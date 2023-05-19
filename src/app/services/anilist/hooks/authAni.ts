@@ -19,6 +19,7 @@ import { RootNavPaths } from '../../../../navigation/types';
 
 const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
 const ANI_WEB_ID = Constants.expoConfig?.extra?.ANI_WEB_ID;
+const ANI_EXPO_GO = Constants.expoConfig?.extra?.ANI_EXPO_GO;
 
 // https://anilist.co/api/v2/oauth/authorize?client_id={client_id}&response_type=token
 
@@ -27,16 +28,15 @@ const discovery: DiscoveryDocument = {
 };
 
 const redirectUri = makeRedirectUri({
-    scheme: 'goraku',
-    path: 'anilist/redirect',
+    path: 'more/accounts',
     // queryParams: { rootPath: rootPath },
 });
 
 const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
-    Platform.OS === 'web' ? ANI_WEB_ID : ANI_ID
+    Platform.OS === 'web' ? ANI_WEB_ID : ANI_EXPO_GO
 }&response_type=token`;
 
-export const useAnilistAuth = (rootPath: keyof RootNavPaths) => {
+export const useAnilistAuth = () => {
     const [request, setRequest] = useState<AuthRequest | null>(null);
     const [result, setResult] = useState<AuthSessionResult | null>(null);
     const dispatch = useDispatch();
@@ -55,15 +55,23 @@ export const useAnilistAuth = (rootPath: keyof RootNavPaths) => {
                 options,
             );
 
+            console.log('RedirectURL:', redirectUri);
+            console.log('RESULT:', result);
+
+            // Using Expo Go gives error: "Cross-Site request verification failed. Cached state and returned state do not match."
+            // Still provides the token though.
             if (result?.type === 'success' || result?.type === 'error') {
-                const { accessToken, expiresIn } = result.authentication;
-                const today = new Date().getTime() / 1000;
-                const death = today + expiresIn;
-                dispatch(setAniAuth({ token: accessToken, timeTillDeath: death?.toString() }));
-                console.log('dispatched auth!');
-                dispatch(api.util.invalidateTags(['ExploreAnime', 'ExploreManga', 'ExploreNovel']));
+                const accessToken = result.authentication?.accessToken;
+                const expiresAt = new Date();
+                expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+                console.log('Success!', 'No access token yet...');
+                if (accessToken){
+                    dispatch(setAniAuth({ token: accessToken, deathDate: expiresAt.toLocaleString() }));
+                    console.log('Success!', accessToken);
+                    dispatch(api.util.invalidateTags(['ExploreAnime', 'ExploreManga', 'ExploreNovel']));
+                }
             } else {
-                console.log('useAuth!', result?.type);
+                console.log('Error!', result?.type);
             }
             setResult(result);
             return result;
