@@ -4,35 +4,30 @@ import PaperHeader, { MoreHeader } from '../../components/headers';
 import SettingsScreen from '../../features/more/settings';
 import MoreScreen from '../../features/more';
 import AccountsScreen from '../../features/more/accounts';
+import { MoreStackProps } from '../types';
 
-export type SettingsStackProps = {
-    more: undefined;
-    settings: undefined;
-    accounts: undefined;
-};
+const MoreStackNav = createNativeStackNavigator<MoreStackProps>();
 
-const SettingsStackNav = createNativeStackNavigator<SettingsStackProps>();
-
-export const SettingsStack = () => {
+export const MoreStack = () => {
     return (
-        <SettingsStackNav.Navigator
+        <MoreStackNav.Navigator
             screenOptions={{ header: (props) => <PaperHeader {...props} /> }}
         >
-            <SettingsStackNav.Screen
+            <MoreStackNav.Screen
                 name="more"
                 component={MoreScreen}
                 options={{ title: 'More', header: (props) => <MoreHeader {...props} /> }}
             />
-            <SettingsStackNav.Screen 
+            <MoreStackNav.Screen 
                 name="accounts"
                 component={AccountsScreen}
                 options={{ title: 'Accounts' }}
             />
-            <SettingsStackNav.Screen
+            <MoreStackNav.Screen
                 name="settings"
                 component={SettingsScreen}
                 options={{ title: 'Settings' }}
             />
-        </SettingsStackNav.Navigator>
+        </MoreStackNav.Navigator>
     );
 };
