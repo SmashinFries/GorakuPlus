@@ -1,9 +1,9 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { View } from "react-native";
 import { Divider, List } from "react-native-paper";
-import { SettingsStackProps } from "../../navigation/stacks/more";
+import { MoreStackProps } from "../../navigation/types";
 
-const MoreScreen = ({navigation}:NativeStackScreenProps<SettingsStackProps, 'more'>) => {
+const MoreScreen = ({navigation}:NativeStackScreenProps<MoreStackProps, 'more'>) => {
     return(
         <View>
             <Divider />
