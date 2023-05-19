@@ -1,10 +1,15 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+
 export type RootNavPaths = {
     explore: undefined;
-    anilistRedirect: {
-        rootPath: keyof RootNavPaths;
-    };
     searchStack: undefined;
     listStack: undefined;
     userStack: undefined;
-    moreStack: undefined;
+    moreStack: NavigatorScreenParams<MoreStackProps>;
+};
+
+export type MoreStackProps = {
+    more: undefined;
+    settings: undefined;
+    accounts: undefined;
 };
