@@ -27,7 +27,6 @@ const config = {
                 search: 'search',
             },
         },
-        anilistRedirect: 'anilist/redirect',
         more: {
             screens: {
                 settings: 'more/settings',
