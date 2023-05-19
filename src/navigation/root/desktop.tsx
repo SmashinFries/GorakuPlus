@@ -36,19 +36,11 @@ const DesktopNavigation = () => {
                 }}
             />
             <Drawers.Screen
-                name="more"
+                name="moreStack"
                 component={Test}
                 options={{
                     title: 'Settings',
                     drawerIcon: ({ color }) => <Icon name="cog-outline" color={color} size={26} />,
-                }}
-            />
-            <Drawers.Screen
-                name="anilistRedirect"
-                component={Test}
-                options={{
-                    headerLeftLabelVisible: false,
-                    drawerItemStyle: { display: 'none' },
                 }}
             />
         </Drawers.Navigator>
