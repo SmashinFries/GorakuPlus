@@ -51,6 +51,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ANI_ID: process.env.ANI_ID,
     ANI_WEB_ID: process.env.ANI_WEB_ID,
     ANI_EXPO_GO: process.env.ANI_EXPO_GO,
+    ANI_EXPO_GO_IOS: process.env.ANI_EXPO_GO_IOS,
   },
   scheme: "gorakuplus"
 });
