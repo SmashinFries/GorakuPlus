@@ -2,14 +2,15 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import { RootNavPaths } from "../types";
 import { View } from "react-native";
 import { Button } from "react-native-paper";
-import SettingsScreen from "../../features/more/settings";
-import { SettingsStack } from "../stacks/more";
-import Constants from "expo-constants";
-
+import { MoreStack } from "../stacks/more";
 
 const RTBottomTabs = createMaterialBottomTabNavigator<RootNavPaths>();
 
-const Test = () => <View style={{flex:1, justifyContent:'center'}}><Button onPress={() => console.log(Constants.expoConfig?.extra?.ANI_ID)}>Print</Button></View>;
+const Test = () => {
+    return(
+        <View style={{flex:1, justifyContent:'center'}}><Button >Print</Button></View>
+    )
+};
 
 const MobileNavigation = () => {
     return (
@@ -39,7 +40,7 @@ const MobileNavigation = () => {
             />
             <RTBottomTabs.Screen
                 name="moreStack"
-                component={SettingsStack}
+                component={MoreStack}
                 options={{
                     title: 'More',
                     tabBarIcon: 'dots-horizontal',
