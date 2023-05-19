@@ -1,0 +1,356 @@
+query RandomMedia($random: Int, $perRandom: Int, $type: MediaType, $isAdult: Boolean) {
+    Page(page: $random, perPage: $perRandom) {
+        pageInfo {
+            total
+        }
+        media(type: $type, isAdult: $isAdult) {
+            id
+            idMal
+            type
+            format
+            isAdult
+            genres
+            description(asHtml: true)
+            status(version: 3)
+            tags {
+                id
+                name
+                description
+                rank
+                category
+            }
+            title {
+                userPreferred
+                romaji
+                native
+                english
+            }
+            coverImage {
+                extraLarge
+            }
+            bannerImage
+            meanScore
+            averageScore
+        }
+    }
+}
+
+query AniMedia(
+    $id: Int
+    $sort_c: [CharacterSort]
+    $role_c: CharacterRole
+    $page_c: Int
+    $perPage_c: Int
+    $page_rec: Int
+    $perPage_rec: Int
+) {
+    Media(id: $id) {
+        title {
+            romaji
+            english
+            native
+            userPreferred
+        }
+        averageScore
+        meanScore
+        startDate {
+            year
+            month
+            day
+        }
+        endDate {
+            year
+            month
+            day
+        }
+        tags {
+            id
+            name
+            description
+            rank
+            category
+        }
+        trailer {
+            id
+            site
+            thumbnail
+        }
+        relations {
+            edges {
+                id
+                relationType(version: 2)
+                node {
+                    id
+                    idMal
+                    bannerImage
+                    type
+                    format
+                    title {
+                        romaji
+                        english
+                        native
+                        userPreferred
+                    }
+                    coverImage {
+                        extraLarge
+                    }
+                    averageScore
+                    meanScore
+                }
+            }
+        }
+        externalLinks {
+            id
+            site
+            url
+            color
+            icon
+        }
+        rankings {
+            id
+            rank
+            type
+            format
+            year
+            season
+            allTime
+            context
+        }
+        streamingEpisodes {
+            title
+            thumbnail
+            url
+            site
+        }
+        nextAiringEpisode {
+            id
+            airingAt
+            timeUntilAiring
+            episode
+            mediaId
+        }
+        coverImage {
+            extraLarge
+        }
+        characters(sort: $sort_c, role: $role_c, page: $page_c, perPage: $perPage_c) {
+            pageInfo {
+                total
+                hasNextPage
+                currentPage
+            }
+            edges {
+                id
+                role
+                voiceActorRoles(sort: [RELEVANCE, ID]) {
+                    voiceActor {
+                        id
+                        name {
+                            full
+                            userPreferred
+                            native
+                        }
+                        language: languageV2
+                        image {
+                            large
+                        }
+                    }
+                }
+                node {
+                    id
+                    isFavourite
+                    image {
+                        large
+                    }
+                    name {
+                        full
+                        userPreferred
+                        native
+                        first
+                        last
+                    }
+                    favourites
+                }
+            }
+        }
+        recommendations(sort: RATING_DESC, page: $page_rec, perPage: $perPage_rec) {
+            edges {
+                node {
+                    id
+                    rating
+                    userRating
+                    mediaRecommendation {
+                        id
+                        idMal
+                        bannerImage
+                        type
+                        title {
+                            romaji
+                            english
+                            native
+                            userPreferred
+                        }
+                        coverImage {
+                            extraLarge
+                        }
+                        meanScore
+                        averageScore
+                    }
+                }
+            }
+        }
+        mediaListEntry {
+            id
+            mediaId
+            status
+            score
+            progress
+            progressVolumes
+            repeat
+            priority
+            private
+            notes
+            hiddenFromStatusLists
+            customLists
+            advancedScores
+            startedAt {
+                year
+                month
+                day
+            }
+            completedAt {
+                year
+                month
+                day
+            }
+            updatedAt
+            createdAt
+        }
+        staff(page: 1, perPage: 12, sort: [RELEVANCE, ID]) {
+            edges {
+                role
+                node {
+                    id
+                    name {
+                        full
+                        first
+                        middle
+                        last
+                        native
+                        userPreferred
+                    }
+                    image {
+                        large
+                    }
+                    isFavourite
+                }
+            }
+        }
+        reviews(limit: 5, sort: RATING_DESC, page: 1, perPage: 20) {
+            edges {
+                node {
+                    id
+                    userId
+                    summary
+                    body(asHtml: true)
+                    rating
+                    ratingAmount
+                    userRating
+                    score
+                    siteUrl
+                    createdAt
+                    updatedAt
+                    user {
+                        id
+                        name
+                        about(asHtml: true)
+                        bannerImage
+                        createdAt
+                        options {
+                            profileColor
+                        }
+                        avatar {
+                            large
+                        }
+                        favourites {
+                            anime(perPage: 1) {
+                                nodes {
+                                    id
+                                    title {
+                                        userPreferred
+                                    }
+                                    coverImage {
+                                        extraLarge
+                                    }
+                                    siteUrl
+                                }
+                            }
+                            manga(perPage: 1) {
+                                nodes {
+                                    id
+                                    title {
+                                        userPreferred
+                                    }
+                                    coverImage {
+                                        extraLarge
+                                    }
+                                    siteUrl
+                                }
+                            }
+                            characters(perPage: 1) {
+                                nodes {
+                                    id
+                                    name {
+                                        userPreferred
+                                    }
+                                    image {
+                                        large
+                                    }
+                                    gender
+                                    siteUrl
+                                }
+                            }
+                        }
+                        donatorBadge
+                        siteUrl
+                    }
+                }
+            }
+        }
+        studios(isMain: true) {
+            nodes {
+                id
+                name
+                isAnimationStudio
+                isFavourite
+                favourites
+            }
+        }
+        source(version: 3)
+        idMal
+        id
+        bannerImage
+        description(asHtml: true)
+        siteUrl
+        updatedAt
+        season
+        seasonYear
+        type
+        format
+        status(version: 2)
+        episodes
+        duration
+        chapters
+        volumes
+        isAdult
+        genres
+        countryOfOrigin
+        isLicensed
+        hashtag
+        synonyms
+        popularity
+        isLocked
+        trending
+        favourites
+        isFavourite
+    }
+}

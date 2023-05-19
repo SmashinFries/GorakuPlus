@@ -1,12 +1,17 @@
+import 'react-native-reanimated';
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { AppProvider } from './src/provider';
+import DesktopNavigation from './src/navigation/root/desktop';
+import MobileNavigation from './src/navigation/root/mobile';
 
 export default function App() {
+  const {width, height} = useWindowDimensions();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AppProvider>
+      {width > height ? <DesktopNavigation /> : <MobileNavigation />}
+    </AppProvider>
   );
 }
 

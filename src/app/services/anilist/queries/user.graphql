@@ -1,0 +1,307 @@
+query ViewerStats {
+    Viewer {
+        statistics {
+            anime {
+                count
+                meanScore
+                standardDeviation
+                minutesWatched
+                episodesWatched
+                formats(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    format
+                }
+                statuses(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    status
+                }
+                scores(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    score
+                }
+                lengths(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    length
+                }
+                releaseYears(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    releaseYear
+                }
+                startYears(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    startYear
+                }
+                genres(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    genre
+                }
+                tags(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    tag {
+                        id
+                        name
+                        description
+                        category
+                    }
+                }
+                countries(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    country
+                }
+                voiceActors(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    voiceActor {
+                        id
+                        languageV2
+                        image {
+                            large
+                        }
+                        isFavourite
+                        favourites
+                        name {
+                            userPreferred
+                        }
+                    }
+                }
+                staff(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    staff {
+                        id
+                        languageV2
+                        image {
+                            large
+                        }
+                        isFavourite
+                        favourites
+                        name {
+                            userPreferred
+                        }
+                    }
+                }
+                studios {
+                    count
+                    meanScore
+                    minutesWatched
+                    mediaIds
+                    studio {
+                        id
+                        name
+                        favourites
+                        isFavourite
+                    }
+                }
+            }
+            manga {
+                count
+                meanScore
+                standardDeviation
+                chaptersRead
+                volumesRead
+                formats(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    format
+                }
+                statuses(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    status
+                }
+                scores(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    score
+                }
+                lengths(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    length
+                }
+                releaseYears(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    releaseYear
+                }
+                startYears(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    startYear
+                }
+                genres(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    genre
+                }
+                tags(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    tag {
+                        id
+                        name
+                        description
+                        category
+                    }
+                }
+                countries(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    country
+                }
+                staff(sort: [COUNT_DESC]) {
+                    count
+                    meanScore
+                    chaptersRead
+                    mediaIds
+                    staff {
+                        id
+                        languageV2
+                        image {
+                            large
+                        }
+                        isFavourite
+                        favourites
+                        name {
+                            userPreferred
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query UserActivity($page: Int, $isFollowing: Boolean, $userId: Int) {
+    Page(page: $page, perPage: 24) {
+        pageInfo {
+            total
+            currentPage
+            hasNextPage
+        }
+        activities(sort: ID_DESC, isFollowing: $isFollowing, userId: $userId) {
+            __typename
+            ... on ListActivity {
+                id
+                progress
+                status
+                createdAt
+                user {
+                    id
+                    name
+                    about
+                    createdAt
+                    bannerImage
+                    options {
+                        profileColor
+                    }
+                    avatar {
+                        large
+                    }
+                    favourites {
+                        anime(perPage: 1) {
+                            nodes {
+                                id
+                                title {
+                                    userPreferred
+                                }
+                                coverImage {
+                                    extraLarge
+                                }
+                                siteUrl
+                            }
+                        }
+                        manga(perPage: 1) {
+                            nodes {
+                                id
+                                title {
+                                    userPreferred
+                                }
+                                coverImage {
+                                    extraLarge
+                                }
+                                siteUrl
+                            }
+                        }
+                        characters(perPage: 1) {
+                            nodes {
+                                id
+                                name {
+                                    userPreferred
+                                }
+                                image {
+                                    large
+                                }
+                                gender
+                                siteUrl
+                            }
+                        }
+                    }
+                    siteUrl
+                }
+                media {
+                    id
+                    type
+                    bannerImage
+                    isAdult
+                    title {
+                        userPreferred
+                    }
+                    coverImage {
+                        extraLarge
+                    }
+                }
+                siteUrl
+            }
+        }
+    }
+}

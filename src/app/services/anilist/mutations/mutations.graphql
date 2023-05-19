@@ -1,0 +1,99 @@
+mutation ToggleFav($animeId: Int, $mangaId: Int, $characterId: Int, $staffId: Int, $studioId: Int) {
+    ToggleFavourite(
+        animeId: $animeId
+        mangaId: $mangaId
+        characterId: $characterId
+        staffId: $staffId
+        studioId: $studioId
+    ) {
+        __typename
+    }
+}
+
+mutation SaveMediaListItem(
+    $id: Int
+    $mediaId: Int
+    $status: MediaListStatus
+    $score: Float
+    $progress: Int
+    $progressVolumes: Int
+    $repeat: Int
+    $startedAt: FuzzyDateInput
+    $completedAt: FuzzyDateInput
+    $notes: String
+) {
+    SaveMediaListEntry(
+        id: $id
+        mediaId: $mediaId
+        status: $status
+        score: $score
+        progress: $progress
+        progressVolumes: $progressVolumes
+        repeat: $repeat
+        startedAt: $startedAt
+        completedAt: $completedAt
+        notes: $notes
+    ) {
+        id
+        status
+        score
+        progress
+        repeat
+        startedAt {
+            year
+            month
+            day
+        }
+        completedAt {
+            year
+            month
+            day
+        }
+        notes
+    }
+}
+
+mutation DeleteMediaListItem($id: Int) {
+    DeleteMediaListEntry(id: $id) {
+        deleted
+    }
+}
+
+mutation ChangeLanguage(
+    $titleLanguage: UserTitleLanguage
+    $staffNameLanguage: UserStaffNameLanguage
+) {
+    UpdateUser(titleLanguage: $titleLanguage, staffNameLanguage: $staffNameLanguage) {
+        id
+    }
+}
+
+mutation UpdateViewer($notificationOptions: [NotificationOptionInput], $displayNSFW: Boolean) {
+    UpdateUser(displayAdultContent: $displayNSFW, notificationOptions: $notificationOptions) {
+        id
+    }
+}
+
+mutation SaveRecom($mediaId: Int, $mediaRecommendationId: Int, $rating: RecommendationRating) {
+    SaveRecommendation(
+        mediaId: $mediaId
+        mediaRecommendationId: $mediaRecommendationId
+        rating: $rating
+    ) {
+        rating
+        userRating
+    }
+}
+
+mutation DeleteAct($id: Int) {
+    DeleteActivity(id: $id) {
+        deleted
+    }
+}
+
+mutation RateRev($id: Int, $rating: ReviewRating) {
+    RateReview(reviewId: $id, rating: $rating) {
+        id
+        userRating
+    }
+}
