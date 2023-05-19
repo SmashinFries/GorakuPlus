@@ -1,20 +1,25 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { View } from "react-native";
-import { SettingsStackProps } from "../../../navigation/stacks/more";
-import { List, Portal } from "react-native-paper";
-import { setTheme } from "../../../theme/themeSlice";
+import { Button, List, Portal } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../app/store";
 import { useTokenTime } from "../../../utils/time";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AniListLoginDialog from "../../../app/services/anilist/components/dialogs";
 import { setAniAuth } from "../../../app/services/anilist/authSlice";
 import { api } from "../../../app/services/anilist/enhanced";
 import { Style } from "react-native-paper/lib/typescript/src/components/List/utils";
+import { MoreStackProps } from "../../../navigation/types";
+import { RootState } from "../../../app/store";
+import * as WebBrowser from 'expo-web-browser';
+import { useAnilistAuth } from "../../../app/services/anilist/hooks/authAni";
+import { AnilistIcon, DanbooruIcon } from "../../../components/svgs";
 
-const AccountsScreen = ({}:NativeStackScreenProps<SettingsStackProps, 'settings'>) => {
-    const { timeTillDeath } = useSelector((state: RootState) => state.persistedAniLogin);
-    const { aniTokenTime } = useTokenTime({ death: Number(timeTillDeath) });
+WebBrowser.maybeCompleteAuthSession();
+
+const AccountsScreen = ({}:NativeStackScreenProps<MoreStackProps, 'accounts'>) => {
+    const { deathDate } = useSelector((state: RootState) => state.persistedAniLogin);
+    const aniAuth = useAnilistAuth();
+    // const { aniTokenTime } = useTokenTime({ death: Number(timeTillDeath) });
     const dispatch = useDispatch();
     const [showAniAuth, setShowAniAuth] = useState(false);
 
@@ -23,35 +28,42 @@ const AccountsScreen = ({}:NativeStackScreenProps<SettingsStackProps, 'settings'
 
     const ActiveIcon = (props:{color:string, style?: Style }) => <List.Icon {...props} icon={'check'} color={'green'} />;
 
+    useEffect(() => {
+        setShowAniAuth(false);
+    },[])
+
     return(
         <View>
             <List.Section>
                 <List.Subheader>Accounts</List.Subheader>
                 <List.Item
                     title="Anilist"
-                    description={timeTillDeath && `Next Login:\n💀${aniTokenTime}💀`}
-                    onPress={() => setShowAniAuth(true)}
-                    right={(props) => ( timeTillDeath ?
+                    description={deathDate && `Expires: ${deathDate}`}
+                    onPress={() => deathDate ? setShowAniAuth(true) : aniAuth.promptAsync()}
+                    right={(props) => ( deathDate ?
                         <ActiveIcon {...props} />
                         : null
                     )}
+                    left={(props) => <AnilistIcon style={props.style} />}
+                    
                 />
                 <List.Item
                     title="Danbooru"
-                    description="Not implemented"
+                    description="🚧"
                     onPress={() => null}
+                    left={(props) => <DanbooruIcon style={props.style} />}
                     // right={(props) => <ActiveIcon {...props} />}
                 />
             </List.Section>
             <Portal>
                 <AniListLoginDialog
                     visible={showAniAuth}
-                    rootPath={'explore'}
                     onDismiss={() => setShowAniAuth(false)}
                     onLogout={() => {
-                        dispatch(setAniAuth({ token: '', timeTillDeath: '' }));
+                        dispatch(setAniAuth({ token: '', deathDate: '' }));
                         resetCache();
                     }}
+                    onRelogin={() => aniAuth.promptAsync()}
                 />
             </Portal>
         </View>
