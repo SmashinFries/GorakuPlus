@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { View } from "react-native";
 import { Button, List, Portal } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { useTokenTime } from "../../../utils/time";
 import { useEffect, useState } from "react";
 import AniListLoginDialog from "../../../app/services/anilist/components/dialogs";
 import { setAniAuth } from "../../../app/services/anilist/authSlice";

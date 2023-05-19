@@ -20,6 +20,7 @@ import { RootNavPaths } from '../../../../navigation/types';
 const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
 const ANI_WEB_ID = Constants.expoConfig?.extra?.ANI_WEB_ID;
 const ANI_EXPO_GO = Constants.expoConfig?.extra?.ANI_EXPO_GO;
+const ANI_EXPO_GO_IOS = Constants.expoConfig?.extra?.ANI_EXPO_GO_IOS;
 
 // https://anilist.co/api/v2/oauth/authorize?client_id={client_id}&response_type=token
 
@@ -33,7 +34,7 @@ const redirectUri = makeRedirectUri({
 });
 
 const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
-    Platform.OS === 'web' ? ANI_WEB_ID : ANI_EXPO_GO
+    Platform.OS === 'web' ? ANI_WEB_ID : Platform.OS === 'android' ? ANI_EXPO_GO : ANI_EXPO_GO_IOS
 }&response_type=token`;
 
 export const useAnilistAuth = () => {
