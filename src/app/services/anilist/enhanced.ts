@@ -1,6 +1,4 @@
-import {
-    api as generatedApi,
-} from './generated-anilist';
+import { api as generatedApi } from './generated-anilist';
 
 // function sortAiring(data: any[]) {
 //     return data.sort((a, b) => {
@@ -16,6 +14,9 @@ import {
 
 export const api = generatedApi.enhanceEndpoints({
     endpoints: {
+        // UserData: {
+
+        // }
         AnimeThisSeason: {
             providesTags: ['ExploreAnime'],
         },
@@ -49,9 +50,20 @@ export const api = generatedApi.enhanceEndpoints({
         NovelTopScored: {
             providesTags: ['ExploreNovel'],
         },
+        AniMedia: {
+            providesTags: ['AniMedia'],
+        },
+        ToggleFav: {
+            invalidatesTags: ['AniMedia'],
+        },
+        SaveMediaListItem: {
+            invalidatesTags: ['AniMedia'],
+        },
+        DeleteMediaListItem: {
+            invalidatesTags: ['AniMedia'],
+        },
     },
-    addTagTypes: ['ExploreAnime', 'ExploreManga', 'ExploreNovel'],
-    
+    addTagTypes: ['ExploreAnime', 'ExploreManga', 'ExploreNovel', 'AniMedia'],
 });
 
 export const { useExploreMediaQuery, useAnimeThisSeasonQuery } = api;
