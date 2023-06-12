@@ -1,9 +1,0 @@
-{
-    "schemaFile": "./src/app/services/deviantart/schema.json",
-    "apiFile": "./src/app/services/deviantart/emptyDeviantArtAPI.ts",
-    "apiImport": "emptyDeviantArtAPI",
-    "outputFile": "./src/app/services/deviantart/deviantArtApi.ts",
-    "exportName": "deviantArtApi",
-    "hooks": true,
-    "tag": true
-}
