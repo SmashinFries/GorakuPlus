@@ -22,14 +22,26 @@ const AniListLogoutDialog = ({
 
     const LogoutButton = () => (
         <Button
-            onPress={() => {onLogout(); onDismiss();}}
+            onPress={() => {
+                onLogout();
+                onDismiss();
+            }}
             textColor={MD3Colors.error50}
         >
             {'Logout'}
         </Button>
     );
 
-    const RefetchButton = () => <Button onPress={() => {onRelogin(); onDismiss();}}>Re-login</Button>
+    const RefetchButton = () => (
+        <Button
+            onPress={() => {
+                onRelogin();
+                onDismiss();
+            }}
+        >
+            Re-login
+        </Button>
+    );
 
     return (
         <Dialog
