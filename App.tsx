@@ -3,23 +3,33 @@ import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { AppProvider } from './src/provider';
-import DesktopNavigation from './src/navigation/root/desktop';
-import MobileNavigation from './src/navigation/root/mobile';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import RootStackNavigation from './src/navigation/root';
+// import * as Localization from 'expo-localization';
+// import { I18n } from 'i18n-js';
+// import en from './languages/english.json';
+// import ja from './languages/japanese.json';
 
-export default function App() {
-  const {width, height} = useWindowDimensions();
-  return (
-    <AppProvider>
-      {width > height ? <DesktopNavigation /> : <MobileNavigation />}
-    </AppProvider>
-  );
+if (typeof window !== 'undefined') {
+    // @ts-ignore
+    window._frameTimestamp = null;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// const translations = {
+//     en: { ...en },
+//     ja: { ...ja },
+// };
+// const i18n = new I18n(translations);
+
+const App = () => {
+    const { width, height } = useWindowDimensions();
+    return (
+        <AppProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <RootStackNavigation />
+            </GestureHandlerRootView>
+        </AppProvider>
+    );
+};
+
+export default App;
