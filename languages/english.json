@@ -1,0 +1,17 @@
+{
+    "tabs": {
+        "browse": "Browse",
+        "list": "List",
+        "user": "User",
+        "more": "More",
+        "anime": "Anime",
+        "manga": "Manga",
+        "manhwa": "Manhwa",
+        "novels": "Novels"
+    },
+    "moreTab": {
+        "accounts": "Accounts",
+        "settings": "Settings",
+        "about": "About"
+    }
+}

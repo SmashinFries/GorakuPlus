@@ -1,0 +1,17 @@
+{
+    "tabs": {
+        "browse": "ブラウズする",
+        "list": "リスト",
+        "user": "ユーザー",
+        "more": "もっと",
+        "anime": "アニメ",
+        "manga": "漫画",
+        "manhwa": "Manhwa",
+        "novels": "ライトノベル"
+    },
+    "moreTab": {
+        "accounts": "口座",
+        "settings": "設定",
+        "about": "について"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "tabs": {
+        "browse": "탐색",
+        "list": "목록",
+        "user": "사용자",
+        "more": "더",
+        "anime": "애니메이션",
+        "manga": "Manga",
+        "manhwa": "만화",
+        "novels": "라이트노벨"
+    },
+    "moreTab": {
+        "accounts": "회계",
+        "settings": "설정",
+        "about": "약"
+    }
+}
