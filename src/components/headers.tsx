@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
-import { Appbar, Portal, Text, useTheme } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { Appbar, Button, IconButton, Portal, Searchbar, Text, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { Image } from 'react-native';
+import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View, useWindowDimensions } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '../app/store';
+import { MotiImage, MotiScrollView, MotiView } from 'moti';
+import { Image } from 'expo-image';
+import Animated from 'react-native-reanimated';
+import { useHeaderAnim } from './animations';
+import { useNavigation } from '@react-navigation/native';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -14,14 +21,169 @@ const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProp
     );
 };
 
-export const MoreHeader = ({navigation, options, route, back}: NativeStackHeaderProps) => {
+export const ExploreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+    const title = getHeaderTitle(options, route.name);
+    const { width } = useWindowDimensions();
+    const { mode } = useSelector((state: RootState) => state.persistedTheme);
+    return (
+        <Appbar.Header>
+            {mode === 'punpun' && (
+                <MotiView
+                    from={{ translateX: width }}
+                    animate={{ translateX: -width }}
+                    transition={{
+                        type: 'timing',
+                        duration: 25000,
+                        loop: true,
+                        repeatReverse: false,
+                        delay: 500,
+                    }}
+                    exit={{
+                        opacity: 0,
+                    }}
+                    style={{ position: 'absolute', height: 60, width: 30 }}
+                >
+                    <MotiImage
+                        from={{ translateY: -5 }}
+                        animate={{ translateY: 5 }}
+                        transition={{
+                            type: 'timing',
+                            duration: 1000,
+                            loop: true,
+                            repeatReverse: true,
+                        }}
+                        source={require('../../assets/punpun.png')}
+                        style={{ height: 50, width: 30 }}
+                        resizeMode="contain"
+                    />
+                </MotiView>
+            )}
+            {back && <Appbar.BackAction onPress={navigation.goBack} />}
+            <Appbar.Content title={title} />
+            <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
+        </Appbar.Header>
+    );
+};
+
+type SearchHeaderProps = NativeStackHeaderProps & {
+    onSearch: () => void;
+    openFilter: () => void;
+};
+export const SearchHeader = ({
+    navigation,
+    options,
+    route,
+    back,
+    openFilter,
+}: SearchHeaderProps) => {
+    // const title = getHeaderTitle(options, route.name);
+    const [query, setQuery] = useState('');
+    const [isFilterActive, setIsFilterActive] = useState(false);
+
+    const clearQuery = () => setQuery('');
+
+    return (
+        <Appbar.Header elevated>
+            <Searchbar
+                value={query}
+                onChangeText={(txt) => setQuery(txt)}
+                autoFocus
+                placeholder="Search sauce..."
+                mode="bar"
+                icon="arrow-left"
+                onIconPress={navigation.goBack}
+                traileringIcon={'image-search-outline'}
+                style={{ flex: 1 }}
+            />
+            <IconButton icon={isFilterActive ? 'filter' : 'filter-outline'} onPress={openFilter} />
+        </Appbar.Header>
+    );
+};
+
+export const MoreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+    const { mode } = useSelector((state: RootState) => state.persistedTheme);
     const title = getHeaderTitle(options, route.name);
     return (
-        <Appbar.Header style={{height:200, justifyContent:'center'}}>
+        <Appbar.Header style={{ height: 200, justifyContent: 'center' }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             {/* <Appbar.Content title={title} /> */}
-            <Image source={{uri:'http://3.bp.blogspot.com/-EhrA8cHwXnQ/TyCtHjs957I/AAAAAAAAAeg/QJfY0lg1x34/s1600/1019i.gif'}} style={{width: 300, height: 200, alignSelf:'center'}} />
+            <Image
+                source={
+                    mode === 'punpun'
+                        ? require('../../assets/punpunRotate.gif')
+                        : {
+                              uri: 'http://3.bp.blogspot.com/-EhrA8cHwXnQ/TyCtHjs957I/AAAAAAAAAeg/QJfY0lg1x34/s1600/1019i.gif',
+                          }
+                }
+                style={{ width: 300, height: 200, alignSelf: 'center' }}
+                contentFit="contain"
+            />
         </Appbar.Header>
+    );
+};
+
+type MediaHeaderProps = NativeStackHeaderProps;
+export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderProps) => {
+    const title = getHeaderTitle(options, route.name);
+
+    return (
+        <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+            {back && <Appbar.BackAction onPress={navigation.goBack} />}
+            <Appbar.Content title={title ?? ''} />
+            <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} />
+        </Appbar.Header>
+    );
+};
+
+type FadeHeaderProps = {
+    children: React.ReactNode;
+    title: string;
+    loading?: boolean;
+};
+export const FadeHeaderProvider = ({ children, title, loading }: FadeHeaderProps) => {
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
+    const { colors } = useTheme();
+    const { headerStyle, headerTitleStyle, scrollHandler } = useHeaderAnim();
+    const { width, height } = useWindowDimensions();
+
+    const Header = () => {
+        return (
+            <Animated.View style={[headerStyle]}>
+                <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+                    {navigation.canGoBack && <Appbar.BackAction onPress={navigation.goBack} />}
+                    <Animated.View
+                        style={[
+                            headerTitleStyle,
+                            {
+                                flex: 1,
+                                height: '50%',
+                                justifyContent: 'center',
+                            },
+                        ]}
+                    >
+                        <Appbar.Content title={title ?? ''} />
+                    </Animated.View>
+                    <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} />
+                </Appbar.Header>
+            </Animated.View>
+        );
+    };
+
+    useEffect(() => {
+        navigation.setOptions({
+            title: title,
+            headerTransparent: true,
+            headerShown: loading ? false : true,
+            header: (props) => <Header />,
+        });
+    }, [loading]);
+
+    return (
+        <View style={{ height: height, width: width }}>
+            <MotiScrollView scrollEventThrottle={16} onScroll={scrollHandler}>
+                {children}
+            </MotiScrollView>
+        </View>
     );
 };
 
