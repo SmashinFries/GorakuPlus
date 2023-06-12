@@ -305,3 +305,122 @@ query UserActivity($page: Int, $isFollowing: Boolean, $userId: Int) {
         }
     }
 }
+
+query UserData {
+    Viewer {
+        id
+        name
+        avatar {
+            medium
+            large
+        }
+        bannerImage
+    }
+}
+
+query UserOverview {
+    Viewer {
+        name
+        avatar {
+            large
+        }
+        bannerImage
+        about
+        favourites {
+            anime(perPage: 12) {
+                nodes {
+                    id
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+            manga(perPage: 12) {
+                nodes {
+                    id
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+            characters(perPage: 12) {
+                nodes {
+                    id
+                    image {
+                        large
+                    }
+                }
+            }
+            staff(perPage: 12) {
+                nodes {
+                    id
+                    image {
+                        large
+                    }
+                }
+            }
+            studios(perPage: 12) {
+                nodes {
+                    id
+                    name
+                }
+            }
+        }
+        statistics {
+            anime {
+                minutesWatched
+                episodesWatched
+            }
+            manga {
+                chaptersRead
+                volumesRead
+            }
+        }
+        unreadNotificationCount
+        siteUrl
+    }
+}
+
+query UserFollowing($userId: Int!, $page: Int) {
+    Page(page: $page) {
+        pageInfo {
+            total
+            hasNextPage
+        }
+        following(userId: $userId) {
+            id
+            name
+            avatar {
+                large
+                medium
+            }
+            bannerImage
+            isFollowing
+            isFollower
+            isBlocked
+            siteUrl
+        }
+    }
+}
+
+query UserFollowers($userId: Int!, $page: Int) {
+    Page(page: $page) {
+        pageInfo {
+            total
+            hasNextPage
+        }
+        followers(userId: $userId) {
+            id
+            name
+            avatar {
+                large
+                medium
+            }
+            bannerImage
+            isFollowing
+            isFollower
+            isBlocked
+            siteUrl
+        }
+    }
+}

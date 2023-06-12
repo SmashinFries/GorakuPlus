@@ -368,7 +368,13 @@ query MangaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boole
             currentPage
             total
         }
-        media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: TRENDING_DESC) {
+        media(
+            type: MANGA
+            countryOfOrigin: JP
+            isAdult: $isAdult
+            onList: $onList
+            sort: TRENDING_DESC
+        ) {
             ...MangaMeta
         }
     }
@@ -381,7 +387,13 @@ query MangaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolea
             currentPage
             total
         }
-        media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: POPULARITY_DESC) {
+        media(
+            type: MANGA
+            countryOfOrigin: JP
+            isAdult: $isAdult
+            onList: $onList
+            sort: POPULARITY_DESC
+        ) {
             ...MangaMeta
         }
     }
@@ -394,7 +406,70 @@ query MangaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Bool
             currentPage
             total
         }
-        media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: SCORE_DESC) {
+        media(
+            type: MANGA
+            countryOfOrigin: JP
+            isAdult: $isAdult
+            onList: $onList
+            sort: SCORE_DESC
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
+query ManhwaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: KR
+            isAdult: $isAdult
+            onList: $onList
+            sort: TRENDING_DESC
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
+query ManhwaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: KR
+            isAdult: $isAdult
+            onList: $onList
+            sort: POPULARITY_DESC
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
+query ManhwaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: KR
+            isAdult: $isAdult
+            onList: $onList
+            sort: SCORE_DESC
+        ) {
             ...MangaMeta
         }
     }
