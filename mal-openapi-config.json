@@ -1,0 +1,9 @@
+{
+    "schemaFile": "https://raw.githubusercontent.com/jikan-me/jikan-rest/master/storage/api-docs/api-docs.json",
+    "apiFile": "./src/app/services/mal/baseMal.ts",
+    "apiImport": "baseMal",
+    "outputFile": "./src/app/services/mal/malApi.ts",
+    "exportName": "malApi",
+    "hooks": true,
+    "tag": true
+}

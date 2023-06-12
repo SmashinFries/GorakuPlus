@@ -1,0 +1,8 @@
+{
+    "schemaFile": "./soruly-api.trace.moe-1.0.1-resolved.json",
+    "apiFile": "./src/app/services/tracemoe/baseTraceMoe.ts",
+    "apiImport": "baseTraceMoe",
+    "outputFile": "./src/app/services/tracemoe/traceMoeApi.ts",
+    "exportName": "traceMoeApi",
+    "hooks": true
+}
