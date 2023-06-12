@@ -16,6 +16,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { api } from '../enhanced';
 import { RootNavPaths } from '../../../../navigation/types';
+import { useLazyUserDataQuery } from '../generated-anilist';
 
 const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
 const ANI_WEB_ID = Constants.expoConfig?.extra?.ANI_WEB_ID;
@@ -41,8 +42,7 @@ export const useAnilistAuth = () => {
     const [request, setRequest] = useState<AuthRequest | null>(null);
     const [result, setResult] = useState<AuthSessionResult | null>(null);
     const dispatch = useDispatch();
-
-    
+    const [fetchUser, userResult] = useLazyUserDataQuery();
 
     const promptAsync = useCallback(
         async (options: AuthRequestPromptOptions = {}) => {
@@ -66,10 +66,33 @@ export const useAnilistAuth = () => {
                 const expiresAt = new Date();
                 expiresAt.setFullYear(expiresAt.getFullYear() + 1);
                 console.log('Success!', 'No access token yet...');
-                if (accessToken){
-                    dispatch(setAniAuth({ token: accessToken, deathDate: expiresAt.toLocaleString() }));
+                if (accessToken) {
+                    // set header
+                    dispatch(
+                        setAniAuth({
+                            token: accessToken,
+                            deathDate: expiresAt.toLocaleString(),
+                        }),
+                    );
                     console.log('Success!', accessToken);
-                    dispatch(api.util.invalidateTags(['ExploreAnime', 'ExploreManga', 'ExploreNovel']));
+                    dispatch(
+                        api.util.invalidateTags(['ExploreAnime', 'ExploreManga', 'ExploreNovel']),
+                    );
+                    // Fetch userdata
+                    const user = await fetchUser().unwrap();
+                    const userAvatar =
+                        user.Viewer.avatar?.large ?? user.Viewer.avatar?.medium ?? null;
+                    const userID = user.Viewer.id ?? null;
+                    const username = user.Viewer.name ?? null;
+                    dispatch(
+                        setAniAuth({
+                            token: accessToken,
+                            deathDate: expiresAt.toLocaleString(),
+                            avatar: userAvatar,
+                            userID: userID,
+                            username: username,
+                        }),
+                    );
                 }
             } else {
                 console.log('Error!', result?.type);
