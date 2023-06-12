@@ -10,11 +10,13 @@ export const api = createApi({
         client,
         prepareHeaders: (headers, { getState }) => {
             const { token } = (getState() as RootState).persistedAniLogin;
+            // console.log('token', token);
             if (token) {
                 headers.set('authorization', `Bearer ${token}`);
             }
             return headers;
         },
     }),
+    reducerPath: 'anilistApi',
     endpoints: () => ({}),
 });
