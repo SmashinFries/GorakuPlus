@@ -4917,6 +4917,36 @@ export type MangaTopScoredQueryVariables = Exact<{
 
 export type MangaTopScoredQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
 
+export type ManhwaTrendingQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  onList?: InputMaybe<Scalars['Boolean']>;
+  isAdult?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+
+export type ManhwaTrendingQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
+
+export type ManhwaPopularQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  onList?: InputMaybe<Scalars['Boolean']>;
+  isAdult?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+
+export type ManhwaPopularQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
+
+export type ManhwaTopScoredQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  onList?: InputMaybe<Scalars['Boolean']>;
+  isAdult?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+
+export type ManhwaTopScoredQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
+
 export type NovelTrendingQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
@@ -4993,6 +5023,32 @@ export type UserActivityQueryVariables = Exact<{
 
 
 export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null } | null, activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null };
+
+export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', medium?: string | null, large?: string | null } | null } | null };
+
+export type UserOverviewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserOverviewQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, staff?: { __typename?: 'StaffConnection', nodes?: Array<{ __typename?: 'Staff', id: number, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', nodes?: Array<{ __typename?: 'Studio', id: number, name: string } | null> | null } | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number } | null } | null } | null };
+
+export type UserFollowingQueryVariables = Exact<{
+  userId: Scalars['Int'];
+  page?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserFollowingQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null };
+
+export type UserFollowersQueryVariables = Exact<{
+  userId: Scalars['Int'];
+  page?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserFollowersQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null };
 
 export const MainMetaFragmentDoc = `
     fragment MainMeta on Media {
@@ -5476,7 +5532,13 @@ export const MangaTrendingDocument = `
       currentPage
       total
     }
-    media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: TRENDING_DESC) {
+    media(
+      type: MANGA
+      countryOfOrigin: JP
+      isAdult: $isAdult
+      onList: $onList
+      sort: TRENDING_DESC
+    ) {
       ...MangaMeta
     }
   }
@@ -5490,7 +5552,13 @@ export const MangaPopularDocument = `
       currentPage
       total
     }
-    media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: POPULARITY_DESC) {
+    media(
+      type: MANGA
+      countryOfOrigin: JP
+      isAdult: $isAdult
+      onList: $onList
+      sort: POPULARITY_DESC
+    ) {
       ...MangaMeta
     }
   }
@@ -5504,7 +5572,73 @@ export const MangaTopScoredDocument = `
       currentPage
       total
     }
-    media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: SCORE_DESC) {
+    media(
+      type: MANGA
+      countryOfOrigin: JP
+      isAdult: $isAdult
+      onList: $onList
+      sort: SCORE_DESC
+    ) {
+      ...MangaMeta
+    }
+  }
+}
+    ${MangaMetaFragmentDoc}`;
+export const ManhwaTrendingDocument = `
+    query ManhwaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(
+      type: MANGA
+      countryOfOrigin: KR
+      isAdult: $isAdult
+      onList: $onList
+      sort: TRENDING_DESC
+    ) {
+      ...MangaMeta
+    }
+  }
+}
+    ${MangaMetaFragmentDoc}`;
+export const ManhwaPopularDocument = `
+    query ManhwaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(
+      type: MANGA
+      countryOfOrigin: KR
+      isAdult: $isAdult
+      onList: $onList
+      sort: POPULARITY_DESC
+    ) {
+      ...MangaMeta
+    }
+  }
+}
+    ${MangaMetaFragmentDoc}`;
+export const ManhwaTopScoredDocument = `
+    query ManhwaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(
+      type: MANGA
+      countryOfOrigin: KR
+      isAdult: $isAdult
+      onList: $onList
+      sort: SCORE_DESC
+    ) {
       ...MangaMeta
     }
   }
@@ -6334,6 +6468,129 @@ export const UserActivityDocument = `
   }
 }
     `;
+export const UserDataDocument = `
+    query UserData {
+  Viewer {
+    id
+    name
+    avatar {
+      medium
+      large
+    }
+    bannerImage
+  }
+}
+    `;
+export const UserOverviewDocument = `
+    query UserOverview {
+  Viewer {
+    name
+    avatar {
+      large
+    }
+    bannerImage
+    about
+    favourites {
+      anime(perPage: 12) {
+        nodes {
+          id
+          coverImage {
+            extraLarge
+          }
+        }
+      }
+      manga(perPage: 12) {
+        nodes {
+          id
+          coverImage {
+            extraLarge
+          }
+        }
+      }
+      characters(perPage: 12) {
+        nodes {
+          id
+          image {
+            large
+          }
+        }
+      }
+      staff(perPage: 12) {
+        nodes {
+          id
+          image {
+            large
+          }
+        }
+      }
+      studios(perPage: 12) {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+    statistics {
+      anime {
+        minutesWatched
+        episodesWatched
+      }
+      manga {
+        chaptersRead
+        volumesRead
+      }
+    }
+    unreadNotificationCount
+    siteUrl
+  }
+}
+    `;
+export const UserFollowingDocument = `
+    query UserFollowing($userId: Int!, $page: Int) {
+  Page(page: $page) {
+    pageInfo {
+      total
+      hasNextPage
+    }
+    following(userId: $userId) {
+      id
+      name
+      avatar {
+        large
+        medium
+      }
+      bannerImage
+      isFollowing
+      isFollower
+      isBlocked
+      siteUrl
+    }
+  }
+}
+    `;
+export const UserFollowersDocument = `
+    query UserFollowers($userId: Int!, $page: Int) {
+  Page(page: $page) {
+    pageInfo {
+      total
+      hasNextPage
+    }
+    followers(userId: $userId) {
+      id
+      name
+      avatar {
+        large
+        medium
+      }
+      bannerImage
+      isFollowing
+      isFollower
+      isBlocked
+      siteUrl
+    }
+  }
+}
+    `;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -6391,6 +6648,15 @@ const injectedRtkApi = api.injectEndpoints({
     MangaTopScored: build.query<MangaTopScoredQuery, MangaTopScoredQueryVariables | void>({
       query: (variables) => ({ document: MangaTopScoredDocument, variables })
     }),
+    ManhwaTrending: build.query<ManhwaTrendingQuery, ManhwaTrendingQueryVariables | void>({
+      query: (variables) => ({ document: ManhwaTrendingDocument, variables })
+    }),
+    ManhwaPopular: build.query<ManhwaPopularQuery, ManhwaPopularQueryVariables | void>({
+      query: (variables) => ({ document: ManhwaPopularDocument, variables })
+    }),
+    ManhwaTopScored: build.query<ManhwaTopScoredQuery, ManhwaTopScoredQueryVariables | void>({
+      query: (variables) => ({ document: ManhwaTopScoredDocument, variables })
+    }),
     NovelTrending: build.query<NovelTrendingQuery, NovelTrendingQueryVariables | void>({
       query: (variables) => ({ document: NovelTrendingDocument, variables })
     }),
@@ -6415,9 +6681,21 @@ const injectedRtkApi = api.injectEndpoints({
     UserActivity: build.query<UserActivityQuery, UserActivityQueryVariables | void>({
       query: (variables) => ({ document: UserActivityDocument, variables })
     }),
+    UserData: build.query<UserDataQuery, UserDataQueryVariables | void>({
+      query: (variables) => ({ document: UserDataDocument, variables })
+    }),
+    UserOverview: build.query<UserOverviewQuery, UserOverviewQueryVariables | void>({
+      query: (variables) => ({ document: UserOverviewDocument, variables })
+    }),
+    UserFollowing: build.query<UserFollowingQuery, UserFollowingQueryVariables>({
+      query: (variables) => ({ document: UserFollowingDocument, variables })
+    }),
+    UserFollowers: build.query<UserFollowersQuery, UserFollowersQueryVariables>({
+      query: (variables) => ({ document: UserFollowersDocument, variables })
+    }),
   }),
 });
 
 export { injectedRtkApi as api };
-export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useRateRevMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useViewerStatsQuery, useLazyViewerStatsQuery, useUserActivityQuery, useLazyUserActivityQuery } = injectedRtkApi;
+export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useRateRevMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useViewerStatsQuery, useLazyViewerStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery } = injectedRtkApi;
 
