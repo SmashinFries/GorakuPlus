@@ -60,6 +60,7 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
             )}
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title} />
+            <Appbar.Action icon="crystal-ball" onPress={() => console.log('RANDOM CONTENT')} />
             <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
         </Appbar.Header>
     );
@@ -163,7 +164,14 @@ export const FadeHeaderProvider = ({ children, title, loading }: FadeHeaderProps
                     >
                         <Appbar.Content title={title ?? ''} />
                     </Animated.View>
-                    <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} />
+                    <Appbar.Action
+                        icon="file-document-edit-outline"
+                        onPress={() => console.log('test')}
+                    />
+                    <Appbar.Action
+                        icon="share-variant-outline"
+                        onPress={() => console.log('test')}
+                    />
                 </Appbar.Header>
             </Animated.View>
         );
@@ -179,7 +187,7 @@ export const FadeHeaderProvider = ({ children, title, loading }: FadeHeaderProps
     }, [loading]);
 
     return (
-        <View style={{ height: height, width: width }}>
+        <View>
             <MotiScrollView scrollEventThrottle={16} onScroll={scrollHandler}>
                 {children}
             </MotiScrollView>
