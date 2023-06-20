@@ -22,6 +22,7 @@ import danbooruApi from './services/danbooru/danbooruApi';
 import { api as anilistApi } from './services/anilist/enhanced';
 import settingsSlice, { SettingsState } from '../features/more/settings/settingsSlice';
 import { malApi } from './services/mal/malApi';
+import animeThemesApi from './services/animethemes/animeThemesApi';
 
 const secureStorage = createSecureStorage();
 
@@ -44,6 +45,7 @@ export const store = configureStore({
         [anilistApi.reducerPath]: anilistApi.reducer,
         [danbooruApi.reducerPath]: danbooruApi.reducer,
         [malApi.reducerPath]: malApi.reducer,
+        [animeThemesApi.reducerPath]: animeThemesApi.reducer,
         persistedTheme,
         persistedSettings,
         persistedAniLogin,
@@ -53,7 +55,12 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat([anilistApi.middleware, malApi.middleware, danbooruApi.middleware]),
+        }).concat([
+            anilistApi.middleware,
+            malApi.middleware,
+            animeThemesApi.middleware,
+            danbooruApi.middleware,
+        ]),
 });
 
 export const persistor = persistStore(store);
