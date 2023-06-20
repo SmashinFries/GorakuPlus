@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { animeSongsQuery } from './types';
+import { MainMusic, animeSongsQuery } from './types';
 // import {  } from './types';
 
 const animeThemesApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: 'https://api.animethemes.moe' }),
     reducerPath: 'animeThemesApi',
     endpoints: (build) => ({
-        getAnimeSongs: build.query<any, animeSongsQuery>({
+        getAnimeSongs: build.query<MainMusic, animeSongsQuery>({
             query: (params) => ({
                 url: '/anime/',
                 params: {

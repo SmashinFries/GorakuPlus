@@ -2,13 +2,13 @@ export type animeSongsQuery = {
     aniID: string;
 };
 
-export interface Main {
-    anime: Anime[];
+export interface MainMusic {
+    anime: AnimeDetails[];
     links: Links;
     meta: Meta;
 }
 
-export interface Anime {
+export interface AnimeDetails {
     id: number;
     name: string;
     slug: string;
