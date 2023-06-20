@@ -24,11 +24,11 @@ if (typeof window !== 'undefined') {
 const App = () => {
     const { width, height } = useWindowDimensions();
     return (
-        <AppProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <AppProvider>
                 <RootStackNavigation />
-            </GestureHandlerRootView>
-        </AppProvider>
+            </AppProvider>
+        </GestureHandlerRootView>
     );
 };
 
