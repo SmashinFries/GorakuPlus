@@ -1,13 +1,9 @@
-import {
-    DrawerContentComponentProps,
-    DrawerContentScrollView,
-    DrawerItemList,
-    createDrawerNavigator,
-} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { RootNavPaths } from '../types';
 import { View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ExploreStack } from '../stacks/explore';
 
 const Drawers = createDrawerNavigator<RootNavPaths>();
 
@@ -25,8 +21,8 @@ const DesktopNavigation = () => {
             // drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
             <Drawers.Screen
-                name="explore"
-                component={Test}
+                name="exploreStack"
+                component={ExploreStack}
                 options={{
                     title: 'Explore',
                     headerShown: false,
