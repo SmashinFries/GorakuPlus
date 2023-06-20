@@ -4,14 +4,15 @@ dotenv.config();
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config,
+    owner: 'KuzuTech',
     slug: 'GorakuPlus',
     name: 'Goraku',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/icon.png',
-    userInterfaceStyle: 'light',
+    icon: './assets/icon2.png',
+    userInterfaceStyle: 'automatic',
     splash: {
-        image: './assets/splash.png',
+        image: './assets/splash2.png',
         resizeMode: 'contain',
         backgroundColor: '#ffffff',
     },
@@ -39,6 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             foregroundImage: './assets/adaptive-icon.png',
             backgroundColor: '#ffffff',
         },
+        softwareKeyboardLayoutMode: 'pan',
     },
     web: {
         favicon: './assets/favicon.png',
