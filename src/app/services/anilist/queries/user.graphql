@@ -318,6 +318,17 @@ query UserData {
     }
 }
 
+query ExtUserData($id: Int, $name: String) {
+    User(id: $id, name: $name) {
+        id
+        name
+        avatar {
+            large
+        }
+        bannerImage
+    }
+}
+
 query UserOverview {
     Viewer {
         name

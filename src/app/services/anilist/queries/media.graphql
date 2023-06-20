@@ -18,6 +18,9 @@ query RandomMedia($random: Int, $perRandom: Int, $type: MediaType, $isAdult: Boo
                 description
                 rank
                 category
+                isAdult
+                isGeneralSpoiler
+                isMediaSpoiler
             }
             title {
                 userPreferred
@@ -69,6 +72,10 @@ query AniMedia(
             description
             rank
             category
+            isAdult
+            isGeneralSpoiler
+            isMediaSpoiler
+            userId
         }
         trailer {
             id
