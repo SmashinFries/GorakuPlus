@@ -1,7 +1,14 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView, useDynamicAnimation } from 'moti';
 import { useRef } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Platform,
+    StyleProp,
+    ViewStyle,
+    useWindowDimensions,
+} from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Animated, {
     useSharedValue,
@@ -139,9 +146,44 @@ const styles = StyleSheet.create({
     },
 });
 
-type UseMeasureProps = {
-    initialHeight: number;
+type AnimViewProps = {
+    style?: StyleProp<ViewStyle>;
+    animation?: boolean;
+    children: React.ReactNode;
 };
-export const useMeasure = ({ initialHeight }: UseMeasureProps) => {
-    const measuredHeight = useSharedValue(initialHeight);
+export const TransYUpView = ({ children, style, animation = true }: AnimViewProps) => {
+    const { height } = useWindowDimensions();
+
+    if (!animation) {
+        return <View style={style}>{children}</View>;
+    }
+
+    return (
+        <MotiView
+            style={style}
+            from={{ translateY: height }}
+            animate={{ translateY: 0 }}
+            transition={{ type: 'spring', mass: 0.5, damping: 10 }}
+        >
+            {children}
+        </MotiView>
+    );
+};
+
+export const TransXInView = ({
+    children,
+    style,
+    direction,
+}: AnimViewProps & { direction: 'left' | 'right' }) => {
+    const { width } = useWindowDimensions();
+    return (
+        <MotiView
+            style={style}
+            from={{ translateX: direction === 'left' ? -width : width }}
+            animate={{ translateX: direction === 'right' ? 0 : 0 }}
+            transition={{ type: 'spring', mass: 0.5, damping: 10 }}
+        >
+            {children}
+        </MotiView>
+    );
 };
