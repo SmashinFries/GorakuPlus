@@ -4,86 +4,30 @@ import { View, ScrollView, useWindowDimensions, Keyboard } from 'react-native';
 import { ExploreStackProps } from '../../navigation/types';
 import { SearchHeader } from '../../components/headers';
 import { MediaSelector } from './components/mediaSelector';
-import {
-    ExploreMediaQueryVariables,
-    MediaFormat,
-    MediaType,
-} from '../../app/services/anilist/generated-anilist';
-import {
-    ExploreAnimeVars,
-    ExploreMangaVars,
-    ExploreNovelVars,
-    FilterOptions,
-    MediaSearchSelection,
-} from './types';
-import SearchList from './components/lists';
 import { FilterSheet } from './components/filtersheet';
-import BottomSheet from '@gorhom/bottom-sheet';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useFilter } from './hooks/filter';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import useSearch from './hooks/search';
+import { FlashList } from '@shopify/flash-list';
+import { useColumns } from '../../utils';
+import { RenderSearchItem } from './components/media';
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import useFilterSheet from './hooks/sheet';
 
 const SearchScreen = ({ navigation }: NativeStackScreenProps<ExploreStackProps, 'search'>) => {
-    const { filterOptions, updateFilter, switchType } = useFilter();
-    const [mediaSelection, setMediaSelection] = useState<MediaSearchSelection>(MediaType.Anime);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-
     const sheetRef = useRef<BottomSheetModalMethods>(null);
+    const { searchResults, page, searchMedia, searchNextPage } = useSearch();
+    const filterData = useFilter();
+    const { isFilterOpen, handleSheetChange, setIsFilterOpen } = useFilterSheet(sheetRef);
+    const { columns, listKey } = useColumns(200);
 
     const { width, height } = useWindowDimensions();
-
-    const onMediaSelect = (type: MediaSearchSelection) => setMediaSelection(type);
-
-    useEffect(() => {
-        if (isFilterOpen) {
-            sheetRef.current?.present();
-        } else {
-            sheetRef.current?.dismiss();
-        }
-    }, [isFilterOpen]);
-
-    const handleSheetChange = useCallback((index) => {
-        console.log('handleSheetChange', index);
-        if (index === -1) {
-            setIsFilterOpen(false);
-        }
-    }, []);
-
-    // useEffect(() => {
-    //     if (mediaSelection === MediaType.Anime) {
-    //         setFilter((prev) => {
-    //             return { ...prev, type: MediaType.Anime };
-    //         });
-    //     } else if (mediaSelection === MediaType.Manga) {
-    //         setFilter((prev) => {
-    //             return {
-    //                 ...prev,
-    //                 type: MediaType.Manga,
-    //                 season: undefined,
-    //                 seasonYear: undefined,
-    //                 format_not_in: [MediaFormat.Novel],
-    //             };
-    //         });
-    //     } else {
-    //         setFilter((prev) => {
-    //             return {
-    //                 ...prev,
-    //                 type: MediaType.Manga,
-    //                 season: undefined,
-    //                 seasonYear: undefined,
-    //                 format_in: [MediaFormat.Novel],
-    //             };
-    //         });
-    //     }
-    // }, [mediaSelection]);
 
     useEffect(() => {
         navigation.setOptions({
             header: (props) => (
                 <SearchHeader
                     {...props}
-                    onSearch={() => null}
+                    onSearch={(search?: string) => searchMedia({ ...filterData.filter, search })}
                     openFilter={() => {
                         Keyboard.dismiss();
                         setIsFilterOpen((prev) => !prev);
@@ -97,23 +41,29 @@ const SearchScreen = ({ navigation }: NativeStackScreenProps<ExploreStackProps, 
         <ScrollView
             stickyHeaderHiddenOnScroll
             stickyHeaderIndices={[0]}
-            style={{ flex: 1, height: '100%' }}
+            nestedScrollEnabled
+            style={{ height: height, width: width }}
         >
-            <MediaSelector
-                selection={
-                    filterOptions.format_in?.includes(MediaFormat.Novel)
-                        ? 'NOVEL'
-                        : filterOptions.type
-                }
-                onSelect={switchType}
-            />
-            <SearchList data={[]} />
+            <MediaSelector selection={filterData.current} onSelect={filterData.switchType} />
+            {/* <SearchList data={searchResults?.data?.Page?.media ?? []} /> */}
+            <View style={{ minHeight: 3, width: width }}>
+                <FlashList
+                    key={listKey}
+                    data={searchResults?.data?.Page?.media}
+                    renderItem={RenderSearchItem}
+                    keyExtractor={(item, index) => (item.id + index).toString()}
+                    numColumns={columns}
+                    estimatedItemSize={238}
+                    ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                    // contentContainerStyle={{ paddingHorizontal: 15 }}
+                    contentContainerStyle={{ paddingLeft: 238 / 2 / 3 }}
+                />
+            </View>
+
             <FilterSheet
                 sheetRef={sheetRef}
                 handleSheetChange={handleSheetChange}
-                filterOptions={filterOptions}
-                // @ts-ignore
-                updateFilter={updateFilter}
+                filterData={filterData}
             />
         </ScrollView>
     );
