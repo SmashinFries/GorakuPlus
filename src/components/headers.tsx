@@ -3,13 +3,14 @@ import { Appbar, Button, IconButton, Portal, Searchbar, Text, useTheme } from 'r
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { View, useWindowDimensions } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
+import { setSearch } from '../features/search/searchSlice';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -67,7 +68,7 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
-    onSearch: () => void;
+    onSearch: (search?: string) => void;
     openFilter: () => void;
 };
 export const SearchHeader = ({
@@ -76,18 +77,24 @@ export const SearchHeader = ({
     route,
     back,
     openFilter,
+    onSearch,
 }: SearchHeaderProps) => {
     // const title = getHeaderTitle(options, route.name);
-    const [query, setQuery] = useState('');
+    const { search, history, historyLimit } = useSelector(
+        (state: RootState) => state.persistedSearch,
+    );
     const [isFilterActive, setIsFilterActive] = useState(false);
+    const dispatch = useDispatch();
 
-    const clearQuery = () => setQuery('');
+    const clearSearch = () => dispatch(setSearch(''));
 
     return (
         <Appbar.Header elevated>
             <Searchbar
-                value={query}
-                onChangeText={(txt) => setQuery(txt)}
+                value={search}
+                onChangeText={(txt) => dispatch(setSearch(txt))}
+                onSubmitEditing={() => onSearch(search)}
+                returnKeyType="search"
                 autoFocus
                 placeholder="Search sauce..."
                 mode="bar"
