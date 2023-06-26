@@ -1,38 +1,46 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { MD3Colors, SegmentedButtons, useTheme } from 'react-native-paper';
 import { MediaType } from '../../../app/services/anilist/generated-anilist';
 import { MediaSearchSelection } from '../types';
+import { FilterState } from '../filterSlice';
 
 type SegButtons = {
-    value: MediaSearchSelection;
+    value: FilterState['current'];
     label: string;
 };
 
 type MediaSelectorProps = {
     selection: string;
-    onSelect: (type: MediaSearchSelection) => void;
+    onSelect: (type: FilterState['current']) => void;
 };
 
 export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
     const { colors } = useTheme();
+    const { width } = useWindowDimensions();
     const buttons: SegButtons[] = [
         {
-            value: MediaType.Anime,
+            value: 'anime',
             label: 'Anime',
         },
         {
-            value: MediaType.Manga,
+            value: 'manga',
             label: 'Manga',
         },
         {
-            value: 'NOVEL',
+            value: 'manhwa',
+            label: 'Manhwa',
+        },
+        {
+            value: 'novel',
             label: 'Novel',
         },
     ];
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView
+            style={[styles.container, { width, backgroundColor: colors.elevation.level2 }]}
+        >
             <SegmentedButtons
                 value={selection}
                 onValueChange={onSelect}
