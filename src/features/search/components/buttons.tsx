@@ -11,42 +11,42 @@ type ListOptions = {
 };
 
 type DButtonProps = {
-    filterOptions: ExploreMediaQueryVariables;
-    updateFilter: UpdateFilter;
+    onList: boolean | undefined;
+    updateOnList: (onList: boolean | undefined) => void;
 };
 
-export const OnListSelector = ({ filterOptions, updateFilter }: DButtonProps) => {
+const listOptions: ListOptions[] = [
+    {
+        label: 'List Only',
+        value: true,
+        status: 'checked',
+    },
+    {
+        label: 'All + List',
+        value: undefined,
+        status: 'unchecked',
+    },
+    {
+        label: 'Exclude List',
+        value: false,
+        status: 'indeterminate',
+    },
+];
+
+export const OnListSelector = ({ onList, updateOnList }: DButtonProps) => {
     const [listSelect, setListSelect] = useState<number>(
-        filterOptions.onList === true ? 0 : filterOptions.onList === false ? 3 : 1,
+        onList === true ? 0 : onList === false ? 3 : 1,
     );
-    const listOptions: ListOptions[] = [
-        {
-            label: 'List Only',
-            value: true,
-            status: 'checked',
-        },
-        {
-            label: 'All + List',
-            value: false,
-            status: 'unchecked',
-        },
-        {
-            label: 'Exclude List',
-            value: undefined,
-            status: 'indeterminate',
-        },
-    ];
 
     useEffect(() => {
-        console.log('listSelect: ', listSelect);
-        updateFilter('onList', listOptions[listSelect].value);
+        updateOnList(listOptions[listSelect].value);
     }, [listSelect]);
 
     return (
         <View>
             <Checkbox.Item
-                label={listOptions[listSelect].label}
-                status={listOptions[listSelect].status}
+                label={listOptions[listSelect]?.label}
+                status={listOptions[listSelect]?.status}
                 position="leading"
                 // uncheckedColor={'blue'}
                 color={'green'}
@@ -56,8 +56,12 @@ export const OnListSelector = ({ filterOptions, updateFilter }: DButtonProps) =>
     );
 };
 
-export const NSFWSelector = ({ filterOptions, updateFilter }: DButtonProps) => {
-    const [nsfwSelect, setNsfwSelect] = useState<boolean>(filterOptions.isAdult ?? false);
+type NSFWSelectorProps = {
+    isAdult: boolean | undefined;
+    updateIsAdult: (isAdult: boolean | undefined) => void;
+};
+export const NSFWSelector = ({ isAdult, updateIsAdult }: NSFWSelectorProps) => {
+    const [nsfwSelect, setNsfwSelect] = useState<boolean>(isAdult ?? false);
     const options = {
         0: {
             label: 'NSFW',
@@ -72,7 +76,7 @@ export const NSFWSelector = ({ filterOptions, updateFilter }: DButtonProps) => {
     };
 
     useEffect(() => {
-        updateFilter('isAdult', nsfwSelect);
+        updateIsAdult(nsfwSelect);
     }, [nsfwSelect]);
 
     return (
@@ -88,5 +92,20 @@ export const NSFWSelector = ({ filterOptions, updateFilter }: DButtonProps) => {
                 {options[nsfwSelect ? 1 : 0].label}
             </Button>
         </View>
+    );
+};
+
+type PresetButtonProps = {
+    onPress: () => void;
+};
+export const PresetButton = ({ onPress }: PresetButtonProps) => {
+    const [icon, setIcon] = useState('bookmark-multiple-outline');
+    return (
+        <IconButton
+            icon={icon}
+            onPressIn={() => setIcon('bookmark-multiple')}
+            onPressOut={() => setIcon('bookmark-multiple-outline')}
+            onPress={() => onPress()}
+        />
     );
 };

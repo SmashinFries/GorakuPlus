@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { TextInput, Menu } from 'react-native-paper';
-import { UpdateFilter } from '../types/types';
+import { SortModes, UpdateFilter } from '../types/types';
 import {
     ExploreMediaQueryVariables,
     MediaFormat,
@@ -12,45 +12,46 @@ import {
 } from '../../../app/services/anilist/generated-anilist';
 // import { TextInputLabelProp } from 'react-native-paper/lib/typescript/src/components/TextInput/types';
 import { captilize } from '../../../utils/text';
-import { MediaSearchSelection } from '../types';
-import { ANIME_FORMATS, MANGA_FORMATS, NOVEL_FORMATS, animeSort, mangaNovelSort, mediaStatusOptions } from '../constants/mediaConsts';
+import { FilterTypes, MediaSearchSelection, SortCategories } from '../types';
+import {
+    ANIME_FORMATS,
+    MANGA_FORMATS,
+    NOVEL_FORMATS,
+    animeSort,
+    mangaNovelSort,
+    mediaStatusOptions,
+} from '../constants/mediaConsts';
 import { arrayRange } from '../../../utils/numbers';
+import { FilterState, changeSort } from '../filterSlice';
+import { useFilter } from '../hooks/filter';
+import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 type DropdownProps = {
+    visible: boolean;
+    onOpen: () => void;
+    onClose: () => void;
     label: string;
     value: string;
-    options?: string[];
+    children: React.ReactNode;
     left?: React.ReactNode;
-    onMenuPressAction: (option: string) => void;
+    anchorPosition?: 'top' | 'bottom';
 };
 export const Dropdown = ({
+    visible,
+    onClose,
+    onOpen,
     label,
     value,
-    options = ['test1', 'test2', 'test3', 'test4'],
     left,
-    onMenuPressAction,
+    children,
+    anchorPosition = 'bottom',
 }: DropdownProps) => {
-    const [visible, setVisible] = useState(false);
-
-    const openMenu = () => setVisible(true);
-    const closeMenu = () => setVisible(false);
-
-    const onMenuPress = (option: string) => {
-        closeMenu();
-        onMenuPressAction(option);
-        // if (enableSortMode) {
-        //     updateFilter('sort', sortMode === 'ASC' ? option : option + '_DESC');
-        // } else {
-        //     updateFilter(label, option);
-        // }
-    };
-
     return (
         <View style={{ flex: 1 }}>
             <Menu
                 visible={visible}
-                onDismiss={closeMenu}
-                anchorPosition="bottom"
+                onDismiss={onClose}
+                anchorPosition={anchorPosition}
                 anchor={
                     <TextInput
                         label={captilize(label).replaceAll('_', ' ')}
@@ -66,133 +67,229 @@ export const Dropdown = ({
                         }}
                         outlineStyle={{ borderRadius: 16 }}
                         editable={false}
-                        right={<TextInput.Icon icon="menu-down" onPress={openMenu} />}
+                        right={<TextInput.Icon icon="menu-down" onPress={onOpen} />}
                         left={left ?? null}
                     />
                 }
             >
-                {options.map((option, idx) => (
-                    <Menu.Item
-                        key={idx}
-                        disabled={value?.includes(option)}
-                        onPress={() => onMenuPress(option)}
-                        titleStyle={{ textTransform: 'capitalize' }}
-                        title={option.replaceAll('_', ' ')}
-                    />
-                ))}
+                {children}
             </Menu>
         </View>
     );
 };
 
 type SortDropdownProps = {
-    mediaType: MediaSearchSelection;
-    updateFilter: UpdateFilter;
-    sortValue: string;
+    current: FilterTypes;
+    updateSort: (
+        mode: FilterState['sort']['mode'],
+        category: FilterState['sort']['category'],
+    ) => void;
+    sortData: FilterState['sort'];
 };
-export const SortDropdown = ({ mediaType, sortValue, updateFilter }: SortDropdownProps) => {
-    const [sortMode, setSortMode] = useState<'DESC' | 'ASC'>('DESC');
+export const SortDropdown = ({ current, sortData, updateSort }: SortDropdownProps) => {
+    const categories = current === 'anime' ? animeSort : mangaNovelSort;
+    const [visible, setVisible] = useState(false);
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
 
     const toggleSortMode = () => {
-        setSortMode(sortMode === 'DESC' ? 'ASC' : 'DESC');
+        updateSort(sortData.mode === 'desc' ? 'asc' : 'desc', sortData.category);
     };
-
-    const switchModeValue = (mode: string) => {
-        if (sortMode === 'DESC' && !mode.includes('_DESC')) {
-            return mode + '_DESC';
-        } else {
-            return mode.replace('_DESC', '');
-        }
-    };
-
-    useEffect(() => {
-        if (sortMode === 'DESC' && !sortValue.includes('_DESC')) {
-            console.log(sortValue + '_DESC');
-            updateFilter('sort', sortValue + '_DESC');
-        } else if (sortMode === 'ASC' && sortValue.includes('_DESC')) {
-            updateFilter('sort', sortValue.replace('_DESC', ''));
-            console.log(sortValue.replace('_DESC', ''));
-        }
-    }, [sortMode]);
 
     return (
         <Dropdown
+            visible={visible}
+            onOpen={openMenu}
+            onClose={closeMenu}
             label={'Sort'}
-            value={sortValue.replaceAll('_', ' ').replace('DESC', '')}
-            onMenuPressAction={(opt) => updateFilter('sort', switchModeValue(opt))}
-            options={mediaType === MediaType.Anime ? animeSort : mangaNovelSort}
+            value={sortData.category}
+            // onMenuPressAction={(opt: MediaSort) => updateFilter('sort', switchModeValue(opt))}
             left={
                 <TextInput.Icon
-                    icon={sortMode === 'DESC' ? 'sort-descending' : 'sort-ascending'}
+                    icon={sortData.mode === 'desc' ? 'sort-descending' : 'sort-ascending'}
                     onPress={toggleSortMode}
                 />
             }
-        />
+        >
+            {categories.map((category: SortCategories, idx: number) => (
+                <Menu.Item
+                    key={idx}
+                    disabled={sortData.category === category}
+                    onPress={() => {
+                        closeMenu();
+                        updateSort(sortData.mode, category);
+                    }}
+                    titleStyle={{ textTransform: 'capitalize' }}
+                    title={category}
+                />
+            ))}
+        </Dropdown>
     );
 };
 
 type StatusDropdownProps = {
-    updateFilter: UpdateFilter;
-    statusValue: string;
+    current: FilterTypes;
+    updateStatus: (status: MediaStatus | undefined) => void;
+    statusValue: MediaStatus;
 };
-export const StatusDropdown = ({ statusValue, updateFilter }: StatusDropdownProps) => {
+export const StatusDropdown = ({ current, statusValue, updateStatus }: StatusDropdownProps) => {
+    const categories = ['ANY', ...mediaStatusOptions];
+
+    const [visible, setVisible] = useState(false);
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
     return (
         <Dropdown
             label="Status"
-            value={statusValue}
-            options={mediaStatusOptions}
-            onMenuPressAction={(opt) => updateFilter('status', opt === 'ANY' ? undefined : opt)}
-        />
+            visible={visible}
+            onOpen={openMenu}
+            onClose={closeMenu}
+            value={statusValue?.toLowerCase() ?? 'ANY'.toLowerCase()}
+            // onMenuPressAction={(opt: MediaStatus | 'ANY') =>
+            //     updateStatus(current, opt === 'ANY' ? { status: undefined } : { status: opt })
+            // }
+        >
+            {categories.map((category: MediaStatus | 'ANY', idx) => (
+                <Menu.Item
+                    key={idx}
+                    disabled={
+                        (category === 'ANY' && statusValue === undefined) ||
+                        category === statusValue
+                    }
+                    onPress={() => {
+                        closeMenu();
+                        updateStatus(category !== 'ANY' ? category : undefined);
+                    }}
+                    titleStyle={{ textTransform: 'capitalize' }}
+                    title={category.replaceAll('_', ' ')}
+                />
+            ))}
+        </Dropdown>
     );
 };
 
 type FormatDropdownProps = {
-    mediaType: MediaSearchSelection;
-    updateFilter: UpdateFilter;
+    current: FilterTypes;
+    updateFormat: (format: MediaFormat | undefined) => void;
     formatValue: MediaFormat;
 };
-export const FormatDropdown = ({ mediaType, formatValue, updateFilter }: FormatDropdownProps) => {
+export const FormatDropdown = ({ current, formatValue, updateFormat }: FormatDropdownProps) => {
+    const categories = current === 'anime' ? ['ANY', ...ANIME_FORMATS] : ['ANY', ...MANGA_FORMATS];
 
-    const options = mediaType === MediaType.Anime ? ANIME_FORMATS : mediaType === 'NOVEL' ? NOVEL_FORMATS : MANGA_FORMATS;
+    const [visible, setVisible] = useState(false);
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
+    if (current === 'novel') {
+        return null;
+    }
 
     return (
         <Dropdown
+            visible={visible}
             label="Format"
-            value={formatValue}
-            options={options}
-            onMenuPressAction={(opt) => updateFilter('format', opt)}
-        />
+            value={formatValue ?? 'ANY'.toLowerCase()}
+            onOpen={openMenu}
+            onClose={closeMenu}
+            // onMenuPressAction={(opt: MediaFormat) => updateFormat(mediaType, { format: opt })}
+        >
+            {categories.map((category: MediaFormat | 'ANY', idx) => (
+                <Menu.Item
+                    key={idx}
+                    disabled={
+                        (category === 'ANY' && formatValue === undefined) ||
+                        category === formatValue
+                    }
+                    onPress={() => {
+                        closeMenu();
+                        updateFormat(category !== 'ANY' ? category : undefined);
+                    }}
+                    titleStyle={{ textTransform: 'capitalize' }}
+                    title={category.replaceAll('_', ' ')}
+                />
+            ))}
+        </Dropdown>
     );
 };
 
 type SeasonDropdownProps = {
-    updateFilter: UpdateFilter;
+    updateSeason: (season: MediaSeason | undefined) => void;
     seasonValue: string;
 };
-export const SeasonDropdown = ({ seasonValue, updateFilter }: SeasonDropdownProps) => {
+export const SeasonDropdown = ({ seasonValue, updateSeason }: SeasonDropdownProps) => {
+    const seasons = ['ANY', ...Object.values(MediaSeason)];
+    const [visible, setVisible] = useState(false);
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
     return (
         <Dropdown
+            visible={visible}
             label="Season"
-            value={seasonValue}
-            options={Object.values(MediaSeason)}
-            onMenuPressAction={(opt) => updateFilter('season', opt)}
-        />
+            value={seasonValue ?? 'ANY'.toLowerCase()}
+            onOpen={openMenu}
+            onClose={closeMenu}
+            // options={Object.values(MediaSeason)}
+            // onMenuPressAction={(opt: MediaSeason) => updateSeason('anime', { season: opt })}
+        >
+            {seasons.map((season: MediaSeason | 'ANY', idx) => (
+                <Menu.Item
+                    key={idx}
+                    disabled={
+                        (season === 'ANY' && seasonValue === undefined) || season === seasonValue
+                    }
+                    onPress={() => {
+                        closeMenu();
+                        updateSeason(season !== 'ANY' ? season : undefined);
+                    }}
+                    titleStyle={{ textTransform: 'capitalize' }}
+                    title={season.replaceAll('_', ' ')}
+                />
+            ))}
+        </Dropdown>
     );
 };
 
 type YearDropdownProps = {
-    updateFilter: UpdateFilter;
+    updateSeasonYear: (year: number | undefined) => void;
     yearValue: ExploreMediaQueryVariables['seasonYear'];
 };
-export const YearDropdown = ({ yearValue, updateFilter }: YearDropdownProps) => {
+export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps) => {
+    const range = arrayRange(1970, new Date().getFullYear(), 1).reverse();
+    const years = ['ANY'].concat(range);
+
+    const [visible, setVisible] = useState(false);
+
+    const openMenu = () => setVisible(true);
+    const closeMenu = () => setVisible(false);
+
     return (
         <Dropdown
+            visible={visible}
             label="Year"
-            value={yearValue?.toString() ?? undefined}
-            options={['ANY'].concat(arrayRange(1970, new Date().getFullYear(), 1, true).reverse())}
-            onMenuPressAction={(opt) =>
-                updateFilter('seasonYear', opt === 'ANY' ? undefined : Number(opt))
-            }
-        />
+            value={yearValue?.toString() ?? 'ANY'}
+            onOpen={openMenu}
+            onClose={closeMenu}
+        >
+            {years.map((year: string, idx) => (
+                <Menu.Item
+                    key={idx}
+                    disabled={
+                        (year === 'ANY' && yearValue === undefined) || Number(year) === yearValue
+                    }
+                    onPress={() => {
+                        closeMenu();
+                        updateSeasonYear(year !== 'ANY' ? Number(year) : undefined);
+                    }}
+                    titleStyle={{ textTransform: 'capitalize' }}
+                    title={year}
+                />
+            ))}
+        </Dropdown>
     );
 };
