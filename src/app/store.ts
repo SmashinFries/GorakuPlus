@@ -23,6 +23,10 @@ import { api as anilistApi } from './services/anilist/enhanced';
 import settingsSlice, { SettingsState } from '../features/more/settings/settingsSlice';
 import { malApi } from './services/mal/malApi';
 import animeThemesApi from './services/animethemes/animeThemesApi';
+import filterSlice, { FilterState } from '../features/search/filterSlice';
+import searchSlice, { SearchState } from '../features/search/searchSlice';
+import presetSlice, { PresetState } from '../features/search/presetSlice';
+import { ExploreMediaQueryVariables } from './services/anilist/generated-anilist';
 
 const secureStorage = createSecureStorage();
 
@@ -39,28 +43,28 @@ const anilistAuthPersistConfig: PersistConfig<any, any, any, any> = {
 const persistedTheme = persistReducer<ThemeState, AnyAction>(persistConfig, themeSlice);
 const persistedSettings = persistReducer<SettingsState, AnyAction>(persistConfig, settingsSlice);
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
+const persistedFilter = persistReducer<FilterState, AnyAction>(persistConfig, filterSlice);
+const persistedSearch = persistReducer<SearchState, AnyAction>(persistConfig, searchSlice);
+const persistedPresets = persistReducer<PresetState, AnyAction>(persistConfig, presetSlice);
 
 export const store = configureStore({
     reducer: {
         [anilistApi.reducerPath]: anilistApi.reducer,
         [danbooruApi.reducerPath]: danbooruApi.reducer,
         [malApi.reducerPath]: malApi.reducer,
-        [animeThemesApi.reducerPath]: animeThemesApi.reducer,
         persistedTheme,
         persistedSettings,
         persistedAniLogin,
+        persistedFilter,
+        persistedSearch,
+        persistedPresets,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat([
-            anilistApi.middleware,
-            malApi.middleware,
-            animeThemesApi.middleware,
-            danbooruApi.middleware,
-        ]),
+        }).concat([anilistApi.middleware, malApi.middleware, danbooruApi.middleware]),
 });
 
 export const persistor = persistStore(store);
