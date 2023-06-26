@@ -1,4 +1,4 @@
-import { api as generatedApi } from './generated-anilist';
+import { ExploreMediaQuery, api as generatedApi } from './generated-anilist';
 
 // function sortAiring(data: any[]) {
 //     return data.sort((a, b) => {
@@ -14,9 +14,17 @@ import { api as generatedApi } from './generated-anilist';
 
 export const api = generatedApi.enhanceEndpoints({
     endpoints: {
-        // UserData: {
-
-        // }
+        ExploreMedia: {
+            serializeQueryArgs: ({ endpointName }) => {
+                return endpointName;
+            },
+            merge: (currentCache, newItems) => {
+                if (currentCache.Page.pageInfo.currentPage < newItems.Page.pageInfo.currentPage) {
+                    currentCache.Page = newItems.Page;
+                    currentCache.Page.media.push(...newItems.Page.media);
+                }
+            },
+        },
         AnimeThisSeason: {
             providesTags: ['ExploreAnime'],
         },
