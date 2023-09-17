@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
-import { TransYUpView } from './animations';
+import { TransYUpView, TransYUpViewMem } from './animations';
 import { MotiView } from 'moti';
 
 type ScoreContainerProps = {
@@ -10,12 +10,14 @@ type ScoreContainerProps = {
     color?: string;
     isMal?: boolean;
     animate?: boolean;
+    delay?: number;
 };
 export const ScoreContainer = ({
     title,
     color,
     opacity,
     score,
+    delay,
     animate = true,
     isMal = false,
 }: ScoreContainerProps) => {
@@ -24,7 +26,7 @@ export const ScoreContainer = ({
     const width = 85;
     const { colors } = useTheme();
     return (
-        <TransYUpView animation={animate}>
+        <View>
             <View
                 style={{
                     height: height,
@@ -62,6 +64,6 @@ export const ScoreContainer = ({
                 <Text>{score ?? '?'}</Text>
                 {title ? <Text>{title}</Text> : null}
             </View>
-        </TransYUpView>
+        </View>
     );
 };
