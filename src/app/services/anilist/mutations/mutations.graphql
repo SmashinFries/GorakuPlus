@@ -39,6 +39,10 @@ mutation SaveMediaListItem(
         score
         progress
         repeat
+        media {
+            type
+            format
+        }
         startedAt {
             year
             month
@@ -95,5 +99,98 @@ mutation RateRev($id: Int, $rating: ReviewRating) {
     RateReview(reviewId: $id, rating: $rating) {
         id
         userRating
+    }
+}
+
+mutation UpdateUser(
+    $about: String
+    $titleLanguage: UserTitleLanguage
+    $staffNameLanguage: UserStaffNameLanguage
+    $airingNotifications: Boolean
+    $displayAdultContent: Boolean
+    $scoreFormat: ScoreFormat
+    $rowOrder: String
+    $profileColor: String
+    $donatorBadge: String
+    $notificationOptions: [NotificationOptionInput]
+    $animeListOptions: MediaListOptionsInput
+    $mangaListOptions: MediaListOptionsInput
+    $timezone: String
+    $activityMergeTime: Int
+    $restrictMessagesToFollowing: Boolean
+    $disabledListActivity: [ListActivityOptionInput]
+) {
+    UpdateUser(
+        about: $about
+        titleLanguage: $titleLanguage
+        staffNameLanguage: $staffNameLanguage
+        airingNotifications: $airingNotifications
+        displayAdultContent: $displayAdultContent
+        scoreFormat: $scoreFormat
+        rowOrder: $rowOrder
+        profileColor: $profileColor
+        donatorBadge: $donatorBadge
+        notificationOptions: $notificationOptions
+        animeListOptions: $animeListOptions
+        mangaListOptions: $mangaListOptions
+        timezone: $timezone
+        activityMergeTime: $activityMergeTime
+        restrictMessagesToFollowing: $restrictMessagesToFollowing
+        disabledListActivity: $disabledListActivity
+    ) {
+        id
+        name
+        about
+        avatar {
+            large
+        }
+        bannerImage
+        unreadNotificationCount
+        donatorTier
+        donatorBadge
+        moderatorRoles
+        options {
+            titleLanguage
+            staffNameLanguage
+            restrictMessagesToFollowing
+            airingNotifications
+            displayAdultContent
+            profileColor
+            timezone
+            activityMergeTime
+            notificationOptions {
+                type
+                enabled
+            }
+            disabledListActivity {
+                type
+                disabled
+            }
+        }
+        mediaListOptions {
+            scoreFormat
+            rowOrder
+            animeList {
+                customLists
+                sectionOrder
+                splitCompletedSectionByFormat
+                advancedScoring
+                advancedScoringEnabled
+            }
+            mangaList {
+                customLists
+                sectionOrder
+                splitCompletedSectionByFormat
+                advancedScoring
+                advancedScoringEnabled
+            }
+        }
+    }
+}
+
+mutation ToggleFollow($userId: Int) {
+    ToggleFollow(userId: $userId) {
+        id
+        isFollowing
     }
 }
