@@ -11,9 +11,7 @@ export const NetworkError = ({ status }: { status: QueryStatus }) => {
             <MotiView>
                 <IconButton icon="server-network-off" size={38} iconColor={colors.error} />
             </MotiView>
-            <Text>
-                {status === QueryStatus.rejected ? 'Network Error!' : 'Something went wrong!'}
-            </Text>
+            <Text>{'Something went wrong :('}</Text>
         </MotiView>
     );
 };
