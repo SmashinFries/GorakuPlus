@@ -1,13 +1,12 @@
 import { AnimatePresence, MotiView, useDynamicAnimation } from 'moti';
 import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper';
-import { AnilistIcon, MalIcon } from '../../../components/svgs';
+import { AnilistIcon, MalIcon, MangaUpdatesIcon } from '../../../components/svgs';
 import { MotiPressable } from 'moti/interactions';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
 import { SerializedError } from '@reduxjs/toolkit';
 
-const LoadingIcon = ({ icon }: { icon: 'ANI' | 'MAL' }) => {
-    const { dark } = useTheme();
+const LoadingIcon = ({ icon, dark }: { icon: 'ANI' | 'MAL' | 'MU'; dark: boolean }) => {
     return (
         <MotiView
             from={{
@@ -22,24 +21,29 @@ const LoadingIcon = ({ icon }: { icon: 'ANI' | 'MAL' }) => {
                 loop: true,
                 type: 'timing',
                 duration: 1500,
-                delay: icon === 'ANI' ? 100 : 400,
-            }}
-            exit={{
-                scale: 2,
-                opacity: 0,
+                delay: icon === 'ANI' ? 100 : icon === 'MAL' ? 400 : 700,
             }}
         >
-            {icon === 'ANI' ? <AnilistIcon isDark={dark} /> : <MalIcon />}
+            {icon === 'ANI' ? (
+                <AnilistIcon isDark={dark} />
+            ) : icon === 'MAL' ? (
+                <MalIcon />
+            ) : (
+                <MangaUpdatesIcon />
+            )}
         </MotiView>
     );
 };
 
+const LoadingIconMem = memo(LoadingIcon);
+
 type LoadingItemProps = {
     loading: boolean;
+    dark: boolean;
     error?: ErrorResponse | SerializedError;
-    icon: 'ANI' | 'MAL';
+    icon: 'ANI' | 'MAL' | 'MU';
 };
-const LoadingItem = ({ loading, icon, error }: LoadingItemProps) => {
+const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
     const [loadIcon, setLoadIcon] = useState('check');
     useEffect(() => {
         if (loading === null) {
@@ -53,7 +57,7 @@ const LoadingItem = ({ loading, icon, error }: LoadingItemProps) => {
     }, []);
     return (
         <MotiView style={{ padding: 20 }}>
-            <LoadingIcon icon={icon} />
+            <LoadingIconMem icon={icon} dark={dark} />
             {loading ? (
                 <ActivityIndicator style={{ paddingTop: 10 }} />
             ) : (
@@ -63,14 +67,28 @@ const LoadingItem = ({ loading, icon, error }: LoadingItemProps) => {
     );
 };
 
+const LoadingItemMem = memo(LoadingItem);
+
 type LoadingProps = {
     aniLoading: boolean;
     aniError?: ErrorResponse | SerializedError;
     malLoading?: boolean;
     malError?: ErrorResponse | SerializedError;
+    malUnitialized?: boolean;
+    mangaUpdatesLoading?: boolean;
+    mangaUpdatesError?: ErrorResponse | SerializedError;
 };
 
-export const MediaLoading = ({ aniLoading, malLoading, aniError, malError }: LoadingProps) => {
+export const MediaLoading = ({
+    aniLoading,
+    malLoading,
+    mangaUpdatesLoading,
+    aniError,
+    malError,
+    mangaUpdatesError,
+    malUnitialized,
+}: LoadingProps) => {
+    const { dark } = useTheme();
     return (
         <MotiView
             style={{
@@ -92,11 +110,26 @@ export const MediaLoading = ({ aniLoading, malLoading, aniError, malError }: Loa
             }}
             exitTransition={{
                 type: 'timing',
-                duration: 2500,
+                duration: 500,
             }}
         >
-            <LoadingItem loading={aniLoading} error={aniError} icon="ANI" />
-            <LoadingItem loading={malLoading} error={malError} icon="MAL" />
+            <LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
+            <LoadingItemMem
+                loading={malLoading || malUnitialized}
+                dark={dark}
+                error={malError}
+                icon="MAL"
+            />
+            {mangaUpdatesLoading !== null && (
+                <LoadingItemMem
+                    loading={mangaUpdatesLoading}
+                    dark={dark}
+                    error={mangaUpdatesError}
+                    icon="MU"
+                />
+            )}
         </MotiView>
     );
 };
+
+export const MediaLoadingMem = memo(MediaLoading);
