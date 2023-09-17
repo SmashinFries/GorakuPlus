@@ -1,46 +1,82 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 import dotenv from 'dotenv';
+const IS_DEV = process.env.APP_VARIANT === 'development';
 dotenv.config();
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config,
-    owner: 'KuzuTech',
+    owner: 'kuzutech',
     slug: 'GorakuPlus',
-    name: 'Goraku',
-    version: '1.0.0',
+    name: IS_DEV ? 'Goraku Dev' : 'Goraku',
+    version: '0.6',
     orientation: 'portrait',
-    icon: './assets/icon2.png',
+    icon: './assets/iconsv1/icon.png',
     userInterfaceStyle: 'automatic',
     splash: {
-        image: './assets/splash2.png',
-        resizeMode: 'contain',
-        backgroundColor: '#ffffff',
+        image: './assets/iconsv1/splash.png',
+        resizeMode: 'cover',
     },
     plugins: [
         '@react-native-firebase/app',
         '@react-native-firebase/crashlytics',
         'expo-localization',
-        // [
-        //     "expo-build-properties",
-        //     {
-        //         "ios": {
-        //         "useFrameworks": "static"
-        //         }
-        //     }
-        // ]
     ],
     assetBundlePatterns: ['**/*'],
     ios: {
         googleServicesFile: '',
         supportsTablet: true,
+        bundleIdentifier: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
     },
     android: {
-        googleServicesFile: '',
+        package: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
+        googleServicesFile: IS_DEV ? './google-services-dev.json' : './google-services.json',
         adaptiveIcon: {
-            foregroundImage: './assets/adaptive-icon.png',
-            backgroundColor: '#ffffff',
+            foregroundImage: './assets/iconsv1/adaptive-icon.png',
         },
         softwareKeyboardLayoutMode: 'pan',
+        intentFilters: [
+            {
+                action: 'VIEW',
+                data: [
+                    {
+                        scheme: 'https',
+                        host: 'anilist.co',
+                        pathPattern: '/anime/.*',
+                    },
+                    {
+                        scheme: 'https',
+                        host: 'anilist.co',
+                        pathPattern: '/manga/.*',
+                    },
+                    {
+                        scheme: 'https',
+                        host: 'anilist.co',
+                        pathPattern: '/character/.*',
+                    },
+                    {
+                        scheme: 'https',
+                        host: 'anilist.co',
+                        pathPattern: '/staff/.*',
+                    },
+                    {
+                        scheme: 'https',
+                        host: 'anilist.co',
+                        pathPattern: '/studio/.*',
+                    },
+                ],
+                category: ['BROWSABLE', 'DEFAULT'],
+            },
+            {
+                action: 'VIEW',
+                autoVerify: true,
+                data: [
+                    {
+                        scheme: 'gorakuplus',
+                    },
+                ],
+                category: ['BROWSABLE', 'DEFAULT'],
+            },
+        ],
     },
     web: {
         favicon: './assets/favicon.png',
