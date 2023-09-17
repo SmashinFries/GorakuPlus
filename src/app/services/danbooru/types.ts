@@ -1,3 +1,17 @@
+export type DanTags = {
+    type: string;
+    label: string;
+    value: string;
+    category: number;
+    post_count: number;
+};
+
+export type DanTagParams = {
+    'search[query]': string;
+    'search[type]': 'tag';
+    limit?: number;
+};
+
 export type DanPost = {
     id: number;
     created_at: Date;
@@ -74,9 +88,34 @@ export type Variant = {
 
 export type DanSearchQuery = {
     tags: string;
-    rating: string;
+    rating?: DanRatings;
     limit: number;
     page: number;
+};
+
+export type DanArtistCommentary = {
+    id: number;
+    post_id: number;
+    original_title: string;
+    original_description: string;
+    translated_title: string;
+    translated_description: string;
+    created_at: string;
+    updated_at: string;
+}[];
+export type DanArtistCommentaryParams = {
+    'search[post_id]': number;
+};
+
+export type DanWikiPage = {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    title: string;
+    body: string;
+    is_locked: boolean;
+    other_names: string[];
+    is_deleted: boolean;
 };
 
 export type DanRatings = 'g' | 's' | 'q' | 'e';
