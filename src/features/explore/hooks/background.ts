@@ -16,7 +16,6 @@ const useBackground = (data: ExploreMediaQuery) => {
     const updateBG = () => {
         const nextID = data.Page.media.length - 1 === bg.id ? 0 : bg.id + 1;
         const nextBG = getBG(data.Page.media[nextID]);
-        console.log('Changed!', nextID, `LENGHT: ${data.Page.media.length}`);
         setBg({ id: nextID, bg: nextBG });
         toggle();
     };
@@ -27,7 +26,6 @@ const useBackground = (data: ExploreMediaQuery) => {
                 toggle();
             }, 15000);
             return () => {
-                console.log('clearing interval');
                 clearInterval(interval);
             };
         }, [bg]),
