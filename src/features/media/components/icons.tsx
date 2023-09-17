@@ -1,61 +1,75 @@
 import { IconButton, Text, useTheme } from 'react-native-paper';
-import { MediaStatus } from '../../../app/services/anilist/generated-anilist';
-import { MotiPressable } from 'moti/interactions';
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MotiView, useAnimationState, useDynamicAnimation } from 'moti';
+import {
+    ExploreMediaQuery,
+    FuzzyDate,
+    MediaStatus,
+} from '../../../app/services/anilist/generated-anilist';
+import { MotiView, useDynamicAnimation } from 'moti';
 import { TapGestureHandler, TapGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { useAnimatedGestureHandler } from 'react-native-reanimated';
+import { convertDate, getTimeUntil } from '../../../utils';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 type StatusIconConfig = {
     icon: string;
     color: string;
 };
 
+const statusIconConfig = {
+    [MediaStatus.Finished]: { icon: 'check-bold', color: 'green' },
+    [MediaStatus.Releasing]: { icon: 'clock', color: 'blue' },
+    [MediaStatus.NotYetReleased]: { icon: 'calendar', color: 'blue' },
+    [MediaStatus.Cancelled]: { icon: 'close', color: 'red' },
+    [MediaStatus.Hiatus]: { icon: 'pause', color: 'red' },
+};
+
 type StatusIconProps = {
     status: MediaStatus;
+    release_date?: FuzzyDate;
+    nextEP?: ExploreMediaQuery['Page']['media'][0]['nextAiringEpisode'];
     top?: number;
     right?: number;
 };
-export const StatusIcon = ({ status, right = 10, top = 10 }: StatusIconProps) => {
+export const StatusIcon = ({
+    status,
+    release_date,
+    nextEP,
+    right = 10,
+    top = 10,
+}: StatusIconProps) => {
     const { colors } = useTheme();
+    const [statusState, setStatusState] = useState<MediaStatus>(status);
     const size = 28;
-    const getIcon = (): StatusIconConfig => {
-        if (status === MediaStatus.Finished) return { icon: 'check-bold', color: 'green' };
-        if (status === MediaStatus.Releasing) return { icon: 'clock', color: 'blue' };
-        if (status === MediaStatus.NotYetReleased) return { icon: 'calendar', color: 'blue' };
-        if (status === MediaStatus.Cancelled) return { icon: 'close', color: 'red' };
-        if (status === MediaStatus.Hiatus) return { icon: 'pause', color: 'red' };
-    };
-    const config = getIcon();
+    const releaseData = convertDate(release_date);
 
-    // const expand = useAnimationState({
-    //     to: {
-    //         width: [size, 185, { value: size, delay: 3000, type: 'timing' }],
-    //     },
-    // });
+    const title = useMemo(
+        () =>
+            nextEP && nextEP?.episode
+                ? (nextEP.episode < 1000 ? 'EP ' : '') +
+                  nextEP.episode +
+                  ': ' +
+                  getTimeUntil(nextEP.airingAt)
+                : statusState === MediaStatus.NotYetReleased && releaseData
+                ? releaseData
+                : statusState?.replaceAll('_', ' '),
+        [nextEP, statusState],
+    );
 
     const pressAnimState = useDynamicAnimation(() => ({
         width: size,
     }));
-
-    // const textAnimState = useDynamicAnimation(() => ({
-    //     opacity: 0,
-    // }));
-
-    // const textVis = useAnimationState({
-    //     to: {
-    //         opacity: [0, 1, { value: 0, delay: 3000, type: 'timing' }],
-    //     },
-    // });
 
     const onGestureEvent = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
         onStart: () => {
             pressAnimState.animateTo({
                 width: [size, 185, { value: size, delay: 3000, type: 'timing' }],
             });
-            // textAnimState.animateTo({ opacity: [0, 1, { value: 0, delay: 3000, type: 'timing' }] });
         },
     });
+
+    // useEffect(() => {
+    //     console.log(statusState);
+    // }, [statusState]);
 
     return (
         <TapGestureHandler onGestureEvent={onGestureEvent}>
@@ -75,13 +89,14 @@ export const StatusIcon = ({ status, right = 10, top = 10 }: StatusIconProps) =>
             >
                 <MotiView
                     from={{ width: size }}
-                    animate={{
-                        width: [
-                            size,
-                            { value: 185, delay: 600, type: 'timing' },
-                            { value: size, delay: 3000, type: 'timing' },
-                        ],
-                    }}
+                    // animate={{
+                    //     width: [
+                    //         size,
+                    //         { value: 185, delay: 600, type: 'timing' },
+                    //         { value: size, delay: 3000, type: 'timing' },
+                    //     ],
+                    // }}
+                    transition={{ type: 'spring', damping: 30 }}
                     state={pressAnimState}
                     style={{
                         position: 'absolute',
@@ -91,16 +106,30 @@ export const StatusIcon = ({ status, right = 10, top = 10 }: StatusIconProps) =>
                         width: size,
                         left: 0,
                         alignItems: 'center',
-                        overflow: 'hidden',
                         justifyContent: 'center',
                     }}
                 >
-                    <Text numberOfLines={1} style={{ textTransform: 'capitalize' }}>
-                        {status?.replaceAll('_', ' ')}
+                    <Text
+                        numberOfLines={1}
+                        variant="labelMedium"
+                        // adjustsFontSizeToFit
+                        style={{
+                            textTransform: nextEP ? undefined : 'capitalize',
+                            color: colors.onPrimaryContainer,
+                        }}
+                    >
+                        {title}
                     </Text>
                 </MotiView>
-                <IconButton icon={config.icon} size={14} containerColor={colors.primaryContainer} />
+                <IconButton
+                    icon={statusIconConfig[statusState]?.icon ?? ''}
+                    iconColor={colors.onPrimaryContainer}
+                    size={14}
+                    containerColor={colors.primaryContainer}
+                />
             </MotiView>
         </TapGestureHandler>
     );
 };
+
+export const StatusIconMem = memo(StatusIcon);
