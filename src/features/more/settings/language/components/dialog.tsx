@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Dialog, RadioButton, Portal, Button } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { setSettings } from '../../settingsSlice';
+import { useAppDispatch } from '../../../../../app/hooks';
 
 type MediaLanguageDialogProps = {
     visible: boolean;
@@ -14,7 +15,7 @@ export const MediaLanguageDialog = ({
     hideDialog,
 }: MediaLanguageDialogProps) => {
     const [lang, setLang] = useState(defaultLanguage);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const langOptions: MediaLanguageDialogProps['defaultLanguage'][] = [
         'english',
         'romaji',
@@ -22,7 +23,7 @@ export const MediaLanguageDialog = ({
     ];
 
     const onDone = () => {
-        dispatch(setSettings({ mediaLanguage: lang }));
+        dispatch(setSettings({ entryType: 'mediaLanguage', value: lang }));
         hideDialog();
     };
 
