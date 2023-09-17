@@ -13,7 +13,11 @@ const MotiButton = ({ ...buttonProps }: ButtonProps, { ...motiViewProps }: MotiV
     );
 };
 
-const Selectable = (props: MotiPressableProps) => {
+interface SelectableProps extends MotiPressableProps {
+    animation?: 'bounce' | 'opacity';
+}
+
+const Selectable = (props: SelectableProps = { animation: 'bounce' }) => {
     return (
         <MotiPressable
             {...props}
@@ -22,7 +26,16 @@ const Selectable = (props: MotiPressableProps) => {
                     ({ hovered, pressed }) => {
                         'worklet';
                         return {
-                            scale: hovered || pressed ? 0.8 : 1,
+                            scale:
+                                props.animation === 'bounce' ? (hovered || pressed ? 0.8 : 1) : 1,
+                            opacity:
+                                props.animation === 'opacity'
+                                    ? pressed
+                                        ? 0.5
+                                        : hovered
+                                        ? 0.75
+                                        : 1
+                                    : 1,
                         };
                     },
                 [],
