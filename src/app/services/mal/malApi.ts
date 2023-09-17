@@ -404,6 +404,7 @@ const injectedRtkApi = api
                         filter: queryArg.filter,
                         kids: queryArg.kids,
                         sfw: queryArg.sfw,
+                        unapproved: queryArg.unapproved,
                         limit: queryArg.limit,
                     },
                 }),
@@ -413,6 +414,8 @@ const injectedRtkApi = api
                 query: (queryArg) => ({
                     url: `/anime`,
                     params: {
+                        sfw: queryArg.sfw,
+                        unapproved: queryArg.unapproved,
                         page: queryArg.page,
                         limit: queryArg.limit,
                         q: queryArg.q,
@@ -422,7 +425,6 @@ const injectedRtkApi = api
                         max_score: queryArg.maxScore,
                         status: queryArg.status,
                         rating: queryArg.rating,
-                        sfw: queryArg.sfw,
                         genres: queryArg.genres,
                         genres_exclude: queryArg.genresExclude,
                         order_by: queryArg.orderBy,
@@ -439,6 +441,8 @@ const injectedRtkApi = api
                 query: (queryArg) => ({
                     url: `/manga`,
                     params: {
+                        sfw: queryArg.sfw,
+                        unapproved: queryArg.unapproved,
                         page: queryArg.page,
                         limit: queryArg.limit,
                         q: queryArg.q,
@@ -447,7 +451,6 @@ const injectedRtkApi = api
                         min_score: queryArg.minScore,
                         max_score: queryArg.maxScore,
                         status: queryArg.status,
-                        sfw: queryArg.sfw,
                         genres: queryArg.genres,
                         genres_exclude: queryArg.genresExclude,
                         order_by: queryArg.orderBy,
@@ -540,15 +543,30 @@ const injectedRtkApi = api
                 }),
                 providesTags: ['producers'],
             }),
-            getSeason: build.query<GetSeasonApiResponse, GetSeasonApiArg>({
+            getSeasonNow: build.query<GetSeasonNowApiResponse, GetSeasonNowApiArg>({
                 query: (queryArg) => ({
-                    url: `/seasons/${queryArg.year}/${queryArg.season}`,
-                    params: { filter: queryArg.filter, page: queryArg.page },
+                    url: `/seasons/now`,
+                    params: {
+                        filter: queryArg.filter,
+                        sfw: queryArg.sfw,
+                        unapproved: queryArg.unapproved,
+                        page: queryArg.page,
+                        limit: queryArg.limit,
+                    },
                 }),
                 providesTags: ['seasons'],
             }),
-            getSeasonNow: build.query<GetSeasonNowApiResponse, GetSeasonNowApiArg>({
-                query: (queryArg) => ({ url: `/seasons/now`, params: { page: queryArg.page } }),
+            getSeason: build.query<GetSeasonApiResponse, GetSeasonApiArg>({
+                query: (queryArg) => ({
+                    url: `/seasons/${queryArg.year}/${queryArg.season}`,
+                    params: {
+                        filter: queryArg.filter,
+                        sfw: queryArg.sfw,
+                        unapproved: queryArg.unapproved,
+                        page: queryArg.page,
+                        limit: queryArg.limit,
+                    },
+                }),
                 providesTags: ['seasons'],
             }),
             getSeasonsList: build.query<GetSeasonsListApiResponse, GetSeasonsListApiArg>({
@@ -558,7 +576,13 @@ const injectedRtkApi = api
             getSeasonUpcoming: build.query<GetSeasonUpcomingApiResponse, GetSeasonUpcomingApiArg>({
                 query: (queryArg) => ({
                     url: `/seasons/upcoming`,
-                    params: { filter: queryArg.filter, page: queryArg.page },
+                    params: {
+                        filter: queryArg.filter,
+                        sfw: queryArg.sfw,
+                        unapproved: queryArg.unapproved,
+                        page: queryArg.page,
+                        limit: queryArg.limit,
+                    },
                 }),
                 providesTags: ['seasons'],
             }),
@@ -568,6 +592,8 @@ const injectedRtkApi = api
                     params: {
                         type: queryArg['type'],
                         filter: queryArg.filter,
+                        rating: queryArg.rating,
+                        sfw: queryArg.sfw,
                         page: queryArg.page,
                         limit: queryArg.limit,
                     },
@@ -601,7 +627,15 @@ const injectedRtkApi = api
                 providesTags: ['top'],
             }),
             getTopReviews: build.query<GetTopReviewsApiResponse, GetTopReviewsApiArg>({
-                query: (queryArg) => ({ url: `/top/reviews`, params: { page: queryArg.page } }),
+                query: (queryArg) => ({
+                    url: `/top/reviews`,
+                    params: {
+                        page: queryArg.page,
+                        type: queryArg['type'],
+                        preliminary: queryArg.preliminary,
+                        spoilers: queryArg.spoilers,
+                    },
+                }),
                 providesTags: ['top'],
             }),
             getUserFullProfile: build.query<
@@ -646,11 +680,17 @@ const injectedRtkApi = api
                 providesTags: ['users'],
             }),
             getUserAnimelist: build.query<GetUserAnimelistApiResponse, GetUserAnimelistApiArg>({
-                query: (queryArg) => ({ url: `/users/${queryArg.username}/animelist` }),
+                query: (queryArg) => ({
+                    url: `/users/${queryArg.username}/animelist`,
+                    params: { status: queryArg.status },
+                }),
                 providesTags: ['users'],
             }),
             getUserMangaList: build.query<GetUserMangaListApiResponse, GetUserMangaListApiArg>({
-                query: (queryArg) => ({ url: `/users/${queryArg.username}/mangalist` }),
+                query: (queryArg) => ({
+                    url: `/users/${queryArg.username}/mangalist`,
+                    params: { status: queryArg.status },
+                }),
                 providesTags: ['users'],
             }),
             getUserReviews: build.query<GetUserReviewsApiResponse, GetUserReviewsApiArg>({
@@ -685,37 +725,28 @@ const injectedRtkApi = api
                 GetWatchRecentEpisodesApiResponse,
                 GetWatchRecentEpisodesApiArg
             >({
-                query: (queryArg) => ({
-                    url: `/watch/episodes`,
-                    params: { limit: queryArg.limit },
-                }),
+                query: () => ({ url: `/watch/episodes` }),
                 providesTags: ['watch'],
             }),
             getWatchPopularEpisodes: build.query<
                 GetWatchPopularEpisodesApiResponse,
                 GetWatchPopularEpisodesApiArg
             >({
-                query: (queryArg) => ({
-                    url: `/watch/episodes/popular`,
-                    params: { limit: queryArg.limit },
-                }),
+                query: () => ({ url: `/watch/episodes/popular` }),
                 providesTags: ['watch'],
             }),
             getWatchRecentPromos: build.query<
                 GetWatchRecentPromosApiResponse,
                 GetWatchRecentPromosApiArg
             >({
-                query: () => ({ url: `/watch/promos` }),
+                query: (queryArg) => ({ url: `/watch/promos`, params: { page: queryArg.page } }),
                 providesTags: ['watch'],
             }),
             getWatchPopularPromos: build.query<
                 GetWatchPopularPromosApiResponse,
                 GetWatchPopularPromosApiArg
             >({
-                query: (queryArg) => ({
-                    url: `/watch/promos/popular`,
-                    params: { limit: queryArg.limit },
-                }),
+                query: () => ({ url: `/watch/promos/popular` }),
                 providesTags: ['watch'],
             }),
         }),
@@ -1070,13 +1101,19 @@ export type GetSchedulesApiArg = {
     filter?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'unknown' | 'other';
     /** When supplied, it will filter entries with the `Kids` Genre Demographic. When supplied as `kids=true`, it will return only Kid entries and when supplied as `kids=false`, it will filter out any Kid entries. Defaults to `false`. */
     kids?: 'true' | 'false';
-    /** 'Safe For Work'. When supplied, it will filter entries with the `Hentai` Genre. When supplied as `sfw=true`, it will return only SFW entries and when supplied as `sfw=false`, it will filter out any Hentai entries. Defaults to `false`. */
-    sfw?: 'true' | 'false';
+    /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
+    sfw?: boolean;
+    /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
+    unapproved?: boolean;
     limit?: number;
 };
 export type GetAnimeSearchApiResponse =
     /** status 200 Returns search results for anime */ AnimeSearch;
 export type GetAnimeSearchApiArg = {
+    /** Filter out Adult entries */
+    sfw?: boolean;
+    /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
+    unapproved?: boolean;
     page?: number;
     limit?: number;
     q?: string;
@@ -1088,8 +1125,6 @@ export type GetAnimeSearchApiArg = {
     maxScore?: number;
     status?: AnimeSearchQueryStatus;
     rating?: AnimeSearchQueryRating;
-    /** Filter out Adult entries */
-    sfw?: boolean;
     /** Filter by genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
     genres?: string;
     /** Exclude genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
@@ -1108,6 +1143,10 @@ export type GetAnimeSearchApiArg = {
 export type GetMangaSearchApiResponse =
     /** status 200 Returns search results for manga */ MangaSearch;
 export type GetMangaSearchApiArg = {
+    /** Filter out Adult entries */
+    sfw?: boolean;
+    /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
+    unapproved?: boolean;
     page?: number;
     limit?: number;
     q?: string;
@@ -1118,8 +1157,6 @@ export type GetMangaSearchApiArg = {
     /** Set a maximum score for results */
     maxScore?: number;
     status?: MangaSearchQueryStatus;
-    /** Filter out Adult entries */
-    sfw?: boolean;
     /** Filter by genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
     genres?: string;
     /** Exclude genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
@@ -1197,17 +1234,29 @@ export type GetProducersApiArg = {
     /** Return entries starting with the given letter */
     letter?: string;
 };
+export type GetSeasonNowApiResponse = /** status 200 Returns current seasonal anime */ AnimeSearch;
+export type GetSeasonNowApiArg = {
+    /** Entry types */
+    filter?: 'tv' | 'movie' | 'ova' | 'special' | 'ona' | 'music';
+    /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
+    sfw?: boolean;
+    /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
+    unapproved?: boolean;
+    page?: number;
+    limit?: number;
+};
 export type GetSeasonApiResponse = /** status 200 Returns seasonal anime */ AnimeSearch;
 export type GetSeasonApiArg = {
     year: number;
     season: string;
     /** Entry types */
     filter?: 'tv' | 'movie' | 'ova' | 'special' | 'ona' | 'music';
+    /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
+    sfw?: boolean;
+    /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
+    unapproved?: boolean;
     page?: number;
-};
-export type GetSeasonNowApiResponse = /** status 200 Returns current seasonal anime */ AnimeSearch;
-export type GetSeasonNowApiArg = {
-    page?: number;
+    limit?: number;
 };
 export type GetSeasonsListApiResponse = /** status 200 Returns available list of seasons */ Seasons;
 export type GetSeasonsListApiArg = void;
@@ -1216,19 +1265,27 @@ export type GetSeasonUpcomingApiResponse =
 export type GetSeasonUpcomingApiArg = {
     /** Entry types */
     filter?: 'tv' | 'movie' | 'ova' | 'special' | 'ona' | 'music';
+    /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
+    sfw?: boolean;
+    /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
+    unapproved?: boolean;
     page?: number;
+    limit?: number;
 };
 export type GetTopAnimeApiResponse = /** status 200 Returns top anime */ AnimeSearch;
 export type GetTopAnimeApiArg = {
     type?: AnimeSearchQueryType;
-    filter?: 'airing' | 'upcoming' | 'bypopularity' | 'favorite';
+    filter?: TopAnimeFilter;
+    rating?: AnimeSearchQueryRating;
+    /** Filter out Adult entries */
+    sfw?: boolean;
     page?: number;
     limit?: number;
 };
 export type GetTopMangaApiResponse = /** status 200 Returns top manga */ MangaSearch;
 export type GetTopMangaApiArg = {
     type?: MangaSearchQueryType;
-    filter?: 'publishing' | 'upcoming' | 'bypopularity' | 'favorite';
+    filter?: TopMangaFilter;
     page?: number;
     limit?: number;
 };
@@ -1260,6 +1317,11 @@ export type GetTopReviewsApiResponse = /** status 200 Returns top reviews */ {
 };
 export type GetTopReviewsApiArg = {
     page?: number;
+    type?: TopReviewsTypeEnum;
+    /** Whether the results include preliminary reviews or not. Defaults to true. */
+    preliminary?: boolean;
+    /** Whether the results include reviews with spoilers or not. Defaults to true. */
+    spoilers?: boolean;
 };
 export type GetUserFullProfileApiResponse = /** status 200 Returns complete user resource data */ {
     data?: UserProfileFull;
@@ -1305,10 +1367,12 @@ export type GetUserFriendsApiArg = {
 export type GetUserAnimelistApiResponse = /** status 200 Returns user anime list */ any;
 export type GetUserAnimelistApiArg = {
     username: string;
+    status?: UserAnimeListStatusFilter;
 };
 export type GetUserMangaListApiResponse = /** status 200 Returns user manga list */ any;
 export type GetUserMangaListApiArg = {
     username: string;
+    status?: UserMangaListStatusFilter;
 };
 export type GetUserReviewsApiResponse = /** status 200 Returns user reviews */ {
     data?: {
@@ -1348,22 +1412,18 @@ export type GetUserExternalApiArg = {
 };
 export type GetWatchRecentEpisodesApiResponse =
     /** status 200 Returns Recently Added Episodes */ WatchEpisodes;
-export type GetWatchRecentEpisodesApiArg = {
-    limit?: number;
-};
+export type GetWatchRecentEpisodesApiArg = void;
 export type GetWatchPopularEpisodesApiResponse =
     /** status 200 Returns Popular Episodes */ WatchEpisodes;
-export type GetWatchPopularEpisodesApiArg = {
-    limit?: number;
-};
+export type GetWatchPopularEpisodesApiArg = void;
 export type GetWatchRecentPromosApiResponse =
     /** status 200 Returns Recently Added Promotional Videos */ WatchPromos;
-export type GetWatchRecentPromosApiArg = void;
+export type GetWatchRecentPromosApiArg = {
+    page?: number;
+};
 export type GetWatchPopularPromosApiResponse =
     /** status 200 Returns Popular Promotional Videos */ WatchPromos;
-export type GetWatchPopularPromosApiArg = {
-    limit?: number;
-};
+export type GetWatchPopularPromosApiArg = void;
 export type AnimeImages = {
     jpg?: {
         image_url?: string | null;
@@ -1579,7 +1639,7 @@ export type Pagination = {
 export type AnimeEpisodes = {
     data?: {
         mal_id?: number;
-        url?: string;
+        url?: string | null;
         title?: string;
         title_japanese?: string | null;
         title_romanji?: string | null;
@@ -1776,8 +1836,8 @@ export type AnimeReview = {
     review?: string;
     score?: number;
     tags?: string[];
-    is_spoiler?: any;
-    is_preliminary?: any;
+    is_spoiler?: boolean;
+    is_preliminary?: boolean;
     episodes_watched?: number;
 };
 export type AnimeReviews = {
@@ -2074,8 +2134,8 @@ export type MangaReview = {
     review?: string;
     score?: number;
     tags?: string[];
-    is_spoiler?: any;
-    is_preliminary?: any;
+    is_spoiler?: boolean;
+    is_preliminary?: boolean;
 };
 export type MangaReviews = {
     data?: ({
@@ -2288,12 +2348,7 @@ export type ClubSearchQueryCategory =
     | 'music'
     | 'other'
     | 'schools';
-export type ClubSearchQueryOrderby =
-    | 'mal_id'
-    | 'title'
-    | 'members_count'
-    | 'pictures_count'
-    | 'created';
+export type ClubSearchQueryOrderby = 'mal_id' | 'name' | 'members_count' | 'created';
 export type Producers = {
     data?: Producer[];
 } & Pagination;
@@ -2304,6 +2359,9 @@ export type Seasons = {
         seasons?: string[];
     }[];
 };
+export type TopAnimeFilter = 'airing' | 'upcoming' | 'bypopularity' | 'favorite';
+export type TopMangaFilter = 'publishing' | 'upcoming' | 'bypopularity' | 'favorite';
+export type TopReviewsTypeEnum = 'anime' | 'manga';
 export type UserProfileFull = {
     mal_id?: number | null;
     username?: string;
@@ -2438,6 +2496,20 @@ export type UserFriends = {
         friends_since?: string;
     })[];
 } & Pagination;
+export type UserAnimeListStatusFilter =
+    | 'all'
+    | 'watching'
+    | 'completed'
+    | 'onhold'
+    | 'dropped'
+    | 'plantowatch';
+export type UserMangaListStatusFilter =
+    | 'all'
+    | 'reading'
+    | 'completed'
+    | 'onhold'
+    | 'dropped'
+    | 'plantoread';
 export type UserClubs = {
     data?: {
         mal_id?: number;
@@ -2540,8 +2612,8 @@ export const {
     useGetUserByIdQuery,
     useGetClubsSearchQuery,
     useGetProducersQuery,
-    useGetSeasonQuery,
     useGetSeasonNowQuery,
+    useGetSeasonQuery,
     useGetSeasonsListQuery,
     useGetSeasonUpcomingQuery,
     useGetTopAnimeQuery,
