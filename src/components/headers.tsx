@@ -1,16 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { Appbar, Button, IconButton, Portal, Searchbar, Text, useTheme } from 'react-native-paper';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+    Appbar,
+    Avatar,
+    Button,
+    IconButton,
+    Portal,
+    Searchbar,
+    Text,
+    useTheme,
+} from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { View, useWindowDimensions } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+    Keyboard,
+    RefreshControlProps,
+    Share,
+    ToastAndroid,
+    View,
+    useWindowDimensions,
+} from 'react-native';
+// import {} from 'react'
 import { RootState } from '../app/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
-import { setSearch } from '../features/search/searchSlice';
+import { MediaType } from '../app/services/anilist/generated-anilist';
+import { StatusBar } from 'expo-status-bar';
+import { useAppSelector } from '../app/hooks';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -24,8 +42,9 @@ const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProp
 
 export const ExploreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
+    const { colors } = useTheme();
     const { width } = useWindowDimensions();
-    const { mode } = useSelector((state: RootState) => state.persistedTheme);
+    const { mode } = useAppSelector((state) => state.persistedTheme);
     return (
         <Appbar.Header>
             {mode === 'punpun' && (
@@ -61,15 +80,32 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
             )}
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title} />
-            <Appbar.Action icon="crystal-ball" onPress={() => console.log('RANDOM CONTENT')} />
+            <Appbar.Action
+                icon="crystal-ball"
+                iconColor={colors.surfaceVariant}
+                onPress={() => ToastAndroid.show('Randomizer coming soon!', ToastAndroid.LONG)}
+            />
+            <Appbar.Action
+                icon="barcode-scan"
+                iconColor={colors.surfaceVariant}
+                onPress={() => ToastAndroid.show('Barcode search coming soon!', ToastAndroid.LONG)}
+            />
+            <Appbar.Action
+                icon="image-search-outline"
+                iconColor={colors.surfaceVariant}
+                onPress={() => ToastAndroid.show('Image search coming soon!', ToastAndroid.LONG)}
+            />
             <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
         </Appbar.Header>
     );
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
-    onSearch: (search?: string) => void;
+    searchContent: () => void;
     openFilter: () => void;
+    search: string;
+    currentType: string;
+    setSearch: (txt: string) => void;
 };
 export const SearchHeader = ({
     navigation,
@@ -77,55 +113,90 @@ export const SearchHeader = ({
     route,
     back,
     openFilter,
-    onSearch,
+    searchContent,
+    search,
+    setSearch,
+    currentType,
 }: SearchHeaderProps) => {
-    // const title = getHeaderTitle(options, route.name);
-    const { search, history, historyLimit } = useSelector(
-        (state: RootState) => state.persistedSearch,
-    );
-    const [isFilterActive, setIsFilterActive] = useState(false);
-    const dispatch = useDispatch();
-
-    const clearSearch = () => dispatch(setSearch(''));
-
     return (
-        <Appbar.Header elevated>
+        <Appbar.Header>
+            <Appbar.BackAction onPress={navigation.goBack} />
             <Searchbar
                 value={search}
-                onChangeText={(txt) => dispatch(setSearch(txt))}
-                onSubmitEditing={() => onSearch(search)}
+                onChangeText={(txt) => setSearch(txt)}
+                onSubmitEditing={(e) => {
+                    searchContent();
+                }}
                 returnKeyType="search"
                 autoFocus
                 placeholder="Search sauce..."
                 mode="bar"
-                icon="arrow-left"
-                onIconPress={navigation.goBack}
-                traileringIcon={'image-search-outline'}
-                style={{ flex: 1 }}
+                onIconPress={searchContent}
+                // traileringIcon={'image-search-outline'}
+                // onTraileringIconPress={() => ToastAndroid.show('Image search coming soon!', 1000)}
+                icon={null}
+                style={{ flex: 1, backgroundColor: 'transparent' }}
+                inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
+                onClearIconPress={() => {
+                    setSearch('');
+                }}
             />
-            <IconButton icon={isFilterActive ? 'filter' : 'filter-outline'} onPress={openFilter} />
+            <IconButton
+                icon={'filter-outline'}
+                onPress={openFilter}
+                // onPress={() => setIsFilterOpen((prev) => !prev)}
+                disabled={![MediaType.Anime, MediaType.Manga].includes(currentType as MediaType)}
+            />
         </Appbar.Header>
     );
 };
 
 export const MoreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
-    const { mode } = useSelector((state: RootState) => state.persistedTheme);
+    const { mode } = useAppSelector((state: RootState) => state.persistedTheme);
     const title = getHeaderTitle(options, route.name);
+    const { width } = useWindowDimensions();
     return (
-        <Appbar.Header style={{ height: 200, justifyContent: 'center' }}>
+        <Appbar.Header style={{ height: 200 }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             {/* <Appbar.Content title={title} /> */}
             <Image
                 source={
                     mode === 'punpun'
                         ? require('../../assets/punpunRotate.gif')
-                        : {
-                              uri: 'http://3.bp.blogspot.com/-EhrA8cHwXnQ/TyCtHjs957I/AAAAAAAAAeg/QJfY0lg1x34/s1600/1019i.gif',
-                          }
+                        : require('../../assets/icon3-trans.png')
                 }
-                style={{ width: 300, height: 200, alignSelf: 'center' }}
+                style={{
+                    width: width,
+                    height: 225,
+                    overflow: 'visible',
+                    alignSelf: 'center',
+                    position: 'absolute',
+                    // top: -25,
+                    bottom: 0,
+                }}
+                // contentFit="contain"
                 contentFit="contain"
             />
+        </Appbar.Header>
+    );
+};
+
+export const BanTagHeader = ({
+    navigation,
+    options,
+    route,
+    back,
+    iconColor,
+    onSave,
+}: NativeStackHeaderProps & { onSave: () => void; iconColor: string }) => {
+    const title = getHeaderTitle(options, route.name);
+    const { colors } = useTheme();
+    const { width } = useWindowDimensions();
+    return (
+        <Appbar.Header>
+            {back && <Appbar.BackAction onPress={navigation.goBack} />}
+            <Appbar.Content title={title} />
+            <Appbar.Action icon="check" iconColor={iconColor ?? undefined} onPress={onSave} />
         </Appbar.Header>
     );
 };
@@ -137,7 +208,7 @@ export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderPro
     return (
         <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
-            <Appbar.Content title={title ?? ''} />
+            <Appbar.Content title={title ?? ''} subtitle={'Test'} />
             <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} />
         </Appbar.Header>
     );
@@ -146,19 +217,64 @@ export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderPro
 type FadeHeaderProps = {
     children: React.ReactNode;
     title: string;
+    shareLink?: string;
+    favorite?: boolean;
+    onFavorite?: () => void;
+    onEdit?: () => void;
     loading?: boolean;
+    disableBack?: boolean;
+    addFriendIcon?: boolean;
+    onAddFriend?: () => void;
+    RefreshControl?: React.ReactElement<
+        RefreshControlProps,
+        string | React.JSXElementConstructor<any>
+    >;
+    animationRange?: number[];
 };
-export const FadeHeaderProvider = ({ children, title, loading }: FadeHeaderProps) => {
+export const FadeHeaderProvider = ({
+    children,
+    title,
+    shareLink,
+    favorite,
+    onFavorite,
+    onEdit,
+    loading,
+    addFriendIcon,
+    onAddFriend,
+    RefreshControl,
+    disableBack = false,
+    animationRange = [40, 110],
+}: FadeHeaderProps) => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { colors } = useTheme();
-    const { headerStyle, headerTitleStyle, scrollHandler } = useHeaderAnim();
+    const { headerStyle, headerTitleStyle, headerActionStyle, scrollHandler } = useHeaderAnim(
+        animationRange[0],
+        animationRange[1],
+    );
     const { width, height } = useWindowDimensions();
+    const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
     const Header = () => {
         return (
             <Animated.View style={[headerStyle]}>
                 <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
-                    {navigation.canGoBack && <Appbar.BackAction onPress={navigation.goBack} />}
+                    {navigation.canGoBack && !disableBack && (
+                        <Animated.View
+                            style={[
+                                {
+                                    borderRadius: 100,
+                                    height: 42,
+                                    width: 42,
+                                    marginLeft: 5,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                },
+                                headerActionStyle,
+                            ]}
+                        >
+                            <Appbar.BackAction onPress={navigation.goBack} />
+                        </Animated.View>
+                    )}
                     <Animated.View
                         style={[
                             headerTitleStyle,
@@ -166,19 +282,97 @@ export const FadeHeaderProvider = ({ children, title, loading }: FadeHeaderProps
                                 flex: 1,
                                 height: '50%',
                                 justifyContent: 'center',
+                                paddingLeft: disableBack ? 20 : 0,
                             },
                         ]}
                     >
-                        <Appbar.Content title={title ?? ''} />
+                        <Appbar.Content
+                            title={title ?? ''}
+                            titleStyle={{ textTransform: 'capitalize' }}
+                        />
                     </Animated.View>
-                    <Appbar.Action
-                        icon="file-document-edit-outline"
-                        onPress={() => console.log('test')}
-                    />
-                    <Appbar.Action
-                        icon="share-variant-outline"
-                        onPress={() => console.log('test')}
-                    />
+                    {onEdit !== undefined && (
+                        <Animated.View
+                            style={[
+                                {
+                                    borderRadius: 100,
+                                    height: 42,
+                                    width: 42,
+                                    marginRight: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                },
+                                headerActionStyle,
+                            ]}
+                        >
+                            <Appbar.Action icon="file-document-edit-outline" onPress={onEdit} />
+                        </Animated.View>
+                    )}
+                    {shareLink && (
+                        <Animated.View
+                            style={[
+                                {
+                                    borderRadius: 100,
+                                    height: 42,
+                                    width: 42,
+                                    marginRight: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                },
+                                headerActionStyle,
+                            ]}
+                        >
+                            <Appbar.Action
+                                icon="share-variant-outline"
+                                onPress={() =>
+                                    Share.share({
+                                        url: shareLink,
+                                        title: shareLink,
+                                        message: shareLink,
+                                    })
+                                }
+                                disabled={!shareLink}
+                            />
+                        </Animated.View>
+                    )}
+                    {favorite !== undefined && userID && (
+                        <Animated.View
+                            style={[
+                                {
+                                    borderRadius: 100,
+                                    height: 42,
+                                    width: 42,
+                                    marginRight: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                },
+                                headerActionStyle,
+                            ]}
+                        >
+                            <Appbar.Action
+                                icon={favorite ? 'heart' : 'heart-outline'}
+                                onPress={onFavorite}
+                                color="red"
+                            />
+                        </Animated.View>
+                    )}
+                    {userID && addFriendIcon && (
+                        <Animated.View
+                            style={[
+                                {
+                                    borderRadius: 100,
+                                    height: 42,
+                                    width: 42,
+                                    marginRight: 10,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                },
+                                headerActionStyle,
+                            ]}
+                        >
+                            <Appbar.Action icon={'account-plus-outline'} onPress={onAddFriend} />
+                        </Animated.View>
+                    )}
                 </Appbar.Header>
             </Animated.View>
         );
@@ -195,10 +389,23 @@ export const FadeHeaderProvider = ({ children, title, loading }: FadeHeaderProps
 
     return (
         <View>
-            <MotiScrollView scrollEventThrottle={16} onScroll={scrollHandler}>
+            <MotiScrollView
+                refreshControl={RefreshControl ?? undefined}
+                showsVerticalScrollIndicator={false}
+                scrollEventThrottle={16}
+                onScroll={scrollHandler}
+            >
                 {children}
             </MotiScrollView>
         </View>
+    );
+};
+
+export const CharStaffHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+    return (
+        <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+            {back && <Appbar.BackAction onPress={navigation.goBack} />}
+        </Appbar.Header>
     );
 };
 
