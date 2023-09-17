@@ -25,17 +25,13 @@ const ANI_EXPO_GO_IOS = Constants.expoConfig?.extra?.ANI_EXPO_GO_IOS;
 
 // https://anilist.co/api/v2/oauth/authorize?client_id={client_id}&response_type=token
 
-const discovery: DiscoveryDocument = {
-    authorizationEndpoint: 'https://anilist.co/api/v2/oauth/authorize',
-};
-
 const redirectUri = makeRedirectUri({
     path: 'more/accounts',
     // queryParams: { rootPath: rootPath },
 });
 
 const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
-    Platform.OS === 'web' ? ANI_WEB_ID : Platform.OS === 'android' ? ANI_EXPO_GO : ANI_EXPO_GO_IOS
+    Platform.OS === 'web' ? ANI_WEB_ID : ANI_ID
 }&response_type=token`;
 
 export const useAnilistAuth = () => {
@@ -56,16 +52,12 @@ export const useAnilistAuth = () => {
                 options,
             );
 
-            console.log('RedirectURL:', redirectUri);
-            console.log('RESULT:', result);
-
             // Using Expo Go gives error: "Cross-Site request verification failed. Cached state and returned state do not match."
             // Still provides the token though.
             if (result?.type === 'success' || result?.type === 'error') {
                 const accessToken = result.authentication?.accessToken;
                 const expiresAt = new Date();
                 expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-                console.log('Success!', 'No access token yet...');
                 if (accessToken) {
                     // set header
                     dispatch(
@@ -73,10 +65,6 @@ export const useAnilistAuth = () => {
                             token: accessToken,
                             deathDate: expiresAt.toLocaleString(),
                         }),
-                    );
-                    console.log('Success!', accessToken);
-                    dispatch(
-                        api.util.invalidateTags(['ExploreAnime', 'ExploreManga', 'ExploreNovel']),
                     );
                     // Fetch userdata
                     const user = await fetchUser().unwrap();
@@ -93,9 +81,17 @@ export const useAnilistAuth = () => {
                             username: username,
                         }),
                     );
+                    dispatch(
+                        api.util.invalidateTags([
+                            'AniMedia',
+                            'AniSearch',
+                            'ExploreAnime',
+                            'ExploreManga',
+                            'ExploreManhwa',
+                            'ExploreNovel',
+                        ]),
+                    );
                 }
-            } else {
-                console.log('Error!', result?.type);
             }
             setResult(result);
             return result;
