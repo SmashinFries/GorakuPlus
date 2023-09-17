@@ -1,0 +1,173 @@
+query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
+    Viewer {
+        id
+        unreadNotificationCount
+    }
+    Page(page: $page, perPage: $amount) {
+        pageInfo {
+            hasNextPage
+        }
+        notifications(resetNotificationCount: $reset) {
+            __typename
+            ... on ActivityLikeNotification {
+                id
+                activityId
+                user {
+                    ...user
+                }
+                activity {
+                    ...activity
+                }
+                context
+                createdAt
+                type
+            }
+            ... on ActivityMentionNotification {
+                id
+                activityId
+                user {
+                    ...user
+                }
+                activity {
+                    ...activity
+                }
+                context
+                createdAt
+                type
+            }
+            ... on ActivityMessageNotification {
+                id
+                activityId
+                user {
+                    ...user
+                }
+                message {
+                    siteUrl
+                }
+                activityId
+                context
+                createdAt
+                type
+            }
+            ... on ActivityReplyNotification {
+                id
+                activityId
+                user {
+                    ...user
+                }
+                activity {
+                    ...activity
+                }
+                context
+                createdAt
+                type
+            }
+            ... on AiringNotification {
+                id
+                media {
+                    ...media
+                }
+                episode
+                contexts
+                createdAt
+                type
+            }
+            ... on RelatedMediaAdditionNotification {
+                id
+                media {
+                    ...media
+                }
+                context
+                createdAt
+                type
+            }
+            ... on FollowingNotification {
+                id
+                user {
+                    ...user
+                }
+                context
+                createdAt
+                type
+            }
+            ... on MediaDataChangeNotification {
+                id
+                media {
+                    ...media
+                }
+                reason
+                context
+                createdAt
+                type
+            }
+            ... on MediaDeletionNotification {
+                id
+                deletedMediaTitle
+                context
+                reason
+                createdAt
+                type
+            }
+            ... on MediaMergeNotification {
+                id
+                media {
+                    ...media
+                }
+                reason
+                deletedMediaTitles
+                context
+                createdAt
+                type
+            }
+        }
+    }
+}
+
+fragment media on Media {
+    id
+    type
+    title {
+        userPreferred
+        native
+        romaji
+        english
+    }
+    bannerImage
+    coverImage {
+        extraLarge
+        large
+        color
+    }
+    siteUrl
+}
+
+fragment user on User {
+    id
+    name
+    avatar {
+        large
+    }
+    siteUrl
+}
+
+fragment thread on Thread {
+    id
+    title
+    siteUrl
+}
+
+fragment activity on ActivityUnion {
+    __typename
+    ... on TextActivity {
+        id
+        siteUrl
+    }
+    ... on ListActivity {
+        id
+        siteUrl
+    }
+    ... on MessageActivity {
+        id
+        siteUrl
+    }
+}

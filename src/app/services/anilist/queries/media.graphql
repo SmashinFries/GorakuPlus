@@ -40,6 +40,8 @@ query RandomMedia($random: Int, $perRandom: Int, $type: MediaType, $isAdult: Boo
 
 query AniMedia(
     $id: Int
+    $userId: Int
+    $skipUser: Boolean!
     $sort_c: [CharacterSort]
     $role_c: CharacterRole
     $page_c: Int
@@ -47,6 +49,37 @@ query AniMedia(
     $page_rec: Int
     $perPage_rec: Int
 ) {
+    User(id: $userId) @skip(if: $skipUser) {
+        mediaListOptions {
+            scoreFormat
+        }
+    }
+    Page(page: 1) {
+        pageInfo {
+            total
+            perPage
+            currentPage
+            lastPage
+            hasNextPage
+        }
+        mediaList(mediaId: $id, isFollowing: true, sort: UPDATED_TIME_DESC) {
+            id
+            status
+            score
+            progress
+            user {
+                id
+                name
+                isFollowing
+                avatar {
+                    large
+                }
+                mediaListOptions {
+                    scoreFormat
+                }
+            }
+        }
+    }
     Media(id: $id) {
         title {
             romaji
@@ -92,6 +125,9 @@ query AniMedia(
                     bannerImage
                     type
                     format
+                    isFavourite
+                    isLicensed
+                    status(version: 2)
                     title {
                         romaji
                         english
@@ -100,6 +136,8 @@ query AniMedia(
                     }
                     coverImage {
                         extraLarge
+                        large
+                        color
                     }
                     averageScore
                     meanScore
@@ -112,6 +150,9 @@ query AniMedia(
             url
             color
             icon
+            notes
+            type
+            language
         }
         rankings {
             id
@@ -137,6 +178,7 @@ query AniMedia(
             mediaId
         }
         coverImage {
+            color
             extraLarge
         }
         characters(sort: $sort_c, role: $role_c, page: $page_c, perPage: $perPage_c) {
@@ -179,7 +221,7 @@ query AniMedia(
                 }
             }
         }
-        recommendations(sort: RATING_DESC, page: $page_rec, perPage: $perPage_rec) {
+        recommendations(sort: [RATING_DESC, ID], page: $page_rec, perPage: $perPage_rec) {
             edges {
                 node {
                     id
@@ -190,6 +232,10 @@ query AniMedia(
                         idMal
                         bannerImage
                         type
+                        format
+                        isFavourite
+                        isLicensed
+                        status(version: 2)
                         title {
                             romaji
                             english
@@ -198,6 +244,15 @@ query AniMedia(
                         }
                         coverImage {
                             extraLarge
+                            color
+                            large
+                        }
+                        mediaListEntry {
+                            id
+                            status
+                            score
+                            progress
+                            progressVolumes
                         }
                         meanScore
                         averageScore
@@ -208,6 +263,15 @@ query AniMedia(
         mediaListEntry {
             id
             mediaId
+            media {
+                status(version: 2)
+                episodes
+                chapters
+                volumes
+                nextAiringEpisode {
+                    episode
+                }
+            }
             status
             score
             progress
@@ -252,7 +316,7 @@ query AniMedia(
                 }
             }
         }
-        reviews(limit: 5, sort: RATING_DESC, page: 1, perPage: 20) {
+        reviews(limit: 5, sort: [RATING_DESC, ID], page: 1, perPage: 20) {
             edges {
                 node {
                     id
@@ -323,13 +387,14 @@ query AniMedia(
                 }
             }
         }
-        studios(isMain: true) {
-            nodes {
-                id
-                name
-                isAnimationStudio
-                isFavourite
-                favourites
+        studios {
+            edges {
+                isMain
+                node {
+                    id
+                    name
+                    isFavourite
+                }
             }
         }
         source(version: 3)
@@ -359,5 +424,258 @@ query AniMedia(
         trending
         favourites
         isFavourite
+    }
+}
+
+query MediaFollowing($id: Int, $page: Int, $perPage: Int) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            total
+            perPage
+            currentPage
+            lastPage
+            hasNextPage
+        }
+        mediaList(mediaId: $id, isFollowing: true, sort: UPDATED_TIME_DESC) {
+            id
+            status
+            score
+            progress
+            user {
+                id
+                name
+                avatar {
+                    large
+                }
+                mediaListOptions {
+                    scoreFormat
+                }
+            }
+        }
+    }
+}
+
+query CharacterList($id: Int, $page: Int, $perPage: Int, $sort: [CharacterSort]) {
+    Media(id: $id) {
+        id
+        characters(sort: $sort, page: $page, perPage: $perPage) {
+            pageInfo {
+                total
+                perPage
+                currentPage
+                hasNextPage
+                lastPage
+            }
+            edges {
+                id
+                role
+                voiceActorRoles(sort: ROLE_DESC) {
+                    roleNotes
+                    voiceActor {
+                        id
+                        isFavourite
+                        favourites
+                        languageV2
+                        name {
+                            native
+                            full
+                        }
+                        image {
+                            large
+                        }
+                    }
+                }
+                node {
+                    id
+                    image {
+                        large
+                    }
+                    gender
+                    isFavourite
+                    favourites
+                    name {
+                        full
+                        native
+                    }
+                }
+            }
+        }
+    }
+}
+
+query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) {
+    Character(id: $id) {
+        name {
+            full
+            first
+            last
+            native
+            alternative
+        }
+        image {
+            large
+        }
+        description(asHtml: true)
+        gender
+        dateOfBirth {
+            year
+            month
+            day
+        }
+        age
+        bloodType
+        isFavourite
+        siteUrl
+        favourites
+        media(sort: $sort, page: $page, perPage: $perPage) {
+            edges {
+                voiceActorRoles(sort: [RELEVANCE, ID]) {
+                    roleNotes
+                    voiceActor {
+                        id
+                        name {
+                            first
+                            middle
+                            last
+                            full
+                            native
+                        }
+                        image {
+                            large
+                        }
+                        language: languageV2
+                    }
+                }
+                characterRole
+                node {
+                    id
+                    idMal
+                    title {
+                        english
+                        native
+                        romaji
+                    }
+                    type
+                    format
+                    status(version: 2)
+                    isLicensed
+                    averageScore
+                    meanScore
+                    isAdult
+                    isFavourite
+                    coverImage {
+                        extraLarge
+                        color
+                    }
+                }
+            }
+        }
+    }
+}
+
+query StaffList($id: Int, $page: Int, $perPage: Int) {
+    Media(id: $id) {
+        id
+        staff(page: $page, perPage: $perPage, sort: [RELEVANCE, ID]) {
+            edges {
+                role
+                node {
+                    id
+                    name {
+                        full
+                        native
+                    }
+                    languageV2
+                    image {
+                        large
+                    }
+                    isFavourite
+                    favourites
+                }
+            }
+            pageInfo {
+                total
+                currentPage
+                hasNextPage
+                perPage
+                lastPage
+            }
+        }
+    }
+}
+
+query StaffDetails(
+    $staff_media_page: Int
+    $staff_media_perPage: Int
+    $id: Int
+    $char_page: Int
+    $char_perPage: Int
+) {
+    Staff(id: $id) {
+        name {
+            full
+            native
+            alternative
+        }
+        languageV2
+        image {
+            large
+        }
+        description(asHtml: true)
+        primaryOccupations
+        gender
+        dateOfBirth {
+            year
+            month
+            day
+        }
+        dateOfDeath {
+            year
+            month
+            day
+        }
+        age
+        yearsActive
+        homeTown
+        bloodType
+        isFavourite
+        siteUrl
+        favourites
+        modNotes
+        staffMedia(page: $staff_media_page, perPage: $staff_media_perPage, sort: POPULARITY_DESC) {
+            edges {
+                staffRole
+                node {
+                    id
+                    idMal
+                    type
+                    status(version: 2)
+                    averageScore
+                    meanScore
+                    format
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                }
+            }
+        }
+        characters(page: $char_page, perPage: $char_perPage, sort: RELEVANCE) {
+            edges {
+                role
+                node {
+                    id
+                    name {
+                        full
+                        native
+                    }
+                    image {
+                        large
+                    }
+                    isFavourite
+                }
+            }
+        }
     }
 }

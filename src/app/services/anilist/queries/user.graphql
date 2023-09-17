@@ -1,5 +1,5 @@
-query ViewerStats {
-    Viewer {
+query UserAnimeStats($userId: Int) {
+    User(id: $userId) {
         statistics {
             anime {
                 count
@@ -124,6 +124,13 @@ query ViewerStats {
                     }
                 }
             }
+        }
+    }
+}
+
+query UserMangaStats($userId: Int) {
+    User(id: $userId) {
+        statistics {
             manga {
                 count
                 meanScore
@@ -221,8 +228,8 @@ query ViewerStats {
     }
 }
 
-query UserActivity($page: Int, $isFollowing: Boolean, $userId: Int) {
-    Page(page: $page, perPage: 24) {
+query UserActivity($page: Int, $perPage: Int, $isFollowing: Boolean, $userId: Int) {
+    Page(page: $page, perPage: $perPage) {
         pageInfo {
             total
             currentPage
@@ -375,6 +382,19 @@ query UserOverview {
                     id
                     name
                 }
+            }
+        }
+        stats {
+            favouredGenresOverview {
+                genre
+                amount
+                meanScore
+                timeWatched
+            }
+            activityHistory {
+                date
+                amount
+                level
             }
         }
         statistics {

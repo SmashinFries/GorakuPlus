@@ -1,212 +1,3 @@
-query ExploreMedia(
-    $page: Int
-    $perPage: Int
-    $id: Int
-    $idMal: Int
-    $startDate: FuzzyDateInt
-    $endDate: FuzzyDateInt
-    $season: MediaSeason
-    $seasonYear: Int
-    $type: MediaType
-    $format: MediaFormat
-    $status: MediaStatus
-    $episodes: Int
-    $duration: Int
-    $chapters: Int
-    $volumes: Int
-    $isAdult: Boolean
-    $genre: String
-    $tag: String
-    $minimumTagRank: Int
-    $tagCategory: String
-    $onList: Boolean
-    $licensedBy: String
-    $licensedById: Int
-    $averageScore: Int
-    $popularity: Int
-    $source: MediaSource
-    $countryOfOrigin: CountryCode
-    $isLicensed: Boolean
-    $search: String
-    $id_not: Int
-    $id_in: [Int]
-    $id_not_in: [Int]
-    $idMal_not: Int
-    $idMal_in: [Int]
-    $idMal_not_in: [Int]
-    $startDate_greater: FuzzyDateInt
-    $startDate_lesser: FuzzyDateInt
-    $startDate_like: String
-    $endDate_greater: FuzzyDateInt
-    $endDate_lesser: FuzzyDateInt
-    $endDate_like: String
-    $format_in: [MediaFormat]
-    $format_not: MediaFormat
-    $format_not_in: [MediaFormat]
-    $status_in: [MediaStatus]
-    $status_not: MediaStatus
-    $status_not_in: [MediaStatus]
-    $episodes_greater: Int
-    $episodes_lesser: Int
-    $duration_greater: Int
-    $duration_lesser: Int
-    $chapters_greater: Int
-    $chapters_lesser: Int
-    $volumes_greater: Int
-    $volumes_lesser: Int
-    $genre_in: [String]
-    $genre_not_in: [String]
-    $tag_in: [String]
-    $tag_not_in: [String]
-    $tagCategory_in: [String]
-    $tagCategory_not_in: [String]
-    $licensedBy_in: [String]
-    $licensedById_in: [Int]
-    $averageScore_not: Int
-    $averageScore_greater: Int
-    $averageScore_lesser: Int
-    $popularity_not: Int
-    $popularity_greater: Int
-    $popularity_lesser: Int
-    $source_in: [MediaSource]
-    $sort: [MediaSort]
-) {
-    Page(page: $page, perPage: $perPage) {
-        pageInfo {
-            hasNextPage
-            currentPage
-            total
-        }
-        media(
-            id: $id
-            idMal: $idMal
-            startDate: $startDate
-            endDate: $endDate
-            season: $season
-            seasonYear: $seasonYear
-            type: $type
-            format: $format
-            status: $status
-            episodes: $episodes
-            duration: $duration
-            chapters: $chapters
-            volumes: $volumes
-            isAdult: $isAdult
-            genre: $genre
-            tag: $tag
-            minimumTagRank: $minimumTagRank
-            tagCategory: $tagCategory
-            onList: $onList
-            licensedBy: $licensedBy
-            licensedById: $licensedById
-            averageScore: $averageScore
-            popularity: $popularity
-            source: $source
-            countryOfOrigin: $countryOfOrigin
-            isLicensed: $isLicensed
-            search: $search
-            id_not: $id_not
-            id_in: $id_in
-            id_not_in: $id_not_in
-            idMal_not: $idMal_not
-            idMal_in: $idMal_in
-            idMal_not_in: $idMal_not_in
-            startDate_greater: $startDate_greater
-            startDate_lesser: $startDate_lesser
-            startDate_like: $startDate_like
-            endDate_greater: $endDate_greater
-            endDate_lesser: $endDate_lesser
-            endDate_like: $endDate_like
-            format_in: $format_in
-            format_not: $format_not
-            format_not_in: $format_not_in
-            status_in: $status_in
-            status_not: $status_not
-            status_not_in: $status_not_in
-            episodes_greater: $episodes_greater
-            episodes_lesser: $episodes_lesser
-            duration_greater: $duration_greater
-            duration_lesser: $duration_lesser
-            chapters_greater: $chapters_greater
-            chapters_lesser: $chapters_lesser
-            volumes_greater: $volumes_greater
-            volumes_lesser: $volumes_lesser
-            genre_in: $genre_in
-            genre_not_in: $genre_not_in
-            tag_in: $tag_in
-            tag_not_in: $tag_not_in
-            tagCategory_in: $tagCategory_in
-            tagCategory_not_in: $tagCategory_not_in
-            licensedBy_in: $licensedBy_in
-            licensedById_in: $licensedById_in
-            averageScore_not: $averageScore_not
-            averageScore_greater: $averageScore_greater
-            averageScore_lesser: $averageScore_lesser
-            popularity_not: $popularity_not
-            popularity_greater: $popularity_greater
-            popularity_lesser: $popularity_lesser
-            source_in: $source_in
-            sort: $sort
-        ) {
-            id
-            idMal
-            bannerImage
-            type
-            format
-            isFavourite
-            description
-            genres
-            title {
-                english
-                native
-                romaji
-                userPreferred
-            }
-            coverImage {
-                medium
-                extraLarge
-            }
-            meanScore
-            averageScore
-            mediaListEntry {
-                id
-                mediaId
-                status
-                score
-                progress
-                progressVolumes
-                repeat
-                priority
-                private
-                notes
-                hiddenFromStatusLists
-                customLists
-                advancedScores
-                startedAt {
-                    year
-                    month
-                    day
-                }
-                completedAt {
-                    year
-                    month
-                    day
-                }
-                updatedAt
-                createdAt
-            }
-            nextAiringEpisode {
-                id
-                airingAt
-                timeUntilAiring
-                episode
-                mediaId
-            }
-            siteUrl
-        }
-    }
-}
-
 fragment MainMeta on Media {
     id
     idMal
@@ -233,6 +24,7 @@ fragment MainMeta on Media {
     }
     coverImage {
         medium
+        large
         extraLarge
     }
     mediaListEntry {
@@ -268,40 +60,76 @@ fragment NovelMeta on Media {
     volumes
 }
 
-query AnimeTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query AnimeTrending(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
             currentPage
             total
         }
-        media(type: ANIME, isAdult: $isAdult, onList: $onList, sort: TRENDING_DESC) {
+        media(
+            type: ANIME
+            isAdult: $isAdult
+            onList: $onList
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+            tag_not_in: $tag_not_in
+        ) {
             ...AnimeMeta
         }
     }
 }
 
-query AnimePopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query AnimePopular(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
             currentPage
             total
         }
-        media(type: ANIME, isAdult: $isAdult, onList: $onList, sort: POPULARITY_DESC) {
+        media(
+            type: ANIME
+            isAdult: $isAdult
+            onList: $onList
+            sort: POPULARITY_DESC
+            tag_not_in: $tag_not_in
+        ) {
             ...AnimeMeta
         }
     }
 }
 
-query AnimeTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query AnimeTopScored(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
             currentPage
             total
         }
-        media(type: ANIME, isAdult: $isAdult, onList: $onList, sort: SCORE_DESC) {
+        media(
+            type: ANIME
+            isAdult: $isAdult
+            onList: $onList
+            sort: SCORE_DESC
+            tag_not_in: $tag_not_in
+        ) {
             ...AnimeMeta
         }
     }
@@ -314,6 +142,7 @@ query AnimeThisSeason(
     $seasonYear: Int
     $onList: Boolean
     $isAdult: Boolean
+    $tag_not_in: [String]
 ) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
@@ -328,6 +157,7 @@ query AnimeThisSeason(
             isAdult: $isAdult
             onList: $onList
             sort: SCORE_DESC
+            tag_not_in: $tag_not_in
         ) {
             ...AnimeMeta
         }
@@ -341,6 +171,7 @@ query AnimeNextSeason(
     $seasonYear: Int
     $onList: Boolean
     $isAdult: Boolean
+    $tag_not_in: [String]
 ) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
@@ -355,13 +186,20 @@ query AnimeNextSeason(
             isAdult: $isAdult
             onList: $onList
             sort: TRENDING_DESC
+            tag_not_in: $tag_not_in
         ) {
             ...AnimeMeta
         }
     }
 }
 
-query MangaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query MangaTrending(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -373,14 +211,21 @@ query MangaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boole
             countryOfOrigin: JP
             isAdult: $isAdult
             onList: $onList
-            sort: TRENDING_DESC
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+            tag_not_in: $tag_not_in
         ) {
             ...MangaMeta
         }
     }
 }
 
-query MangaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query MangaPopular(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -393,13 +238,20 @@ query MangaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolea
             isAdult: $isAdult
             onList: $onList
             sort: POPULARITY_DESC
+            tag_not_in: $tag_not_in
         ) {
             ...MangaMeta
         }
     }
 }
 
-query MangaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query MangaTopScored(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -412,13 +264,20 @@ query MangaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Bool
             isAdult: $isAdult
             onList: $onList
             sort: SCORE_DESC
+            tag_not_in: $tag_not_in
         ) {
             ...MangaMeta
         }
     }
 }
 
-query ManhwaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query ManhwaTrending(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -430,14 +289,21 @@ query ManhwaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Bool
             countryOfOrigin: KR
             isAdult: $isAdult
             onList: $onList
-            sort: TRENDING_DESC
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+            tag_not_in: $tag_not_in
         ) {
             ...MangaMeta
         }
     }
 }
 
-query ManhwaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query ManhwaPopular(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -450,13 +316,20 @@ query ManhwaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boole
             isAdult: $isAdult
             onList: $onList
             sort: POPULARITY_DESC
+            tag_not_in: $tag_not_in
         ) {
             ...MangaMeta
         }
     }
 }
 
-query ManhwaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query ManhwaTopScored(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -469,26 +342,46 @@ query ManhwaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boo
             isAdult: $isAdult
             onList: $onList
             sort: SCORE_DESC
+            tag_not_in: $tag_not_in
         ) {
             ...MangaMeta
         }
     }
 }
 
-query NovelTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query NovelTrending(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
             currentPage
             total
         }
-        media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: TRENDING_DESC, format: NOVEL) {
+        media(
+            type: MANGA
+            isAdult: $isAdult
+            onList: $onList
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+            format: NOVEL
+            tag_not_in: $tag_not_in
+        ) {
             ...NovelMeta
         }
     }
 }
 
-query NovelPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query NovelPopular(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
@@ -501,20 +394,34 @@ query NovelPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolea
             onList: $onList
             sort: POPULARITY_DESC
             format: NOVEL
+            tag_not_in: $tag_not_in
         ) {
             ...NovelMeta
         }
     }
 }
 
-query NovelTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean) {
+query NovelTopScored(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
     Page(page: $page, perPage: $perPage) {
         pageInfo {
             hasNextPage
             currentPage
             total
         }
-        media(type: MANGA, isAdult: $isAdult, onList: $onList, sort: SCORE_DESC, format: NOVEL) {
+        media(
+            type: MANGA
+            isAdult: $isAdult
+            onList: $onList
+            sort: SCORE_DESC
+            format: NOVEL
+            tag_not_in: $tag_not_in
+        ) {
             ...NovelMeta
         }
     }
@@ -619,5 +526,19 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                 siteUrl
             }
         }
+    }
+}
+
+query GenreTagCollection {
+    GenreCollection
+    MediaTagCollection {
+        id
+        name
+        description
+        category
+        rank
+        isGeneralSpoiler
+        isMediaSpoiler
+        isAdult
     }
 }
