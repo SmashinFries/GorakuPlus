@@ -1,0 +1,8 @@
+{
+    "schemaFile": "./mangaupdates-openapi.yaml",
+    "apiFile": "./src/app/services/mangaupdates/baseMangaUpdates.ts",
+    "apiImport": "baseMangaUpdates",
+    "outputFile": "src/app/services/mangaupdates/mangaUpdatesApi.ts",
+    "exportName": "mangaUpdatesApi",
+    "hooks": true
+}
