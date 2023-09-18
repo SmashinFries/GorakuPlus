@@ -1,11 +1,9 @@
-import { MotiView } from 'moti';
-import { useTheme, Text, Button, IconButton } from 'react-native-paper';
+import { useTheme, Text } from 'react-native-paper';
 import React from 'react';
-import { AnimateHeight, TransYUpView } from '../../../components/animations';
+import { ExpandableDescription } from '../../../components/animations';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../app/store';
 import RenderHTML from 'react-native-render-html';
+import { useAppSelector } from '../../../app/hooks';
 
 type DescriptionProps = {
     aniDescription: string;
@@ -15,7 +13,8 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
     const [show, toggle] = React.useReducer((open) => !open, false);
     const { width } = useWindowDimensions();
     const { colors } = useTheme();
-    const { defaultDescription } = useSelector((state: RootState) => state.persistedSettings);
+    const { defaultDescription } = useAppSelector((state) => state.persistedSettings);
+    const [descriptionHeight, setDescriptionHeight] = React.useState(90);
 
     const AniDesc = () => (
         <RenderHTML
@@ -47,25 +46,13 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
     }
 
     return (
-        <TransYUpView>
-            <AnimateHeight initialHeight={50} enterFrom="bottom" hide={!show}>
-                <MotiView
-                    style={{
-                        paddingHorizontal: 20,
-                        paddingVertical: 10,
-                        paddingBottom: 20,
-                        backgroundColor: colors.background,
-                    }}
-                >
-                    <DescView />
-                </MotiView>
-            </AnimateHeight>
-            <MotiView style={[styles.button, { bottom: -15 }]}>
-                <IconButton icon={!show ? 'chevron-up' : 'chevron-down'} onPress={() => toggle()} />
-            </MotiView>
-        </TransYUpView>
+        <ExpandableDescription initialHeight={90}>
+            <DescView />
+        </ExpandableDescription>
     );
 };
+
+export const DescriptionMem = React.memo(Description);
 
 const styles = StyleSheet.create({
     container: {},
