@@ -7,8 +7,9 @@ import {
     useUserFollowingQuery,
 } from '../../../app/services/anilist/generated-anilist';
 import { MotiPressable } from 'moti/interactions';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Selectable } from '../../../components/moti';
+import { ListHeading } from '../../../components/text';
 
 type FollowUserItemProps = {
     user: User;
@@ -19,6 +20,7 @@ const FollowUserItem = ({ user }: FollowUserItemProps) => {
             <Selectable
                 from={{ scale: 0 }}
                 animate={{ scale: 1 }}
+                onPress={() => ToastAndroid.show('User screen coming soon!', ToastAndroid.LONG)}
                 style={{ margin: 12, alignItems: 'center' }}
             >
                 <MotiView>
@@ -36,11 +38,12 @@ type FollowRowProps = {
     isLoading: boolean;
 };
 export const FollowRow = ({ title, data, isLoading }: FollowRowProps) => {
+    if (!data) {
+        return null;
+    }
     return (
         <MotiView>
-            <Text variant="headlineMedium" style={[styles.header]}>
-                {title}
-            </Text>
+            <ListHeading title={title} />
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {!isLoading ? (
                     data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)
