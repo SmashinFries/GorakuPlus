@@ -27,13 +27,6 @@ export const UserStack = () => {
                     headerShown: false,
                 }}
             />
-            <UserStackNav.Screen
-                name="stats"
-                component={UserScreen}
-                options={{
-                    title: 'Statistics',
-                }}
-            />
         </UserStackNav.Navigator>
     );
 };

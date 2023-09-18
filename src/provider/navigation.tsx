@@ -1,58 +1,109 @@
 import { Provider as PaperProvider } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import { RootState } from '../app/store';
 import { availableThemes } from '../theme/theme';
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer, useLinkTo } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 import { StatusBar } from 'expo-status-bar';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useAppSelector } from '../app/hooks';
+import { useEffect, useState } from 'react';
+import { RootStackProps } from '../navigation/types';
+import useNotif from './hooks/useNotificationSetup';
 
 const prefix = Linking.createURL('/');
 
-const config = {
+const config: LinkingOptions<RootStackProps>['config'] = {
     screens: {
-        explore: {
+        root: {
             screens: {
-                exploreMain: {
+                exploreStack: {
+                    path: 'explore',
+                },
+                userStack: {
+                    path: 'user',
+                },
+                moreStack: {
+                    path: 'more',
+                    initialRouteName: 'more',
+                    exact: true,
                     screens: {
-                        anime: 'explore/anime',
-                        manga: 'explore/manga',
-                        novels: 'explore/novels',
+                        settings: {
+                            path: 'more/settings',
+                            initialRouteName: 'settingsHome',
+                            screens: {
+                                mediaSettings: 'more/settings/media',
+                            },
+                        },
+                        accounts: {
+                            path: 'more/accounts',
+                        },
                     },
                 },
-                exploreMedia: 'explore/media/:id',
             },
         },
-        searchStack: {
-            screens: {
-                search: 'search',
+        media: {
+            path: 'media/:type/:aniID',
+            parse: {
+                type: (type) => type.toUpperCase(),
+                aniID: (aniID) => `${aniID}`,
             },
+            exact: true,
         },
-        more: {
-            screens: {
-                settings: 'more/settings',
-                accounts: 'more/accounts',
-            },
-        },
+        // explore: {
+        //     screens: {
+        //         path: '',
+        //         exploreMain: {
+        //             screens: {
+        //                 anime: 'explore/anime',
+        //                 manga: 'explore/manga',
+        //                 novels: 'explore/novels',
+        //             },
+        //         },
+        //         exploreMedia: 'explore/media/:id',
+        //     },
+        // },
+        // searchStack: {
+        //     screens: {
+        //         search: 'search',
+        //     },
+        // },
+        // userStack: 'user',
+        // more: {
+        //     path: 'more',
+        //     screens: {
+        //         settings: 'more/settings',
+        //         accounts: 'more/accounts',
+        //     },
+        // },
     },
 };
 
-const linking = {
-    prefixes: [prefix, 'https://goraku.kuzutech.com', 'gorakuplus://', 'https://localhost:19006'],
+const linking: LinkingOptions<RootStackProps> = {
+    prefixes: [
+        prefix,
+        'https://goraku.kuzutech.com',
+        'gorakuplus://',
+        'https://localhost:19006',
+        'https://anilist.co',
+    ],
     config,
 };
 
 const NavigationProvider = ({ children }: { children: React.ReactNode }) => {
-    const { isDark, mode } = useSelector((state: RootState) => state.persistedTheme);
-    const theme = isDark ? availableThemes['dark'][mode] : availableThemes['light'][mode];
+    const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
+    const { loading } = useNotif();
 
     return (
-        <PaperProvider theme={theme}>
-            <NavigationContainer theme={theme} linking={linking}>
+        <PaperProvider
+            theme={isDark ? availableThemes['dark'][mode] : availableThemes['light'][mode]}
+        >
+            <NavigationContainer
+                theme={isDark ? availableThemes['dark'][mode] : availableThemes['light'][mode]}
+                linking={linking}
+            >
                 <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
             </NavigationContainer>
 
-            <StatusBar style={isDark ? 'light' : 'dark'} />
+            <StatusBar translucent style={isDark ? 'light' : 'dark'} />
         </PaperProvider>
     );
 };
