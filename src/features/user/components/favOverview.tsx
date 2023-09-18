@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
 import { Image } from 'expo-image';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { IconButton, Text, useTheme } from 'react-native-paper';
@@ -8,6 +8,7 @@ import { MotiPressable } from 'moti/interactions';
 import { Favourites, UserOverviewQuery } from '../../../app/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Selectable } from '../../../components/moti';
+import { ListHeading } from '../../../components/text';
 
 type FavItemProps = {
     title: string;
@@ -18,8 +19,16 @@ export const FavItem = ({ images, onPress, title }: FavItemProps) => {
     const { bg, visible, updateBG } = useSlideshow({ images: images || [] });
     const { colors } = useTheme();
     return (
-        <Selectable style={styles.container} onPress={() => console.log(bg)}>
-            <MotiView style={[styles.imgContainer, { backgroundColor: colors.secondaryContainer }]}>
+        <Selectable
+            style={styles.container}
+            onPress={() => ToastAndroid.show('Favorites coming soon!', ToastAndroid.LONG)}
+        >
+            <MotiView
+                style={[
+                    styles.imgContainer,
+                    { backgroundColor: colors.secondaryContainer, overflow: 'hidden' },
+                ]}
+            >
                 <AnimatePresence
                     onExitComplete={() => {
                         updateBG();
@@ -27,8 +36,8 @@ export const FavItem = ({ images, onPress, title }: FavItemProps) => {
                 >
                     {visible && (
                         <MotiImage
-                            from={{ opacity: 1 }}
-                            animate={{ opacity: 1 }}
+                            from={{ opacity: 0, scale: 1 }}
+                            animate={{ opacity: 1, scale: 1.3 }}
                             exit={{ opacity: 0 }}
                             exitTransition={{ type: 'timing', duration: 1500 }}
                             transition={{ type: 'timing', duration: 1500 }}
@@ -56,28 +65,39 @@ type FavOverviewProps = {
     favorites: UserOverviewQuery['Viewer']['favourites'];
 };
 export const FavOverview = ({ favorites }: FavOverviewProps) => {
-    const animeImages = favorites?.anime?.nodes?.map((anime) => anime?.coverImage?.extraLarge);
-    const mangaImages = favorites?.manga?.nodes?.map((manga) => manga?.coverImage?.extraLarge);
-    const characterImages = favorites?.characters?.nodes?.map(
-        (character) => character?.image?.large,
+    const animeImages = useMemo(
+        () => favorites?.anime?.nodes?.map((anime) => anime?.coverImage?.extraLarge),
+        [],
     );
-    const staffImages = favorites?.staff?.nodes?.map((staff) => staff?.image?.large);
+    const mangaImages = useMemo(
+        () => favorites?.manga?.nodes?.map((manga) => manga?.coverImage?.extraLarge),
+        [],
+    );
+    const characterImages = useMemo(
+        () => favorites?.characters?.nodes?.map((character) => character?.image?.large),
+        [],
+    );
+    const staffImages = useMemo(
+        () => favorites?.staff?.nodes?.map((staff) => staff?.image?.large),
+        [],
+    );
+
     return (
         <View>
-            <Text variant="headlineMedium" style={[styles.header]}>
-                Favorites
-            </Text>
+            <ListHeading title="Favorites" />
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <FavItem title="Anime" images={animeImages} />
-                <FavItem title="Manga" images={mangaImages} />
-                <FavItem title="Characters" images={characterImages} />
-                <FavItem title="Staff" images={staffImages} />
-                <FavItem
-                    title="Studios"
-                    images={[
-                        'https://www.spoon-tamago.com/wp-content/uploads/2021/07/studio-mappa-9-2048x1365.jpg',
-                    ]}
-                />
+                {animeImages && <FavItem title="Anime" images={animeImages} />}
+                {mangaImages && <FavItem title="Manga" images={mangaImages} />}
+                {characterImages && <FavItem title="Characters" images={characterImages} />}
+                {staffImages && <FavItem title="Staff" images={staffImages} />}
+                {favorites.studios && (
+                    <FavItem
+                        title="Studios"
+                        images={[
+                            'https://www.spoon-tamago.com/wp-content/uploads/2021/07/studio-mappa-9-2048x1365.jpg',
+                        ]}
+                    />
+                )}
             </ScrollView>
         </View>
     );
@@ -119,5 +139,6 @@ const styles = StyleSheet.create({
     },
     title: {
         textAlign: 'center',
+        color: 'white',
     },
 });
