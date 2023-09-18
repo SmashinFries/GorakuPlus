@@ -3,6 +3,7 @@ import { AppState, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import YoutubePlayer, { YoutubeIframeProps } from 'react-native-youtube-iframe';
 import { TransYUpView } from '../../../components/animations';
+import { ListHeading } from '../../../components/text';
 
 type AnimeTrailerProps = {
     video: string;
@@ -15,11 +16,14 @@ export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
     }
 
     return (
-        <TransYUpView style={{ marginVertical: 20, paddingHorizontal: 15 }}>
-            <Text variant="titleMedium" style={{ paddingBottom: 10 }}>
-                Trailer
-            </Text>
-            <YoutubePlayer height={400} play={playing} videoId={video} />
+        <TransYUpView style={{ marginVertical: 10 }}>
+            <ListHeading title="Trailer" />
+            <YoutubePlayer
+                height={270}
+                webViewStyle={{ opacity: 0.99 }}
+                play={playing}
+                videoId={video}
+            />
         </TransYUpView>
     );
 };
