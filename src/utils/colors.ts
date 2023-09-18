@@ -1,4 +1,5 @@
-import { MediaListStatus } from '../app/services/anilist/generated-anilist';
+import { MediaListStatus, MediaStatus } from '../app/services/anilist/generated-anilist';
+import { changeHue } from './hue';
 
 const RED = '#FF0000';
 const YELLOW = '#FFA500';
@@ -62,5 +63,40 @@ export const listColor = (status: MediaListStatus) => {
         case 'CURRENT':
         case 'REPEATING':
             return '#3AADE9';
+    }
+};
+
+export const getStatusColor = (status: MediaStatus) => {
+    switch (status) {
+        case MediaStatus.Releasing:
+            return '';
+    }
+};
+
+export const rgbToRgba = (rgb: string, alpha: number) => {
+    if (rgb.includes('rgba')) {
+        return rgb;
+    }
+    return rgb.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+};
+
+export const getPieChartColor = (index: number, primaryColor: string) => {
+    switch (index) {
+        case 0:
+            return primaryColor;
+        case 1:
+            return 'grey';
+        case 2:
+            return 'red';
+        case 3:
+            return 'orange';
+        case 4:
+            return 'purple';
+        case 5:
+            return 'pink';
+        case 6:
+            return 'blue';
+        default:
+            break;
     }
 };
