@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { TextInput, Menu } from 'react-native-paper';
+import { TextInput, Menu, Text, useTheme } from 'react-native-paper';
 import { SortModes, UpdateFilter } from '../types/types';
 import {
     ExploreMediaQueryVariables,
@@ -12,19 +12,17 @@ import {
 } from '../../../app/services/anilist/generated-anilist';
 // import { TextInputLabelProp } from 'react-native-paper/lib/typescript/src/components/TextInput/types';
 import { captilize } from '../../../utils/text';
-import { FilterTypes, MediaSearchSelection, SortCategories } from '../types';
+import { MediaSearchSelection, SortCategories } from '../types';
 import {
     ANIME_FORMATS,
+    COUNTRY_OPTIONS,
     MANGA_FORMATS,
-    NOVEL_FORMATS,
     animeSort,
     mangaNovelSort,
     mediaStatusOptions,
+    sortMap,
 } from '../constants/mediaConsts';
 import { arrayRange } from '../../../utils/numbers';
-import { FilterState, changeSort } from '../filterSlice';
-import { useFilter } from '../hooks/filter';
-import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 type DropdownProps = {
     visible: boolean;
@@ -46,24 +44,36 @@ export const Dropdown = ({
     children,
     anchorPosition = 'bottom',
 }: DropdownProps) => {
+    const { colors } = useTheme();
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginVertical: 5 }}>
             <Menu
                 visible={visible}
                 onDismiss={onClose}
                 anchorPosition={anchorPosition}
                 anchor={
                     <TextInput
-                        label={captilize(label).replaceAll('_', ' ')}
+                        label={
+                            <Text
+                                style={{
+                                    textTransform: 'capitalize',
+                                    backgroundColor: colors.secondaryContainer,
+                                }}
+                            >
+                                {label.replaceAll('_', ' ')}
+                            </Text>
+                        }
                         mode="outlined"
-                        value={value}
-                        contentStyle={{ textTransform: 'capitalize' }}
-                        onPressIn={() => console.log('TEST')}
-                        onFocus={() => console.log('TEST_FOCUS')}
+                        value={value.replaceAll('_', ' ').replaceAll('DESC', '')}
+                        contentStyle={{
+                            textTransform: 'capitalize',
+                            textAlign: 'center',
+                        }}
+                        outlineColor={colors.secondary}
                         style={{
                             flex: 1,
-                            maxWidth: 200,
                             marginHorizontal: 6,
+                            backgroundColor: 'transparent',
                         }}
                         outlineStyle={{ borderRadius: 16 }}
                         editable={false}
@@ -78,62 +88,85 @@ export const Dropdown = ({
     );
 };
 
+const DropdownMem = React.memo(Dropdown);
+
 type SortDropdownProps = {
-    current: FilterTypes;
-    updateSort: (
-        mode: FilterState['sort']['mode'],
-        category: FilterState['sort']['category'],
-    ) => void;
-    sortData: FilterState['sort'];
+    current: MediaType;
+    updateSort: (sort: MediaSort) => void;
+    sort: MediaSort[];
 };
-export const SortDropdown = ({ current, sortData, updateSort }: SortDropdownProps) => {
-    const categories = current === 'anime' ? animeSort : mangaNovelSort;
+export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) => {
+    // const categories = current === 'anime' ? animeSort : mangaNovelSort;
     const [visible, setVisible] = useState(false);
+    const [mode, setMode] = useState<'desc' | 'asc'>(sort[0].includes('DESC') ? 'desc' : 'asc');
 
-    const openMenu = () => setVisible(true);
-    const closeMenu = () => setVisible(false);
+    const openMenu = useCallback(() => setVisible(true), []);
+    const closeMenu = useCallback(() => setVisible(false), []);
 
-    const toggleSortMode = () => {
-        updateSort(sortData.mode === 'desc' ? 'asc' : 'desc', sortData.category);
-    };
+    const toggleSortMode = useCallback(() => {
+        setMode((prev) => (prev === 'desc' ? 'asc' : 'desc'));
+        const newSort = flipSort();
+        updateSort(newSort);
+    }, []);
+
+    const flipSort = useCallback(() => {
+        const temp = [...sort];
+        temp.forEach((s, idx) => {
+            if (s.includes('_DESC')) {
+                temp[idx] = s.replace('_DESC', '');
+            } else {
+                temp[idx] = s + '_DESC';
+            }
+        });
+        return temp;
+    }, []);
 
     return (
-        <Dropdown
+        <DropdownMem
             visible={visible}
             onOpen={openMenu}
             onClose={closeMenu}
             label={'Sort'}
-            value={sortData.category}
+            value={sort[0].includes('ID') ? sort[1] : sort[0]}
             // onMenuPressAction={(opt: MediaSort) => updateFilter('sort', switchModeValue(opt))}
             left={
                 <TextInput.Icon
-                    icon={sortData.mode === 'desc' ? 'sort-descending' : 'sort-ascending'}
+                    icon={mode === 'desc' ? 'sort-descending' : 'sort-ascending'}
+                    // disabled={sort === MediaSort.SearchMatch}
                     onPress={toggleSortMode}
                 />
             }
         >
-            {categories.map((category: SortCategories, idx: number) => (
+            {Object.keys(sortMap[current]).map((category: SortCategories, idx) => (
                 <Menu.Item
                     key={idx}
-                    disabled={sortData.category === category}
+                    disabled={
+                        category === 'Start Date' || category === 'End Date'
+                            ? sortMap[current][category][mode][1] === sort[1]
+                            : sortMap[current][category][mode][0] === sort[0]
+                    }
                     onPress={() => {
                         closeMenu();
-                        updateSort(sortData.mode, category);
+                        updateSort(sortMap[current][category][mode]);
+                        // console.log(sortMap[current][category][mode]);
+                        // console.log(sortMap[current][category][mode] === sort ? true : false);
                     }}
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={category}
                 />
             ))}
-        </Dropdown>
+        </DropdownMem>
     );
 };
 
+export const SortDropdownMem = React.memo(SortDropdown);
+
 type StatusDropdownProps = {
-    current: FilterTypes;
-    updateStatus: (status: MediaStatus | undefined) => void;
-    statusValue: MediaStatus;
+    updateStatus: (status: MediaStatus | null) => void;
+    removeStatus: () => void;
+    status: MediaStatus;
 };
-export const StatusDropdown = ({ current, statusValue, updateStatus }: StatusDropdownProps) => {
+export const StatusDropdown = ({ status, updateStatus, removeStatus }: StatusDropdownProps) => {
     const categories = ['ANY', ...mediaStatusOptions];
 
     const [visible, setVisible] = useState(false);
@@ -142,12 +175,12 @@ export const StatusDropdown = ({ current, statusValue, updateStatus }: StatusDro
     const closeMenu = () => setVisible(false);
 
     return (
-        <Dropdown
+        <DropdownMem
             label="Status"
             visible={visible}
             onOpen={openMenu}
             onClose={closeMenu}
-            value={statusValue?.toLowerCase() ?? 'ANY'.toLowerCase()}
+            value={status?.toLowerCase() ?? 'ANY'.toLowerCase()}
             // onMenuPressAction={(opt: MediaStatus | 'ANY') =>
             //     updateStatus(current, opt === 'ANY' ? { status: undefined } : { status: opt })
             // }
@@ -155,41 +188,55 @@ export const StatusDropdown = ({ current, statusValue, updateStatus }: StatusDro
             {categories.map((category: MediaStatus | 'ANY', idx) => (
                 <Menu.Item
                     key={idx}
-                    disabled={
-                        (category === 'ANY' && statusValue === undefined) ||
-                        category === statusValue
-                    }
+                    disabled={(category === 'ANY' && status === null) || category === status}
                     onPress={() => {
                         closeMenu();
-                        updateStatus(category !== 'ANY' ? category : undefined);
+                        if (category === 'ANY') {
+                            removeStatus();
+                        } else {
+                            updateStatus(category);
+                        }
                     }}
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={category.replaceAll('_', ' ')}
                 />
             ))}
-        </Dropdown>
+        </DropdownMem>
     );
 };
 
+export const StatusDropdownMem = React.memo(StatusDropdown);
+
 type FormatDropdownProps = {
-    current: FilterTypes;
+    current: MediaType;
     updateFormat: (format: MediaFormat | undefined) => void;
+    removeFormat: () => void;
     formatValue: MediaFormat;
 };
-export const FormatDropdown = ({ current, formatValue, updateFormat }: FormatDropdownProps) => {
-    const categories = current === 'anime' ? ['ANY', ...ANIME_FORMATS] : ['ANY', ...MANGA_FORMATS];
+export const FormatDropdown = ({
+    current,
+    formatValue,
+    removeFormat,
+    updateFormat,
+}: FormatDropdownProps) => {
+    const categories = useMemo(
+        () => (current === MediaType.Anime ? ['ANY', ...ANIME_FORMATS] : ['ANY', ...MANGA_FORMATS]),
+        [current],
+    );
 
     const [visible, setVisible] = useState(false);
 
-    const openMenu = () => setVisible(true);
-    const closeMenu = () => setVisible(false);
+    const openMenu = useCallback(() => setVisible(true), []);
+    const closeMenu = useCallback(() => setVisible(false), []);
 
-    if (current === 'novel') {
-        return null;
-    }
+    useEffect(() => {
+        if (!categories.includes(formatValue)) {
+            updateFormat(undefined);
+        }
+    }, [categories]);
 
     return (
-        <Dropdown
+        <DropdownMem
             visible={visible}
             label="Format"
             value={formatValue ?? 'ANY'.toLowerCase()}
@@ -206,15 +253,21 @@ export const FormatDropdown = ({ current, formatValue, updateFormat }: FormatDro
                     }
                     onPress={() => {
                         closeMenu();
-                        updateFormat(category !== 'ANY' ? category : undefined);
+                        if (category === 'ANY') {
+                            removeFormat();
+                        } else {
+                            updateFormat(category);
+                        }
                     }}
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={category.replaceAll('_', ' ')}
                 />
             ))}
-        </Dropdown>
+        </DropdownMem>
     );
 };
+
+export const FormatDropdownMem = React.memo(FormatDropdown);
 
 type SeasonDropdownProps = {
     updateSeason: (season: MediaSeason | undefined) => void;
@@ -224,11 +277,11 @@ export const SeasonDropdown = ({ seasonValue, updateSeason }: SeasonDropdownProp
     const seasons = ['ANY', ...Object.values(MediaSeason)];
     const [visible, setVisible] = useState(false);
 
-    const openMenu = () => setVisible(true);
-    const closeMenu = () => setVisible(false);
+    const openMenu = useCallback(() => setVisible(true), []);
+    const closeMenu = useCallback(() => setVisible(false), []);
 
     return (
-        <Dropdown
+        <DropdownMem
             visible={visible}
             label="Season"
             value={seasonValue ?? 'ANY'.toLowerCase()}
@@ -251,25 +304,27 @@ export const SeasonDropdown = ({ seasonValue, updateSeason }: SeasonDropdownProp
                     title={season.replaceAll('_', ' ')}
                 />
             ))}
-        </Dropdown>
+        </DropdownMem>
     );
 };
+
+export const SeasonDropdownMem = React.memo(SeasonDropdown);
 
 type YearDropdownProps = {
     updateSeasonYear: (year: number | undefined) => void;
     yearValue: ExploreMediaQueryVariables['seasonYear'];
 };
 export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps) => {
-    const range = arrayRange(1970, new Date().getFullYear(), 1).reverse();
+    const range = arrayRange(1970, new Date().getFullYear() + 1, 1).reverse();
     const years = ['ANY'].concat(range);
 
     const [visible, setVisible] = useState(false);
 
-    const openMenu = () => setVisible(true);
-    const closeMenu = () => setVisible(false);
+    const openMenu = useCallback(() => setVisible(true), []);
+    const closeMenu = useCallback(() => setVisible(false), []);
 
     return (
-        <Dropdown
+        <DropdownMem
             visible={visible}
             label="Year"
             value={yearValue?.toString() ?? 'ANY'}
@@ -290,6 +345,64 @@ export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps)
                     title={year}
                 />
             ))}
-        </Dropdown>
+        </DropdownMem>
     );
 };
+
+export const YearDropdownMem = React.memo(YearDropdown);
+
+type CountryDropdownProps = {
+    updateCountry: (c_code: string) => void;
+    removeCountry: () => void;
+    countryValue: string;
+};
+export const CountryDropdown = ({
+    countryValue,
+    removeCountry,
+    updateCountry,
+}: CountryDropdownProps) => {
+    const categories = useMemo(() => Object.keys(COUNTRY_OPTIONS), []);
+    const [visible, setVisible] = useState(false);
+    const [cValue, setCValue] = useState<string | undefined>(countryValue ?? 'ANY');
+
+    const openMenu = useCallback(() => setVisible(true), []);
+    const closeMenu = useCallback(() => setVisible(false), []);
+
+    useEffect(() => {
+        if (!categories.includes(countryValue)) {
+            removeCountry();
+        }
+    }, [categories]);
+
+    return (
+        <DropdownMem
+            visible={visible}
+            label="Country"
+            value={COUNTRY_OPTIONS[cValue]['name']}
+            onOpen={openMenu}
+            onClose={closeMenu}
+            // onMenuPressAction={(opt: MediaFormat) => updateFormat(mediaType, { format: opt })}
+        >
+            {categories.map((c_code: string, idx) => (
+                <Menu.Item
+                    key={idx}
+                    disabled={(c_code === 'ANY' && cValue === undefined) || c_code === cValue}
+                    onPress={() => {
+                        closeMenu();
+                        if (c_code === 'ANY') {
+                            setCValue('ANY');
+                            removeCountry();
+                        } else {
+                            setCValue(c_code);
+                            updateCountry(c_code);
+                        }
+                    }}
+                    titleStyle={{ textTransform: 'capitalize' }}
+                    title={COUNTRY_OPTIONS[c_code]['name']}
+                />
+            ))}
+        </DropdownMem>
+    );
+};
+
+export const CountryDropdownMem = React.memo(CountryDropdown);
