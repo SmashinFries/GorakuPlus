@@ -1,11 +1,11 @@
 import { MotiView } from 'moti';
-import { AniMediaQuery } from '../../../app/services/anilist/generated-anilist';
+import { AniMediaQuery, MediaType } from '../../../app/services/anilist/generated-anilist';
 import { Image } from 'expo-image';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { QuickSelector } from '../components/quickSelect';
-import { TransXInView, TransYUpView } from '../../../components/animations';
-import { useState } from 'react';
-import { StatusIcon } from '../components/icons';
+import { TransXInView, TransYUpView, TransYUpViewMem } from '../../../components/animations';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { StatusIcon, StatusIconMem } from '../components/icons';
 import { MediaTitleView } from '../components/text';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackProps } from '../../../navigation/types';
@@ -15,6 +15,7 @@ import {
     GetAnimeFullByIdApiResponse,
     GetAnimeVideosApiResponse,
 } from '../../../app/services/mal/malApi';
+import { useTheme } from 'react-native-paper';
 
 type FrontCoverProps = {
     data: AniMediaQuery['Media'];
@@ -25,25 +26,42 @@ type FrontCoverProps = {
 export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
     const { width, height } = useWindowDimensions();
     const nav = useNavigation<NativeStackNavigationProp<RootStackProps, 'media'>>();
+    const { colors } = useTheme();
+
+    const StatusAnim = useCallback(() => {
+        return (
+            <StatusIconMem
+                status={data?.status}
+                release_date={data?.startDate}
+                nextEP={data?.nextAiringEpisode}
+            />
+        );
+    }, []);
 
     return (
         <MotiView style={[styles.container, { width: width }]}>
             <MotiView
                 style={{
                     flex: 1,
+                    width: '100%',
                     justifyContent: 'space-evenly',
                     flexDirection: 'row',
                 }}
             >
-                {/* <ScoreText score={data?.averageScore} svg="ani" /> */}
+                {/* Left Icons */}
                 <TransXInView
                     direction="left"
-                    style={{ justifyContent: 'space-evenly', width: '100%' }}
+                    delay={350}
+                    style={{
+                        justifyContent: 'space-evenly',
+                        width: '100%',
+                        flex: 1,
+                    }}
                 >
                     <QuickSelector
                         onPress={() => nav.navigate('music', { animeID: data?.idMal })}
                         // onPress={() => console.log(music)}
-                        disabled={music?.length < 1}
+                        disabled={data?.type !== MediaType.Anime || music?.length < 1}
                         icon="music-box-multiple-outline"
                     />
                     {/* <QuickSelector
@@ -56,22 +74,59 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
                         disabled={data?.streamingEpisodes?.length < 1}
                     /> */}
 
-                    <QuickSelector icon="newspaper" />
+                    <QuickSelector
+                        icon="newspaper"
+                        onPress={() =>
+                            nav.push('newsStack', {
+                                screen: 'newsList',
+                                params: { malId: data?.idMal, type: data?.type },
+                            })
+                        }
+                        disabled={!data?.idMal}
+                    />
                 </TransXInView>
-                <TransYUpView>
+
+                {/* Cover Image */}
+                <TransYUpViewMem>
                     <Image
-                        style={[styles.coverImg]}
+                        style={[styles.coverImg, { backgroundColor: colors.onSurfaceVariant }]}
                         contentFit="cover"
                         source={{ uri: data?.coverImage?.extraLarge }}
                     />
-                    <StatusIcon status={data?.status} />
-                </TransYUpView>
+                    {data?.status && <StatusAnim />}
+                </TransYUpViewMem>
+                {/* Right Icons */}
                 <TransXInView
                     direction="right"
-                    style={{ justifyContent: 'space-evenly', width: '100%' }}
+                    delay={350}
+                    style={{
+                        flex: 1,
+                        justifyContent: 'space-evenly',
+                        width: '100%',
+                    }}
                 >
-                    <QuickSelector icon={'badge-account-outline'} />
-                    <QuickSelector icon={'account-group-outline'} />
+                    <QuickSelector
+                        icon={'badge-account-outline'}
+                        disabled={data?.staff?.edges?.length < 1}
+                        onPress={() =>
+                            nav.navigate('staffStack', {
+                                screen: 'staffList',
+                                params: { mediaId: data?.id },
+                                initial: false,
+                            })
+                        }
+                    />
+                    <QuickSelector
+                        icon={'account-group-outline'}
+                        disabled={data?.characters?.edges?.length < 1}
+                        onPress={() =>
+                            nav.navigate('characterStack', {
+                                screen: 'characterList',
+                                params: { mediaId: data?.id },
+                                initial: false,
+                            })
+                        }
+                    />
                 </TransXInView>
             </MotiView>
             <MediaTitleView data={data} defaultTitle={defaultTitle} />
@@ -79,11 +134,15 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
     );
 };
 
+export const FrontCoverMem = memo(FrontCover);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         paddingTop: 20,
+        zIndex: 10,
+        overflow: 'visible',
     },
     coverImg: {
         borderRadius: 12,
