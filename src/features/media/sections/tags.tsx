@@ -5,7 +5,7 @@ import { ScrollView, View } from 'react-native';
 import { sortTagsRank } from '../../../utils/sort';
 import Constants from 'expo-constants';
 import { TagDialog } from '../components/dialogs';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TransYUpView } from '../../../components/animations';
 import { Tag } from '../components/tag';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ const TagView = ({ genres, tags }: TagViewProps) => {
     const [currentTag, setCurrentTag] = React.useState<MediaTag | null>(tags[0] ?? null);
     const [visible, setVisible] = React.useState(false);
     const openTag = (tag: MediaTag) => {
+        if (tag.isAdult && !showNSFW) return;
         setCurrentTag(tag);
         setVisible(true);
     };
@@ -26,8 +27,9 @@ const TagView = ({ genres, tags }: TagViewProps) => {
     const { showNSFW } = useSelector((state: RootState) => state.persistedSettings);
 
     const closeTag = () => setVisible(false);
+
     return (
-        <TransYUpView style={{ marginVertical: 15, paddingHorizontal: 10 }}>
+        <View style={{ marginVertical: 15, paddingHorizontal: 10 }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {genres?.map((genres, index) => (
                     <Chip key={index} style={{ paddingHorizontal: 5, marginHorizontal: 8 }}>
@@ -39,7 +41,7 @@ const TagView = ({ genres, tags }: TagViewProps) => {
                 ))}
             </ScrollView>
             {tags && <TagDialog visible={visible} onDismiss={closeTag} tag={currentTag} />}
-        </TransYUpView>
+        </View>
     );
 };
 
