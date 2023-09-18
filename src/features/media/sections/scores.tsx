@@ -110,38 +110,41 @@ export const ScoreCircles = ({
     userScore,
     scoreColors,
 }: ScoreViewProps & { scoreColors: { red: number; yellow: number } }) => {
-    const { width, height } = useWindowDimensions();
-    const { colors } = useTheme();
-
     return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 15 }}>
             <ScoreContainer
                 title={'Mean'}
                 score={meanScore}
                 opacity={0.35}
                 color={getScoreColor(meanScore, scoreColors)}
+                delay={870}
             />
             <ScoreContainer
                 title={'Average'}
                 score={avgScore}
                 opacity={0.35}
                 color={getScoreColor(avgScore, scoreColors)}
+                delay={835}
             />
             <ScoreContainer
                 title={'MAL'}
                 score={malScore}
                 opacity={0.35}
                 color={getScoreColor(malScore, scoreColors, true)}
+                delay={800}
                 isMal
             />
-            {userScore && (
+            {/* {userScore ? (
                 <ScoreContainer
                     title={'Yours'}
                     score={userScore}
                     opacity={0.35}
-                    color={getScoreColor(userScore, scoreColors)}
+                    color={getScoreColor(userScore, scoreColors, true)}
+                    // color={'red'}
+                    delay={780}
+                    isMal
                 />
-            )}
+            ) : null} */}
         </View>
     );
 };
