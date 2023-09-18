@@ -1,4 +1,36 @@
 import { useEffect, useState } from 'react';
+import { FuzzyDate } from '../app/services/anilist/generated-anilist';
+
+const monthByNumber = {
+    [1]: 'Jan',
+    [2]: 'Feb',
+    [3]: 'Mar',
+    [4]: 'Apr',
+    [5]: 'May',
+    [6]: 'June',
+    [7]: 'July',
+    [8]: 'Aug',
+    [9]: 'Sep',
+    [10]: 'Oct',
+    [11]: 'Nov',
+    [12]: 'Dec',
+};
+
+export const useCurrentTime = () => {
+    const [currentTime, setCurrentTime] = useState<number>();
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date().getTime());
+        }, 1000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+
+    return { currentTime };
+};
 
 type TokenTimeProps = {
     death?: number;
@@ -24,4 +56,61 @@ export const useTokenTime = ({ death }: TokenTimeProps) => {
     }, []);
 
     return { aniTokenTime };
+};
+
+export const convertDate = (date: FuzzyDate, bdayFormat?: boolean): string | null => {
+    if (!date) return null;
+    const { year, month, day } = date;
+
+    if (bdayFormat) {
+        // Jul 11, 1966
+        return month ? `${monthByNumber[month]} ${day ?? '??'}, ${year ?? '????'}` : null;
+    }
+
+    if (!date?.day && !date?.month && !date?.year) return null;
+
+    return `${month ?? '??'}-${day ?? '??'}-${year ?? '????'}`;
+};
+
+export const getTimeUntil = (time: number) => {
+    const today = new Date().getTime();
+    const episodeDate = new Date(time * 1000).getTime();
+    const diffTime = Math.abs(episodeDate - today);
+    const diffDays = `${Math.floor(diffTime / (1000 * 60 * 60 * 24))}d`;
+    const diffHours = `${Math.floor((diffTime / (1000 * 60 * 60)) % 24)}h`;
+    const diffMinutes = `${Math.floor((diffTime / (1000 * 60)) % 60)}m`;
+
+    return `${diffDays} ${diffHours} ${diffMinutes}`;
+};
+
+export const useTimeUntil = (time: number) => {
+    const [timeUntil, setTimeUntil] = useState<string>(getTimeUntil(time));
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const newTime = getTimeUntil(time);
+            setTimeUntil(newTime);
+        }, 60000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+
+    return { timeUntil };
+};
+
+export const getFuzzytoDate = (value: FuzzyDate): Date => {
+    if (!value.day || !value.month || !value.year) return null;
+    const newDate = new Date(value.year, value.month, value.day);
+    return newDate;
+};
+
+export const getDatetoFuzzy = (value: Date): FuzzyDate => {
+    const newDate = {
+        day: value.getDate(),
+        month: value.getMonth(),
+        year: value.getFullYear(),
+    };
+    return newDate;
 };
