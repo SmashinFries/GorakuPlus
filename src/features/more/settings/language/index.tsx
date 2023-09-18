@@ -5,16 +5,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../app/store';
 import { useState } from 'react';
 import { MediaLanguageDialog } from './components/dialog';
+import { useAppSelector } from '../../../../app/hooks';
 
 const LanguageScreen = () => {
-    const { mediaLanguage } = useSelector((state: RootState) => state.persistedSettings);
+    const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
     const [mediaLangVisible, setMediaLangVisible] = useState(false);
     return (
         <ScrollView>
             <List.Item
                 title="App Language"
-                description={'English'}
-                descriptionStyle={{ textTransform: 'capitalize' }}
+                description={'English Only (more are planned)'}
+                // descriptionStyle={{ textTransform: 'capitalize' }}
             />
             <List.Item
                 title="Media Language"

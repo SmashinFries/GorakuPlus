@@ -1,10 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { List, Switch, Text, useTheme } from 'react-native-paper';
 import { Platform, ScrollView, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MoreStackProps } from '../../../../navigation/types';
-import { ThemeOptions, availableThemes } from '../../../../theme/theme';
+import { availableThemes, themeOptions } from '../../../../theme/theme';
 import { RootState } from '../../../../app/store';
 import { setTheme } from '../../../../theme/themeSlice';
 import { setSettings } from '../settingsSlice';
@@ -12,10 +11,9 @@ import { ThemeSkeleton } from './components/skeletons';
 import { MotiPressable } from 'moti/interactions';
 import { StackAnimationTypes } from 'react-native-screens';
 import { MotiButton } from '../../../../components/moti';
-import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { useWindowDimensions } from 'react-native';
 import { ListSubheader } from '../../../../components/titles';
-import { ScoreColorDialog } from './components/dialogs';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 
 const STACK_ANIMS_ANDROID: StackAnimationTypes[] = [
     'none',
@@ -38,16 +36,24 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 ];
 
 const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>) => {
-    const THEME_SELECTION: ThemeOptions[] = ['default', 'kawaii', 'punpun', 'sonozaki_mion'];
-    const { mode, isDark } = useSelector((state: RootState) => state.persistedTheme);
-    const { btmTabLabels, navAnimation, scoreColors } = useSelector(
-        (state: RootState) => state.persistedSettings,
-    );
-    const dispatch = useDispatch();
+    // const THEME_SELECTION: ThemeOptions[] = ['default', 'kawaii', 'punpun', 'sonozaki_mion'];
+    const { mode, isDark } = useAppSelector((state: RootState) => state.persistedTheme);
+    const {
+        btmTabLabels,
+        navAnimation,
+        scoreColors,
+        scoreGlow,
+        scoreNumber,
+        scoreHealthBar,
+        defaultScore,
+        showItemListStatus,
+        mediaLanguage,
+    } = useAppSelector((state: RootState) => state.persistedSettings);
+    const dispatch = useAppDispatch();
     const { colors } = useTheme();
     const { width, height } = useWindowDimensions();
 
-    const [showScoreColorDialog, setShowScoreColorDialog] = React.useState(false);
+    const [expandThemes, setExpandThemes] = React.useState(true);
 
     const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
 
@@ -56,7 +62,7 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
     };
 
     const onBtmTabLabelChange = () => {
-        dispatch(setSettings({ btmTabLabels: !btmTabLabels }));
+        dispatch(setSettings({ entryType: 'btmTabLabels', value: !btmTabLabels }));
     };
 
     return (
@@ -83,10 +89,12 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                         description={mode.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
                         rippleColor={'transparent'}
+                        expanded={expandThemes}
+                        onPress={() => setExpandThemes((prev) => !prev)}
                     >
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={{ flexDirection: 'row' }}>
-                                {THEME_SELECTION.map((theme, index) => (
+                                {themeOptions.map((theme, index) => (
                                     <MotiPressable
                                         key={index}
                                         animate={({ hovered, pressed }) => {
@@ -135,12 +143,12 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                     </List.Accordion>
                 </List.Section>
                 <List.Section>
-                    <ListSubheader title="UI" />
+                    <ListSubheader title="Navigation" />
                     <List.Item
                         title={'Bottom tab labels'}
-                        onPress={() => {
-                            dispatch(setTheme({ isDark: !isDark, mode: mode }));
-                        }}
+                        // onPress={() => {
+                        //     dispatch(setTheme({ isDark: !isDark, mode: mode }));
+                        // }}
                         right={(props) => (
                             <Switch
                                 value={btmTabLabels}
@@ -149,10 +157,6 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                                 onValueChange={onBtmTabLabelChange}
                             />
                         )}
-                    />
-                    <List.Item
-                        title={'Score Colors'}
-                        onPress={() => setShowScoreColorDialog(true)}
                     />
                 </List.Section>
                 <List.Section>
@@ -171,7 +175,11 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                                     compact
                                     labelStyle={{ textTransform: 'capitalize' }}
                                     style={{ paddingHorizontal: 5, marginHorizontal: 5 }}
-                                    onPress={() => dispatch(setSettings({ navAnimation: anim }))}
+                                    onPress={() =>
+                                        dispatch(
+                                            setSettings({ entryType: 'navAnimation', value: anim }),
+                                        )
+                                    }
                                     buttonColor={anim === navAnimation ? colors.primary : undefined}
                                     textColor={anim === navAnimation ? colors.onPrimary : undefined}
                                 >
@@ -182,15 +190,6 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                     </List.Accordion>
                 </List.Section>
             </ScrollView>
-            <ScoreColorDialog
-                visible={showScoreColorDialog}
-                onDismiss={() => setShowScoreColorDialog(false)}
-                red={scoreColors.red}
-                yellow={scoreColors.yellow}
-                updateScoreColor={(red: number, yellow: number) =>
-                    dispatch(setSettings({ scoreColors: { red: red, yellow: yellow } }))
-                }
-            />
         </>
     );
 };
