@@ -8,6 +8,14 @@ import PaperHeader, { MediaHeader } from '../../components/headers';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import MusicScreen from '../../features/music';
+import CharacterScreen from '../../features/character';
+import CharacterStack from '../stacks/characters';
+import StaffStack from '../stacks/staff';
+import StatisticsScreen from '../../features/statistics';
+import StatisticsTabs from '../stacks/statistics';
+import useNotif from '../../provider/hooks/useNotificationSetup';
+import NewsStack from '../stacks/news';
+import DanbooruStack from '../stacks/danbooru';
 
 const RootStack = createNativeStackNavigator<RootStackProps>();
 
@@ -23,14 +31,7 @@ const RootStackNavigation = () => {
                 name="root"
                 component={width > height ? DesktopNavigation : MobileNavigation}
             />
-            <RootStack.Screen
-                name="media"
-                component={MediaScreen}
-                options={{
-                    headerShown: false,
-                    // header: (props) => <MediaHeader {...props} />,
-                }}
-            />
+            <RootStack.Screen name="media" component={MediaScreen} />
             <RootStack.Screen
                 name="music"
                 component={MusicScreen}
@@ -40,6 +41,19 @@ const RootStackNavigation = () => {
                     headerTitle: '',
                     title: '',
                     header: (props) => <PaperHeader {...props} />,
+                }}
+            />
+            <RootStack.Screen name="characterStack" component={CharacterStack} />
+            <RootStack.Screen name="staffStack" component={StaffStack} />
+            <RootStack.Screen name="newsStack" component={NewsStack} />
+            <RootStack.Screen name="danbooruStack" component={DanbooruStack} />
+            <RootStack.Screen
+                name="statistics"
+                component={StatisticsTabs}
+                options={{
+                    title: 'Statistics',
+                    header: (props) => <PaperHeader {...props} />,
+                    headerShown: true,
                 }}
             />
         </RootStack.Navigator>

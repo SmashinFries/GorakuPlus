@@ -1,18 +1,27 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
-import { Media, MediaType } from '../app/services/anilist/generated-anilist';
+import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
+import {
+    ExploreMediaQueryVariables,
+    Media,
+    MediaListStatus,
+    MediaType,
+} from '../app/services/anilist/generated-anilist';
+import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type RootStackProps = {
     root: NavigatorScreenParams<RootNavPaths>;
     media: {
-        type: MediaType | 'MANHWA' | 'NOVEL';
         aniID: number;
-        malID?: number;
+        malID: number;
+        type: MediaType;
     };
-    charactersStack: NavigatorScreenParams<CharactersStackProps>;
-    staffsStack: NavigatorScreenParams<StaffsStackProps>;
+    characterStack: NavigatorScreenParams<CharacterStackProps>;
+    staffStack: NavigatorScreenParams<StaffStackProps>;
+    newsStack: NavigatorScreenParams<NewsStackProps>;
     music: {
         animeID: number;
     };
+    statistics: { userId: number };
     danbooruStack: NavigatorScreenParams<DanbooruStackProps>;
 };
 
@@ -20,7 +29,7 @@ export type RootNavPaths = {
     exploreStack: NavigatorScreenParams<ExploreStackProps>;
     recommendStack: undefined;
     listStack: undefined;
-    userStack: undefined;
+    userStack: NavigatorScreenParams<UserStackProps>;
     moreStack: NavigatorScreenParams<MoreStackProps>;
 };
 
@@ -28,7 +37,7 @@ export type RootNavPaths = {
 
 export type ExploreStackProps = {
     explore: NavigatorScreenParams<ExploreTabsProps>;
-    search: undefined;
+    search: ExploreMediaQueryVariables;
 };
 
 export type ExploreTabsProps = {
@@ -36,6 +45,37 @@ export type ExploreTabsProps = {
     manga: undefined;
     manhwa: undefined;
     novels: undefined;
+};
+
+// STATS
+export type StatsStackProps = {
+    userId: number;
+};
+export type StatsTabProps = {
+    anime: {
+        userId: number;
+    };
+    manga: {
+        userId: number;
+    };
+};
+
+// export type StatScreenProps = CompositeScreenProps<
+//     MaterialTopTabScreenProps<StatsTabProps>,
+//     NativeStackScreenProps<StatsStackProps>
+// >;
+
+// LIST
+export type ListStackProps = {
+    animeList: NavigatorScreenParams<ListTabsProps>;
+    mangaList: NavigatorScreenParams<ListTabsProps>;
+};
+
+export type ListTabsProps = {
+    [key: string]: {
+        mediaType: MediaType;
+        listName: string | MediaListStatus;
+    };
 };
 
 // SEARCH
@@ -50,31 +90,42 @@ export type UserStackProps = {
 
 // CHARACTER
 
-export type CharactersStackProps = {
-    characters: {
-        id: number;
+export type CharacterStackProps = {
+    characterList: {
+        mediaId: number;
     };
-    charDetail: {
+    character: {
         id: number;
     };
 };
 
 // STAFF
 
-export type StaffsStackProps = {
-    staffs: {
+export type StaffStackProps = {
+    staffList: {
+        mediaId: number;
+    };
+    staff: {
         id: number;
     };
-    staffDetail: {
-        id: number;
+};
+
+// NEWS
+
+export type NewsStackProps = {
+    newsList: {
+        type: MediaType;
+        malId: number;
     };
 };
 
 // DANBOORU
 export type DanbooruStackProps = {
-    danbooru: undefined;
+    danbooruList: {
+        tag: string;
+    };
     danbooruDetail: {
-        data: undefined;
+        id: number;
     };
 };
 
@@ -84,6 +135,7 @@ export type MoreStackProps = {
     more: undefined;
     settings: NavigatorScreenParams<SettingsStackProps>;
     accounts: undefined;
+    about: undefined;
 };
 
 export type SettingsStackProps = {
@@ -91,5 +143,15 @@ export type SettingsStackProps = {
     appearance: undefined;
     tabs: undefined;
     language: undefined;
-    media: undefined;
+    mediaSettings: NavigatorScreenParams<MediaSettingsStackProps>;
+    notifications: undefined;
+};
+
+export type BannedTagsStackProps = {
+    btags: undefined;
+};
+
+export type MediaSettingsStackProps = {
+    msHome: undefined;
+    bannedTags: NavigatorScreenParams<BannedTagsStackProps>;
 };
