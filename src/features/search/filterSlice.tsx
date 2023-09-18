@@ -1,7 +1,5 @@
 import { combineReducers, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { Appearance } from 'react-native';
-import { StackAnimationTypes } from 'react-native-screens';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import {
     ExploreMediaQueryVariables,
@@ -10,51 +8,37 @@ import {
     MediaType,
 } from '../../app/services/anilist/generated-anilist';
 import { FilterTypes, SortCategories } from './types';
-import { animeSort, commonSorts, mangaNovelSort } from './constants/mediaConsts';
 
 const animeParams: ExploreMediaQueryVariables = {
     type: MediaType.Anime,
-    format: undefined,
-    format_in: undefined,
-    format_not_in: undefined,
-    format_not: undefined,
-    chapters: undefined,
-    chapters_greater: undefined,
-    chapters_lesser: undefined,
-    volumes: undefined,
-    volumes_greater: undefined,
-    volumes_lesser: undefined,
-    countryOfOrigin: undefined,
+    countryOfOrigin: null,
 };
 
 const mangaParams: ExploreMediaQueryVariables = {
     type: MediaType.Manga,
-    format: undefined,
-    format_in: undefined,
-    format_not_in: undefined,
-    format_not: undefined,
-    episodes: undefined,
-    episodes_greater: undefined,
-    episodes_lesser: undefined,
-    duration: undefined,
-    duration_greater: undefined,
-    duration_lesser: undefined,
-    season: undefined,
-    seasonYear: undefined,
+    countryOfOrigin: 'JP',
 };
 
-const getTypeParams = (mediaType: FilterTypes): ExploreMediaQueryVariables => {
+const manhwaParams: ExploreMediaQueryVariables = {
+    type: MediaType.Manga,
+    countryOfOrigin: 'KR',
+};
+
+const novelParams: ExploreMediaQueryVariables = {
+    type: MediaType.Manga,
+    countryOfOrigin: null,
+    format: MediaFormat.Novel,
+};
+
+export const getTypeParams = (mediaType: FilterTypes): ExploreMediaQueryVariables => {
     switch (mediaType) {
         case 'anime':
             return animeParams;
         case 'manga':
             return mangaParams;
         case 'manhwa':
-            const manhwaParams = mangaParams;
             return manhwaParams;
         case 'novel':
-            const novelParams = mangaParams;
-            novelParams.countryOfOrigin = undefined;
             return novelParams;
     }
 };
@@ -89,6 +73,12 @@ export type FilterState = {
     };
 };
 
+type TagToggleProps = {
+    type: 'genre' | 'tag';
+    name: string;
+    mode: 'in' | 'not_in' | 'remove';
+};
+
 // Define the initial state using that type
 const initialFilterState: FilterState = {
     current: 'anime',
@@ -99,34 +89,83 @@ const initialFilterState: FilterState = {
     },
 };
 
-export const filterSlice = createSlice({
-    name: 'filter',
-    initialState: initialFilterState,
-    reducers: {
-        setMediaType: (state, action: PayloadAction<FilterTypes>) => {
-            const newFilter = getTypeParams(action.payload);
-            state.current = action.payload;
-            state.filter = { ...state.filter, ...newFilter };
-        },
-        addFilterParam: (
-            state,
-            action: PayloadAction<{ param: keyof ExploreMediaQueryVariables; value: any }>,
-        ) => {
-            state.filter = { ...state.filter, [action.payload.param]: action.payload.value };
-        },
-        removeFilterParam: (state, action: PayloadAction<keyof ExploreMediaQueryVariables>) => {
-            state = { ...state, [action.payload]: undefined };
-        },
-        changeSort: (
-            state,
-            action: PayloadAction<{ mode: 'asc' | 'desc'; sort: SortCategories }>,
-        ) => {
-            state.filter.sort = getSortParam(action.payload.mode, action.payload.sort);
-            state.sort = { category: action.payload.sort, mode: action.payload.mode };
-        },
-    },
-});
+// export const filterSlice = createSlice({
+//     name: 'filter',
+//     initialState: initialFilterState,
+//     reducers: {
+//         setMediaType: (state, action: PayloadAction<FilterTypes>) => {
+//             const newFilter = getTypeParams(action.payload);
+//             state.current = action.payload;
+//             state.filter = { ...state.filter, ...newFilter };
+//         },
+//         addFilterParam: (
+//             state,
+//             action: PayloadAction<{ param: keyof ExploreMediaQueryVariables; value: any }>,
+//         ) => {
+//             state.filter = { ...state.filter, [action.payload.param]: action.payload.value };
+//         },
+//         toggleTag: (state, action: PayloadAction<TagToggleProps>) => {
+//             switch (action.payload.mode) {
+//                 case 'in':
+//                     if (action.payload.type === 'genre') {
+//                         state.filter.genre_in =
+//                             typeof state.filter.genre_in === 'object'
+//                                 ? [...state.filter.genre_in, action.payload.name]
+//                                 : [action.payload.name];
+//                     } else {
+//                         state.filter.tag_in =
+//                             typeof state.filter.tag_in === 'object'
+//                                 ? [...state.filter.tag_in, action.payload.name]
+//                                 : [action.payload.name];
+//                     }
+//                     break;
+//                 case 'not_in':
+//                     if (action.payload.type === 'genre') {
+//                         state.filter.genre_not_in =
+//                             typeof state.filter.genre_not_in === 'object'
+//                                 ? [...state.filter.genre_not_in, action.payload.name]
+//                                 : [action.payload.name];
+//                         state.filter.genre_in = state.filter.genre_in?.filter(
+//                             (genre: string) => genre !== action.payload.name,
+//                         );
+//                     } else {
+//                         state.filter.tag_not_in =
+//                             typeof state.filter.tag_not_in === 'object'
+//                                 ? [...state.filter.tag_not_in, action.payload.name]
+//                                 : [action.payload.name];
+//                         state.filter.tag_in = state.filter.tag_in?.filter(
+//                             (tag: string) => tag !== action.payload.name,
+//                         );
+//                     }
 
-export const { setMediaType, addFilterParam, removeFilterParam, changeSort } = filterSlice.actions;
+//                     break;
+//                 case 'remove':
+//                     if (action.payload.type === 'genre') {
+//                         state.filter.genre_not_in = state.filter.genre_not_in?.filter(
+//                             (genre: string) => genre !== action.payload.name,
+//                         );
+//                     } else {
+//                         state.filter.tag_not_in = state.filter.tag_not_in?.filter(
+//                             (tag: string) => tag !== action.payload.name,
+//                         );
+//                     }
+//             }
+//         },
+//         removeFilterParam: (state, action: PayloadAction<keyof ExploreMediaQueryVariables>) => {
+//             // state.filter = { ...state.filter, [action.payload]: null };
+//             delete state.filter[action.payload];
+//         },
+//         changeSort: (
+//             state,
+//             action: PayloadAction<{ mode: 'asc' | 'desc'; sort: SortCategories }>,
+//         ) => {
+//             state.filter.sort = getSortParam(action.payload.mode, action.payload.sort);
+//             state.sort = { category: action.payload.sort, mode: action.payload.mode };
+//         },
+//     },
+// });
 
-export default filterSlice.reducer;
+// export const { setMediaType, addFilterParam, removeFilterParam, changeSort, toggleTag } =
+//     filterSlice.actions;
+
+// export default filterSlice.reducer;
