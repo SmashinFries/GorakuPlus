@@ -1,7 +1,9 @@
 import { AnimatePresence, MotiView } from 'moti';
 import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
-import { Button, IconButton, Text, useTheme } from 'react-native-paper';
+import { Button, IconButton, Portal, Text, useTheme } from 'react-native-paper';
+// import { UserHeatmap } from './heatmap';
+import { UserOverviewQuery } from '../../../app/services/anilist/generated-anilist';
 
 type MediaStatIsland = {
     icon: string;
@@ -24,7 +26,9 @@ export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
                     {title}
                 </Text>
                 <View style={[styles.valueContainer, { backgroundColor: colors.primaryContainer }]}>
-                    <Text style={[styles.value]}>{value.toLocaleString()}</Text>
+                    <Text style={[styles.value, { color: colors.onPrimaryContainer }]}>
+                        {value.toLocaleString()}
+                    </Text>
                 </View>
             </MotiView>
         </AnimatePresence>
@@ -32,6 +36,8 @@ export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
 };
 
 type StatOverview = {
+    navToStats: () => void;
+    activity: UserOverviewQuery['Viewer']['stats']['activityHistory'];
     anime: {
         minutesWatched: number;
         episodesWatched: number;
@@ -41,8 +47,9 @@ type StatOverview = {
         volumesRead: number;
     };
 };
-export const StatOverview = ({ anime, manga }: StatOverview) => {
+export const StatOverview = ({ anime, manga, activity, navToStats }: StatOverview) => {
     const { colors } = useTheme();
+
     return (
         <View>
             <View
@@ -74,9 +81,10 @@ export const StatOverview = ({ anime, manga }: StatOverview) => {
                     value={manga.volumesRead}
                 /> */}
             </View>
-            <Button style={{ marginHorizontal: 10 }} mode="elevated">
+            <Button style={{ marginHorizontal: 10 }} onPress={navToStats} mode="elevated">
                 View Statistics
             </Button>
+            {/* <UserHeatmap data={activity} /> */}
         </View>
     );
 };
