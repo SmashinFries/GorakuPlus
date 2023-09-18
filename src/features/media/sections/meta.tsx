@@ -1,0 +1,206 @@
+import { Button, List, Text, useTheme } from 'react-native-paper';
+import {
+    AniMediaQuery,
+    MediaFormat,
+    MediaType,
+} from '../../../app/services/anilist/generated-anilist';
+import { convertDate, countryFlags } from '../../../utils';
+import { View } from 'react-native';
+import { COUNTRY_OPTIONS } from '../../search/constants/mediaConsts';
+import { RetrieveSeriesApiResponse } from '../../../app/services/mangaupdates/mangaUpdatesApi';
+import { Accordian, TransYUpViewMem } from '../../../components/animations';
+import { useMemo } from 'react';
+
+type MetaDataProps = {
+    data: AniMediaQuery['Media'];
+};
+export const MetaData = ({ data }: MetaDataProps) => {
+    const startDate = convertDate(data.startDate, true);
+    const endDate = convertDate(data.endDate, true);
+
+    // delay={960}
+
+    return (
+        <TransYUpViewMem style={{ marginVertical: 15 }} delay={945}>
+            <Accordian title="Additional Info">
+                <List.Item
+                    title={'Source'}
+                    right={(props) => (
+                        <Text style={{ textTransform: 'capitalize' }}>
+                            {data.source?.replaceAll('_', ' ') ?? '??'}
+                        </Text>
+                    )}
+                />
+                <List.Item
+                    title={
+                        data.type === 'ANIME'
+                            ? 'Episodes'
+                            : data.format === MediaFormat.Novel
+                            ? 'Volumes'
+                            : 'Chapters'
+                    }
+                    right={(props) => (
+                        <Text>{data.chapters ?? data.volumes ?? data.episodes ?? 'N/A'}</Text>
+                    )}
+                />
+                <List.Item
+                    title="Origin"
+                    right={(props) => (
+                        <Text>
+                            {data.countryOfOrigin
+                                ? COUNTRY_OPTIONS[data.countryOfOrigin]['name']
+                                : 'N/A'}
+                        </Text>
+                    )}
+                />
+                {data.type === MediaType.Anime && (
+                    <List.Item
+                        title="Duration"
+                        right={(props) => <Text>{data.duration ?? 'N/A'}</Text>}
+                    />
+                )}
+                {data.season && (
+                    <List.Item
+                        title="Season"
+                        right={(props) => (
+                            <Text style={{ textTransform: 'capitalize' }}>
+                                {`${data.season} ${data.seasonYear}` ?? 'N/A'}
+                            </Text>
+                        )}
+                    />
+                )}
+                <List.Item
+                    title="Start Date"
+                    right={(props) => <Text>{startDate ?? 'N/A'}</Text>}
+                />
+                <List.Item title="End Date" right={(props) => <Text>{endDate ?? 'N/A'}</Text>} />
+                <List.Item
+                    title="Favorites"
+                    right={(props) => <Text>{data.favourites?.toLocaleString() ?? 'N/A'}</Text>}
+                />
+                <List.Item title="Format" right={(props) => <Text>{data.format ?? 'N/A'}</Text>} />
+                <List.Item
+                    title="Trending Rank"
+                    right={(props) => <Text>{data.trending?.toLocaleString() ?? 'N/A'}</Text>}
+                />
+                <List.Item
+                    title="Popularity Rank"
+                    right={(props) => <Text>{data.popularity?.toLocaleString() ?? 'N/A'}</Text>}
+                />
+                <List.Item
+                    title="HashTag"
+                    right={(props) => <Text selectable>{data.hashtag ?? 'N/A'}</Text>}
+                />
+                <List.Item
+                    title="Synonyms"
+                    // description={
+                    //     data.synonyms.length > 0
+                    //         ? data.synonyms.map((name, idx) => name).join(', ')
+                    //         : 'N/A'
+                    // }
+                    // descriptionNumberOfLines={10}
+                    right={(props) => (
+                        <Text selectable style={{ width: '50%', textAlign: 'right' }}>
+                            {data.synonyms.length > 0
+                                ? data.synonyms.map((name, idx) => name).join(', ')
+                                : 'N/A'}
+                        </Text>
+                    )}
+                />
+                {data?.type !== MediaType.Manga && (
+                    <List.Item
+                        title="Studios"
+                        right={(props) => (
+                            <Text selectable>
+                                {data.studios.edges.length > 0
+                                    ? data.studios.edges.map(
+                                          (studio, idx) => studio.isMain && studio.node.name,
+                                      )
+                                    : 'N/A'}
+                            </Text>
+                        )}
+                    />
+                )}
+                {data?.type !== MediaType.Manga && (
+                    <List.Item
+                        title="Producers"
+                        right={(props) => (
+                            <Text selectable style={{ width: '40%', textAlign: 'right' }}>
+                                {data.studios.edges.length > 0
+                                    ? data.studios.edges
+                                          .map((studio, idx) => !studio.isMain && studio.node.name)
+                                          .join(', ')
+                                    : 'N/A'}
+                            </Text>
+                        )}
+                    />
+                )}
+            </Accordian>
+        </TransYUpViewMem>
+    );
+};
+
+export const MUData = ({
+    data,
+    openMuDialog,
+}: {
+    data: RetrieveSeriesApiResponse;
+    openMuDialog: () => void;
+}) => {
+    const { colors } = useTheme();
+    const isEnglishTrans = useMemo(
+        () => data?.publishers?.some((pub) => pub.type === 'English') ?? false,
+        [data?.publishers],
+    );
+    return (
+        <View style={{ marginVertical: 15 }}>
+            <Accordian title="Manga Updates">
+                <List.Item
+                    title="Title"
+                    description="Wrong series?"
+                    descriptionStyle={{ textDecorationLine: 'underline', color: colors.primary }}
+                    right={(props) => (
+                        <Text style={{ maxWidth: '50%' }}>{data?.title ?? 'N/A'}</Text>
+                    )}
+                    onPress={openMuDialog}
+                />
+                <List.Item
+                    title="Licensed (English)"
+                    right={(props) => (
+                        <List.Icon {...props} icon={isEnglishTrans ? 'check' : 'close'} />
+                    )}
+                />
+                <List.Item
+                    title="Latest Chapter"
+                    right={(props) => <Text selectable>{data?.latest_chapter ?? 'N/A'}</Text>}
+                />
+                <List.Item
+                    title="Last Updated"
+                    right={(props) => (
+                        <Text selectable>{data?.last_updated.as_string ?? 'N/A'}</Text>
+                    )}
+                />
+                {data?.anime?.start ? (
+                    <List.Item
+                        title="Anime Start"
+                        right={(props) => (
+                            <Text style={{ width: '50%', textAlign: 'right' }} selectable>
+                                {data?.anime?.start ?? 'N/A'}
+                            </Text>
+                        )}
+                    />
+                ) : null}
+                {data?.anime?.end ? (
+                    <List.Item
+                        title="Anime End"
+                        right={(props) => (
+                            <Text style={{ width: '50%', textAlign: 'right' }} selectable>
+                                {data?.anime?.end ?? 'N/A'}
+                            </Text>
+                        )}
+                    />
+                ) : null}
+            </Accordian>
+        </View>
+    );
+};
