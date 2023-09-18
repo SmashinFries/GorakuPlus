@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { UserStack } from '../stacks/user';
 import PickScreen from '../../features/picks';
+import { ListStackNav, ListTabsNav } from '../stacks/list';
 
 const RTBottomTabs = createMaterialBottomTabNavigator<RootNavPaths>();
 
@@ -20,7 +21,7 @@ const Test = () => {
 };
 
 const MobileNavigation = () => {
-    const { avatar, username } = useSelector((state: RootState) => state.persistedAniLogin);
+    const { avatar, username, userID } = useSelector((state: RootState) => state.persistedAniLogin);
     const { btmTabLabels } = useSelector((state: RootState) => state.persistedSettings);
     return (
         <RTBottomTabs.Navigator
@@ -44,10 +45,10 @@ const MobileNavigation = () => {
                     tabBarIcon: 'cards-outline',
                 }}
             /> */}
-            {username && (
+            {userID && (
                 <RTBottomTabs.Screen
                     name="listStack"
-                    component={Test}
+                    component={ListStackNav}
                     options={{ title: 'List', tabBarIcon: 'bookshelf' }}
                 />
             )}
@@ -55,10 +56,10 @@ const MobileNavigation = () => {
                 name="userStack"
                 component={UserStack}
                 options={{
-                    title: username ?? 'User',
+                    title: username ?? 'Login',
                     tabBarIcon: avatar
                         ? () => <Avatar.Image size={24} source={{ uri: avatar }} />
-                        : 'account-outline',
+                        : 'login',
                 }}
             />
             <RTBottomTabs.Screen
