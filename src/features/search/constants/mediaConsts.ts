@@ -5,33 +5,115 @@ import {
     MediaStatus,
     MediaType,
 } from '../../../app/services/anilist/generated-anilist';
+import { AnimeSort, MangaSort, SortCategories } from '../types';
 
-type FilterOptions = keyof ExploreMediaQueryVariables;
-
-const commonSorts: MediaSort[] = [
-    MediaSort.Trending,
-    MediaSort.Popularity,
-    MediaSort.Score,
-    MediaSort.UpdatedAt,
+export const commonSorts: SortCategories[] = [
+    'Search Match',
+    'Trending',
+    'Popularity',
+    'Score',
+    'Updated At',
+    'Start Date',
+    'End Date',
 ];
 
-export const animeSort: MediaSort[] = [...commonSorts, MediaSort.Episodes, MediaSort.Duration];
+export const animeSort: SortCategories[] = [...commonSorts, 'Episodes', 'Duration'];
 
-export const mangaNovelSort: MediaSort[] = [...commonSorts, MediaSort.Chapters, MediaSort.Volumes];
+export const mangaNovelSort: SortCategories[] = [...commonSorts, 'Chapters', 'Volumes'];
 
-export const mediaStatusOptions = ['ANY', ...Object.values(MediaStatus)];
+const commonSortMap = {
+    'Search Match': {
+        desc: [MediaSort.SearchMatch],
+        asc: [MediaSort.SearchMatch],
+    },
+    Trending: {
+        desc: [MediaSort.TrendingDesc, MediaSort.PopularityDesc],
+        asc: [MediaSort.Trending, MediaSort.Popularity],
+    },
+    Popularity: {
+        desc: [MediaSort.PopularityDesc],
+        asc: [MediaSort.Popularity],
+    },
+    Score: {
+        desc: [MediaSort.ScoreDesc],
+        asc: [MediaSort.Score],
+    },
+    'Updated At': {
+        desc: [MediaSort.UpdatedAtDesc],
+        asc: [MediaSort.UpdatedAt],
+    },
+    'Start Date': {
+        desc: [MediaSort.IdDesc, MediaSort.StartDateDesc],
+        asc: [MediaSort.Id, MediaSort.StartDate],
+    },
+    'End Date': {
+        desc: [MediaSort.IdDesc, MediaSort.EndDateDesc],
+        asc: [MediaSort.Id, MediaSort.EndDate],
+    },
+};
+
+type SortMap = {
+    [MediaType.Anime]: {
+        [key in AnimeSort]: {
+            desc: MediaSort[];
+            asc: MediaSort[];
+        };
+    };
+    [MediaType.Manga]: {
+        [key in MangaSort]: {
+            desc: MediaSort[];
+            asc: MediaSort[];
+        };
+    };
+};
+export const sortMap: SortMap = {
+    ANIME: {
+        ...commonSortMap,
+        Episodes: {
+            desc: [MediaSort.EpisodesDesc],
+            asc: [MediaSort.Episodes],
+        },
+        Duration: {
+            desc: [MediaSort.DurationDesc],
+            asc: [MediaSort.Duration],
+        },
+    },
+    MANGA: {
+        ...commonSortMap,
+        Chapters: {
+            desc: [MediaSort.ChaptersDesc],
+            asc: [MediaSort.Chapters],
+        },
+        Volumes: {
+            desc: [MediaSort.VolumesDesc],
+            asc: [MediaSort.Volumes],
+        },
+    },
+};
+
+export const mediaStatusOptions: MediaStatus[] = [
+    MediaStatus.Releasing,
+    MediaStatus.Finished,
+    MediaStatus.NotYetReleased,
+    MediaStatus.Cancelled,
+    MediaStatus.Hiatus,
+];
 
 export const ANIME_FORMATS: MediaFormat[] = [
-    MediaFormat.TvShort,
     MediaFormat.Tv,
+    MediaFormat.TvShort,
     MediaFormat.Movie,
     MediaFormat.Ova,
     MediaFormat.Ona,
     MediaFormat.Special,
     MediaFormat.Music,
 ];
-export const MANGA_FORMATS: MediaFormat[] = [MediaFormat.Manga, MediaFormat.OneShot];
-export const NOVEL_FORMATS: MediaFormat[] = [MediaFormat.Novel];
+export const MANGA_FORMATS: MediaFormat[] = [
+    MediaFormat.Manga,
+    MediaFormat.OneShot,
+    MediaFormat.Novel,
+];
+// export const NOVEL_FORMATS: MediaFormat[] = [];
 
 export const ANIME_DANGER: ExploreMediaQueryVariables = {
     chapters: undefined,
@@ -49,4 +131,27 @@ export const MANGA_DANGER: ExploreMediaQueryVariables = {
     duration: undefined,
     duration_greater: undefined,
     duration_lesser: undefined,
+};
+
+export const COUNTRY_OPTIONS = {
+    ANY: {
+        name: '🌏 Global',
+        flag: '🌏',
+    },
+    JP: {
+        name: '🇯🇵 Japan',
+        flag: '🇯🇵',
+    },
+    KR: {
+        name: '🇰🇷 South Korea',
+        flag: '🇰🇷',
+    },
+    CN: {
+        name: '🇨🇳 China',
+        flag: '🇨🇳',
+    },
+    TW: {
+        name: '🇹🇼 Taiwan',
+        flag: '🇹🇼',
+    },
 };
