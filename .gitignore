@@ -17,7 +17,3 @@ web-build/
 .metro-health-check*
 
 *.env
-
-eas.json
-google-services.json
-goole-services-dev.json

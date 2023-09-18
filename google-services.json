@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "428760693838",
+    "project_id": "goraku-7f06b",
+    "storage_bucket": "goraku-7f06b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428760693838:android:b8d1ecb2dc987c80bcd71f",
+        "android_client_info": {
+          "package_name": "com.kuzutech.gorakuplus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428760693838-qeqr0q6uhfa2oegm45bfsjlme1qj57be.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOXkbJXqoP7FRC2WrUT4GYsotyJqlJcCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428760693838-qeqr0q6uhfa2oegm45bfsjlme1qj57be.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "428760693838-s8idvqh6lpgci3avuan00hc1699cufa3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kuzutech.goraku"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

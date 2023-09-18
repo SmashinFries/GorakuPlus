@@ -1,18 +1,28 @@
 {
-  "cli": {
-    "version": ">= 3.13.0"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+    "cli": {
+        "version": ">= 3.13.0"
     },
-    "preview": {
-      "distribution": "internal"
+    "build": {
+        "development": {
+            "android": {
+                "image": "ubuntu-18.04-jdk-11-ndk-r19c"
+            },
+            "developmentClient": true,
+            "distribution": "internal",
+            "env": {
+                "ANI_ID": "12490",
+                "APP_VARIANT": "development"
+            }
+        },
+        "preview": {
+            "distribution": "internal",
+            "env": {
+                "ANI_ID": "12490"
+            }
+        },
+        "production": {}
     },
-    "production": {}
-  },
-  "submit": {
-    "production": {}
-  }
+    "submit": {
+        "production": {}
+    }
 }
