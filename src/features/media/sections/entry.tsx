@@ -1,29 +1,31 @@
 import { MotiView } from 'moti';
-import { ActivityIndicator, Button, IconButton } from 'react-native-paper';
+import { ActivityIndicator, IconButton, Portal, Text, useTheme } from 'react-native-paper';
 import {
     AniMediaQuery,
+    MediaListStatus,
     MediaType,
-    useSaveMediaListItemMutation,
-    useToggleFavMutation,
+    SaveMediaListItemMutationVariables,
+    ScoreFormat,
 } from '../../../app/services/anilist/generated-anilist';
-import { MotiPressable } from 'moti/interactions';
 import { useListEntry } from '../hooks/mutations';
-import { Selectable } from '../../../components/moti';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../app/store';
-import { TransYUpView } from '../../../components/animations';
+import { memo, useCallback, useState } from 'react';
+import { ListEntryEditDialog, RemoveListItemDialog } from '../components/dialogs';
+import { View } from 'react-native';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
-const LIST_ICONS = ['plus', 'playlist-check'];
+const LIST_ICONS = ['plus', 'playlist-edit'];
 
 type ListEntryViewProps = {
     id: number;
     type: MediaType;
     data: AniMediaQuery['Media']['mediaListEntry'];
+    scoreFormat?: ScoreFormat;
     isFav: boolean;
 };
 
-const ListEntryView = ({ id, type, data, isFav }: ListEntryViewProps) => {
+const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProps) => {
     const {
         deleteListItem,
         saveListItem,
@@ -34,12 +36,33 @@ const ListEntryView = ({ id, type, data, isFav }: ListEntryViewProps) => {
     } = useListEntry();
 
     const { userID } = useSelector((state: RootState) => state.persistedAniLogin);
+    const { colors } = useTheme();
+
+    const [showRemListDlg, setShowRemListDlg] = useState(false);
+    const [showListEntryDlg, setShowListEntryDlg] = useState(false);
+    const [listStatus, setListStatus] = useState<MediaListStatus | string>(data?.status ?? '');
+    const [listProgress, setListProgress] = useState<number | null>(data?.progress ?? null);
+    const [isOnList, setIsOnList] = useState(data ? true : false);
+
+    const updateListEntry = useCallback(
+        (variables?: SaveMediaListItemMutationVariables) => {
+            saveListItem({ mediaId: id, status: MediaListStatus.Planning, ...variables }).then(
+                (res) => {
+                    if (res) {
+                        setListStatus(res?.data?.SaveMediaListEntry?.status ?? null);
+                        setIsOnList(true);
+                    }
+                },
+            );
+        },
+        [id],
+    );
 
     const iconStates = {
         list: {
-            icon: data ? LIST_ICONS[1] : LIST_ICONS[0],
+            icon: isOnList ? LIST_ICONS[1] : LIST_ICONS[0],
             isLoading: savedMediaLoading || deletedListItemLoading,
-            color: data ? 'green' : null,
+            color: isOnList ? 'green' : null,
         },
         fav: {
             icon: isFav ? FAV_ICONS[1] : FAV_ICONS[0],
@@ -50,55 +73,91 @@ const ListEntryView = ({ id, type, data, isFav }: ListEntryViewProps) => {
     };
 
     return (
-        <TransYUpView>
-            <MotiView
-                style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 15 }}
-            >
-                <Selectable
-                    onPress={() =>
-                        toggleFav(type === MediaType.Anime ? { animeId: id } : { mangaId: id })
-                    }
-                    disabled={iconStates.disabled}
+        <>
+            <View>
+                <MotiView
+                    style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-evenly',
+                        marginVertical: 15,
+                    }}
                 >
-                    {iconStates.fav.isLoading ? (
-                        <ActivityIndicator
-                            animating
-                            size={'small'}
-                            style={{ transform: [{ scale: 0.9 }] }}
-                        />
-                    ) : (
-                        <IconButton
-                            icon={iconStates.fav.icon}
-                            iconColor={iconStates.fav.color}
-                            disabled={iconStates.disabled}
-                            size={32}
-                        />
-                    )}
-                </Selectable>
-                <Selectable
-                    onPress={() =>
-                        data ? deleteListItem({ id: data.id }) : saveListItem({ mediaId: id })
-                    }
-                    disabled={iconStates.disabled}
-                >
-                    {iconStates.list.isLoading ? (
-                        <ActivityIndicator
-                            animating
-                            size={'small'}
-                            style={{ transform: [{ scale: 0.9 }] }}
-                        />
-                    ) : (
-                        <IconButton
-                            disabled={iconStates.disabled}
-                            icon={iconStates.list.icon}
-                            iconColor={iconStates.list.color}
-                            size={32}
-                        />
-                    )}
-                </Selectable>
-            </MotiView>
-        </TransYUpView>
+                    <View>
+                        {iconStates.fav.isLoading ? (
+                            <ActivityIndicator
+                                animating
+                                size={'small'}
+                                style={{ transform: [{ scale: 0.9 }] }}
+                            />
+                        ) : (
+                            <IconButton
+                                icon={isFav ? FAV_ICONS[1] : FAV_ICONS[0]}
+                                iconColor={isFav ? 'red' : null}
+                                disabled={iconStates.disabled ?? userID ? false : true}
+                                size={32}
+                                onPress={() =>
+                                    toggleFav(
+                                        type === MediaType.Anime
+                                            ? { animeId: id }
+                                            : { mangaId: id },
+                                    )
+                                }
+                            />
+                        )}
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ alignItems: 'center' }}>
+                            {iconStates.list.isLoading ? (
+                                <ActivityIndicator animating size={32} />
+                            ) : (
+                                <IconButton
+                                    disabled={iconStates.disabled ?? userID ? false : true}
+                                    icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
+                                    iconColor={isOnList ? colors.primary : null}
+                                    onPress={() =>
+                                        isOnList ? setShowListEntryDlg(true) : updateListEntry()
+                                    }
+                                    onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
+                                    size={32}
+                                />
+                            )}
+                            <Text
+                                style={{
+                                    textTransform: 'capitalize',
+                                    color: colors.onSurfaceVariant,
+                                }}
+                                variant="labelMedium"
+                            >
+                                {listStatus ? listStatus?.replaceAll('_', ' ') : ''}
+                                {listProgress ? ` · ${listProgress}` : ''}
+                            </Text>
+                        </View>
+                    </View>
+                </MotiView>
+            </View>
+            <Portal>
+                <RemoveListItemDialog
+                    visible={showRemListDlg}
+                    onDismiss={() => setShowRemListDlg(false)}
+                    onConfirm={() => {
+                        deleteListItem({ id: data.id });
+                        setIsOnList(false);
+                        setListStatus('');
+                        setListProgress(null);
+                    }}
+                />
+                <ListEntryEditDialog
+                    visible={showListEntryDlg}
+                    entryData={data}
+                    scoreFormat={scoreFormat}
+                    status={listStatus}
+                    updateEntry={updateListEntry}
+                    onDismiss={() => setShowListEntryDlg(false)}
+                />
+            </Portal>
+        </>
     );
 };
 
+export const ListEntryViewMem = memo(ListEntryView);
 export default ListEntryView;
