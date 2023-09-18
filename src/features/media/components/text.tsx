@@ -10,55 +10,20 @@ import {
 import { AniMediaQuery } from '../../../app/services/anilist/generated-anilist';
 import { AnilistIcon, MalIcon } from '../../../components/svgs';
 import { copyToClipboard, getScoreColor } from '../../../utils';
-import { TransXInView, TransYUpView } from '../../../components/animations';
+import { TransXInView, TransYUpView, TransYUpViewMem } from '../../../components/animations';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-// type ScoreTextProps = {
-//     score: AniMediaQuery['Media']['averageScore'] | AniMediaQuery['Media']['meanScore'];
-//     svg: 'ani' | 'mal';
-// };
-// export const ScoreText = ({ score, svg }: ScoreTextProps) => {
-//     const { colors } = useTheme();
-//     return (
-//         <TransXInView direction={svg === 'ani' ? 'left' : 'right'}>
-//             <MotiView
-//                 // from={{ opacity: 0, scale: 0 }}
-//                 // animate={{ opacity: 1, scale: 1 }}
-//                 style={{
-//                     flex: 1,
-//                     width: '100%',
-//                     justifyContent: 'center',
-//                     alignItems: 'center',
-//                 }}
-//             >
-//                 <Text variant="titleLarge">{score ?? '?'}</Text>
-//                 <View
-//                     style={{
-//                         width: 50,
-//                         // height: 1,
-//                         marginVertical: 10,
-//                         borderRadius: 0.5,
-//                         backgroundColor: score
-//                             ? getScoreColor(score, svg === 'mal' && true)
-//                             : colors.secondaryContainer,
-//                     }}
-//                 />
-//                 {/* <Text>{title}</Text> */}
-//                 {svg === 'ani' ? <AnilistIcon /> : <MalIcon />}
-//             </MotiView>
-//         </TransXInView>
-//     );
-// };
-
 type MediaTitleView = {
-    data: any;
+    data: AniMediaQuery['Media'];
     defaultTitle: 'romaji' | 'english' | 'native';
 };
 export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
     const [title, setTitle] = useState<MediaTitleView['defaultTitle']>(
         data?.title[defaultTitle] ? defaultTitle : 'romaji',
     );
+
+    const { colors } = useTheme();
 
     const titleButtons: SegmentedButtonsProps['buttons'] = [
         {
@@ -72,14 +37,14 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
     ];
 
     return (
-        <TransYUpView
+        <TransYUpViewMem
             style={{
                 width: '100%',
-                paddingTop: 10,
+                paddingTop: 15,
                 paddingHorizontal: 20,
-                overflow: 'hidden',
                 justifyContent: 'center',
             }}
+            delay={200}
         >
             <MotiView>
                 <Text
@@ -88,6 +53,17 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
                     style={[styles.title]}
                 >
                     {data?.title[title]}
+                </Text>
+                <Text
+                    onLongPress={() => copyToClipboard(data?.title[title])}
+                    variant="titleSmall"
+                    style={[
+                        styles.title,
+                        { textTransform: 'capitalize', color: colors.onSurfaceVariant },
+                    ]}
+                >
+                    {data?.isLicensed ? data?.format?.replaceAll('_', ' ') ?? '??' : 'Doujin'} ·{' '}
+                    {data?.status?.replaceAll('_', ' ')}
                 </Text>
             </MotiView>
             <SegmentedButtons
@@ -101,7 +77,7 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
                 value={title}
                 style={{ paddingVertical: 10 }}
             />
-        </TransYUpView>
+        </TransYUpViewMem>
     );
 };
 
