@@ -15,7 +15,7 @@ export const UserBanner = ({ bannerImage }: UserBannerProps) => {
             <BlurView intensity={80} tint="dark">
                 <Image
                     source={{ uri: bannerImage }}
-                    style={{ width: '100%', height: '100%' }}
+                    style={{ width: width, height: 140 }}
                     contentFit="cover"
                 />
                 <LinearGradient
