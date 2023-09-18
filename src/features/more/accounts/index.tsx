@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { Button, List, Portal, useTheme } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AniListLoginDialog from '../../../app/services/anilist/components/dialogs';
 import { setAniAuth } from '../../../app/services/anilist/authSlice';
 import { api } from '../../../app/services/anilist/enhanced';
@@ -18,6 +18,7 @@ import {
     SafebooruIcon,
 } from '../../../components/svgs';
 import { ListSubheader } from '../../../components/titles';
+import { useAppDispatch } from '../../../app/hooks';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -26,13 +27,22 @@ const AccountsScreen = ({}: NativeStackScreenProps<MoreStackProps, 'accounts'>) 
     const { colors, dark } = useTheme();
     const aniAuth = useAnilistAuth();
     // const { aniTokenTime } = useTokenTime({ death: Number(timeTillDeath) });
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [showAniAuth, setShowAniAuth] = useState(false);
 
-    const resetCache = () =>
-        dispatch(
-            api.util.invalidateTags(['ExploreAnime', 'ExploreManga', 'ExploreNovel', 'AniMedia']),
-        );
+    const resetCache = useCallback(
+        () =>
+            dispatch(
+                api.util.invalidateTags([
+                    'ExploreAnime',
+                    'ExploreManga',
+                    'ExploreManhwa',
+                    'ExploreNovel',
+                    'AniMedia',
+                ]),
+            ),
+        [],
+    );
 
     const ActiveIcon = (props: { color: string; style?: Style }) => (
         <List.Icon {...props} icon={'check'} color={'green'} />
@@ -50,11 +60,12 @@ const AccountsScreen = ({}: NativeStackScreenProps<MoreStackProps, 'accounts'>) 
                     title="Anilist"
                     description={deathDate && `Expires: ${deathDate}`}
                     onPress={() => (deathDate ? setShowAniAuth(true) : aniAuth.promptAsync())}
+                    // onPress={() => console.log(dark)}
                     right={(props) => (deathDate ? <ActiveIcon {...props} /> : null)}
                     left={(props) => <AnilistIcon style={props.style} isDark={dark} />}
                 />
             </List.Section>
-            <List.Section>
+            {/* <List.Section>
                 <ListSubheader title="Fan Art" />
                 <List.Item
                     title="Danbooru"
@@ -70,8 +81,8 @@ const AccountsScreen = ({}: NativeStackScreenProps<MoreStackProps, 'accounts'>) 
                     left={(props) => <SafebooruIcon style={props.style} />}
                     // right={(props) => <ActiveIcon {...props} />}
                 />
-            </List.Section>
-            <List.Section>
+            </List.Section> */}
+            {/* <List.Section>
                 <ListSubheader title="Music" />
                 <List.Item
                     title="Anime Themes"
@@ -80,7 +91,7 @@ const AccountsScreen = ({}: NativeStackScreenProps<MoreStackProps, 'accounts'>) 
                     left={(props) => <AnimeThemesIcon style={props.style} />}
                     // right={(props) => <ActiveIcon {...props} />}
                 />
-            </List.Section>
+            </List.Section> */}
             <Portal>
                 <AniListLoginDialog
                     visible={showAniAuth}
