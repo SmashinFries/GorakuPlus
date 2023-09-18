@@ -12,7 +12,7 @@ export interface ThemeState {
 // Define the initial state using that type
 const initialState: ThemeState = {
     mode: 'default',
-    isDark: false,
+    isDark: Appearance.getColorScheme() === 'dark',
 };
 
 export const themeSlice = createSlice({

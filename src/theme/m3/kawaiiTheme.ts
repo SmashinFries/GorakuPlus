@@ -1,12 +1,11 @@
-import { MD3Theme, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 import { MD3Colors } from 'react-native-paper/lib/typescript/src/types';
 
 const KawaiiLight: MD3Colors = {
-    primary: 'rgb(153, 64, 94)',
+    primary: 'rgb(229, 95, 141)',
     onPrimary: 'rgb(255, 255, 255)',
     primaryContainer: 'rgb(255, 217, 225)',
     onPrimaryContainer: 'rgb(63, 0, 27)',
-    secondary: 'rgb(153, 64, 96)',
+    secondary: 'rgb(229, 95, 135)',
     onSecondary: 'rgb(255, 255, 255)',
     secondaryContainer: 'rgb(255, 217, 226)',
     onSecondaryContainer: 'rgb(62, 0, 28)',

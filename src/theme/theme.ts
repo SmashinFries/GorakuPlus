@@ -1,4 +1,5 @@
-type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion';
+type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion' | 'aqua';
+const themeOptions: ThemeOptions[] = ['default', 'kawaii', 'punpun', 'sonozaki_mion', 'aqua'];
 // type ThemeSelection = keyof typeof themes;
 // export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
 
@@ -12,6 +13,8 @@ import { NavigationTheme } from 'react-native-paper/lib/typescript/src/types';
 import { KawaiiDark, KawaiiLight } from './m3/kawaiiTheme';
 import { PunpunDark, PunpunLight } from './m3/punpunTheme';
 import { MionDark, MionLight } from './m3/mionTheme';
+import { BerserkDark, BerserkLight } from './m3/berserkTheme';
+import { AquaDark, AquaLight } from './m3/aquaTheme';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
     reactNavigationLight: NavigationDefaultTheme,
@@ -83,21 +86,39 @@ const MionDarkTheme = {
     },
 };
 
+const AquaLightTheme = {
+    ...DefaultLightTheme,
+    colors: {
+        ...DefaultLightTheme.colors,
+        ...AquaLight,
+    },
+};
+
+const AquaDarkTheme = {
+    ...DefaultDarkTheme,
+    colors: {
+        ...DefaultLightTheme.colors,
+        ...AquaDark,
+    },
+};
+
 const lightThemes = {
     default: DefaultLightTheme,
     kawaii: KawaiiLightTheme,
     punpun: PunpunLightTheme,
     sonozaki_mion: MionLightTheme,
+    aqua: AquaLightTheme,
 };
 const darkThemes = {
     default: DefaultDarkTheme,
     kawaii: KawaiiDarkTheme,
     punpun: PunpunDarkTheme,
     sonozaki_mion: MionDarkTheme,
+    aqua: AquaDarkTheme,
 };
 const availableThemes = {
     light: lightThemes,
     dark: darkThemes,
 };
 
-export { availableThemes, ThemeOptions };
+export { availableThemes, ThemeOptions, themeOptions };
