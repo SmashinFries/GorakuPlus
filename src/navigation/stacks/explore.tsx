@@ -11,6 +11,7 @@ import { AnimeTab, MangaTab, ManhwaTab, NovelsTab } from '../../features/explore
 import SearchScreen from '../../features/search';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
+import SearchScreen2 from '../../features/search/index2';
 
 const ExploreStackNav = createNativeStackNavigator<ExploreStackProps>();
 const ExploreTabs = createMaterialTopTabNavigator<ExploreTabsProps>();
@@ -31,7 +32,7 @@ export const ExploreStack = () => {
             />
             <ExploreStackNav.Screen
                 name="search"
-                component={SearchScreen}
+                component={SearchScreen2}
                 options={{ title: 'Search' }}
             />
         </ExploreStackNav.Navigator>
