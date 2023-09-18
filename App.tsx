@@ -9,14 +9,11 @@ import * as TaskManager from 'expo-task-manager';
 import * as Linking from 'expo-linking';
 import notifee, { EventType } from '@notifee/react-native';
 import { store } from './src/app/store';
-import { useAppSelector } from './src/app/hooks';
 import {
     displayNotification,
     parseNotif,
 } from './src/features/more/settings/notifications/backgroundFetch';
-import { useLinkTo } from '@react-navigation/native';
 import { useEffect } from 'react';
-import useNotif from './src/provider/hooks/useNotificationSetup';
 import { api } from './src/app/services/anilist/enhanced';
 
 // import * as Localization from 'expo-localization';
