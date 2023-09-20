@@ -47,7 +47,7 @@ const MangaStatTab = ({ navigation, route }: MaterialTopTabScreenProps<StatsTabP
                     value={
                         data.User?.statistics?.manga?.statuses?.find(
                             (item) => item.status === 'PLANNING',
-                        ).chaptersRead ?? '???'
+                        )?.chaptersRead ?? '???'
                     }
                 />
                 <GeneralStatBlock

@@ -1,6 +1,6 @@
 import { MaterialTopTabScreenProps } from '@react-navigation/material-top-tabs';
 import { ScrollView, View } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import { StatsTabProps } from '../../navigation/types';
 import { useUserAnimeStats } from './hooks/useStats';
 import { GeneralStatBlock } from './components/blocks';
@@ -10,9 +10,9 @@ import { ReleaseYearsLineChart } from './components/line';
 // import { ScoreGraph } from './components/graphs';
 
 const AnimeStatTab = ({ navigation, route }: MaterialTopTabScreenProps<StatsTabProps, 'anime'>) => {
-    const { data, isFetching } = useUserAnimeStats(route.params?.userId);
+    const { data, isFetching, isLoading } = useUserAnimeStats(route.params?.userId);
 
-    if (isFetching)
+    if (isFetching || isLoading)
         return (
             <View>
                 <ActivityIndicator size={'large'} />
@@ -54,8 +54,8 @@ const AnimeStatTab = ({ navigation, route }: MaterialTopTabScreenProps<StatsTabP
                         (
                             data.User?.statistics?.anime?.statuses?.find(
                                 (item) => item.status === 'PLANNING',
-                            ).minutesWatched / 1440
-                        ).toFixed(2) ?? '???'
+                            )?.minutesWatched / 1440
+                        )?.toFixed(2) ?? '???'
                     }
                 />
                 <GeneralStatBlock
