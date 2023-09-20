@@ -1238,10 +1238,10 @@
     "@babel/helper-validator-identifier" "^7.22.5"
     to-fast-properties "^2.0.0"
 
-"@callstack/react-theme-provider@^3.0.8":
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/@callstack/react-theme-provider/-/react-theme-provider-3.0.8.tgz#d0d7ac71e422133c5f7b78f4c4aa1bc57f156f50"
-  integrity sha512-5U231sYY2sqQOaELX0WBCn+iluV8bFaXIS7em03k4W5Xz0AhGvKlnpLIhDGFP8im/SvNW7/2XoR0BsClhn9t6Q==
+"@callstack/react-theme-provider@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@callstack/react-theme-provider/-/react-theme-provider-3.0.9.tgz#01035fa1231f1fffc1a806be1b55eb82716e80c1"
+  integrity sha512-tTQ0uDSCL0ypeMa8T/E9wAZRGKWj8kXP7+6RYgPTfOPs9N07C9xM8P02GJ3feETap4Ux5S69D9nteq9mEj86NA==
   dependencies:
     deepmerge "^3.2.0"
     hoist-non-react-statics "^3.3.0"
@@ -5702,23 +5702,23 @@ expo-crypto@~12.4.0, expo-crypto@~12.4.1:
   dependencies:
     base64-js "^1.3.0"
 
-expo-dev-client@~2.4.8:
-  version "2.4.8"
-  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-2.4.8.tgz#be1c69287b0be1ada8a7c9c972d4ecff094eeed8"
-  integrity sha512-1rcqSjEe5Wn08n5UwXhc2VS+6OKu4BSQBSu8+GgTq0l/2wY49v2d6E6KNprFQa3xlt7TRNm27f0lQS1t+BrsnA==
+expo-dev-client@~2.4.10:
+  version "2.4.10"
+  resolved "https://registry.yarnpkg.com/expo-dev-client/-/expo-dev-client-2.4.10.tgz#a7f77592e8793936d32bb385a78bae49f92a3c02"
+  integrity sha512-45nyJAufsVRunKw2XOAn/RG0mG5PoV5eKFR4C9RpuUi0VvHKhdzeF5epRFrYR44zmhe3KwG4ggut5KB4YcsdeA==
   dependencies:
-    expo-dev-launcher "2.4.10"
-    expo-dev-menu "3.1.10"
+    expo-dev-launcher "2.4.12"
+    expo-dev-menu "3.2.0"
     expo-dev-menu-interface "1.3.0"
     expo-manifests "~0.7.0"
     expo-updates-interface "~0.10.0"
 
-expo-dev-launcher@2.4.10:
-  version "2.4.10"
-  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-2.4.10.tgz#60619e0fdbd3cb39610fbcd66caa158e5ca45433"
-  integrity sha512-45d+IC+iAYEZFs42sNGi8gNGHkR9GwKe3BZd8aj1hFFcz+axiYTKdUvcvt4TTb+ouvUGYoJ480dio+9Hp4u2qA==
+expo-dev-launcher@2.4.12:
+  version "2.4.12"
+  resolved "https://registry.yarnpkg.com/expo-dev-launcher/-/expo-dev-launcher-2.4.12.tgz#6f31005a6b0c5c144abc9118714ba6c5d6b140e2"
+  integrity sha512-r561CgR4fNIn5f4I16vxSD9b2Za3QCIfez0OwcRt90dY612tk1Ifkl5DQMLEL3Rm/maB7wfH3bXf0cZa5RGtog==
   dependencies:
-    expo-dev-menu "3.1.10"
+    expo-dev-menu "3.2.0"
     resolve-from "^5.0.0"
     semver "^7.5.3"
 
@@ -5727,10 +5727,10 @@ expo-dev-menu-interface@1.3.0:
   resolved "https://registry.yarnpkg.com/expo-dev-menu-interface/-/expo-dev-menu-interface-1.3.0.tgz#51b6be8c6e0ce73e414ac7a545998dfad0dfdb80"
   integrity sha512-WtRP7trQ2lizJJTTFXUSGGn1deIeHaYej0sUynvu/uC69VrSP4EeSnYOxbmEO29kuT/MsQBMGu0P/AkMQOqCOg==
 
-expo-dev-menu@3.1.10:
-  version "3.1.10"
-  resolved "https://registry.yarnpkg.com/expo-dev-menu/-/expo-dev-menu-3.1.10.tgz#a545236df3898bd9b47c266317e4ee7bd0b5ab84"
-  integrity sha512-3uRU0Cq35dwdN20HqOZl5yv6NS+Xb1WebMifASpT0q9P89M/s0IuewdLw/xL9NEYj4XI2uCGfI0Jy+UGISyizg==
+expo-dev-menu@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/expo-dev-menu/-/expo-dev-menu-3.2.0.tgz#d6ecff9649516f849a9fdacaa93cd378c4b6fe8b"
+  integrity sha512-oMhfNI2aU2HOVYLkFz3krj+L+GwJDHTPjnJWMBG5AsmWJDp70yFGZhSEjcNFG1ekscRndrvfdHlocKO6JTeQcw==
   dependencies:
     expo-dev-menu-interface "1.3.0"
     semver "^7.5.3"
@@ -5766,10 +5766,10 @@ expo-image-picker@~14.3.2:
   dependencies:
     expo-image-loader "~4.3.0"
 
-expo-image@~1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/expo-image/-/expo-image-1.3.2.tgz#e5051cc728af1d57f5dc1c0d783e7c1dfb6aa8a0"
-  integrity sha512-5Dm6kPfAOptMpQSJZDaA1M+AGjRJT0b1eLjtWLLpf6Z7gG1SMAFPUNUKaQV4p9H57psqvloDNb5nPIjSdIA1HQ==
+expo-image@~1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/expo-image/-/expo-image-1.3.3.tgz#16884056a6c379d516cae7e4b0f9eb245bec81d5"
+  integrity sha512-H/w/4XGPRrOv8PsBnoVrctLKtsLYhavrhTK/SkizF3F5u81aHItBACgV8HVrh1qzPXbP40hp/Oyua/ttz61zMQ==
 
 expo-json-utils@~0.7.0:
   version "0.7.1"
@@ -9853,12 +9853,12 @@ react-native-pager-view@6.2.0:
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz#51380d93fbe47f6380dc71d613a787bf27a4ca37"
   integrity sha512-pf9OnL/Tkr+5s4Gjmsn7xh91PtJLDa6qxYa/bmtUhd/+s4cQdWQ8DIFoOFghwZIHHHwVdWtoXkp6HtpjN+r20g==
 
-react-native-paper@^5.8.0:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.8.0.tgz#ac6b98a9d8fe96d959d2a6a92454e10626177970"
-  integrity sha512-Mde8KkWt+9VD+KMqGK5VyTskJLZCsF/gAQQxoLgRlC2C8RmVPgyG0xhgu1sD3ED7T7FewE8cKrQm+soB9FAD1Q==
+react-native-paper@^5.10.6:
+  version "5.10.6"
+  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.10.6.tgz#922f25bd258140f3b7600c9b67674593e90ea19e"
+  integrity sha512-n5r2S53/pGpHRyQV/n75W8ibU+VyamMGSqKWGSti9ZmChcgEWC0s4o/TnpUvmAKNZCQwcYwKSLrmMq5wR5nUNA==
   dependencies:
-    "@callstack/react-theme-provider" "^3.0.8"
+    "@callstack/react-theme-provider" "^3.0.9"
     color "^3.1.2"
     use-latest-callback "^0.1.5"
 
