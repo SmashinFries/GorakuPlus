@@ -61,7 +61,7 @@ const AuthUserScreen = ({ userID }: { userID: number }) => {
             // shareLink={shareLink}
             loading={user?.isFetching}
         >
-            <View style={{ flex: 1 }}>
+            <View>
                 <UserBanner bannerImage={user.data?.Viewer?.bannerImage} />
                 <LinearGradient
                     locations={[0, 0.2]}
@@ -78,7 +78,7 @@ const AuthUserScreen = ({ userID }: { userID: number }) => {
                         navToStats={navToStats}
                     />
                     {/* <ActivityOverview data={activity.data?.Page?.activities} /> */}
-                    <FavOverview favorites={user.data?.Viewer?.favourites} />
+                    {/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
                     <FollowRow
                         title="Following"
                         data={following.data?.Page?.following}
