@@ -93,7 +93,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProp
                             <IconButton
                                 icon={isFav ? FAV_ICONS[1] : FAV_ICONS[0]}
                                 iconColor={isFav ? 'red' : null}
-                                disabled={iconStates.disabled ?? userID ? false : true}
+                                disabled={!iconStates.disabled ? false : true}
                                 size={32}
                                 onPress={() =>
                                     toggleFav(
@@ -111,7 +111,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProp
                                 <ActivityIndicator animating size={32} />
                             ) : (
                                 <IconButton
-                                    disabled={iconStates.disabled ?? userID ? false : true}
+                                    disabled={!iconStates.disabled ? false : true}
                                     icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
                                     iconColor={isOnList ? colors.primary : null}
                                     onPress={() =>
