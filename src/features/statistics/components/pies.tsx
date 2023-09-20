@@ -42,6 +42,8 @@ export const FormatPie = ({ data }: FormatPieProps) => {
         };
     });
 
+    if (data?.length < 1) return null;
+
     return (
         <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
             <ListHeading title="Format Distribution" />
@@ -85,6 +87,8 @@ export const StatusPie = ({ data }: StatusPieProps) => {
         };
     });
 
+    if (data?.length < 1) return null;
+
     return (
         <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
             <ListHeading title="Statuses Distribution" />
@@ -127,6 +131,8 @@ export const CountryPie = ({ data }: CountryPieProps) => {
             legendFontSize: 16,
         };
     });
+
+    if (data?.length < 1) return null;
 
     return (
         <View style={{ justifyContent: 'center', alignSelf: 'center' }}>
