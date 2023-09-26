@@ -21,6 +21,7 @@ import Animated, {
     interpolateColor,
     useDerivedValue,
     withSpring,
+    useAnimatedReaction,
 } from 'react-native-reanimated';
 import { rgbToRgba } from '../utils';
 
@@ -32,6 +33,7 @@ export const useHeaderAnim = (start = 40, end = 110) => {
         [colors.elevation.level3],
     );
     const scrollY = useSharedValue(0);
+    const bgTransY = useSharedValue(0);
     const scrollHandler = useAnimatedScrollHandler((event) => {
         scrollY.value = event.contentOffset.y;
     });
@@ -61,7 +63,25 @@ export const useHeaderAnim = (start = 40, end = 110) => {
         };
     });
 
-    return { scrollHandler, headerStyle, headerTitleStyle, headerActionStyle };
+    const bgImageStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateY: bgTransY.value }],
+        };
+    });
+
+    useAnimatedReaction(
+        () => {
+            return scrollY.value;
+        },
+        (currentValue, previousValue) => {
+            if (currentValue !== previousValue) {
+                // bgTransY.value = withSpring(-(currentValue / 2), { damping: 10, mass: 0.5 });
+                bgTransY.value = -(currentValue / 3);
+            }
+        },
+    );
+
+    return { scrollHandler, headerStyle, headerTitleStyle, bgImageStyle, headerActionStyle };
 };
 
 type AnimViewProps = {
