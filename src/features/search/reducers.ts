@@ -8,7 +8,7 @@ import {
 export type FilterState = {
     search: string | null;
     searchType: MediaType.Anime | MediaType.Manga | 'users' | 'characters' | 'staff' | 'studios';
-    enableTagBan: boolean;
+    enableTagBlacklist: boolean;
     filter: ExploreMediaQueryVariables;
 };
 
@@ -196,14 +196,14 @@ export const filterReducer = (state: FilterState, action: FilterActions): Filter
         case 'ENABLE_TAGBAN':
             return {
                 ...state,
-                enableTagBan: action.payload,
+                enableTagBlacklist: action.payload,
             };
         case 'RESET':
             return {
                 filter: { type: MediaType.Anime, sort: MediaSort.TrendingDesc },
                 search: null,
                 searchType: MediaType.Anime,
-                enableTagBan: true,
+                enableTagBlacklist: true,
             };
 
         default:

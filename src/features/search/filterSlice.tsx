@@ -7,7 +7,7 @@ import {
     MediaSort,
     MediaType,
 } from '../../app/services/anilist/generated-anilist';
-import { FilterTypes, SortCategories } from './types';
+import { SearchTypes, SortCategories } from './types';
 
 const animeParams: ExploreMediaQueryVariables = {
     type: MediaType.Anime,
@@ -30,16 +30,12 @@ const novelParams: ExploreMediaQueryVariables = {
     format: MediaFormat.Novel,
 };
 
-export const getTypeParams = (mediaType: FilterTypes): ExploreMediaQueryVariables => {
+export const getTypeParams = (mediaType: SearchTypes): ExploreMediaQueryVariables => {
     switch (mediaType) {
-        case 'anime':
+        case MediaType.Anime:
             return animeParams;
-        case 'manga':
+        case MediaType.Manga:
             return mangaParams;
-        case 'manhwa':
-            return manhwaParams;
-        case 'novel':
-            return novelParams;
     }
 };
 
@@ -65,7 +61,7 @@ const getSortParam = (mode: 'asc' | 'desc', sort: SortCategories) => {
 };
 
 export type FilterState = {
-    current: FilterTypes;
+    current: SearchTypes;
     filter: ExploreMediaQueryVariables;
     sort: {
         mode: 'asc' | 'desc';

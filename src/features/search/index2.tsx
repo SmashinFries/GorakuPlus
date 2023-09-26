@@ -25,7 +25,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { FilterActions, filterReducer } from './reducers';
 import FilterContext from './context';
-import { updateFilterHistory } from './historySlice';
+import { addSearch, clearSearch, updateFilterHistory, updateSearchType } from './historySlice';
 import { StatusBar } from 'expo-status-bar';
 import { LoadMoreButton } from '../../components/buttons';
 import { EmptyLoadView } from './components/loading';
@@ -35,6 +35,7 @@ import { MediaCard, MediaProgressBar, UserCard } from '../../components/cards';
 import { useSearch } from './hooks/search';
 import { AniMangList, CharacterList, StaffList, StudioList } from './components/lists';
 import { openWebBrowser } from '../../utils/webBrowser';
+import { FilterState } from './filterSlice';
 
 const SearchScreen2 = ({
     navigation,
@@ -52,6 +53,7 @@ const SearchScreen2 = ({
         filter: history.filter,
         search: null,
         searchType: history.searchType,
+        enableTagBlacklist: history.enableTagBlacklist,
     });
     const {
         searchContent,
@@ -90,12 +92,6 @@ const SearchScreen2 = ({
         });
         const response = await searchContent(cleansedFilter, false).unwrap();
         updateNewResults(response);
-
-        appDispatch(
-            updateFilterHistory({
-                filter: filter.filter,
-            }),
-        );
         sheetRef.current?.close();
 
         setLoading(false);
@@ -200,6 +196,12 @@ const SearchScreen2 = ({
     };
 
     const onSearch = async () => {
+        appDispatch(
+            updateFilterHistory({
+                filter: filter.filter,
+            }),
+        );
+        appDispatch(addSearch(filter.search));
         if (filter.searchType === MediaType.Anime || filter.searchType === MediaType.Manga) {
             await onMediaSearch();
         } else if (filter.searchType === 'characters') {
@@ -247,6 +249,7 @@ const SearchScreen2 = ({
                         selection={filter.searchType}
                         onSelect={(type) => {
                             dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
+                            appDispatch(updateSearchType(type));
                             if (type !== MediaType.Anime && type !== MediaType.Manga) {
                                 sheetRef?.current?.close();
                             }

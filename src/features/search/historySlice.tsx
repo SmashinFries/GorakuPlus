@@ -5,13 +5,15 @@ import {
     MediaSort,
     MediaType,
 } from '../../app/services/anilist/generated-anilist';
+import { SearchTypes } from './types';
 
 // Define a type for the slice state
 export interface HistoryState {
     filter?: ExploreMediaQueryVariables;
     search?: string[];
-    searchType?: MediaType.Anime | MediaType.Manga | 'users' | 'characters' | 'staff' | 'studios';
+    searchType?: SearchTypes;
     searchLimit?: number;
+    enableTagBlacklist?: boolean;
 }
 
 // Define the initial state using that type
@@ -30,15 +32,25 @@ export const historySlice = createSlice({
     // `createSlice` will infer the state type from the `initialState` argument
     initialState: initialState(),
     reducers: {
-        updateFilterHistory: (state, action: PayloadAction<{ filter: HistoryState['filter'] }>) => {
-            state.filter = { ...state.filter, ...action.payload.filter };
+        updateFilterHistory: (state, action: PayloadAction<HistoryState>) => {
+            state = {
+                ...state,
+                filter: action.payload.filter ?? state.filter,
+                searchType: action.payload.searchType ?? state.searchType,
+                enableTagBlacklist: action.payload.enableTagBlacklist ?? state.enableTagBlacklist,
+            };
+        },
+        updateSearchType: (state, action: PayloadAction<SearchTypes>) => {
+            state.searchType = action.payload;
         },
         addSearch: (state, action: PayloadAction<string>) => {
             if (state.search?.includes(action.payload)) return;
             if (state.search?.length === state.searchLimit) {
                 state.search.pop();
             }
-            state.search = [action.payload, ...state.search];
+            if (action.payload) {
+                state.search = [action.payload, ...state.search];
+            }
         },
         clearSearch: (state) => {
             state.search = [];
@@ -56,6 +68,7 @@ export const {
     addSearch,
     clearSearch,
     updateSearchLimit,
+    updateSearchType,
 } = historySlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
