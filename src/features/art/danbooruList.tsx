@@ -12,6 +12,7 @@ import { Pressable, View, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { ActivityIndicator, IconButton, useTheme } from 'react-native-paper';
 import { rgbToRgba } from '../../utils';
+import { DanbooruImageCard } from '../../components/cards';
 
 export const DanbooruList = ({
     navigation,
@@ -20,7 +21,7 @@ export const DanbooruList = ({
     const { tag } = route.params;
     const { colors } = useTheme();
     const { width, height } = useWindowDimensions();
-    const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+    const { showNSFW, blurNSFW } = useAppSelector((state) => state.persistedSettings);
     const [searchPosts, status] = useLazySearchPostsQuery();
     const [results, setResults] = useState<DanPost[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -43,29 +44,42 @@ export const DanbooruList = ({
         }
     };
 
+    // const RenderItem = useCallback(({ item }: { item: DanPost }) => {
+    //     const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
+    //     if (!preview) {
+    //         return null;
+    //     }
+    //     return (
+    //         <Pressable onPress={() => navigation.navigate('danbooruDetail', { id: item.id })}>
+    //             <Image
+    //                 blurRadius={blurNSFW && item.rating !== 'g' ? 200 : 0}
+    //                 transition={800}
+    //                 source={{ uri: preview.url }}
+    //                 contentFit="cover"
+    //                 style={{ width: width / 2, height: preview.height, margin: 5 }}
+    //             />
+    //             <IconButton
+    //                 icon={item.file_ext === 'gif' ? 'file-gif-box' : 'image-area'}
+    //                 style={{
+    //                     position: 'absolute',
+    //                     backgroundColor: rgbToRgba(colors.surface, 0.5),
+    //                     top: 0,
+    //                     alignSelf: 'flex-end',
+    //                     transform: [{ rotate: `${preview.height > preview.width ? 90 : 0} deg` }],
+    //                 }}
+    //             />
+    //         </Pressable>
+    //     );
+    // }, []);
+
     const RenderItem = useCallback(({ item }: { item: DanPost }) => {
-        const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
-        if (!preview) {
-            return null;
-        }
         return (
-            <Pressable onPress={() => navigation.navigate('danbooruDetail', { id: item.id })}>
-                <Image
-                    source={{ uri: preview.url }}
-                    contentFit="cover"
-                    style={{ width: width / 2, height: preview.height, margin: 5 }}
+            <View style={{ width: width / 2, margin: 5, maxHeight: height / 2 }}>
+                <DanbooruImageCard
+                    item={item}
+                    onNavigate={(id) => navigation.navigate('danbooruDetail', { id })}
                 />
-                <IconButton
-                    icon={item.file_ext === 'gif' ? 'file-gif-box' : 'image-area'}
-                    style={{
-                        position: 'absolute',
-                        backgroundColor: rgbToRgba(colors.surface, 0.5),
-                        top: 0,
-                        alignSelf: 'flex-end',
-                        transform: [{ rotate: `${preview.height > preview.width ? 90 : 0} deg` }],
-                    }}
-                />
-            </Pressable>
+            </View>
         );
     }, []);
 

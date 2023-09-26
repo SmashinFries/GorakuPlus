@@ -1,4 +1,4 @@
-import { ScrollView, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useTheme, Text, IconButton, Button, ActivityIndicator } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -18,6 +18,8 @@ import { StatisticsBar } from './components/stats';
 import { FileDetails } from './components/fileDetails';
 import Animated from 'react-native-reanimated';
 import { Commentary } from './components/commentary';
+import { PostImage } from './components/image';
+import { useNsfwBlur } from '../../hooks/useNSFWBlur';
 
 export const DanbooruPost = ({
     navigation,
@@ -31,35 +33,7 @@ export const DanbooruPost = ({
     const [aspectRatio, setAspectRatio] = useState<number>(1);
     const [titleHeight, setTitleHeight] = useState<number>(0);
 
-    const MainImage = useCallback(
-        ({ isPlaceholder = false }: { isPlaceholder?: boolean }) => {
-            // const aspectRatio = data?.image_width / data?.image_height;
-            return (
-                <Animated.View
-                    sharedTransitionTag="danImage"
-                    style={{
-                        position: isPlaceholder ? 'relative' : 'absolute',
-                        top: isPlaceholder ? undefined : 0,
-                        height: aspectRatio ? width / aspectRatio : 0,
-                        width: width,
-                    }}
-                >
-                    {!isPlaceholder && (
-                        <Image
-                            source={{ uri: data?.file_url }}
-                            contentFit="contain"
-                            transition={1000}
-                            style={{
-                                height: aspectRatio ? width / aspectRatio : 0,
-                                width: width,
-                            }}
-                        />
-                    )}
-                </Animated.View>
-            );
-        },
-        [aspectRatio, width, height],
-    );
+    const { blurAmount, toggleBlur } = useNsfwBlur(data?.rating);
 
     const getTitle = (titles: string) => {
         const splitTitles = titles?.split(' ');
@@ -89,13 +63,31 @@ export const DanbooruPost = ({
 
     return (
         <View>
-            <MainImage />
+            {/* <PostImage aspectRatio={aspectRatio} img_url={data?.file_url} blurAmount={blurAmount} /> */}
             <FadeHeaderProvider
                 animationRange={[width / aspectRatio, width / aspectRatio + titleHeight]}
                 title={data?.tag_string_character?.split(' ')[0].replaceAll('_', ' ')}
+                BgImage={({ style }) => (
+                    <PostImage
+                        aspectRatio={aspectRatio}
+                        style={style}
+                        img_url={data?.file_url}
+                        blurAmount={blurAmount}
+                    />
+                )}
             >
-                <MainImage isPlaceholder />
-                <View style={{ backgroundColor: colors.background }}>
+                <Pressable
+                    onPress={toggleBlur}
+                    style={{
+                        height: aspectRatio ? width / aspectRatio : 0,
+                        width: width,
+                    }}
+                />
+                <View
+                    style={{
+                        backgroundColor: colors.background,
+                    }}
+                >
                     <View
                         onLayout={(e) => setTitleHeight(e.nativeEvent.layout.height)}
                         style={{ alignItems: 'center' }}
