@@ -1,24 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-    Appbar,
-    Avatar,
-    Button,
-    IconButton,
-    Portal,
-    Searchbar,
-    Text,
-    useTheme,
-} from 'react-native-paper';
+import React, { useEffect } from 'react';
+import { Appbar, IconButton, Searchbar, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {
-    Keyboard,
-    RefreshControlProps,
-    Share,
-    ToastAndroid,
-    View,
-    useWindowDimensions,
-} from 'react-native';
+import { RefreshControlProps, Share, ToastAndroid, View, useWindowDimensions } from 'react-native';
 // import {} from 'react'
 import { RootState } from '../app/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
@@ -27,7 +11,6 @@ import Animated from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
 import { MediaType } from '../app/services/anilist/generated-anilist';
-import { StatusBar } from 'expo-status-bar';
 import { useAppSelector } from '../app/hooks';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
@@ -230,6 +213,7 @@ type FadeHeaderProps = {
         string | React.JSXElementConstructor<any>
     >;
     animationRange?: number[];
+    BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
 };
 export const FadeHeaderProvider = ({
     children,
@@ -244,13 +228,12 @@ export const FadeHeaderProvider = ({
     RefreshControl,
     disableBack = false,
     animationRange = [40, 110],
+    BgImage,
 }: FadeHeaderProps) => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { colors } = useTheme();
-    const { headerStyle, headerTitleStyle, headerActionStyle, scrollHandler } = useHeaderAnim(
-        animationRange[0],
-        animationRange[1],
-    );
+    const { headerStyle, headerTitleStyle, bgImageStyle, headerActionStyle, scrollHandler } =
+        useHeaderAnim(animationRange[0], animationRange[1]);
     const { width, height } = useWindowDimensions();
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
@@ -389,6 +372,7 @@ export const FadeHeaderProvider = ({
 
     return (
         <View>
+            {BgImage && <BgImage style={bgImageStyle} />}
             <MotiScrollView
                 refreshControl={RefreshControl ?? undefined}
                 showsVerticalScrollIndicator={false}
