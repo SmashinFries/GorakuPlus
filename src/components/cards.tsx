@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, useWindowDimensions } from 'react-native';
 import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
 import {
     MediaListStatus,
@@ -12,6 +12,9 @@ import { ScoreHealthBar, ScoreIconText } from '../features/explore/components/it
 import { AiringBanner, AiringBannerMemo } from '../features/explore/components/episodeBanner';
 import { listColor, rgbToRgba } from '../utils';
 import { useAppSelector } from '../app/hooks';
+import { DanPost } from '../app/services/danbooru/types';
+import { useNsfwBlur } from '../hooks/useNSFWBlur';
+import { NSFWLabel } from './labels';
 
 const BORDER_RADIUS = 12;
 
@@ -352,5 +355,59 @@ export const StudioCard = (props: StudioCardProps) => {
                 {props.name}
             </Button>
         </View>
+    );
+};
+
+type DanbooruImageCardProps = {
+    item: DanPost;
+    disableAR?: boolean;
+    onNavigate: (id: number) => void;
+};
+export const DanbooruImageCard = ({
+    item,
+    disableAR = false,
+    onNavigate,
+}: DanbooruImageCardProps) => {
+    const { width, height } = useWindowDimensions();
+    // const { blurNSFW } = useAppSelector((state) => state.persistedSettings);
+    const { blurAmount, toggleBlur } = useNsfwBlur(item.rating);
+    // navigation.navigate('danbooruDetail', { id: item.id })
+    const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
+    if (!preview) {
+        return null;
+    }
+    return (
+        <Pressable
+            onLongPress={toggleBlur}
+            onPress={() => onNavigate(item.id)}
+            style={{
+                borderRadius: 12,
+            }}
+        >
+            <Image
+                blurRadius={blurAmount}
+                transition={800}
+                source={{ uri: preview.url }}
+                contentFit="cover"
+                style={{
+                    aspectRatio: disableAR ? undefined : preview?.width / preview?.height,
+                    borderRadius: 12,
+                    width: width / 2 - 8,
+                    height: disableAR ? preview?.height : undefined,
+                    maxHeight: height / 2,
+                }}
+            />
+            <NSFWLabel level={item.rating} />
+            {/* <IconButton
+                icon={item.file_ext === 'gif' ? 'file-gif-box' : 'image-area'}
+                style={{
+                    position: 'absolute',
+                    backgroundColor: rgbToRgba(colors.surface, 0.5),
+                    top: 0,
+                    alignSelf: 'flex-end',
+                    transform: [{ rotate: `${preview.height > preview.width ? 90 : 0} deg` }],
+                }}
+            /> */}
+        </Pressable>
     );
 };
