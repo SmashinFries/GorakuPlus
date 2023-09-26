@@ -100,21 +100,23 @@ const MediaScreen = ({ navigation, route }: NativeStackScreenProps<RootStackProp
 
             {!loading && (
                 <View key="loaded">
-                    <MediaBanner
-                        url={
-                            aniData?.data?.Media?.bannerImage ??
-                            aniData?.data?.Media?.coverImage?.extraLarge
-                        }
-                    />
                     <FadeHeaderProvider
                         title={
                             aniData?.data?.Media?.title[mediaLanguage] ??
                             aniData?.data?.Media?.title?.romaji
                         }
-                        // shareLink={shareLink}
                         shareLink={aniData?.data?.Media?.siteUrl}
                         onEdit={openEdit}
                         loading={loading}
+                        BgImage={({ style }) => (
+                            <MediaBanner
+                                style={style}
+                                url={
+                                    aniData?.data?.Media?.bannerImage ??
+                                    aniData?.data?.Media?.coverImage?.extraLarge
+                                }
+                            />
+                        )}
                     >
                         <BodyContainer>
                             <FrontCoverMem
