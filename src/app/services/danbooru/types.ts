@@ -12,6 +12,13 @@ export type DanTagParams = {
     limit?: number;
 };
 
+export enum DanbooruRating {
+    General = 'g',
+    Sensitive = 's',
+    Questionable = 'q',
+    Explicit = 'e',
+}
+
 export type DanPost = {
     id: number;
     created_at: Date;
@@ -20,7 +27,7 @@ export type DanPost = {
     source: string;
     md5: string;
     last_comment_bumped_at: null;
-    rating: string;
+    rating: DanbooruRating;
     image_width: number;
     image_height: number;
     tag_string: string;
