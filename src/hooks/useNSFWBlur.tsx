@@ -1,0 +1,33 @@
+import { useMemo, useState } from 'react';
+import { DanbooruRating } from '../app/services/danbooru/types';
+import { useAppSelector } from '../app/hooks';
+
+const nsfwLevelOrder = [
+    DanbooruRating.General,
+    DanbooruRating.Sensitive,
+    DanbooruRating.Questionable,
+    DanbooruRating.Explicit,
+];
+
+export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
+    const [isBlur, setIsBlur] = useState<boolean>(true);
+    const { blurNSFW, blurNSFWLevel } = useAppSelector((state) => state.persistedSettings);
+
+    const userNsfwLevel = useMemo(
+        () => nsfwLevelOrder.findIndex((value) => value === blurNSFWLevel),
+        [blurNSFWLevel],
+    );
+    const imageNsfwLevel = useMemo(
+        () => nsfwLevelOrder.findIndex((value) => value === nsfwLevel),
+        [nsfwLevel],
+    );
+
+    const blurAmount = useMemo(
+        () => (userNsfwLevel < imageNsfwLevel && isBlur ? 200 : 0),
+        [userNsfwLevel, imageNsfwLevel, isBlur],
+    );
+
+    const toggleBlur = () => setIsBlur((prev) => !prev);
+
+    return { blurAmount, toggleBlur };
+};

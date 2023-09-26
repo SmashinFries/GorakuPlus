@@ -11,6 +11,7 @@ import DraggableFlatList, {
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { DanbooruRating } from '../../../../../app/services/danbooru/types';
 
 type DefaultDescDialogProps = BasicDialogProps & {
     defaultValue: 'ani' | 'mal';
@@ -49,23 +50,17 @@ export const DefaultDescDialog = ({ defaultValue, visible, onDismiss }: DefaultD
     );
 };
 
-type ExploreTabsDialogProps = {
-    vis: boolean;
-    toggleVis: (isVis: boolean) => void;
-};
-export const ExploreTabsDialog = ({ vis, toggleVis }: ExploreTabsDialogProps) => {
+export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
     const dispatch = useAppDispatch();
     const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
 
     const [tabOrder, setTabOrder] = useState<(keyof ExploreTabsProps)[]>(exploreTabOrder);
     const [validTabs, setValidTabs] = useState<(keyof ExploreTabsProps)[]>(exploreTabs);
 
-    const hideDialog = () => toggleVis(false);
-
     const onDone = () => {
         updateTabOrder(tabOrder);
         editExploreTabs(validTabs);
-        hideDialog();
+        onDismiss();
     };
 
     const editExploreTabs = (tabs: string[]) => {
@@ -126,7 +121,7 @@ export const ExploreTabsDialog = ({ vis, toggleVis }: ExploreTabsDialogProps) =>
     };
 
     return (
-        <Dialog visible={vis} onDismiss={hideDialog}>
+        <Dialog visible={visible} onDismiss={onDismiss}>
             <Dialog.Title>Edit Explore Tabs</Dialog.Title>
             <Dialog.Content style={{ overflow: 'hidden' }}>
                 <GestureHandlerRootView>
@@ -142,13 +137,50 @@ export const ExploreTabsDialog = ({ vis, toggleVis }: ExploreTabsDialogProps) =>
                 </GestureHandlerRootView>
             </Dialog.Content>
             <Dialog.Actions>
-                <Button onPress={hideDialog}>Cancel</Button>
+                <Button onPress={onDismiss}>Cancel</Button>
                 <Button onPress={onDone}>Done</Button>
             </Dialog.Actions>
         </Dialog>
     );
 };
 
+export const NSFWLevelDialog = ({ onDismiss, visible }: BasicDialogProps) => {
+    const dispatch = useAppDispatch();
+    const { blurNSFWLevel } = useAppSelector((state) => state.persistedSettings);
+
+    const [newLevel, setNewLevel] = useState<DanbooruRating>(blurNSFWLevel);
+
+    return (
+        <Dialog visible={visible} onDismiss={onDismiss}>
+            <Dialog.Title>NSFW Blur Level</Dialog.Title>
+            <Dialog.Content>
+                <RadioButton.Group
+                    value={newLevel}
+                    onValueChange={(val: DanbooruRating) => setNewLevel(val)}
+                >
+                    {Object.keys(DanbooruRating).map((rating, index) => (
+                        <RadioButton.Item
+                            key={index}
+                            label={rating}
+                            value={DanbooruRating[rating]}
+                        />
+                    ))}
+                </RadioButton.Group>
+            </Dialog.Content>
+            <Dialog.Actions>
+                <Button onPress={onDismiss}>Cancel</Button>
+                <Button
+                    onPress={() => {
+                        dispatch(setSettings({ entryType: 'blurNSFWLevel', value: newLevel }));
+                        onDismiss();
+                    }}
+                >
+                    Confirm
+                </Button>
+            </Dialog.Actions>
+        </Dialog>
+    );
+};
 // const styles = StyleSheet.create({
 //     rowItem: {
 //         height: 100,

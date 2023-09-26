@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Button, Chip, List, Portal, Switch, Text, useTheme } from 'react-native-paper';
 import { RootState } from '../../../../app/store';
 import { useCallback, useState } from 'react';
-import { DefaultDescDialog, ExploreTabsDialog } from './component/dialog';
+import { DefaultDescDialog, ExploreTabsDialog, NSFWLevelDialog } from './component/dialog';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { mediaCardAppearanceActions, setMediaCardAppearance, setSettings } from '../settingsSlice';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
@@ -17,6 +17,7 @@ import {
 } from '../appearance/components/dialogs';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import danbooruApi from '../../../../app/services/danbooru/danbooruApi';
+import { DanbooruRating } from '../../../../app/services/danbooru/types';
 
 const MediaSettingScreen = ({
     navigation,
@@ -24,6 +25,8 @@ const MediaSettingScreen = ({
     const {
         defaultDescription,
         showNSFW,
+        blurNSFW,
+        blurNSFWLevel,
         globalTagExclude,
         exploreTabs,
         exploreTabOrder,
@@ -43,6 +46,7 @@ const MediaSettingScreen = ({
     const [showScoreColorDialog, setShowScoreColorDialog] = useState(false);
     const [showDefaultScoreDialog, setShowDefaultScoreDialog] = useState(false);
     const [showMTCustomizer, setShowMTCustomizer] = useState(false);
+    const [showNsfwLevelDialog, setShowNsfwLevelDialog] = useState(false);
 
     const [expTbsVis, setExpTbsVis] = useState<boolean>(false);
 
@@ -102,7 +106,43 @@ const MediaSettingScreen = ({
                     )}
                 />
                 <List.Item
-                    title="Banned Tags"
+                    title="NSFW Blur"
+                    right={() => (
+                        <Switch
+                            value={blurNSFW}
+                            // thumbColor={colors.primary}
+                            color={colors.primary}
+                            onValueChange={(value) => {
+                                dispatch(setSettings({ entryType: 'blurNSFW', value: value }));
+                                dispatch(
+                                    danbooruApi.util.invalidateTags([
+                                        'DanbooruSearch',
+                                        'DanbooruPost',
+                                    ]),
+                                );
+                            }}
+                            disabled={
+                                Constants.executionEnvironment === ExecutionEnvironment.StoreClient
+                            }
+                        />
+                    )}
+                />
+                <List.Item
+                    title="NSFW Blur Level"
+                    description={'Blur anything more severe than this'}
+                    right={(props) => (
+                        <Text {...props}>
+                            {
+                                Object.entries(DanbooruRating).find(
+                                    (value) => value[1] === blurNSFWLevel,
+                                )[0]
+                            }
+                        </Text>
+                    )}
+                    onPress={() => setShowNsfwLevelDialog(true)}
+                />
+                <List.Item
+                    title="Blacklisted Tags"
                     description={'Never show content with selected tags'}
                     right={(props) => <Text {...props}>{globalTagExclude?.length}</Text>}
                     onPress={() => navigation.navigate('bannedTags', { screen: 'btags' })}
@@ -155,6 +195,10 @@ const MediaSettingScreen = ({
                             }),
                         )
                     }
+                />
+                <NSFWLevelDialog
+                    visible={showNsfwLevelDialog}
+                    onDismiss={() => setShowNsfwLevelDialog(false)}
                 />
                 <MediaTileCustomizer
                     themeMode={mode}

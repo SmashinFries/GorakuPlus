@@ -6,6 +6,7 @@ import { ExploreTabsProps } from '../../../navigation/types';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { InitialState } from '@react-navigation/native';
 import { MediaListStatus } from '../../../app/services/anilist/generated-anilist';
+import { DanbooruRating } from '../../../app/services/danbooru/types';
 
 // Define a type for the slice state
 export type SettingsState = {
@@ -20,6 +21,8 @@ export type SettingsState = {
     mediaLanguage?: 'romaji' | 'english' | 'native';
     defaultDescription?: 'ani' | 'mal';
     showNSFW?: boolean;
+    blurNSFW?: boolean;
+    blurNSFWLevel?: DanbooruRating;
     scoreColors?: {
         red: number;
         yellow: number;
@@ -61,6 +64,8 @@ const initialState: SettingsState = {
     mediaLanguage: 'english',
     defaultDescription: 'mal',
     showNSFW: Constants.executionEnvironment === ExecutionEnvironment.StoreClient ? false : true,
+    blurNSFW: true,
+    blurNSFWLevel: DanbooruRating.General,
     scoreColors: {
         red: 64,
         yellow: 74,
