@@ -12,6 +12,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     orientation: 'portrait',
     icon: './assets/iconsv1/icon.png',
     userInterfaceStyle: 'automatic',
+    updates: {
+        url: 'https://u.expo.dev/3a04cf40-e4fd-4885-ae1c-17d23d6df96b',
+        checkAutomatically: 'ON_ERROR_RECOVERY',
+    },
+    runtimeVersion: 'appVersion',
     splash: {
         image: './assets/iconsv1/splash.png',
         resizeMode: 'cover',

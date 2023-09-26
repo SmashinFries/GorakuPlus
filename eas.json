@@ -18,9 +18,12 @@
             "distribution": "internal",
             "env": {
                 "ANI_ID": "12490"
-            }
+            },
+            "channel": "preview"
         },
-        "production": {}
+        "production": {
+            "channel": "production"
+        }
     },
     "submit": {
         "production": {}

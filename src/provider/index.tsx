@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from '../app/store';
 import NavigationProvider from './navigation';
+import * as Updates from 'expo-updates';
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     return (

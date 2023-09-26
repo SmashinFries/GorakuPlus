@@ -1,4 +1,4 @@
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider, Portal } from 'react-native-paper';
 import { availableThemes } from '../theme/theme';
 import { LinkingOptions, NavigationContainer, useLinkTo } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
@@ -8,6 +8,8 @@ import { useAppSelector } from '../app/hooks';
 import { useEffect, useState } from 'react';
 import { RootStackProps } from '../navigation/types';
 import useNotif from './hooks/useNotificationSetup';
+import * as Updates from 'expo-updates';
+import { UpdateDialog } from '../components/updates';
 
 const prefix = Linking.createURL('/');
 
@@ -92,6 +94,16 @@ const NavigationProvider = ({ children }: { children: React.ReactNode }) => {
     const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
     const { loading } = useNotif();
 
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+    const updatesListener = (e: Updates.UpdateEvent) => {
+        console.log(e);
+        if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+            setShowUpdateDialog(true);
+        }
+    };
+
+    Updates.useUpdateEvents(updatesListener);
+
     return (
         <PaperProvider
             theme={isDark ? availableThemes['dark'][mode] : availableThemes['light'][mode]}
@@ -102,7 +114,12 @@ const NavigationProvider = ({ children }: { children: React.ReactNode }) => {
             >
                 <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
             </NavigationContainer>
-
+            <Portal>
+                <UpdateDialog
+                    visible={showUpdateDialog}
+                    onDismiss={() => setShowUpdateDialog(false)}
+                />
+            </Portal>
             <StatusBar translucent style={isDark ? 'light' : 'dark'} />
         </PaperProvider>
     );
