@@ -131,7 +131,12 @@ const MediaSettingScreen = ({
                     title="NSFW Blur Level"
                     description={'Blur anything more severe than this'}
                     right={(props) => (
-                        <Text {...props}>
+                        <Text
+                            style={[
+                                props.style,
+                                { color: !blurNSFW ? colors.onSurfaceDisabled : props.color },
+                            ]}
+                        >
                             {
                                 Object.entries(DanbooruRating).find(
                                     (value) => value[1] === blurNSFWLevel,
@@ -140,6 +145,7 @@ const MediaSettingScreen = ({
                         </Text>
                     )}
                     onPress={() => setShowNsfwLevelDialog(true)}
+                    disabled={!blurNSFW}
                 />
                 <List.Item
                     title="Blacklisted Tags"
