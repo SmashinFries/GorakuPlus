@@ -15,7 +15,6 @@ import {
 import { FadeHeaderProvider } from '../../components/headers';
 import { Accordian, ExpandableDescription, TransYUpViewMem } from '../../components/animations';
 import { AnimatePresence, MotiView } from 'moti';
-import { Image } from 'expo-image';
 import { openWebBrowser } from '../../utils/webBrowser';
 import RenderHTML from 'react-native-render-html';
 import { useCallback, useEffect, useReducer, useState } from 'react';
@@ -24,7 +23,7 @@ import { useWindowDimensions } from 'react-native';
 import { convertDate } from '../../utils';
 import { CharacterDetailsQuery, MediaFormat } from '../../app/services/anilist/generated-anilist';
 import { ListHeading } from '../../components/text';
-import { MediaCard, StaffCard } from '../../components/cards';
+import { DanbooruImageCard, MediaCard, StaffCard } from '../../components/cards';
 import { FlashList } from '@shopify/flash-list';
 import { DanPost } from '../../app/services/danbooru/types';
 import { useCharDetail } from './hooks/useCharDetails';
@@ -33,7 +32,6 @@ import { CharacterFront } from './components/front';
 import { SaveImageDialog } from '../../utils/images';
 import { updateCharArtDB } from './charArtSlice';
 import { TagSearchDialog } from './components/dialogs';
-import Animated from 'react-native-reanimated';
 
 const CharacterScreen = ({
     navigation,
@@ -149,36 +147,21 @@ const CharacterScreen = ({
     );
 
     const ArtRenderItem = useCallback(({ item }: { item: DanPost }) => {
-        const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
-        if (!preview) {
-            return null;
-        }
         return (
-            <Pressable
-                android_ripple={{ color: colors.primary }}
-                // onPress={() => setSelectedImg(item.large_file_url ?? item.file_url)}
-                onPress={() =>
-                    navigation.navigate('danbooruStack', {
-                        screen: 'danbooruDetail',
-                        params: { id: item.id },
-                    })
-                }
-                style={{ marginHorizontal: 8 }}
-            >
-                <Animated.View
-                    style={{ height: 300, width: preview.width }}
-                    sharedTransitionTag="danImage"
-                >
-                    <Image
-                        source={{ uri: preview.url }}
-                        contentFit="contain"
-                        transition={800}
-                        style={{ height: 300, width: preview.width }}
-                    />
-                </Animated.View>
-            </Pressable>
+            <View style={{ margin: 8 }}>
+                <DanbooruImageCard
+                    item={item}
+                    disableAR
+                    onNavigate={() =>
+                        // @ts-ignore
+                        navigation.navigate('danbooruStack', {
+                            screen: 'danbooruDetail',
+                            params: { id: item.id },
+                        })
+                    }
+                />
+            </View>
         );
-        // return <Text>Test</Text>;
     }, []);
 
     const EmptyArt = useCallback(() => {
@@ -360,14 +343,14 @@ const CharacterScreen = ({
                                             keyExtractor={keyExtractor}
                                             horizontal
                                             estimatedItemSize={130}
-                                            estimatedListSize={{ height: 160, width: width }}
+                                            estimatedListSize={{ height: 130, width: width }}
                                             contentContainerStyle={{ padding: 15 }}
                                             showsHorizontalScrollIndicator={false}
                                         />
                                     </View>
                                 )}
 
-                                <View style={{ overflow: 'visible' }}>
+                                <View style={{ overflow: 'visible', marginBottom: 20 }}>
                                     <ListHeading
                                         title="Fan Art"
                                         subtitle={currentArtTag?.replaceAll('_', ' ') ?? undefined}
@@ -378,6 +361,7 @@ const CharacterScreen = ({
                                         subtitlePress={toggleShowTagSearch}
                                         icon="chevron-right"
                                         onIconPress={() =>
+                                            // @ts-ignore
                                             navigation.navigate('danbooruStack', {
                                                 screen: 'danbooruList',
                                                 params: { tag: currentArtTag },
@@ -386,18 +370,15 @@ const CharacterScreen = ({
                                     />
                                     {!art?.isFetching ? (
                                         <FlashList
-                                            data={art?.data ?? []}
+                                            data={art?.data}
                                             ListEmptyComponent={EmptyArt}
                                             renderItem={ArtRenderItem}
                                             keyExtractor={keyExtractor}
                                             horizontal
-                                            removeClippedSubviews
-                                            estimatedItemSize={300}
-                                            // estimatedListSize={{
-                                            //     height: art?.data ? 340 : 100,
-                                            //     width: width,
-                                            // }}
-                                            contentContainerStyle={{ padding: 15 }}
+                                            estimatedItemSize={213}
+                                            contentContainerStyle={{
+                                                padding: 15,
+                                            }}
                                             showsHorizontalScrollIndicator={false}
                                         />
                                     ) : (
