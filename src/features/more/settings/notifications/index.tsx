@@ -158,16 +158,6 @@ const NotifScreen = () => {
 
     return (
         <ScrollView>
-            {/* <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <Text>Is Registered?: </Text>
-                <Text style={{ color: isRegistered ? 'green' : 'red' }}>
-                    {isRegistered ? 'True' : 'False'}
-                </Text>
-            </View>
-            <Button onPress={registerBackgroundFetchAsync}>Register</Button>
-            <Button onPress={unregisterBackgroundFetchAsync}>Unregister</Button>
-            <Button onPress={testNotif}>Test Notif</Button>
-            <Divider bold /> */}
             <List.Item
                 title="Allow Notifications"
                 right={() => <Switch value={isRegistered} onValueChange={toggleNotifications} />}
