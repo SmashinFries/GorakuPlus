@@ -152,6 +152,7 @@ export const FilterSheet = ({
                         updateSort={(sort) =>
                             updateFilter({ type: 'SET_FILTER', key: 'sort', payload: sort })
                         }
+                        // @ts-ignore
                         sort={filterData.filter.sort}
                     />
                     <StatusDropdownMem
