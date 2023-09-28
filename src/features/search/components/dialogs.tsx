@@ -58,8 +58,8 @@ export const ScoreDialog = ({
                     />
                 </Dialog.Content>
                 <Dialog.Actions>
-                    <Button onPress={onCancel}>Cancel</Button>
-                    <Button onPress={onConfirm}>Confirm</Button>
+                    {/* <Button onPress={onCancel}>Cancel</Button>
+                    <Button onPress={onConfirm}>Confirm</Button> */}
                 </Dialog.Actions>
             </Dialog>
         </NativeViewGestureHandler>
