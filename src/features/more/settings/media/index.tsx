@@ -179,7 +179,10 @@ const MediaSettingScreen = ({
                     visible={showDefDescDialog}
                     onDismiss={() => setShowDefDescDialog(false)}
                 />
-                <ExploreTabsDialog vis={expTbsVis} toggleVis={toggleExploreTabOptions} />
+                <ExploreTabsDialog
+                    visible={expTbsVis}
+                    onDismiss={() => toggleExploreTabOptions(false)}
+                />
                 <DefaultScoreDialog
                     visible={showDefaultScoreDialog}
                     onDismiss={() => setShowDefaultScoreDialog(false)}
