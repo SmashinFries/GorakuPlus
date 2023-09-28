@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { BottomSheetScrollView, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { StyleSheet } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { Button, Text, TextInput, useTheme } from 'react-native-paper';
 import {
     CountryDropdownMem,
     FormatDropdownMem,
@@ -22,6 +22,7 @@ import { GenreSelectionMem, TagSelectionMem } from './tags';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { LicensedSelector, NSFWSelector, OnListSelector, TagBanSwitch } from './buttons';
 import { setSettings } from '../../more/settings/settingsSlice';
+import { ScoreSlider } from './slider';
 
 type FilterSheetProps = {
     sheetRef: React.Ref<BottomSheetModalMethods>;
@@ -107,6 +108,45 @@ export const FilterSheet = ({
                     )}
                 </BottomSheetView>
                 <BottomSheetView style={{ flex: 1 }}>
+                    <ScoreSlider
+                        title="Minimum Score"
+                        initialScore={filterData.filter.averageScore_greater}
+                        maxValue={filterData.filter.averageScore_lesser}
+                        minValue={0}
+                        updateScore={(score) =>
+                            updateFilter({
+                                type: 'SET_FILTER',
+                                key: 'averageScore_greater',
+                                payload: score,
+                            })
+                        }
+                    />
+                    <ScoreSlider
+                        title="Maximum Score"
+                        maxValue={100}
+                        minValue={filterData.filter.averageScore_greater}
+                        initialScore={filterData.filter.averageScore_lesser ?? 100}
+                        updateScore={(score) =>
+                            updateFilter({
+                                type: 'SET_FILTER',
+                                key: 'averageScore_lesser',
+                                payload: score,
+                            })
+                        }
+                    />
+                </BottomSheetView>
+                <BottomSheetView style={{ flex: 1 }}>
+                    {/* <ScoreSlider
+                        updateScore={(score) =>
+                            updateFilter({
+                                type: 'SET_FILTER',
+                                key: 'averageScore_greater',
+                                payload: score,
+                            })
+                        }
+                        initialScore={filterData.filter?.averageScore_greater}
+                        minValue={filterData.filter?.averageScore_greater}
+                    /> */}
                     <SortDropdownMem
                         current={filterData.filter.type}
                         updateSort={(sort) =>
@@ -194,7 +234,7 @@ export const FilterSheet = ({
                     tags_in={filterData.filter.tag_in}
                     tags_not_in={filterData.filter.tag_not_in}
                     isAdult={filterData.filter.isAdult}
-                    tagBanEnabled={filterData.enableTagBan}
+                    tagBanEnabled={filterData.enableTagBlacklist}
                     toggleGenreTag={updateFilter}
                 />
             </BottomSheetScrollView>
