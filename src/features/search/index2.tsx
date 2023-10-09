@@ -217,6 +217,12 @@ const SearchScreen2 = ({
     );
 
     useEffect(() => {
+        if (history.searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
+            dispatch({ type: 'SET_TYPE', payload: history.searchType });
+        }
+    }, [history.searchType]);
+
+    useEffect(() => {
         navigation.setOptions({
             header: (props) => (
                 <SearchHeader
