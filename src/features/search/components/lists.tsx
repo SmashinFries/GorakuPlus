@@ -123,6 +123,8 @@ export const AniMangList = (props: AniMangListProps) => {
                 nestedScrollEnabled
                 renderItem={RenderItem}
                 keyExtractor={keyExtract}
+                keyboardShouldPersistTaps="never"
+                keyboardDismissMode="interactive"
                 numColumns={columns}
                 estimatedItemSize={240}
                 removeClippedSubviews

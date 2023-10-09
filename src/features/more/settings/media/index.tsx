@@ -38,6 +38,7 @@ const MediaSettingScreen = ({
         mediaLanguage,
         showItemListStatus,
     } = useAppSelector((state) => state.persistedSettings);
+    const { searchLimit } = useAppSelector((state) => state.persistedHistory);
     const { mode, isDark } = useAppSelector((state: RootState) => state.persistedTheme);
     const dispatch = useAppDispatch();
     const { colors } = useTheme();
@@ -76,6 +77,13 @@ const MediaSettingScreen = ({
                     title="Default Description"
                     description={defaultDescription === 'ani' ? 'AniList' : 'MyAnimeList'}
                     onPress={() => setShowDefDescDialog(true)}
+                />
+                <ListSubheader title="Search" />
+                <List.Item
+                    title="Search History Limit"
+                    right={(props) => (
+                        <Text style={[props.style, { color: props.color }]}>{searchLimit}</Text>
+                    )}
                 />
                 <ListSubheader title="Filter" />
                 <List.Item

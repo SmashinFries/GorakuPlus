@@ -1,49 +1,42 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { memo, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { View, ScrollView, useWindowDimensions, Keyboard, FlatList } from 'react-native';
+import { View, useWindowDimensions, Keyboard, TextInput, Pressable } from 'react-native';
 import { ExploreStackProps } from '../../navigation/types';
 import { SearchHeader } from '../../components/headers';
-import { MediaSelector, MediaSelectorMem } from './components/mediaSelector';
+import { MediaSelectorMem } from './components/mediaSelector';
 import { FilterSheet } from './components/filtersheet';
 import { FlashList } from '@shopify/flash-list';
 import { rgbToRgba, useColumns } from '../../utils';
 import { RenderSearchItem, RenderSearchItemMem } from './components/media';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import useFilterSheet from './hooks/sheet';
-import { ActivityIndicator, Button, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, IconButton, List, Text, useTheme } from 'react-native-paper';
 import { useLazyExploreMediaQuery } from '../../app/services/anilist/enhanced';
 import {
     CharacterSort,
-    ExploreMediaQuery,
     MediaType,
     StaffSort,
     StudioSort,
     useGenreTagCollectionQuery,
-    useLazyUserSearchQuery,
-    useUserSearchQuery,
 } from '../../app/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { FilterActions, filterReducer } from './reducers';
 import FilterContext from './context';
-import { addSearch, clearSearch, updateFilterHistory, updateSearchType } from './historySlice';
-import { StatusBar } from 'expo-status-bar';
-import { LoadMoreButton } from '../../components/buttons';
-import { EmptyLoadView } from './components/loading';
-import { SearchFooter } from './components/footers';
+import { addSearch, removeSearchTerm, updateFilterHistory, updateSearchType } from './historySlice';
 import { cleanFilter } from './helpers/cleanFilter';
-import { MediaCard, MediaProgressBar, UserCard } from '../../components/cards';
 import { useSearch } from './hooks/search';
 import { AniMangList, CharacterList, StaffList, StudioList } from './components/lists';
-import { openWebBrowser } from '../../utils/webBrowser';
-import { FilterState } from './filterSlice';
 
 const SearchScreen2 = ({
     navigation,
     route,
 }: NativeStackScreenProps<ExploreStackProps, 'search'>) => {
-    const { width, height } = useWindowDimensions();
     const { dark, colors } = useTheme();
+    const searchbarRef = React.useRef<TextInput>();
+    const [isFocused, setIsFocused] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
     const history = useAppSelector((state) => state.persistedHistory);
     const { showNSFW, globalTagExclude } = useAppSelector((state) => state.persistedSettings);
@@ -233,9 +226,11 @@ const SearchScreen2 = ({
                         Keyboard.dismiss();
                         openSheet();
                     }}
+                    toggleIsFocused={toggleIsFocused}
                     setSearch={setSearch}
                     search={filter.search}
                     currentType={filter.searchType}
+                    searchbarRef={searchbarRef}
                 />
             ),
         });
@@ -256,6 +251,7 @@ const SearchScreen2 = ({
                         }}
                     />
                 </View>
+
                 {(filter.searchType === MediaType.Anime ||
                     filter.searchType === MediaType.Manga) && (
                     <AniMangList
@@ -303,6 +299,36 @@ const SearchScreen2 = ({
                             )
                         }
                     />
+                )}
+                {isFocused && (
+                    <Pressable
+                        onPress={() => {
+                            searchbarRef.current?.blur();
+                            toggleIsFocused(false);
+                        }}
+                        style={{
+                            position: 'absolute',
+                            height: '100%',
+                            width: '100%',
+                            backgroundColor: colors.background,
+                            top: 120,
+                        }}
+                    >
+                        {history.search.map((term, idx) => (
+                            <List.Item
+                                key={idx}
+                                title={term}
+                                right={(props) => (
+                                    <IconButton
+                                        {...props}
+                                        icon={'delete-outline'}
+                                        onPress={() => appDispatch(removeSearchTerm(term))}
+                                    />
+                                )}
+                                onPress={() => setSearch(term)}
+                            />
+                        ))}
+                    </Pressable>
                 )}
             </View>
             <FilterSheet

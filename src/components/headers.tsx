@@ -2,7 +2,14 @@ import React, { useEffect } from 'react';
 import { Appbar, IconButton, Searchbar, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RefreshControlProps, Share, ToastAndroid, View, useWindowDimensions } from 'react-native';
+import {
+    RefreshControlProps,
+    Share,
+    TextInput,
+    ToastAndroid,
+    View,
+    useWindowDimensions,
+} from 'react-native';
 // import {} from 'react'
 import { RootState } from '../app/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
@@ -88,7 +95,9 @@ type SearchHeaderProps = NativeStackHeaderProps & {
     openFilter: () => void;
     search: string;
     currentType: string;
+    searchbarRef: React.RefObject<TextInput>;
     setSearch: (txt: string) => void;
+    toggleIsFocused: (value: boolean) => void;
 };
 export const SearchHeader = ({
     navigation,
@@ -100,11 +109,14 @@ export const SearchHeader = ({
     search,
     setSearch,
     currentType,
+    searchbarRef,
+    toggleIsFocused,
 }: SearchHeaderProps) => {
     return (
         <Appbar.Header>
             <Appbar.BackAction onPress={navigation.goBack} />
             <Searchbar
+                ref={searchbarRef}
                 value={search}
                 onChangeText={(txt) => setSearch(txt)}
                 onSubmitEditing={(e) => {
@@ -112,6 +124,8 @@ export const SearchHeader = ({
                 }}
                 returnKeyType="search"
                 autoFocus
+                onFocus={() => toggleIsFocused(true)}
+                onBlur={() => toggleIsFocused(false)}
                 placeholder="Search sauce..."
                 mode="bar"
                 onIconPress={searchContent}
