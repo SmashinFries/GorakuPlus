@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { View, useWindowDimensions, Keyboard } from 'react-native';
+import { View, useWindowDimensions, Keyboard, Pressable } from 'react-native';
 import { ExploreStackProps } from '../../navigation/types';
 import { SearchHeader } from '../../components/headers';
 import { MediaSelectorMem } from './components/mediaSelector';
 import { FilterSheet } from './components/filtersheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import useFilterSheet from './hooks/sheet';
-import { useTheme } from 'react-native-paper';
+import { IconButton, List, useTheme } from 'react-native-paper';
 import {
     CharacterSort,
     MediaType,
@@ -18,18 +18,22 @@ import {
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { FilterActions, filterReducer } from './reducers';
 import FilterContext from './context';
-import { addSearch, updateFilterHistory, updateSearchType } from './historySlice';
+import { addSearch, removeSearchTerm, updateFilterHistory, updateSearchType } from './historySlice';
 import { cleanFilter } from './helpers/cleanFilter';
 import { useSearch } from './hooks/search';
 import { AniMangList, CharacterList, StaffList, StudioList } from './components/lists';
+import { TextInput } from 'react-native';
 
 const SearchScreen = ({
     navigation,
     route,
 }: NativeStackScreenProps<ExploreStackProps, 'search'>) => {
-    const { width, height } = useWindowDimensions();
     const { dark, colors } = useTheme();
+    const searchbarRef = React.useRef<TextInput>();
+    const [isFocused, setIsFocused] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
     const history = useAppSelector((state) => state.persistedHistory);
     const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
@@ -217,6 +221,12 @@ const SearchScreen = ({
     );
 
     useEffect(() => {
+        if (history.searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
+            dispatch({ type: 'SET_TYPE', payload: history.searchType });
+        }
+    }, [history.searchType]);
+
+    useEffect(() => {
         navigation.setOptions({
             header: (props) => (
                 <SearchHeader
@@ -229,6 +239,8 @@ const SearchScreen = ({
                     setSearch={setSearch}
                     search={filter.search}
                     currentType={filter.searchType}
+                    toggleIsFocused={toggleIsFocused}
+                    searchbarRef={searchbarRef}
                 />
             ),
         });
@@ -296,6 +308,36 @@ const SearchScreen = ({
                             )
                         }
                     />
+                )}
+                {isFocused && (
+                    <Pressable
+                        onPress={() => {
+                            searchbarRef.current?.blur();
+                            toggleIsFocused(false);
+                        }}
+                        style={{
+                            position: 'absolute',
+                            height: '100%',
+                            width: '100%',
+                            backgroundColor: colors.background,
+                            top: 120,
+                        }}
+                    >
+                        {history.search.map((term, idx) => (
+                            <List.Item
+                                key={idx}
+                                title={term}
+                                right={(props) => (
+                                    <IconButton
+                                        {...props}
+                                        icon={'delete-outline'}
+                                        onPress={() => appDispatch(removeSearchTerm(term))}
+                                    />
+                                )}
+                                onPress={() => setSearch(term)}
+                            />
+                        ))}
+                    </Pressable>
                 )}
             </View>
             <FilterSheet
