@@ -109,7 +109,7 @@ export const AniMangList = (props: AniMangListProps) => {
         props.filter.filter,
     ]);
 
-    if (props.isLoading) return <EmptyLoadView isLoading={true} />;
+    // if (props.isLoading) return <EmptyLoadView isLoading={true} />;
 
     return (
         <View style={{ flex: 1, height: '100%', width }}>
@@ -131,7 +131,9 @@ export const AniMangList = (props: AniMangListProps) => {
                 }}
                 onEndReachedThreshold={0.4}
                 onEndReached={() => {
-                    props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
+                    props.results?.Page &&
+                        props.results?.Page?.media?.length > 0 &&
+                        props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
                 }}
                 // ListFooterComponent={
                 //     !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
