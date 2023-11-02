@@ -8,10 +8,9 @@ import {
 } from '@react-navigation/material-top-tabs';
 import { useTheme } from 'react-native-paper';
 import { AnimeTab, MangaTab, ManhwaTab, NovelsTab } from '../../features/explore';
-import SearchScreen from '../../features/search';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import SearchScreen2 from '../../features/search/index2';
+import SearchScreen from '../../features/search';
 
 const ExploreStackNav = createNativeStackNavigator<ExploreStackProps>();
 const ExploreTabs = createMaterialTopTabNavigator<ExploreTabsProps>();
@@ -32,7 +31,7 @@ export const ExploreStack = () => {
             />
             <ExploreStackNav.Screen
                 name="search"
-                component={SearchScreen2}
+                component={SearchScreen}
                 options={{ title: 'Search' }}
             />
         </ExploreStackNav.Navigator>
