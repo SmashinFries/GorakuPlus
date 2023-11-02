@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
-import { useAppSelector } from '../../../app/hooks';
-import { FilterActions, filterReducer } from '../reducers';
+import { useCallback, useState } from 'react';
 import {
     useLazyCharacterSearchQuery,
     useLazyExploreMediaQuery,
@@ -17,8 +15,8 @@ import {
     StudioSearchQuery,
     StudioSort,
 } from '../../../app/services/anilist/generated-anilist';
-import { Keyboard } from 'react-native';
 import { cleanFilter } from '../helpers/cleanFilter';
+import { useAppSelector } from '../../../app/hooks';
 
 export const useSearch = (searchType: string) => {
     const [searchTrigger, searchStatus] = useLazyExploreMediaQuery();
@@ -26,7 +24,7 @@ export const useSearch = (searchType: string) => {
     const [searchStaffTrig, searchStaffStatus] = useLazyStaffSearchQuery();
     const [searchStudioTrig, searchStudioStatus] = useLazyStudioSearchQuery();
 
-    const [loading, setLoading] = useState(false);
+    const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
 
     const [mediaResults, setMediaResults] = useState<ExploreMediaQuery>();
     const [charResults, setCharResults] = useState<CharacterSearchQuery>();
@@ -112,14 +110,20 @@ export const useSearch = (searchType: string) => {
         [searchType],
     );
 
-    const nextMediaPage = async (currentPage: number, filter, allowAdult: boolean) => {
+    const nextMediaPage = async (currentPage: number, filter) => {
         if (!searchStatus?.isFetching) {
+            const tag_not_in = filter.filter.tag_not_in
+                ? [...filter.filter.tag_not_in, ...tagBlacklist]
+                : tagBlacklist
+                ? tagBlacklist
+                : [];
             const cleansedFilter = cleanFilter({
                 ...filter.filter,
                 search: filter.search,
                 page: currentPage + 1,
                 perPage: 24,
-                isAdult: allowAdult ? filter.filter.isAdult : false,
+                isAdult: showNSFW ? filter.filter.isAdult : false,
+                tag_not_in: tag_not_in,
             });
             const response = await searchTrigger(cleansedFilter, false).unwrap();
 
