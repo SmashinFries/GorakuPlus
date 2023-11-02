@@ -27,7 +27,7 @@ const MediaSettingScreen = ({
         showNSFW,
         blurNSFW,
         blurNSFWLevel,
-        globalTagExclude,
+        tagBlacklist,
         exploreTabs,
         exploreTabOrder,
         scoreColors,
@@ -150,7 +150,7 @@ const MediaSettingScreen = ({
                 <List.Item
                     title="Blacklisted Tags"
                     description={'Never show content with selected tags'}
-                    right={(props) => <Text {...props}>{globalTagExclude?.length}</Text>}
+                    right={(props) => <Text {...props}>{tagBlacklist?.length}</Text>}
                     onPress={() => navigation.navigate('bannedTags', { screen: 'btags' })}
                 />
                 <List.Section>

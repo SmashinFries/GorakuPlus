@@ -1,14 +1,12 @@
-import { Badge, Button, Chip, Divider, IconButton, List, Text, useTheme } from 'react-native-paper';
+import { Badge, Chip, IconButton, Text } from 'react-native-paper';
 import { MotiView } from 'moti';
 import {
     ExploreMediaQueryVariables,
     GenreTagCollectionQuery,
-    useGenreTagCollectionQuery,
 } from '../../../app/services/anilist/generated-anilist';
 import { View } from 'react-native';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { memo, useCallback, useState } from 'react';
+import { FlatList } from 'react-native-gesture-handler';
 import { FilterActions } from '../reducers';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { setSettings } from '../../more/settings/settingsSlice';
@@ -72,14 +70,9 @@ const TagSelection = ({
     tagBanEnabled,
     toggleGenreTag,
 }: TagSelectionProps) => {
-    const { defaultTagLayout, globalTagExclude } = useAppSelector(
-        (state) => state.persistedSettings,
-    );
+    const { defaultTagLayout, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
     const [tagMode, setTagMode] = useState(defaultTagLayout);
     const settingsDispatch = useAppDispatch();
-
-    // const { showNSFW } = useSelector((state: RootState) => state.persistedSettings);
-    // const { tagPresets } = useSelector((state: RootState) => state.persistedPresets);
 
     const changeLayout = useCallback(() => {
         setTagMode((prev) => (prev === 'list' ? 'row' : 'list'));
@@ -121,7 +114,7 @@ const TagSelection = ({
                             payload: item.name,
                         })
                     }
-                    disabled={tagBanEnabled ? globalTagExclude?.includes(item.name) : false}
+                    disabled={tagBanEnabled ? tagBlacklist?.includes(item.name) : false}
                 />
             );
         },
@@ -148,7 +141,7 @@ const TagSelection = ({
                 </View>
                 <TagBanSwitch
                     initialState={tagBanEnabled}
-                    totalBanned={globalTagExclude?.length}
+                    totalBanned={tagBlacklist?.length}
                     onPress={(value) => toggleGenreTag({ type: 'ENABLE_TAGBAN', payload: value })}
                 />
             </BottomSheetView>

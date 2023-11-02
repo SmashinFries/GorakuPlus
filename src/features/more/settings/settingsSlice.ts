@@ -34,7 +34,7 @@ export type SettingsState = {
     defaultScore?: 'average' | 'mean';
     defaultGenreLayout?: 'list' | 'row';
     defaultTagLayout?: 'list' | 'row';
-    globalTagExclude?: string[];
+    tagBlacklist?: string[];
 };
 
 // Define the initial state using that type
@@ -77,7 +77,7 @@ const initialState: SettingsState = {
     defaultScore: 'average',
     defaultGenreLayout: 'row',
     defaultTagLayout: 'list',
-    globalTagExclude: [],
+    tagBlacklist: [],
 };
 
 type settingsActions = {

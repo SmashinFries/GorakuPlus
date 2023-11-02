@@ -1,28 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
     ActivityIndicator,
-    Button,
     Chip,
-    IconButton,
     List,
-    RadioButton,
     Searchbar,
-    Switch,
     Text,
     useTheme,
 } from 'react-native-paper';
 import { FlatList, ScrollView, useWindowDimensions } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BannedTagsStackProps, MediaSettingsStackProps } from '../../../../../navigation/types';
+import { BannedTagsStackProps } from '../../../../../navigation/types';
 import {
     GenreTagCollectionQuery,
     useGenreTagCollectionQuery,
 } from '../../../../../app/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '../../../../../app/hooks';
 import { ListSubheader } from '../../../../../components/titles';
-import { FlashList } from '@shopify/flash-list';
-import { View } from 'react-native';
-import DraggableFlatList from 'react-native-draggable-flatlist';
 import { BanTagHeader } from '../../../../../components/headers';
 import { setSettings } from '../../settingsSlice';
 
@@ -35,10 +28,10 @@ type TagChipProps = {
 const TagFilterScreen = ({ navigation }: NativeStackScreenProps<BannedTagsStackProps, 'btags'>) => {
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
-    const { globalTagExclude, showNSFW } = useAppSelector((state) => state.persistedSettings);
+    const { tagBlacklist, showNSFW } = useAppSelector((state) => state.persistedSettings);
     const dispatch = useAppDispatch();
 
-    const [tags, setTags] = useState<string[]>(globalTagExclude ?? []);
+    const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
     const [search, setSearch] = useState<string>('');
     const [searchResults, setSearchResults] = useState<
         GenreTagCollectionQuery['MediaTagCollection']
@@ -104,7 +97,7 @@ const TagFilterScreen = ({ navigation }: NativeStackScreenProps<BannedTagsStackP
     }, []);
 
     const onSave = () => {
-        dispatch(setSettings({ entryType: 'globalTagExclude', value: tags }));
+        dispatch(setSettings({ entryType: 'tagBlacklist', value: tags }));
         navigation.goBack();
     };
 
@@ -124,7 +117,7 @@ const TagFilterScreen = ({ navigation }: NativeStackScreenProps<BannedTagsStackP
                 <BanTagHeader {...props} iconColor={colors.primary} onSave={onSave} />
             ),
         });
-    }, [onSave, globalTagExclude, tags]);
+    }, [onSave, tagBlacklist, tags]);
 
     return (
         <ScrollView nestedScrollEnabled style={{ flex: 1 }}>
