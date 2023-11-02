@@ -127,10 +127,14 @@ export const AniMangList = (props: AniMangListProps) => {
                     padding: 10,
                     paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
                 }}
-                ListFooterComponent={
-                    !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
-                }
-                ListFooterComponentStyle={{ alignItems: 'center' }}
+                onEndReachedThreshold={0.4}
+                onEndReached={() => {
+                    props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
+                }}
+                // ListFooterComponent={
+                //     !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
+                // }
+                // ListFooterComponentStyle={{ alignItems: 'center' }}
             />
         </View>
     );
