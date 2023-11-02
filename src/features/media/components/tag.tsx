@@ -8,7 +8,8 @@ type TagProps = {
     allowAdult?: boolean;
 };
 export const Tag = ({ tag, openTag, allowAdult }: TagProps) => {
-    const isSpoiler = tag.isGeneralSpoiler || tag.isMediaSpoiler;
+    if (!tag) return null;
+    const isSpoiler = tag?.isGeneralSpoiler || tag?.isMediaSpoiler;
     const [reveal, setReveal] = React.useState(isSpoiler ? false : true);
 
     const handleTagPress = () => {
