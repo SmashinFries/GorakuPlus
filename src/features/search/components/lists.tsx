@@ -34,7 +34,7 @@ type AniMangListProps = {
     searchStatus: any;
     sheetRef: any;
     isLoading: boolean;
-    nextPage: (currentPage: number, filter: FilterState, allowAdult: boolean) => Promise<void>;
+    nextPage: (currentPage: number, filter: FilterState) => Promise<void>;
     onItemPress: (aniID: any, malID: any, type: any) => void;
 };
 export const AniMangList = (props: AniMangListProps) => {
@@ -96,11 +96,7 @@ export const AniMangList = (props: AniMangListProps) => {
             <SearchFooter
                 hasMore={props.results?.Page?.pageInfo?.hasNextPage}
                 nextPage={() =>
-                    props.nextPage(
-                        props.results?.Page?.pageInfo?.currentPage,
-                        props.filter,
-                        allowAdult,
-                    )
+                    props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter)
                 }
                 isUnitialized={props.searchStatus.isUninitialized}
             />
