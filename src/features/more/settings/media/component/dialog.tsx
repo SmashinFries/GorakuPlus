@@ -181,16 +181,3 @@ export const NSFWLevelDialog = ({ onDismiss, visible }: BasicDialogProps) => {
         </Dialog>
     );
 };
-// const styles = StyleSheet.create({
-//     rowItem: {
-//         height: 100,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-//     text: {
-//         color: 'white',
-//         fontSize: 24,
-//         fontWeight: 'bold',
-//         textAlign: 'center',
-//     },
-// });

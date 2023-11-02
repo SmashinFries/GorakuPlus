@@ -56,6 +56,12 @@ export const historySlice = createSlice({
         clearSearch: (state) => {
             state.search = [];
         },
+        removeSearchTerm: (state, action: PayloadAction<string>) => {
+            const searchIndx = state.search?.indexOf(action.payload);
+            if (searchIndx > -1) {
+                state.search.splice(searchIndx, 1);
+            }
+        },
         updateSearchLimit: (state, action: PayloadAction<number>) => {
             state.searchLimit = action.payload;
         },
@@ -70,6 +76,7 @@ export const {
     clearSearch,
     updateSearchLimit,
     updateSearchType,
+    removeSearchTerm,
 } = historySlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

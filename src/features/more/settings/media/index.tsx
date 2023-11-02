@@ -18,6 +18,8 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import danbooruApi from '../../../../app/services/danbooru/danbooruApi';
 import { DanbooruRating } from '../../../../app/services/danbooru/types';
+import { FetchIntervalDialog } from '../notifications/components/dialog';
+import { updateSearchLimit } from '../../../search/historySlice';
 
 const MediaSettingScreen = ({
     navigation,
@@ -38,10 +40,12 @@ const MediaSettingScreen = ({
         mediaLanguage,
         showItemListStatus,
     } = useAppSelector((state) => state.persistedSettings);
+    const { searchLimit } = useAppSelector((state) => state.persistedHistory);
     const { mode, isDark } = useAppSelector((state: RootState) => state.persistedTheme);
     const dispatch = useAppDispatch();
     const { colors } = useTheme();
     const [showDefDescDialog, setShowDefDescDialog] = useState(false);
+    const [showSearchHistoryLimit, setShowSearchHistoryLimit] = useState(false);
 
     const [showScoreColorDialog, setShowScoreColorDialog] = useState(false);
     const [showDefaultScoreDialog, setShowDefaultScoreDialog] = useState(false);
@@ -76,6 +80,14 @@ const MediaSettingScreen = ({
                     title="Default Description"
                     description={defaultDescription === 'ani' ? 'AniList' : 'MyAnimeList'}
                     onPress={() => setShowDefDescDialog(true)}
+                />
+                <ListSubheader title="Search" />
+                <List.Item
+                    title="Search History Limit"
+                    onPress={() => setShowSearchHistoryLimit(true)}
+                    right={(props) => (
+                        <Text style={[props.style, { color: props.color }]}>{searchLimit}</Text>
+                    )}
                 />
                 <ListSubheader title="Filter" />
                 <List.Item
@@ -220,6 +232,14 @@ const MediaSettingScreen = ({
                     mediaLanguage={mediaLanguage}
                     scoreColors={scoreColors}
                     onDismiss={() => setShowMTCustomizer(false)}
+                />
+                <FetchIntervalDialog
+                    initialInterval={searchLimit}
+                    onDismiss={() => setShowSearchHistoryLimit(false)}
+                    title="Search History Limit"
+                    visible={showSearchHistoryLimit}
+                    updateInterval={(value) => dispatch(updateSearchLimit(value))}
+                    options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}
                 />
             </Portal>
         </>

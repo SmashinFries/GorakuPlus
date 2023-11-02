@@ -5,12 +5,16 @@ import { useCallback, useEffect, useState } from 'react';
 type FetchIntervalDialogProps = {
     visible: boolean;
     initialInterval: number;
+    options?: string[];
+    title?: string;
     onDismiss: () => void;
     updateInterval: (value: number) => void;
 };
 export const FetchIntervalDialog = ({
     visible,
     initialInterval,
+    options,
+    title,
     onDismiss,
     updateInterval,
 }: FetchIntervalDialogProps) => {
@@ -38,9 +42,9 @@ export const FetchIntervalDialog = ({
 
     return (
         <Dialog visible={visible} onDismiss={onDismiss}>
-            <Dialog.Title>Notification Frequency (hours)</Dialog.Title>
+            <Dialog.Title>{title ?? 'Notification Frequency (hours)'}</Dialog.Title>
             <Dialog.Content>
-                <NumberPicker defaultValue={interval - 1} onChange={onChange} />
+                <NumberPicker defaultValue={interval - 1} options={options} onChange={onChange} />
             </Dialog.Content>
             <Dialog.Actions>
                 <Button onPress={onCancel}>Cancel</Button>
