@@ -36,7 +36,7 @@ export const historySlice = createSlice({
         updateFilterHistory: (state, action: PayloadAction<HistoryState>) => {
             state = {
                 ...state,
-                filter: action.payload.filter ?? state.filter,
+                filter: { ...action.payload.filter },
                 searchType: action.payload.searchType ?? state.searchType,
                 enableTagBlacklist: action.payload.enableTagBlacklist ?? state.enableTagBlacklist,
             };

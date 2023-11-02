@@ -78,6 +78,12 @@ const SearchScreen = ({
         });
         const response = await searchContent(cleansedFilter, false).unwrap();
         updateNewResults(response);
+        appDispatch(
+            updateFilterHistory({
+                filter: { ...filter.filter, type: filter.filter.type },
+                searchType: filter.searchType,
+            }),
+        );
         sheetRef.current?.close();
 
         setLoading(false);
@@ -184,7 +190,7 @@ const SearchScreen = ({
     const onSearch = async () => {
         appDispatch(
             updateFilterHistory({
-                filter: filter.filter,
+                filter: { ...filter.filter, type: filter.filter.type },
                 searchType: filter.searchType,
             }),
         );
