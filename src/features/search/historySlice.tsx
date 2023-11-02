@@ -25,6 +25,7 @@ const initialState: () => HistoryState = () => ({
     search: [],
     searchType: MediaType.Anime,
     searchLimit: 10,
+    enableTagBlacklist: true,
 });
 
 export const historySlice = createSlice({
