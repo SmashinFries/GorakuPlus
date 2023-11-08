@@ -9,16 +9,14 @@ import {
     Text,
     useTheme,
 } from 'react-native-paper';
-import { useStaffDetailsQuery } from '../../app/services/anilist/generated-anilist';
+import {
+    StaffDetailsQuery,
+    useStaffDetailsQuery,
+} from '../../app/services/anilist/generated-anilist';
 import { useCallback, useEffect, useReducer, useState } from 'react';
 import { MotiView } from 'moti';
 import { Image } from 'expo-image';
-import {
-    Accordian,
-    AnimateHeight,
-    ExpandableDescription,
-    TransYUpView,
-} from '../../components/animations';
+import { Accordian, ExpandableDescription, TransYUpView } from '../../components/animations';
 import { useAppSelector } from '../../app/hooks';
 import RenderHTML from 'react-native-render-html';
 import { FavoriteButton } from '../../components/buttons';
@@ -27,15 +25,14 @@ import { convertDate } from '../../utils';
 import { openWebBrowser } from '../../utils/webBrowser';
 import { CharacterPrevList } from './components/characterList';
 import { useToggleFavMutation } from '../../app/services/anilist/enhanced';
+import { FlashList } from '@shopify/flash-list';
+import { StaffMediaCard } from './components/media';
 
 const StaffScreen = ({ navigation, route }: NativeStackScreenProps<StaffStackProps, 'staff'>) => {
     const { id } = route.params;
     const { width } = useWindowDimensions();
-    const [expanded, setExpanded] = useState(true);
     const [charPage, setCharPage] = useState(1);
     const [smPage, setSmPage] = useState(1);
-    const [descriptionHeight, setDescriptionHeight] = useState(80);
-    const [show, toggle] = useReducer((open) => !open, false);
 
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
@@ -64,6 +61,13 @@ const StaffScreen = ({ navigation, route }: NativeStackScreenProps<StaffStackPro
     useEffect(() => {
         setFav(data?.Staff?.isFavourite);
     }, [data?.Staff?.isFavourite]);
+
+    const StaffMediaRenderItem = useCallback(
+        ({ item }: { item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0] }) => {
+            return <StaffMediaCard item={item} nav={navigation} />;
+        },
+        [],
+    );
 
     if (isLoading) {
         return (
@@ -227,9 +231,43 @@ const StaffScreen = ({ navigation, route }: NativeStackScreenProps<StaffStackPro
                             )}
                         />
                     </Accordian>
-                    <Text style={{ textAlign: 'center', marginTop: 15 }}>
-                        More data coming soon!
-                    </Text>
+                    {data?.Staff?.staffMedia?.edges?.length > 0 && (
+                        <Accordian title="Media">
+                            <FlashList
+                                data={data?.Staff?.staffMedia?.edges}
+                                renderItem={StaffMediaRenderItem}
+                                keyExtractor={(item, idx) => idx.toString()}
+                                estimatedItemSize={250}
+                                horizontal
+                                removeClippedSubviews
+                                contentContainerStyle={{ padding: 15 }}
+                                showsHorizontalScrollIndicator={false}
+                                onEndReached={() => {
+                                    data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
+                                        console.log('Next Page!');
+                                    data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
+                                        setSmPage((prev) => prev + 1);
+                                }}
+                            />
+                        </Accordian>
+                    )}
+                    {data?.Staff?.characters?.edges?.length > 0 && (
+                        <Accordian title="Characters">
+                            <Text style={{ textAlign: 'center', marginTop: 15 }}>
+                                Characters coming soon!
+                            </Text>
+                            {/* <FlashList
+                                data={data?.Staff?.staffMedia?.edges}
+                                renderItem={StaffMediaRenderItem}
+                                keyExtractor={(item, idx) => idx.toString()}
+                                estimatedItemSize={250}
+                                horizontal
+                                removeClippedSubviews
+                                contentContainerStyle={{ padding: 15 }}
+                                showsHorizontalScrollIndicator={false}
+                            /> */}
+                        </Accordian>
+                    )}
                     <View>{/* <CharacterPrevList data={data?.Staff?.characters} /> */}</View>
                 </MotiView>
             </TransYUpView>
