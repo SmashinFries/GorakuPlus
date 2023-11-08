@@ -7,7 +7,6 @@ import {
 import { IconButton, Text, useTheme } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
 import { TransYUpViewMem } from '../../../components/animations';
-import { MD3Colors } from 'react-native-paper/lib/typescript/src/types';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackProps } from '../../../navigation/types';
@@ -16,6 +15,7 @@ import { memo, useCallback } from 'react';
 import { ListHeading } from '../../../components/text';
 import { View } from 'react-native';
 import { MediaCard } from '../../../components/cards';
+import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 
 type RelationItemProps = {
     textColor: string;
