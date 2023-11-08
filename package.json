@@ -13,7 +13,8 @@
     "format": "prettier --check ./src",
     "format-fix": "prettier --write ./src",
     "codegen": "graphql-codegen",
-    "openapigen": "npx @rtk-query/codegen-openapi"
+    "openapigen": "npx @rtk-query/codegen-openapi",
+    "eas-update": "eas update --branch preview --message"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
