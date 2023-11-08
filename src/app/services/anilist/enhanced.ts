@@ -422,6 +422,30 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: ['CharacterDetails'],
         },
         StaffDetails: {
+            serializeQueryArgs: ({ endpointName }) => {
+                return endpointName;
+            },
+            // Always merge incoming data to the cache entry
+            merge: (currentCache, newItems) => {
+                if (
+                    currentCache.Staff.staffMedia?.pageInfo?.currentPage <
+                    newItems.Staff.staffMedia?.pageInfo?.currentPage
+                ) {
+                    currentCache.Staff.staffMedia.edges.push(...newItems.Staff.staffMedia.edges);
+                    currentCache.Staff.staffMedia.pageInfo = newItems.Staff.staffMedia.pageInfo;
+                }
+                if (
+                    currentCache.Staff.characters?.pageInfo?.currentPage <
+                    newItems.Staff.characters?.pageInfo?.currentPage
+                ) {
+                    currentCache.Staff.characters.edges.push(...newItems.Staff.characters.edges);
+                    currentCache.Staff.characters.pageInfo = newItems.Staff.characters.pageInfo;
+                }
+            },
+            // Refetch when the page arg changes
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg !== previousArg;
+            },
             providesTags: ['StaffDetails'],
         },
         UserSearch: {
