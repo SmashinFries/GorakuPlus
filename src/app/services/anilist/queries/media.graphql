@@ -643,6 +643,13 @@ query StaffDetails(
         favourites
         modNotes
         staffMedia(page: $staff_media_page, perPage: $staff_media_perPage, sort: POPULARITY_DESC) {
+            pageInfo {
+                total
+                perPage
+                currentPage
+                hasNextPage
+                lastPage
+            }
             edges {
                 staffRole
                 node {
@@ -653,15 +660,28 @@ query StaffDetails(
                     averageScore
                     meanScore
                     format
+                    isLicensed
+                    isFavourite
                     title {
                         romaji
                         english
                         native
                     }
+                    coverImage {
+                        extraLarge
+                        color
+                    }
                 }
             }
         }
         characters(page: $char_page, perPage: $char_perPage, sort: RELEVANCE) {
+            pageInfo {
+                total
+                perPage
+                currentPage
+                hasNextPage
+                lastPage
+            }
             edges {
                 role
                 node {
