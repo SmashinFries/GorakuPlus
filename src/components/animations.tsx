@@ -64,8 +64,9 @@ export const useHeaderAnim = (start = 40, end = 110) => {
     });
 
     const bgImageStyle = useAnimatedStyle(() => {
+        const scale = interpolate(scrollY.value, [0, start], [1.05, 1.1]);
         return {
-            transform: [{ translateY: bgTransY.value }],
+            transform: [{ translateY: bgTransY.value }, { scale: scale }],
         };
     });
 
