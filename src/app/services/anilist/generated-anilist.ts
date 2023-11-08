@@ -2150,6 +2150,8 @@ export enum ModRole {
   Admin = 'ADMIN',
   /** An anime data moderator */
   AnimeData = 'ANIME_DATA',
+  /** A character data moderator */
+  CharacterData = 'CHARACTER_DATA',
   /** A community moderator */
   Community = 'COMMUNITY',
   /** An AniList developer */
@@ -2171,7 +2173,9 @@ export enum ModRole {
   /** A retired moderator */
   Retired = 'RETIRED',
   /** A social media moderator */
-  SocialMedia = 'SOCIAL_MEDIA'
+  SocialMedia = 'SOCIAL_MEDIA',
+  /** A staff data moderator */
+  StaffData = 'STAFF_DATA'
 }
 
 export type Mutation = {
@@ -5052,7 +5056,7 @@ export type StaffDetailsQueryVariables = Exact<{
 }>;
 
 
-export type StaffDetailsQuery = { __typename?: 'Query', Staff?: { __typename?: 'Staff', languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, dateOfDeath?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, staffMedia?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', staffRole?: string | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, status?: MediaStatus | null, averageScore?: number | null, meanScore?: number | null, format?: MediaFormat | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null } | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', edges?: Array<{ __typename?: 'CharacterEdge', role?: CharacterRole | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
+export type StaffDetailsQuery = { __typename?: 'Query', Staff?: { __typename?: 'Staff', languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, dateOfDeath?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, staffMedia?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'MediaEdge', staffRole?: string | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, status?: MediaStatus | null, averageScore?: number | null, meanScore?: number | null, format?: MediaFormat | null, isLicensed?: boolean | null, isFavourite: boolean, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', role?: CharacterRole | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
 
 export type GetNotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -6794,6 +6798,13 @@ export const StaffDetailsDocument = `
       perPage: $staff_media_perPage
       sort: POPULARITY_DESC
     ) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        hasNextPage
+        lastPage
+      }
       edges {
         staffRole
         node {
@@ -6804,15 +6815,28 @@ export const StaffDetailsDocument = `
           averageScore
           meanScore
           format
+          isLicensed
+          isFavourite
           title {
             romaji
             english
             native
           }
+          coverImage {
+            extraLarge
+            color
+          }
         }
       }
     }
     characters(page: $char_page, perPage: $char_perPage, sort: RELEVANCE) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        hasNextPage
+        lastPage
+      }
       edges {
         role
         node {
