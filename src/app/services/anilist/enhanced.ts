@@ -422,7 +422,10 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: ['CharacterDetails'],
         },
         StaffDetails: {
-            serializeQueryArgs: ({ endpointName }) => {
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs) {
+                    return endpointName + queryArgs.id.toString();
+                }
                 return endpointName;
             },
             // Always merge incoming data to the cache entry
