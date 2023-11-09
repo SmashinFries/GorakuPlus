@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Appbar, IconButton, Searchbar, useTheme } from 'react-native-paper';
+import { Appbar, IconButton, Portal, Searchbar, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
@@ -19,6 +19,7 @@ import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
 import { MediaType } from '../app/services/anilist/generated-anilist';
 import { useAppSelector } from '../app/hooks';
+import { BarcodeScanDialog } from './dialogs';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -35,6 +36,9 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
     const { mode } = useAppSelector((state) => state.persistedTheme);
+
+    const [showBCDialog, setShowBCDialog] = useState(false);
+
     return (
         <Appbar.Header>
             {mode === 'punpun' && (
@@ -77,8 +81,9 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
             /> */}
             <Appbar.Action
                 icon="barcode-scan"
-                iconColor={colors.surfaceVariant}
-                onPress={() => ToastAndroid.show('Barcode search coming soon!', ToastAndroid.LONG)}
+                // iconColor={colors.surfaceVariant}
+                // onPress={() => ToastAndroid.show('Barcode search coming soon!', ToastAndroid.LONG)}
+                onPress={() => setShowBCDialog(true)}
             />
             {/* <Appbar.Action
                 icon="image-search-outline"
@@ -86,6 +91,19 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
                 onPress={() => ToastAndroid.show('Image search coming soon!', ToastAndroid.LONG)}
             /> */}
             <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
+            <Portal>
+                <BarcodeScanDialog
+                    visible={showBCDialog}
+                    onDismiss={() => setShowBCDialog(false)}
+                    onNav={(aniId: number, malId: number, type: MediaType) =>
+                        navigation.push('media', {
+                            aniID: aniId,
+                            malID: malId,
+                            type: type,
+                        })
+                    }
+                />
+            </Portal>
         </Appbar.Header>
     );
 };
