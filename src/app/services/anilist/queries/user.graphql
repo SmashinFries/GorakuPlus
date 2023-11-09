@@ -300,10 +300,17 @@ query UserActivity($page: Int, $perPage: Int, $isFollowing: Boolean, $userId: In
                     type
                     bannerImage
                     isAdult
+                    format
+                    isLicensed
+                    status
                     title {
                         userPreferred
+                        romaji
+                        english
+                        native
                     }
                     coverImage {
+                        color
                         extraLarge
                     }
                 }

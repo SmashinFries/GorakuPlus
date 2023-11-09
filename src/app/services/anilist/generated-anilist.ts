@@ -5216,7 +5216,7 @@ export type UserActivityQueryVariables = Exact<{
 }>;
 
 
-export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null } | null, activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null };
+export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null } | null, activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, format?: MediaFormat | null, isLicensed?: boolean | null, status?: MediaStatus | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null };
 
 export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7521,10 +7521,17 @@ export const UserActivityDocument = `
           type
           bannerImage
           isAdult
+          format
+          isLicensed
+          status
           title {
             userPreferred
+            romaji
+            english
+            native
           }
           coverImage {
+            color
             extraLarge
           }
         }
