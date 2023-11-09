@@ -33,32 +33,20 @@ const FollowUserItem = ({ user }: FollowUserItemProps) => {
 };
 
 type FollowRowProps = {
-    title: string;
     data: User[];
     isLoading: boolean;
 };
-export const FollowRow = ({ title, data, isLoading }: FollowRowProps) => {
+export const FollowRow = ({ data, isLoading }: FollowRowProps) => {
     if (!data) {
         return null;
     }
     return (
-        <MotiView>
-            <ListHeading title={title} />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {!isLoading ? (
-                    data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)
-                ) : (
-                    <ActivityIndicator />
-                )}
-            </ScrollView>
-        </MotiView>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {!isLoading ? (
+                data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)
+            ) : (
+                <ActivityIndicator />
+            )}
+        </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {},
-    header: {
-        paddingLeft: 10,
-        paddingTop: 10,
-    },
-});
