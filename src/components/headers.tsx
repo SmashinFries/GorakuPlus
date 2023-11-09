@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Appbar, IconButton, Searchbar, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -70,33 +70,33 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
             )}
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title} />
-            <Appbar.Action
+            {/* <Appbar.Action
                 icon="crystal-ball"
                 iconColor={colors.surfaceVariant}
                 onPress={() => ToastAndroid.show('Randomizer coming soon!', ToastAndroid.LONG)}
-            />
+            /> */}
             <Appbar.Action
                 icon="barcode-scan"
                 iconColor={colors.surfaceVariant}
                 onPress={() => ToastAndroid.show('Barcode search coming soon!', ToastAndroid.LONG)}
             />
-            <Appbar.Action
+            {/* <Appbar.Action
                 icon="image-search-outline"
                 iconColor={colors.surfaceVariant}
                 onPress={() => ToastAndroid.show('Image search coming soon!', ToastAndroid.LONG)}
-            />
+            /> */}
             <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
         </Appbar.Header>
     );
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
-    searchContent: () => void;
+    searchContent: (query: string) => void;
     openFilter: () => void;
-    search: string;
     currentType: string;
     searchbarRef: React.RefObject<TextInput>;
-    setSearch: (txt: string) => void;
+    historySelected: string | null;
+    onHistorySelected: () => void;
     toggleIsFocused: (value: boolean) => void;
 };
 export const SearchHeader = ({
@@ -106,21 +106,30 @@ export const SearchHeader = ({
     back,
     openFilter,
     searchContent,
-    search,
-    setSearch,
+    historySelected,
+    onHistorySelected,
     currentType,
     searchbarRef,
     toggleIsFocused,
 }: SearchHeaderProps) => {
+    const [query, setQuery] = useState('');
+
+    useEffect(() => {
+        if (historySelected) {
+            setQuery(historySelected);
+            onHistorySelected();
+        }
+    }, [historySelected]);
+
     return (
         <Appbar.Header>
             <Appbar.BackAction onPress={navigation.goBack} />
             <Searchbar
                 ref={searchbarRef}
-                value={search}
-                onChangeText={(txt) => setSearch(txt)}
+                value={query}
+                onChangeText={(txt) => setQuery(txt)}
                 onSubmitEditing={(e) => {
-                    searchContent();
+                    searchContent(e.nativeEvent.text);
                 }}
                 returnKeyType="search"
                 autoFocus
@@ -128,14 +137,14 @@ export const SearchHeader = ({
                 onBlur={() => toggleIsFocused(false)}
                 placeholder="Search sauce..."
                 mode="bar"
-                onIconPress={searchContent}
+                onIconPress={() => searchContent(query)}
                 // traileringIcon={'image-search-outline'}
                 // onTraileringIconPress={() => ToastAndroid.show('Image search coming soon!', 1000)}
                 icon={null}
                 style={{ flex: 1, backgroundColor: 'transparent' }}
                 inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
                 onClearIconPress={() => {
-                    setSearch('');
+                    setQuery('');
                 }}
             />
             <IconButton

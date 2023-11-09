@@ -32,6 +32,7 @@ const SearchScreen = ({
     const searchbarRef = React.useRef<TextInput>();
     const [isFocused, setIsFocused] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [currentHistorySearch, setCurrentHistorySearch] = useState<string | null>(null);
 
     const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
@@ -64,7 +65,7 @@ const SearchScreen = ({
 
     const updateFilter = useCallback((props: FilterActions) => dispatch(props), []);
 
-    const onMediaSearch = async () => {
+    const onMediaSearch = async (query: string) => {
         Keyboard.dismiss();
         setLoading(true);
         const tag_not_in = filter.filter.tag_not_in
@@ -74,7 +75,7 @@ const SearchScreen = ({
             : [];
         const cleansedFilter = cleanFilter({
             ...filter.filter,
-            search: filter.search,
+            search: query,
             page: 1,
             perPage: 24,
             isAdult: showNSFW ? filter.filter.isAdult : false,
@@ -117,16 +118,16 @@ const SearchScreen = ({
 
     const onStudioPress = useCallback(() => null, []);
 
-    const onCharSearch = async () => {
+    const onCharSearch = async (query: string) => {
         Keyboard.dismiss();
         setLoading(true);
         const response = await searchContent(
             {
-                name: filter.search,
+                name: query,
                 page: 1,
-                isBirthday: filter.search?.length < 1 || !filter.search ? true : undefined,
+                isBirthday: query?.length < 1 || !query ? true : undefined,
                 sort:
-                    filter.search?.length < 1 || !filter.search
+                    query?.length < 1 || !query
                         ? [CharacterSort.FavouritesDesc]
                         : [CharacterSort.SearchMatch],
             },
@@ -142,16 +143,16 @@ const SearchScreen = ({
         setLoading(false);
     };
 
-    const onStaffSearch = async () => {
+    const onStaffSearch = async (query: string) => {
         Keyboard.dismiss();
         setLoading(true);
         const response = await searchContent(
             {
-                name: filter.search,
+                name: query,
                 page: 1,
-                isBirthday: filter.search?.length < 1 || !filter.search ? true : undefined,
+                isBirthday: query?.length < 1 || !query ? true : undefined,
                 sort:
-                    filter.search?.length < 1 || !filter.search
+                    query?.length < 1 || !query
                         ? [StaffSort.FavouritesDesc]
                         : [StaffSort.SearchMatch],
             },
@@ -167,15 +168,15 @@ const SearchScreen = ({
         setLoading(false);
     };
 
-    const onStudioSearch = async () => {
+    const onStudioSearch = async (query: string) => {
         Keyboard.dismiss();
         setLoading(true);
         const response = await searchContent(
             {
-                name: filter.search,
+                name: query,
                 page: 1,
                 sort:
-                    filter.search?.length < 1 || !filter.search
+                    query?.length < 1 || !query
                         ? [StudioSort.FavouritesDesc]
                         : [StudioSort.SearchMatch],
             },
@@ -191,22 +192,22 @@ const SearchScreen = ({
         setLoading(false);
     };
 
-    const onSearch = async () => {
+    const onSearch = async (query: string) => {
         appDispatch(
             updateFilterHistory({
                 filter: { ...filter.filter, type: filter.filter.type },
                 searchType: filter.searchType,
             }),
         );
-        appDispatch(addSearch(filter.search));
+        appDispatch(addSearch(query));
         if (filter.searchType === MediaType.Anime || filter.searchType === MediaType.Manga) {
-            await onMediaSearch();
+            await onMediaSearch(query);
         } else if (filter.searchType === 'characters') {
-            await onCharSearch();
+            await onCharSearch(query);
         } else if (filter.searchType === 'staff') {
-            await onStaffSearch();
+            await onStaffSearch(query);
         } else if (filter.searchType === 'studios') {
-            await onStudioSearch();
+            await onStudioSearch(query);
         }
     };
 
@@ -215,10 +216,10 @@ const SearchScreen = ({
         dispatch,
     };
 
-    const setSearch = useCallback(
-        (query: string) => dispatch({ type: 'SET_SEARCH', payload: query }),
-        [],
-    );
+    // const setSearch = useCallback(
+    //     (query: string) => dispatch({ type: 'SET_SEARCH', payload: query }),
+    //     [],
+    // );
 
     useEffect(() => {
         if (history.searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
@@ -236,15 +237,17 @@ const SearchScreen = ({
                         Keyboard.dismiss();
                         openSheet();
                     }}
-                    setSearch={setSearch}
-                    search={filter.search}
+                    // setSearch={setSearch}
+                    // search={filter.search}
+                    historySelected={currentHistorySearch}
+                    onHistorySelected={() => setCurrentHistorySearch(null)}
                     currentType={filter.searchType}
                     toggleIsFocused={toggleIsFocused}
                     searchbarRef={searchbarRef}
                 />
             ),
         });
-    }, [filter.search, filter.searchType, filter.filter, isFilterOpen]);
+    }, [filter.search, filter.searchType, filter.filter, currentHistorySearch, isFilterOpen]);
 
     return (
         <FilterContext.Provider value={filterState}>
@@ -334,7 +337,9 @@ const SearchScreen = ({
                                         onPress={() => appDispatch(removeSearchTerm(term))}
                                     />
                                 )}
-                                onPress={() => setSearch(term)}
+                                onPress={() => {
+                                    setCurrentHistorySearch(term);
+                                }}
                             />
                         ))}
                     </Pressable>
