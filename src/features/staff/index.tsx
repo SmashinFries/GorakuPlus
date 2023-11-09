@@ -79,7 +79,11 @@ const StaffScreen = ({ navigation, route }: NativeStackScreenProps<StaffStackPro
 
     return (
         <FadeHeaderProvider
-            title=""
+            title={
+                mediaLanguage === 'english' || mediaLanguage === 'romaji'
+                    ? data?.Staff?.name?.full
+                    : data?.Staff?.name?.native
+            }
             loading={isLoading}
             shareLink={data?.Staff?.siteUrl}
             onEdit={() => openWebBrowser(`https://anilist.co/edit/staff/${id}`)}
