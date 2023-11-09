@@ -48,7 +48,7 @@
     "expo-dev-client": "~2.4.10",
     "expo-file-system": "~15.4.3",
     "expo-haptics": "~12.4.0",
-    "expo-image": "~1.3.3",
+    "expo-image": "~1.3.5",
     "expo-image-picker": "~14.3.2",
     "expo-images": "^1.0.0",
     "expo-linear-gradient": "~12.3.0",
