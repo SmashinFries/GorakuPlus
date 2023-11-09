@@ -72,15 +72,27 @@ export const convertDate = (date: FuzzyDate, bdayFormat?: boolean): string | nul
     return `${month ?? '??'}-${day ?? '??'}-${year ?? '????'}`;
 };
 
-export const getTimeUntil = (time: number) => {
+export const getTimeUntil = (time: number, format: 'until' | 'createdAt' = 'until') => {
     const today = new Date().getTime();
     const episodeDate = new Date(time * 1000).getTime();
     const diffTime = Math.abs(episodeDate - today);
-    const diffDays = `${Math.floor(diffTime / (1000 * 60 * 60 * 24))}d`;
-    const diffHours = `${Math.floor((diffTime / (1000 * 60 * 60)) % 24)}h`;
-    const diffMinutes = `${Math.floor((diffTime / (1000 * 60)) % 60)}m`;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffHours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
+    const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
 
-    return `${diffDays} ${diffHours} ${diffMinutes}`;
+    if (format === 'until')
+        return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${
+            diffMinutes > 0 ? `${diffMinutes}m` : ''
+        }`;
+    if (format === 'createdAt') {
+        if (diffDays > 0) return `${diffDays > 1 ? `${diffDays} days ` : `${diffDays} day `} ago`;
+        if (diffHours > 0)
+            return `${diffHours > 1 ? `${diffHours} hours` : `${diffHours} hour`} ago`;
+        if (diffMinutes > 0)
+            return `${
+                diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`
+            } minutes ago`;
+    }
 };
 
 export const useTimeUntil = (time: number) => {
