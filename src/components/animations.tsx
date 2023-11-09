@@ -288,7 +288,7 @@ export const Accordian = ({
     }, [initialExpand, totalHeight]);
 
     return (
-        <View style={{ overflow: 'visible' }}>
+        <View style={[{ overflow: 'visible' }]}>
             <View style={{ backgroundColor: colors?.background }}>
                 <TouchableRipple
                     onPress={toggleHeight}
