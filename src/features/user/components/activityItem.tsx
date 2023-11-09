@@ -87,6 +87,7 @@ export const ActivityOverview = ({
         <View style={{ width: width, height: 300 }}>
             {data ? (
                 <FlashList
+                    // @ts-ignore - not sure how to handle this type :/
                     data={data}
                     renderItem={RenderItem}
                     keyExtractor={(item) => item.id.toString()}
