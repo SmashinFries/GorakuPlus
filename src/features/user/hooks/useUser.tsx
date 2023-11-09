@@ -14,7 +14,7 @@ export const useUser = (userID: number) => {
             userId: userID,
             isFollowing: false,
         },
-        { skip: true },
+        { skip: !userID },
     );
     const followers = useUserFollowersQuery({ page: 1, userId: userID });
     const following = useUserFollowingQuery({ page: 1, userId: userID });
