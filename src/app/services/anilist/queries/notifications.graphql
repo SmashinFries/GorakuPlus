@@ -126,6 +126,9 @@ query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
 fragment media on Media {
     id
     type
+    format
+    status
+    idMal
     title {
         userPreferred
         native
