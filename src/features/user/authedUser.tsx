@@ -72,7 +72,7 @@ const AuthUserScreen = ({ userID }: { userID: number }) => {
                 />
                 <View style={{ marginTop: 10 }}>
                     <Accordian title="Activity" initialExpand>
-                        <ActivityOverview data={activity.data?.Page?.activities} />
+                        <ActivityOverview data={activity.data?.Page?.activities} nav={navigation} />
                     </Accordian>
                     {/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
                     <Accordian title={'Following'}>

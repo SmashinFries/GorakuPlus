@@ -12,6 +12,8 @@ import { ListHeading } from '../../../components/text';
 import { FlashList } from '@shopify/flash-list';
 import { MediaCard } from '../../../components/cards';
 import { getTimeUntil } from '../../../utils';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackProps } from '../../../navigation/types';
 
 type ActivityItemProps = {
     item: ListActivity;
@@ -20,7 +22,13 @@ const ActivityItem = ({ item }: ActivityItemProps) => {};
 
 // const ActivityItemMem = memo(ActivityItem);
 
-export const ActivityOverview = ({ data }: { data: UserActivityQuery['Page']['activities'] }) => {
+export const ActivityOverview = ({
+    data,
+    nav,
+}: {
+    data: UserActivityQuery['Page']['activities'];
+    nav: NavigationProp<RootStackProps>;
+}) => {
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
 
@@ -31,6 +39,13 @@ export const ActivityOverview = ({ data }: { data: UserActivityQuery['Page']['ac
                     titles={item.media?.title}
                     coverImg={item.media?.coverImage?.extraLarge}
                     imgBgColor={item.media?.coverImage?.color}
+                    navigate={() =>
+                        nav.navigate('media', {
+                            aniID: item.media?.id,
+                            malID: item.media?.idMal,
+                            type: item.media.type,
+                        })
+                    }
                 />
                 <Text
                     variant="labelLarge"
