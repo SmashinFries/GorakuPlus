@@ -36,6 +36,8 @@ export const api = generatedApi.enhanceEndpoints({
         'CharacterSearch',
         'StaffSearch',
         'StudioSearch',
+        'Notifications',
+        'Activity',
     ],
     endpoints: {
         ExploreMedia: {
@@ -495,6 +497,48 @@ export const api = generatedApi.enhanceEndpoints({
                           'StudioSearch',
                       ]
                     : ['StudioSearch'],
+        },
+        UserActivity: {
+            // transformResponse(baseQueryReturnValue, meta, arg) {
+            //     return transformMediaDates(baseQueryReturnValue);
+            // },
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.activities?.map((activity) => ({
+                              type: 'Activity' as const,
+                              // @ts-ignore
+                              id: activity.id,
+                          })),
+                          'Activity',
+                      ]
+                    : ['Activity'],
+        },
+        GetNotifications: {
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs) {
+                    return endpointName + queryArgs.page.toString();
+                }
+                return endpointName;
+            },
+            merge: (currentCache, newItems) => {
+                if (
+                    currentCache.Page.pageInfo?.currentPage <
+                    currentCache.Page.pageInfo?.currentPage
+                ) {
+                    currentCache.Page?.notifications.push(...newItems.Page?.notifications);
+                    currentCache.Page.pageInfo = newItems.Page.pageInfo;
+                }
+            },
+            // Refetch when the page arg changes
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg !== previousArg;
+            },
+            providesTags: ['Notifications'],
+        },
+        DeleteAct: {
+            invalidatesTags: (result, error, params) =>
+                params ? [{ type: 'Activity', id: params.id }] : ['Activity'],
         },
     },
 });
