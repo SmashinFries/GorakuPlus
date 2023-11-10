@@ -22,6 +22,7 @@ export type RootStackProps = {
         animeID: number;
     };
     statistics: { userId: number };
+    notifications: { unreadNotifs: number };
     danbooruStack: NavigatorScreenParams<DanbooruStackProps>;
 };
 
