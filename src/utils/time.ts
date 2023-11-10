@@ -76,6 +76,8 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' = 'unti
     const today = new Date().getTime();
     const episodeDate = new Date(time * 1000).getTime();
     const diffTime = Math.abs(episodeDate - today);
+    const diffMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7 * 4));
+    const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     const diffHours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
     const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
@@ -85,7 +87,11 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' = 'unti
             diffMinutes > 0 ? `${diffMinutes}m` : ''
         }`;
     if (format === 'createdAt') {
-        if (diffDays > 0) return `${diffDays > 1 ? `${diffDays} days ` : `${diffDays} day `} ago`;
+        if (diffMonths > 0)
+            return `${diffMonths > 1 ? `${diffMonths} months` : `${diffMonths} month`} ago`;
+        if (diffWeeks > 0)
+            return `${diffWeeks > 1 ? `${diffWeeks} weeks` : `${diffWeeks} week`} ago`;
+        if (diffDays > 0) return `${diffDays > 1 ? `${diffDays} days` : `${diffDays} day`} ago`;
         if (diffHours > 0)
             return `${diffHours > 1 ? `${diffHours} hours` : `${diffHours} hour`} ago`;
         if (diffMinutes > 0)
