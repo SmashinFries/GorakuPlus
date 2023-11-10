@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Appbar, IconButton, Portal, Searchbar, useTheme } from 'react-native-paper';
+import { Appbar, Badge, IconButton, Portal, Searchbar, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
     RefreshControlProps,
     Share,
+    StyleSheet,
     TextInput,
     ToastAndroid,
     View,
@@ -14,7 +15,14 @@ import {
 import { RootState } from '../app/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
-import Animated from 'react-native-reanimated';
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withSequence,
+    withTiming,
+} from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
 import { MediaType } from '../app/services/anilist/generated-anilist';
@@ -238,6 +246,10 @@ export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderPro
     );
 };
 
+const ANGLE = 10;
+const TIME = 100;
+const EASING = Easing.elastic(1.5);
+
 type FadeHeaderProps = {
     children: React.ReactNode;
     title: string;
@@ -249,6 +261,10 @@ type FadeHeaderProps = {
     disableBack?: boolean;
     addFriendIcon?: boolean;
     onAddFriend?: () => void;
+    notificationIcon?: boolean;
+    newNotifs?: number;
+    onNotificationIcon?: () => void;
+    keepTitle?: boolean;
     RefreshControl?: React.ReactElement<
         RefreshControlProps,
         string | React.JSXElementConstructor<any>
@@ -266,6 +282,9 @@ export const FadeHeaderProvider = ({
     loading,
     addFriendIcon,
     onAddFriend,
+    notificationIcon,
+    newNotifs,
+    onNotificationIcon,
     RefreshControl,
     disableBack = false,
     animationRange = [40, 110],
@@ -277,6 +296,40 @@ export const FadeHeaderProvider = ({
         useHeaderAnim(animationRange[0], animationRange[1]);
     const { width, height } = useWindowDimensions();
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
+
+    const notifRotation = useSharedValue(0);
+
+    const animatedNotifStyle = useAnimatedStyle(() => ({
+        transform: [{ rotateZ: `${notifRotation.value}deg` }],
+    }));
+
+    const handleNotifPress = () => {
+        notifRotation.value = 0;
+        onNotificationIcon();
+    };
+
+    useEffect(() => {
+        if (newNotifs) {
+            notifRotation.value = withRepeat(
+                withSequence(
+                    // deviate left to start from -ANGLE
+                    withTiming(-ANGLE, { duration: TIME / 2, easing: EASING }),
+                    // wobble between -ANGLE and ANGLE 7 times
+                    withRepeat(
+                        withTiming(ANGLE, {
+                            duration: TIME,
+                            easing: EASING,
+                        }),
+                        7,
+                        true,
+                    ),
+                    // go back to 0 at the end
+                    withTiming(0, { duration: TIME / 2, easing: EASING }),
+                ),
+                -1,
+            );
+        }
+    }, [newNotifs]);
 
     const Header = () => {
         return (
@@ -316,36 +369,12 @@ export const FadeHeaderProvider = ({
                         />
                     </Animated.View>
                     {onEdit !== undefined && (
-                        <Animated.View
-                            style={[
-                                {
-                                    borderRadius: 100,
-                                    height: 42,
-                                    width: 42,
-                                    marginRight: 10,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                },
-                                headerActionStyle,
-                            ]}
-                        >
+                        <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
                             <Appbar.Action icon="file-document-edit-outline" onPress={onEdit} />
                         </Animated.View>
                     )}
                     {shareLink && (
-                        <Animated.View
-                            style={[
-                                {
-                                    borderRadius: 100,
-                                    height: 42,
-                                    width: 42,
-                                    marginRight: 10,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                },
-                                headerActionStyle,
-                            ]}
-                        >
+                        <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
                             <Appbar.Action
                                 icon="share-variant-outline"
                                 onPress={() =>
@@ -360,19 +389,7 @@ export const FadeHeaderProvider = ({
                         </Animated.View>
                     )}
                     {favorite !== undefined && userID && (
-                        <Animated.View
-                            style={[
-                                {
-                                    borderRadius: 100,
-                                    height: 42,
-                                    width: 42,
-                                    marginRight: 10,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                },
-                                headerActionStyle,
-                            ]}
-                        >
+                        <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
                             <Appbar.Action
                                 icon={favorite ? 'heart' : 'heart-outline'}
                                 onPress={onFavorite}
@@ -395,6 +412,26 @@ export const FadeHeaderProvider = ({
                             ]}
                         >
                             <Appbar.Action icon={'account-plus-outline'} onPress={onAddFriend} />
+                        </Animated.View>
+                    )}
+                    {userID && notificationIcon && (
+                        <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
+                            <Animated.View style={[animatedNotifStyle]}>
+                                <Appbar.Action icon={'bell-outline'} onPress={handleNotifPress} />
+                            </Animated.View>
+                            {newNotifs ? (
+                                <Badge
+                                    style={{
+                                        position: 'absolute',
+                                        right: -5,
+                                        top: -5,
+                                        color: colors.onPrimary,
+                                        backgroundColor: colors.primary,
+                                    }}
+                                >
+                                    {newNotifs}
+                                </Badge>
+                            ) : null}
                         </Animated.View>
                     )}
                 </Appbar.Header>
@@ -433,5 +470,16 @@ export const CharStaffHeader = ({ navigation, options, route, back }: NativeStac
         </Appbar.Header>
     );
 };
+
+const HeaderStyles = StyleSheet.create({
+    icon: {
+        borderRadius: 100,
+        height: 42,
+        width: 42,
+        marginRight: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});
 
 export default PaperHeader;
