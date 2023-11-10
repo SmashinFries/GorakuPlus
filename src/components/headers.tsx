@@ -309,7 +309,7 @@ export const FadeHeaderProvider = ({
     };
 
     useEffect(() => {
-        if (newNotifs) {
+        if (newNotifs && notificationIcon) {
             notifRotation.value = withRepeat(
                 withSequence(
                     // deviate left to start from -ANGLE
@@ -329,7 +329,7 @@ export const FadeHeaderProvider = ({
                 -1,
             );
         }
-    }, [newNotifs]);
+    }, [newNotifs, notificationIcon]);
 
     const Header = () => {
         return (
