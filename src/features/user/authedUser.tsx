@@ -12,9 +12,10 @@ import { RootStackProps } from '../../navigation/types';
 import { useUser } from './hooks/useUser';
 import { ActivityOverview } from './components/activityItem';
 import { FadeHeaderProvider } from '../../components/headers';
-import { AddFriendDialog } from './components/dialogs';
+import { AddFriendDialog, ConfirmActDelDialog } from './components/dialogs';
 import { Accordian } from '../../components/animations';
 import { MediaBanner } from '../media/components/banner';
+import { ProfileActionBar } from './components/actionbar';
 
 const AuthUserScreen = ({ userID }: { userID: number }) => {
     const navigation = useNavigation<NavigationProp<RootStackProps>>();
@@ -35,11 +36,11 @@ const AuthUserScreen = ({ userID }: { userID: number }) => {
         user.refetch();
         followers.refetch();
         following.refetch();
-        // activity.refetch();
+        activity.refetch();
         setIsRefreshing(false);
     };
 
-    if (user.isFetching)
+    if (user.isUninitialized || !user.data)
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <ActivityIndicator />
@@ -53,6 +54,13 @@ const AuthUserScreen = ({ userID }: { userID: number }) => {
                 <MediaBanner style={style} url={user?.data?.Viewer?.bannerImage} />
             )}
             disableBack
+            notificationIcon
+            newNotifs={user?.data?.Viewer?.unreadNotificationCount}
+            onNotificationIcon={() =>
+                navigation.navigate('notifications', {
+                    unreadNotifs: user?.data?.Viewer?.unreadNotificationCount ?? 0,
+                })
+            }
             addFriendIcon
             onAddFriend={() => setShowAddFriend(true)}
             RefreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
@@ -70,10 +78,16 @@ const AuthUserScreen = ({ userID }: { userID: number }) => {
                     activity={user.data?.Viewer?.stats?.activityHistory}
                     navToStats={navToStats}
                 />
+                <ProfileActionBar
+                    profile_url={user.data?.Viewer?.siteUrl}
+                    submissions_url={user.data?.Viewer?.siteUrl + '/submissions'}
+                    settings_url="https://anilist.co/settings"
+                    onStatPress={navToStats}
+                />
                 <View style={{ marginTop: 10 }}>
-                    <Accordian title="Activity" initialExpand>
-                        <ActivityOverview data={activity.data?.Page?.activities} nav={navigation} />
-                    </Accordian>
+                    {/* <Accordian title="Activity" initialExpand> */}
+                    <ActivityOverview data={activity.data?.Page?.activities} nav={navigation} />
+                    {/* </Accordian> */}
                     {/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
                     <Accordian title={'Following'}>
                         <FollowRow
