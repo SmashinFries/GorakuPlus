@@ -12,6 +12,7 @@ type MediaStatIsland = {
 };
 export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
     const { colors } = useTheme();
+    if (!value) return null;
     return (
         <AnimatePresence exitBeforeEnter>
             <MotiView
@@ -63,17 +64,17 @@ export const StatOverview = ({ anime, manga, activity, navToStats }: StatOvervie
                 <MediaStatIsland
                     icon={'timer-outline'}
                     title="Minutes Wasted"
-                    value={anime.minutesWatched}
+                    value={anime?.minutesWatched}
                 />
                 <MediaStatIsland
                     icon={'television-play'}
                     title="Episodes Watched"
-                    value={anime.episodesWatched}
+                    value={anime?.episodesWatched}
                 />
                 <MediaStatIsland
                     icon={'television-play'}
                     title="Chapters Read"
-                    value={manga.chaptersRead}
+                    value={manga?.chaptersRead}
                 />
                 {/* <MediaStatIsland
                     icon={'television-play'}
@@ -81,9 +82,9 @@ export const StatOverview = ({ anime, manga, activity, navToStats }: StatOvervie
                     value={manga.volumesRead}
                 /> */}
             </View>
-            <Button style={{ marginHorizontal: 10 }} onPress={navToStats} mode="elevated">
+            {/* <Button style={{ marginHorizontal: 10 }} onPress={navToStats} mode="elevated">
                 View Statistics
-            </Button>
+            </Button> */}
             {/* <UserHeatmap data={activity} /> */}
         </View>
     );
