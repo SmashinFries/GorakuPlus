@@ -36,7 +36,7 @@
     "@rtk-query/graphql-request-base-query": "^2.2.0",
     "@shopify/flash-list": "1.4.3",
     "dotenv": "^16.0.3",
-    "expo": "^49.0.0",
+    "expo": "^49.0.17",
     "expo-auth-session": "~5.0.2",
     "expo-av": "~13.4.1",
     "expo-background-fetch": "~11.3.0",
