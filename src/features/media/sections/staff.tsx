@@ -1,17 +1,11 @@
 import { FlashList } from '@shopify/flash-list';
-import { AnimatePresence, MotiView } from 'moti';
-import { Image } from 'expo-image';
-import { Avatar, IconButton, List, Text, useTheme } from 'react-native-paper';
 import { AniMediaQuery } from '../../../app/services/anilist/generated-anilist';
-import { TransYUpView, TransYUpViewMem } from '../../../components/animations';
-import { MD3Colors } from 'react-native-paper/lib/typescript/src/types';
-import { MotiPressable } from 'moti/interactions';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackProps } from '../../../navigation/types';
 import { memo, useCallback } from 'react';
 import { ListHeading } from '../../../components/text';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { StaffCard } from '../../../components/cards';
 
 type StaffPrevListProps = {
@@ -30,7 +24,7 @@ export const StaffPrevList = ({ data }: StaffPrevListProps) => {
                 role={item.role}
                 isFavourite={item.node.isFavourite}
                 onPress={() =>
-                    nav.navigate('staffStack', {
+                    nav.push('staffStack', {
                         screen: 'staff',
                         params: { id: item.node.id },
                     })
