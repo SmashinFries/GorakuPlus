@@ -11,6 +11,7 @@ import {
     UserOverviewQuery,
     UserSearchQuery,
     UserStatistics,
+    useDeleteActMutation,
 } from '../../../app/services/anilist/generated-anilist';
 import { ListHeading } from '../../../components/text';
 import { BasicDialogProps } from '../../../types';
@@ -173,6 +174,29 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
                     disabled={selectedUser?.isFollowing}
                 /> */}
                 <Button onPress={onDismiss}>Close</Button>
+            </Dialog.Actions>
+        </Dialog>
+    );
+};
+
+type ConfirmActDelDialogProps = BasicDialogProps & { id: number | null };
+export const ConfirmActDelDialog = ({ visible, id, onDismiss }: ConfirmActDelDialogProps) => {
+    const [deleteAct, results] = useDeleteActMutation();
+
+    const onConfirm = useCallback(async () => {
+        await deleteAct({ id }).unwrap();
+        onDismiss();
+    }, [id]);
+
+    return (
+        <Dialog visible={visible} onDismiss={onDismiss}>
+            <Dialog.Title>Delete Activity?</Dialog.Title>
+            <Dialog.Content>
+                <Text>Are you sure you want to delete this activity?</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+                <Button onPress={onDismiss}>Cancel</Button>
+                <Button onPress={onConfirm}>Delete</Button>
             </Dialog.Actions>
         </Dialog>
     );
