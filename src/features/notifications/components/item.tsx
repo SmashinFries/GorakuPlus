@@ -15,6 +15,8 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
     const { colors } = useTheme();
     const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
 
+    if (!item?.media) return null;
+
     return (
         <Animated.View
             entering={FadeIn}
@@ -86,7 +88,7 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
                         paddingHorizontal: 8,
                     }}
                 >
-                    <Text variant="labelSmall">{getTimeUntil(item.createdAt, 'createdAt')}</Text>
+                    <Text variant="labelSmall">{getTimeUntil(item?.createdAt, 'createdAt')}</Text>
                 </View>
             </Pressable>
         </Animated.View>
