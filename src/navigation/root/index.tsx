@@ -16,6 +16,7 @@ import StatisticsTabs from '../stacks/statistics';
 import useNotif from '../../provider/hooks/useNotificationSetup';
 import NewsStack from '../stacks/news';
 import DanbooruStack from '../stacks/danbooru';
+import NotificationScreen from '../../features/notifications';
 
 const RootStack = createNativeStackNavigator<RootStackProps>();
 
@@ -52,6 +53,15 @@ const RootStackNavigation = () => {
                 component={StatisticsTabs}
                 options={{
                     title: 'Statistics',
+                    header: (props) => <PaperHeader {...props} />,
+                    headerShown: true,
+                }}
+            />
+            <RootStack.Screen
+                name="notifications"
+                component={NotificationScreen}
+                options={{
+                    title: 'Notifications',
                     header: (props) => <PaperHeader {...props} />,
                     headerShown: true,
                 }}
