@@ -6,6 +6,7 @@ query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
     Page(page: $page, perPage: $amount) {
         pageInfo {
             hasNextPage
+            currentPage
         }
         notifications(resetNotificationCount: $reset) {
             __typename
