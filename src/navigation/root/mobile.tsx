@@ -9,6 +9,7 @@ import { RootState } from '../../app/store';
 import { UserStack } from '../stacks/user';
 import PickScreen from '../../features/picks';
 import { ListStackNav, ListTabsNav } from '../stacks/list';
+import CalendarScreen from '../../features/calendar';
 
 const RTBottomTabs = createMaterialBottomTabNavigator<RootNavPaths>();
 
@@ -35,6 +36,14 @@ const MobileNavigation = () => {
                 options={{
                     title: 'Explore',
                     tabBarIcon: 'campfire',
+                }}
+            />
+            <RTBottomTabs.Screen
+                name="calendarStack"
+                component={CalendarScreen}
+                options={{
+                    title: 'Calendar',
+                    tabBarIcon: 'calendar',
                 }}
             />
             {/* <RTBottomTabs.Screen

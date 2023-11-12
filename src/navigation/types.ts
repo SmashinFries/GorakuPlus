@@ -29,6 +29,7 @@ export type RootStackProps = {
 export type RootNavPaths = {
     exploreStack: NavigatorScreenParams<ExploreStackProps>;
     recommendStack: undefined;
+    calendarStack: undefined;
     listStack: undefined;
     userStack: NavigatorScreenParams<UserStackProps>;
     moreStack: NavigatorScreenParams<MoreStackProps>;
