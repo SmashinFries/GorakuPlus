@@ -4779,7 +4779,7 @@ export type WeeklyAnimeQueryVariables = Exact<{
 }>;
 
 
-export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, status?: MediaStatus | null, season?: MediaSeason | null, format?: MediaFormat | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, duration?: number | null, popularity?: number | null, episodes?: number | null, source?: MediaSource | null, countryOfOrigin?: any | null, hashtag?: string | null, averageScore?: number | null, siteUrl?: string | null, description?: string | null, bannerImage?: string | null, isAdult?: boolean | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, native?: string | null, english?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, trailer?: { __typename?: 'MediaTrailer', id?: string | null, site?: string | null, thumbnail?: string | null } | null, externalLinks?: Array<{ __typename?: 'MediaExternalLink', site: string, url?: string | null } | null> | null, rankings?: Array<{ __typename?: 'MediaRank', rank: number, type: MediaRankType, season?: MediaSeason | null, allTime?: boolean | null } | null> | null, studios?: { __typename?: 'StudioConnection', nodes?: Array<{ __typename?: 'Studio', id: number, name: string, siteUrl?: string | null } | null> | null } | null, relations?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', relationType?: MediaRelation | null, node?: { __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, native?: string | null, english?: string | null } | null } | null } | null> | null } | null } | null } | null> | null } | null };
+export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, status?: MediaStatus | null, season?: MediaSeason | null, format?: MediaFormat | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, duration?: number | null, popularity?: number | null, episodes?: number | null, source?: MediaSource | null, countryOfOrigin?: any | null, hashtag?: string | null, averageScore?: number | null, meanScore?: number | null, siteUrl?: string | null, description?: string | null, bannerImage?: string | null, isAdult?: boolean | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, native?: string | null, english?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null } | null } | null> | null } | null };
 
 export type MainMetaFragment = { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null };
 
@@ -5665,6 +5665,7 @@ export const WeeklyAnimeDocument = `
         countryOfOrigin
         hashtag
         averageScore
+        meanScore
         siteUrl
         description
         bannerImage
@@ -5672,42 +5673,6 @@ export const WeeklyAnimeDocument = `
         coverImage {
           extraLarge
           color
-        }
-        trailer {
-          id
-          site
-          thumbnail
-        }
-        externalLinks {
-          site
-          url
-        }
-        rankings {
-          rank
-          type
-          season
-          allTime
-        }
-        studios(isMain: true) {
-          nodes {
-            id
-            name
-            siteUrl
-          }
-        }
-        relations {
-          edges {
-            relationType(version: 2)
-            node {
-              id
-              title {
-                romaji
-                native
-                english
-              }
-              siteUrl
-            }
-          }
         }
       }
     }

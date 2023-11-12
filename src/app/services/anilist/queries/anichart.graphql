@@ -38,6 +38,7 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
                 countryOfOrigin
                 hashtag
                 averageScore
+                meanScore
                 siteUrl
                 description
                 bannerImage
@@ -45,42 +46,6 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
                 coverImage {
                     extraLarge
                     color
-                }
-                trailer {
-                    id
-                    site
-                    thumbnail
-                }
-                externalLinks {
-                    site
-                    url
-                }
-                rankings {
-                    rank
-                    type
-                    season
-                    allTime
-                }
-                studios(isMain: true) {
-                    nodes {
-                        id
-                        name
-                        siteUrl
-                    }
-                }
-                relations {
-                    edges {
-                        relationType(version: 2)
-                        node {
-                            id
-                            title {
-                                romaji
-                                native
-                                english
-                            }
-                            siteUrl
-                        }
-                    }
                 }
             }
         }
