@@ -132,3 +132,23 @@ export const getDatetoFuzzy = (value: Date): FuzzyDate => {
     };
     return newDate;
 };
+
+export const getWeekStartEnd = () => {
+    const weekStart = new Date();
+    const weekEnd = new Date();
+    const currentDay = weekStart.getDay();
+
+    const startDiff = weekStart.getDate() - currentDay;
+    const endDiff = weekEnd.getDate() + (6 - currentDay);
+
+    weekStart.setDate(startDiff);
+    weekEnd.setDate(endDiff);
+
+    console.log('Start:', weekStart.toDateString());
+    console.log('End:', weekEnd.toDateString());
+
+    return {
+        start: weekStart,
+        end: weekEnd,
+    };
+};
