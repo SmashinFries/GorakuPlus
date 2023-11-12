@@ -1,31 +1,178 @@
 import * as React from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { ActivityIndicator, Button, Text, useTheme } from 'react-native-paper';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { getTimeUntil, getWeekStartEnd } from '../../../utils';
+import { useCalendar } from '../hooks/useCalendar';
+import { FlashList } from '@shopify/flash-list';
+import { WeeklyAnimeQuery } from '../../../app/services/anilist/generated-anilist';
+import { MediaCard } from '../../../components/cards';
 
-const FirstRoute = () => <View style={{ flex: 1 }} />;
+const Days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
-const SecondRoute = () => <View style={{ flex: 1, backgroundColor: '#673ab7' }} />;
+type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 
-const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-});
-
-export const CalendarTabs = () => {
-    const layout = useWindowDimensions();
-
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'first', title: 'First' },
-        { key: 'second', title: 'Second' },
-    ]);
+type DayTabProps = {
+    data: WeeklyAnimeQuery['Page']['airingSchedules'];
+};
+const DayTab = ({ data }: DayTabProps) => {
+    const today = new Date().getTime() / 1000; // seconds
+    const RenderItem = React.useCallback(
+        ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
+            return (
+                <View style={{ padding: 10 }}>
+                    <MediaCard
+                        titles={item.media?.title}
+                        coverImg={item.media.coverImage.extraLarge}
+                        averageScore={item.media?.averageScore}
+                        meanScore={item.media?.meanScore}
+                        showBanner
+                        bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
+                    />
+                </View>
+            );
+        },
+        [data],
+    );
 
     return (
-        <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: layout.width }}
+        <View style={{ width: '100%', flex: 1 }}>
+            <FlashList
+                data={data}
+                renderItem={RenderItem}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={2}
+                estimatedItemSize={211}
+            />
+            {/* <Button onPress={() => console.log(data?.length)}>Print Amount</Button> */}
+        </View>
+    );
+};
+
+export const CalendarTabs = () => {
+    const dayOfWeek = new Date().getDay();
+    const layout = useWindowDimensions();
+    const { colors } = useTheme();
+
+    const { data, week, loading, refetch } = useCalendar();
+
+    const [index, setIndex] = React.useState(dayOfWeek);
+
+    const [routes] = React.useState<{ key: string; title: string }[]>(
+        Days.map((day) => {
+            return { key: day, title: day };
+        }),
+    );
+
+    const renderTabBar = (props) => (
+        <TabBar
+            {...props}
+            tabStyle={{ paddingTop: 30 }}
+            indicatorStyle={{ backgroundColor: colors.primary }}
+            style={{ backgroundColor: colors.surface }}
+            labelStyle={{ textTransform: 'capitalize' }}
+            scrollEnabled={true}
         />
+    );
+
+    const renderScene = React.useCallback(
+        ({ route }: { route: { key: WeekDay; title: WeekDay } }) => {
+            switch (route.key) {
+                case 'sunday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) =>
+                                    ep.airingAt > week.start && ep.airingAt < week.start + 86400,
+                            )}
+                        />
+                    );
+                // return <DayTab data={null} />;
+                case 'monday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 &&
+                                    ep.airingAt < week.start + 86400 * 2,
+                            )}
+                        />
+                    );
+                case 'tuesday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 2 &&
+                                    ep.airingAt < week.start + 86400 * 3,
+                            )}
+                        />
+                    );
+                case 'wednesday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 3 &&
+                                    ep.airingAt < week.start + 86400 * 4,
+                            )}
+                        />
+                    );
+                case 'thursday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 4 &&
+                                    ep.airingAt < week.start + 86400 * 5,
+                            )}
+                        />
+                    );
+                case 'friday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 5 &&
+                                    ep.airingAt < week.start + 86400 * 6,
+                            )}
+                        />
+                    );
+                case 'saturday':
+                    return (
+                        <DayTab
+                            data={data.filter(
+                                (ep) => ep.airingAt > week.end && ep.airingAt < week.end + 86400,
+                            )}
+                        />
+                    );
+                default:
+                    return null;
+            }
+        },
+        [data],
+    );
+
+    return (
+        <>
+            {/* <Button onPress={() => console.log(new Date(getWeekStartEnd().start).toDateString())}>
+                time
+            </Button>
+            <Button onPress={() => console.log(data.length)}>AMOUNT</Button> */}
+            {!loading ? (
+                <TabView
+                    navigationState={{ index, routes }}
+                    renderScene={renderScene}
+                    onIndexChange={setIndex}
+                    initialLayout={{ width: layout.width }}
+                    renderTabBar={renderTabBar}
+                    swipeEnabled={true}
+                />
+            ) : (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator size={'large'} />
+                </View>
+            )}
+        </>
     );
 };

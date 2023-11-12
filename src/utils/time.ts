@@ -144,11 +144,29 @@ export const getWeekStartEnd = () => {
     weekStart.setDate(startDiff);
     weekEnd.setDate(endDiff);
 
-    console.log('Start:', weekStart.toDateString());
-    console.log('End:', weekEnd.toDateString());
+    // set hours to 0
+    weekStart.setHours(0, 0, 0, 0);
+    weekEnd.setHours(0, 0, 0, 0);
+
+    // console.log(
+    //     'Start:',
+    //     Math.round(weekStart.getTime() / 1000),
+    //     '/',
+    //     weekStart.toDateString(),
+    //     '/',
+    //     weekStart.toTimeString(),
+    // );
+    // console.log(
+    //     'End:',
+    //     Math.round(weekEnd.getTime() / 1000),
+    //     '/',
+    //     weekEnd.toDateString(),
+    //     '/',
+    //     weekEnd.toTimeString(),
+    // );
 
     return {
-        start: weekStart,
-        end: weekEnd,
+        start: Math.round(weekStart.getTime() / 1000),
+        end: Math.round(weekEnd.getTime() / 1000),
     };
 };
