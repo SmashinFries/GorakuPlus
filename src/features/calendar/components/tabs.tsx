@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, Button, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Appbar, Button, Text, useTheme } from 'react-native-paper';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { getTimeUntil, getWeekStartEnd } from '../../../utils';
 import { useCalendar } from '../hooks/useCalendar';
@@ -81,7 +81,7 @@ export const CalendarTabs = () => {
     const renderTabBar = (props) => (
         <TabBar
             {...props}
-            tabStyle={{ paddingTop: 30 }}
+            tabStyle={{ paddingTop: 10 }}
             indicatorStyle={{ backgroundColor: colors.primary }}
             style={{ backgroundColor: colors.surface }}
             labelStyle={{ textTransform: 'capitalize' }}
@@ -180,6 +180,10 @@ export const CalendarTabs = () => {
                 time
             </Button>
             <Button onPress={() => console.log(data.length)}>AMOUNT</Button> */}
+            <Appbar.Header>
+                <Appbar.Content title="Calendar" />
+                {/* <Appbar.Action icon="refresh" onPress={() => refetch()} /> */}
+            </Appbar.Header>
             {!loading ? (
                 <TabView
                     navigationState={{ index, routes }}
