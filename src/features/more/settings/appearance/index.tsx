@@ -40,6 +40,7 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
     const { mode, isDark } = useAppSelector((state: RootState) => state.persistedTheme);
     const {
         btmTabLabels,
+        btmTabShifting,
         navAnimation,
         scoreColors,
         scoreGlow,
@@ -63,6 +64,10 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
 
     const onBtmTabLabelChange = () => {
         dispatch(setSettings({ entryType: 'btmTabLabels', value: !btmTabLabels }));
+    };
+
+    const onBtmTabShiftingChange = () => {
+        dispatch(setSettings({ entryType: 'btmTabShifting', value: !btmTabShifting }));
     };
 
     return (
@@ -145,7 +150,8 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                 <List.Section>
                     <ListSubheader title="Navigation" />
                     <List.Item
-                        title={'Bottom tab labels'}
+                        title={'Bottom Tab Labels'}
+                        description={'Show labels on bottom tab bar'}
                         // onPress={() => {
                         //     dispatch(setTheme({ isDark: !isDark, mode: mode }));
                         // }}
@@ -161,6 +167,21 @@ const AppearanceScreen = ({}: NativeStackScreenProps<MoreStackProps, 'settings'>
                 </List.Section>
                 <List.Section>
                     <ListSubheader title="Animations" />
+                    <List.Item
+                        title={'Bottom Tab Shifting'}
+                        // onPress={() => {
+                        //     dispatch(setTheme({ isDark: !isDark, mode: mode }));
+                        // }}
+                        description={'Enable labels to see the effect'}
+                        right={(props) => (
+                            <Switch
+                                value={btmTabShifting}
+                                {...props}
+                                thumbColor={btmTabShifting ? colors.primary : undefined}
+                                onValueChange={onBtmTabShiftingChange}
+                            />
+                        )}
+                    />
                     <List.Accordion
                         title={'Navigation between screens'}
                         description={navAnimation.replaceAll('_', ' ')}

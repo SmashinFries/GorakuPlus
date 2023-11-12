@@ -12,6 +12,7 @@ import { DanbooruRating } from '../../../app/services/danbooru/types';
 export type SettingsState = {
     navAnimation?: StackAnimationTypes;
     btmTabLabels?: boolean;
+    btmTabShifting?: boolean;
     exploreTabs?: (keyof ExploreTabsProps)[];
     exploreTabOrder?: (keyof ExploreTabsProps)[];
     listATabOrder?: (MediaListStatus | string)[];
@@ -41,6 +42,7 @@ export type SettingsState = {
 const initialState: SettingsState = {
     navAnimation: 'slide_from_bottom',
     btmTabLabels: true,
+    btmTabShifting: true,
     exploreTabs: ['anime', 'manga', 'manhwa', 'novels'],
     exploreTabOrder: ['anime', 'manga', 'manhwa', 'novels'],
     listATabOrder: [

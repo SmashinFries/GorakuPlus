@@ -23,12 +23,15 @@ const Test = () => {
 
 const MobileNavigation = () => {
     const { avatar, username, userID } = useSelector((state: RootState) => state.persistedAniLogin);
-    const { btmTabLabels } = useSelector((state: RootState) => state.persistedSettings);
+    const { btmTabLabels, btmTabShifting } = useSelector(
+        (state: RootState) => state.persistedSettings,
+    );
     return (
         <RTBottomTabs.Navigator
             labeled={btmTabLabels}
             sceneAnimationEnabled
             sceneAnimationType="shifting"
+            shifting={btmTabShifting}
         >
             <RTBottomTabs.Screen
                 name="exploreStack"
