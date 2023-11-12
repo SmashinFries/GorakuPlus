@@ -30,8 +30,7 @@ const AboutScreen = () => {
                 right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
             />
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Alpha version: 0.6</Text>
-                <Text>Many features are missing! 😵 {'\n\n'}</Text>
+                <Text>Alpha version: 0.6 {'\n'}</Text>
                 <Text>When you find bugs or issues, send me a DM!</Text>
                 <Button
                     icon={'instagram'}
