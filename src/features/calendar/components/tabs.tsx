@@ -5,8 +5,11 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { getTimeUntil, getWeekStartEnd } from '../../../utils';
 import { useCalendar } from '../hooks/useCalendar';
 import { FlashList } from '@shopify/flash-list';
-import { WeeklyAnimeQuery } from '../../../app/services/anilist/generated-anilist';
+import { MediaType, WeeklyAnimeQuery } from '../../../app/services/anilist/generated-anilist';
 import { MediaCard } from '../../../components/cards';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootNavPaths } from '../../../navigation/types';
 
 const Days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
@@ -14,13 +17,14 @@ type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'fri
 
 type DayTabProps = {
     data: WeeklyAnimeQuery['Page']['airingSchedules'];
+    navigation: NativeStackNavigationProp<RootNavPaths, 'calendarStack'>;
 };
-const DayTab = ({ data }: DayTabProps) => {
+const DayTab = ({ data, navigation }: DayTabProps) => {
     const today = new Date().getTime() / 1000; // seconds
     const RenderItem = React.useCallback(
         ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
             return (
-                <View style={{ padding: 10 }}>
+                <View style={{ padding: 15 }}>
                     <MediaCard
                         titles={item.media?.title}
                         coverImg={item.media.coverImage.extraLarge}
@@ -28,6 +32,14 @@ const DayTab = ({ data }: DayTabProps) => {
                         meanScore={item.media?.meanScore}
                         showBanner
                         bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
+                        navigate={() =>
+                            // @ts-ignore
+                            navigation.navigate('media', {
+                                aniID: item.media?.id,
+                                malID: item.media?.idMal,
+                                type: MediaType.Anime,
+                            })
+                        }
                     />
                 </View>
             );
@@ -43,6 +55,7 @@ const DayTab = ({ data }: DayTabProps) => {
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={2}
                 estimatedItemSize={211}
+                centerContent
             />
             {/* <Button onPress={() => console.log(data?.length)}>Print Amount</Button> */}
         </View>
@@ -50,6 +63,7 @@ const DayTab = ({ data }: DayTabProps) => {
 };
 
 export const CalendarTabs = () => {
+    const nav = useNavigation<NativeStackNavigationProp<RootNavPaths, 'calendarStack'>>();
     const dayOfWeek = new Date().getDay();
     const layout = useWindowDimensions();
     const { colors } = useTheme();
@@ -85,6 +99,7 @@ export const CalendarTabs = () => {
                                 (ep) =>
                                     ep.airingAt > week.start && ep.airingAt < week.start + 86400,
                             )}
+                            navigation={nav}
                         />
                     );
                 // return <DayTab data={null} />;
@@ -96,6 +111,7 @@ export const CalendarTabs = () => {
                                     ep.airingAt > week.start + 86400 &&
                                     ep.airingAt < week.start + 86400 * 2,
                             )}
+                            navigation={nav}
                         />
                     );
                 case 'tuesday':
@@ -106,6 +122,7 @@ export const CalendarTabs = () => {
                                     ep.airingAt > week.start + 86400 * 2 &&
                                     ep.airingAt < week.start + 86400 * 3,
                             )}
+                            navigation={nav}
                         />
                     );
                 case 'wednesday':
@@ -116,6 +133,7 @@ export const CalendarTabs = () => {
                                     ep.airingAt > week.start + 86400 * 3 &&
                                     ep.airingAt < week.start + 86400 * 4,
                             )}
+                            navigation={nav}
                         />
                     );
                 case 'thursday':
@@ -126,6 +144,7 @@ export const CalendarTabs = () => {
                                     ep.airingAt > week.start + 86400 * 4 &&
                                     ep.airingAt < week.start + 86400 * 5,
                             )}
+                            navigation={nav}
                         />
                     );
                 case 'friday':
@@ -136,6 +155,7 @@ export const CalendarTabs = () => {
                                     ep.airingAt > week.start + 86400 * 5 &&
                                     ep.airingAt < week.start + 86400 * 6,
                             )}
+                            navigation={nav}
                         />
                     );
                 case 'saturday':
@@ -144,6 +164,7 @@ export const CalendarTabs = () => {
                             data={data.filter(
                                 (ep) => ep.airingAt > week.end && ep.airingAt < week.end + 86400,
                             )}
+                            navigation={nav}
                         />
                     );
                 default:
