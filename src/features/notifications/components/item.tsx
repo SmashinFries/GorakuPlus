@@ -38,7 +38,7 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
                         />
                     )} */}
                     <Image
-                        source={{ uri: item.media.coverImage?.extraLarge }}
+                        source={{ uri: item.media?.coverImage?.extraLarge }}
                         style={{ height: 140, width: 90, borderRadius: 12, aspectRatio: 2 / 3 }}
                         contentFit="cover"
                     />
