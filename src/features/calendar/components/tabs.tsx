@@ -11,15 +11,11 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootNavPaths } from '../../../navigation/types';
 
-const Days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-
-type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
-
 type DayTabProps = {
     data: WeeklyAnimeQuery['Page']['airingSchedules'];
     navigation: NativeStackNavigationProp<RootNavPaths, 'calendarStack'>;
 };
-const DayTab = ({ data, navigation }: DayTabProps) => {
+export const DayTab = ({ data, navigation }: DayTabProps) => {
     const today = new Date().getTime() / 1000; // seconds
     const RenderItem = React.useCallback(
         ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
@@ -59,145 +55,5 @@ const DayTab = ({ data, navigation }: DayTabProps) => {
             />
             {/* <Button onPress={() => console.log(data?.length)}>Print Amount</Button> */}
         </View>
-    );
-};
-
-export const CalendarTabs = () => {
-    const nav = useNavigation<NativeStackNavigationProp<RootNavPaths, 'calendarStack'>>();
-    const dayOfWeek = new Date().getDay();
-    const layout = useWindowDimensions();
-    const { colors } = useTheme();
-
-    const { data, week, loading, refetch } = useCalendar();
-
-    const [index, setIndex] = React.useState(dayOfWeek);
-
-    const [routes] = React.useState<{ key: string; title: string }[]>(
-        Days.map((day) => {
-            return { key: day, title: day };
-        }),
-    );
-
-    const renderTabBar = (props) => (
-        <TabBar
-            {...props}
-            tabStyle={{ paddingTop: 10 }}
-            indicatorStyle={{ backgroundColor: colors.primary }}
-            style={{ backgroundColor: colors.surface }}
-            labelStyle={{ textTransform: 'capitalize' }}
-            scrollEnabled={true}
-        />
-    );
-
-    const renderScene = React.useCallback(
-        ({ route }: { route: { key: WeekDay; title: WeekDay } }) => {
-            switch (route.key) {
-                case 'sunday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) =>
-                                    ep.airingAt > week.start && ep.airingAt < week.start + 86400,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                // return <DayTab data={null} />;
-                case 'monday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 &&
-                                    ep.airingAt < week.start + 86400 * 2,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                case 'tuesday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 2 &&
-                                    ep.airingAt < week.start + 86400 * 3,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                case 'wednesday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 3 &&
-                                    ep.airingAt < week.start + 86400 * 4,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                case 'thursday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 4 &&
-                                    ep.airingAt < week.start + 86400 * 5,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                case 'friday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 5 &&
-                                    ep.airingAt < week.start + 86400 * 6,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                case 'saturday':
-                    return (
-                        <DayTab
-                            data={data.filter(
-                                (ep) => ep.airingAt > week.end && ep.airingAt < week.end + 86400,
-                            )}
-                            navigation={nav}
-                        />
-                    );
-                default:
-                    return null;
-            }
-        },
-        [data],
-    );
-
-    return (
-        <>
-            {/* <Button onPress={() => console.log(new Date(getWeekStartEnd().start).toDateString())}>
-                time
-            </Button>
-            <Button onPress={() => console.log(data.length)}>AMOUNT</Button> */}
-            <Appbar.Header>
-                <Appbar.Content title="Calendar" />
-                {/* <Appbar.Action icon="refresh" onPress={() => refetch()} /> */}
-            </Appbar.Header>
-            {!loading ? (
-                <TabView
-                    navigationState={{ index, routes }}
-                    renderScene={renderScene}
-                    onIndexChange={setIndex}
-                    initialLayout={{ width: layout.width }}
-                    renderTabBar={renderTabBar}
-                    swipeEnabled={true}
-                />
-            ) : (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <ActivityIndicator size={'large'} />
-                </View>
-            )}
-        </>
     );
 };
