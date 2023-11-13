@@ -35,8 +35,9 @@ const CalendarScreen = ({
             tabStyle={{ paddingTop: 10 }}
             indicatorStyle={{ backgroundColor: colors.primary }}
             style={{ backgroundColor: colors.surface }}
-            labelStyle={{ textTransform: 'capitalize' }}
+            labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
             scrollEnabled={true}
+            android_ripple={{ color: colors.primary, borderless: true }}
         />
     );
 
