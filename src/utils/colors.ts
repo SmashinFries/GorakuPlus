@@ -1,5 +1,4 @@
-import { MediaListStatus, MediaStatus } from '../app/services/anilist/generated-anilist';
-import { changeHue } from './hue';
+import { MediaListStatus, MediaStatus } from '@/store/services/anilist/generated-anilist';
 
 const RED = '#FF0000';
 const YELLOW = '#FFA500';

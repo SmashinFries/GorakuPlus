@@ -9,10 +9,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as Linking from 'expo-linking';
 import notifee, { EventType } from '@notifee/react-native';
 import { store } from './src/app/store';
-import {
-    displayNotification,
-    parseNotif,
-} from './src/features/more/settings/notifications/backgroundFetch';
+import { displayNotification, parseNotif } from './src/utils/notifications/backgroundFetch';
 import { useEffect } from 'react';
 import { api } from './src/app/services/anilist/enhanced';
 

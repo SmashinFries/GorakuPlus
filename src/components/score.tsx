@@ -1,6 +1,5 @@
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
-import { TransYUpView, TransYUpViewMem } from './animations';
 import { MotiView } from 'moti';
 
 type ScoreContainerProps = {

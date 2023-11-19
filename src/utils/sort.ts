@@ -1,4 +1,4 @@
-import { MediaTag } from '../app/services/anilist/generated-anilist';
+import { MediaTag } from '@/store/services/anilist/generated-anilist';
 
 export const sortTagsRank = (tags: MediaTag[]) => {
     const highestRateTags: MediaTag[] = tags ? tags.map((tag) => tag) : [];

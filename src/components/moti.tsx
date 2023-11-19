@@ -1,7 +1,6 @@
-import { MotiProps, MotiView, motify } from 'moti';
+import { MotiProps, MotiView } from 'moti';
 import { AnimateProp, MotiPressable, MotiPressableProps } from 'moti/interactions';
 import React, { useMemo } from 'react';
-import { ViewProps } from 'react-native';
 import { Button, ButtonProps } from 'react-native-paper';
 
 type MotiViewProps = typeof MotiView & AnimateProp;

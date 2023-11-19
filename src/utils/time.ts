@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FuzzyDate } from '../app/services/anilist/generated-anilist';
+import { FuzzyDate } from '@/store/services/anilist/generated-anilist';
 
 const monthByNumber = {
     [1]: 'Jan',
@@ -146,24 +146,24 @@ export const getWeekStartEnd = () => {
 
     // set hours to 0
     weekStart.setHours(0, 0, 0, 0);
-    weekEnd.setHours(0, 0, 0, 0);
+    weekEnd.setHours(23, 59, 59, 0);
 
-    // console.log(
-    //     'Start:',
-    //     Math.round(weekStart.getTime() / 1000),
-    //     '/',
-    //     weekStart.toDateString(),
-    //     '/',
-    //     weekStart.toTimeString(),
-    // );
-    // console.log(
-    //     'End:',
-    //     Math.round(weekEnd.getTime() / 1000),
-    //     '/',
-    //     weekEnd.toDateString(),
-    //     '/',
-    //     weekEnd.toTimeString(),
-    // );
+    console.log(
+        'Start:',
+        Math.round(weekStart.getTime() / 1000),
+        '/',
+        weekStart.toDateString(),
+        '/',
+        weekStart.toTimeString(),
+    );
+    console.log(
+        'End:',
+        Math.round(weekEnd.getTime() / 1000),
+        '/',
+        weekEnd.toDateString(),
+        '/',
+        weekEnd.toTimeString(),
+    );
 
     return {
         start: Math.round(weekStart.getTime() / 1000),

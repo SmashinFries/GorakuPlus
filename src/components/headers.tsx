@@ -7,12 +7,10 @@ import {
     Share,
     StyleSheet,
     TextInput,
-    ToastAndroid,
     View,
     useWindowDimensions,
 } from 'react-native';
-// import {} from 'react'
-import { RootState } from '../app/store';
+import { RootState } from '@/store/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated, {
@@ -25,8 +23,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
-import { MediaType } from '../app/services/anilist/generated-anilist';
-import { useAppSelector } from '../app/hooks';
+import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {

@@ -12,6 +12,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     orientation: 'portrait',
     icon: './assets/iconsv1/icon.png',
     userInterfaceStyle: 'automatic',
+    experiments: {
+        tsconfigPaths: true,
+    },
     updates: {
         url: 'https://u.expo.dev/3a04cf40-e4fd-4885-ae1c-17d23d6df96b',
         checkAutomatically: 'ON_LOAD',
@@ -25,6 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         '@react-native-firebase/app',
         '@react-native-firebase/crashlytics',
         'expo-localization',
+        'expo-router',
     ],
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -90,10 +94,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         eas: {
             projectId: '3a04cf40-e4fd-4885-ae1c-17d23d6df96b',
         },
+        router: {
+            origin: false,
+        },
         ANI_ID: process.env.ANI_ID,
         ANI_WEB_ID: process.env.ANI_WEB_ID,
         ANI_EXPO_GO: process.env.ANI_EXPO_GO,
         ANI_EXPO_GO_IOS: process.env.ANI_EXPO_GO_IOS,
     },
-    scheme: 'gorakuplus',
+    scheme: IS_DEV ? 'gorakuplusDev' : 'gorakuplus',
 });

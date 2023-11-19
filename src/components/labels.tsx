@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Chip, MD3LightTheme } from 'react-native-paper';
-import { DanbooruRating } from '../app/services/danbooru/types';
+import { DanbooruRating } from '@/store/services/danbooru/types';
 
 type RatingLevels = {
     [key in DanbooruRating]: {

@@ -1,0 +1,65 @@
+import { FlashList } from '@shopify/flash-list';
+import { View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, useTheme } from 'react-native-paper';
+import { useColumns } from '@/utils';
+import { CharacterItemMemo } from '@/components/characters/card';
+import { useCallback } from 'react';
+import { useCharactersList } from '@/hooks/characters/useCharacters';
+import { router, useLocalSearchParams } from 'expo-router';
+import { MediaType } from '@/store/services/anilist/generated-anilist';
+
+const CharacterListPage = () => {
+    const { params } = useLocalSearchParams<{ params: [string, string] }>();
+    const type = params[0] as MediaType;
+    const id = parseInt(params[1]);
+    const { charData, loadMore } = useCharactersList(id, type);
+    const { colors } = useTheme();
+    const { height } = useWindowDimensions();
+
+    const { columns, listKey } = useColumns(180);
+
+    const RenderItem = useCallback(
+        (props) => (
+            <CharacterItemMemo
+                {...props}
+                subTextColor={colors.onSurfaceVariant}
+                onNavigation={(id) => router.push(`characters/info/${id}`)}
+            />
+        ),
+        [],
+    );
+
+    if (charData.isUninitialized) {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" />
+            </View>
+        );
+    }
+
+    return (
+        <View style={{ height: '100%', width: '100%' }}>
+            {/* <Button onPress={() => data?.Media?.characters?.edges.length}>Print Length</Button> */}
+            <FlashList
+                numColumns={columns}
+                key={listKey}
+                data={charData.data?.Media?.characters?.edges}
+                keyExtractor={(item) => item?.node?.id.toString()}
+                renderItem={RenderItem}
+                contentContainerStyle={{ padding: 10 }}
+                ListFooterComponent={() =>
+                    charData.isFetching && (
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                            <ActivityIndicator size="large" />
+                        </View>
+                    )
+                }
+                drawDistance={height / 2}
+                estimatedItemSize={241}
+                onEndReached={() => loadMore()}
+            />
+        </View>
+    );
+};
+
+export default CharacterListPage;

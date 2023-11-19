@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { ColorValue } from 'react-native';
 import Svg, { SvgProps, Defs, LinearGradient, Stop, G, Path, Circle } from 'react-native-svg';
 
 export const DanbooruIcon = (props: SvgProps) => (
