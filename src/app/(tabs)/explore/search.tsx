@@ -31,6 +31,7 @@ import { IconButton, List, useTheme } from 'react-native-paper';
 const SearchPage = () => {
     const { dark, colors } = useTheme();
     const searchbarRef = useRef<TextInput>();
+    const [filterSearch, setFilterSearch] = useState('');
     const [isFocused, setIsFocused] = useState(false);
     const [loading, setLoading] = useState(false);
     const [currentHistorySearch, setCurrentHistorySearch] = useState<string | null>(null);
@@ -83,6 +84,7 @@ const SearchPage = () => {
             isAdult: showNSFW ? filter.filter.isAdult : false,
             tag_not_in: tag_not_in,
         });
+        console.log(cleansedFilter);
         const response = await searchContent(cleansedFilter, false).unwrap();
         updateNewResults(response);
         appDispatch(
@@ -256,6 +258,7 @@ const SearchPage = () => {
                             currentType={filter.searchType}
                             toggleIsFocused={toggleIsFocused}
                             searchbarRef={searchbarRef}
+                            setFilterSearch={(query) => setFilterSearch(query)}
                         />
                     ),
                 }}
@@ -357,7 +360,8 @@ const SearchPage = () => {
             <FilterSheet
                 sheetRef={sheetRef}
                 handleSheetChange={handleSheetChange}
-                onSearch={onSearch}
+                onSearch={(query: string) => onSearch(query)}
+                filterSearch={filterSearch}
                 filterData={filter}
                 updateFilter={updateFilter}
                 toggleSheet={closeSheet}

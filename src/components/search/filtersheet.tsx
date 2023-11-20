@@ -23,7 +23,8 @@ type FilterSheetProps = {
     sheetRef: React.Ref<BottomSheetModalMethods>;
     filterData: FilterState;
     genreTagData: GenreTagCollectionQuery;
-    onSearch: (search?: string) => void;
+    filterSearch: string;
+    onSearch: (query: string) => void;
     handleSheetChange: (index: number) => void;
     updateFilter: (props: FilterActions) => void;
     toggleSheet: () => void;
@@ -32,6 +33,7 @@ export const FilterSheet = ({
     sheetRef,
     filterData,
     genreTagData,
+    filterSearch,
     onSearch,
     handleSheetChange,
     updateFilter,
@@ -41,7 +43,7 @@ export const FilterSheet = ({
     // const [presetDialogVisible, setPresetDialogVisible] = useState(false);
     const { showNSFW } = useAppSelector((state) => state.persistedSettings);
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     const { colors } = useTheme();
     const snapPoints = useMemo(() => ['70%', '95%'], []);
 
@@ -59,7 +61,7 @@ export const FilterSheet = ({
                     icon={'magnify'}
                     onPress={() => {
                         toggleSheet();
-                        onSearch();
+                        onSearch(filterSearch);
                     }}
                     style={{ marginHorizontal: 8, marginTop: 20, marginBottom: 10 }}
                 >
@@ -79,16 +81,18 @@ export const FilterSheet = ({
                             }
                         />
                     )}
-                    <LicensedSelector
-                        isLicensed={filterData.filter.isLicensed}
-                        updateOnList={(isLicensed) =>
-                            updateFilter({
-                                type: 'SET_FILTER',
-                                key: 'isLicensed',
-                                payload: isLicensed,
-                            })
-                        }
-                    />
+                    {filterData.filter.type !== MediaType.Anime && (
+                        <LicensedSelector
+                            isLicensed={filterData.filter.isLicensed}
+                            updateOnList={(isLicensed) =>
+                                updateFilter({
+                                    type: 'SET_FILTER',
+                                    key: 'isLicensed',
+                                    payload: isLicensed,
+                                })
+                            }
+                        />
+                    )}
                     {showNSFW && (
                         <NSFWSelector
                             isAdult={filterData.filter.isAdult}
@@ -211,13 +215,6 @@ export const FilterSheet = ({
                         </BottomSheetView>
                     </BottomSheetView>
                 )}
-                {/* <Button onPress={() => console.log(filterData.filter.tag_in)}>Print Tag_In</Button>
-                <Button onPress={() => console.log(filterData.filter.tag_not_in)}>
-                    Print Tag_Not_In
-                </Button>
-                <Button onPress={() => console.log(filterData.filter.genre_in)}>
-                    Print genre_in
-                </Button> */}
                 <GenreSelectionMem
                     isAdult={filterData.filter.isAdult}
                     data={genreTagData?.GenreCollection}

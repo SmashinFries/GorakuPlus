@@ -122,6 +122,7 @@ type SearchHeaderProps = NativeStackHeaderProps & {
     historySelected: string | null;
     onHistorySelected: () => void;
     toggleIsFocused: (value: boolean) => void;
+    setFilterSearch: (query: string) => void;
 };
 export const SearchHeader = ({
     navigation,
@@ -135,6 +136,7 @@ export const SearchHeader = ({
     currentType,
     searchbarRef,
     toggleIsFocused,
+    setFilterSearch,
 }: SearchHeaderProps) => {
     const [query, setQuery] = useState('');
 
@@ -151,7 +153,10 @@ export const SearchHeader = ({
             <Searchbar
                 ref={searchbarRef}
                 value={query}
-                onChangeText={(txt) => setQuery(txt)}
+                onChangeText={(txt) => {
+                    setQuery(txt);
+                    setFilterSearch(txt);
+                }}
                 onSubmitEditing={(e) => {
                     searchContent(e.nativeEvent.text);
                 }}
