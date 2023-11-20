@@ -15,7 +15,6 @@ const useMangaUpdates = (title: string, type: MediaFormat, skip: boolean, muId?:
     useEffect(() => {
         // only search if no id
         if (title && type && !seriesData.data && !muId) {
-            console.log('searching mu');
             const fixed_title = title?.replace('[', '').replace(']', '');
             search({
                 seriesSearchRequestV1: {

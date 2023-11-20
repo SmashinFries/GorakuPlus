@@ -69,11 +69,6 @@ const MediaScreen = () => {
         }
     }, [aniData.isFetching, malData.isFetching, !mangaUpdates?.isFetching]);
 
-    useEffect(() => {
-        console.log('Local:', params);
-        // console.log('Global:', params2.params, typeof params2.params);
-    }, [params]);
-
     if (!params) return null;
 
     return (

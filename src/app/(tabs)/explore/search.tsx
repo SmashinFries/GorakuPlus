@@ -84,7 +84,6 @@ const SearchPage = () => {
             isAdult: showNSFW ? filter.filter.isAdult : false,
             tag_not_in: tag_not_in,
         });
-        console.log(cleansedFilter);
         const response = await searchContent(cleansedFilter, false).unwrap();
         updateNewResults(response);
         appDispatch(

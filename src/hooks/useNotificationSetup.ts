@@ -15,7 +15,6 @@ const useNotif = () => {
 
     // Bootstrap sequence function
     const bootstrap = async () => {
-        console.log('checking');
         const initialNotification = await notifee.getInitialNotification();
 
         if (initialNotification) {

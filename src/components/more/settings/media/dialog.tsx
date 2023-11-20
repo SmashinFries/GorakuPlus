@@ -130,7 +130,6 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
                         renderItem={renderItem}
                         keyExtractor={(item, idx) => idx.toString()}
                         onDragEnd={({ data }) => {
-                            console.log('Drag Ended!');
                             setTabOrder(data);
                         }}
                     />

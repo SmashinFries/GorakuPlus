@@ -61,7 +61,6 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
 
     useEffect(() => {
         if (seriesData?.data?.series_id) {
-            console.log('updating mu id:', seriesData?.data?.series_id);
             if (!muID) {
                 dispatch(updateDB({ aniId: id, muId: seriesData?.data?.series_id }));
             }
@@ -75,10 +74,6 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
     //         getMangaUpdates(aniData?.data?.Media?.title.romaji);
     //     }
     // }, [aniData, mangaUpdates]);
-
-    useEffect(() => {
-        console.log('using hook!');
-    }, []);
 
     return {
         aniData: aniData,

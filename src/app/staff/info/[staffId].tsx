@@ -259,8 +259,8 @@ const StafPage = () => {
                                 contentContainerStyle={{ padding: 15 }}
                                 showsHorizontalScrollIndicator={false}
                                 onEndReached={() => {
-                                    data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
-                                        console.log('Next Page!');
+                                    // data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
+                                    //     console.log('Next Page!');
                                     data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
                                         setSmPage((prev) => prev + 1);
                                 }}
