@@ -26,6 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
+import { router } from 'expo-router';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -102,11 +103,7 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
                     visible={showBCDialog}
                     onDismiss={() => setShowBCDialog(false)}
                     onNav={(aniId: number, malId: number, type: MediaType) =>
-                        navigation.push('media', {
-                            aniID: aniId,
-                            malID: malId,
-                            type: type,
-                        })
+                        router.push(`/${type}/${aniId}`)
                     }
                 />
             </Portal>
@@ -244,7 +241,7 @@ export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderPro
         <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title ?? ''} subtitle={'Test'} />
-            <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} />
+            {/* <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} /> */}
         </Appbar.Header>
     );
 };
