@@ -57,6 +57,14 @@ const AppearancePage = () => {
                 type: 'fade',
                 duration: 900,
             },
+            // animationConfig: {
+            //     type: 'circular',
+            //     duration: 900,
+            //     startingPoint: {
+            //         cx: 0,
+            //         cy: 0,
+            //     },
+            // },
         });
         // dispatch(setTheme({ isDark: !isDark, mode: mode }));
     };
