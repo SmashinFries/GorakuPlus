@@ -1,4 +1,4 @@
-import { MD3Colors } from 'react-native-paper/lib/typescript/src/types';
+import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 
 const KawaiiLight: MD3Colors = {
     primary: 'rgb(229, 95, 141)',

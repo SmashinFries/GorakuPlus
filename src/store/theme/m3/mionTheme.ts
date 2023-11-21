@@ -1,4 +1,4 @@
-import { MD3Colors } from 'react-native-paper/lib/typescript/src/types';
+import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 
 const MionLight: MD3Colors = {
     primary: 'rgb(61, 105, 27)',
