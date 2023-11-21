@@ -26,13 +26,13 @@ export const ArtistBar = ({ artist_name, pixiv_id, source }: ArtistBarProps) => 
                 onLayout={(e) => setTotalHeight(e.nativeEvent.layout.height)}
                 style={[styles.textBody]}
             >
-                <Text variant="titleMedium">{artist_name}</Text>
+                <Text variant="titleMedium">{artist_name?.length > 0 ? artist_name : '???'}</Text>
                 <Text
                     numberOfLines={1}
                     style={{ color: colors.onSurfaceVariant }}
                     variant="titleSmall"
                 >
-                    {source_link}
+                    {source_link?.length > 1 ? source_link : 'No source 🥲'}
                 </Text>
             </View>
         </Pressable>
