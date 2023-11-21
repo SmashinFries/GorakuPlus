@@ -136,6 +136,7 @@ export const SearchHeader = ({
     setFilterSearch,
 }: SearchHeaderProps) => {
     const [query, setQuery] = useState('');
+    const { colors } = useTheme();
 
     useEffect(() => {
         if (historySelected) {
@@ -164,6 +165,7 @@ export const SearchHeader = ({
                 placeholder="Search sauce..."
                 mode="bar"
                 onIconPress={() => searchContent(query)}
+                selectionColor={colors.primaryContainer}
                 // traileringIcon={'image-search-outline'}
                 // onTraileringIconPress={() => ToastAndroid.show('Image search coming soon!', 1000)}
                 icon={null}
