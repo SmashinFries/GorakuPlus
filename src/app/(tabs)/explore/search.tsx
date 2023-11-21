@@ -117,7 +117,7 @@ const SearchPage = () => {
         setLoading(true);
         const response = await searchContent(
             {
-                name: query,
+                name: query?.length < 1 || !query ? undefined : query,
                 page: 1,
                 isBirthday: query?.length < 1 || !query ? true : undefined,
                 sort:
@@ -142,7 +142,7 @@ const SearchPage = () => {
         setLoading(true);
         const response = await searchContent(
             {
-                name: query,
+                name: query?.length < 1 || !query ? undefined : query,
                 page: 1,
                 isBirthday: query?.length < 1 || !query ? true : undefined,
                 sort:
@@ -167,7 +167,7 @@ const SearchPage = () => {
         setLoading(true);
         const response = await searchContent(
             {
-                name: query,
+                name: query?.length < 1 || !query ? undefined : query,
                 page: 1,
                 sort:
                     query?.length < 1 || !query
