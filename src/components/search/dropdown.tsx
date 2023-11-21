@@ -55,7 +55,7 @@ export const Dropdown = ({
                             <Text
                                 style={{
                                     textTransform: 'capitalize',
-                                    backgroundColor: colors.secondaryContainer,
+                                    // backgroundColor: colors.secondaryContainer,
                                 }}
                             >
                                 {label.replaceAll('_', ' ')}
@@ -66,12 +66,13 @@ export const Dropdown = ({
                         contentStyle={{
                             textTransform: 'capitalize',
                             textAlign: 'center',
+                            color: colors.onPrimaryContainer,
                         }}
                         outlineColor={colors.secondary}
                         style={{
                             flex: 1,
                             marginHorizontal: 6,
-                            backgroundColor: 'transparent',
+                            backgroundColor: colors.primaryContainer,
                         }}
                         outlineStyle={{ borderRadius: 16 }}
                         editable={false}
