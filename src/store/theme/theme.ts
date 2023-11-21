@@ -1,5 +1,12 @@
-export type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion' | 'aqua';
-const themeOptions: ThemeOptions[] = ['default', 'kawaii', 'punpun', 'sonozaki_mion', 'aqua'];
+export type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion' | 'aqua' | 'berserk';
+const themeOptions: ThemeOptions[] = [
+    'default',
+    'kawaii',
+    'punpun',
+    'sonozaki_mion',
+    'aqua',
+    'berserk',
+];
 // type ThemeSelection = keyof typeof themes;
 // export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
 
@@ -101,12 +108,29 @@ const AquaDarkTheme = {
     },
 };
 
+const BerserkLightTheme = {
+    ...DefaultLightTheme,
+    colors: {
+        ...DefaultLightTheme.colors,
+        ...BerserkLight,
+    },
+};
+
+const BerserkDarkTheme = {
+    ...DefaultDarkTheme,
+    colors: {
+        ...DefaultLightTheme.colors,
+        ...BerserkDark,
+    },
+};
+
 const lightThemes = {
     default: DefaultLightTheme,
     kawaii: KawaiiLightTheme,
     punpun: PunpunLightTheme,
     sonozaki_mion: MionLightTheme,
     aqua: AquaLightTheme,
+    berserk: BerserkLightTheme,
 };
 const darkThemes = {
     default: DefaultDarkTheme,
@@ -114,6 +138,7 @@ const darkThemes = {
     punpun: PunpunDarkTheme,
     sonozaki_mion: MionDarkTheme,
     aqua: AquaDarkTheme,
+    berserk: BerserkDarkTheme,
 };
 const availableThemes = {
     light: lightThemes,
