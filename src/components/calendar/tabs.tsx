@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { getTimeUntil } from '@/utils';
+import { getTimeUntil, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { MediaType, WeeklyAnimeQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
@@ -11,6 +11,7 @@ type DayTabProps = {
 };
 export const DayTab = ({ data }: DayTabProps) => {
     const today = new Date().getTime() / 1000; // seconds
+    const { columns, listKey } = useColumns(150);
     const RenderItem = React.useCallback(
         ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
             return (
@@ -40,10 +41,11 @@ export const DayTab = ({ data }: DayTabProps) => {
     return (
         <View style={{ width: '100%', flex: 1 }}>
             <FlashList
+                key={listKey}
                 data={data}
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id.toString()}
-                numColumns={2}
+                numColumns={columns}
                 estimatedItemSize={211}
                 centerContent
             />
