@@ -18,18 +18,16 @@ import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { useLocalSearchParams } from 'expo-router';
 
 const DanbooruPostPage = () => {
-    const { id } = useLocalSearchParams<{ id: string }>();
+    const { postId } = useLocalSearchParams<{ postId: string }>();
+    const id = parseInt(postId);
     const { colors } = useTheme();
     const { width, height } = useWindowDimensions();
-    const { data, isLoading, isFetching } = useGetPostQuery(Number(id), { skip: !id });
-    const commentary = useGetArtistCommentaryQuery(
-        { 'search[post_id]': Number(id) },
-        { skip: !id },
-    );
+    const { data, isLoading, isFetching } = useGetPostQuery(id, { skip: !id });
+    const commentary = useGetArtistCommentaryQuery({ 'search[post_id]': id }, { skip: !id });
     const [aspectRatio, setAspectRatio] = useState<number>(1);
     const [titleHeight, setTitleHeight] = useState<number>(0);
 
-    const { blurAmount, toggleBlur } = useNsfwBlur(data?.rating);
+    // const { blurAmount, toggleBlur } = useNsfwBlur(data?.rating);
 
     const getTitle = (titles: string) => {
         const splitTitles = titles?.split(' ');
@@ -68,12 +66,12 @@ const DanbooruPostPage = () => {
                         aspectRatio={aspectRatio}
                         style={style}
                         img_url={data?.file_url}
-                        blurAmount={blurAmount}
+                        blurAmount={0}
                     />
                 )}
             >
                 <Pressable
-                    onPress={toggleBlur}
+                    // onPress={toggleBlur}
                     style={{
                         height: aspectRatio ? width / aspectRatio : 0,
                         width: width,
