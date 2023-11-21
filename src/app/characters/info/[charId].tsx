@@ -344,10 +344,7 @@ const CharacterScreen = () => {
                                         icon="chevron-right"
                                         onIconPress={() =>
                                             // @ts-ignore
-                                            navigation.navigate('danbooruStack', {
-                                                screen: 'danbooruList',
-                                                params: { tag: currentArtTag },
-                                            })
+                                            router.push(`/art/${currentArtTag}`)
                                         }
                                     />
                                     {!art?.isFetching ? (
