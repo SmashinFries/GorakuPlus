@@ -1,25 +1,17 @@
-export type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion' | 'aqua' | 'berserk';
-const themeOptions: ThemeOptions[] = [
-    'default',
-    'kawaii',
-    'punpun',
-    'sonozaki_mion',
-    'aqua',
-    'berserk',
-];
+export type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion' | 'aqua';
+const themeOptions: ThemeOptions[] = ['default', 'kawaii', 'punpun', 'sonozaki_mion', 'aqua'];
 // type ThemeSelection = keyof typeof themes;
 // export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
 
 import {
-    NavigationContainer,
     DarkTheme as NavigationDarkTheme,
     DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
-import { MD3DarkTheme, MD3LightTheme, MD3Theme, adaptNavigationTheme } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme, adaptNavigationTheme } from 'react-native-paper';
 import { KawaiiDark, KawaiiLight } from './m3/kawaiiTheme';
 import { PunpunDark, PunpunLight } from './m3/punpunTheme';
 import { MionDark, MionLight } from './m3/mionTheme';
-import { BerserkDark, BerserkLight } from './m3/berserkTheme';
+import { RamenDark, RamenLight } from './m3/ramenTheme';
 import { AquaDark, AquaLight } from './m3/aquaTheme';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -108,21 +100,21 @@ const AquaDarkTheme = {
     },
 };
 
-const BerserkLightTheme = {
-    ...DefaultLightTheme,
-    colors: {
-        ...DefaultLightTheme.colors,
-        ...BerserkLight,
-    },
-};
+// const RamenLightTheme = {
+//     ...DefaultLightTheme,
+//     colors: {
+//         ...DefaultLightTheme.colors,
+//         ...RamenLight,
+//     },
+// };
 
-const BerserkDarkTheme = {
-    ...DefaultDarkTheme,
-    colors: {
-        ...DefaultLightTheme.colors,
-        ...BerserkDark,
-    },
-};
+// const RamenDarkTheme = {
+//     ...DefaultDarkTheme,
+//     colors: {
+//         ...DefaultLightTheme.colors,
+//         ...RamenDark,
+//     },
+// };
 
 const lightThemes = {
     default: DefaultLightTheme,
@@ -130,7 +122,7 @@ const lightThemes = {
     punpun: PunpunLightTheme,
     sonozaki_mion: MionLightTheme,
     aqua: AquaLightTheme,
-    berserk: BerserkLightTheme,
+    // ramen: RamenLightTheme,
 };
 const darkThemes = {
     default: DefaultDarkTheme,
@@ -138,7 +130,7 @@ const darkThemes = {
     punpun: PunpunDarkTheme,
     sonozaki_mion: MionDarkTheme,
     aqua: AquaDarkTheme,
-    berserk: BerserkDarkTheme,
+    // ramen: RamenDarkTheme,
 };
 const availableThemes = {
     light: lightThemes,
