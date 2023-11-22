@@ -8,7 +8,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     owner: 'kuzutech',
     slug: 'GorakuPlus',
     name: IS_DEV ? 'Goraku Dev' : 'Goraku',
-    version: '0.6',
+    version: '0.7',
     orientation: 'portrait',
     icon: './assets/iconsv1/icon.png',
     userInterfaceStyle: 'automatic',
