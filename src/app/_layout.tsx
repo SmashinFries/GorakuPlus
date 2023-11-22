@@ -98,10 +98,26 @@ const AppProvider = () => {
 
     return (
         <PaperProvider
-            theme={isDark ? availableThemes['dark'][mode] : availableThemes['light'][mode]}
+            theme={
+                isDark
+                    ? availableThemes['dark'][mode]
+                        ? availableThemes['dark'][mode]
+                        : availableThemes['dark']['default']
+                    : availableThemes['light'][mode]
+                    ? availableThemes['light'][mode]
+                    : availableThemes['light']['default']
+            }
         >
             <ThemeProvider
-                value={isDark ? availableThemes['dark'][mode] : availableThemes['light'][mode]}
+                value={
+                    isDark
+                        ? availableThemes['dark'][mode]
+                            ? availableThemes['dark'][mode]
+                            : availableThemes['dark']['default']
+                        : availableThemes['light'][mode]
+                        ? availableThemes['light'][mode]
+                        : availableThemes['light']['default']
+                }
             >
                 <BottomSheetModalProvider>
                     <Stack
