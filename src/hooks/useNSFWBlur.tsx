@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { DanbooruRating } from '../app/services/danbooru/types';
-import { useAppSelector } from '../app/hooks';
+import { DanbooruRating } from '@/store/services/danbooru/types';
+import { useAppSelector } from '@/store/hooks';
 
 const nsfwLevelOrder = [
     DanbooruRating.General,

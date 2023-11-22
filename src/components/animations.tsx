@@ -23,7 +23,7 @@ import Animated, {
     withSpring,
     useAnimatedReaction,
 } from 'react-native-reanimated';
-import { rgbToRgba } from '../utils';
+import { rgbToRgba } from '@/utils';
 
 export const useHeaderAnim = (start = 40, end = 110) => {
     const input_range = [start, end];
@@ -193,7 +193,7 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
     }, [height, totalHeight]);
 
     return (
-        <View style={{ overflow: 'visible', marginVertical: 15 }}>
+        <View style={{ marginVertical: 15 }}>
             <Animated.View style={[animatedStyles, { overflow: 'hidden' }]}>
                 <View style={[StyleSheet.absoluteFill, { bottom: 'auto', paddingBottom: 10 }]}>
                     <View
@@ -210,13 +210,15 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
                         {children}
                     </View>
                 </View>
-                <LinearGradient
-                    colors={['transparent', colors.background]}
-                    locations={
-                        Math.floor(currentHeight) < Math.floor(totalHeight) ? [0.5, 1] : [1, 1]
-                    }
-                    style={{ position: 'absolute', height: '100%', width: '100%' }}
-                />
+                {currentHeight <= totalHeight && (
+                    <LinearGradient
+                        colors={['transparent', colors.background]}
+                        locations={
+                            Math.floor(currentHeight) < Math.floor(totalHeight) ? [0.5, 1] : [1, 1]
+                        }
+                        style={{ position: 'absolute', height: '100%', width: '100%' }}
+                    />
+                )}
             </Animated.View>
             {currentHeight <= totalHeight && (
                 <IconButton

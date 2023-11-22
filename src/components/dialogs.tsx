@@ -1,21 +1,15 @@
-import { Dialog, Button, Text, Searchbar, ActivityIndicator, useTheme } from 'react-native-paper';
+import { Dialog, Button, Text, ActivityIndicator, useTheme } from 'react-native-paper';
 import { BarCodeScanner, Constants as BarCodeConstants } from 'expo-barcode-scanner';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { BasicDialogProps } from '../types';
-import { StyleSheet, View } from 'react-native';
-import { useBarcode } from '../features/explore/hooks/useBarcode';
+import { BasicDialogProps } from '@/types';
+import { View } from 'react-native';
+import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useLazySearchISBNQuery } from '../app/services/google-books/googleApi';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FlashList } from '@shopify/flash-list';
-import { useLazyExploreMediaQuery } from '../app/services/anilist/enhanced';
-import {
-    ExploreMediaQuery,
-    MediaFormat,
-    MediaType,
-} from '../app/services/anilist/generated-anilist';
+import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from './cards';
-import { copyToClipboard } from '../utils';
+import { copyToClipboard } from '@/utils';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
     onNav: (aniId: number, malId: number, type: MediaType) => void;

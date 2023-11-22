@@ -7,12 +7,10 @@ import {
     Share,
     StyleSheet,
     TextInput,
-    ToastAndroid,
     View,
     useWindowDimensions,
 } from 'react-native';
-// import {} from 'react'
-import { RootState } from '../app/store';
+import { RootState } from '@/store/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated, {
@@ -25,9 +23,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
-import { MediaType } from '../app/services/anilist/generated-anilist';
-import { useAppSelector } from '../app/hooks';
+import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
+import { router } from 'expo-router';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -104,11 +103,7 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
                     visible={showBCDialog}
                     onDismiss={() => setShowBCDialog(false)}
                     onNav={(aniId: number, malId: number, type: MediaType) =>
-                        navigation.push('media', {
-                            aniID: aniId,
-                            malID: malId,
-                            type: type,
-                        })
+                        router.push(`/${type}/${aniId}`)
                     }
                 />
             </Portal>
@@ -124,6 +119,7 @@ type SearchHeaderProps = NativeStackHeaderProps & {
     historySelected: string | null;
     onHistorySelected: () => void;
     toggleIsFocused: (value: boolean) => void;
+    setFilterSearch: (query: string) => void;
 };
 export const SearchHeader = ({
     navigation,
@@ -137,8 +133,10 @@ export const SearchHeader = ({
     currentType,
     searchbarRef,
     toggleIsFocused,
+    setFilterSearch,
 }: SearchHeaderProps) => {
     const [query, setQuery] = useState('');
+    const { colors } = useTheme();
 
     useEffect(() => {
         if (historySelected) {
@@ -153,7 +151,10 @@ export const SearchHeader = ({
             <Searchbar
                 ref={searchbarRef}
                 value={query}
-                onChangeText={(txt) => setQuery(txt)}
+                onChangeText={(txt) => {
+                    setQuery(txt);
+                    setFilterSearch(txt);
+                }}
                 onSubmitEditing={(e) => {
                     searchContent(e.nativeEvent.text);
                 }}
@@ -164,6 +165,7 @@ export const SearchHeader = ({
                 placeholder="Search sauce..."
                 mode="bar"
                 onIconPress={() => searchContent(query)}
+                selectionColor={colors.primaryContainer}
                 // traileringIcon={'image-search-outline'}
                 // onTraileringIconPress={() => ToastAndroid.show('Image search coming soon!', 1000)}
                 icon={null}
@@ -241,7 +243,7 @@ export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderPro
         <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title ?? ''} subtitle={'Test'} />
-            <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} />
+            {/* <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} /> */}
         </Appbar.Header>
     );
 };

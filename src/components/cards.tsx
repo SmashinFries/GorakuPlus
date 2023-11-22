@@ -5,16 +5,15 @@ import {
     MediaListStatus,
     MediaStatus,
     MediaTitle,
-} from '../app/services/anilist/generated-anilist';
+} from '@/store/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ScoreHealthBar, ScoreIconText } from '../features/explore/components/itemScore';
-import { AiringBanner, AiringBannerMemo } from '../features/explore/components/episodeBanner';
-import { listColor, rgbToRgba } from '../utils';
-import { useAppSelector } from '../app/hooks';
-import { DanPost } from '../app/services/danbooru/types';
-import { useNsfwBlur } from '../hooks/useNSFWBlur';
+import { listColor, rgbToRgba } from '@/utils';
+import { useAppSelector } from '@/store/hooks';
+import { DanPost } from '@/store/services/danbooru/types';
+import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { NSFWLabel } from './labels';
+import { ScoreHealthBar, ScoreIconText } from './explore/itemScore';
+import { AiringBanner } from './explore/episodeBanner';
 
 const BORDER_RADIUS = 12;
 

@@ -9,8 +9,8 @@ export const copyToClipboard = async (txt: string) => {
 };
 
 export const countryFlags = {
-    'JP': '🇯🇵',
-    'KR': '🇰🇷',
-    'CN': '🇨🇳',
-    'TW': '🇹🇼',
-}
+    JP: '🇯🇵',
+    KR: '🇰🇷',
+    CN: '🇨🇳',
+    TW: '🇹🇼',
+};

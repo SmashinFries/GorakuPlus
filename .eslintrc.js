@@ -30,6 +30,7 @@ module.exports = {
         'no-empty-pattern': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
+        'react-hooks/rules-of-hooks': 'error',
     },
     settings: {
         react: {

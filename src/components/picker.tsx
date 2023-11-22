@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import WheelPicker from 'react-native-wheely';
 
