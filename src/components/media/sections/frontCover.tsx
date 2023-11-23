@@ -60,7 +60,9 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
                     />
                     <QuickSelector
                         icon="newspaper"
-                        onPress={() => router.push(`/news/${data?.type}/${data?.id}`)}
+                        onPress={() => {
+                            router.push(`/news/${data?.type}/${data?.idMal}`);
+                        }}
                         disabled={!data?.idMal}
                     />
                 </TransXInView>
