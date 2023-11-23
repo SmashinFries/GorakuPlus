@@ -421,6 +421,12 @@ export const api = generatedApi.enhanceEndpoints({
             ],
         },
         CharacterDetails: {
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs) {
+                    return endpointName + queryArgs.id.toString();
+                }
+                return endpointName;
+            },
             providesTags: ['CharacterDetails'],
         },
         StaffDetails: {
