@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, IconButton, useTheme } from 'react-native-paper';
 import { AnilistIcon, DanbooruIcon } from '../svgs';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 
 const LoadingIcon = ({ icon, dark }: { icon: 'ani' | 'danbooru'; dark: boolean }) => {
     return (
@@ -69,31 +70,21 @@ type LoadingProps = {
 export const CharacterLoading = ({ aniLoading, artLoading, aniError, artError }: LoadingProps) => {
     const { dark } = useTheme();
     return (
-        <MotiView
-            style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                alignItems: 'center',
-            }}
-            from={{ opacity: 1 }}
-            animate={{ opacity: 1 }}
-            transition={{
-                type: 'timing',
-                duration: 2500,
-            }}
-            exit={{
-                opacity: 0,
-            }}
-            exitTransition={{
-                type: 'timing',
-                duration: 500,
-            }}
+        <Animated.View
+            style={[
+                {
+                    width: '100%',
+                    height: '100%',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                },
+            ]}
+            entering={FadeIn.duration(500).easing(Easing.ease)}
+            exiting={FadeOut.duration(500).easing(Easing.ease)}
         >
             <LoadingItem loading={aniLoading} dark={dark} error={aniError} icon="ani" />
             <LoadingItem loading={artLoading} dark={dark} error={artError} icon="danbooru" />
-        </MotiView>
+        </Animated.View>
     );
 };

@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
 import { SerializedError } from '@reduxjs/toolkit';
 import Animated, {
+    Easing,
     FadeIn,
     FadeOut,
     useAnimatedStyle,
@@ -122,7 +123,6 @@ export const MediaLoading = ({
         <Animated.View
             style={[
                 {
-                    position: 'absolute',
                     width: '100%',
                     height: '100%',
                     justifyContent: 'center',
@@ -130,8 +130,8 @@ export const MediaLoading = ({
                     alignItems: 'center',
                 },
             ]}
-            entering={FadeIn}
-            exiting={FadeOut}
+            entering={FadeIn.duration(500).easing(Easing.ease)}
+            exiting={FadeOut.duration(500).easing(Easing.ease)}
         >
             <LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
             <LoadingItemMem

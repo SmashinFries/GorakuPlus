@@ -28,6 +28,7 @@ import MalImages from '@/components/media/sections/images';
 import MediaLinks from '@/components/media/sections/links';
 import { MuSearchDialog } from '@/components/media/dialogs';
 import { AnimatePresence } from 'moti';
+import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 
 const MediaScreen = () => {
     const { params } = useLocalSearchParams<{ params: [string, string] }>(); // /anime/1234
@@ -66,16 +67,16 @@ const MediaScreen = () => {
     useEffect(() => {
         if (!aniData.isFetching && !malData.isFetching && !mangaUpdates?.isFetching) {
             setLoading(false);
+            console.log('done loading');
         }
-    }, [aniData.isFetching, malData.isFetching, !mangaUpdates?.isFetching]);
+    }, [aniData.isFetching, malData.isFetching, mangaUpdates?.isFetching]);
 
     if (!params) return null;
 
     return (
-        <AnimatePresence exitBeforeEnter>
+        <View>
             {loading && (
                 <MediaLoadingMem
-                    key="loading"
                     aniLoading={aniData?.isFetching}
                     mangaUpdatesLoading={mangaUpdates?.isFetching ?? null}
                     aniError={aniData?.error}
@@ -85,7 +86,7 @@ const MediaScreen = () => {
             )}
 
             {!loading && (
-                <View key="loaded">
+                <Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
                     <FadeHeaderProvider
                         title={
                             aniData?.data?.Media?.title[mediaLanguage] ??
@@ -145,10 +146,7 @@ const MediaScreen = () => {
                                         openMuDialog={toggleMuDialog}
                                     />
                                 )}
-                                <RelationsMem
-                                    data={aniData?.data?.Media?.relations}
-                                    scoreColors={scoreColors}
-                                />
+                                <RelationsMem data={aniData?.data?.Media?.relations} />
                                 <CharacterPrevListMem data={aniData?.data?.Media?.characters} />
                                 <StaffPrevListMem data={aniData?.data?.Media?.staff} />
                                 {userID && (
@@ -198,9 +196,9 @@ const MediaScreen = () => {
                             )} */}
                         </Portal>
                     </FadeHeaderProvider>
-                </View>
+                </Animated.View>
             )}
-        </AnimatePresence>
+        </View>
     );
 };
 

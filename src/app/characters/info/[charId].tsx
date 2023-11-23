@@ -30,6 +30,7 @@ import { updateCharArtDB } from '@/store/slices/charArtSlice';
 import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
 import { AnimatePresence } from 'moti';
+import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 
 const CharacterScreen = () => {
     const { charId } = useLocalSearchParams<{ charId: string }>();
@@ -191,7 +192,7 @@ const CharacterScreen = () => {
     }, [charData.data]);
 
     return (
-        <AnimatePresence exitBeforeEnter>
+        <View>
             {isLoading && (
                 <CharacterLoading
                     key="loading"
@@ -202,7 +203,7 @@ const CharacterScreen = () => {
                 />
             )}
             {!isLoading && (
-                <View key={'loaded'}>
+                <Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
                     <FadeHeaderProvider
                         title={primaryName}
                         loading={charData.isLoading}
@@ -398,9 +399,9 @@ const CharacterScreen = () => {
                             }
                         />
                     </Portal>
-                </View>
+                </Animated.View>
             )}
-        </AnimatePresence>
+        </View>
     );
 };
 
