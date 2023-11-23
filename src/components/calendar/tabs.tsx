@@ -4,7 +4,8 @@ import { getTimeUntil, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { MediaType, WeeklyAnimeQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
-import { MediaCard } from '../cards';
+import { MediaCard, MediaProgressBar } from '../cards';
+import { useAppSelector } from '@/store/hooks';
 
 type DayTabProps = {
     data: WeeklyAnimeQuery['Page']['airingSchedules'];
@@ -12,6 +13,8 @@ type DayTabProps = {
 export const DayTab = ({ data }: DayTabProps) => {
     const today = new Date().getTime() / 1000; // seconds
     const { columns, listKey } = useColumns(150);
+    const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
+
     const RenderItem = React.useCallback(
         ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
             return (
@@ -32,10 +35,17 @@ export const DayTab = ({ data }: DayTabProps) => {
                             );
                         }}
                     />
+                    <MediaProgressBar
+                        progress={item.media.mediaListEntry?.progress}
+                        mediaListEntry={item.media.mediaListEntry}
+                        mediaStatus={item.media.status}
+                        total={item.media.episodes ?? 0}
+                        showListStatus={showItemListStatus}
+                    />
                 </View>
             );
         },
-        [data],
+        [data, showItemListStatus],
     );
 
     return (
