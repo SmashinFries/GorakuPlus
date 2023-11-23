@@ -1,11 +1,23 @@
 import { useState } from 'react';
-import { Linking, View } from 'react-native';
+import { Linking, ScrollView, View } from 'react-native';
 
 import * as Updates from 'expo-updates';
+import Constants from 'expo-constants';
 import { ToastAndroid } from 'react-native';
 import { ActivityIndicator, Button, List, Text } from 'react-native-paper';
+import { Accordian } from '@/components/animations';
+import { LinkButton } from '@/components/more/settings/about/buttons';
+import {
+    AnilistIcon,
+    DanbooruIcon,
+    GumroadIcon,
+    MalIcon,
+    MangaUpdatesIcon,
+} from '@/components/svgs';
+import { useAppSelector } from '@/store/hooks';
 
 const AboutPage = () => {
+    const { showNSFW } = useAppSelector((state) => state.persistedSettings);
     const [isCheckingUpdates, setIsCheckingUpdates] = useState(false);
 
     const checkForUpdates = async () => {
@@ -26,19 +38,82 @@ const AboutPage = () => {
     return (
         <View style={{ flex: 1 }}>
             <List.Item
+                title={'Version'}
+                description={`${Constants?.expoConfig?.version}${
+                    Updates.createdAt ? ` (${Updates.createdAt?.toLocaleString()})` : ''
+                }`}
+                descriptionStyle={{ textTransform: 'capitalize' }}
+                onPress={() => console.log(Updates)}
+            />
+            <List.Item
                 title={'Check for Updates'}
                 onPress={checkForUpdates}
                 right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
             />
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Alpha version: 0.6 {'\n'}</Text>
-                <Text>When you find bugs or issues, send me a DM!</Text>
+            <Accordian title="Data Sources" initialExpand>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <LinkButton
+                        url="https://anilist.co/home"
+                        label="Anilist"
+                        icon={() => <AnilistIcon />}
+                    />
+                    <LinkButton
+                        url="https://myanimelist.net/"
+                        label="MyAnimeList"
+                        icon={() => <MalIcon />}
+                        transparentBg
+                    />
+                    <LinkButton
+                        url="https://www.mangaupdates.com/"
+                        label="MangaUpdates"
+                        icon={() => <MangaUpdatesIcon />}
+                        transparentBg
+                    />
+                    <LinkButton
+                        url="https://books.google.com/"
+                        label="Google Books"
+                        icon={'google'}
+                    />
+                    <LinkButton
+                        url={
+                            showNSFW
+                                ? 'https://danbooru.donmai.us/'
+                                : 'https://safebooru.donmai.us/'
+                        }
+                        label="Danbooru"
+                        icon={() => <DanbooruIcon />}
+                        transparentBg
+                    />
+                </ScrollView>
+            </Accordian>
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: 'flex-end',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                }}
+            >
+                {/* <Text>When you find bugs or issues, send me a DM!</Text>
                 <Button
                     icon={'instagram'}
                     onPress={() => Linking.openURL('https://www.instagram.com/smashinfries')}
                 >
                     @smashinfries
-                </Button>
+                </Button> */}
+                <LinkButton url="https://kuzulabz.com/" icon={'earth'} size={28} />
+                <LinkButton
+                    url="https://store.kuzulabz.com/"
+                    icon={() => <GumroadIcon fillColor="#ff90e8" />}
+                    size={28}
+                    bgColor="#000"
+                />
+                <LinkButton url="https://github.com/SmashinFries" icon={'github'} size={28} />
+                <LinkButton
+                    url="https://www.instagram.com/smashinfries"
+                    icon={'instagram'}
+                    size={28}
+                />
             </View>
         </View>
     );
