@@ -5,6 +5,7 @@ import { memo, useCallback } from 'react';
 import { ListHeading } from '../../text';
 import { Pressable, View } from 'react-native';
 import { UserCard } from '../../cards';
+import { openWebBrowser } from '@/utils/webBrowser';
 
 type FollowingPrevListProps = {
     data: AniMediaQuery['Page']['mediaList'];
@@ -17,6 +18,7 @@ export const FollowingPrevList = ({ data }: FollowingPrevListProps) => {
                 avatarImg={item.user?.avatar?.large}
                 username={item.user?.name}
                 status={item.status}
+                onPress={() => openWebBrowser(`https://anilist.co/user/${item.user?.name}`)}
             />
         ),
         [],

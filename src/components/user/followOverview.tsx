@@ -3,6 +3,7 @@ import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
 import { User } from '@/store/services/anilist/generated-anilist';
 import { ScrollView, ToastAndroid } from 'react-native';
 import { Selectable } from '../moti';
+import { openWebBrowser } from '@/utils/webBrowser';
 
 type FollowUserItemProps = {
     user: User;
@@ -13,7 +14,7 @@ const FollowUserItem = ({ user }: FollowUserItemProps) => {
             <Selectable
                 from={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                onPress={() => ToastAndroid.show('User screen coming soon!', ToastAndroid.LONG)}
+                onPress={() => openWebBrowser(`https://anilist.co/user/${user.name}`)}
                 style={{ margin: 12, alignItems: 'center' }}
             >
                 <MotiView>
