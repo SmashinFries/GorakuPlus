@@ -53,42 +53,34 @@ const AppearancePage = () => {
             switchThemeFunction: () => {
                 dispatch(setTheme({ isDark: !isDark, mode: mode }));
             },
-            // animationConfig: {
-            //     type: 'fade',
-            //     duration: 900,
-            // },
             animationConfig: {
-                type: 'circular',
+                type: 'fade',
                 duration: 900,
-                startingPoint: {
-                    cx: 0,
-                    cy: 0,
-                },
             },
+            // animationConfig: {
+            //     type: 'circular',
+            //     duration: 900,
+            //     startingPoint: {
+            //         cx: 0,
+            //         cy: 0,
+            //     },
+            // },
         });
         // dispatch(setTheme({ isDark: !isDark, mode: mode }));
     };
 
-    const onThemeChange = (theme: ThemeOptions) => {
+    const onThemeChange = (theme: ThemeOptions, py: number, px: number) => {
         switchTheme({
             switchThemeFunction: () => {
                 dispatch(setTheme({ mode: theme, isDark: isDark }));
             },
-            // animationConfig: {
-            //     type: 'fade', // circular aint workin
-            //     duration: 900,
-            //     // startingPoint: {
-            //     //     cy: py + height / 2,
-            //     //     cx: px + width / 2,
-            //     // },
-            // },
             animationConfig: {
-                type: 'circular',
+                type: 'fade', // circular aint workin
                 duration: 900,
-                startingPoint: {
-                    cx: 0,
-                    cy: 0,
-                },
+                // startingPoint: {
+                //     cy: py + height / 2,
+                //     cx: px + width / 2,
+                // },
             },
         });
     };
