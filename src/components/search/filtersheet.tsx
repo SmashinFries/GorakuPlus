@@ -16,12 +16,11 @@ import { GenreSelectionMem, TagSelectionMem } from './tags';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { LicensedSelector, NSFWSelector, OnListSelector, TagBanSwitch } from './buttons';
 import { ScoreSlider } from './slider';
-import { FilterState } from '@/store/slices/search/filterSlice';
-import { FilterActions } from '@/reducers/search/reducers';
+import { FilterActions, FilterReducerState } from '@/reducers/search/reducers';
 
 type FilterSheetProps = {
     sheetRef: React.Ref<BottomSheetModalMethods>;
-    filterData: FilterState;
+    filterData: FilterReducerState;
     genreTagData: GenreTagCollectionQuery;
     filterSearch: string;
     onSearch: (query: string) => void;

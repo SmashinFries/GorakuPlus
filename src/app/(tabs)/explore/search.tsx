@@ -71,10 +71,12 @@ const SearchPage = () => {
     const onMediaSearch = async (query: string) => {
         Keyboard.dismiss();
         setLoading(true);
-        const tag_not_in = filter.filter.tag_not_in
-            ? [...filter.filter.tag_not_in, ...tagBlacklist]
-            : tagBlacklist
-            ? tagBlacklist
+        const tag_not_in = filter.enableTagBlacklist
+            ? filter.filter.tag_not_in
+                ? [...filter.filter.tag_not_in, ...tagBlacklist]
+                : tagBlacklist
+                ? tagBlacklist
+                : []
             : [];
         const cleansedFilter = cleanFilter({
             ...filter.filter,
@@ -193,6 +195,7 @@ const SearchPage = () => {
                 searchType: filter.searchType,
             }),
         );
+        setFilterSearch(query);
         appDispatch(addSearch(query));
         if (filter.searchType === MediaType.Anime || filter.searchType === MediaType.Manga) {
             await onMediaSearch(query);
