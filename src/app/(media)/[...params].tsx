@@ -67,7 +67,6 @@ const MediaScreen = () => {
     useEffect(() => {
         if (!aniData.isFetching && !malData.isFetching && !mangaUpdates?.isFetching) {
             setLoading(false);
-            console.log('done loading');
         }
     }, [aniData.isFetching, malData.isFetching, mangaUpdates?.isFetching]);
 
@@ -85,119 +84,125 @@ const MediaScreen = () => {
                 />
             )}
 
-            {!loading && (
-                <Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
-                    <FadeHeaderProvider
-                        title={
-                            aniData?.data?.Media?.title[mediaLanguage] ??
-                            aniData?.data?.Media?.title?.romaji
-                        }
-                        shareLink={aniData?.data?.Media?.siteUrl}
-                        onEdit={openEdit}
-                        loading={loading}
-                        BgImage={({ style }) => (
-                            <MediaBanner
-                                style={style}
-                                url={
-                                    aniData?.data?.Media?.bannerImage ??
-                                    aniData?.data?.Media?.coverImage?.extraLarge
-                                }
-                            />
-                        )}
-                    >
-                        <BodyContainer>
-                            <FrontCoverMem
-                                data={aniData?.data?.Media}
-                                music={videoData?.data?.data?.music_videos}
-                                toggleEP={toggleEPDialog}
-                                defaultTitle={mediaLanguage}
-                            />
-                            <TransYUpViewMem animation={true} delay={550}>
-                                <TagView
-                                    genres={aniData?.data?.Media?.genres}
-                                    tags={aniData?.data?.Media?.tags}
-                                />
-                                <ScoreCircles
-                                    avgScore={aniData?.data?.Media?.averageScore}
-                                    meanScore={aniData?.data?.Media?.meanScore}
-                                    malScore={malData?.data?.data?.score}
-                                    userScore={aniData?.data?.Media?.mediaListEntry?.score}
-                                    scoreColors={scoreColors}
-                                />
-                                {userID && (
-                                    <ListEntryViewMem
-                                        id={aniID}
-                                        type={aniData?.data?.Media?.type}
-                                        data={aniData?.data?.Media?.mediaListEntry}
-                                        scoreFormat={
-                                            aniData?.data?.User?.mediaListOptions?.scoreFormat
-                                        }
-                                        isFav={aniData?.data?.Media?.isFavourite}
-                                    />
-                                )}
-                                <DescriptionMem
-                                    aniDescription={aniData?.data?.Media?.description}
-                                    malDescription={malData?.data?.data?.synopsis}
-                                />
-                                <MetaData data={aniData?.data?.Media} />
-                                {mangaUpdates && aniData?.data?.Media?.type !== MediaType.Anime && (
-                                    <MUData
-                                        data={mangaUpdates?.data}
-                                        openMuDialog={toggleMuDialog}
-                                    />
-                                )}
-                                <RelationsMem data={aniData?.data?.Media?.relations} />
-                                <CharacterPrevListMem data={aniData?.data?.Media?.characters} />
-                                <StaffPrevListMem data={aniData?.data?.Media?.staff} />
-                                {userID && (
-                                    <FollowingPrevListMem data={aniData?.data?.Page?.mediaList} />
-                                )}
-                                <RecListMem data={aniData?.data?.Media?.recommendations} />
-                                <MalImages
-                                    data={
-                                        type === MediaType.Anime
-                                            ? animeImages.data
-                                            : mangaImages.data
+            {!loading &&
+                !aniData.isFetching &&
+                !malData.isFetching &&
+                !mangaUpdates?.isFetching && (
+                    <Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
+                        <FadeHeaderProvider
+                            title={
+                                aniData?.data?.Media?.title[mediaLanguage] ??
+                                aniData?.data?.Media?.title?.romaji
+                            }
+                            shareLink={aniData?.data?.Media?.siteUrl}
+                            onEdit={openEdit}
+                            loading={loading}
+                            BgImage={({ style }) => (
+                                <MediaBanner
+                                    style={style}
+                                    url={
+                                        aniData?.data?.Media?.bannerImage ??
+                                        aniData?.data?.Media?.coverImage?.extraLarge
                                     }
-                                />
-                                {type === MediaType.Anime && (
-                                    <AnimeTrailer video={aniData?.data?.Media?.trailer?.id} />
-                                )}
-                                <MediaLinks
-                                    links={aniData?.data?.Media?.externalLinks}
-                                    aniLink={aniData?.data?.Media?.siteUrl}
-                                    malLink={
-                                        aniData?.data?.Media?.idMal
-                                            ? `https://myanimelist.net/${aniData?.data?.Media?.type.toLowerCase()}/${
-                                                  aniData?.data?.Media?.idMal
-                                              }`
-                                            : null
-                                    }
-                                    muLink={mangaUpdates?.data?.url}
-                                />
-                            </TransYUpViewMem>
-                        </BodyContainer>
-                        <Portal>
-                            {type === MediaType.Manga && (
-                                <MuSearchDialog
-                                    title={aniData?.data?.Media?.title?.romaji}
-                                    currentMuID={muDB['data'][aniID]}
-                                    visible={showMuDialog}
-                                    onDismiss={toggleMuDialog}
-                                    onConfirm={onConfirmMuDialog}
                                 />
                             )}
-                            {/* {aniData?.data?.Media?.streamingEpisodes && (
+                        >
+                            <BodyContainer>
+                                <FrontCoverMem
+                                    data={aniData?.data?.Media}
+                                    music={videoData?.data?.data?.music_videos}
+                                    toggleEP={toggleEPDialog}
+                                    defaultTitle={mediaLanguage}
+                                />
+                                <TransYUpViewMem animation={true} delay={550}>
+                                    <TagView
+                                        genres={aniData?.data?.Media?.genres}
+                                        tags={aniData?.data?.Media?.tags}
+                                    />
+                                    <ScoreCircles
+                                        avgScore={aniData?.data?.Media?.averageScore}
+                                        meanScore={aniData?.data?.Media?.meanScore}
+                                        malScore={malData?.data?.data?.score}
+                                        userScore={aniData?.data?.Media?.mediaListEntry?.score}
+                                        scoreColors={scoreColors}
+                                    />
+                                    {userID && (
+                                        <ListEntryViewMem
+                                            id={aniID}
+                                            type={aniData?.data?.Media?.type}
+                                            data={aniData?.data?.Media?.mediaListEntry}
+                                            scoreFormat={
+                                                aniData?.data?.User?.mediaListOptions?.scoreFormat
+                                            }
+                                            isFav={aniData?.data?.Media?.isFavourite}
+                                        />
+                                    )}
+                                    <DescriptionMem
+                                        aniDescription={aniData?.data?.Media?.description}
+                                        malDescription={malData?.data?.data?.synopsis}
+                                    />
+                                    <MetaData data={aniData?.data?.Media} />
+                                    {mangaUpdates &&
+                                        aniData?.data?.Media?.type !== MediaType.Anime && (
+                                            <MUData
+                                                data={mangaUpdates?.data}
+                                                openMuDialog={toggleMuDialog}
+                                            />
+                                        )}
+                                    <RelationsMem data={aniData?.data?.Media?.relations} />
+                                    <CharacterPrevListMem data={aniData?.data?.Media?.characters} />
+                                    <StaffPrevListMem data={aniData?.data?.Media?.staff} />
+                                    {userID && (
+                                        <FollowingPrevListMem
+                                            data={aniData?.data?.Page?.mediaList}
+                                        />
+                                    )}
+                                    <RecListMem data={aniData?.data?.Media?.recommendations} />
+                                    <MalImages
+                                        data={
+                                            type === MediaType.Anime
+                                                ? animeImages.data
+                                                : mangaImages.data
+                                        }
+                                    />
+                                    {type === MediaType.Anime && (
+                                        <AnimeTrailer video={aniData?.data?.Media?.trailer?.id} />
+                                    )}
+                                    <MediaLinks
+                                        links={aniData?.data?.Media?.externalLinks}
+                                        aniLink={aniData?.data?.Media?.siteUrl}
+                                        malLink={
+                                            aniData?.data?.Media?.idMal
+                                                ? `https://myanimelist.net/${aniData?.data?.Media?.type.toLowerCase()}/${
+                                                      aniData?.data?.Media?.idMal
+                                                  }`
+                                                : null
+                                        }
+                                        muLink={mangaUpdates?.data?.url}
+                                    />
+                                </TransYUpViewMem>
+                            </BodyContainer>
+                            <Portal>
+                                {type === MediaType.Manga && (
+                                    <MuSearchDialog
+                                        title={aniData?.data?.Media?.title?.romaji}
+                                        currentMuID={muDB['data'][aniID]}
+                                        visible={showMuDialog}
+                                        onDismiss={toggleMuDialog}
+                                        onConfirm={onConfirmMuDialog}
+                                    />
+                                )}
+                                {/* {aniData?.data?.Media?.streamingEpisodes && (
                                 <EpisodeDialog
                                     visible={showEpDialog}
                                     onDismiss={() => setShowEpDialog(false)}
                                     episodes={aniData?.data?.Media?.streamingEpisodes}
                                 />
                             )} */}
-                        </Portal>
-                    </FadeHeaderProvider>
-                </Animated.View>
-            )}
+                            </Portal>
+                        </FadeHeaderProvider>
+                    </Animated.View>
+                )}
         </View>
     );
 };
