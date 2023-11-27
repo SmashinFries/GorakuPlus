@@ -32,8 +32,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     assetBundlePatterns: ['**/*'],
     ios: {
-        googleServicesFile: '',
-        supportsTablet: true,
+        googleServicesFile: IS_DEV
+            ? './GoogleService-Info-dev.plist'
+            : './GoogleService-Info.plist',
+        supportsTablet: false,
         bundleIdentifier: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
     },
     android: {
