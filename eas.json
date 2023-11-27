@@ -8,7 +8,8 @@
                 "image": "latest"
             },
             "ios": {
-                "simulator": true
+                "simulator": true,
+                "image": "latest"
             },
             "developmentClient": true,
             "distribution": "internal",
