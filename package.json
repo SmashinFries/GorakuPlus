@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "android-dev": "eas build --profile development --platform android",
+    "ios-dev": "eas build --profile development --platform ios",
     "lint": "eslint --ext .tsx --ext .ts src/",
     "lint-fix": "eslint ./src/**/*.tsx --fix",
     "format": "prettier --check ./src",
