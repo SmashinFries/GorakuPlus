@@ -29,6 +29,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         '@react-native-firebase/crashlytics',
         'expo-localization',
         'expo-router',
+        [
+            'expo-build-properties',
+            {
+                ios: {
+                    useFrameworks: 'static',
+                },
+            },
+        ],
     ],
     assetBundlePatterns: ['**/*'],
     ios: {
