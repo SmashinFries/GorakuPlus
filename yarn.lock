@@ -10032,10 +10032,10 @@ react-native-tab-view@^3.5.1:
   dependencies:
     use-latest-callback "^0.1.5"
 
-react-native-theme-switch-animation@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-theme-switch-animation/-/react-native-theme-switch-animation-0.4.1.tgz#9d29c0523d2d3b5c5cd963e1ac9b141d32efefb4"
-  integrity sha512-NYZOneFTMDbKSZkVFdJGQaEO9DXucjsby9guCcJf+qT1qnDteTj0P9XGU6V06WV3vyk/BBb7nXMgDZd96/J8gw==
+react-native-theme-switch-animation@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-theme-switch-animation/-/react-native-theme-switch-animation-0.6.0.tgz#4fa99d572ee683dbdfc9c3b2f088f77a1ecd113b"
+  integrity sha512-XC6xb1J6Pgq4XQFsq6KdxJugRHjwsj04qTDh9rZdi1mkNOy9QKtz7wCQHoK6q8CBZtF3R/sergCw9wZhIRXK3Q==
 
 react-native-vector-icons@^9.2.0:
   version "9.2.0"
