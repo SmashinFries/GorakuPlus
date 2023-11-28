@@ -28,7 +28,7 @@ if (typeof window !== 'undefined') {
 notifee.onBackgroundEvent(async ({ type, detail }) => {
     const { notification, pressAction } = detail;
     if (type === EventType.PRESS) {
-        const link = Linking.createURL(detail.notification?.data?.url);
+        const link = Linking.createURL(detail.notification?.data?.url as string);
         Linking.openURL(link ?? 'gorakuplus://user');
         await notifee.cancelNotification(notification.id);
     }
@@ -176,7 +176,7 @@ const RootLayout = () => {
         return notifee.onForegroundEvent(({ type, detail }) => {
             switch (type) {
                 case EventType.PRESS:
-                    const link = Linking.createURL(detail.notification?.data?.url);
+                    const link = Linking.createURL(detail.notification?.data?.url as string);
                     Linking.openURL(link ?? 'gorakuplus://user');
                     break;
             }
