@@ -80,7 +80,6 @@ const AppProvider = () => {
 
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     const updatesListener = (e: Updates.UpdateEvent) => {
-        console.log(e);
         if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
             setShowUpdateDialog(true);
         }

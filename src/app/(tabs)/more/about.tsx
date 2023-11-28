@@ -43,7 +43,6 @@ const AboutPage = () => {
                     Updates.createdAt ? ` (${Updates.createdAt?.toLocaleString()})` : ''
                 }`}
                 descriptionStyle={{ textTransform: 'capitalize' }}
-                onPress={() => console.log(Updates)}
             />
             <List.Item
                 title={'Check for Updates'}

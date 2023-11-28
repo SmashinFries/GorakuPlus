@@ -27,7 +27,6 @@ import { AnimeTrailer } from '@/components/media/sections/trailer';
 import MalImages from '@/components/media/sections/images';
 import MediaLinks from '@/components/media/sections/links';
 import { MuSearchDialog } from '@/components/media/dialogs';
-import { AnimatePresence } from 'moti';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 
 const MediaScreen = () => {
@@ -192,13 +191,6 @@ const MediaScreen = () => {
                                         onConfirm={onConfirmMuDialog}
                                     />
                                 )}
-                                {/* {aniData?.data?.Media?.streamingEpisodes && (
-                                <EpisodeDialog
-                                    visible={showEpDialog}
-                                    onDismiss={() => setShowEpDialog(false)}
-                                    episodes={aniData?.data?.Media?.streamingEpisodes}
-                                />
-                            )} */}
                             </Portal>
                         </FadeHeaderProvider>
                     </Animated.View>

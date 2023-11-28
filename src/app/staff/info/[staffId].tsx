@@ -53,7 +53,6 @@ const StafPage = () => {
     const onToggleFavorite = useCallback(async () => {
         setFav((prev) => !prev);
         const results = await toggleFav({ staffId: id }).unwrap();
-        console.log(results);
     }, [id]);
 
     useEffect(() => {
