@@ -131,9 +131,6 @@ export const SectionScroll = ({
             }}
         >
             <Text
-                onPress={() =>
-                    console.log(transformMediaDates(data).Page?.media[4]?.nextAiringEpisode)
-                }
                 variant="headlineLarge"
                 style={{
                     fontWeight: 'bold',

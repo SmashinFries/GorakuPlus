@@ -1,4 +1,4 @@
-import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Button, IconButton, Text, useTheme } from 'react-native-paper';
 import { AnilistIcon, MalIcon, MangaUpdatesIcon } from '../svgs';
 import { memo, useEffect, useState } from 'react';
 import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
