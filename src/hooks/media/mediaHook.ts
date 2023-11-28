@@ -9,6 +9,7 @@ import {
     useGetAnimePicturesQuery,
     useGetAnimeVideosQuery,
     useGetMangaByIdQuery,
+    useGetMangaFullByIdQuery,
     useGetMangaPicturesQuery,
 } from '@/store/services/mal/malApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -33,7 +34,7 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
                   { id: aniData.data?.Media?.idMal },
                   { skip: !aniData.data?.Media?.idMal },
               )
-            : useGetMangaByIdQuery(
+            : useGetMangaFullByIdQuery(
                   { id: aniData.data?.Media?.idMal },
                   { skip: !aniData.data?.Media?.idMal },
               );
