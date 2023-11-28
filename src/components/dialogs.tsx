@@ -5,11 +5,12 @@ import { BasicDialogProps } from '@/types';
 import { View } from 'react-native';
 import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from './cards';
 import { copyToClipboard } from '@/utils';
+import { NumberPicker, NumberPickerProps } from './picker';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
     onNav: (aniId: number, malId: number, type: MediaType) => void;
@@ -145,6 +146,48 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
             <Dialog.Actions>
                 <Button onPress={closeDialog}>Close</Button>
                 {scanned && <Button onPress={triggerScan}>Rescan</Button>}
+            </Dialog.Actions>
+        </Dialog>
+    );
+};
+
+type NumberPickDialogProps = BasicDialogProps &
+    NumberPickerProps & {
+        title: string;
+    };
+export const NumberPickDialog = ({
+    title,
+    defaultValue,
+    mode,
+    onChange,
+    options,
+    visible,
+    onDismiss,
+}: NumberPickDialogProps) => {
+    const { colors } = useTheme();
+    const [tempVal, setTempVal] = useState(defaultValue);
+
+    return (
+        <Dialog visible={visible} onDismiss={onDismiss}>
+            <Dialog.Title>{title}</Dialog.Title>
+            <Dialog.Content>
+                <NumberPicker
+                    defaultValue={tempVal}
+                    mode={mode}
+                    onChange={(value) => setTempVal(value)}
+                    options={options}
+                />
+            </Dialog.Content>
+            <Dialog.Actions>
+                <Button onPress={onDismiss}>Cancel</Button>
+                <Button
+                    onPress={() => {
+                        onChange(tempVal);
+                        onDismiss();
+                    }}
+                >
+                    Confirm
+                </Button>
             </Dialog.Actions>
         </Dialog>
     );
