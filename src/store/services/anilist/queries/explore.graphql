@@ -454,6 +454,7 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                     english
                 }
                 coverImage {
+                    color
                     extraLarge
                 }
                 meanScore
@@ -471,6 +472,7 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                     english
                 }
                 coverImage {
+                    color
                     extraLarge
                 }
                 meanScore
@@ -496,6 +498,7 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                                 userPreferred
                             }
                             coverImage {
+                                color
                                 extraLarge
                             }
                             siteUrl
@@ -508,6 +511,7 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                                 userPreferred
                             }
                             coverImage {
+                                color
                                 extraLarge
                             }
                             siteUrl

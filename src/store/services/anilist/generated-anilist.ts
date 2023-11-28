@@ -4955,7 +4955,7 @@ export type RecommendationsQueryVariables = Exact<{
 }>;
 
 
-export type RecommendationsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', currentPage?: number | null, hasNextPage?: boolean | null } | null, recommendations?: Array<{ __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, media?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, createdAt?: number | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null } | null> | null } | null };
+export type RecommendationsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', currentPage?: number | null, hasNextPage?: boolean | null } | null, recommendations?: Array<{ __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, media?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, createdAt?: number | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null } | null> | null } | null };
 
 export type GenreTagCollectionQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6002,6 +6002,7 @@ export const RecommendationsDocument = `
           english
         }
         coverImage {
+          color
           extraLarge
         }
         meanScore
@@ -6019,6 +6020,7 @@ export const RecommendationsDocument = `
           english
         }
         coverImage {
+          color
           extraLarge
         }
         meanScore
@@ -6044,6 +6046,7 @@ export const RecommendationsDocument = `
                 userPreferred
               }
               coverImage {
+                color
                 extraLarge
               }
               siteUrl
@@ -6056,6 +6059,7 @@ export const RecommendationsDocument = `
                 userPreferred
               }
               coverImage {
+                color
                 extraLarge
               }
               siteUrl
