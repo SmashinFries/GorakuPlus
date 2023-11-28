@@ -32,7 +32,7 @@ export const LinkButton = ({
                 onPress={() => openWebBrowser(url)}
                 onLongPress={() => copyToClipboard(url)}
                 style={[
-                    transparentBg && { backgroundColor: 'transparent' },
+                    transparentBg && { backgroundColor: 'transparent', borderRadius: 0 },
                     bgColor && { backgroundColor: bgColor },
                 ]}
             />
