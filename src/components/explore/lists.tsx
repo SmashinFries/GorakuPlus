@@ -65,7 +65,7 @@ export const SectionScroll = ({
     };
 
     const RenderItem = useCallback(
-        (props: { item: Media }) => (
+        (props: { item: ExploreMediaQuery['Page']['media'][0] }) => (
             // <MediaItemTest
             //     {...props}
             //     height={height}
@@ -95,13 +95,13 @@ export const SectionScroll = ({
                     meanScore={props.item.meanScore}
                     // @ts-ignore timeUntilAiring is transformed to string via RTK Query
                     bannerText={props.item.nextAiringEpisode?.timeUntilAiring}
-                    imgBgColor={props.item.coverImage.color}
+                    imgBgColor={props.item.coverImage?.color}
                     showBanner={props.item.nextAiringEpisode ? true : false}
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}
                     mediaListEntry={props.item.mediaListEntry}
-                    mediaStatus={props.item.status}
+                    mediaStatus={props.item?.status}
                     total={props.item.episodes ?? props.item.chapters ?? props.item.volumes ?? 0}
                     showListStatus={showItemListStatus}
                 />
