@@ -13,7 +13,8 @@ export const transformMediaDates = (media: AnimeTrendingQuery) => {
     // {format === MediaFormat.Movie ? 'Movie:' : 'EP'}{' '}
     //                 {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
     //                 {timeTill}
-    for (const anime of newResponse.Page.media) {
+    if (!newResponse?.Page) return newResponse;
+    for (const anime of newResponse?.Page?.media) {
         if (anime.nextAiringEpisode) {
             const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
             const prefix = anime.format === MediaFormat.Movie ? 'Movie: ' : 'EP: ';
