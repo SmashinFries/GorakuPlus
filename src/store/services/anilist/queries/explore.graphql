@@ -26,6 +26,7 @@ fragment MainMeta on Media {
         medium
         large
         extraLarge
+        color
     }
     mediaListEntry {
         id
