@@ -15,6 +15,7 @@ import {
     MangaUpdatesIcon,
 } from '@/components/svgs';
 import { useAppSelector } from '@/store/hooks';
+import { Image } from 'expo-image';
 
 const AboutPage = () => {
     const { showNSFW } = useAppSelector((state) => state.persistedSettings);
@@ -55,6 +56,17 @@ const AboutPage = () => {
                         url="https://anilist.co/home"
                         label="Anilist"
                         icon={() => <AnilistIcon />}
+                    />
+                    <LinkButton
+                        url="https://jikan.moe/"
+                        label="Jikan"
+                        icon={(props) => (
+                            <Image
+                                source={require('../../../../assets/jikan.logo.png')}
+                                style={{ height: 46, width: 46 }}
+                            />
+                        )}
+                        transparentBg
                     />
                     <LinkButton
                         url="https://myanimelist.net/"
@@ -108,11 +120,7 @@ const AboutPage = () => {
                     bgColor="#000"
                 />
                 <LinkButton url="https://github.com/SmashinFries" icon={'github'} size={28} />
-                <LinkButton
-                    url="https://www.instagram.com/smashinfries"
-                    icon={'instagram'}
-                    size={28}
-                />
+                <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} />
             </View>
         </View>
     );
