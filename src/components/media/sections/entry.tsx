@@ -198,8 +198,8 @@ type EntryNumInputProps = {
 };
 
 type ListEntrySheetProps = {
-    entryData: MediaList;
-    status: MediaListStatus;
+    entryData: AniMediaQuery['Media']['mediaListEntry'];
+    status: MediaListStatus | string;
     scoreFormat: ScoreFormat;
     updateEntry: (variables: SaveMediaListItemMutationVariables) => void;
 };
