@@ -1,8 +1,8 @@
-import { Button, Menu, Portal, Text, TextInput } from 'react-native-paper';
+import { Button, List, Menu, Portal, Text, TextInput, useTheme } from 'react-native-paper';
 import { FuzzyDate, MediaListStatus } from '@/store/services/anilist/generated-anilist';
 import { useState } from 'react';
 import { arrayRange, convertDate, getDatetoFuzzy, getFuzzytoDate } from '@/utils';
-import { Platform, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import Slider from '@react-native-community/slider';
 import DateTimePicker, {
     DateTimePickerAndroid,
@@ -53,13 +53,16 @@ export const StatusDropDown = ({ value, isUnreleased, onSelect }: DropdownMenuPr
 };
 
 type DatePopupProps = {
+    title: string;
+    containerHeight?: number;
     value: FuzzyDate;
     onSelect: (item: FuzzyDate) => void;
 };
-export const DatePopup = ({ onSelect, value }: DatePopupProps) => {
+export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopupProps) => {
     const [date, setDate] = useState<Date>(value?.day ? getFuzzytoDate(value) : new Date());
     const [vis, setVis] = useState<boolean>(false);
     const platform = Platform.OS;
+    const { colors } = useTheme();
 
     const showTimePicker = () => {
         if (platform === 'android') {
@@ -79,7 +82,7 @@ export const DatePopup = ({ onSelect, value }: DatePopupProps) => {
         setDate(currentDate);
         if (event.type === 'set') {
             const newFuzzy = getDatetoFuzzy(currentDate);
-            // onSelect(newFuzzy);
+            onSelect(newFuzzy);
         }
     };
 
@@ -87,13 +90,20 @@ export const DatePopup = ({ onSelect, value }: DatePopupProps) => {
 
     return (
         <>
-            <Button
-                mode="elevated"
-                labelStyle={{ textTransform: 'capitalize' }}
+            <Pressable
                 onPress={showTimePicker}
+                android_ripple={{
+                    color: colors.primary,
+                    borderless: true,
+                    foreground: true,
+                    radius: containerHeight ?? 40,
+                }}
             >
-                {convertDate(value) ?? 'Select Date'}
-            </Button>
+                <List.Subheader style={{ textAlign: 'center' }}>{title}</List.Subheader>
+                <Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>
+                    {convertDate(value) ?? '???'}
+                </Text>
+            </Pressable>
             <Portal>
                 {vis && <DateTimePicker value={date} mode="date" onChange={onChange} />}
             </Portal>
