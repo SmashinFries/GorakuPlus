@@ -212,7 +212,8 @@ export const ListEntryEditDialog = ({
                     </List.Section>
                     {entryData.media?.status !== MediaStatus.NotYetReleased && (
                         <List.Section title="Progress">
-                            <ProgressDropDown
+                            <Text style={{ textAlign: 'center' }}>{tempParams.progress}</Text>
+                            {/* <ProgressDropDown
                                 total={
                                     entryData?.media?.episodes ??
                                     entryData?.media?.chapters ??
@@ -226,19 +227,20 @@ export const ListEntryEditDialog = ({
                                 value={tempParams.progress ?? 0}
                                 // onSelect={(item) => setProgress(item)}
                                 onSelect={(item) => updateParams('progress', item)}
-                            />
+                            /> */}
                         </List.Section>
                     )}
                     {entryData.media?.status !== MediaStatus.NotYetReleased && (
                         <List.Section title="Score">
-                            <ProgressDropDown
+                            {/* <ProgressDropDown
                                 total={scoreOptions[scoreFormat].maxValue}
                                 maxValue={scoreOptions[scoreFormat].maxValue}
                                 step={scoreOptions[scoreFormat].step}
                                 value={tempParams.score ?? 0}
                                 // onSelect={(item) => setProgress(item)}
                                 onSelect={(item) => updateParams('score', item)}
-                            />
+                            /> */}
+                            <Text style={{ textAlign: 'center' }}>{tempParams.score}</Text>
                         </List.Section>
                     )}
                     <List.Section title="Start Date">
