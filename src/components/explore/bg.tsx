@@ -38,7 +38,6 @@ export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
             <AnimatePresence
                 // exitBeforeEnter
                 onExitComplete={() => {
-                    console.log('Exiting!');
                     updateBG();
                 }}
             >
