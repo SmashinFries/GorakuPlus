@@ -178,13 +178,15 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProp
                     onDismiss={() => setShowListEntryDlg(false)}
                 /> */}
             </Portal>
-            <ListEntrySheet
-                ref={sheetRef}
-                entryData={data}
-                scoreFormat={scoreFormat}
-                status={listStatus}
-                updateEntry={updateListEntry}
-            />
+            {data && (
+                <ListEntrySheet
+                    ref={sheetRef}
+                    entryData={data}
+                    scoreFormat={scoreFormat}
+                    status={listStatus}
+                    updateEntry={updateListEntry}
+                />
+            )}
         </>
     );
 };
