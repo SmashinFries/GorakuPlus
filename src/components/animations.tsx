@@ -216,7 +216,12 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
                         locations={
                             Math.floor(currentHeight) < Math.floor(totalHeight) ? [0.5, 1] : [1, 1]
                         }
-                        style={{ position: 'absolute', height: '100%', width: '100%' }}
+                        style={{
+                            position: 'absolute',
+                            height: '100%',
+                            width: '100%',
+                            pointerEvents: 'none',
+                        }}
                     />
                 )}
             </Animated.View>
@@ -295,9 +300,9 @@ export const Accordion = ({
 
     useEffect(() => {
         if (isExpanded && totalHeight) {
-            height.value === totalHeight
-                ? console.log('same')
-                : totalHeight - height.value + initialHeight;
+            // height.value === totalHeight
+            //     ? console.log('same')
+            //     : totalHeight - height.value + initialHeight;
             height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
             // setCurrentHeight(
             //     height.value === totalHeight
