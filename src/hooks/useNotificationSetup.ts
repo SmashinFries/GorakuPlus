@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import notifee, { EventType } from '@notifee/react-native';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as Linking from 'expo-linking';
 import { useEffect, useState } from 'react';
 import { setRegisteredState } from '../store/slices/notifSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const useNotif = () => {
     const [loading, setLoading] = useState(true);
