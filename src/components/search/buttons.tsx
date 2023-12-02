@@ -133,7 +133,7 @@ export const NSFWSelector = ({ isAdult = false, updateIsAdult }: NSFWSelectorPro
                 // textColor={options[nsfwSelect ? 1 : 0].color}
                 icon={options[nsfwSelect ? 0 : 1].icon}
                 // mode={'contained'}
-                textColor={colors.onSecondaryContainer}
+                // textColor={colors.onSecondaryContainer}
                 style={{ justifyContent: 'center', alignItems: 'center' }}
             >
                 {options[nsfwSelect ? 0 : 1].label}

@@ -19,10 +19,10 @@ const useNotif = () => {
 
         if (initialNotification) {
             Linking.openURL('gorakuplus://user');
-            console.log(
-                'Notification caused application to open',
-                initialNotification.notification,
-            );
+            // console.log(
+            //     'Notification caused application to open',
+            //     initialNotification.notification,
+            // );
         }
     };
 

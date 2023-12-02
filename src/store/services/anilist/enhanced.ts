@@ -399,7 +399,7 @@ export const api = generatedApi.enhanceEndpoints({
                               : result.SaveMediaListEntry?.media?.format === 'NOVEL'
                               ? 'ExploreNovel'
                               : 'ExploreManga',
-                          { type: 'AniMedia', id: params?.mediaId },
+                          //   { type: 'AniMedia', id: params?.mediaId },
                           { type: 'AniSearch', id: params?.mediaId },
                       ]
                     : [
@@ -412,7 +412,7 @@ export const api = generatedApi.enhanceEndpoints({
         },
         DeleteMediaListItem: {
             invalidatesTags: (result, error, params) => [
-                'AniMedia',
+                // 'AniMedia',
                 'AniSearch',
                 'ExploreAnime',
                 'ExploreManga',

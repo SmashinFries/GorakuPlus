@@ -27,9 +27,9 @@ export const DayTab = ({ data }: DayTabProps) => {
                         showBanner
                         bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
                         navigate={() => {
-                            console.log(
-                                `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
-                            );
+                            // console.log(
+                            //     `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
+                            // );
                             router.push(
                                 `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
                             );
