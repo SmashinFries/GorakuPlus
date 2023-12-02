@@ -144,7 +144,7 @@ const MediaSettingsPage = () => {
                     )}
                 />
                 <List.Item
-                    title="NSFW Blur Level"
+                    title="NSFW Blur Level (fanart)"
                     description={'Blur anything more severe than this'}
                     right={(props) => (
                         <Text
