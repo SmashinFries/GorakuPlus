@@ -273,6 +273,7 @@ type FadeHeaderProps = {
     >;
     animationRange?: number[];
     BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
+    onBack?: () => void;
 };
 export const FadeHeaderProvider = ({
     children,
@@ -291,6 +292,7 @@ export const FadeHeaderProvider = ({
     disableBack = false,
     animationRange = [40, 110],
     BgImage,
+    onBack,
 }: FadeHeaderProps) => {
     const navigation = useNavigation<NativeStackNavigationProp<any>>();
     const { colors } = useTheme();
@@ -351,7 +353,12 @@ export const FadeHeaderProvider = ({
                                 headerActionStyle,
                             ]}
                         >
-                            <Appbar.BackAction onPress={navigation.goBack} />
+                            <Appbar.BackAction
+                                onPress={() => {
+                                    navigation.goBack();
+                                    onBack ? onBack() : null;
+                                }}
+                            />
                         </Animated.View>
                     )}
                     <Animated.View
