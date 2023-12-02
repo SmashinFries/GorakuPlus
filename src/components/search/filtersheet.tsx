@@ -49,9 +49,10 @@ export const FilterSheet = ({
     return (
         <BottomSheetModal
             ref={sheetRef}
-            backgroundStyle={{ backgroundColor: colors.secondaryContainer }}
+            backgroundStyle={{ backgroundColor: colors.elevation.level1 }}
             snapPoints={snapPoints}
             onChange={handleSheetChange}
+            handleIndicatorStyle={{ backgroundColor: colors.onSurfaceVariant }}
         >
             <BottomSheetScrollView style={{ flex: 1 }} nestedScrollEnabled>
                 {/* <PresetButton onPress={() => setPresetDialogVisible(true)} /> */}

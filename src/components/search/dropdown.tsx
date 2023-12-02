@@ -66,13 +66,13 @@ export const Dropdown = ({
                         contentStyle={{
                             textTransform: 'capitalize',
                             textAlign: 'center',
-                            color: colors.onPrimaryContainer,
+                            color: colors.onSurface,
                         }}
                         outlineColor={colors.secondary}
                         style={{
                             flex: 1,
                             marginHorizontal: 6,
-                            backgroundColor: colors.primaryContainer,
+                            backgroundColor: colors.elevation.level5,
                         }}
                         outlineStyle={{ borderRadius: 16 }}
                         editable={false}

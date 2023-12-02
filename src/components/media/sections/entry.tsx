@@ -346,7 +346,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                     ref={ref}
                     index={0}
                     snapPoints={snapPoints}
-                    backgroundStyle={{ backgroundColor: colors.secondaryContainer }}
+                    backgroundStyle={{ backgroundColor: colors.elevation.level5 }}
                     onDismiss={() => submitNewEntry()}
                     // onChange={handleSheetChange}
                 >
