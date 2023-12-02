@@ -115,6 +115,7 @@ const AppearancePage = () => {
                         description={mode.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
                         initialExpand={expandThemes}
+                        titleFontSize={16}
                         // onPress={() => setExpandThemes((prev) => !prev)}
                     >
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -209,6 +210,7 @@ const AppearancePage = () => {
                     />
                     <Accordion
                         title={'Navigation between screens'}
+                        titleFontSize={16}
                         description={navAnimation.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
                     >
