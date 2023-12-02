@@ -5,7 +5,7 @@ import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import { ToastAndroid } from 'react-native';
 import { ActivityIndicator, Button, List, Text } from 'react-native-paper';
-import { Accordian } from '@/components/animations';
+import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
 import {
     AnilistIcon,
@@ -50,7 +50,7 @@ const AboutPage = () => {
                 onPress={checkForUpdates}
                 right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
             />
-            <Accordian title="Data Sources" initialExpand>
+            <Accordion title="Data Sources" initialExpand>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <LinkButton
                         url="https://anilist.co/home"
@@ -96,7 +96,7 @@ const AboutPage = () => {
                         transparentBg
                     />
                 </ScrollView>
-            </Accordian>
+            </Accordion>
             <View
                 style={{
                     flex: 1,

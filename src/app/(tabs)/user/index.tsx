@@ -1,4 +1,4 @@
-import { Accordian } from '@/components/animations';
+import { Accordion } from '@/components/animations';
 import { FadeHeaderProvider } from '@/components/headers';
 import { MediaBanner } from '@/components/media/banner';
 import { ProfileActionBar } from '@/components/user/actionbar';
@@ -99,22 +99,22 @@ const UserPage = () => {
                     onStatPress={navToStats}
                 />
                 <View style={{ marginTop: 10 }}>
-                    {/* <Accordian title="Activity" initialExpand> */}
+                    {/* <Accordion title="Activity" initialExpand> */}
                     <ActivityOverview data={activity.data?.Page?.activities} />
-                    {/* </Accordian> */}
+                    {/* </Accordion> */}
                     {/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
-                    <Accordian title={'Following'}>
+                    <Accordion title={'Following'}>
                         <FollowRow
                             data={following.data?.Page?.following}
                             isLoading={following.isLoading}
                         />
-                    </Accordian>
-                    <Accordian title={'Followers'}>
+                    </Accordion>
+                    <Accordion title={'Followers'}>
                         <FollowRow
                             data={followers.data?.Page?.followers}
                             isLoading={followers.isLoading}
                         />
-                    </Accordian>
+                    </Accordion>
                 </View>
             </View>
             <Portal>

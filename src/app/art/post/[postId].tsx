@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { TagSection } from '@/components/art/danTag';
 import { FadeHeaderProvider } from '@/components/headers';
-import { Accordian } from '@/components/animations';
+import { Accordion } from '@/components/animations';
 import { ArtistBar } from '@/components/art/artist';
 import { InteractionBar } from '@/components/art/interactions';
 import { StatisticsBar } from '@/components/art/stats';
@@ -116,7 +116,7 @@ const DanbooruPostPage = () => {
                         source={data?.source}
                     />
                     {commentary?.data && <Commentary data={commentary?.data} />}
-                    <Accordian title="File Details" initialExpand>
+                    <Accordion title="File Details" initialExpand>
                         <FileDetails
                             size={data?.file_size}
                             format={data?.file_ext}
@@ -124,8 +124,8 @@ const DanbooruPostPage = () => {
                             width={data?.image_width}
                             rating={data?.rating}
                         />
-                    </Accordian>
-                    <Accordian title="Tags">
+                    </Accordion>
+                    <Accordion title="Tags">
                         <TagSection
                             title="Artist"
                             tags={data?.tag_string_artist}
@@ -144,7 +144,7 @@ const DanbooruPostPage = () => {
                         />
                         <TagSection title="General" tags={data?.tag_string_general} color="blue" />
                         <TagSection title="Meta" tags={data?.tag_string_meta} color="orange" />
-                    </Accordian>
+                    </Accordion>
                 </View>
             </FadeHeaderProvider>
         </View>

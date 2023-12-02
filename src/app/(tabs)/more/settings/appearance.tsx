@@ -1,4 +1,4 @@
-import { Accordian } from '@/components/animations';
+import { Accordion } from '@/components/animations';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { MotiButton } from '@/components/moti';
 import { ListSubheader } from '@/components/titles';
@@ -110,7 +110,7 @@ const AppearancePage = () => {
                             />
                         )}
                     />
-                    <Accordian
+                    <Accordion
                         title="Themes"
                         description={mode.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
@@ -170,7 +170,7 @@ const AppearancePage = () => {
                                 ))}
                             </View>
                         </ScrollView>
-                    </Accordian>
+                    </Accordion>
                 </List.Section>
                 <List.Section>
                     <ListSubheader title="Navigation" />
@@ -207,7 +207,7 @@ const AppearancePage = () => {
                             />
                         )}
                     />
-                    <Accordian
+                    <Accordion
                         title={'Navigation between screens'}
                         description={navAnimation.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
@@ -232,7 +232,7 @@ const AppearancePage = () => {
                                 </MotiButton>
                             ))}
                         </ScrollView>
-                    </Accordian>
+                    </Accordion>
                 </List.Section>
             </ScrollView>
         </>

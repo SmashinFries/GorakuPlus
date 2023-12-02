@@ -14,7 +14,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { MotiView } from 'moti';
 import { Image } from 'expo-image';
-import { Accordian, ExpandableDescription, TransYUpView } from '@/components/animations';
+import { Accordion, ExpandableDescription, TransYUpView } from '@/components/animations';
 import { useAppSelector } from '@/store/hooks';
 import RenderHTML from 'react-native-render-html';
 import { FadeHeaderProvider } from '@/components/headers';
@@ -151,7 +151,7 @@ const StafPage = () => {
                     />
                 </ExpandableDescription>
                 <MotiView style={{ marginVertical: 20, marginTop: 30 }}>
-                    <Accordian title="Information" initialExpand>
+                    <Accordion title="Information" initialExpand>
                         <List.Item
                             title="Language"
                             left={(props) => <List.Icon {...props} icon="translate" />}
@@ -245,9 +245,9 @@ const StafPage = () => {
                                 <Text {...props}>{data?.Staff?.bloodType ?? 'N/A'}</Text>
                             )}
                         />
-                    </Accordian>
+                    </Accordion>
                     {data?.Staff?.staffMedia?.edges?.length > 0 && (
-                        <Accordian title="Media">
+                        <Accordion title="Media">
                             <FlashList
                                 data={data?.Staff?.staffMedia?.edges}
                                 renderItem={StaffMediaRenderItem}
@@ -264,10 +264,10 @@ const StafPage = () => {
                                         setSmPage((prev) => prev + 1);
                                 }}
                             />
-                        </Accordian>
+                        </Accordion>
                     )}
                     {data?.Staff?.characters?.edges?.length > 0 && (
-                        <Accordian title="Characters">
+                        <Accordion title="Characters">
                             <Text style={{ textAlign: 'center', marginTop: 15 }}>
                                 Characters coming soon!
                             </Text>
@@ -281,7 +281,7 @@ const StafPage = () => {
                                 contentContainerStyle={{ padding: 15 }}
                                 showsHorizontalScrollIndicator={false}
                             /> */}
-                        </Accordian>
+                        </Accordion>
                     )}
                     <View>{/* <CharacterPrevList data={data?.Staff?.characters} /> */}</View>
                 </MotiView>

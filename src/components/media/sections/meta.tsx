@@ -4,7 +4,7 @@ import { convertDate } from '@/utils';
 import { View } from 'react-native';
 import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { useMemo } from 'react';
-import { Accordian, TransYUpViewMem } from '@/components/animations';
+import { Accordion, TransYUpViewMem } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
 
 type MetaDataProps = {
@@ -18,7 +18,7 @@ export const MetaData = ({ data }: MetaDataProps) => {
 
     return (
         <TransYUpViewMem style={{ marginVertical: 15 }} delay={945}>
-            <Accordian title="Additional Info">
+            <Accordion title="Details">
                 <List.Item
                     title={'Source'}
                     right={(props) => (
@@ -131,7 +131,7 @@ export const MetaData = ({ data }: MetaDataProps) => {
                         )}
                     />
                 )}
-            </Accordian>
+            </Accordion>
         </TransYUpViewMem>
     );
 };
@@ -150,7 +150,7 @@ export const MUData = ({
     );
     return (
         <View style={{ marginVertical: 15 }}>
-            <Accordian title="Manga Updates">
+            <Accordion title="Manga Updates">
                 <List.Item
                     title="Title"
                     description="Wrong series?"
@@ -196,7 +196,7 @@ export const MUData = ({
                         )}
                     />
                 ) : null}
-            </Accordian>
+            </Accordion>
         </View>
     );
 };

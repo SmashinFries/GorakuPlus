@@ -157,7 +157,7 @@ const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
     }, [isExpanded, toggleRotation]);
 
     return (
-        <Animated.View style={[animatedIconStyle]}>
+        <Animated.View style={[animatedIconStyle, { alignSelf: 'center' }]}>
             <MaterialCommunityIcons size={24} color={colors.onSurfaceVariant} name={'chevron-up'} />
         </Animated.View>
     );
@@ -238,7 +238,7 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
     );
 };
 
-type AccordianProps = {
+type AccordionProps = {
     title: string;
     titleNumberOfLines?: number;
     description?: string;
@@ -247,7 +247,7 @@ type AccordianProps = {
     children: ReactNode;
     initialExpand?: boolean;
 };
-export const Accordian = ({
+export const Accordion = ({
     title,
     titleNumberOfLines,
     children,
@@ -255,7 +255,7 @@ export const Accordian = ({
     descriptionNumberOfLines,
     descriptionStyle,
     initialExpand = false,
-}: AccordianProps) => {
+}: AccordionProps) => {
     const { colors } = useTheme();
     const [isExpanded, setIsExpanded] = useState(initialExpand);
     const initialHeight = 0;
@@ -303,7 +303,8 @@ export const Accordian = ({
                             <Text
                                 selectable={false}
                                 numberOfLines={titleNumberOfLines}
-                                style={[{ fontSize: 16 }]}
+                                // style={[{ fontSize: 16 }]}
+                                variant="titleLarge"
                             >
                                 {title}
                             </Text>
@@ -323,7 +324,15 @@ export const Accordian = ({
                                 </Text>
                             ) : null}
                         </View>
-                        <View style={[{ marginVertical: 6, paddingLeft: 8 }]}>
+                        <View
+                            style={[
+                                {
+                                    marginVertical: 6,
+                                    marginRight: 8,
+                                    // backgroundColor: 'red',
+                                },
+                            ]}
+                        >
                             {/* <Animated.View>
                                 <MaterialCommunityIcons
                                     size={24}

@@ -10,7 +10,7 @@ import {
     useTheme,
 } from 'react-native-paper';
 import { FadeHeaderProvider } from '@/components/headers';
-import { Accordian, ExpandableDescription, TransYUpViewMem } from '@/components/animations';
+import { Accordion, ExpandableDescription, TransYUpViewMem } from '@/components/animations';
 import { openWebBrowser } from '@/utils/webBrowser';
 import RenderHTML from 'react-native-render-html';
 import { useCallback, useEffect, useReducer, useState } from 'react';
@@ -239,7 +239,7 @@ const CharacterScreen = () => {
                                         overflow: 'visible',
                                     }}
                                 >
-                                    <Accordian title="Information" initialExpand>
+                                    <Accordion title="Information" initialExpand>
                                         <List.Item
                                             title="Gender"
                                             left={(props) => (
@@ -301,7 +301,7 @@ const CharacterScreen = () => {
                                                 </Text>
                                             )}
                                         />
-                                    </Accordian>
+                                    </Accordion>
                                 </View>
                                 <ListHeading title="Media" />
                                 <View style={{ overflow: 'visible' }}>
