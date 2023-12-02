@@ -23,8 +23,8 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         id: id,
         userId: userID,
         skipUser: userID ? false : true,
-        perPage_c: 15,
-        perPage_rec: 15,
+        perPage_c: 25,
+        perPage_rec: 25,
         sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
     });
 
