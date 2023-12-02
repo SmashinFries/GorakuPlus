@@ -379,6 +379,42 @@ const dummyAquaData: Media = {
     isFavouriteBlocked: false,
 };
 
+const dummyBerserkData: Media = {
+    id: 30002,
+    type: MediaType.Manga,
+    format: MediaFormat.Manga,
+    isFavourite: false,
+    status: MediaStatus.Releasing,
+    meanScore: 93,
+    averageScore: 93,
+    chapters: null,
+    startDate: {
+        year: 1989,
+        month: 8,
+        day: 25,
+    },
+    endDate: {
+        year: null,
+        month: null,
+        day: null,
+    },
+    title: {
+        userPreferred: 'Berserk',
+        romaji: 'Berserk',
+        english: 'Berserk',
+        native: 'ベルセルク',
+    },
+    coverImage: {
+        extraLarge:
+            'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30002-7EzO7o21jzeF.jpg',
+        color: '#e4a143',
+    },
+    mediaListEntry: {
+        status: MediaListStatus.Current,
+        progress: 50,
+    },
+};
+
 type DummyData = {
     [k in ThemeOptions]: Media;
 };
@@ -388,6 +424,7 @@ const dummyData: DummyData = {
     kawaii: dummyKawaiiData,
     default: dummyDefaultData,
     aqua: dummyAquaData,
+    berserk: dummyBerserkData,
 };
 
 type MediaTileCustomizerProps = {
@@ -467,7 +504,8 @@ export const MediaTileCustomizer = ({
                         />
                         <MediaProgressBar
                             progress={
-                                (dummyData[themeMode].episodes ?? dummyData[themeMode].chapters) / 2
+                                (dummyData[themeMode].episodes ??
+                                    dummyData[themeMode].mediaListEntry.progress) / 2
                             }
                             total={dummyData[themeMode].episodes ?? dummyData[themeMode].chapters}
                             mediaStatus={dummyData[themeMode].status}
