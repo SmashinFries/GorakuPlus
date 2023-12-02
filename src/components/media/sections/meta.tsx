@@ -150,7 +150,7 @@ export const MUData = ({
     );
     return (
         <View style={{ marginVertical: 15 }}>
-            <Accordion title="Manga Updates">
+            <Accordion containerKey={data.series_id} title="Manga Updates">
                 <List.Item
                     title="Title"
                     description="Wrong series?"
