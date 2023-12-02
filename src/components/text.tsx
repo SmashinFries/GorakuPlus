@@ -1,6 +1,9 @@
+import { openWebBrowser } from '@/utils/webBrowser';
 import { View } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { StyleProp, TextStyle } from 'react-native';
-import { IconButton, Text } from 'react-native-paper';
+import { IconButton, Text, useTheme } from 'react-native-paper';
+import RenderHTML from 'react-native-render-html';
 
 type ListHeadingProps = {
     title: string;
@@ -58,5 +61,31 @@ export const ListHeading = ({
                 </View>
             )}
         </View>
+    );
+};
+
+type HTMLTextProps = {
+    html: string;
+};
+export const HTMLText = ({ html }: HTMLTextProps) => {
+    const { width } = useWindowDimensions();
+    const { colors } = useTheme();
+
+    const renderersProps = {
+        a: {
+            onPress(event, url, htmlAttribs, target) {
+                // console.log(url, target);
+                openWebBrowser(url);
+            },
+        },
+    };
+
+    return (
+        <RenderHTML
+            source={{ html: html }}
+            contentWidth={width}
+            baseStyle={{ color: colors.onBackground }}
+            renderersProps={renderersProps}
+        />
     );
 };
