@@ -27,6 +27,8 @@ export const ListHeading = ({
                     padding: 15,
                     paddingBottom: 8,
                     flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                     width: '100%',
                 },
                 style,
@@ -47,7 +49,7 @@ export const ListHeading = ({
             {icon && (
                 <View
                     style={{
-                        flex: 1,
+                        alignSelf: 'flex-end',
                         alignItems: 'flex-end',
                         justifyContent: 'flex-end',
                     }}
