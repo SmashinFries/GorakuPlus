@@ -24,6 +24,7 @@ import { useToggleFavMutation } from '@/store/services/anilist/enhanced';
 import { FlashList } from '@shopify/flash-list';
 import { StaffMediaCard } from '@/components/staff/media';
 import { router, useLocalSearchParams } from 'expo-router';
+import { HTMLText } from '@/components/text';
 
 const StafPage = () => {
     const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -70,14 +71,6 @@ const StafPage = () => {
         },
         [],
     );
-
-    const renderersProps = {
-        a: {
-            onPress(event, url, htmlAttribs, target) {
-                openWebBrowser(url);
-            },
-        },
-    };
 
     if (isLoading) {
         return (
@@ -143,12 +136,7 @@ const StafPage = () => {
                         : data?.Staff?.name?.full}
                 </Text>
                 <ExpandableDescription initialHeight={90}>
-                    <RenderHTML
-                        source={{ html: data?.Staff?.description }}
-                        contentWidth={width}
-                        baseStyle={{ color: colors.onBackground }}
-                        renderersProps={renderersProps}
-                    />
+                    <HTMLText html={data?.Staff?.description} />
                 </ExpandableDescription>
                 <MotiView style={{ marginVertical: 20, marginTop: 30 }}>
                     <Accordion title="Information" initialExpand>

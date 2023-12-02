@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useWindowDimensions } from 'react-native';
 import { convertDate } from '@/utils';
 import { CharacterDetailsQuery, MediaFormat } from '@/store/services/anilist/generated-anilist';
-import { ListHeading } from '@/components/text';
+import { HTMLText, ListHeading } from '@/components/text';
 import { DanbooruImageCard, MediaCard, StaffCard } from '@/components/cards';
 import { FlashList } from '@shopify/flash-list';
 import { DanPost } from '@/store/services/danbooru/types';
@@ -225,11 +225,7 @@ const CharacterScreen = () => {
                                 />
                                 {/* Description */}
                                 <ExpandableDescription initialHeight={90}>
-                                    <RenderHTML
-                                        source={{ html: charData?.data?.Character?.description }}
-                                        contentWidth={width}
-                                        baseStyle={{ color: colors.onBackground }}
-                                    />
+                                    <HTMLText html={charData?.data?.Character?.description} />
                                 </ExpandableDescription>
                                 {/* Info */}
                                 <View
