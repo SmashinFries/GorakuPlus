@@ -241,20 +241,24 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
 type AccordionProps = {
     title: string;
     titleNumberOfLines?: number;
+    titleFontSize?: number;
     description?: string;
     descriptionNumberOfLines?: number;
     descriptionStyle?: StyleProp<TextStyle>;
     children: ReactNode;
     initialExpand?: boolean;
+    containerKey?: string | number;
 };
 export const Accordion = ({
     title,
     titleNumberOfLines,
+    titleFontSize,
     children,
     description,
     descriptionNumberOfLines,
     descriptionStyle,
     initialExpand = false,
+    containerKey = 1,
 }: AccordionProps) => {
     const { colors } = useTheme();
     const [isExpanded, setIsExpanded] = useState(initialExpand);
@@ -287,7 +291,21 @@ export const Accordion = ({
         if (initialExpand) {
             toggleHeight();
         }
-    }, [initialExpand, totalHeight]);
+    }, [initialExpand]);
+
+    useEffect(() => {
+        if (isExpanded && totalHeight) {
+            height.value === totalHeight
+                ? console.log('same')
+                : totalHeight - height.value + initialHeight;
+            height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
+            // setCurrentHeight(
+            //     height.value === totalHeight
+            //         ? initialHeight
+            //         : totalHeight - height.value + initialHeight,
+            // );
+        }
+    }, [isExpanded, totalHeight]);
 
     return (
         <View style={[{ overflow: 'visible' }]}>
@@ -303,8 +321,8 @@ export const Accordion = ({
                             <Text
                                 selectable={false}
                                 numberOfLines={titleNumberOfLines}
-                                // style={[{ fontSize: 16 }]}
-                                variant="titleLarge"
+                                style={[titleFontSize && { fontSize: titleFontSize }]}
+                                variant={titleFontSize ? null : 'titleLarge'}
                             >
                                 {title}
                             </Text>
@@ -345,10 +363,12 @@ export const Accordion = ({
                     </View>
                 </TouchableRipple>
             </View>
-            <Animated.View style={[animatedStyles, { overflow: 'hidden' }]}>
+            <Animated.View key={containerKey} style={[animatedStyles, { overflow: 'hidden' }]}>
                 <View style={[StyleSheet.absoluteFill, { bottom: 'auto', paddingBottom: 10 }]}>
                     <View
-                        onLayout={(e) => setTotalHeight(e.nativeEvent.layout.height)}
+                        onLayout={(e) => {
+                            setTotalHeight(e.nativeEvent.layout.height);
+                        }}
                         // style={{
                         //     paddingHorizontal: 20,
                         //     paddingVertical: 10,
