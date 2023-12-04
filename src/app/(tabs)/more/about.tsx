@@ -95,6 +95,17 @@ const AboutPage = () => {
                         icon={() => <DanbooruIcon />}
                         transparentBg
                     />
+                    <LinkButton
+                        url="https://waifu.it/"
+                        label="Waifu.It"
+                        icon={(props) => (
+                            <Image
+                                source={require('../../../../assets/waifu.it.logo.png')}
+                                style={{ height: 46, width: 46 }}
+                            />
+                        )}
+                        transparentBg
+                    />
                 </ScrollView>
             </Accordion>
             <View

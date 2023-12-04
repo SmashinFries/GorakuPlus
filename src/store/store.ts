@@ -16,6 +16,7 @@ import themeSlice, { ThemeState } from '@/store/theme/themeSlice';
 import createSecureStorage from '@/store/persist-securestore';
 import { Platform } from 'react-native';
 import authSlice, { AuthState } from '@/store/services/anilist/authSlice';
+import waifuItSlice, { WaifuItAuthState } from '@/store/services/waifu.it/tokenSlice';
 import danbooruApi from '@/store/services/danbooru/danbooruApi';
 import { api as anilistApi } from '@/store/services/anilist/enhanced';
 import settingsSlice, { SettingsState } from '@/store/slices/settingsSlice';
@@ -27,6 +28,7 @@ import muSlice, { MuDBState } from '@/store/slices/muSlice';
 import notifSlice, { NotifState } from '@/store/slices/notifSlice';
 import googleBooksApi from '@/store/services/google-books/googleApi';
 import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
+import waifuItAPI from './services/waifu.it/waifuit';
 
 const secureStorage = createSecureStorage();
 
@@ -71,12 +73,23 @@ const anilistAuthPersistConfig: PersistConfig<any, any, any, any> = {
     storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
 };
 
+const waifuItAuthPersistConfig: PersistConfig<any, any, any, any> = {
+    key: 'waifuItAuth',
+    storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
+};
+
 const persistedTheme = persistReducer<ThemeState, AnyAction>(persistThemeConfig, themeSlice);
 const persistedSettings = persistReducer<SettingsState, AnyAction>(
     persistSettingsConfig,
     settingsSlice,
 );
+
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
+const persistedWaifuItToken = persistReducer<WaifuItAuthState, AnyAction>(
+    waifuItAuthPersistConfig,
+    waifuItSlice,
+);
+
 const persistedHistory = persistReducer<HistoryState, AnyAction>(
     persistHistoryConfig,
     historySlice,
@@ -96,9 +109,11 @@ export const store = configureStore({
         [malApi.reducerPath]: malApi.reducer,
         [mangaUpdatesApi.reducerPath]: mangaUpdatesApi.reducer,
         [googleBooksApi.reducerPath]: googleBooksApi.reducer,
+        [waifuItAPI.reducerPath]: waifuItAPI.reducer,
         persistedTheme,
         persistedSettings,
         persistedAniLogin,
+        persistedWaifuItToken,
         persistedPresets,
         persistedHistory,
         peresistedMuDB,
@@ -118,6 +133,7 @@ export const store = configureStore({
             danbooruApi.middleware,
             mangaUpdatesApi.middleware,
             googleBooksApi.middleware,
+            waifuItAPI.middleware,
         ]),
 });
 

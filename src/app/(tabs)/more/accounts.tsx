@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { List, Portal, useTheme } from 'react-native-paper';
+import { List, Portal, Text, useTheme } from 'react-native-paper';
 import { useAnilistAuth } from '@/store/services/anilist/hooks/authAni';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/store/services/anilist/enhanced';
@@ -9,16 +9,19 @@ import { Style } from 'react-native-paper/lib/typescript/components/List/utils';
 import { AnilistIcon } from '@/components/svgs';
 import { setAniAuth } from '@/store/services/anilist/authSlice';
 import AniListLoginDialog from '@/store/services/anilist/components/dialogs';
+import { ListSubheader } from '@/components/titles';
+import WaifuItTokenDialog from '@/store/services/waifu.it/components/dialogs';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const AccountsPage = () => {
     const { deathDate, username } = useAppSelector((state) => state.persistedAniLogin);
+    const { token } = useAppSelector((state) => state.persistedWaifuItToken);
     const { colors, dark } = useTheme();
     const aniAuth = useAnilistAuth();
-    // const { aniTokenTime } = useTokenTime({ death: Number(timeTillDeath) });
     const dispatch = useAppDispatch();
     const [showAniAuth, setShowAniAuth] = useState(false);
+    const [showWaifuIt, setShowWaifuIt] = useState(false);
 
     const resetCache = useCallback(
         () =>
@@ -45,7 +48,7 @@ const AccountsPage = () => {
     return (
         <View>
             <List.Section>
-                {/* <ListSubheader title="Base" /> */}
+                <ListSubheader title="Main" />
                 <List.Item
                     title="Anilist"
                     description={deathDate && `Expires: ${deathDate}`}
@@ -53,6 +56,19 @@ const AccountsPage = () => {
                     // onPress={() => console.log(dark)}
                     right={(props) => (deathDate ? <ActiveIcon {...props} /> : null)}
                     left={(props) => <AnilistIcon style={props.style} isDark={dark} />}
+                />
+                <ListSubheader title="Extras" />
+                <List.Item
+                    title="Waifu.It"
+                    description={'Anime Quotes, Facts, Emotes, Gifs, and More!'}
+                    onPress={() => setShowWaifuIt(true)}
+                    right={(props) => (token ? <ActiveIcon {...props} /> : null)}
+                    left={(props) => (
+                        <List.Image
+                            source={require('../../../../assets/waifu.it.logo.png')}
+                            style={[props.style]}
+                        />
+                    )}
                 />
             </List.Section>
             <Portal>
@@ -65,6 +81,7 @@ const AccountsPage = () => {
                     }}
                     onRelogin={() => aniAuth.promptAsync()}
                 />
+                <WaifuItTokenDialog visible={showWaifuIt} onDismiss={() => setShowWaifuIt(false)} />
             </Portal>
         </View>
     );
