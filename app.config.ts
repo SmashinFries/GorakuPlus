@@ -3,11 +3,13 @@ import dotenv from 'dotenv';
 const IS_DEV = process.env.APP_VARIANT === 'development';
 dotenv.config();
 
+const appName = IS_DEV ? 'Goraku Dev' : 'Goraku';
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config,
     owner: 'kuzutech',
     slug: 'GorakuPlus',
-    name: IS_DEV ? 'Goraku Dev' : 'Goraku',
+    name: appName,
     version: '0.7',
     orientation: 'portrait',
     icon: './assets/iconsv1/icon.png',
@@ -35,6 +37,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                 ios: {
                     useFrameworks: 'static',
                 },
+            },
+        ],
+        [
+            'expo-barcode-scanner',
+            {
+                cameraPermission: `Allow ${appName} to access camera for barcode scanning.`,
+            },
+        ],
+        [
+            'expo-media-library',
+            {
+                //   "photosPermission": `Allow ${appName} to access your photos. This is for `,
+                savePhotosPermission: `Allow ${appName} to save photos.`,
+                isAccessMediaLocationEnabled: true,
             },
         ],
     ],
