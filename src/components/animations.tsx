@@ -172,25 +172,30 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
     const height = useSharedValue(initialHeight);
     const [totalHeight, setTotalHeight] = useState<number>(0);
     const [currentHeight, setCurrentHeight] = useState<number>(initialHeight);
+    const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const animatedStyles = useAnimatedStyle(() => {
         return {
             height: height.value,
         };
     });
 
-    const toggleHeight = useCallback(() => {
-        height.value = withSpring(
-            height.value === totalHeight
-                ? initialHeight
-                : totalHeight - height.value + initialHeight,
-            { damping: 10, mass: 0.5 },
-        );
-        setCurrentHeight(
-            height.value === totalHeight
-                ? initialHeight
-                : totalHeight - height.value + initialHeight,
-        );
+    const resetHeight = useCallback(() => {
+        height.value = withSpring(initialHeight, { damping: 10, mass: 0.5 });
+        setCurrentHeight(initialHeight);
     }, [height, totalHeight]);
+
+    const increaseHeight = useCallback(() => {
+        height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
+        setCurrentHeight(totalHeight);
+    }, [height, totalHeight]);
+
+    useEffect(() => {
+        if (isExpanded) {
+            increaseHeight();
+        } else {
+            resetHeight();
+        }
+    }, [isExpanded]);
 
     return (
         <View style={{ marginVertical: 15 }}>
@@ -210,7 +215,7 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
                         {children}
                     </View>
                 </View>
-                {currentHeight <= totalHeight && (
+                {!isExpanded && (
                     <LinearGradient
                         colors={['transparent', colors.background]}
                         locations={
@@ -230,7 +235,7 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
                     icon={
                         Math.floor(currentHeight) === initialHeight ? 'chevron-down' : 'chevron-up'
                     }
-                    onPress={toggleHeight}
+                    onPress={() => setIsExpanded((prev) => !prev)}
                     style={{
                         position: 'absolute',
                         bottom: -35,
