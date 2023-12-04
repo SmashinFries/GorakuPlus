@@ -9,6 +9,13 @@ const MorePage = () => {
         <View>
             <Divider />
             <List.Item
+                title="Weeb Lab"
+                description="Test new features that may or may not make it in future builds!"
+                onPress={() => router.push('/more/weeblab')}
+                left={(props) => <List.Icon {...props} color={colors.primary} icon="flask" />}
+            />
+            <Divider />
+            <List.Item
                 title="Accounts"
                 onPress={() => router.push('/more/accounts')}
                 // description="Manage accounts"
@@ -29,6 +36,7 @@ const MorePage = () => {
                     <List.Icon {...props} color={colors.primary} icon="information-outline" />
                 )}
             />
+            <Divider />
         </View>
     );
 };
