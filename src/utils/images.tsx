@@ -9,7 +9,8 @@ import { useCallback } from 'react';
 export const saveImage = async (url: string, name = null) => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const formattedTitle = name ?? 'mal_' + url.split('/').pop()?.split('.')[0];
-    const fileUri = FileSystem.documentDirectory + formattedTitle + '.jpg';
+    console.log(`.${url.split('.').at(-1)}`);
+    const fileUri = FileSystem.documentDirectory + formattedTitle + `.${url.split('.').at(-1)}`;
     if (status === MediaLibrary.PermissionStatus.GRANTED) {
         try {
             const result = await FileSystem.downloadAsync(url, fileUri);
