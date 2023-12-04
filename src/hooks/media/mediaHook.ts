@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     CharacterSort,
     MediaType,
@@ -18,6 +18,7 @@ import { updateDB } from '@/store/slices/muSlice';
 
 export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?: number) => {
     const dispatch = useAppDispatch();
+    const [isLoaded, setIsLoaded] = useState(false);
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const aniData = useAniMediaQuery({
         id: id,
@@ -43,15 +44,15 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
     );
 
-    const animeImages = useGetAnimePicturesQuery(
-        { id: aniData.data?.Media?.idMal },
-        { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
-    );
+    // const animeImages = useGetAnimePicturesQuery(
+    //     { id: aniData.data?.Media?.idMal },
+    //     { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
+    // );
 
-    const mangaImages = useGetMangaPicturesQuery(
-        { id: aniData.data?.Media?.idMal },
-        { skip: type === MediaType.Anime && !aniData.data?.Media?.idMal },
-    );
+    // const mangaImages = useGetMangaPicturesQuery(
+    //     { id: aniData.data?.Media?.idMal },
+    //     { skip: type === MediaType.Anime && !aniData.data?.Media?.idMal },
+    // );
 
     const { seriesData } = useMangaUpdates(
         aniData?.data?.Media?.title.romaji,
@@ -68,6 +69,29 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         }
     }, [seriesData]);
 
+    useEffect(() => {
+        if (aniData.isSuccess && aniData.data) {
+            if (aniData.data?.Media?.idMal && malData.isSuccess) {
+                if (type !== MediaType.Anime) {
+                    if (seriesData.isSuccess) {
+                        setIsLoaded(true);
+                    }
+                } else if (type === MediaType.Anime && videoData.isSuccess) {
+                    setIsLoaded(true);
+                }
+                // setIsLoaded(true);
+            } else if (!aniData.data?.Media?.idMal) {
+                if (type !== MediaType.Anime) {
+                    if (seriesData.isSuccess) {
+                        setIsLoaded(true);
+                    }
+                } else if (type === MediaType.Anime) {
+                    setIsLoaded(true);
+                }
+            }
+        }
+    }, [aniData, malData, videoData, seriesData]);
+
     // useEffect(() => {
     //     console.log('checking');
     //     if (type !== MediaType.Anime && aniData.data?.Media && !mangaUpdates.data) {
@@ -81,7 +105,6 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         malData: malData,
         videoData: videoData,
         mangaUpdates: seriesData,
-        animeImages: animeImages,
-        mangaImages: mangaImages,
+        isLoaded: isLoaded,
     };
 };

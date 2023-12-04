@@ -37,7 +37,7 @@ const MediaScreen = () => {
     const aniID = Number(params[1]);
     const type = params[0].toLowerCase() === 'anime' ? MediaType.Anime : MediaType.Manga;
     const muDB = useAppSelector((state) => state.peresistedMuDB);
-    const { aniData, malData, videoData, mangaUpdates, animeImages, mangaImages } = useMedia(
+    const { aniData, malData, videoData, mangaUpdates, isLoaded } = useMedia(
         aniID,
         type,
         muDB['data'][aniID],
@@ -65,26 +65,37 @@ const MediaScreen = () => {
     }, []);
 
     useEffect(() => {
-        if (!aniData.isLoading && !malData.isLoading && !mangaUpdates?.isLoading) {
+        if (
+            !aniData.isUninitialized &&
+            !aniData.isLoading &&
+            !malData.isUninitialized &&
+            !malData.isFetching &&
+            !mangaUpdates?.isLoading
+        ) {
             setLoading(false);
         }
-    }, [aniData.isLoading, malData.isLoading, mangaUpdates?.isLoading]);
+    }, [aniData, malData, mangaUpdates]);
 
     if (!params) return null;
 
     return (
         <View>
-            {loading && (
+            {!isLoaded && (
                 <MediaLoadingMem
                     aniLoading={aniData?.isFetching}
                     mangaUpdatesLoading={mangaUpdates?.isFetching ?? null}
                     aniError={aniData?.error}
-                    malLoading={malData?.isFetching ?? null}
+                    malLoading={
+                        malData?.isFetching ||
+                        // animeImages?.isFetching ||
+                        // mangaImages?.isFetching ||
+                        videoData?.isFetching
+                    }
                     malUnitialized={malData?.isUninitialized}
                 />
             )}
 
-            {!loading && (
+            {isLoaded && (
                 <Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
                     <FadeHeaderProvider
                         onBack={() => {
@@ -96,7 +107,7 @@ const MediaScreen = () => {
                         }
                         shareLink={aniData?.data?.Media?.siteUrl}
                         onEdit={openEdit}
-                        loading={loading}
+                        loading={!isLoaded}
                         BgImage={({ style }) => (
                             <MediaBanner
                                 style={style}
@@ -155,13 +166,13 @@ const MediaScreen = () => {
                                     <FollowingPrevListMem data={aniData?.data?.Page?.mediaList} />
                                 )}
                                 <RecListMem data={aniData?.data?.Media?.recommendations} />
-                                <MalImages
+                                {/* <MalImages
                                     data={
                                         type === MediaType.Anime
                                             ? animeImages.data
                                             : mangaImages.data
                                     }
-                                />
+                                /> */}
                                 {type === MediaType.Anime && (
                                     <AnimeTrailer video={aniData?.data?.Media?.trailer?.id} />
                                 )}
