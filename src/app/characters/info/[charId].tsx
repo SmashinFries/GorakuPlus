@@ -224,9 +224,11 @@ const CharacterScreen = () => {
                                     userID={userID}
                                 />
                                 {/* Description */}
-                                <ExpandableDescription initialHeight={90}>
-                                    <HTMLText html={charData?.data?.Character?.description} />
-                                </ExpandableDescription>
+                                {charData?.data?.Character?.description ? (
+                                    <ExpandableDescription initialHeight={90}>
+                                        <HTMLText html={charData?.data?.Character?.description} />
+                                    </ExpandableDescription>
+                                ) : null}
                                 {/* Info */}
                                 <View
                                     style={{

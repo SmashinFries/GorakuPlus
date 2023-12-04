@@ -135,9 +135,11 @@ const StafPage = () => {
                         ? data?.Staff?.name?.native
                         : data?.Staff?.name?.full}
                 </Text>
-                <ExpandableDescription initialHeight={90}>
-                    <HTMLText html={data?.Staff?.description} />
-                </ExpandableDescription>
+                {data?.Staff?.description ? (
+                    <ExpandableDescription initialHeight={90}>
+                        <HTMLText html={data?.Staff?.description} />
+                    </ExpandableDescription>
+                ) : null}
                 <MotiView style={{ marginVertical: 20, marginTop: 30 }}>
                     <Accordion title="Information" initialExpand>
                         <List.Item
