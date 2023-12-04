@@ -3,7 +3,7 @@ import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/
 import { convertDate } from '@/utils';
 import { View } from 'react-native';
 import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUpdatesApi';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Accordion, TransYUpViewMem } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
 
@@ -148,9 +148,12 @@ export const MUData = ({
         () => data?.publishers?.some((pub) => pub.type === 'English') ?? false,
         [data?.publishers],
     );
+
+    if (!data) return null;
+
     return (
         <View style={{ marginVertical: 15 }}>
-            <Accordion containerKey={data.series_id} title="Manga Updates">
+            <Accordion containerKey={data?.series_id} title="Manga Updates">
                 <List.Item
                     title="Title"
                     description="Wrong series?"
