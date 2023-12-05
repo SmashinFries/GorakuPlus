@@ -296,7 +296,12 @@ query AniMedia(
             updatedAt
             createdAt
         }
-        staff(page: 1, perPage: 12, sort: [RELEVANCE, ID]) {
+        staff(page: 1, perPage: 25, sort: [RELEVANCE, ID]) {
+            pageInfo {
+                total
+                hasNextPage
+                currentPage
+            }
             edges {
                 role
                 node {
