@@ -18,11 +18,12 @@ import {
 import { copyToClipboard } from '@/utils';
 import { saveImage } from '@/utils/images';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { SerializedError } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
-import { Stack } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { ScrollView, Share, View } from 'react-native';
+import { Stack, router } from 'expo-router';
+import { useEffect, useMemo, useState } from 'react';
+import { ScrollView, Share, ToastAndroid, View } from 'react-native';
 import {
     ActivityIndicator,
     Banner,
@@ -108,19 +109,58 @@ const WeebLabPage = () => {
     const onTextGen = async (genType: TextGenOptions) => {
         switch (genType) {
             case TextGenOptions.owoify:
-                const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
-                setGeneratedText(owoifyResult.text);
+                try {
+                    const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
+                    setGeneratedText(owoifyResult.text);
+                } catch (e) {
+                    ToastAndroid.show(
+                        `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+                        ToastAndroid.SHORT,
+                    );
+                }
                 break;
             case TextGenOptions.uvuify:
-                const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
-                setGeneratedText(uvuifyResult.text);
+                try {
+                    const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
+                    setGeneratedText(uvuifyResult.text);
+                } catch (e) {
+                    ToastAndroid.show(
+                        `Error code: ${e?.status} --> ${e?.data?.statusMessage}`,
+                        ToastAndroid.SHORT,
+                    );
+                }
+
                 break;
             case TextGenOptions.uwuify:
-                const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
-                setGeneratedText(uwuifyResult.text);
+                try {
+                    const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
+                    setGeneratedText(uwuifyResult.text);
+                } catch (e) {
+                    ToastAndroid.show(
+                        `Error code: ${e?.status} --> ${e?.data?.statusMessage}`,
+                        ToastAndroid.SHORT,
+                    );
+                }
+
                 break;
         }
     };
+
+    // useEffect(() => {
+    //     if (owoDetails.error || uvuDetails.error || uwuDetails.error) {
+    //         // console.log(uvuDetails.error?.status);
+    //         ToastAndroid.show(
+    //             `Could not generate text! Error code: ${
+    //                 owoDetails.isError
+    //                     ? owoDetails.error?.status
+    //                     : uvuDetails.isError
+    //                     ? uvuDetails.error?.status
+    //                     : uwuDetails.error?.status
+    //             }`,
+    //             ToastAndroid.SHORT,
+    //         );
+    //     }
+    // }, [owoDetails, uvuDetails, uwuDetails]);
 
     // const [] =
     return (
@@ -166,7 +206,11 @@ const WeebLabPage = () => {
                             Currently testing Waifu.It! {'\n\n'} For this lab, you will need a
                             token.
                         </Text>
-                        <Button mode="elevated" style={{ marginVertical: 20 }}>
+                        <Button
+                            mode="elevated"
+                            style={{ marginVertical: 20 }}
+                            onPress={() => router.replace('/more/accounts')}
+                        >
                             Setup Waifu.It Token
                         </Button>
                     </View>
@@ -224,7 +268,7 @@ const WeebLabPage = () => {
                                         {emotion.isFetching ? (
                                             <View
                                                 style={{
-                                                    height: 250,
+                                                    height: 200,
                                                     justifyContent: 'center',
                                                     alignItems: 'center',
                                                 }}
@@ -234,7 +278,11 @@ const WeebLabPage = () => {
                                         ) : (
                                             <Image
                                                 cachePolicy="none"
-                                                source={{ uri: emotion.data?.url }}
+                                                source={{
+                                                    uri: emotion.data?.url?.includes('gif')
+                                                        ? emotion.data?.url
+                                                        : `${emotion.data?.url}.gif`,
+                                                }}
                                                 style={{
                                                     maxHeight: 250,
                                                     width: '95%',

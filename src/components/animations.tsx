@@ -295,13 +295,13 @@ export const Accordion = ({
                 : totalHeight - height.value + initialHeight,
         );
         setIsExpanded((prev) => !prev);
-    }, [height, totalHeight]);
+    }, [height, initialHeight, totalHeight]);
 
     useEffect(() => {
-        if (initialExpand) {
-            toggleHeight();
+        if (initialExpand && totalHeight) {
+            height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
         }
-    }, [initialExpand]);
+    }, [totalHeight]);
 
     useEffect(() => {
         if (isExpanded && totalHeight) {
