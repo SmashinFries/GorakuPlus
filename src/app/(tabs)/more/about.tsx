@@ -50,7 +50,7 @@ const AboutPage = () => {
                 onPress={checkForUpdates}
                 right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
             />
-            <Accordion title="Data Sources" initialExpand>
+            <Accordion title="Data Sources" titleFontSize={16} initialExpand>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <LinkButton
                         url="https://anilist.co/home"
@@ -95,7 +95,7 @@ const AboutPage = () => {
                         icon={() => <DanbooruIcon />}
                         transparentBg
                     />
-                    <LinkButton
+                    {/* <LinkButton
                         url="https://waifu.it/"
                         label="Waifu.It"
                         icon={(props) => (
@@ -105,7 +105,7 @@ const AboutPage = () => {
                             />
                         )}
                         transparentBg
-                    />
+                    /> */}
                 </ScrollView>
             </Accordion>
             <View
