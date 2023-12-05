@@ -1,4 +1,12 @@
-import { ActivityIndicator, Button, IconButton, Portal, Text, useTheme } from 'react-native-paper';
+import {
+    ActivityIndicator,
+    Avatar,
+    Button,
+    IconButton,
+    Portal,
+    Text,
+    useTheme,
+} from 'react-native-paper';
 import {
     ListActivity,
     MediaFormat,
@@ -12,90 +20,110 @@ import { MediaCard } from '../cards';
 import { getTimeUntil } from '@/utils';
 import { ConfirmActDelDialog } from './dialogs';
 import { router } from 'expo-router';
+import { useAppSelector } from '@/store/hooks';
 
 type ActivityItemProps = {
     item: ListActivity;
+    onTrash: (id: number) => void;
+};
+
+export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
+    const { colors } = useTheme();
+    const { userID } = useAppSelector((state) => state.persistedAniLogin);
+    return (
+        <View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
+            <MediaCard
+                titles={item.media?.title}
+                coverImg={item.media?.coverImage?.extraLarge}
+                imgBgColor={item.media?.coverImage?.color}
+                navigate={
+                    () => router.push(`/${item.media?.type}/${item.media?.id}`)
+                    // nav.navigate('media', {
+                    //     aniID: item.media?.id,
+                    //     malID: item.media?.idMal,
+                    //     type: item.media.type,
+                    // })
+                }
+            />
+            <Text
+                variant="labelLarge"
+                numberOfLines={2}
+                style={{ textTransform: 'capitalize', maxWidth: 200, textAlign: 'center' }}
+            >
+                {item.status ?? '???'}
+            </Text>
+            <Text
+                variant="labelMedium"
+                style={{
+                    textTransform: 'capitalize',
+                    textAlign: 'center',
+                    color: colors.onSurfaceVariant,
+                }}
+            >
+                {item.media?.format === MediaFormat.Tv
+                    ? 'Anime'
+                    : item.media?.isLicensed
+                    ? item.media?.format
+                    : 'Doujin'}{' '}
+                · {item.media?.status?.replaceAll('_', ' ') ?? '??'}
+            </Text>
+            <Text
+                variant="labelMedium"
+                style={{
+                    textTransform: 'capitalize',
+                    textAlign: 'center',
+                    color: colors.onSurfaceVariant,
+                }}
+            >
+                {getTimeUntil(item.createdAt, 'createdAt')}
+            </Text>
+            {item.user?.id === userID && (
+                <IconButton
+                    icon={'trash-can'}
+                    iconColor={colors.onPrimaryContainer}
+                    style={{
+                        position: 'absolute',
+                        top: -5,
+                        right: -15,
+                        backgroundColor: colors.primaryContainer,
+                    }}
+                    onPress={() => onTrash(item.id)}
+                />
+            )}
+            {item.user?.id !== userID && (
+                <Avatar.Image
+                    style={{ position: 'absolute', top: 0, right: 0 }}
+                    source={{ uri: item.user?.avatar?.large }}
+                    size={32}
+                />
+            )}
+        </View>
+    );
 };
 
 export const ActivityOverview = ({ data }: { data: UserActivityQuery['Page']['activities'] }) => {
-    const { colors } = useTheme();
     const { width } = useWindowDimensions();
 
     const [showActDelConfirm, setShowActDelConfirm] = useState(false);
     const [actDelID, setActDelID] = useState<number | null>(null);
+    const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
-    const RenderItem = useCallback(
-        ({ item }: ActivityItemProps) => {
-            return (
-                <View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
-                    <MediaCard
-                        titles={item.media?.title}
-                        coverImg={item.media?.coverImage?.extraLarge}
-                        imgBgColor={item.media?.coverImage?.color}
-                        navigate={
-                            () => router.push(`/${item.media?.type}/${item.media?.id}`)
-                            // nav.navigate('media', {
-                            //     aniID: item.media?.id,
-                            //     malID: item.media?.idMal,
-                            //     type: item.media.type,
-                            // })
-                        }
-                    />
-                    <Text
-                        variant="labelLarge"
-                        numberOfLines={2}
-                        style={{ textTransform: 'capitalize', maxWidth: 200, textAlign: 'center' }}
-                    >
-                        {item.status ?? '???'}
-                    </Text>
-                    <Text
-                        variant="labelMedium"
-                        style={{
-                            textTransform: 'capitalize',
-                            textAlign: 'center',
-                            color: colors.onSurfaceVariant,
-                        }}
-                    >
-                        {item.media?.format === MediaFormat.Tv
-                            ? 'Anime'
-                            : item.media?.isLicensed
-                            ? item.media?.format
-                            : 'Doujin'}{' '}
-                        · {item.media?.status?.replaceAll('_', ' ') ?? '??'}
-                    </Text>
-                    <Text
-                        variant="labelMedium"
-                        style={{
-                            textTransform: 'capitalize',
-                            textAlign: 'center',
-                            color: colors.onSurfaceVariant,
-                        }}
-                    >
-                        {getTimeUntil(item.createdAt, 'createdAt')}
-                    </Text>
-                    <IconButton
-                        icon={'trash-can'}
-                        iconColor={colors.onPrimaryContainer}
-                        style={{
-                            position: 'absolute',
-                            top: -5,
-                            right: -15,
-                            backgroundColor: colors.primaryContainer,
-                        }}
-                        onPress={() => {
-                            setActDelID(item.id);
-                            setShowActDelConfirm(true);
-                        }}
-                    />
-                </View>
-            );
-        },
-        [colors],
-    );
+    const onTrash = (id: number) => {
+        setActDelID(id);
+        setShowActDelConfirm(true);
+    };
+
+    const RenderItem = ({ item }: { item: ListActivity }) => {
+        return <ActivityItem item={item} onTrash={onTrash} />;
+    };
 
     return (
         <View style={{ width: width, overflow: 'visible' }}>
-            <ListHeading title="Activity" icon="chevron-right" />
+            <ListHeading
+                title="Activity"
+                icon="chevron-right"
+                onIconPress={() => router.push('/activity/user')}
+            />
             {data ? (
                 <FlashList
                     // @ts-ignore - not sure how to handle this type :/
