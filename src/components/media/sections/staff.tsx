@@ -8,8 +8,9 @@ import { StaffCard } from '@/components/cards';
 
 type StaffPrevListProps = {
     data: AniMediaQuery['Media']['staff'];
+    openMore: () => void;
 };
-export const StaffPrevList = ({ data }: StaffPrevListProps) => {
+export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
     const keyExtractor = useCallback((item, index) => index.toString(), []);
     const renderItem = useCallback(
         ({ item }: { item: AniMediaQuery['Media']['staff']['edges'][0] }) => (
@@ -31,7 +32,11 @@ export const StaffPrevList = ({ data }: StaffPrevListProps) => {
 
     return (
         <View>
-            <ListHeading title="Staff" />
+            <ListHeading
+                title="Staff"
+                icon={data.pageInfo.hasNextPage ? 'arrow-right' : undefined}
+                onIconPress={openMore}
+            />
             <FlashList
                 data={data.edges}
                 renderItem={renderItem}

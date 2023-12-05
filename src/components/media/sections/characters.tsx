@@ -6,10 +6,13 @@ import { View } from 'react-native';
 import { CharacterCard } from '../../cards';
 import { router } from 'expo-router';
 
+// router.push(`/characters/info/${item.node.id}`)
+
 type CharacterPrevListProps = {
     data: AniMediaQuery['Media']['characters'];
+    openMore: () => void;
 };
-export const CharacterPrevList = ({ data }: CharacterPrevListProps) => {
+export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) => {
     const keyExtractor = useCallback((item, index) => index.toString(), []);
     const renderItem = useCallback(
         ({ item }: { item: AniMediaQuery['Media']['characters']['edges'][0] }) => (
@@ -40,7 +43,11 @@ export const CharacterPrevList = ({ data }: CharacterPrevListProps) => {
 
     return (
         <View>
-            <ListHeading title="Characters" />
+            <ListHeading
+                title="Characters"
+                icon={data.pageInfo.hasNextPage ? 'arrow-right' : undefined}
+                onIconPress={openMore}
+            />
             <FlashList
                 data={data.edges}
                 renderItem={renderItem}
