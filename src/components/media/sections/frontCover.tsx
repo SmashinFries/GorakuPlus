@@ -95,7 +95,7 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
                     <QuickSelector
                         icon={'account-group-outline'}
                         disabled={data?.characters?.edges?.length < 1}
-                        onPress={() => router.push(`/characters/${data?.type}/${data?.id}`)}
+                        onPress={() => router.push(`/characters/${data?.type}/${data?.id}`)} 
                         // onPress={() =>
                         //     nav.navigate('characterStack', {
                         //         screen: 'characterList',
