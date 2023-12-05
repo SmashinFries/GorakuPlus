@@ -505,9 +505,25 @@ export const api = generatedApi.enhanceEndpoints({
                     : ['StudioSearch'],
         },
         UserActivity: {
-            // transformResponse(baseQueryReturnValue, meta, arg) {
-            //     return transformMediaDates(baseQueryReturnValue);
-            // },
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs) {
+                    return `${endpointName}${queryArgs.userId ?? 'user'}`;
+                } else {
+                    return endpointName;
+                }
+                // return endpointName;
+            },
+            merge: (currentCache, newItems) => {
+                if (currentCache.Page.pageInfo.currentPage < newItems.Page.pageInfo.currentPage) {
+                    currentCache.Page.pageInfo = newItems.Page.pageInfo;
+                    currentCache.Page.activities.push(...newItems.Page.activities);
+                }
+            },
+            forceRefetch({ currentArg, previousArg }) {
+                if (currentArg && previousArg) {
+                    return currentArg.page > previousArg.page;
+                }
+            },
             providesTags: (result) =>
                 result
                     ? [
