@@ -10,9 +10,9 @@ export const useUser = (userID: number) => {
     const activity = useUserActivityQuery(
         {
             page: 1,
-            perPage: 10,
-            userId: userID,
-            isFollowing: false,
+            perPage: 20,
+            userId: undefined,
+            isFollowing: true,
         },
         { skip: !userID },
     );
