@@ -3,7 +3,7 @@ import { Button, Portal } from 'react-native-paper';
 import { useCallback, useEffect, useState } from 'react';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useMedia } from '@/hooks/media/mediaHook';
 import { updateDB } from '@/store/slices/muSlice';
 import { openWebBrowser } from '@/utils/webBrowser';
@@ -160,8 +160,20 @@ const MediaScreen = () => {
                                     />
                                 )}
                                 <RelationsMem data={aniData?.data?.Media?.relations} />
-                                <CharacterPrevListMem data={aniData?.data?.Media?.characters} />
-                                <StaffPrevListMem data={aniData?.data?.Media?.staff} />
+                                <CharacterPrevListMem
+                                    data={aniData?.data?.Media?.characters}
+                                    openMore={() =>
+                                        router.push(
+                                            `/characters/${aniData?.data?.Media?.type}/${aniData?.data?.Media?.id}`,
+                                        )
+                                    }
+                                />
+                                <StaffPrevListMem
+                                    data={aniData?.data?.Media?.staff}
+                                    openMore={() =>
+                                        router.push(`/staff/${aniData?.data?.Media?.id}`)
+                                    }
+                                />
                                 {userID && (
                                     <FollowingPrevListMem data={aniData?.data?.Page?.mediaList} />
                                 )}
