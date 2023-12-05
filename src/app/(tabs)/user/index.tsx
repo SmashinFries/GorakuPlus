@@ -44,12 +44,12 @@ const UserPage = () => {
         // navigation.navigate('statistics', { userId: userID });
     };
 
-    const onRefresh = () => {
+    const onRefresh = async () => {
         setIsRefreshing(true);
-        user.refetch();
-        followers.refetch();
-        following.refetch();
-        activity.refetch();
+        await user.refetch();
+        await followers.refetch();
+        await following.refetch();
+        await activity.refetch();
         setIsRefreshing(false);
     };
 
