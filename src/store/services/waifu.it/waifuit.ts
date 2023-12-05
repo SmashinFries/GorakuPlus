@@ -26,13 +26,13 @@ const waifuItAPI = createApi({
     reducerPath: 'waifuiItApi',
 
     endpoints: (build) => ({
-        getQuote: build.query<QuoteResponse, undefined>({
+        getQuote: build.query<QuoteResponse, void>({
             query: () => ({ url: '/quote' }),
         }),
-        getFact: build.query<FactResponse, undefined>({
+        getFact: build.query<FactResponse, void>({
             query: () => ({ url: '/fact' }),
         }),
-        getWaifu: build.query<WaifuResponse, undefined>({
+        getWaifu: build.query<WaifuResponse, void>({
             query: () => ({ url: '/waifu' }),
         }),
         getInteraction: build.query<InteractionResponse, InteractionParams>({
