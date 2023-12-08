@@ -138,10 +138,11 @@ const CharacterScreen = () => {
                     disableAR
                     onNavigate={() =>
                         // @ts-ignore
-                        navigation.navigate('danbooruStack', {
-                            screen: 'danbooruDetail',
-                            params: { id: item.id },
-                        })
+                        // navigation.navigate('danbooruStack', {
+                        //     screen: 'danbooruDetail',
+                        //     params: { id: item.id },
+                        // })
+                        router.push(`/art/post/${item.id}`)
                     }
                 />
             </View>
