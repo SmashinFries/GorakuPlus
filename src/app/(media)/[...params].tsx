@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { Button, Portal } from 'react-native-paper';
+import { Button, Portal, Text } from 'react-native-paper';
 import { useCallback, useEffect, useState } from 'react';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -37,17 +37,15 @@ const MediaScreen = () => {
     const aniID = Number(params[1]);
     const type = params[0].toLowerCase() === 'anime' ? MediaType.Anime : MediaType.Manga;
     const muDB = useAppSelector((state) => state.peresistedMuDB);
-    const { aniData, malData, videoData, mangaUpdates, isLoaded } = useMedia(
-        aniID,
-        type,
-        muDB['data'][aniID],
-    );
-    const [loading, setLoading] = useState(true);
+    const { aniData, malData, videoData, mangaUpdates, isAniLoading, isMalLoading, isMuLoading } =
+        useMedia(aniID, type, muDB['data'][aniID]);
 
     const [showEpDialog, setShowEpDialog] = useState(false);
     const [showMuDialog, setShowMuDialog] = useState(false);
 
-    const { mediaLanguage, scoreColors } = useAppSelector((state) => state.persistedSettings);
+    const { mediaLanguage, scoreColors, allowSensorMotion } = useAppSelector(
+        (state) => state.persistedSettings,
+    );
 
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const dispatch = useAppDispatch();
@@ -64,38 +62,21 @@ const MediaScreen = () => {
         openWebBrowser(`https://anilist.co/edit/${params[0]}/${aniID}`);
     }, []);
 
-    useEffect(() => {
-        if (
-            !aniData.isUninitialized &&
-            !aniData.isLoading &&
-            !malData.isUninitialized &&
-            !malData.isFetching &&
-            !mangaUpdates?.isLoading
-        ) {
-            setLoading(false);
-        }
-    }, [aniData, malData, mangaUpdates]);
-
     if (!params) return null;
 
     return (
         <View>
-            {!isLoaded && (
+            {(isAniLoading || isMalLoading || isMuLoading) && (
                 <MediaLoadingMem
-                    aniLoading={aniData?.isFetching}
-                    mangaUpdatesLoading={mangaUpdates?.isFetching ?? null}
+                    aniLoading={isAniLoading}
+                    mangaUpdatesLoading={type !== MediaType.Anime ? isMuLoading : null}
                     aniError={aniData?.error}
-                    malLoading={
-                        malData?.isFetching ||
-                        // animeImages?.isFetching ||
-                        // mangaImages?.isFetching ||
-                        videoData?.isFetching
-                    }
+                    malLoading={isMalLoading}
                     malUnitialized={malData?.isUninitialized}
                 />
             )}
 
-            {isLoaded && (
+            {!isAniLoading && !isMalLoading && !isMuLoading && (
                 <Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
                     <FadeHeaderProvider
                         onBack={() => {
@@ -107,7 +88,7 @@ const MediaScreen = () => {
                         }
                         shareLink={aniData?.data?.Media?.siteUrl}
                         onEdit={openEdit}
-                        loading={!isLoaded}
+                        loading={false}
                         BgImage={({ style }) => (
                             <MediaBanner
                                 style={style}
@@ -115,6 +96,7 @@ const MediaScreen = () => {
                                     aniData?.data?.Media?.bannerImage ??
                                     aniData?.data?.Media?.coverImage?.extraLarge
                                 }
+                                allowMotion={allowSensorMotion}
                             />
                         )}
                     >

@@ -107,7 +107,6 @@ export const MediaLoading = ({
     aniError,
     malError,
     mangaUpdatesError,
-    malUnitialized,
 }: LoadingProps) => {
     const { dark } = useTheme();
 
@@ -134,12 +133,7 @@ export const MediaLoading = ({
             exiting={FadeOut.duration(500).easing(Easing.ease)}
         >
             <LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
-            <LoadingItemMem
-                loading={malLoading || malUnitialized}
-                dark={dark}
-                error={malError}
-                icon="MAL"
-            />
+            <LoadingItemMem loading={malLoading} dark={dark} error={malError} icon="MAL" />
             {mangaUpdatesLoading !== null && (
                 <LoadingItemMem
                     loading={mangaUpdatesLoading}

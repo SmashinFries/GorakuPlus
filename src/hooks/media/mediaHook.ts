@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
+    AniMediaQuery,
     CharacterSort,
+    MediaFormat,
     MediaType,
     useAniMediaQuery,
+    useLazyAniMediaQuery,
 } from '@/store/services/anilist/generated-anilist';
 import {
     useGetAnimeFullByIdQuery,
@@ -11,38 +14,118 @@ import {
     useGetMangaByIdQuery,
     useGetMangaFullByIdQuery,
     useGetMangaPicturesQuery,
+    useLazyGetAnimeFullByIdQuery,
+    useLazyGetAnimeVideosQuery,
+    useLazyGetMangaFullByIdQuery,
 } from '@/store/services/mal/malApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import useMangaUpdates from './useMangaUpdates';
 import { updateDB } from '@/store/slices/muSlice';
+import {
+    useLazyRetrieveSeriesQuery,
+    useSearchSeriesPostMutation,
+} from '@/store/services/mangaupdates/mangaUpdatesApi';
 
 export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?: number) => {
     const dispatch = useAppDispatch();
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isAniLoading, setIsAniLoading] = useState(true);
+    const [isMalLoading, setIsMalLoading] = useState(true);
+    const [isMuLoading, setIsMuLoading] = useState(true);
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
-    const aniData = useAniMediaQuery({
-        id: id,
-        userId: userID,
-        skipUser: userID ? false : true,
-        perPage_c: 25,
-        perPage_rec: 25,
-        sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
-    });
 
-    const malData =
-        type === MediaType.Anime
-            ? useGetAnimeFullByIdQuery(
-                  { id: aniData.data?.Media?.idMal },
-                  { skip: !aniData.data?.Media?.idMal },
-              )
-            : useGetMangaFullByIdQuery(
-                  { id: aniData.data?.Media?.idMal },
-                  { skip: !aniData.data?.Media?.idMal },
-              );
-    const videoData = useGetAnimeVideosQuery(
-        { id: aniData.data?.Media?.idMal },
-        { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
-    );
+    const [getAniMedia, aniData] = useLazyAniMediaQuery();
+    const [getMalManga, malMangaData] = useLazyGetMangaFullByIdQuery();
+    const [getMalAnime, malAnimeData] = useLazyGetAnimeFullByIdQuery();
+    const [getAnimeVideos, videoData] = useLazyGetAnimeVideosQuery();
+
+    // MU
+    const [getMuSearchSeries] = useSearchSeriesPostMutation();
+    const [getMuSeries, muData] = useLazyRetrieveSeriesQuery();
+
+    const fetchAniContent = async () => {
+        setIsAniLoading(true);
+        const aniRes = await getAniMedia({
+            id: id,
+            userId: userID,
+            skipUser: userID ? false : true,
+            perPage_c: 25,
+            perPage_rec: 25,
+            sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
+        }).unwrap();
+        setIsAniLoading(false);
+        return aniRes;
+    };
+
+    const fetchMalContent = async (idMal: number | null) => {
+        setIsMalLoading(true);
+        idMal
+            ? type === MediaType.Anime
+                ? await getMalAnime({ id: idMal }).unwrap()
+                : await getMalManga({ id: idMal }).unwrap()
+            : null;
+        idMal && type === MediaType.Anime ? await getAnimeVideos({ id: idMal }).unwrap() : null;
+        setIsMalLoading(false);
+    };
+
+    const fetchMUContent = async (title: string, type: MediaFormat, muId?: number) => {
+        setIsMuLoading(true);
+        if (!muId) {
+            const fixed_title = title?.replace('[', '').replace(']', '');
+            const searchResults = await getMuSearchSeries({
+                seriesSearchRequestV1: {
+                    search: `${fixed_title}${type === 'NOVEL' ? ' (Novel)' : ''}`,
+                    stype: 'title',
+                },
+            }).unwrap();
+            await getMuSeries({
+                id: muId ? muId : searchResults?.results[0]?.record?.series_id,
+            }).unwrap();
+            setIsMuLoading(false);
+        } else {
+            await getMuSeries({ id: muId }).unwrap();
+            setIsMuLoading(false);
+        }
+    };
+
+    const fetchAll = async () => {
+        const aniData = await fetchAniContent();
+        await fetchMalContent(aniData?.Media?.idMal ?? null);
+        if (type === MediaType.Manga) {
+            // Manhwa english title gives better accuracy
+            await fetchMUContent(
+                aniData?.Media?.countryOfOrigin === 'KR'
+                    ? aniData?.Media?.title?.english ?? aniData?.Media?.title?.romaji
+                    : aniData?.Media?.title.romaji,
+                aniData?.Media?.format,
+                muID,
+            );
+        } else {
+            setIsMuLoading(false);
+        }
+    };
+    // const aniData = useAniMediaQuery({
+    //     id: id,
+    //     userId: userID,
+    //     skipUser: userID ? false : true,
+    //     perPage_c: 25,
+    //     perPage_rec: 25,
+    //     sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
+    // });
+
+    // const malData =
+    //     type === MediaType.Anime
+    //         ? useGetAnimeFullByIdQuery(
+    //               { id: aniData.data?.Media?.idMal },
+    //               { skip: !aniData.data?.Media?.idMal },
+    //           )
+    //         : useGetMangaFullByIdQuery(
+    //               { id: aniData.data?.Media?.idMal },
+    //               { skip: !aniData.data?.Media?.idMal },
+    //           );
+    // const videoData = useGetAnimeVideosQuery(
+    //     { id: aniData.data?.Media?.idMal },
+    //     { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
+    // );
 
     // const animeImages = useGetAnimePicturesQuery(
     //     { id: aniData.data?.Media?.idMal },
@@ -54,43 +137,24 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
     //     { skip: type === MediaType.Anime && !aniData.data?.Media?.idMal },
     // );
 
-    const { seriesData } = useMangaUpdates(
-        aniData?.data?.Media?.title.romaji,
-        aniData?.data?.Media?.format,
-        type === MediaType.Anime,
-        muID,
-    );
+    // const { seriesData } = useMangaUpdates(
+    //     aniData?.data?.Media?.title.romaji,
+    //     aniData?.data?.Media?.format,
+    //     type === MediaType.Anime,
+    //     muID,
+    // );
 
     useEffect(() => {
-        if (seriesData?.data?.series_id) {
+        if (muData?.data?.series_id) {
             if (!muID) {
-                dispatch(updateDB({ aniId: id, muId: seriesData?.data?.series_id }));
+                dispatch(updateDB({ aniId: id, muId: muData?.data?.series_id }));
             }
         }
-    }, [seriesData]);
+    }, [muData]);
 
     useEffect(() => {
-        if (aniData.isSuccess && aniData.data) {
-            if (aniData.data?.Media?.idMal && malData.isSuccess) {
-                if (type !== MediaType.Anime) {
-                    if (seriesData.isSuccess) {
-                        setIsLoaded(true);
-                    }
-                } else if (type === MediaType.Anime && videoData.isSuccess) {
-                    setIsLoaded(true);
-                }
-                // setIsLoaded(true);
-            } else if (!aniData.data?.Media?.idMal) {
-                if (type !== MediaType.Anime) {
-                    if (seriesData.isSuccess) {
-                        setIsLoaded(true);
-                    }
-                } else if (type === MediaType.Anime) {
-                    setIsLoaded(true);
-                }
-            }
-        }
-    }, [aniData, malData, videoData, seriesData]);
+        fetchAll();
+    }, []);
 
     // useEffect(() => {
     //     console.log('checking');
@@ -102,9 +166,11 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
 
     return {
         aniData: aniData,
-        malData: malData,
+        malData: type === MediaType.Anime ? malAnimeData : malMangaData,
         videoData: videoData,
-        mangaUpdates: seriesData,
-        isLoaded: isLoaded,
+        mangaUpdates: muData,
+        isAniLoading,
+        isMalLoading,
+        isMuLoading,
     };
 };

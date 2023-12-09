@@ -121,7 +121,11 @@ const injectedRtkApi = api
             getAnimeReviews: build.query<GetAnimeReviewsApiResponse, GetAnimeReviewsApiArg>({
                 query: (queryArg) => ({
                     url: `/anime/${queryArg.id}/reviews`,
-                    params: { page: queryArg.page },
+                    params: {
+                        page: queryArg.page,
+                        preliminary: queryArg.preliminary,
+                        spoiler: queryArg.spoiler,
+                    },
                 }),
                 providesTags: ['anime'],
             }),
@@ -285,7 +289,11 @@ const injectedRtkApi = api
             getMangaReviews: build.query<GetMangaReviewsApiResponse, GetMangaReviewsApiArg>({
                 query: (queryArg) => ({
                     url: `/manga/${queryArg.id}/reviews`,
-                    params: { page: queryArg.page },
+                    params: {
+                        page: queryArg.page,
+                        preliminary: queryArg.preliminary,
+                        spoiler: queryArg.spoiler,
+                    },
                 }),
                 providesTags: ['manga'],
             }),
@@ -386,25 +394,41 @@ const injectedRtkApi = api
                 GetRecentAnimeReviewsApiResponse,
                 GetRecentAnimeReviewsApiArg
             >({
-                query: (queryArg) => ({ url: `/reviews/anime`, params: { page: queryArg.page } }),
+                query: (queryArg) => ({
+                    url: `/reviews/anime`,
+                    params: {
+                        page: queryArg.page,
+                        preliminary: queryArg.preliminary,
+                        spoiler: queryArg.spoiler,
+                    },
+                }),
                 providesTags: ['reviews'],
             }),
             getRecentMangaReviews: build.query<
                 GetRecentMangaReviewsApiResponse,
                 GetRecentMangaReviewsApiArg
             >({
-                query: (queryArg) => ({ url: `/reviews/manga`, params: { page: queryArg.page } }),
+                query: (queryArg) => ({
+                    url: `/reviews/manga`,
+                    params: {
+                        page: queryArg.page,
+                        preliminary: queryArg.preliminary,
+                        spoiler: queryArg.spoiler,
+                    },
+                }),
                 providesTags: ['reviews'],
             }),
             getSchedules: build.query<GetSchedulesApiResponse, GetSchedulesApiArg>({
                 query: (queryArg) => ({
                     url: `/schedules`,
                     params: {
-                        page: queryArg.page,
+                        page: queryArg.queryPage,
                         filter: queryArg.filter,
                         kids: queryArg.kids,
-                        sfw: queryArg.sfw,
+                        sfw: queryArg.querySfw,
+                        sfw: queryArg._querySfw,
                         unapproved: queryArg.unapproved,
+                        page: queryArg._queryPage,
                         limit: queryArg.limit,
                     },
                 }),
@@ -414,7 +438,7 @@ const injectedRtkApi = api
                 query: (queryArg) => ({
                     url: `/anime`,
                     params: {
-                        sfw: queryArg.sfw,
+                        sfw: queryArg.querySfw,
                         unapproved: queryArg.unapproved,
                         page: queryArg.page,
                         limit: queryArg.limit,
@@ -425,6 +449,7 @@ const injectedRtkApi = api
                         max_score: queryArg.maxScore,
                         status: queryArg.status,
                         rating: queryArg.rating,
+                        sfw: queryArg._querySfw,
                         genres: queryArg.genres,
                         genres_exclude: queryArg.genresExclude,
                         order_by: queryArg.orderBy,
@@ -441,7 +466,7 @@ const injectedRtkApi = api
                 query: (queryArg) => ({
                     url: `/manga`,
                     params: {
-                        sfw: queryArg.sfw,
+                        sfw: queryArg.querySfw,
                         unapproved: queryArg.unapproved,
                         page: queryArg.page,
                         limit: queryArg.limit,
@@ -451,6 +476,7 @@ const injectedRtkApi = api
                         min_score: queryArg.minScore,
                         max_score: queryArg.maxScore,
                         status: queryArg.status,
+                        sfw: queryArg._querySfw,
                         genres: queryArg.genres,
                         genres_exclude: queryArg.genresExclude,
                         order_by: queryArg.orderBy,
@@ -841,6 +867,10 @@ export type GetAnimeReviewsApiResponse = /** status 200 Returns anime reviews */
 export type GetAnimeReviewsApiArg = {
     id: number;
     page?: number;
+    /** Any reviews left during an ongoing anime/manga, those reviews are tagged as preliminary. NOTE: Preliminary reviews are not returned by default so if the entry is airing/publishing you need to add this otherwise you will get an empty list. e.g usage: `?preliminary=true` */
+    preliminary?: boolean;
+    /** Any reviews that are tagged as a spoiler. Spoiler reviews are not returned by default. e.g usage: `?spoiler=true` */
+    spoiler?: boolean;
 };
 export type GetAnimeRelationsApiResponse = /** status 200 Returns anime relations */ {
     data?: Relation[];
@@ -994,6 +1024,10 @@ export type GetMangaReviewsApiResponse = /** status 200 Returns manga reviews */
 export type GetMangaReviewsApiArg = {
     id: number;
     page?: number;
+    /** Any reviews left during an ongoing anime/manga, those reviews are tagged as preliminary. NOTE: Preliminary reviews are not returned by default so if the entry is airing/publishing you need to add this otherwise you will get an empty list. e.g usage: `?preliminary=true` */
+    preliminary?: boolean;
+    /** Any reviews that are tagged as a spoiler. Spoiler reviews are not returned by default. e.g usage: `?spoiler=true` */
+    spoiler?: boolean;
 };
 export type GetMangaRelationsApiResponse = /** status 200 Returns manga relations */ {
     data?: Relation[];
@@ -1089,29 +1123,40 @@ export type GetRecentMangaRecommendationsApiArg = {
 export type GetRecentAnimeReviewsApiResponse = /** status 200 Returns recent anime reviews */ any;
 export type GetRecentAnimeReviewsApiArg = {
     page?: number;
+    /** Any reviews left during an ongoing anime/manga, those reviews are tagged as preliminary. NOTE: Preliminary reviews are not returned by default so if the entry is airing/publishing you need to add this otherwise you will get an empty list. e.g usage: `?preliminary=true` */
+    preliminary?: boolean;
+    /** Any reviews that are tagged as a spoiler. Spoiler reviews are not returned by default. e.g usage: `?spoiler=true` */
+    spoiler?: boolean;
 };
 export type GetRecentMangaReviewsApiResponse = /** status 200 Returns recent manga reviews */ any;
 export type GetRecentMangaReviewsApiArg = {
     page?: number;
+    /** Any reviews left during an ongoing anime/manga, those reviews are tagged as preliminary. NOTE: Preliminary reviews are not returned by default so if the entry is airing/publishing you need to add this otherwise you will get an empty list. e.g usage: `?preliminary=true` */
+    preliminary?: boolean;
+    /** Any reviews that are tagged as a spoiler. Spoiler reviews are not returned by default. e.g usage: `?spoiler=true` */
+    spoiler?: boolean;
 };
 export type GetSchedulesApiResponse = /** status 200 Returns weekly schedule */ Schedules;
 export type GetSchedulesApiArg = {
-    page?: number;
+    queryPage?: number;
     /** Filter by day */
     filter?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'unknown' | 'other';
     /** When supplied, it will filter entries with the `Kids` Genre Demographic. When supplied as `kids=true`, it will return only Kid entries and when supplied as `kids=false`, it will filter out any Kid entries. Defaults to `false`. */
     kids?: 'true' | 'false';
+    /** 'Safe For Work'. When supplied, it will filter entries with the `Hentai` Genre. When supplied as `sfw=true`, it will return only SFW entries and when supplied as `sfw=false`, it will filter out any Hentai entries. Defaults to `false`. */
+    querySfw?: 'true' | 'false';
     /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
-    sfw?: boolean;
+    _querySfw?: boolean;
     /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
     unapproved?: boolean;
+    _queryPage?: number;
     limit?: number;
 };
 export type GetAnimeSearchApiResponse =
     /** status 200 Returns search results for anime */ AnimeSearch;
 export type GetAnimeSearchApiArg = {
-    /** Filter out Adult entries */
-    sfw?: boolean;
+    /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
+    querySfw?: boolean;
     /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
     unapproved?: boolean;
     page?: number;
@@ -1125,6 +1170,8 @@ export type GetAnimeSearchApiArg = {
     maxScore?: number;
     status?: AnimeSearchQueryStatus;
     rating?: AnimeSearchQueryRating;
+    /** Filter out Adult entries */
+    _querySfw?: boolean;
     /** Filter by genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
     genres?: string;
     /** Exclude genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
@@ -1143,8 +1190,8 @@ export type GetAnimeSearchApiArg = {
 export type GetMangaSearchApiResponse =
     /** status 200 Returns search results for manga */ MangaSearch;
 export type GetMangaSearchApiArg = {
-    /** Filter out Adult entries */
-    sfw?: boolean;
+    /** 'Safe For Work'. This is a flag. When supplied it will filter out entries according to the SFW Policy. You do not need to pass a value to it. e.g usage: `?sfw` */
+    querySfw?: boolean;
     /** This is a flag. When supplied it will include entries which are unapproved. Unapproved entries on MyAnimeList are those that are user submitted and have not yet been approved by MAL to show up on other pages. They will have their own specifc pages and are often removed resulting in a 404 error. You do not need to pass a value to it. e.g usage: `?unapproved` */
     unapproved?: boolean;
     page?: number;
@@ -1157,6 +1204,8 @@ export type GetMangaSearchApiArg = {
     /** Set a maximum score for results */
     maxScore?: number;
     status?: MangaSearchQueryStatus;
+    /** Filter out Adult entries */
+    _querySfw?: boolean;
     /** Filter by genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
     genres?: string;
     /** Exclude genre(s) IDs. Can pass multiple with a comma as a delimiter. e.g 1,2,3 */
@@ -1946,7 +1995,11 @@ export type Club = {
     access?: 'public' | 'private' | 'secret';
 };
 export type ClubMember = {
-    data?: UserImages[];
+    data?: {
+        username?: string;
+        url?: string;
+        images?: UserImages;
+    }[];
 };
 export type ClubStaff = {
     data?: {
@@ -2273,8 +2326,6 @@ export type AnimeSearchQueryRating = 'g' | 'pg' | 'pg13' | 'r17' | 'r' | 'rx';
 export type AnimeSearchQueryOrderby =
     | 'mal_id'
     | 'title'
-    | 'type'
-    | 'rating'
     | 'start_date'
     | 'end_date'
     | 'episodes'
@@ -2540,103 +2591,203 @@ export type WatchPromos = Pagination &
     });
 export const {
     useGetAnimeFullByIdQuery,
+    useLazyGetAnimeFullByIdQuery,
     useGetAnimeByIdQuery,
+    useLazyGetAnimeByIdQuery,
     useGetAnimeCharactersQuery,
+    useLazyGetAnimeCharactersQuery,
     useGetAnimeStaffQuery,
+    useLazyGetAnimeStaffQuery,
     useGetAnimeEpisodesQuery,
+    useLazyGetAnimeEpisodesQuery,
     useGetAnimeEpisodeByIdQuery,
+    useLazyGetAnimeEpisodeByIdQuery,
     useGetAnimeNewsQuery,
+    useLazyGetAnimeNewsQuery,
     useGetAnimeForumQuery,
+    useLazyGetAnimeForumQuery,
     useGetAnimeVideosQuery,
+    useLazyGetAnimeVideosQuery,
     useGetAnimeVideosEpisodesQuery,
+    useLazyGetAnimeVideosEpisodesQuery,
     useGetAnimePicturesQuery,
+    useLazyGetAnimePicturesQuery,
     useGetAnimeStatisticsQuery,
+    useLazyGetAnimeStatisticsQuery,
     useGetAnimeMoreInfoQuery,
+    useLazyGetAnimeMoreInfoQuery,
     useGetAnimeRecommendationsQuery,
+    useLazyGetAnimeRecommendationsQuery,
     useGetAnimeUserUpdatesQuery,
+    useLazyGetAnimeUserUpdatesQuery,
     useGetAnimeReviewsQuery,
+    useLazyGetAnimeReviewsQuery,
     useGetAnimeRelationsQuery,
+    useLazyGetAnimeRelationsQuery,
     useGetAnimeThemesQuery,
+    useLazyGetAnimeThemesQuery,
     useGetAnimeExternalQuery,
+    useLazyGetAnimeExternalQuery,
     useGetAnimeStreamingQuery,
+    useLazyGetAnimeStreamingQuery,
     useGetCharacterFullByIdQuery,
+    useLazyGetCharacterFullByIdQuery,
     useGetCharacterByIdQuery,
+    useLazyGetCharacterByIdQuery,
     useGetCharacterAnimeQuery,
+    useLazyGetCharacterAnimeQuery,
     useGetCharacterMangaQuery,
+    useLazyGetCharacterMangaQuery,
     useGetCharacterVoiceActorsQuery,
+    useLazyGetCharacterVoiceActorsQuery,
     useGetCharacterPicturesQuery,
+    useLazyGetCharacterPicturesQuery,
     useGetClubsByIdQuery,
+    useLazyGetClubsByIdQuery,
     useGetClubMembersQuery,
+    useLazyGetClubMembersQuery,
     useGetClubStaffQuery,
+    useLazyGetClubStaffQuery,
     useGetClubRelationsQuery,
+    useLazyGetClubRelationsQuery,
     useGetAnimeGenresQuery,
+    useLazyGetAnimeGenresQuery,
     useGetMangaGenresQuery,
+    useLazyGetMangaGenresQuery,
     useGetMagazinesQuery,
+    useLazyGetMagazinesQuery,
     useGetMangaFullByIdQuery,
+    useLazyGetMangaFullByIdQuery,
     useGetMangaByIdQuery,
+    useLazyGetMangaByIdQuery,
     useGetMangaCharactersQuery,
+    useLazyGetMangaCharactersQuery,
     useGetMangaNewsQuery,
+    useLazyGetMangaNewsQuery,
     useGetMangaTopicsQuery,
+    useLazyGetMangaTopicsQuery,
     useGetMangaPicturesQuery,
+    useLazyGetMangaPicturesQuery,
     useGetMangaStatisticsQuery,
+    useLazyGetMangaStatisticsQuery,
     useGetMangaMoreInfoQuery,
+    useLazyGetMangaMoreInfoQuery,
     useGetMangaRecommendationsQuery,
+    useLazyGetMangaRecommendationsQuery,
     useGetMangaUserUpdatesQuery,
+    useLazyGetMangaUserUpdatesQuery,
     useGetMangaReviewsQuery,
+    useLazyGetMangaReviewsQuery,
     useGetMangaRelationsQuery,
+    useLazyGetMangaRelationsQuery,
     useGetMangaExternalQuery,
+    useLazyGetMangaExternalQuery,
     useGetPersonFullByIdQuery,
+    useLazyGetPersonFullByIdQuery,
     useGetPersonByIdQuery,
+    useLazyGetPersonByIdQuery,
     useGetPersonAnimeQuery,
+    useLazyGetPersonAnimeQuery,
     useGetPersonVoicesQuery,
+    useLazyGetPersonVoicesQuery,
     useGetPersonMangaQuery,
+    useLazyGetPersonMangaQuery,
     useGetPersonPicturesQuery,
+    useLazyGetPersonPicturesQuery,
     useGetProducerByIdQuery,
+    useLazyGetProducerByIdQuery,
     useGetProducerFullByIdQuery,
+    useLazyGetProducerFullByIdQuery,
     useGetProducerExternalQuery,
+    useLazyGetProducerExternalQuery,
     useGetRandomAnimeQuery,
+    useLazyGetRandomAnimeQuery,
     useGetRandomMangaQuery,
+    useLazyGetRandomMangaQuery,
     useGetRandomCharactersQuery,
+    useLazyGetRandomCharactersQuery,
     useGetRandomPeopleQuery,
+    useLazyGetRandomPeopleQuery,
     useGetRandomUsersQuery,
+    useLazyGetRandomUsersQuery,
     useGetRecentAnimeRecommendationsQuery,
+    useLazyGetRecentAnimeRecommendationsQuery,
     useGetRecentMangaRecommendationsQuery,
+    useLazyGetRecentMangaRecommendationsQuery,
     useGetRecentAnimeReviewsQuery,
+    useLazyGetRecentAnimeReviewsQuery,
     useGetRecentMangaReviewsQuery,
+    useLazyGetRecentMangaReviewsQuery,
     useGetSchedulesQuery,
+    useLazyGetSchedulesQuery,
     useGetAnimeSearchQuery,
+    useLazyGetAnimeSearchQuery,
     useGetMangaSearchQuery,
+    useLazyGetMangaSearchQuery,
     useGetPeopleSearchQuery,
+    useLazyGetPeopleSearchQuery,
     useGetCharactersSearchQuery,
+    useLazyGetCharactersSearchQuery,
     useGetUsersSearchQuery,
+    useLazyGetUsersSearchQuery,
     useGetUserByIdQuery,
+    useLazyGetUserByIdQuery,
     useGetClubsSearchQuery,
+    useLazyGetClubsSearchQuery,
     useGetProducersQuery,
+    useLazyGetProducersQuery,
     useGetSeasonNowQuery,
+    useLazyGetSeasonNowQuery,
     useGetSeasonQuery,
+    useLazyGetSeasonQuery,
     useGetSeasonsListQuery,
+    useLazyGetSeasonsListQuery,
     useGetSeasonUpcomingQuery,
+    useLazyGetSeasonUpcomingQuery,
     useGetTopAnimeQuery,
+    useLazyGetTopAnimeQuery,
     useGetTopMangaQuery,
+    useLazyGetTopMangaQuery,
     useGetTopPeopleQuery,
+    useLazyGetTopPeopleQuery,
     useGetTopCharactersQuery,
+    useLazyGetTopCharactersQuery,
     useGetTopReviewsQuery,
+    useLazyGetTopReviewsQuery,
     useGetUserFullProfileQuery,
+    useLazyGetUserFullProfileQuery,
     useGetUserProfileQuery,
+    useLazyGetUserProfileQuery,
     useGetUserStatisticsQuery,
+    useLazyGetUserStatisticsQuery,
     useGetUserFavoritesQuery,
+    useLazyGetUserFavoritesQuery,
     useGetUserUpdatesQuery,
+    useLazyGetUserUpdatesQuery,
     useGetUserAboutQuery,
+    useLazyGetUserAboutQuery,
     useGetUserHistoryQuery,
+    useLazyGetUserHistoryQuery,
     useGetUserFriendsQuery,
+    useLazyGetUserFriendsQuery,
     useGetUserAnimelistQuery,
+    useLazyGetUserAnimelistQuery,
     useGetUserMangaListQuery,
+    useLazyGetUserMangaListQuery,
     useGetUserReviewsQuery,
+    useLazyGetUserReviewsQuery,
     useGetUserRecommendationsQuery,
+    useLazyGetUserRecommendationsQuery,
     useGetUserClubsQuery,
+    useLazyGetUserClubsQuery,
     useGetUserExternalQuery,
+    useLazyGetUserExternalQuery,
     useGetWatchRecentEpisodesQuery,
+    useLazyGetWatchRecentEpisodesQuery,
     useGetWatchPopularEpisodesQuery,
+    useLazyGetWatchPopularEpisodesQuery,
     useGetWatchRecentPromosQuery,
+    useLazyGetWatchRecentPromosQuery,
     useGetWatchPopularPromosQuery,
+    useLazyGetWatchPopularPromosQuery,
 } = injectedRtkApi;
