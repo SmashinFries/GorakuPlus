@@ -88,7 +88,8 @@
     "react-native-wheely": "^0.6.0",
     "react-native-youtube-iframe": "^2.2.2",
     "react-redux": "^8.0.5",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "uwuifier": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
