@@ -36,7 +36,7 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 
 const AppearancePage = () => {
     const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
-    const { btmTabLabels, btmTabShifting, navAnimation } = useAppSelector(
+    const { btmTabLabels, btmTabShifting, navAnimation, allowSensorMotion } = useAppSelector(
         (state) => state.persistedSettings,
     );
 
@@ -91,6 +91,10 @@ const AppearancePage = () => {
 
     const onBtmTabShiftingChange = () => {
         dispatch(setSettings({ entryType: 'btmTabShifting', value: !btmTabShifting }));
+    };
+
+    const onAllowSensorMotionChange = () => {
+        dispatch(setSettings({ entryType: 'allowSensorMotion', value: !allowSensorMotion }));
     };
 
     return (
@@ -205,6 +209,21 @@ const AppearancePage = () => {
                                 {...props}
                                 thumbColor={btmTabShifting ? colors.primary : undefined}
                                 onValueChange={onBtmTabShiftingChange}
+                            />
+                        )}
+                    />
+                    <List.Item
+                        title={'Sensor Motion (experimental)'}
+                        // onPress={() => {
+                        //     dispatch(setTheme({ isDark: !isDark, mode: mode }));
+                        // }}
+                        description={'Will probably drain your battery...'}
+                        right={(props) => (
+                            <Switch
+                                value={allowSensorMotion}
+                                {...props}
+                                thumbColor={allowSensorMotion ? colors.primary : undefined}
+                                onValueChange={onAllowSensorMotionChange}
                             />
                         )}
                     />

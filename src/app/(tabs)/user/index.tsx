@@ -31,6 +31,7 @@ const UnauthedPage = () => {
 
 const UserPage = () => {
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
+    const { allowSensorMotion } = useAppSelector((state) => state.persistedSettings);
 
     const { activity, followers, following, user } = useUser(userID);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -66,7 +67,11 @@ const UserPage = () => {
         <FadeHeaderProvider
             title={user?.data?.Viewer?.name}
             BgImage={({ style }) => (
-                <MediaBanner style={style} url={user?.data?.Viewer?.bannerImage} />
+                <MediaBanner
+                    style={style}
+                    allowMotion={allowSensorMotion}
+                    url={user?.data?.Viewer?.bannerImage}
+                />
             )}
             disableBack
             notificationIcon
