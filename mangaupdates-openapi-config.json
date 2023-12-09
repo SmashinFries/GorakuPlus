@@ -1,8 +1,12 @@
 {
     "schemaFile": "./mangaupdates-openapi.yaml",
-    "apiFile": "./src/app/services/mangaupdates/baseMangaUpdates.ts",
+    "apiFile": "./src/store/services/mangaupdates/baseMangaUpdates.ts",
     "apiImport": "baseMangaUpdates",
-    "outputFile": "src/app/services/mangaupdates/mangaUpdatesApi.ts",
+    "outputFile": "src/store/services/mangaupdates/mangaUpdatesApi.ts",
     "exportName": "mangaUpdatesApi",
-    "hooks": true
+    "hooks": {
+        "queries": true,
+        "lazyQueries": true,
+        "mutations": true
+    }
 }
