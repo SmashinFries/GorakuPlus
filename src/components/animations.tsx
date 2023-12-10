@@ -166,8 +166,13 @@ const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
 type AnimateHeightProps = {
     initialHeight: number;
     children: ReactNode;
+    toggleUwuifier?: () => void;
 };
-export const ExpandableDescription = ({ initialHeight, children }: AnimateHeightProps) => {
+export const ExpandableDescription = ({
+    initialHeight,
+    toggleUwuifier,
+    children,
+}: AnimateHeightProps) => {
     const { colors } = useTheme();
     const height = useSharedValue(initialHeight);
     const [totalHeight, setTotalHeight] = useState<number>(0);
@@ -231,18 +236,23 @@ export const ExpandableDescription = ({ initialHeight, children }: AnimateHeight
                 )}
             </Animated.View>
             {currentHeight <= totalHeight && (
-                <IconButton
-                    icon={
-                        Math.floor(currentHeight) === initialHeight ? 'chevron-down' : 'chevron-up'
-                    }
-                    onPress={() => setIsExpanded((prev) => !prev)}
-                    style={{
-                        position: 'absolute',
-                        bottom: -35,
-                        alignSelf: 'center',
-                        overflow: 'visible',
-                    }}
-                />
+                <View>
+                    <IconButton
+                        icon={
+                            Math.floor(currentHeight) === initialHeight
+                                ? 'chevron-down'
+                                : 'chevron-up'
+                        }
+                        onPress={() => setIsExpanded((prev) => !prev)}
+                        onLongPress={toggleUwuifier}
+                        style={{
+                            position: 'absolute',
+                            bottom: -35,
+                            alignSelf: 'center',
+                            overflow: 'visible',
+                        }}
+                    />
+                </View>
             )}
         </View>
     );
