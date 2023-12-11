@@ -97,7 +97,7 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' = 'unti
         if (diffMinutes > 0)
             return `${
                 diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`
-            } minutes ago`;
+            } ago`;
     }
 };
 
