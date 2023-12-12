@@ -78,14 +78,14 @@ const AppProvider = () => {
     const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
 
-    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-    const updatesListener = (e: Updates.UpdateEvent) => {
-        if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-            setShowUpdateDialog(true);
-        }
-    };
+    // const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+    // const updatesListener = (e: Updates.UpdateEvent) => {
+    //     if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+    //         setShowUpdateDialog(true);
+    //     }
+    // };
 
-    Updates.useUpdateEvents(updatesListener);
+    // Updates.useUpdateEvents(updatesListener);
 
     useEffect(() => {
         if (isDark) {
@@ -161,12 +161,12 @@ const AppProvider = () => {
                     </Stack>
                 </BottomSheetModalProvider>
             </ThemeProvider>
-            <Portal>
+            {/* <Portal>
                 <UpdateDialog
                     visible={showUpdateDialog}
                     onDismiss={() => setShowUpdateDialog(false)}
                 />
-            </Portal>
+            </Portal> */}
         </PaperProvider>
     );
 };
