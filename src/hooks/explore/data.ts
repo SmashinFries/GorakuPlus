@@ -15,6 +15,9 @@ import {
     useNovelPopularQuery,
     useNovelTopScoredQuery,
     useAnimeTrendingQuery,
+    useManhuaTrendingQuery,
+    useManhuaPopularQuery,
+    useManhuaTopScoredQuery,
 } from '@/store/services/anilist/enhanced';
 import { useAppSelector } from '@/store/hooks';
 
@@ -264,6 +267,66 @@ export const useManhwaExplorer = () => {
         topResults: top,
         isError,
         fetchManhwa,
+        fetchMore,
+    };
+};
+
+export const useManhuaExplorer = () => {
+    const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+    const [skip, setSkip] = useState(true);
+    const [trendPage, setTrendPage] = useState(1);
+    const [popularPage, setPopularPage] = useState(1);
+    const [topPage, setTopPage] = useState(1);
+    const [isError, setIsError] = useState(false);
+
+    const getParams = (page: number) => {
+        return {
+            page: page,
+            perPage: 30,
+            isAdult: showNSFW ? undefined : false,
+            tag_not_in: tagBlacklist ?? undefined,
+        };
+    };
+
+    const trend = useManhuaTrendingQuery(getParams(trendPage), { skip: skip });
+    const popular = useManhuaPopularQuery(getParams(popularPage), { skip: skip });
+    const top = useManhuaTopScoredQuery(getParams(topPage), { skip: skip });
+
+    const fetchManhua = (refetch = false) => {
+        setSkip(false);
+        if (refetch) {
+            trend.refetch();
+            popular.refetch();
+            top.refetch();
+        }
+    };
+
+    const fetchMore = (category: 'trending' | 'popular' | 'score') => {
+        switch (category) {
+            case 'trending':
+                setTrendPage((prev) => prev + 1);
+                break;
+            case 'popular':
+                setPopularPage((prev) => prev + 1);
+                break;
+            case 'score':
+                setTopPage((prev) => prev + 1);
+                break;
+        }
+    };
+
+    useEffect(() => {
+        if (trend.isError || popular.isError || top.isError) {
+            setIsError(true);
+        }
+    }, [trend.isError, popular.isError, top.isError]);
+
+    return {
+        trendResults: trend,
+        popularResults: popular,
+        topResults: top,
+        isError,
+        fetchManhua,
         fetchMore,
     };
 };

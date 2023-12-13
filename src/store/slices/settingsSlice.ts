@@ -43,8 +43,8 @@ const initialState: SettingsState = {
     btmTabLabels: true,
     btmTabShifting: true,
     allowSensorMotion: false,
-    exploreTabs: ['anime', 'manga', 'manhwa', 'novels'],
-    exploreTabOrder: ['anime', 'manga', 'manhwa', 'novels'],
+    exploreTabs: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
+    exploreTabOrder: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
     listATabOrder: [
         MediaListStatus.Current,
         MediaListStatus.Planning,
@@ -65,7 +65,7 @@ const initialState: SettingsState = {
     mangaCustomLists: [],
     mediaLanguage: 'english',
     defaultDescription: 'mal',
-    showNSFW: Constants.executionEnvironment === ExecutionEnvironment.StoreClient ? false : true,
+    showNSFW: Constants.executionEnvironment === ExecutionEnvironment.StoreClient ? false : false,
     blurNSFW: true,
     blurNSFWLevel: DanbooruRating.General,
     scoreColors: {
@@ -74,7 +74,7 @@ const initialState: SettingsState = {
     },
     scoreHealthBar: true,
     scoreGlow: false,
-    scoreNumber: false,
+    scoreNumber: true,
     showItemListStatus: true,
     defaultScore: 'average',
     defaultGenreLayout: 'row',

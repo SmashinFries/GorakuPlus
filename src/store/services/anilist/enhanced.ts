@@ -25,6 +25,7 @@ export const api = generatedApi.enhanceEndpoints({
         'ExploreAnime',
         'ExploreManga',
         'ExploreManhwa',
+        'ExploreManhua',
         'ExploreNovel',
         'AniMedia',
         'AniSearch',
@@ -295,6 +296,56 @@ export const api = generatedApi.enhanceEndpoints({
                           'ExploreManhwa',
                       ]
                     : ['ExploreManhwa'],
+        },
+        ManhuaTrending: {
+            // serializeQueryArgs: ({ endpointName }) => {
+            //     return endpointName;
+            // },
+            // merge: (currentCache, newItems) => {
+            //     if (currentCache.Page.pageInfo.currentPage < newItems.Page.pageInfo.currentPage) {
+            //         currentCache.Page.pageInfo = newItems.Page.pageInfo;
+            //         currentCache.Page.media.push(...newItems.Page.media);
+            //     }
+            // },
+            // forceRefetch({ currentArg, previousArg }) {
+            //     if (currentArg && previousArg) {
+            //         return currentArg.page > previousArg.page;
+            //     }
+            // },
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreManhua' as const,
+                              id: media.id,
+                          })),
+                          'ExploreManhua',
+                      ]
+                    : ['ExploreManhua'],
+        },
+        ManhuaPopular: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreManhua' as const,
+                              id: media.id,
+                          })),
+                          'ExploreManhua',
+                      ]
+                    : ['ExploreManhua'],
+        },
+        ManhuaTopScored: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreManhua' as const,
+                              id: media.id,
+                          })),
+                          'ExploreManhua',
+                      ]
+                    : ['ExploreManhua'],
         },
         NovelTrending: {
             providesTags: (result) =>
@@ -577,6 +628,9 @@ export const {
     useManhwaTrendingQuery,
     useManhwaPopularQuery,
     useManhwaTopScoredQuery,
+    useManhuaTrendingQuery,
+    useManhuaPopularQuery,
+    useManhuaTopScoredQuery,
     useNovelTrendingQuery,
     useNovelPopularQuery,
     useNovelTopScoredQuery,

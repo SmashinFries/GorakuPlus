@@ -3,6 +3,7 @@ import { RefreshableScroll, SectionScrollMem } from '@/components/explore/lists'
 import {
     useAnimeExplorer,
     useMangaExplorer,
+    useManhuaExplorer,
     useManhwaExplorer,
     useNovelExplorer,
 } from '@/hooks/explore/data';
@@ -162,6 +163,45 @@ const ManhwaTab = () => {
     );
 };
 
+const ManhuaTab = () => {
+    const { trendResults, popularResults, topResults, isError, fetchManhua, fetchMore } =
+        useManhuaExplorer();
+    const { isRefreshing, onRefresh } = useRefresh(() => fetchManhua(true));
+
+    useEffect(() => {
+        fetchManhua();
+    }, []);
+
+    if (isError) {
+        return <NetworkError status={popularResults.status} />;
+    }
+
+    return (
+        <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
+            <View style={{ marginVertical: 10 }}>
+                <SectionScrollMem
+                    category_title={'Trending'}
+                    data={trendResults.data}
+                    isLoading={trendResults.isLoading}
+                    fetchMore={() => fetchMore('trending')}
+                />
+                <SectionScrollMem
+                    category_title={'Popular'}
+                    data={popularResults.data}
+                    isLoading={popularResults.isLoading}
+                    fetchMore={() => fetchMore('popular')}
+                />
+                <SectionScrollMem
+                    category_title={'Top Scored'}
+                    data={topResults.data}
+                    isLoading={topResults.isLoading}
+                    fetchMore={() => fetchMore('score')}
+                />
+            </View>
+        </RefreshableScroll>
+    );
+};
+
 const NovelsTab = () => {
     const { trendResults, popularResults, topResults, isError, fetchNovels, fetchMore } =
         useNovelExplorer();
@@ -233,11 +273,12 @@ const ExplorePage = () => {
             switch (route.key) {
                 case 'anime':
                     return <AnimeTab />;
-                // return <DayTab data={null} />;
                 case 'manga':
                     return <MangaTab />;
                 case 'manhwa':
                     return <ManhwaTab />;
+                case 'manhua':
+                    return <ManhuaTab />;
                 case 'novels':
                     return <NovelsTab />;
             }

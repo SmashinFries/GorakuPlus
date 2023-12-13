@@ -353,6 +353,84 @@ query ManhwaTopScored(
     }
 }
 
+query ManhuaTrending(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: CN
+            isAdult: $isAdult
+            onList: $onList
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+            tag_not_in: $tag_not_in
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
+query ManhuaPopular(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: CN
+            isAdult: $isAdult
+            onList: $onList
+            sort: POPULARITY_DESC
+            tag_not_in: $tag_not_in
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
+query ManhuaTopScored(
+    $page: Int
+    $perPage: Int
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: CN
+            isAdult: $isAdult
+            onList: $onList
+            sort: SCORE_DESC
+            tag_not_in: $tag_not_in
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
 query NovelTrending(
     $page: Int
     $perPage: Int

@@ -4914,6 +4914,39 @@ export type ManhwaTopScoredQueryVariables = Exact<{
 
 export type ManhwaTopScoredQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
 
+export type ManhuaTrendingQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  onList?: InputMaybe<Scalars['Boolean']>;
+  isAdult?: InputMaybe<Scalars['Boolean']>;
+  tag_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
+}>;
+
+
+export type ManhuaTrendingQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
+
+export type ManhuaPopularQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  onList?: InputMaybe<Scalars['Boolean']>;
+  isAdult?: InputMaybe<Scalars['Boolean']>;
+  tag_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
+}>;
+
+
+export type ManhuaPopularQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
+
+export type ManhuaTopScoredQueryVariables = Exact<{
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+  onList?: InputMaybe<Scalars['Boolean']>;
+  isAdult?: InputMaybe<Scalars['Boolean']>;
+  tag_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
+}>;
+
+
+export type ManhuaTopScoredQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null } | null> | null } | null };
+
 export type NovelTrendingQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
@@ -5905,6 +5938,69 @@ export const ManhwaTopScoredDocument = `
     media(
       type: MANGA
       countryOfOrigin: KR
+      isAdult: $isAdult
+      onList: $onList
+      sort: SCORE_DESC
+      tag_not_in: $tag_not_in
+    ) {
+      ...MangaMeta
+    }
+  }
+}
+    ${MangaMetaFragmentDoc}`;
+export const ManhuaTrendingDocument = `
+    query ManhuaTrending($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(
+      type: MANGA
+      countryOfOrigin: CN
+      isAdult: $isAdult
+      onList: $onList
+      sort: [TRENDING_DESC, POPULARITY_DESC]
+      tag_not_in: $tag_not_in
+    ) {
+      ...MangaMeta
+    }
+  }
+}
+    ${MangaMetaFragmentDoc}`;
+export const ManhuaPopularDocument = `
+    query ManhuaPopular($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(
+      type: MANGA
+      countryOfOrigin: CN
+      isAdult: $isAdult
+      onList: $onList
+      sort: POPULARITY_DESC
+      tag_not_in: $tag_not_in
+    ) {
+      ...MangaMeta
+    }
+  }
+}
+    ${MangaMetaFragmentDoc}`;
+export const ManhuaTopScoredDocument = `
+    query ManhuaTopScored($page: Int, $perPage: Int, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(
+      type: MANGA
+      countryOfOrigin: CN
       isAdult: $isAdult
       onList: $onList
       sort: SCORE_DESC
@@ -7742,6 +7838,15 @@ const injectedRtkApi = api.injectEndpoints({
     ManhwaTopScored: build.query<ManhwaTopScoredQuery, ManhwaTopScoredQueryVariables | void>({
       query: (variables) => ({ document: ManhwaTopScoredDocument, variables })
     }),
+    ManhuaTrending: build.query<ManhuaTrendingQuery, ManhuaTrendingQueryVariables | void>({
+      query: (variables) => ({ document: ManhuaTrendingDocument, variables })
+    }),
+    ManhuaPopular: build.query<ManhuaPopularQuery, ManhuaPopularQueryVariables | void>({
+      query: (variables) => ({ document: ManhuaPopularDocument, variables })
+    }),
+    ManhuaTopScored: build.query<ManhuaTopScoredQuery, ManhuaTopScoredQueryVariables | void>({
+      query: (variables) => ({ document: ManhuaTopScoredDocument, variables })
+    }),
     NovelTrending: build.query<NovelTrendingQuery, NovelTrendingQueryVariables | void>({
       query: (variables) => ({ document: NovelTrendingDocument, variables })
     }),
@@ -7830,5 +7935,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useRateRevMutation, useUpdateUserMutation, useToggleFollowMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useGenreTagCollectionQuery, useLazyGenreTagCollectionQuery, useUserListCollectionQuery, useLazyUserListCollectionQuery, useUserCustomListsQuery, useLazyUserCustomListsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useMediaFollowingQuery, useLazyMediaFollowingQuery, useCharacterListQuery, useLazyCharacterListQuery, useCharacterDetailsQuery, useLazyCharacterDetailsQuery, useStaffListQuery, useLazyStaffListQuery, useStaffDetailsQuery, useLazyStaffDetailsQuery, useGetNotificationsQuery, useLazyGetNotificationsQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useUserSearchQuery, useLazyUserSearchQuery, useCharacterSearchQuery, useLazyCharacterSearchQuery, useStaffSearchQuery, useLazyStaffSearchQuery, useStudioSearchQuery, useLazyStudioSearchQuery, useUserAnimeStatsQuery, useLazyUserAnimeStatsQuery, useUserMangaStatsQuery, useLazyUserMangaStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useExtUserDataQuery, useLazyExtUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery } = injectedRtkApi;
+export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useRateRevMutation, useUpdateUserMutation, useToggleFollowMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useManhuaTrendingQuery, useLazyManhuaTrendingQuery, useManhuaPopularQuery, useLazyManhuaPopularQuery, useManhuaTopScoredQuery, useLazyManhuaTopScoredQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useGenreTagCollectionQuery, useLazyGenreTagCollectionQuery, useUserListCollectionQuery, useLazyUserListCollectionQuery, useUserCustomListsQuery, useLazyUserCustomListsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useMediaFollowingQuery, useLazyMediaFollowingQuery, useCharacterListQuery, useLazyCharacterListQuery, useCharacterDetailsQuery, useLazyCharacterDetailsQuery, useStaffListQuery, useLazyStaffListQuery, useStaffDetailsQuery, useLazyStaffDetailsQuery, useGetNotificationsQuery, useLazyGetNotificationsQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useUserSearchQuery, useLazyUserSearchQuery, useCharacterSearchQuery, useLazyCharacterSearchQuery, useStaffSearchQuery, useLazyStaffSearchQuery, useStudioSearchQuery, useLazyStudioSearchQuery, useUserAnimeStatsQuery, useLazyUserAnimeStatsQuery, useUserMangaStatsQuery, useLazyUserMangaStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useExtUserDataQuery, useLazyExtUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery } = injectedRtkApi;
 
