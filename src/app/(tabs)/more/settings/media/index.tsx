@@ -93,13 +93,13 @@ const MediaSettingsPage = () => {
                         <Text style={[props.style, { color: props.color }]}>{searchLimit}</Text>
                     )}
                 />
-                <ListSubheader title="Filter" />
+                <ListSubheader title="NSFW" />
                 <List.Item
                     title="NSFW"
                     description={
                         Constants.executionEnvironment === ExecutionEnvironment.StoreClient
                             ? 'Permenantly disabled. \nApp store does not allow NSFW content.'
-                            : '😈'
+                            : ''
                     }
                     right={() => (
                         <Switch
@@ -163,6 +163,7 @@ const MediaSettingsPage = () => {
                     onPress={() => setShowNsfwLevelDialog(true)}
                     disabled={!blurNSFW}
                 />
+                <ListSubheader title="Tags" />
                 <List.Item
                     title="Blacklisted Tags"
                     description={'Never show content with selected tags'}
