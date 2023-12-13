@@ -420,9 +420,9 @@ type DummyData = {
 };
 const dummyData: DummyData = {
     punpun: dummyPPData,
-    sonozaki_mion: dummyWTCData,
+    mi_chan: dummyWTCData,
     kawaii: dummyKawaiiData,
-    default: dummyDefaultData,
+    hinata: dummyDefaultData,
     aqua: dummyAquaData,
     berserk: dummyBerserkData,
 };
