@@ -42,9 +42,6 @@ const AppearancePage = () => {
 
     const dispatch = useAppDispatch();
     const { colors } = useTheme();
-    const { width, height } = useWindowDimensions();
-
-    const [expandThemes, setExpandThemes] = useState(true);
 
     const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
 
@@ -118,7 +115,7 @@ const AppearancePage = () => {
                         title="Themes"
                         description={mode.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
-                        initialExpand={expandThemes}
+                        initialExpand={true}
                         titleFontSize={16}
                         // onPress={() => setExpandThemes((prev) => !prev)}
                     >
@@ -228,7 +225,7 @@ const AppearancePage = () => {
                         )}
                     />
                     <Accordion
-                        title={'Navigation between screens'}
+                        title={'Screen Transition'}
                         titleFontSize={16}
                         description={navAnimation.replaceAll('_', ' ')}
                         descriptionStyle={{ textTransform: 'capitalize' }}
