@@ -1,12 +1,5 @@
-export type ThemeOptions = 'default' | 'kawaii' | 'punpun' | 'sonozaki_mion' | 'aqua' | 'berserk';
-const themeOptions: ThemeOptions[] = [
-    'default',
-    'kawaii',
-    'punpun',
-    'sonozaki_mion',
-    'aqua',
-    'berserk',
-];
+export type ThemeOptions = 'mi_chan' | 'hinata' | 'kawaii' | 'aqua' | 'berserk' | 'punpun';
+const themeOptions: ThemeOptions[] = ['mi_chan', 'hinata', 'kawaii', 'aqua', 'berserk', 'punpun'];
 // type ThemeSelection = keyof typeof themes;
 // export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
 
@@ -26,7 +19,7 @@ const { LightTheme, DarkTheme } = adaptNavigationTheme({
     reactNavigationDark: NavigationDarkTheme,
 });
 
-const DefaultLightTheme = {
+const HinataLightTheme = {
     ...MD3LightTheme,
     ...LightTheme,
     colors: {
@@ -34,7 +27,7 @@ const DefaultLightTheme = {
         ...LightTheme.colors,
     },
 };
-const DefaultDarkTheme = {
+const HinataDarkTheme = {
     ...MD3DarkTheme,
     ...DarkTheme,
     colors: {
@@ -44,98 +37,98 @@ const DefaultDarkTheme = {
 };
 
 const KawaiiLightTheme = {
-    ...DefaultLightTheme,
+    ...HinataLightTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...KawaiiLight,
     },
 };
 
 const KawaiiDarkTheme = {
-    ...DefaultDarkTheme,
+    ...HinataDarkTheme,
     colors: {
-        ...DefaultDarkTheme.colors,
+        ...HinataDarkTheme.colors,
         ...KawaiiDark,
     },
 };
 
 const PunpunLightTheme = {
-    ...DefaultLightTheme,
+    ...HinataLightTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...PunpunLight,
     },
 };
 
 const PunpunDarkTheme = {
-    ...DefaultDarkTheme,
+    ...HinataDarkTheme,
     colors: {
-        ...DefaultDarkTheme.colors,
+        ...HinataDarkTheme.colors,
         ...PunpunDark,
     },
 };
 
 const MionLightTheme = {
-    ...DefaultLightTheme,
+    ...HinataLightTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...MionLight,
     },
 };
 
 const MionDarkTheme = {
-    ...DefaultDarkTheme,
+    ...HinataDarkTheme,
     colors: {
-        ...DefaultDarkTheme.colors,
+        ...HinataDarkTheme.colors,
         ...MionDark,
     },
 };
 
 const AquaLightTheme = {
-    ...DefaultLightTheme,
+    ...HinataLightTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...AquaLight,
     },
 };
 
 const AquaDarkTheme = {
-    ...DefaultDarkTheme,
+    ...HinataDarkTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...AquaDark,
     },
 };
 
 const BerserkLightTheme = {
-    ...DefaultLightTheme,
+    ...HinataLightTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...BerserkLight,
     },
 };
 
 const BerserkDarkTheme = {
-    ...DefaultDarkTheme,
+    ...HinataDarkTheme,
     colors: {
-        ...DefaultLightTheme.colors,
+        ...HinataLightTheme.colors,
         ...BerserkDark,
     },
 };
 
 const lightThemes = {
-    default: DefaultLightTheme,
+    hinata: HinataLightTheme,
     kawaii: KawaiiLightTheme,
     punpun: PunpunLightTheme,
-    sonozaki_mion: MionLightTheme,
+    mi_chan: MionLightTheme,
     aqua: AquaLightTheme,
     berserk: BerserkLightTheme,
 };
 const darkThemes = {
-    default: DefaultDarkTheme,
+    hinata: HinataDarkTheme,
     kawaii: KawaiiDarkTheme,
     punpun: PunpunDarkTheme,
-    sonozaki_mion: MionDarkTheme,
+    mi_chan: MionDarkTheme,
     aqua: AquaDarkTheme,
     berserk: BerserkDarkTheme,
 };

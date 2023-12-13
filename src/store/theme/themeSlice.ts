@@ -11,7 +11,7 @@ export interface ThemeState {
 
 // Define the initial state using that type
 const initialState: ThemeState = {
-    mode: 'default',
+    mode: 'mi_chan',
     isDark: Appearance.getColorScheme() === 'dark',
 };
 
