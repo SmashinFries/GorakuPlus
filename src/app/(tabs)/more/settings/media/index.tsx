@@ -138,7 +138,8 @@ const MediaSettingsPage = () => {
                                 );
                             }}
                             disabled={
-                                Constants.executionEnvironment === ExecutionEnvironment.StoreClient
+                                Constants.executionEnvironment ===
+                                    ExecutionEnvironment.StoreClient || !showNSFW
                             }
                         />
                     )}
@@ -161,7 +162,7 @@ const MediaSettingsPage = () => {
                         </Text>
                     )}
                     onPress={() => setShowNsfwLevelDialog(true)}
-                    disabled={!blurNSFW}
+                    disabled={!blurNSFW || !showNSFW}
                 />
                 <ListSubheader title="Tags" />
                 <List.Item
