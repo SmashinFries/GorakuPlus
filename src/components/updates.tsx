@@ -7,7 +7,6 @@ type UpdateDialogProps = BasicDialogProps & {
 };
 export const UpdateDialog = ({ visible, updateLink, onDismiss }: UpdateDialogProps) => {
     const onUpdate = () => {
-        console.log('updateLink', updateLink);
         openWebBrowser(updateLink);
         onDismiss();
     };
