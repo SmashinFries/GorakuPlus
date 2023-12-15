@@ -300,41 +300,39 @@ const dummyKawaiiData: Media = {
     isFavouriteBlocked: false,
 };
 
-const dummyDefaultData: Media = {
-    id: 20996,
-    idMal: 28977,
-    bannerImage: 'https://s4.anilist.co/file/anilistcdn/media/anime/banner/918-bljqHE1PFArH.jpg',
+const dummyHinataData: Media = {
+    id: 20,
+    idMal: 20,
+    bannerImage: 'https://s4.anilist.co/file/anilistcdn/media/anime/banner/20-HHxhPj5JD13a.jpg',
     type: MediaType.Anime,
     format: MediaFormat.Tv,
+    episodes: 220,
     isFavourite: false,
     description:
-        "Life isn't easy in feudal Japan... especially since the aliens landed and conquered everything! Oh sure, the new health care is great, but the public ban on the use of swords has left a lot of defeated samurai with a difficult decision to make concerning their future career paths! This is especially true if, as in the case of Gintoki Sakata, they're not particularly inclined towards holding a day job, which is why Gintoki's opted for the freelance route, taking any job that's offered to him as long as the financial remuneration sounds right. Unfortunately, in a brave new world filled with stray bug-eyed monsters, upwardly mobile Yakuza and overly ambitious E.T. entrepreneurs, those jobs usually don't pay as well as they should for the pain, suffering and indignities endured!<br><br>\n(Source: Sentai Filmworks)",
-    genres: ['Action', 'Comedy', 'Drama', 'Sci-Fi'],
+        "<p>Naruto Uzumaki, a hyperactive and knuckle-headed ninja, lives in Konohagakure, the Hidden Leaf village. Moments prior to his birth, a huge demon known as the Kyuubi, the Nine-tailed Fox, attacked Konohagakure and wreaked havoc. In order to put an end to the Kyuubi's rampage, the leader of the village, the 4th Hokage, sacrificed his life and sealed the monstrous beast inside the newborn Naruto. <br><br><br />\nShunned because of the presence of the Kyuubi inside him, Naruto struggles to find his place in the village. He strives to become the Hokage of Konohagakure, and he meets many friends and foes along the way. <br><br><br />\n(Source: MAL Rewrite)</p>",
+    genres: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Supernatural'],
     status: MediaStatus.Finished,
-    siteUrl: 'https://anilist.co/anime/918',
-    meanScore: 85,
-    averageScore: 85,
-    episodes: 51,
+    siteUrl: 'https://anilist.co/anime/20',
+    averageScore: 79,
+    meanScore: 79,
     startDate: {
         year: 2006,
         month: 4,
         day: 4,
     },
     title: {
-        english: 'Gintama',
-        native: '銀魂',
-        romaji: 'Gintama',
-        userPreferred: 'Gintama',
+        romaji: 'NARUTO',
+        english: 'Naruto',
+        native: 'NARUTO -ナルト-',
+        userPreferred: 'NARUTO',
     },
     coverImage: {
+        color: '#e47850',
         extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20996-kBEGEGdeK1r7.jpg',
-        large: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx20996-kBEGEGdeK1r7.jpg',
-        medium: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx20996-kBEGEGdeK1r7.jpg',
-        color: '#e45d86',
+            'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-YJvLbgJQPCoI.jpg',
     },
     mediaListEntry: {
-        progress: 51 / 2,
+        progress: 220 / 2,
         status: MediaListStatus.Current,
     },
     isFavouriteBlocked: false,
@@ -422,7 +420,7 @@ const dummyData: DummyData = {
     punpun: dummyPPData,
     mi_chan: dummyWTCData,
     kawaii: dummyKawaiiData,
-    hinata: dummyDefaultData,
+    hinata: dummyHinataData,
     aqua: dummyAquaData,
     berserk: dummyBerserkData,
 };
