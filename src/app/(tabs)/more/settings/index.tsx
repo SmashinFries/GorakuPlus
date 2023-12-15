@@ -12,7 +12,7 @@ const SettingsHomePage = () => {
         <ScrollView>
             <List.Item
                 title={'Appearance'}
-                description={'Themes, animations, scoring'}
+                description={'Themes, animations, labels'}
                 onPress={() => {
                     router.push('/more/settings/appearance');
                 }}
@@ -22,7 +22,7 @@ const SettingsHomePage = () => {
             />
             <List.Item
                 title={'Media'}
-                description={'Media defaults'}
+                description={'Tabs, NSFW, filters, media cards'}
                 onPress={() => {
                     router.push('/more/settings/media');
                 }}
