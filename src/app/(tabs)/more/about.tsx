@@ -4,7 +4,7 @@ import { Linking, ScrollView, View } from 'react-native';
 import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
 import { ToastAndroid } from 'react-native';
-import { ActivityIndicator, Button, List, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, List, Portal, Text } from 'react-native-paper';
 import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
 import {
@@ -16,24 +16,27 @@ import {
 } from '@/components/svgs';
 import { useAppSelector } from '@/store/hooks';
 import { Image } from 'expo-image';
+import { UpdateDialog } from '@/components/updates';
 
 const AboutPage = () => {
     const { showNSFW } = useAppSelector((state) => state.persistedSettings);
     const [isCheckingUpdates, setIsCheckingUpdates] = useState(false);
+    const [updateLink, setUpdateLink] = useState<string | null>(null);
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
     const checkForUpdates = async () => {
         setIsCheckingUpdates(true);
-        const results = await Updates.checkForUpdateAsync();
+        const results = await fetch('https://api.github.com/repos/KuzuLabz/GorakuSite/releases');
+        const jsonResult = await results?.json();
+        const newestVersion = jsonResult[0]?.tag_name ?? null;
 
-        if (results.isAvailable) {
-            await Updates.fetchUpdateAsync();
-            ToastAndroid.show('Update available! Restarting app', ToastAndroid.LONG);
-            setIsCheckingUpdates(false);
-            await Updates.reloadAsync();
+        if (newestVersion && newestVersion !== Constants?.expoConfig?.version) {
+            setUpdateLink(jsonResult[0]?.assets[0]?.browser_download_url);
+            setShowUpdateDialog(true);
         } else {
             ToastAndroid.show('No updates available', ToastAndroid.SHORT);
-            setIsCheckingUpdates(false);
         }
+        setIsCheckingUpdates(false);
     };
 
     return (
@@ -133,6 +136,13 @@ const AboutPage = () => {
                 <LinkButton url="https://github.com/SmashinFries" icon={'github'} size={28} />
                 <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} />
             </View>
+            <Portal>
+                <UpdateDialog
+                    visible={showUpdateDialog}
+                    onDismiss={() => setShowUpdateDialog(false)}
+                    updateLink={updateLink}
+                />
+            </Portal>
         </View>
     );
 };

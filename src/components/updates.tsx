@@ -1,20 +1,25 @@
-import { Button, Dialog, Paragraph } from 'react-native-paper';
-import * as Updates from 'expo-updates';
+import { BasicDialogProps } from '@/types';
+import { openWebBrowser } from '@/utils/webBrowser';
+import { Button, Dialog, Text } from 'react-native-paper';
 
-type UpdateDialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
+type UpdateDialogProps = BasicDialogProps & {
+    updateLink: string | null;
 };
-export const UpdateDialog = ({ visible, onDismiss }: UpdateDialogProps) => {
+export const UpdateDialog = ({ visible, updateLink, onDismiss }: UpdateDialogProps) => {
+    const onUpdate = () => {
+        console.log('updateLink', updateLink);
+        openWebBrowser(updateLink);
+        onDismiss();
+    };
     return (
         <Dialog visible={visible} onDismiss={onDismiss}>
-            <Dialog.Title>Update Available</Dialog.Title>
+            <Dialog.Title>New Update</Dialog.Title>
             <Dialog.Content>
-                <Paragraph>An update is available. Would you like to update now?</Paragraph>
+                <Text>There is a new update available!</Text>
             </Dialog.Content>
             <Dialog.Actions>
-                <Button onPress={onDismiss}>Cancel</Button>
-                <Button onPress={Updates.reloadAsync}>Update</Button>
+                <Button onPress={onDismiss}>Dismiss</Button>
+                <Button onPress={onUpdate}>Update</Button>
             </Dialog.Actions>
         </Dialog>
     );

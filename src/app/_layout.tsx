@@ -19,6 +19,8 @@ import PaperHeader from '@/components/headers';
 import { api } from '@/store/services/anilist/enhanced';
 import { displayNotification, parseNotif } from '@/utils/notifications/backgroundFetch';
 import { setStatusBarStyle } from 'expo-status-bar';
+import { ToastAndroid } from 'react-native';
+import Constants from 'expo-constants';
 
 if (typeof window !== 'undefined') {
     // @ts-ignore
@@ -77,6 +79,8 @@ TaskManager.defineTask('Notifs', async () => {
 const AppProvider = () => {
     const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
+    const [updateLink, setUpdateLink] = useState<string | null>(null);
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
     // const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     // const updatesListener = (e: Updates.UpdateEvent) => {
@@ -87,6 +91,17 @@ const AppProvider = () => {
 
     // Updates.useUpdateEvents(updatesListener);
 
+    const checkForUpdates = async () => {
+        const results = await fetch('https://api.github.com/repos/KuzuLabz/GorakuSite/releases');
+        const jsonResult = await results?.json();
+        const newestVersion = jsonResult[0]?.tag_name ?? null;
+
+        if (newestVersion && newestVersion !== Constants?.expoConfig?.version) {
+            setUpdateLink(jsonResult[0]?.assets[0]?.browser_download_url);
+            setShowUpdateDialog(true);
+        }
+    };
+
     useEffect(() => {
         if (isDark) {
             setStatusBarStyle('light');
@@ -94,6 +109,10 @@ const AppProvider = () => {
             setStatusBarStyle('dark');
         }
     }, [isDark]);
+
+    useEffect(() => {
+        checkForUpdates();
+    }, []);
 
     return (
         <PaperProvider
@@ -159,6 +178,13 @@ const AppProvider = () => {
                             }}
                         />
                     </Stack>
+                    <Portal>
+                        <UpdateDialog
+                            visible={showUpdateDialog}
+                            onDismiss={() => setShowUpdateDialog(false)}
+                            updateLink={updateLink}
+                        />
+                    </Portal>
                 </BottomSheetModalProvider>
             </ThemeProvider>
             {/* <Portal>
