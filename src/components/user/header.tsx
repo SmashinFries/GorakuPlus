@@ -9,10 +9,10 @@ export const UserHeader = ({ avatar, name }: UserHeaderProps) => {
     return (
         <MotiView style={{ flexDirection: 'row', marginTop: 140 / 2, alignItems: 'center' }}>
             <MotiView style={{ marginLeft: 20 }}>
-                <Avatar.Image source={{ uri: avatar }} size={100} />
+                <Avatar.Image source={avatar ? { uri: avatar } : undefined} size={100} />
             </MotiView>
             <Text variant="titleLarge" style={{ paddingLeft: 20 }}>
-                {name}
+                {name ?? ''}
             </Text>
         </MotiView>
     );
