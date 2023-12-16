@@ -36,14 +36,13 @@ const RootLayout = () => {
                 options={{
                     title: 'List',
                     tabBarIcon: 'bookshelf',
-                    href: null,
                 }}
                 redirect={userID ? false : true}
             />
             <MaterialBottomTabs.Screen
                 name="user"
                 options={{
-                    title: username ?? 'Login',
+                    title: username && userID ? username : 'Login',
                     tabBarIcon: avatar
                         ? () => <Avatar.Image size={24} source={{ uri: avatar }} />
                         : 'login',
