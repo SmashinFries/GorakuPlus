@@ -77,7 +77,6 @@ const UserPage = () => {
     return userID && user.isLoading ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator size={'large'} />
-            <Button onPress={() => console.log(user.currentData)}>Test</Button>
         </View>
     ) : (
         <FadeHeaderProvider
