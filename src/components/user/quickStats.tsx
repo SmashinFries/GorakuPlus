@@ -60,17 +60,17 @@ export const StatOverview = ({ anime, manga }: StatOverview) => {
                 <MediaStatIsland
                     icon={'timer-outline'}
                     title="Minutes Wasted"
-                    value={anime?.minutesWatched}
+                    value={anime?.minutesWatched ?? 0}
                 />
                 <MediaStatIsland
                     icon={'television-play'}
                     title="Episodes Watched"
-                    value={anime?.episodesWatched}
+                    value={anime?.episodesWatched ?? 0}
                 />
                 <MediaStatIsland
                     icon={'television-play'}
                     title="Chapters Read"
-                    value={manga?.chaptersRead}
+                    value={manga?.chaptersRead ?? 0}
                 />
                 {/* <MediaStatIsland
                     icon={'television-play'}
