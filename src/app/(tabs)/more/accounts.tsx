@@ -76,7 +76,14 @@ const AccountsPage = () => {
                     visible={showAniAuth}
                     onDismiss={() => setShowAniAuth(false)}
                     onLogout={() => {
-                        dispatch(setAniAuth({ token: '', deathDate: '' }));
+                        dispatch(
+                            setAniAuth({
+                                token: '',
+                                deathDate: '',
+                                username: '',
+                                userID: undefined,
+                            }),
+                        );
                         resetCache();
                     }}
                     onRelogin={() => aniAuth.promptAsync()}
