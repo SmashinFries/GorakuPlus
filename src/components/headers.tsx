@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Appbar, Badge, IconButton, Portal, Searchbar, useTheme } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -448,6 +448,10 @@ export const FadeHeaderProvider = ({
         );
     };
 
+    const BackgroundImage = useCallback(() => {
+        return <BgImage style={bgImageStyle} />;
+    }, []);
+
     useEffect(() => {
         navigation.setOptions({
             title: title,
@@ -459,7 +463,7 @@ export const FadeHeaderProvider = ({
 
     return (
         <View>
-            {BgImage && <BgImage style={bgImageStyle} />}
+            {BgImage && <BackgroundImage />}
             <MotiScrollView
                 refreshControl={RefreshControl ?? undefined}
                 showsVerticalScrollIndicator={false}
