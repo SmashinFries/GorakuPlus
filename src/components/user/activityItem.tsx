@@ -50,7 +50,7 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
                 numberOfLines={2}
                 style={{ textTransform: 'capitalize', maxWidth: 200, textAlign: 'center' }}
             >
-                {item.status ?? '???'}
+                {`${item.status}${item.progress ? ` ${item.progress}` : ''}`}
             </Text>
             <Text
                 variant="labelMedium"
