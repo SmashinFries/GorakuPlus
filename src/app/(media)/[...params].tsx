@@ -38,7 +38,7 @@ const MediaScreen = () => {
     const type = params[0].toLowerCase() === 'anime' ? MediaType.Anime : MediaType.Manga;
     const muDB = useAppSelector((state) => state.peresistedMuDB);
     const { aniData, malData, videoData, mangaUpdates, isAniLoading, isMalLoading, isMuLoading } =
-        useMedia(aniID, type, muDB['data'][aniID]);
+        useMedia(aniID ?? 0, type, muDB['data'][aniID ?? 0]);
 
     const [showEpDialog, setShowEpDialog] = useState(false);
     const [showMuDialog, setShowMuDialog] = useState(false);
@@ -62,7 +62,7 @@ const MediaScreen = () => {
         openWebBrowser(`https://anilist.co/edit/${params[0]}/${aniID}`);
     }, []);
 
-    if (!params) return null;
+    if (!params || !aniID) return null;
 
     return (
         <View>
