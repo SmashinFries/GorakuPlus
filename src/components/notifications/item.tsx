@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { GetNotificationsQuery } from '@/store/services/anilist/generated-anilist';
-import { getTimeUntil, rgbToRgba } from '../../utils';
+import { getNotificationMessage, getTimeUntil, rgbToRgba } from '../../utils';
 import { useAppSelector } from '@/store/hooks';
 
 type NotifItemProps = {
@@ -66,8 +66,8 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
                                     : item?.media?.title?.english ??
                                       item?.media?.title?.romaji}{' '}
                             </Text>
-
-                            {item?.context}
+                            {'\n'}
+                            {getNotificationMessage(item, mediaLanguage)}
                         </Text>
                     </View>
                     {/* <LinearGradient
