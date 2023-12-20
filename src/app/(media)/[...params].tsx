@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useMedia } from '@/hooks/media/mediaHook';
+import { useMedia } from '@/hooks/media/useMedia';
 import { updateDB } from '@/store/slices/muSlice';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { MediaLoadingMem } from '@/components/media/loading';
@@ -37,8 +37,16 @@ const MediaScreen = () => {
     const aniID = Number(params[1]);
     const type = params[0].toLowerCase() === 'anime' ? MediaType.Anime : MediaType.Manga;
     const muDB = useAppSelector((state) => state.peresistedMuDB);
-    const { aniData, malData, videoData, mangaUpdates, isAniLoading, isMalLoading, isMuLoading } =
-        useMedia(aniID ?? 0, type, muDB['data'][aniID ?? 0]);
+    const {
+        aniData,
+        malData,
+        videoData,
+        mangaUpdates,
+        refetchMUContent,
+        isAniLoading,
+        isMalLoading,
+        isMuLoading,
+    } = useMedia(aniID ?? 0, type, muDB['data'][aniID ?? 0]);
 
     const [showEpDialog, setShowEpDialog] = useState(false);
     const [showMuDialog, setShowMuDialog] = useState(false);
@@ -55,6 +63,7 @@ const MediaScreen = () => {
 
     const onConfirmMuDialog = useCallback((muId: number) => {
         dispatch(updateDB({ aniId: aniID, muId: muId }));
+        refetchMUContent(muId);
         toggleMuDialog();
     }, []);
 
@@ -187,7 +196,10 @@ const MediaScreen = () => {
                         <Portal>
                             {type === MediaType.Manga && (
                                 <MuSearchDialog
-                                    title={aniData?.data?.Media?.title?.romaji}
+                                    title={
+                                        aniData?.data?.Media?.title?.english ??
+                                        aniData?.data?.Media?.title?.romaji
+                                    }
                                     currentMuID={muDB['data'][aniID]}
                                     visible={showMuDialog}
                                     onDismiss={toggleMuDialog}
