@@ -18,7 +18,7 @@ import {
     SaveMediaListItemMutationVariables,
     ScoreFormat,
 } from '@/store/services/anilist/generated-anilist';
-import { useListEntry } from '@/hooks/media/mutations';
+import { useListEntry } from '@/hooks/media/useMutations';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
