@@ -87,6 +87,12 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         }
     };
 
+    const refetchMUContent = async (id: number) => {
+        await getMuSeries({
+            id: id,
+        }).unwrap();
+    };
+
     const fetchAll = async () => {
         const aniData = await fetchAniContent();
         await fetchMalContent(aniData?.Media?.idMal ?? null);
@@ -169,6 +175,7 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         malData: type === MediaType.Anime ? malAnimeData : malMangaData,
         videoData: videoData,
         mangaUpdates: muData,
+        refetchMUContent,
         isAniLoading,
         isMalLoading,
         isMuLoading,
