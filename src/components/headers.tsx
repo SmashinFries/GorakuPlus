@@ -24,9 +24,10 @@ import Animated, {
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router } from 'expo-router';
+import { updateListSearch } from '@/store/slices/listSLice';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -494,5 +495,37 @@ const HeaderStyles = StyleSheet.create({
         alignItems: 'center',
     },
 });
+
+type ListHeaderProps = {
+    setSearchQuery: (query: string) => void;
+};
+export const ListHeader = ({ setSearchQuery }: ListHeaderProps) => {
+    const { query } = useAppSelector((state) => state.listSearch);
+    const dispatch = useAppDispatch();
+    // const [query, setQuery] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+        <Appbar.Header>
+            {isOpen ? (
+                <>
+                    <Appbar.BackAction onPress={() => setIsOpen(false)} />
+                    <Searchbar
+                        value={query}
+                        onChangeText={(txt) => {
+                            dispatch(updateListSearch(txt));
+                        }}
+                        style={{ flexShrink: 1 }}
+                        mode="bar"
+                    />
+                </>
+            ) : (
+                <>
+                    <Appbar.Content title={'List'} />
+                    <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />
+                </>
+            )}
+        </Appbar.Header>
+    );
+};
 
 export default PaperHeader;

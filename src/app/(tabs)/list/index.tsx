@@ -1,18 +1,20 @@
 import { MediaCard } from '@/components/cards';
-import { useAppSelector } from '@/store/hooks';
+import { ListHeader } from '@/components/headers';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
     MediaListSort,
     MediaListStatus,
     MediaType,
     useUserListCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
+import { updateListSearch } from '@/store/slices/listSLice';
 import { rgbToRgba, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
-import { router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
-import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 
 type ListParams = {
@@ -28,6 +30,8 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
         status: listName,
         sort: MediaListSort.UpdatedTimeDesc,
     });
+
+    const { query } = useAppSelector((state) => state.listSearch);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { columns, listKey } = useColumns(150);
@@ -91,7 +95,9 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
             {!isFetching ? (
                 <FlashList
                     key={listKey}
-                    data={data?.MediaListCollection?.lists[0]?.entries}
+                    data={data?.MediaListCollection?.lists[0]?.entries.filter((item) =>
+                        item.media.title.romaji.toLowerCase().includes(query?.toLowerCase()),
+                    )}
                     // drawDistance={height * 2}
                     renderItem={RenderItem}
                     keyExtractor={(item, idx) => item?.media?.id.toString() ?? idx.toString()}
@@ -208,15 +214,24 @@ const ListPage = () => {
     //     [listATabOrder],
     // );
 
+    const Tabs = useCallback(() => {
+        return (
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: layout.width }}
+                renderTabBar={renderTabBar}
+                swipeEnabled={true}
+            />
+        );
+    }, []);
+
     return (
-        <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: layout.width }}
-            renderTabBar={renderTabBar}
-            swipeEnabled={true}
-        />
+        <>
+            <ListHeader />
+            <Tabs />
+        </>
     );
 };
 
