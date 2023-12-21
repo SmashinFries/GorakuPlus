@@ -126,15 +126,14 @@ const AboutPage = () => {
                 >
                     @smashinfries
                 </Button> */}
-                <LinkButton url="https://kuzulabz.com/" icon={'earth'} size={28} />
+                <LinkButton url="https://goraku.kuzulabz.com/" icon={'earth'} size={28} />
                 <LinkButton
-                    url="https://store.kuzulabz.com/"
-                    icon={() => <GumroadIcon fillColor="#ff90e8" />}
+                    url="https://github.com/KuzuLabz/gorakusite"
+                    icon={'github'}
                     size={28}
-                    bgColor="#000"
                 />
-                <LinkButton url="https://github.com/SmashinFries" icon={'github'} size={28} />
                 <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} />
+                <LinkButton url="https://www.kuzumerch.com" icon={'storefront-outline'} size={28} />
             </View>
             <Portal>
                 <UpdateDialog
