@@ -496,10 +496,7 @@ const HeaderStyles = StyleSheet.create({
     },
 });
 
-type ListHeaderProps = {
-    setSearchQuery: (query: string) => void;
-};
-export const ListHeader = ({ setSearchQuery }: ListHeaderProps) => {
+export const ListHeader = () => {
     const { query } = useAppSelector((state) => state.listSearch);
     const dispatch = useAppDispatch();
     // const [query, setQuery] = useState('');
