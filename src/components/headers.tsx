@@ -3,10 +3,12 @@ import { Appbar, Badge, IconButton, Portal, Searchbar, useTheme } from 'react-na
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
+    BackHandler,
     RefreshControlProps,
     Share,
     StyleSheet,
     TextInput,
+    ToastAndroid,
     View,
     useWindowDimensions,
 } from 'react-native';
@@ -15,6 +17,9 @@ import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated, {
     Easing,
+    SlideInLeft,
+    SlideInRight,
+    SlideOutRight,
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
@@ -28,6 +33,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router } from 'expo-router';
 import { updateListSearch } from '@/store/slices/listSLice';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -501,26 +507,62 @@ export const ListHeader = () => {
     const dispatch = useAppDispatch();
     // const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        const backAction = () => {
+            setIsOpen(false);
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => backHandler.remove();
+    }, []);
+
+    const { right, left } = useSafeAreaInsets();
+
     return (
         <Appbar.Header>
             {isOpen ? (
-                <>
-                    <Appbar.BackAction onPress={() => setIsOpen(false)} />
+                <Animated.View
+                    entering={SlideInRight}
+                    exiting={SlideOutRight}
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingHorizontal: Math.max(left, right),
+                    }}
+                >
+                    {/* <Appbar.BackAction onPress={() => setIsOpen(false)} /> */}
                     <Searchbar
                         value={query}
                         onChangeText={(txt) => {
                             dispatch(updateListSearch(txt));
                         }}
-                        style={{ flexShrink: 1 }}
+                        icon={'arrow-left'}
+                        onIconPress={() => setIsOpen(false)}
                         mode="bar"
+                        // traileringIcon={'filter-outline'}
+                        // onTraileringIconPress={() =>
+                        //     ToastAndroid.show(
+                        //         'Filter/Display options coming soon!',
+                        //         ToastAndroid.LONG,
+                        //     )
+                        // }
                     />
-                </>
+                </Animated.View>
             ) : (
-                <>
-                    <Appbar.Content title={'List'} />
-                    <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />
-                </>
+                <Appbar.Content title={'List'} />
             )}
+            {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
+            {/* {!isOpen && (
+                <Appbar.Action
+                    icon="filter-outline"
+                    onPress={() =>
+                        ToastAndroid.show('Filter/Display options coming soon!', ToastAndroid.LONG)
+                    }
+                />
+            )} */}
         </Appbar.Header>
     );
 };
