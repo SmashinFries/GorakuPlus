@@ -95,8 +95,14 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
             {!isFetching ? (
                 <FlashList
                     key={listKey}
-                    data={data?.MediaListCollection?.lists[0]?.entries.filter((item) =>
-                        item.media.title.romaji.toLowerCase().includes(query?.toLowerCase()),
+                    data={data?.MediaListCollection?.lists[0]?.entries.filter(
+                        (item) =>
+                            item.media.title.romaji?.toLowerCase().includes(query?.toLowerCase()) ||
+                            item.media.title.english
+                                ?.toLowerCase()
+                                .includes(query?.toLowerCase()) ||
+                            item.media.title.native?.toLowerCase().includes(query?.toLowerCase()) ||
+                            item.media.synonyms?.some((value, index) => value.includes(query)),
                     )}
                     // drawDistance={height * 2}
                     renderItem={RenderItem}
