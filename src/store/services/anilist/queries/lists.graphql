@@ -47,6 +47,7 @@ fragment mediaListEntry on MediaList {
         isAdult
         countryOfOrigin
         genres
+        synonyms
         tags {
             id
             name
