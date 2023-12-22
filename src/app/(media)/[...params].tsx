@@ -43,6 +43,7 @@ const MediaScreen = () => {
         videoData,
         mangaUpdates,
         refetchMUContent,
+        refetchAniData,
         isAniLoading,
         isMalLoading,
         isMuLoading,
@@ -137,6 +138,7 @@ const MediaScreen = () => {
                                             aniData?.data?.User?.mediaListOptions?.scoreFormat
                                         }
                                         isFav={aniData?.data?.Media?.isFavourite}
+                                        refreshData={refetchAniData}
                                     />
                                 )}
                                 <DescriptionMem

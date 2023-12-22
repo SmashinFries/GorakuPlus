@@ -93,6 +93,17 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         }).unwrap();
     };
 
+    const refetchAniData = async () => {
+        await getAniMedia({
+            id: id,
+            userId: userID,
+            skipUser: userID ? false : true,
+            perPage_c: 25,
+            perPage_rec: 25,
+            sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
+        }).unwrap();
+    };
+
     const fetchAll = async () => {
         const aniData = await fetchAniContent();
         await fetchMalContent(aniData?.Media?.idMal ?? null);
@@ -176,6 +187,7 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         videoData: videoData,
         mangaUpdates: muData,
         refetchMUContent,
+        refetchAniData,
         isAniLoading,
         isMalLoading,
         isMuLoading,
