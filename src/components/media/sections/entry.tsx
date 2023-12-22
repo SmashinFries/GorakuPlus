@@ -44,9 +44,10 @@ type ListEntryViewProps = {
     data: AniMediaQuery['Media']['mediaListEntry'];
     scoreFormat?: ScoreFormat;
     isFav: boolean;
+    refreshData: () => void;
 };
 
-const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProps) => {
+const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: ListEntryViewProps) => {
     const {
         deleteListItem,
         saveListItem,
@@ -60,8 +61,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProp
     const { colors } = useTheme();
 
     const sheetRef = useRef<BottomSheetModalMethods>(null);
-    const { isFilterOpen, openSheet, closeSheet, handleSheetChange, setIsFilterOpen } =
-        useFilterSheet(sheetRef);
+    const { isFilterOpen, openSheet } = useFilterSheet(sheetRef);
 
     const [showRemListDlg, setShowRemListDlg] = useState(false);
     const [showListEntryDlg, setShowListEntryDlg] = useState(false);
@@ -76,6 +76,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav }: ListEntryViewProp
                     if (res) {
                         setListStatus(res?.data?.SaveMediaListEntry?.status ?? null);
                         setIsOnList(true);
+                        refreshData();
                     }
                 },
             );
@@ -371,82 +372,97 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                     onSelect={(item) => updateParams('status', item)}
                                 />
                             </View>
-
-                            <View
-                                style={{
-                                    height: 0.5,
-                                    width: '90%',
-                                    alignSelf: 'center',
-                                    backgroundColor: '#000',
-                                }}
-                            />
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-evenly',
-                                    alignItems: 'center',
-                                    paddingVertical: 10,
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                <EntryNumInput
-                                    title="Progress"
-                                    inputType="number"
-                                    value={tempParams.progress}
-                                    onChange={(val) => updateParams('progress', val)}
-                                />
-                                <View
-                                    style={{ height: '100%', width: 0.5, backgroundColor: '#000' }}
-                                />
-                                <EntryNumInput
-                                    title="Score"
-                                    inputType="number"
-                                    value={tempParams.score}
-                                    onChange={(val) => updateParams('score', val)}
-                                />
-                                <View
-                                    style={{ height: '100%', width: 0.5, backgroundColor: '#000' }}
-                                />
-                                <EntryNumInput
-                                    title="Repeats"
-                                    inputType="number"
-                                    value={tempParams.repeat}
-                                    onChange={(val) => updateParams('repeat', val)}
-                                />
-                            </View>
-                            <View
-                                style={{
-                                    height: 0.5,
-                                    width: '90%',
-                                    alignSelf: 'center',
-                                    backgroundColor: '#000',
-                                }}
-                            />
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-evenly',
-                                    alignItems: 'center',
-                                    paddingVertical: 10,
-                                    overflow: 'hidden',
-                                }}
-                            >
-                                <EntryNumInput
-                                    title="Start Date"
-                                    inputType="date"
-                                    value={tempParams.start}
-                                    onChange={(val) => null}
-                                />
-                                <View
-                                    style={{ height: '100%', width: 0.5, backgroundColor: '#000' }}
-                                />
-                                <EntryNumInput
-                                    title="End Date "
-                                    inputType="date"
-                                    value={tempParams.end}
-                                    onChange={(val) => null}
-                                />
-                            </View>
+                            {props.entryData.media?.status !== MediaStatus.NotYetReleased && (
+                                <>
+                                    <View
+                                        style={{
+                                            height: 0.5,
+                                            width: '90%',
+                                            alignSelf: 'center',
+                                            backgroundColor: '#000',
+                                        }}
+                                    />
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-evenly',
+                                            alignItems: 'center',
+                                            paddingVertical: 10,
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        <EntryNumInput
+                                            title="Progress"
+                                            inputType="number"
+                                            value={tempParams.progress}
+                                            onChange={(val) => updateParams('progress', val)}
+                                        />
+                                        <View
+                                            style={{
+                                                height: '100%',
+                                                width: 0.5,
+                                                backgroundColor: '#000',
+                                            }}
+                                        />
+                                        <EntryNumInput
+                                            title="Score"
+                                            inputType="number"
+                                            value={tempParams.score}
+                                            onChange={(val) => updateParams('score', val)}
+                                        />
+                                        <View
+                                            style={{
+                                                height: '100%',
+                                                width: 0.5,
+                                                backgroundColor: '#000',
+                                            }}
+                                        />
+                                        <EntryNumInput
+                                            title="Repeats"
+                                            inputType="number"
+                                            value={tempParams.repeat}
+                                            onChange={(val) => updateParams('repeat', val)}
+                                        />
+                                    </View>
+                                    <View
+                                        style={{
+                                            height: 0.5,
+                                            width: '90%',
+                                            alignSelf: 'center',
+                                            backgroundColor: '#000',
+                                        }}
+                                    />
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-evenly',
+                                            alignItems: 'center',
+                                            paddingVertical: 10,
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        <EntryNumInput
+                                            title="Start Date"
+                                            inputType="date"
+                                            value={tempParams.start}
+                                            onChange={(val) => null}
+                                        />
+                                        <View
+                                            style={{
+                                                height: '100%',
+                                                width: 0.5,
+                                                backgroundColor: '#000',
+                                            }}
+                                        />
+                                        <EntryNumInput
+                                            title="End Date "
+                                            inputType="date"
+                                            value={tempParams.end}
+                                            onChange={(val) => null}
+                                        />
+                                    </View>
+                                </>
+                            )}
                         </View>
                         <List.Section title="Notes">
                             <BottomSheetTextInput

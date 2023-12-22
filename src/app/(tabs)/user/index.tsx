@@ -40,19 +40,8 @@ const UserPage = () => {
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { allowSensorMotion } = useAppSelector((state) => state.persistedSettings);
 
-    const user = useUserOverviewQuery({}, { skip: !userID });
-    const activity = useUserActivityQuery(
-        {
-            page: 1,
-            perPage: 20,
-            userId: undefined,
-            isFollowing: true,
-        },
-        { skip: !userID },
-    );
-    const followers = useUserFollowersQuery({ page: 1, userId: userID }, { skip: !userID });
-    const following = useUserFollowingQuery({ page: 1, userId: userID }, { skip: !userID });
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const { user, activity, followers, following, isLoading, isRefreshing, onRefresh } =
+        useUser(userID);
 
     const [showAddFriend, setShowAddFriend] = useState(false);
 
@@ -63,18 +52,9 @@ const UserPage = () => {
         // navigation.navigate('statistics', { userId: userID });
     };
 
-    const onRefresh = async () => {
-        setIsRefreshing(true);
-        await user.refetch();
-        await followers.refetch();
-        await following.refetch();
-        await activity.refetch();
-        setIsRefreshing(false);
-    };
-
     if (!userID) return <UnauthedPage />;
 
-    return userID && user.isLoading ? (
+    return userID && isLoading ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <ActivityIndicator size={'large'} />
         </View>
@@ -120,7 +100,7 @@ const UserPage = () => {
                 />
                 <View style={{ marginTop: 10 }}>
                     {/* <Accordion title="Activity" initialExpand> */}
-                    <ActivityOverview data={activity.currentData?.Page?.activities} />
+                    <ActivityOverview data={activity.data?.Page?.activities} />
                     {/* </Accordion> */}
                     {/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
                     <Accordion title={'Following'}>
