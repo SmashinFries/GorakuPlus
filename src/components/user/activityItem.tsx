@@ -101,7 +101,13 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
     );
 };
 
-export const ActivityOverview = ({ data }: { data: UserActivityQuery['Page']['activities'] }) => {
+export const ActivityOverview = ({
+    data,
+    onDelete,
+}: {
+    data: UserActivityQuery['Page']['activities'];
+    onDelete?: (id: number) => void;
+}) => {
     const { width } = useWindowDimensions();
 
     const [showActDelConfirm, setShowActDelConfirm] = useState(false);
@@ -113,10 +119,6 @@ export const ActivityOverview = ({ data }: { data: UserActivityQuery['Page']['ac
         setShowActDelConfirm(true);
     };
 
-    const RenderItem = ({ item }: { item: ListActivity }) => {
-        return <ActivityItem item={item} onTrash={onTrash} />;
-    };
-
     return (
         <View style={{ width: width, overflow: 'visible' }}>
             <ListHeading
@@ -124,21 +126,17 @@ export const ActivityOverview = ({ data }: { data: UserActivityQuery['Page']['ac
                 icon="chevron-right"
                 onIconPress={() => router.push('/activity/user')}
             />
-            {data ? (
+            <View style={{ width: width }}>
                 <FlashList
                     // @ts-ignore - not sure how to handle this type :/
                     data={data}
-                    renderItem={RenderItem}
+                    renderItem={({ item }) => <ActivityItem item={item} onTrash={onTrash} />}
                     keyExtractor={(item) => item.id.toString()}
                     horizontal
                     estimatedItemSize={185}
                     showsHorizontalScrollIndicator={false}
                 />
-            ) : (
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                    <ActivityIndicator size={'large'} />
-                </View>
-            )}
+            </View>
             <Portal>
                 <ConfirmActDelDialog
                     visible={showActDelConfirm}

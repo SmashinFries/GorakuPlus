@@ -1,15 +1,17 @@
 import { Dialog, Text, Button, Searchbar, ActivityIndicator, useTheme } from 'react-native-paper';
-import {
-    UserOverviewQuery,
-    UserSearchQuery,
-    useDeleteActMutation,
-} from '@/store/services/anilist/generated-anilist';
+import { UserOverviewQuery, UserSearchQuery } from '@/store/services/anilist/generated-anilist';
 import { BasicDialogProps } from '../../types';
 import { useCallback, useState } from 'react';
-import { useLazyUserSearchQuery, useToggleFollowMutation } from '@/store/services/anilist/enhanced';
+import {
+    api,
+    useDeleteActMutation,
+    useLazyUserSearchQuery,
+    useToggleFollowMutation,
+} from '@/store/services/anilist/enhanced';
 import { UserCard } from '../cards';
 import { FlatList, Keyboard } from 'react-native';
 import { View } from 'react-native';
+import { useAppDispatch } from '@/store/hooks';
 
 type StatDialogProps = BasicDialogProps & {
     animeStats: UserOverviewQuery['Viewer']['statistics']['anime'];
@@ -168,9 +170,11 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 type ConfirmActDelDialogProps = BasicDialogProps & { id: number | null };
 export const ConfirmActDelDialog = ({ visible, id, onDismiss }: ConfirmActDelDialogProps) => {
     const [deleteAct, results] = useDeleteActMutation();
+    const dispatch = useAppDispatch();
 
-    const onConfirm = useCallback(async () => {
-        await deleteAct({ id }).unwrap();
+    const onDelete = useCallback(async () => {
+        await deleteAct({ id });
+        dispatch(api.util.invalidateTags([{ type: 'Activity', id: id }]));
         onDismiss();
     }, [id]);
 
@@ -182,7 +186,7 @@ export const ConfirmActDelDialog = ({ visible, id, onDismiss }: ConfirmActDelDia
             </Dialog.Content>
             <Dialog.Actions>
                 <Button onPress={onDismiss}>Cancel</Button>
-                <Button onPress={onConfirm}>Delete</Button>
+                <Button onPress={onDelete}>Delete</Button>
             </Dialog.Actions>
         </Dialog>
     );

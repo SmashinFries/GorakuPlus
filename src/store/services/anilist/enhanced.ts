@@ -39,6 +39,7 @@ export const api = generatedApi.enhanceEndpoints({
         'StudioSearch',
         'Notifications',
         'Activity',
+        'UserOverview',
     ],
     endpoints: {
         ExploreMedia: {
@@ -516,6 +517,10 @@ export const api = generatedApi.enhanceEndpoints({
         UserFollowing: {
             providesTags: ['UserFollowing'],
         },
+        UserOverview: {
+            providesTags: ['UserOverview'],
+        },
+
         ToggleFollow: {
             invalidatesTags: (result, error, params) => ['UserSearch', 'AniMedia', 'UserFollowing'],
         },
@@ -568,6 +573,9 @@ export const api = generatedApi.enhanceEndpoints({
                 if (currentCache.Page.pageInfo.currentPage < newItems.Page.pageInfo.currentPage) {
                     currentCache.Page.pageInfo = newItems.Page.pageInfo;
                     currentCache.Page.activities.push(...newItems.Page.activities);
+                } else {
+                    currentCache.Page.activities = newItems.Page.activities;
+                    currentCache.Page.pageInfo = newItems.Page.pageInfo;
                 }
             },
             forceRefetch({ currentArg, previousArg }) {
@@ -583,7 +591,6 @@ export const api = generatedApi.enhanceEndpoints({
                               // @ts-ignore
                               id: activity.id,
                           })),
-                          'Activity',
                       ]
                     : ['Activity'],
         },
@@ -611,7 +618,7 @@ export const api = generatedApi.enhanceEndpoints({
         },
         DeleteAct: {
             invalidatesTags: (result, error, params) =>
-                params ? [{ type: 'Activity', id: params.id }] : ['Activity'],
+                params ? [{ type: 'Activity' as const, id: params.id }] : ['Activity'],
         },
     },
 });
@@ -622,18 +629,22 @@ export const {
     useAnimeTrendingQuery,
     useAnimePopularQuery,
     useAnimeTopScoredQuery,
+
     useMangaTrendingQuery,
     useMangaPopularQuery,
     useMangaTopScoredQuery,
+
     useManhwaTrendingQuery,
     useManhwaPopularQuery,
     useManhwaTopScoredQuery,
     useManhuaTrendingQuery,
     useManhuaPopularQuery,
     useManhuaTopScoredQuery,
+
     useNovelTrendingQuery,
     useNovelPopularQuery,
     useNovelTopScoredQuery,
+
     useExploreMediaQuery,
     useLazyExploreMediaQuery,
     useCharacterListQuery,
@@ -643,7 +654,17 @@ export const {
     useDeleteMediaListItemMutation,
     useCharacterDetailsQuery,
     useLazyUserSearchQuery,
+
+    useUserOverviewQuery,
+    useUserActivityQuery,
+    useLazyUserOverviewQuery,
+    useUserFollowersQuery,
+    useLazyUserFollowersQuery,
     useUserFollowingQuery,
+    useLazyUserFollowingQuery,
+    useLazyUserActivityQuery,
+    useDeleteActMutation,
+
     useToggleFollowMutation,
     useLazyCharacterSearchQuery,
     useLazyStaffSearchQuery,
