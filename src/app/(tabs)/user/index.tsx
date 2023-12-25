@@ -4,6 +4,7 @@ import { MediaBanner } from '@/components/media/banner';
 import { ProfileActionBar } from '@/components/user/actionbar';
 import { ActivityOverview } from '@/components/user/activityItem';
 import { AddFriendDialog } from '@/components/user/dialogs';
+import FavoritesOverview from '@/components/user/favoritesOverview';
 import { FollowRow } from '@/components/user/followOverview';
 import { UserHeader } from '@/components/user/header';
 import { StatOverview } from '@/components/user/quickStats';
@@ -40,7 +41,7 @@ const UserPage = () => {
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { allowSensorMotion } = useAppSelector((state) => state.persistedSettings);
 
-    const { user, activity, followers, following, isLoading, isRefreshing, onRefresh } =
+    const { user, favorites, activity, followers, following, isLoading, isRefreshing, onRefresh } =
         useUser(userID);
 
     const [showAddFriend, setShowAddFriend] = useState(false);
@@ -100,6 +101,7 @@ const UserPage = () => {
                 />
                 <View style={{ marginTop: 10 }}>
                     {/* <Accordion title="Activity" initialExpand> */}
+                    <FavoritesOverview data={favorites.currentData?.User?.favourites} />
                     <ActivityOverview data={activity.data?.Page?.activities} />
                     {/* </Accordion> */}
                     {/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}

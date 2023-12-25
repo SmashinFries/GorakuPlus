@@ -40,6 +40,12 @@ export const api = generatedApi.enhanceEndpoints({
         'Notifications',
         'Activity',
         'UserOverview',
+        'AnimeFav',
+        'MangaFav',
+        'CharFav',
+        'StaffFav',
+        'StudiosFav',
+        'UserFavOverview',
     ],
     endpoints: {
         ExploreMedia: {
@@ -620,6 +626,64 @@ export const api = generatedApi.enhanceEndpoints({
             invalidatesTags: (result, error, params) =>
                 params ? [{ type: 'Activity' as const, id: params.id }] : ['Activity'],
         },
+        UserFavoritesOverview: {
+            providesTags: ['UserFavOverview'],
+        },
+        UserAnimeFavorites: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.User?.favourites?.anime?.nodes.map((media) => ({
+                              type: 'AnimeFav' as const,
+                              id: media.id,
+                          })),
+                      ]
+                    : ['AnimeFav'],
+        },
+        UserMangaFavorites: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.User?.favourites?.manga?.nodes.map((media) => ({
+                              type: 'MangaFav' as const,
+                              id: media.id,
+                          })),
+                      ]
+                    : ['MangaFav'],
+        },
+        UserWaifuFavorites: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.User?.favourites?.characters?.nodes.map((char) => ({
+                              type: 'CharFav' as const,
+                              id: char.id,
+                          })),
+                      ]
+                    : ['CharFav'],
+        },
+        UserStaffFavorites: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.User?.favourites?.staff?.nodes.map((staff) => ({
+                              type: 'StaffFav' as const,
+                              id: staff.id,
+                          })),
+                      ]
+                    : ['StaffFav'],
+        },
+        UserStudiosFavorites: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.User?.favourites?.studios?.nodes.map((studios) => ({
+                              type: 'StudiosFav' as const,
+                              id: studios.id,
+                          })),
+                      ]
+                    : ['StudiosFav'],
+        },
     },
 });
 
@@ -669,4 +733,17 @@ export const {
     useLazyCharacterSearchQuery,
     useLazyStaffSearchQuery,
     useLazyStudioSearchQuery,
+
+    useUserFavoritesOverviewQuery,
+    useLazyUserFavoritesOverviewQuery,
+    useUserAnimeFavoritesQuery,
+    useLazyUserAnimeFavoritesQuery,
+    useUserMangaFavoritesQuery,
+    useLazyUserMangaFavoritesQuery,
+    useUserWaifuFavoritesQuery,
+    useLazyUserWaifuFavoritesQuery,
+    useUserStaffFavoritesQuery,
+    useLazyUserStaffFavoritesQuery,
+    useUserStudiosFavoritesQuery,
+    useLazyUserStudiosFavoritesQuery,
 } = api;

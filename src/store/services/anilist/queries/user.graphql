@@ -351,46 +351,6 @@ query UserOverview {
         }
         bannerImage
         about
-        favourites {
-            anime(perPage: 12) {
-                nodes {
-                    id
-                    coverImage {
-                        extraLarge
-                    }
-                }
-            }
-            manga(perPage: 12) {
-                nodes {
-                    id
-                    coverImage {
-                        extraLarge
-                    }
-                }
-            }
-            characters(perPage: 12) {
-                nodes {
-                    id
-                    image {
-                        large
-                    }
-                }
-            }
-            staff(perPage: 12) {
-                nodes {
-                    id
-                    image {
-                        large
-                    }
-                }
-            }
-            studios(perPage: 12) {
-                nodes {
-                    id
-                    name
-                }
-            }
-        }
         stats {
             favouredGenresOverview {
                 genre
@@ -459,6 +419,226 @@ query UserFollowers($userId: Int!, $page: Int) {
             isFollower
             isBlocked
             siteUrl
+        }
+    }
+}
+
+query UserFavoritesOverview($userID: Int) {
+    User(id: $userID) {
+        favourites {
+            anime(perPage: 16) {
+                nodes {
+                    id
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+            manga(perPage: 16) {
+                nodes {
+                    id
+                    coverImage {
+                        extraLarge
+                    }
+                }
+            }
+            characters(perPage: 16) {
+                nodes {
+                    id
+                    image {
+                        large
+                    }
+                }
+            }
+            staff(perPage: 16) {
+                nodes {
+                    id
+                    image {
+                        large
+                    }
+                }
+            }
+            studios(perPage: 16) {
+                nodes {
+                    id
+                    name
+                }
+            }
+        }
+    }
+}
+
+query UserAnimeFavorites($userID: Int, $page: Int, $perPage: Int) {
+    User(id: $userID) {
+        favourites {
+            anime(page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    perPage
+                    currentPage
+                    hasNextPage
+                    lastPage
+                }
+                nodes {
+                    id
+                    coverImage {
+                        extraLarge
+                        color
+                    }
+                    title {
+                        english
+                        native
+                        romaji
+                    }
+                    averageScore
+                    meanScore
+                    bannerImage
+                    type
+                    format
+                    genres
+                    episodes
+                    status
+                    isAdult
+                    synonyms
+                    isLicensed
+                    isFavourite
+                    characters(perPage: 50) {
+                        nodes {
+                            name {
+                                full
+                                native
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query UserMangaFavorites($userID: Int, $page: Int, $perPage: Int) {
+    User(id: $userID) {
+        favourites {
+            manga(page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    perPage
+                    currentPage
+                    hasNextPage
+                    lastPage
+                }
+                nodes {
+                    id
+                    coverImage {
+                        extraLarge
+                        color
+                    }
+                    title {
+                        english
+                        native
+                        romaji
+                    }
+                    averageScore
+                    meanScore
+                    bannerImage
+                    chapters
+                    volumes
+                    type
+                    format
+                    genres
+                    status
+                    isAdult
+                    synonyms
+                    isLicensed
+                    isFavourite
+                    characters(perPage: 50) {
+                        nodes {
+                            name {
+                                full
+                                native
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query UserWaifuFavorites($userID: Int, $page: Int, $perPage: Int) {
+    User(id: $userID) {
+        favourites {
+            characters(page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    perPage
+                    currentPage
+                    hasNextPage
+                    lastPage
+                }
+                nodes {
+                    id
+                    name {
+                        full
+                        native
+                    }
+                    gender
+                    isFavourite
+                    image {
+                        large
+                    }
+                }
+            }
+        }
+    }
+}
+
+query UserStaffFavorites($userID: Int, $page: Int, $perPage: Int) {
+    User(id: $userID) {
+        favourites {
+            staff(page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    perPage
+                    currentPage
+                    hasNextPage
+                    lastPage
+                }
+                nodes {
+                    id
+                    name {
+                        full
+                        native
+                    }
+                    gender
+                    isFavourite
+                    image {
+                        large
+                    }
+                }
+            }
+        }
+    }
+}
+
+query UserStudiosFavorites($userID: Int, $page: Int, $perPage: Int) {
+    User(id: $userID) {
+        favourites {
+            studios(page: $page, perPage: $perPage) {
+                pageInfo {
+                    total
+                    perPage
+                    currentPage
+                    hasNextPage
+                    lastPage
+                }
+                nodes {
+                    id
+                    name
+                    isAnimationStudio
+                    isFavourite
+                }
+            }
         }
     }
 }

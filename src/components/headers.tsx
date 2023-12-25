@@ -32,8 +32,9 @@ import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router } from 'expo-router';
-import { updateListSearch } from '@/store/slices/listSLice';
+import { updateListSearch } from '@/store/slices/listSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { updateFavSearch } from '@/store/slices/favoritesSlice';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -553,6 +554,76 @@ export const ListHeader = () => {
                 </Animated.View>
             ) : (
                 <Appbar.Content title={'List'} />
+            )}
+            {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
+            {/* {!isOpen && (
+                <Appbar.Action
+                    icon="filter-outline"
+                    onPress={() =>
+                        ToastAndroid.show('Filter/Display options coming soon!', ToastAndroid.LONG)
+                    }
+                />
+            )} */}
+        </Appbar.Header>
+    );
+};
+
+export const FavoritesHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+    const { query } = useAppSelector((state) => state.favSearch);
+    const dispatch = useAppDispatch();
+    // const [query, setQuery] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        const backAction = () => {
+            if (isOpen) {
+                setIsOpen(false);
+            } else {
+                navigation.goBack();
+            }
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => backHandler.remove();
+    }, [isOpen]);
+
+    const { right, left } = useSafeAreaInsets();
+
+    return (
+        <Appbar.Header>
+            <Appbar.BackAction onPress={isOpen ? () => setIsOpen(false) : navigation.goBack} />
+            {isOpen ? (
+                <Animated.View
+                    entering={SlideInRight}
+                    exiting={SlideOutRight}
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingHorizontal: Math.max(left, right),
+                        flexShrink: 1,
+                    }}
+                >
+                    {/* <Appbar.BackAction onPress={() => setIsOpen(false)} /> */}
+                    <Searchbar
+                        value={query}
+                        onChangeText={(txt) => {
+                            dispatch(updateFavSearch(txt));
+                        }}
+                        placeholder={'Search favorites...'}
+                        mode="bar"
+                        // traileringIcon={'filter-outline'}
+                        // onTraileringIconPress={() =>
+                        //     ToastAndroid.show(
+                        //         'Filter/Display options coming soon!',
+                        //         ToastAndroid.LONG,
+                        //     )
+                        // }
+                    />
+                </Animated.View>
+            ) : (
+                <Appbar.Content title={'Favorites'} />
             )}
             {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
             {/* {!isOpen && (

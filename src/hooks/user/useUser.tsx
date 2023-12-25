@@ -1,6 +1,7 @@
 import {
     useDeleteActMutation,
     useLazyUserActivityQuery,
+    useLazyUserFavoritesOverviewQuery,
     useLazyUserFollowersQuery,
     useLazyUserFollowingQuery,
     useLazyUserOverviewQuery,
@@ -15,10 +16,12 @@ export const useUser = (userID: number) => {
     const [getActivity, activity] = useLazyUserActivityQuery();
     const [getFollowers, followers] = useLazyUserFollowersQuery();
     const [getFollowing, following] = useLazyUserFollowingQuery();
+    const [getFavorites, favorites] = useLazyUserFavoritesOverviewQuery();
 
     const fetchInitialData = async () => {
         setIsLoading(true);
         await getUser();
+        await getFavorites({ userID: userID });
         await getActivity({
             page: 1,
             perPage: 25,
@@ -33,6 +36,7 @@ export const useUser = (userID: number) => {
     const onRefresh = async () => {
         setIsRefreshing(true);
         await getUser();
+        await getFavorites({ userID: userID });
         await getActivity({
             page: 1,
             perPage: 25,
@@ -45,12 +49,12 @@ export const useUser = (userID: number) => {
     };
 
     useEffect(() => {
-        console.log('fetching initial data');
         fetchInitialData();
     }, []);
 
     return {
         user,
+        favorites,
         activity,
         followers,
         following,

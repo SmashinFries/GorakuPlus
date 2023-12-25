@@ -5268,7 +5268,7 @@ export type ExtUserDataQuery = { __typename?: 'Query', User?: { __typename?: 'Us
 export type UserOverviewQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserOverviewQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, staff?: { __typename?: 'StaffConnection', nodes?: Array<{ __typename?: 'Staff', id: number, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', nodes?: Array<{ __typename?: 'Studio', id: number, name: string } | null> | null } | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number } | null } | null } | null };
+export type UserOverviewQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number } | null } | null } | null };
 
 export type UserFollowingQueryVariables = Exact<{
   userId: Scalars['Int'];
@@ -5285,6 +5285,58 @@ export type UserFollowersQueryVariables = Exact<{
 
 
 export type UserFollowersQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null };
+
+export type UserFavoritesOverviewQueryVariables = Exact<{
+  userID?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserFavoritesOverviewQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, staff?: { __typename?: 'StaffConnection', nodes?: Array<{ __typename?: 'Staff', id: number, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', nodes?: Array<{ __typename?: 'Studio', id: number, name: string } | null> | null } | null } | null } | null };
+
+export type UserAnimeFavoritesQueryVariables = Exact<{
+  userID?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserAnimeFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null } | null> | null } | null } | null> | null } | null } | null } | null };
+
+export type UserMangaFavoritesQueryVariables = Exact<{
+  userID?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserMangaFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null } | null> | null } | null } | null> | null } | null } | null } | null };
+
+export type UserWaifuFavoritesQueryVariables = Exact<{
+  userID?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserWaifuFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+
+export type UserStaffFavoritesQueryVariables = Exact<{
+  userID?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserStaffFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Staff', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+
+export type UserStudiosFavoritesQueryVariables = Exact<{
+  userID?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UserStudiosFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', studios?: { __typename?: 'StudioConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, isFavourite: boolean } | null> | null } | null } | null } | null };
 
 export const MainMetaFragmentDoc = `
     fragment MainMeta on Media {
@@ -7656,46 +7708,6 @@ export const UserOverviewDocument = `
     }
     bannerImage
     about
-    favourites {
-      anime(perPage: 12) {
-        nodes {
-          id
-          coverImage {
-            extraLarge
-          }
-        }
-      }
-      manga(perPage: 12) {
-        nodes {
-          id
-          coverImage {
-            extraLarge
-          }
-        }
-      }
-      characters(perPage: 12) {
-        nodes {
-          id
-          image {
-            large
-          }
-        }
-      }
-      staff(perPage: 12) {
-        nodes {
-          id
-          image {
-            large
-          }
-        }
-      }
-      studios(perPage: 12) {
-        nodes {
-          id
-          name
-        }
-      }
-    }
     stats {
       favouredGenresOverview {
         genre
@@ -7766,6 +7778,232 @@ export const UserFollowersDocument = `
       isFollower
       isBlocked
       siteUrl
+    }
+  }
+}
+    `;
+export const UserFavoritesOverviewDocument = `
+    query UserFavoritesOverview($userID: Int) {
+  User(id: $userID) {
+    favourites {
+      anime(perPage: 16) {
+        nodes {
+          id
+          coverImage {
+            extraLarge
+          }
+        }
+      }
+      manga(perPage: 16) {
+        nodes {
+          id
+          coverImage {
+            extraLarge
+          }
+        }
+      }
+      characters(perPage: 16) {
+        nodes {
+          id
+          image {
+            large
+          }
+        }
+      }
+      staff(perPage: 16) {
+        nodes {
+          id
+          image {
+            large
+          }
+        }
+      }
+      studios(perPage: 16) {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+export const UserAnimeFavoritesDocument = `
+    query UserAnimeFavorites($userID: Int, $page: Int, $perPage: Int) {
+  User(id: $userID) {
+    favourites {
+      anime(page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          perPage
+          currentPage
+          hasNextPage
+          lastPage
+        }
+        nodes {
+          id
+          coverImage {
+            extraLarge
+            color
+          }
+          title {
+            english
+            native
+            romaji
+          }
+          averageScore
+          meanScore
+          bannerImage
+          type
+          format
+          genres
+          episodes
+          status
+          isAdult
+          synonyms
+          isLicensed
+          isFavourite
+          characters(perPage: 50) {
+            nodes {
+              name {
+                full
+                native
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const UserMangaFavoritesDocument = `
+    query UserMangaFavorites($userID: Int, $page: Int, $perPage: Int) {
+  User(id: $userID) {
+    favourites {
+      manga(page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          perPage
+          currentPage
+          hasNextPage
+          lastPage
+        }
+        nodes {
+          id
+          coverImage {
+            extraLarge
+            color
+          }
+          title {
+            english
+            native
+            romaji
+          }
+          averageScore
+          meanScore
+          bannerImage
+          chapters
+          volumes
+          type
+          format
+          genres
+          status
+          isAdult
+          synonyms
+          isLicensed
+          isFavourite
+          characters(perPage: 50) {
+            nodes {
+              name {
+                full
+                native
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const UserWaifuFavoritesDocument = `
+    query UserWaifuFavorites($userID: Int, $page: Int, $perPage: Int) {
+  User(id: $userID) {
+    favourites {
+      characters(page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          perPage
+          currentPage
+          hasNextPage
+          lastPage
+        }
+        nodes {
+          id
+          name {
+            full
+            native
+          }
+          gender
+          isFavourite
+          image {
+            large
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const UserStaffFavoritesDocument = `
+    query UserStaffFavorites($userID: Int, $page: Int, $perPage: Int) {
+  User(id: $userID) {
+    favourites {
+      staff(page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          perPage
+          currentPage
+          hasNextPage
+          lastPage
+        }
+        nodes {
+          id
+          name {
+            full
+            native
+          }
+          gender
+          isFavourite
+          image {
+            large
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const UserStudiosFavoritesDocument = `
+    query UserStudiosFavorites($userID: Int, $page: Int, $perPage: Int) {
+  User(id: $userID) {
+    favourites {
+      studios(page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          perPage
+          currentPage
+          hasNextPage
+          lastPage
+        }
+        nodes {
+          id
+          name
+          isAnimationStudio
+          isFavourite
+        }
+      }
     }
   }
 }
@@ -7932,9 +8170,27 @@ const injectedRtkApi = api.injectEndpoints({
     UserFollowers: build.query<UserFollowersQuery, UserFollowersQueryVariables>({
       query: (variables) => ({ document: UserFollowersDocument, variables })
     }),
+    UserFavoritesOverview: build.query<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables | void>({
+      query: (variables) => ({ document: UserFavoritesOverviewDocument, variables })
+    }),
+    UserAnimeFavorites: build.query<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables | void>({
+      query: (variables) => ({ document: UserAnimeFavoritesDocument, variables })
+    }),
+    UserMangaFavorites: build.query<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables | void>({
+      query: (variables) => ({ document: UserMangaFavoritesDocument, variables })
+    }),
+    UserWaifuFavorites: build.query<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables | void>({
+      query: (variables) => ({ document: UserWaifuFavoritesDocument, variables })
+    }),
+    UserStaffFavorites: build.query<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables | void>({
+      query: (variables) => ({ document: UserStaffFavoritesDocument, variables })
+    }),
+    UserStudiosFavorites: build.query<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables | void>({
+      query: (variables) => ({ document: UserStudiosFavoritesDocument, variables })
+    }),
   }),
 });
 
 export { injectedRtkApi as api };
-export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useRateRevMutation, useUpdateUserMutation, useToggleFollowMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useManhuaTrendingQuery, useLazyManhuaTrendingQuery, useManhuaPopularQuery, useLazyManhuaPopularQuery, useManhuaTopScoredQuery, useLazyManhuaTopScoredQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useGenreTagCollectionQuery, useLazyGenreTagCollectionQuery, useUserListCollectionQuery, useLazyUserListCollectionQuery, useUserCustomListsQuery, useLazyUserCustomListsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useMediaFollowingQuery, useLazyMediaFollowingQuery, useCharacterListQuery, useLazyCharacterListQuery, useCharacterDetailsQuery, useLazyCharacterDetailsQuery, useStaffListQuery, useLazyStaffListQuery, useStaffDetailsQuery, useLazyStaffDetailsQuery, useGetNotificationsQuery, useLazyGetNotificationsQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useUserSearchQuery, useLazyUserSearchQuery, useCharacterSearchQuery, useLazyCharacterSearchQuery, useStaffSearchQuery, useLazyStaffSearchQuery, useStudioSearchQuery, useLazyStudioSearchQuery, useUserAnimeStatsQuery, useLazyUserAnimeStatsQuery, useUserMangaStatsQuery, useLazyUserMangaStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useExtUserDataQuery, useLazyExtUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery } = injectedRtkApi;
+export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useRateRevMutation, useUpdateUserMutation, useToggleFollowMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useManhuaTrendingQuery, useLazyManhuaTrendingQuery, useManhuaPopularQuery, useLazyManhuaPopularQuery, useManhuaTopScoredQuery, useLazyManhuaTopScoredQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useGenreTagCollectionQuery, useLazyGenreTagCollectionQuery, useUserListCollectionQuery, useLazyUserListCollectionQuery, useUserCustomListsQuery, useLazyUserCustomListsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useMediaFollowingQuery, useLazyMediaFollowingQuery, useCharacterListQuery, useLazyCharacterListQuery, useCharacterDetailsQuery, useLazyCharacterDetailsQuery, useStaffListQuery, useLazyStaffListQuery, useStaffDetailsQuery, useLazyStaffDetailsQuery, useGetNotificationsQuery, useLazyGetNotificationsQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useUserSearchQuery, useLazyUserSearchQuery, useCharacterSearchQuery, useLazyCharacterSearchQuery, useStaffSearchQuery, useLazyStaffSearchQuery, useStudioSearchQuery, useLazyStudioSearchQuery, useUserAnimeStatsQuery, useLazyUserAnimeStatsQuery, useUserMangaStatsQuery, useLazyUserMangaStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useExtUserDataQuery, useLazyExtUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery, useUserFavoritesOverviewQuery, useLazyUserFavoritesOverviewQuery, useUserAnimeFavoritesQuery, useLazyUserAnimeFavoritesQuery, useUserMangaFavoritesQuery, useLazyUserMangaFavoritesQuery, useUserWaifuFavoritesQuery, useLazyUserWaifuFavoritesQuery, useUserStaffFavoritesQuery, useLazyUserStaffFavoritesQuery, useUserStudiosFavoritesQuery, useLazyUserStudiosFavoritesQuery } = injectedRtkApi;
 

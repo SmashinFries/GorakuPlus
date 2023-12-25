@@ -29,7 +29,8 @@ import notifSlice, { NotifState } from '@/store/slices/notifSlice';
 import googleBooksApi from '@/store/services/google-books/googleApi';
 import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
 import waifuItAPI from './services/waifu.it/waifuit';
-import { listSearchSlice } from './slices/listSLice';
+import { favSearchSlice } from './slices/favoritesSlice';
+import { listSearchSlice } from './slices/listSlice';
 
 const secureStorage = createSecureStorage();
 
@@ -112,6 +113,7 @@ export const store = configureStore({
         [googleBooksApi.reducerPath]: googleBooksApi.reducer,
         [waifuItAPI.reducerPath]: waifuItAPI.reducer,
         listSearch: listSearchSlice.reducer,
+        favSearch: favSearchSlice.reducer,
         persistedTheme,
         persistedSettings,
         persistedAniLogin,
