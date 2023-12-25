@@ -32,7 +32,7 @@ import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router } from 'expo-router';
-import { updateListSearch } from '@/store/slices/listSlice';
+import { updateListSearch } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
 

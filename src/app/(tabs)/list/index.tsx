@@ -7,7 +7,7 @@ import {
     MediaType,
     useUserListCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
-import { updateListSearch } from '@/store/slices/listSlice';
+import { updateListSearch } from '@/store/slices/listSLice';
 import { rgbToRgba, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, router } from 'expo-router';

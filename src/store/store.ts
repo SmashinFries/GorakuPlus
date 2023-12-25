@@ -30,7 +30,7 @@ import googleBooksApi from '@/store/services/google-books/googleApi';
 import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
 import waifuItAPI from './services/waifu.it/waifuit';
 import { favSearchSlice } from './slices/favoritesSlice';
-import { listSearchSlice } from './slices/listSlice';
+import { listSearchSlice } from './slices/listSLice';
 
 const secureStorage = createSecureStorage();
 
