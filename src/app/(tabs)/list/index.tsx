@@ -7,7 +7,7 @@ import {
     MediaType,
     useUserListCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
-import { updateListSearch } from '@/store/slices/listSLice';
+import { updateListSearch } from '@/store/slices/listSlice';
 import { rgbToRgba, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, router } from 'expo-router';
@@ -97,12 +97,16 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
                     key={listKey}
                     data={data?.MediaListCollection?.lists[0]?.entries.filter(
                         (item) =>
-                            item.media.title.romaji?.toLowerCase().includes(query?.toLowerCase()) ||
+                            item.media.title.romaji
+                                ?.toLowerCase()
+                                ?.includes(query?.toLowerCase()) ||
                             item.media.title.english
                                 ?.toLowerCase()
-                                .includes(query?.toLowerCase()) ||
-                            item.media.title.native?.toLowerCase().includes(query?.toLowerCase()) ||
-                            item.media.synonyms?.some((value, index) => value.includes(query)),
+                                ?.includes(query?.toLowerCase()) ||
+                            item.media.title.native?.includes(query) ||
+                            item.media.synonyms?.some((value, index) =>
+                                value.toLowerCase()?.includes(query?.toLowerCase()),
+                            ),
                     )}
                     // drawDistance={height * 2}
                     renderItem={RenderItem}
