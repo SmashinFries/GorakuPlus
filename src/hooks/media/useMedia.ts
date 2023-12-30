@@ -25,6 +25,7 @@ import {
     useLazyRetrieveSeriesQuery,
     useSearchSeriesPostMutation,
 } from '@/store/services/mangaupdates/mangaUpdatesApi';
+import { ToastAndroid } from 'react-native';
 
 export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?: number) => {
     const dispatch = useAppDispatch();
@@ -71,15 +72,19 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         setIsMuLoading(true);
         if (!muId) {
             const fixed_title = title?.replace('[', '').replace(']', '');
-            const searchResults = await getMuSearchSeries({
-                seriesSearchRequestV1: {
-                    search: `${fixed_title}${type === 'NOVEL' ? ' (Novel)' : ''}`,
-                    stype: 'title',
-                },
-            }).unwrap();
-            await getMuSeries({
-                id: muId ? muId : searchResults?.results[0]?.record?.series_id,
-            }).unwrap();
+            try {
+                const searchResults = await getMuSearchSeries({
+                    seriesSearchRequestV1: {
+                        search: `${fixed_title}${type === 'NOVEL' ? ' (Novel)' : ''}`,
+                        stype: 'title',
+                    },
+                }).unwrap();
+                await getMuSeries({
+                    id: muId ? muId : searchResults?.results[0]?.record?.series_id,
+                }).unwrap();
+            } catch (e) {
+                ToastAndroid.show(`Manga Updates - Error ${e?.status}`, ToastAndroid.LONG);
+            }
             setIsMuLoading(false);
         } else {
             await getMuSeries({ id: muId }).unwrap();
