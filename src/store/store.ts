@@ -33,6 +33,7 @@ import { favSearchSlice } from './slices/favoritesSlice';
 import { listSearchSlice } from './slices/listSLice';
 import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
+import { calendarFilterSlice } from './slices/calendarSlice';
 
 const secureStorage = createSecureStorage();
 
@@ -117,6 +118,7 @@ export const store = configureStore({
         [waifuItAPI.reducerPath]: waifuItAPI.reducer,
         [traceMoeApi.reducerPath]: traceMoeApi.reducer,
         listSearch: listSearchSlice.reducer,
+        calendarFilter: calendarFilterSlice.reducer,
         favSearch: favSearchSlice.reducer,
         persistedTheme,
         persistedSettings,

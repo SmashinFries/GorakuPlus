@@ -22,8 +22,10 @@ import Animated, {
     useDerivedValue,
     withSpring,
     useAnimatedReaction,
+    Extrapolate,
 } from 'react-native-reanimated';
 import { rgbToRgba } from '@/utils';
+import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 
 export const useHeaderAnim = (start = 40, end = 110) => {
     const input_range = [start, end];
@@ -409,4 +411,30 @@ export const Accordion = ({
             </Animated.View>
         </View>
     );
+};
+
+export const CustomBackdrop = ({
+    animatedIndex,
+    style,
+    onDismiss,
+}: BottomSheetBackdropProps & { onDismiss: () => void }) => {
+    const { colors } = useTheme();
+    // animated variables
+    const containerAnimatedStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(animatedIndex.value, [0.2, 0.5], [0.2, 0.5], Extrapolate.CLAMP),
+    }));
+
+    // styles
+    const containerStyle = useMemo(
+        () => [
+            style,
+            {
+                backgroundColor: 'rgb(0,0,0)',
+            },
+            containerAnimatedStyle,
+        ],
+        [style, containerAnimatedStyle],
+    );
+
+    return <Animated.View style={containerStyle} />;
 };

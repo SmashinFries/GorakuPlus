@@ -1,6 +1,9 @@
+import { CalendarFilterSheet } from '@/components/calendar/bottomsheet';
 import { DayTab } from '@/components/calendar/tabs';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
-import { useCallback, useState } from 'react';
+import { useAppSelector } from '@/store/hooks';
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useCallback, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Appbar, useTheme } from 'react-native-paper';
 import { TabBar, TabView } from 'react-native-tab-view';
@@ -13,10 +16,12 @@ const CalendarPage = () => {
     const dayOfWeek = new Date().getDay();
     const layout = useWindowDimensions();
     const { colors } = useTheme();
+    const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 
     const { data, loading, refetch, week } = useCalendar();
 
     const [index, setIndex] = useState(dayOfWeek);
+    const [headerHeight, setHeaderHeight] = useState(0);
 
     const [routes] = useState<{ key: string; title: string }[]>(
         Days.map((day) => {
@@ -46,6 +51,7 @@ const CalendarPage = () => {
                                 (ep) =>
                                     ep.airingAt > week.start && ep.airingAt < week.start + 86400,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 // return <DayTab data={null} />;
@@ -57,6 +63,7 @@ const CalendarPage = () => {
                                     ep.airingAt > week.start + 86400 &&
                                     ep.airingAt < week.start + 86400 * 2,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 case 'tuesday':
@@ -67,6 +74,7 @@ const CalendarPage = () => {
                                     ep.airingAt > week.start + 86400 * 2 &&
                                     ep.airingAt < week.start + 86400 * 3,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 case 'wednesday':
@@ -77,6 +85,7 @@ const CalendarPage = () => {
                                     ep.airingAt > week.start + 86400 * 3 &&
                                     ep.airingAt < week.start + 86400 * 4,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 case 'thursday':
@@ -87,6 +96,7 @@ const CalendarPage = () => {
                                     ep.airingAt > week.start + 86400 * 4 &&
                                     ep.airingAt < week.start + 86400 * 5,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 case 'friday':
@@ -97,6 +107,7 @@ const CalendarPage = () => {
                                     ep.airingAt > week.start + 86400 * 5 &&
                                     ep.airingAt < week.start + 86400 * 6,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 case 'saturday':
@@ -106,13 +117,14 @@ const CalendarPage = () => {
                                 (ep) =>
                                     ep.airingAt > week.start + 86400 * 6 && ep.airingAt < week.end,
                             )}
+                            headerHeight={headerHeight}
                         />
                     );
                 default:
                     return null;
             }
         },
-        [data],
+        [data, headerHeight],
     );
 
     return (
@@ -121,9 +133,12 @@ const CalendarPage = () => {
         time
     </Button>
     <Button onPress={() => console.log(data.length)}>AMOUNT</Button> */}
-            <Appbar.Header>
+            <Appbar.Header onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}>
                 <Appbar.Content title="Calendar" />
-                {/* <Appbar.Action icon="refresh" onPress={() => refetch()} /> */}
+                <Appbar.Action
+                    icon="filter-outline"
+                    onPress={() => filterSheetRef.current.present()}
+                />
             </Appbar.Header>
             {!loading ? (
                 <TabView
@@ -139,6 +154,7 @@ const CalendarPage = () => {
                     <ActivityIndicator size={'large'} />
                 </View>
             )}
+            <CalendarFilterSheet ref={filterSheetRef} />
         </>
     );
 };
