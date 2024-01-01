@@ -45,11 +45,7 @@ const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProp
     return (
         <Appbar.Header>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
-            <Appbar.Content
-                title={title}
-                titleStyle={{ textTransform: 'capitalize' }}
-                onPress={() => console.log('title:', options.headerTitle)}
-            />
+            <Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
         </Appbar.Header>
     );
 };

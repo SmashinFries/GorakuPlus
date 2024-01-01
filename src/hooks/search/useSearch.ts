@@ -68,10 +68,8 @@ export const useSearch = (searchType: SearchType) => {
         if (url) {
             try {
                 const response = await searchImageUrl({ url, anilistInfo: 'true' }).unwrap();
-                console.log(response.error);
                 setImageSearchResults(response);
             } catch (e) {
-                console.log(e);
                 ToastAndroid.show(
                     `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
                     ToastAndroid.LONG,
@@ -85,7 +83,6 @@ export const useSearch = (searchType: SearchType) => {
                     anilistInfo: 'true',
                     cutBorders: 'true',
                 }).unwrap();
-                console.log(response.error);
                 setImageSearchResults(response);
             }
         }

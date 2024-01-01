@@ -107,7 +107,6 @@ export const useAnimeExplorer = () => {
             popular.isError ||
             top.isError
         ) {
-            console.log(trend.error);
             setIsError(true);
         }
     }, [trend.isError, curSeason.isError, nxtSeason.isError, popular.isError, top.isError]);

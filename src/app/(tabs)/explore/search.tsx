@@ -258,7 +258,6 @@ const SearchPage = () => {
         setFilterSearch(query);
         appDispatch(addSearch(query));
         if (filter.searchType === MediaType.Anime || filter.searchType === MediaType.Manga) {
-            console.log('media search');
             await onMediaSearch(query);
         } else if (filter.searchType === 'characters') {
             await onCharSearch(query);

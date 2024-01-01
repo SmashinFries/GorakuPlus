@@ -92,18 +92,6 @@ export const AniMangList = (props: AniMangListProps) => {
         [],
     );
 
-    useAnimatedReaction(
-        () => {
-            return test.value;
-        },
-        (currentVal, pastVal) => {
-            if (currentVal !== pastVal) {
-                console.log('test:', currentVal);
-            }
-        },
-        [],
-    );
-
     return (
         <View style={{ flex: 1, height: '100%', width }}>
             <AnimatedFlashList

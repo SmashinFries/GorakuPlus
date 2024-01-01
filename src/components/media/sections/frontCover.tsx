@@ -29,17 +29,6 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
         );
     }, []);
 
-    useEffect(() => {
-        console.log('status:', data?.status);
-        console.log('type:', data?.type);
-        console.log(
-            'Has Music?:',
-            data?.type !== MediaType.Anime &&
-                data?.status !== MediaStatus.Releasing &&
-                data?.status !== MediaStatus.Finished,
-        );
-    }, [data]);
-
     return (
         <MotiView style={[styles.container, { width: width }]}>
             <MotiView
@@ -62,7 +51,6 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
                 >
                     <QuickSelector
                         onPress={() => {
-                            console.log('Sending:', data?.id);
                             router.push(`/music/${data?.id}`);
                         }}
                         disabled={

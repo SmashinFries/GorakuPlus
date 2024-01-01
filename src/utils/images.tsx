@@ -10,7 +10,6 @@ import * as ImagePicker from 'expo-image-picker';
 export const saveImage = async (url: string, name = null) => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     const formattedTitle = name ?? 'mal_' + url.split('/').pop()?.split('.')[0];
-    console.log(`.${url.split('.').at(-1)}`);
     const fileUri = FileSystem.documentDirectory + formattedTitle + `.${url.split('.').at(-1)}`;
     if (status === MediaLibrary.PermissionStatus.GRANTED) {
         try {

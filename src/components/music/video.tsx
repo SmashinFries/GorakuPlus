@@ -140,8 +140,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
             setProgress(0);
             // Update your UI for the unloaded state
             if (playbackStatus.error) {
-                console.log(`Encountered a fatal error during playback: ${playbackStatus.error}`);
-                // Send Expo team the error on Slack or the forums so we can help you debug!
             }
         } else {
             // Update your UI for the loaded state
@@ -178,7 +176,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
                 await sound.playAsync();
             }
         } else {
-            console.log('Loading Sound');
             setIsLoading(true);
             const song = await Audio.Sound.createAsync({
                 uri: theme?.animethemeentries[0].videos[0]?.audio?.link,
@@ -189,14 +186,12 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
             }
             setIsLoading(false);
             setSound(song.sound);
-            console.log('Playing Sound');
             setIsPlaying(true);
             await song.sound.playAsync();
         }
     };
 
     const pauseSong = async () => {
-        console.log('Pausing Sound');
         await sound?.pauseAsync();
         setIsPlaying(false);
     };
@@ -204,7 +199,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
     useEffect(() => {
         return sound
             ? () => {
-                  console.log('Unloading Sound');
                   setProgress(0);
                   sound.unloadAsync();
                   setIsPlaying(false);
@@ -286,9 +280,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
                     </View>
                     <IconButton
                         onPress={() => {
-                            console.log(
-                                `https://animethemes.moe/anime/${anime_slug}/${theme.slug}`,
-                            );
                             openWebBrowser(
                                 `https://animethemes.moe/anime/${anime_slug}/${theme.slug}`,
                             );
