@@ -1,8 +1,12 @@
 {
     "schemaFile": "./soruly-api.trace.moe-1.0.1-resolved.json",
-    "apiFile": "./src/app/services/tracemoe/baseTraceMoe.ts",
+    "apiFile": "./src/store/services/tracemoe/baseTraceMoe.ts",
     "apiImport": "baseTraceMoe",
-    "outputFile": "./src/app/services/tracemoe/traceMoeApi.ts",
+    "outputFile": "./src/store/services/tracemoe/traceMoeApi.ts",
     "exportName": "traceMoeApi",
-    "hooks": true
+    "hooks": {
+        "queries": true,
+        "lazyQueries": true,
+        "mutations": true
+    }
 }
