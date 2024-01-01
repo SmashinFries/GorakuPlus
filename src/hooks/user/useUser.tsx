@@ -1,3 +1,4 @@
+import { useAppSelector } from '@/store/hooks';
 import {
     useDeleteActMutation,
     useLazyUserActivityQuery,
@@ -8,7 +9,7 @@ import {
 } from '@/store/services/anilist/enhanced';
 import { useEffect, useState } from 'react';
 
-export const useUser = (userID: number) => {
+export const useUser = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -17,6 +18,8 @@ export const useUser = (userID: number) => {
     const [getFollowers, followers] = useLazyUserFollowersQuery();
     const [getFollowing, following] = useLazyUserFollowingQuery();
     const [getFavorites, favorites] = useLazyUserFavoritesOverviewQuery();
+
+    const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
     const fetchInitialData = async () => {
         setIsLoading(true);

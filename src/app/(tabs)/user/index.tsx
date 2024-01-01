@@ -42,7 +42,7 @@ const UserPage = () => {
     const { allowSensorMotion } = useAppSelector((state) => state.persistedSettings);
 
     const { user, favorites, activity, followers, following, isLoading, isRefreshing, onRefresh } =
-        useUser(userID);
+        useUser();
 
     const [showAddFriend, setShowAddFriend] = useState(false);
 

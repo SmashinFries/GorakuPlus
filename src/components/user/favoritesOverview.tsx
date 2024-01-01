@@ -42,7 +42,7 @@ type FavoriteItemProps = {
 };
 const FavoriteItem = ({ images, title, size, delay, onPress }: FavoriteItemProps) => {
     const { colors } = useTheme();
-    const total_images = images.length;
+    const total_images = images?.length;
     const [currentImageIndex, setCurrentImageIndex] = useState(0); // determines which image is shown
     const front_opacity = useSharedValue(1);
     const derivedOpacity = useDerivedValue(() => {
