@@ -147,16 +147,7 @@ const AppProvider = () => {
                             name="(media)/[...params]"
                             getId={(params) => params?.params?.params}
                         />
-                        <Stack.Screen
-                            name="music"
-                            options={{
-                                headerShown: true,
-                                headerTransparent: true,
-                                title: '',
-                                headerTitle: '',
-                                header: (props) => <PaperHeader {...props} />,
-                            }}
-                        />
+                        <Stack.Screen name="music" />
                         <Stack.Screen name="characters" />
                         <Stack.Screen name="staff" />
                         <Stack.Screen name="news" />
