@@ -78,12 +78,19 @@ export const useSearch = (searchType: SearchType) => {
         } else {
             const imageFormData = await selectImage(camera);
             if (imageFormData) {
-                const response = await searchLocalImage({
-                    searchBody: imageFormData,
-                    anilistInfo: 'true',
-                    cutBorders: 'true',
-                }).unwrap();
-                setImageSearchResults(response);
+                try {
+                    const response = await searchLocalImage({
+                        searchBody: imageFormData,
+                        anilistInfo: 'true',
+                        cutBorders: 'true',
+                    }).unwrap();
+                    setImageSearchResults(response);
+                } catch (e) {
+                    ToastAndroid.show(
+                        `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
+                        ToastAndroid.LONG,
+                    );
+                }
             }
         }
     };
