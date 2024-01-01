@@ -30,7 +30,7 @@ import googleBooksApi from '@/store/services/google-books/googleApi';
 import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
 import waifuItAPI from './services/waifu.it/waifuit';
 import { favSearchSlice } from './slices/favoritesSlice';
-import { listSearchSlice } from './slices/listSLice';
+import { listFilterSlice } from './slices/listSLice';
 import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
 import { calendarFilterSlice } from './slices/calendarSlice';
@@ -117,7 +117,7 @@ export const store = configureStore({
         [googleBooksApi.reducerPath]: googleBooksApi.reducer,
         [waifuItAPI.reducerPath]: waifuItAPI.reducer,
         [traceMoeApi.reducerPath]: traceMoeApi.reducer,
-        listSearch: listSearchSlice.reducer,
+        listFilter: listFilterSlice.reducer,
         calendarFilter: calendarFilterSlice.reducer,
         favSearch: favSearchSlice.reducer,
         persistedTheme,

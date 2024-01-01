@@ -35,7 +35,7 @@ import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router } from 'expo-router';
-import { updateListSearch } from '@/store/slices/listSLice';
+import { updateListFilter } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
 import { SearchType } from '@/types/search';
@@ -532,8 +532,8 @@ const HeaderStyles = StyleSheet.create({
     },
 });
 
-export const ListHeader = () => {
-    const { query } = useAppSelector((state) => state.listSearch);
+export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
+    const { query } = useAppSelector((state) => state.listFilter);
     const dispatch = useAppDispatch();
     // const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -561,13 +561,14 @@ export const ListHeader = () => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         paddingHorizontal: Math.max(left, right),
+                        flexShrink: 1,
                     }}
                 >
                     {/* <Appbar.BackAction onPress={() => setIsOpen(false)} /> */}
                     <Searchbar
                         value={query}
                         onChangeText={(txt) => {
-                            dispatch(updateListSearch(txt));
+                            dispatch(updateListFilter({ entryType: 'query', value: txt }));
                         }}
                         icon={'arrow-left'}
                         onIconPress={() => setIsOpen(false)}
@@ -585,14 +586,7 @@ export const ListHeader = () => {
                 <Appbar.Content title={'List'} />
             )}
             {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
-            {/* {!isOpen && (
-                <Appbar.Action
-                    icon="filter-outline"
-                    onPress={() =>
-                        ToastAndroid.show('Filter/Display options coming soon!', ToastAndroid.LONG)
-                    }
-                />
-            )} */}
+            {/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
         </Appbar.Header>
     );
 };

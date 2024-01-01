@@ -2,29 +2,36 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 // Define a type for the slice state
-export interface ListSearchState {
-    query: string;
+export interface ListFilterState {
+    query?: string;
+    genre?: string[];
 }
 
-// Define the initial state using that type
-const initialState: ListSearchState = {
-    query: '',
+type filterActions = {
+    entryType: keyof ListFilterState;
+    value: ListFilterState[keyof ListFilterState];
 };
 
-export const listSearchSlice = createSlice({
-    name: 'listSearch',
+// Define the initial state using that type
+const initialState: ListFilterState = {
+    query: '',
+    genre: [],
+};
+
+export const listFilterSlice = createSlice({
+    name: 'listFilter',
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
-        updateListSearch: (state, action: PayloadAction<string>) => {
-            state.query = action.payload;
+        updateListFilter: (state, action: PayloadAction<filterActions>) => {
+            state[action.payload.entryType] = action.payload.value;
         },
     },
 });
 
-export const { updateListSearch } = listSearchSlice.actions;
+export const { updateListFilter } = listFilterSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.persistedReducer.;
 
-export default listSearchSlice.reducer;
+export default listFilterSlice.reducer;

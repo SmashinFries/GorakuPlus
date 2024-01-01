@@ -92,6 +92,15 @@ query UserListCollection(
             }
         }
     }
+    GenreCollection
+    MediaTagCollection {
+        id
+        name
+        isAdult
+        description
+        isGeneralSpoiler
+        isMediaSpoiler
+    }
 }
 
 query UserCustomLists($userId: Int, $userName: String, $type: MediaType) {

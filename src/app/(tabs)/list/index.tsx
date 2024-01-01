@@ -1,5 +1,6 @@
 import { MediaCard } from '@/components/cards';
 import { ListHeader } from '@/components/headers';
+import { ListFilterSheet } from '@/components/list/filtersheet';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
     MediaListSort,
@@ -7,11 +8,12 @@ import {
     MediaType,
     useUserListCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
-import { updateListSearch } from '@/store/slices/listSLice';
+import { updateListFilter } from '@/store/slices/listSLice';
 import { rgbToRgba, useColumns } from '@/utils';
+import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, router } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
 import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper';
@@ -31,7 +33,7 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
         sort: MediaListSort.UpdatedTimeDesc,
     });
 
-    const { query } = useAppSelector((state) => state.listSearch);
+    const { query } = useAppSelector((state) => state.listFilter);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { columns, listKey } = useColumns(150);
@@ -188,6 +190,8 @@ const ListPage = () => {
     const { listATabOrder } = useAppSelector((state) => state.persistedSettings);
     const [index, setIndex] = useState(0);
 
+    const filterSheetRef = useRef<BottomSheetModalMethods>(null);
+
     const [routes] = useState([
         { key: 'anime', title: 'Anime' },
         { key: 'manga', title: 'Manga' },
@@ -239,8 +243,9 @@ const ListPage = () => {
 
     return (
         <>
-            <ListHeader />
+            <ListHeader openFilter={() => filterSheetRef.current?.present()} />
             <Tabs />
+            {/* <ListFilterSheet ref={filterSheetRef} /> */}
         </>
     );
 };
