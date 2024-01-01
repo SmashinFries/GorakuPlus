@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ExternalLinkType, MediaExternalLink } from '@/store/services/anilist/generated-anilist';
+import { AnimeFull } from '@/store/services/mal/malApi';
+import { StreamSites } from '@/types/mal';
 
 type CustomMediaExternalLink = MediaExternalLink & { iconType: 'ani' | 'mal' | 'mu' };
 

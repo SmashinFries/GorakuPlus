@@ -6,11 +6,13 @@ import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUp
 import { useEffect, useMemo } from 'react';
 import { Accordion, TransYUpViewMem } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
+import { AnimeFull, MangaFull } from '@/store/services/mal/malApi';
 
 type MetaDataProps = {
     data: AniMediaQuery['Media'];
+    malData?: AnimeFull | MangaFull;
 };
-export const MetaData = ({ data }: MetaDataProps) => {
+export const MetaData = ({ data, malData }: MetaDataProps) => {
     const startDate = convertDate(data.startDate, true);
     const endDate = convertDate(data.endDate, true);
 
@@ -70,6 +72,14 @@ export const MetaData = ({ data }: MetaDataProps) => {
                     right={(props) => <Text>{startDate ?? 'N/A'}</Text>}
                 />
                 <List.Item title="End Date" right={(props) => <Text>{endDate ?? 'N/A'}</Text>} />
+                <List.Item
+                    title="Maturity Rating"
+                    right={(props) => (
+                        <Text selectable style={{ width: '50%', textAlign: 'right' }}>
+                            {(malData as AnimeFull)?.rating ?? 'N/A'}
+                        </Text>
+                    )}
+                />
                 <List.Item
                     title="Favorites"
                     right={(props) => <Text>{data.favourites?.toLocaleString() ?? 'N/A'}</Text>}

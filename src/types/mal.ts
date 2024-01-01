@@ -1,0 +1,15 @@
+export type StreamSites =
+    | 'Crunchyroll'
+    | 'Funimation'
+    | 'HIDIVE'
+    | 'Anime Digital Network'
+    | 'Aniverse'
+    | 'Netflix'
+    | 'Aniplus TV'
+    | 'Animax Mongolia'
+    | 'Bahamut Anime Crazy'
+    | 'Bilibili Global'
+    | 'CatchPlay'
+    | 'MeWatch'
+    | 'Muse Asia'
+    | 'iQIYI';

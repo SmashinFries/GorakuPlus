@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
-import { Button, Portal, Text } from 'react-native-paper';
-import { useCallback, useEffect, useState } from 'react';
+import { Portal } from 'react-native-paper';
+import { useCallback, useState } from 'react';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -143,7 +143,10 @@ const MediaScreen = () => {
                                     aniDescription={aniData?.data?.Media?.description}
                                     malDescription={malData?.data?.data?.synopsis}
                                 />
-                                <MetaData data={aniData?.data?.Media} />
+                                <MetaData
+                                    data={aniData?.data?.Media}
+                                    malData={malData?.data?.data}
+                                />
                                 {mangaUpdates && aniData?.data?.Media?.type !== MediaType.Anime && (
                                     <MUData
                                         data={mangaUpdates?.data}
@@ -179,6 +182,11 @@ const MediaScreen = () => {
                                 {type === MediaType.Anime && (
                                     <AnimeTrailer video={aniData?.data?.Media?.trailer?.id} />
                                 )}
+                                {/* {type === MediaType.Anime && (
+                                    <StreamingLinks
+                                        streamLinks={(malData?.data?.data as AnimeFull)?.streaming}
+                                    />
+                                )} */}
                                 <MediaLinks
                                     links={aniData?.data?.Media?.externalLinks}
                                     aniLink={aniData?.data?.Media?.siteUrl}
