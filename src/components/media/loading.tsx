@@ -1,5 +1,5 @@
 import { ActivityIndicator, Button, IconButton, Text, useTheme } from 'react-native-paper';
-import { AnilistIcon, MalIcon, MangaUpdatesIcon } from '../svgs';
+import { AnilistIcon, AnimeThemesIcon, MalIcon, MangaUpdatesIcon } from '../svgs';
 import { memo, useEffect, useState } from 'react';
 import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
 import { SerializedError } from '@reduxjs/toolkit';
@@ -12,8 +12,15 @@ import Animated, {
     withRepeat,
     withTiming,
 } from 'react-native-reanimated';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
-const LoadingIcon = ({ icon, dark }: { icon: 'ANI' | 'MAL' | 'MU'; dark: boolean }) => {
+export const LoadingIcon = ({
+    icon,
+    dark,
+}: {
+    icon: 'ANI' | 'MAL' | 'MU' | 'AT';
+    dark: boolean;
+}) => {
     const iconAnimValue = useSharedValue({ transY: 0, rotateZ: '0deg' });
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -50,8 +57,10 @@ const LoadingIcon = ({ icon, dark }: { icon: 'ANI' | 'MAL' | 'MU'; dark: boolean
                 <AnilistIcon isDark={dark} />
             ) : icon === 'MAL' ? (
                 <MalIcon />
-            ) : (
+            ) : icon === 'MU' ? (
                 <MangaUpdatesIcon />
+            ) : (
+                <AnimeThemesIcon isDark={dark} />
             )}
         </Animated.View>
     );
@@ -61,11 +70,11 @@ const LoadingIconMem = memo(LoadingIcon);
 
 type LoadingItemProps = {
     loading: boolean;
-    dark: boolean;
-    error?: ErrorResponse | SerializedError;
-    icon: 'ANI' | 'MAL' | 'MU';
+    dark?: boolean;
+    error?: FetchBaseQueryError | SerializedError;
+    icon: 'ANI' | 'MAL' | 'MU' | 'AT';
 };
-const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
+export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
     const [loadIcon, setLoadIcon] = useState('check');
     useEffect(() => {
         if (loading === null) {

@@ -12,9 +12,11 @@ const animeThemesApi = createApi({
                 params: {
                     'filter[has]': 'resources',
                     'filter[site]': 'AniList',
-                    'filter[external_id]': params.aniID,
+                    'filter[external_id]': params.aniId,
+                    'fields[video]': 'id,basename,link,tags',
+                    'fields[audio]': 'id,basename,link,size',
                     include:
-                        'animethemes.animethemeentries.videos,animethemes.song,animethemes.song.artists',
+                        'animethemes.animethemeentries.videos,animethemes.animethemeentries.videos.audio,animethemes.song,animethemes.song.artists',
                 },
             }),
         }),

@@ -1,25 +1,21 @@
 import { MotiView } from 'moti';
-import { AniMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
+import { AniMediaQuery, MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
 import { Image } from 'expo-image';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { QuickSelector } from '@/components/media/quickSelect';
 import { TransXInView, TransYUpViewMem } from '@/components/animations';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { StatusIconMem } from '@/components/media/icons';
 import { MediaTitleView } from '@/components/media/text';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { GetAnimeVideosApiResponse } from '@/store/services/mal/malApi';
 import { useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
 
 type FrontCoverProps = {
     data: AniMediaQuery['Media'];
-    music: GetAnimeVideosApiResponse['data']['music_videos'];
     defaultTitle: 'romaji' | 'english' | 'native';
     toggleEP?: () => void;
 };
-export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
+export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
     const { width } = useWindowDimensions();
     const { colors } = useTheme();
 
@@ -32,6 +28,17 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
             />
         );
     }, []);
+
+    useEffect(() => {
+        console.log('status:', data?.status);
+        console.log('type:', data?.type);
+        console.log(
+            'Has Music?:',
+            data?.type !== MediaType.Anime &&
+                data?.status !== MediaStatus.Releasing &&
+                data?.status !== MediaStatus.Finished,
+        );
+    }, [data]);
 
     return (
         <MotiView style={[styles.container, { width: width }]}>
@@ -54,8 +61,15 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
                     }}
                 >
                     <QuickSelector
-                        onPress={() => router.push(`/music/${data?.id}`)}
-                        disabled={data?.type !== MediaType.Anime || music?.length < 1}
+                        onPress={() => {
+                            console.log('Sending:', data?.id);
+                            router.push(`/music/${data?.id}`);
+                        }}
+                        disabled={
+                            data?.type !== MediaType.Anime ||
+                            (data?.status !== MediaStatus.Releasing &&
+                                data?.status !== MediaStatus.Finished)
+                        }
                         icon="music-box-multiple-outline"
                     />
                     <QuickSelector
@@ -95,7 +109,7 @@ export const FrontCover = ({ data, music, defaultTitle }: FrontCoverProps) => {
                     <QuickSelector
                         icon={'account-group-outline'}
                         disabled={data?.characters?.edges?.length < 1}
-                        onPress={() => router.push(`/characters/${data?.type}/${data?.id}`)} 
+                        onPress={() => router.push(`/characters/${data?.type}/${data?.id}`)}
                         // onPress={() =>
                         //     nav.navigate('characterStack', {
                         //         screen: 'characterList',

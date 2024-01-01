@@ -31,6 +31,8 @@ import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
 import waifuItAPI from './services/waifu.it/waifuit';
 import { favSearchSlice } from './slices/favoritesSlice';
 import { listSearchSlice } from './slices/listSLice';
+import animeThemesApi from './services/animethemes/animeThemesApi';
+import { traceMoeApi } from './services/tracemoe/traceMoeApi';
 
 const secureStorage = createSecureStorage();
 
@@ -109,9 +111,11 @@ export const store = configureStore({
         [anilistApi.reducerPath]: anilistApi.reducer,
         [danbooruApi.reducerPath]: danbooruApi.reducer,
         [malApi.reducerPath]: malApi.reducer,
+        [animeThemesApi.reducerPath]: animeThemesApi.reducer,
         [mangaUpdatesApi.reducerPath]: mangaUpdatesApi.reducer,
         [googleBooksApi.reducerPath]: googleBooksApi.reducer,
         [waifuItAPI.reducerPath]: waifuItAPI.reducer,
+        [traceMoeApi.reducerPath]: traceMoeApi.reducer,
         listSearch: listSearchSlice.reducer,
         favSearch: favSearchSlice.reducer,
         persistedTheme,
@@ -135,7 +139,9 @@ export const store = configureStore({
             anilistApi.middleware,
             malApi.middleware,
             danbooruApi.middleware,
+            animeThemesApi.middleware,
             mangaUpdatesApi.middleware,
+            traceMoeApi.middleware,
             googleBooksApi.middleware,
             waifuItAPI.middleware,
         ]),

@@ -94,4 +94,10 @@ export type User = {
     quota: number;
     quotaUsed: number;
 };
-export const { useGetSearchQuery, usePostSearchMutation, useGetMeQuery } = injectedRtkApi;
+export const {
+    useGetSearchQuery,
+    useLazyGetSearchQuery,
+    usePostSearchMutation,
+    useGetMeQuery,
+    useLazyGetMeQuery,
+} = injectedRtkApi;

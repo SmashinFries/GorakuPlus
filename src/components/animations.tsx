@@ -262,17 +262,21 @@ type AccordionProps = {
     title: string;
     titleNumberOfLines?: number;
     titleFontSize?: number;
+    titleStyle?: StyleProp<TextStyle>;
     description?: string;
     descriptionNumberOfLines?: number;
     descriptionStyle?: StyleProp<TextStyle>;
     children: ReactNode;
     initialExpand?: boolean;
     containerKey?: string | number;
+    left?: ReactNode;
 };
 export const Accordion = ({
     title,
     titleNumberOfLines,
     titleFontSize,
+    titleStyle,
+    left,
     children,
     description,
     descriptionNumberOfLines,
@@ -337,11 +341,12 @@ export const Accordion = ({
                     style={{ paddingVertical: 8, paddingRight: 24 }}
                 >
                     <View style={{ flexDirection: 'row', marginVertical: 6 }}>
+                        {left && left}
                         <View style={[{ paddingLeft: 16 }, { flex: 1, justifyContent: 'center' }]}>
                             <Text
                                 selectable={false}
                                 numberOfLines={titleNumberOfLines}
-                                style={[titleFontSize && { fontSize: titleFontSize }]}
+                                style={[titleStyle, titleFontSize && { fontSize: titleFontSize }]}
                                 variant={titleFontSize ? null : 'titleLarge'}
                             >
                                 {title}
