@@ -4,10 +4,11 @@ import {
     MediaSort,
     MediaType,
 } from '@/store/services/anilist/generated-anilist';
+import { SearchType } from '@/types/search';
 
 export type FilterReducerState = {
     search: string | null;
-    searchType: MediaType.Anime | MediaType.Manga | 'users' | 'characters' | 'staff' | 'studios';
+    searchType: SearchType;
     enableTagBlacklist: boolean;
     filter: ExploreMediaQueryVariables;
 };

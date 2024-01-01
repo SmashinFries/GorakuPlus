@@ -7,7 +7,8 @@ import {
     MediaSort,
     MediaType,
 } from '@/store/services/anilist/generated-anilist';
-import { SearchTypes, SortCategories } from '../../../features/search/types';
+import { SearchType } from '@/types/search';
+import { SearchTypes, SortCategories } from '@/constants/anilist';
 
 const animeParams: ExploreMediaQueryVariables = {
     type: MediaType.Anime,
@@ -30,7 +31,7 @@ const novelParams: ExploreMediaQueryVariables = {
     format: MediaFormat.Novel,
 };
 
-export const getTypeParams = (mediaType: SearchTypes): ExploreMediaQueryVariables => {
+export const getTypeParams = (mediaType: SearchType): ExploreMediaQueryVariables => {
     switch (mediaType) {
         case MediaType.Anime:
             return animeParams;
@@ -61,107 +62,10 @@ const getSortParam = (mode: 'asc' | 'desc', sort: SortCategories) => {
 };
 
 export type FilterState = {
-    current: SearchTypes;
+    current: SearchType;
     filter: ExploreMediaQueryVariables;
     sort: {
         mode: 'asc' | 'desc';
         category: SortCategories;
     };
 };
-
-type TagToggleProps = {
-    type: 'genre' | 'tag';
-    name: string;
-    mode: 'in' | 'not_in' | 'remove';
-};
-
-// Define the initial state using that type
-const initialFilterState: FilterState = {
-    current: 'anime',
-    filter: animeParams,
-    sort: {
-        mode: 'desc',
-        category: 'Trending',
-    },
-};
-
-// export const filterSlice = createSlice({
-//     name: 'filter',
-//     initialState: initialFilterState,
-//     reducers: {
-//         setMediaType: (state, action: PayloadAction<FilterTypes>) => {
-//             const newFilter = getTypeParams(action.payload);
-//             state.current = action.payload;
-//             state.filter = { ...state.filter, ...newFilter };
-//         },
-//         addFilterParam: (
-//             state,
-//             action: PayloadAction<{ param: keyof ExploreMediaQueryVariables; value: any }>,
-//         ) => {
-//             state.filter = { ...state.filter, [action.payload.param]: action.payload.value };
-//         },
-//         toggleTag: (state, action: PayloadAction<TagToggleProps>) => {
-//             switch (action.payload.mode) {
-//                 case 'in':
-//                     if (action.payload.type === 'genre') {
-//                         state.filter.genre_in =
-//                             typeof state.filter.genre_in === 'object'
-//                                 ? [...state.filter.genre_in, action.payload.name]
-//                                 : [action.payload.name];
-//                     } else {
-//                         state.filter.tag_in =
-//                             typeof state.filter.tag_in === 'object'
-//                                 ? [...state.filter.tag_in, action.payload.name]
-//                                 : [action.payload.name];
-//                     }
-//                     break;
-//                 case 'not_in':
-//                     if (action.payload.type === 'genre') {
-//                         state.filter.genre_not_in =
-//                             typeof state.filter.genre_not_in === 'object'
-//                                 ? [...state.filter.genre_not_in, action.payload.name]
-//                                 : [action.payload.name];
-//                         state.filter.genre_in = state.filter.genre_in?.filter(
-//                             (genre: string) => genre !== action.payload.name,
-//                         );
-//                     } else {
-//                         state.filter.tag_not_in =
-//                             typeof state.filter.tag_not_in === 'object'
-//                                 ? [...state.filter.tag_not_in, action.payload.name]
-//                                 : [action.payload.name];
-//                         state.filter.tag_in = state.filter.tag_in?.filter(
-//                             (tag: string) => tag !== action.payload.name,
-//                         );
-//                     }
-
-//                     break;
-//                 case 'remove':
-//                     if (action.payload.type === 'genre') {
-//                         state.filter.genre_not_in = state.filter.genre_not_in?.filter(
-//                             (genre: string) => genre !== action.payload.name,
-//                         );
-//                     } else {
-//                         state.filter.tag_not_in = state.filter.tag_not_in?.filter(
-//                             (tag: string) => tag !== action.payload.name,
-//                         );
-//                     }
-//             }
-//         },
-//         removeFilterParam: (state, action: PayloadAction<keyof ExploreMediaQueryVariables>) => {
-//             // state.filter = { ...state.filter, [action.payload]: null };
-//             delete state.filter[action.payload];
-//         },
-//         changeSort: (
-//             state,
-//             action: PayloadAction<{ mode: 'asc' | 'desc'; sort: SortCategories }>,
-//         ) => {
-//             state.filter.sort = getSortParam(action.payload.mode, action.payload.sort);
-//             state.sort = { category: action.payload.sort, mode: action.payload.mode };
-//         },
-//     },
-// });
-
-// export const { setMediaType, addFilterParam, removeFilterParam, changeSort, toggleTag } =
-//     filterSlice.actions;
-
-// export default filterSlice.reducer;

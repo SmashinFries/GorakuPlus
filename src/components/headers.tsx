@@ -17,8 +17,11 @@ import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated, {
     Easing,
+    SlideInDown,
     SlideInLeft,
     SlideInRight,
+    SlideInUp,
+    SlideOutDown,
     SlideOutRight,
     useAnimatedStyle,
     useSharedValue,
@@ -35,13 +38,18 @@ import { router } from 'expo-router';
 import { updateListSearch } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
+import { SearchType } from '@/types/search';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
     return (
         <Appbar.Header>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
-            <Appbar.Content title={title} />
+            <Appbar.Content
+                title={title}
+                titleStyle={{ textTransform: 'capitalize' }}
+                onPress={() => console.log('title:', options.headerTitle)}
+            />
         </Appbar.Header>
     );
 };
@@ -122,12 +130,14 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
 type SearchHeaderProps = NativeStackHeaderProps & {
     searchContent: (query: string) => void;
     openFilter: () => void;
-    currentType: string;
+    currentType: SearchType;
     searchbarRef: React.RefObject<TextInput>;
     historySelected: string | null;
     onHistorySelected: () => void;
     toggleIsFocused: (value: boolean) => void;
     setFilterSearch: (query: string) => void;
+    openImageSearch: () => void;
+    onFocus: () => void;
 };
 export const SearchHeader = ({
     navigation,
@@ -142,9 +152,13 @@ export const SearchHeader = ({
     searchbarRef,
     toggleIsFocused,
     setFilterSearch,
+    openImageSearch,
+    onFocus,
 }: SearchHeaderProps) => {
     const [query, setQuery] = useState('');
     const { colors } = useTheme();
+
+    const { right, left } = useSafeAreaInsets();
 
     useEffect(() => {
         if (historySelected) {
@@ -155,40 +169,59 @@ export const SearchHeader = ({
 
     return (
         <Appbar.Header>
-            <Appbar.BackAction onPress={navigation.goBack} />
-            <Searchbar
-                ref={searchbarRef}
-                value={query}
-                onChangeText={(txt) => {
-                    setQuery(txt);
-                    setFilterSearch(txt);
+            <Animated.View
+                entering={SlideInUp.duration(500)}
+                exiting={SlideOutDown}
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: Math.max(left, right),
+                    zIndex: 5,
                 }}
-                onSubmitEditing={(e) => {
-                    searchContent(e.nativeEvent.text);
-                }}
-                returnKeyType="search"
-                autoFocus
-                onFocus={() => toggleIsFocused(true)}
-                onBlur={() => toggleIsFocused(false)}
-                placeholder="Search sauce..."
-                mode="bar"
-                onIconPress={() => searchContent(query)}
-                selectionColor={colors.primaryContainer}
-                // traileringIcon={'image-search-outline'}
-                // onTraileringIconPress={() => ToastAndroid.show('Image search coming soon!', 1000)}
-                icon={null}
-                style={{ flex: 1, backgroundColor: 'transparent' }}
-                inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
-                onClearIconPress={() => {
-                    setQuery('');
-                }}
-            />
-            <IconButton
-                icon={'filter-outline'}
-                onPress={openFilter}
-                // onPress={() => setIsFilterOpen((prev) => !prev)}
-                disabled={![MediaType.Anime, MediaType.Manga].includes(currentType as MediaType)}
-            />
+            >
+                <Searchbar
+                    ref={searchbarRef}
+                    value={query}
+                    onChangeText={(txt) => {
+                        setQuery(txt);
+                        setFilterSearch(txt);
+                    }}
+                    onSubmitEditing={(e) => {
+                        searchContent(e.nativeEvent.text);
+                    }}
+                    returnKeyType="search"
+                    autoFocus
+                    onFocus={() => {
+                        toggleIsFocused(true);
+                        onFocus();
+                    }}
+                    onBlur={() => toggleIsFocused(false)}
+                    placeholder="Search sauce..."
+                    mode="bar"
+                    onIconPress={() => navigation.goBack()}
+                    selectionColor={colors.primaryContainer}
+                    icon={'arrow-left'}
+                    traileringIcon={
+                        currentType === MediaType.Anime || currentType === 'imageSearch'
+                            ? 'image-search-outline'
+                            : undefined
+                    }
+                    onTraileringIconPress={openImageSearch}
+                    style={{ flex: 1, backgroundColor: 'transparent' }}
+                    inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
+                    onClearIconPress={() => {
+                        setQuery('');
+                    }}
+                />
+                <IconButton
+                    icon={'filter-outline'}
+                    onPress={openFilter}
+                    // onPress={() => setIsFilterOpen((prev) => !prev)}
+                    disabled={
+                        ![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
+                    }
+                />
+            </Animated.View>
         </Appbar.Header>
     );
 };

@@ -17,12 +17,23 @@ import {
 } from '@/store/services/anilist/generated-anilist';
 import { cleanFilter } from '@/utils/search/cleanFilter';
 import { useAppSelector } from '@/store/hooks';
+import {
+    SearchResult,
+    useLazyGetSearchQuery,
+    usePostSearchMutation,
+} from '@/store/services/tracemoe/traceMoeApi';
+import { SearchType } from '@/types/search';
+import { selectImage } from '@/utils/images';
+import { ToastAndroid } from 'react-native';
 
-export const useSearch = (searchType: string) => {
+export const useSearch = (searchType: SearchType) => {
     const [searchTrigger, searchStatus] = useLazyExploreMediaQuery();
     const [searchCharTrig, searchCharStatus] = useLazyCharacterSearchQuery();
     const [searchStaffTrig, searchStaffStatus] = useLazyStaffSearchQuery();
     const [searchStudioTrig, searchStudioStatus] = useLazyStudioSearchQuery();
+
+    const [searchLocalImage, localImageStatus] = usePostSearchMutation();
+    const [searchImageUrl, imageUrlStatus] = useLazyGetSearchQuery();
 
     const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
 
@@ -30,6 +41,7 @@ export const useSearch = (searchType: string) => {
     const [charResults, setCharResults] = useState<CharacterSearchQuery>();
     const [staffResults, setStaffResults] = useState<StaffSearchQuery>();
     const [studioResults, setStudioResults] = useState<StudioSearchQuery>();
+    const [imageSearchResults, setImageSearchResults] = useState<SearchResult>();
 
     const SearchTypes = {
         media: searchTrigger,
@@ -50,6 +62,33 @@ export const useSearch = (searchType: string) => {
         characters: charResults,
         staff: staffResults,
         studios: studioResults,
+    };
+
+    const searchImage = async (url?: string, camera?: boolean) => {
+        if (url) {
+            try {
+                const response = await searchImageUrl({ url, anilistInfo: 'true' }).unwrap();
+                console.log(response.error);
+                setImageSearchResults(response);
+            } catch (e) {
+                console.log(e);
+                ToastAndroid.show(
+                    `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
+                    ToastAndroid.LONG,
+                );
+            }
+        } else {
+            const imageFormData = await selectImage(camera);
+            if (imageFormData) {
+                const response = await searchLocalImage({
+                    searchBody: imageFormData,
+                    anilistInfo: 'true',
+                    cutBorders: 'true',
+                }).unwrap();
+                console.log(response.error);
+                setImageSearchResults(response);
+            }
+        }
     };
 
     const updateNewResults = useCallback(
@@ -197,6 +236,10 @@ export const useSearch = (searchType: string) => {
                     ? 'media'
                     : searchType
             ],
+        imageSearchResults,
+        localImageStatus,
+        imageUrlStatus,
+        searchImage,
         updateNewResults,
         addMoreResults,
         nextMediaPage,

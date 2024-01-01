@@ -5,6 +5,7 @@ import { ToastAndroid } from 'react-native';
 import { Button, Dialog, Text } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useCallback } from 'react';
+import * as ImagePicker from 'expo-image-picker';
 
 export const saveImage = async (url: string, name = null) => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -60,4 +61,40 @@ export const SaveImageDialog = ({
             </Dialog.Actions>
         </Dialog>
     );
+};
+
+export const selectImage = async (camera?: boolean): Promise<FormData | null> => {
+    const data = new FormData();
+    const result = camera
+        ? await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.All,
+              allowsEditing: true,
+              quality: 0.75,
+              base64: true,
+              allowsMultipleSelection: false,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.All,
+              allowsEditing: true,
+              quality: 1,
+              base64: true,
+              allowsMultipleSelection: false,
+          });
+
+    if (!result.canceled) {
+        const imageType = result.assets[0].uri.split('.').at(-1);
+        // const imgBlob = imageURItoBlob(result.assets[0].uri);
+        // const blobUrl = URL.createObjectURL(imgBlob);
+        // const image_base64 =
+        //     `data:image/${imageType === 'jpg' ? 'jpeg' : imageType};base64,` +
+        //     result.assets[0].base64;
+        data.append('image', {
+            name: 'image',
+            type: `image/${imageType === 'jpg' ? 'jpeg' : imageType}`,
+            uri: result.assets[0].uri,
+        });
+        return data;
+    } else {
+        return null;
+    }
 };

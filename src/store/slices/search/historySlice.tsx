@@ -6,12 +6,13 @@ import {
     MediaType,
 } from '@/store/services/anilist/generated-anilist';
 import { SearchTypes } from '@/constants/anilist';
+import { SearchType } from '@/types/search';
 
 // Define a type for the slice state
 export interface HistoryState {
     filter?: ExploreMediaQueryVariables;
     search?: string[];
-    searchType?: SearchTypes;
+    searchType?: SearchType;
     searchLimit?: number;
     enableTagBlacklist?: boolean;
 }
@@ -41,7 +42,7 @@ export const historySlice = createSlice({
                 enableTagBlacklist: action.payload.enableTagBlacklist ?? state.enableTagBlacklist,
             };
         },
-        updateSearchType: (state, action: PayloadAction<SearchTypes>) => {
+        updateSearchType: (state, action: PayloadAction<SearchType>) => {
             state.searchType = action.payload;
         },
         addSearch: (state, action: PayloadAction<string>) => {

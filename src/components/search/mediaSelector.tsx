@@ -4,6 +4,7 @@ import { MD3Colors, SegmentedButtons, useTheme } from 'react-native-paper';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { SearchTypes } from '@/constants/anilist';
 import { FilterState } from '@/store/slices/search/filterSlice';
+import { SearchType } from '@/types/search';
 
 type SegButtons = {
     value: SearchTypes;
@@ -11,7 +12,7 @@ type SegButtons = {
 };
 
 type MediaSelectorProps = {
-    selection: string;
+    selection: SearchType;
     onSelect: (type: FilterState['current']) => void;
 };
 
@@ -47,7 +48,7 @@ export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
     return (
         <SafeAreaView style={[styles.container, { width, backgroundColor: colors.background }]}>
             <SegmentedButtons
-                value={selection}
+                value={selection === 'imageSearch' ? MediaType.Anime : selection}
                 onValueChange={onSelect}
                 density="small"
                 buttons={[buttons[0], buttons[1]]}

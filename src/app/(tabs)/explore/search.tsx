@@ -1,6 +1,13 @@
 import { SearchHeader } from '@/components/headers';
+import { ImageSearchDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';
-import { AniMangList, CharacterList, StaffList, StudioList } from '@/components/search/lists';
+import {
+    AniMangList,
+    CharacterList,
+    ImageSearchList,
+    StaffList,
+    StudioList,
+} from '@/components/search/lists';
 import { MediaSelectorMem } from '@/components/search/mediaSelector';
 import { FilterContext } from '@/hooks/search/useFilter';
 import { useSearch } from '@/hooks/search/useSearch';
@@ -23,10 +30,33 @@ import {
 import { cleanFilter } from '@/utils/search/cleanFilter';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { Stack, router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Keyboard, Pressable, TextInput } from 'react-native';
 import { View } from 'react-native';
-import { IconButton, List, useTheme } from 'react-native-paper';
+import { IconButton, List, Portal, Text, useTheme } from 'react-native-paper';
+import Animated, {
+    SlideInDown,
+    SlideInUp,
+    SlideOutDown,
+    runOnJS,
+    useAnimatedReaction,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    useSharedValue,
+    interpolate,
+    Extrapolation,
+    interpolateColor,
+} from 'react-native-reanimated';
+
+type ScrollCtx = {
+    prevY: number;
+};
+
+const clamp = (value: number, lowerBound: number, upperBound: number) => {
+    'worklet';
+    return Math.min(Math.max(lowerBound, value), upperBound);
+};
 
 const SearchPage = () => {
     const { dark, colors } = useTheme();
@@ -35,6 +65,31 @@ const SearchPage = () => {
     const [isFocused, setIsFocused] = useState(false);
     const [loading, setLoading] = useState(false);
     const [currentHistorySearch, setCurrentHistorySearch] = useState<string | null>(null);
+
+    const [showImageSearchDialog, setShowImageSearchDialog] = useState(false);
+
+    const [headerHeight, setHeaderHeight] = useState(0);
+    const [categoryHeight, setCategoryHeight] = useState(0);
+    const scrollClamp = useSharedValue(0);
+    const scrollHandler = useAnimatedScrollHandler(
+        {
+            onBeginDrag: (e, ctx: ScrollCtx) => {
+                'worklet';
+                ctx.prevY = e.contentOffset.y;
+            },
+            onScroll: (e, ctx: ScrollCtx) => {
+                'worklet';
+                // scrollPos.value = e.contentOffset.y;
+                const diff = e.contentOffset.y - ctx.prevY;
+                scrollClamp.value = clamp(scrollClamp.value + diff, 0, categoryHeight);
+                ctx.prevY = e.contentOffset.y;
+            },
+            onMomentumEnd: () => {
+                'worklet';
+            },
+        },
+        [categoryHeight],
+    );
 
     const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
@@ -53,6 +108,10 @@ const SearchPage = () => {
         searchContent,
         searchStatus,
         searchResults,
+        imageSearchResults,
+        imageUrlStatus,
+        localImageStatus,
+        searchImage,
         updateNewResults,
         nextCharPage,
         nextMediaPage,
@@ -192,12 +251,14 @@ const SearchPage = () => {
         appDispatch(
             updateFilterHistory({
                 filter: { ...filter.filter, type: filter.filter.type },
-                searchType: filter.searchType,
+                searchType:
+                    filter.searchType === 'imageSearch' ? MediaType.Anime : filter.searchType,
             }),
         );
         setFilterSearch(query);
         appDispatch(addSearch(query));
         if (filter.searchType === MediaType.Anime || filter.searchType === MediaType.Manga) {
+            console.log('media search');
             await onMediaSearch(query);
         } else if (filter.searchType === 'characters') {
             await onCharSearch(query);
@@ -213,71 +274,102 @@ const SearchPage = () => {
         dispatch,
     };
 
+    const stickyHeaderStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                {
+                    translateY: interpolate(
+                        scrollClamp.value,
+                        [0, categoryHeight],
+                        [0, -categoryHeight],
+                        Extrapolation.CLAMP,
+                    ),
+                },
+            ],
+        };
+    }, [categoryHeight]);
+
     useEffect(() => {
         if (history.searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
             dispatch({ type: 'SET_TYPE', payload: history.searchType });
         }
     }, [history.searchType]);
 
-    // useEffect(() => {
-    //     navigation.setOptions({
-    //         header: (props) => (
-    //             <SearchHeader
-    //                 {...props}
-    //                 searchContent={onSearch}
-    //                 openFilter={() => {
-    //                     Keyboard.dismiss();
-    //                     openSheet();
-    //                 }}
-    //                 // setSearch={setSearch}
-    //                 // search={filter.search}
-    //                 historySelected={currentHistorySearch}
-    //                 onHistorySelected={() => setCurrentHistorySearch(null)}
-    //                 currentType={filter.searchType}
-    //                 toggleIsFocused={toggleIsFocused}
-    //                 searchbarRef={searchbarRef}
-    //             />
-    //         ),
-    //     });
-    // }, [filter.search, filter.searchType, filter.filter, currentHistorySearch, isFilterOpen]);
-
     return (
         <FilterContext.Provider value={filterState}>
             <Stack.Screen
                 options={{
                     header: (props) => (
-                        <SearchHeader
-                            {...props}
-                            searchContent={onSearch}
-                            openFilter={() => {
-                                Keyboard.dismiss();
-                                openSheet();
-                            }}
-                            // setSearch={setSearch}
-                            // search={filter.search}
-                            historySelected={currentHistorySearch}
-                            onHistorySelected={() => setCurrentHistorySearch(null)}
-                            currentType={filter.searchType}
-                            toggleIsFocused={toggleIsFocused}
-                            searchbarRef={searchbarRef}
-                            setFilterSearch={(query) => setFilterSearch(query)}
-                        />
+                        <Animated.View
+                            style={[{ position: 'absolute' }]}
+                            onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
+                        >
+                            <Animated.View
+                                onLayout={(e) => setCategoryHeight(e.nativeEvent.layout.height)}
+                                entering={SlideInUp.duration(500)}
+                                exiting={SlideOutDown}
+                                style={[
+                                    stickyHeaderStyle,
+                                    {
+                                        zIndex: -1,
+                                        maxHeight: 120,
+                                        position: 'absolute',
+                                        bottom: -categoryHeight,
+                                    },
+                                ]}
+                            >
+                                <MediaSelectorMem
+                                    selection={filter.searchType}
+                                    onSelect={(type) => {
+                                        dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
+                                        appDispatch(updateSearchType(type));
+                                        if (type !== MediaType.Anime && type !== MediaType.Manga) {
+                                            sheetRef?.current?.close();
+                                        }
+                                    }}
+                                />
+                            </Animated.View>
+                            <SearchHeader
+                                {...props}
+                                searchContent={onSearch}
+                                openFilter={() => {
+                                    Keyboard.dismiss();
+                                    dispatch({
+                                        type: 'CHANGE_SEARCHTYPE',
+                                        payload: MediaType.Anime,
+                                    });
+                                    appDispatch(updateSearchType(MediaType.Anime));
+                                    openSheet();
+                                }}
+                                // setSearch={setSearch}
+                                // search={filter.search}
+                                historySelected={currentHistorySearch}
+                                onHistorySelected={() => setCurrentHistorySearch(null)}
+                                currentType={filter.searchType}
+                                toggleIsFocused={toggleIsFocused}
+                                searchbarRef={searchbarRef}
+                                setFilterSearch={(query) => setFilterSearch(query)}
+                                openImageSearch={() => {
+                                    Keyboard.dismiss();
+                                    dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'imageSearch' });
+                                    appDispatch(updateSearchType('imageSearch'));
+                                    setShowImageSearchDialog(true);
+                                }}
+                                onFocus={() => {
+                                    if (filter.searchType === 'imageSearch') {
+                                        dispatch({
+                                            type: 'CHANGE_SEARCHTYPE',
+                                            payload: MediaType.Anime,
+                                        });
+                                        appDispatch(updateSearchType(MediaType.Anime));
+                                    }
+                                }}
+                            />
+                        </Animated.View>
                     ),
                 }}
             />
             <View style={{ flex: 1 }}>
-                <View style={{ maxHeight: 120 }}>
-                    <MediaSelectorMem
-                        selection={filter.searchType}
-                        onSelect={(type) => {
-                            dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
-                            appDispatch(updateSearchType(type));
-                            if (type !== MediaType.Anime && type !== MediaType.Manga) {
-                                sheetRef?.current?.close();
-                            }
-                        }}
-                    />
-                </View>
                 {(filter.searchType === MediaType.Anime ||
                     filter.searchType === MediaType.Manga) && (
                     <AniMangList
@@ -288,6 +380,8 @@ const SearchPage = () => {
                         searchStatus={searchStatus}
                         sheetRef={sheetRef}
                         onItemPress={onMediaPress}
+                        onScrollHandler={scrollHandler}
+                        headerHeight={headerHeight + categoryHeight}
                     />
                 )}
                 {filter.searchType === 'characters' && (
@@ -299,6 +393,8 @@ const SearchPage = () => {
                         nextPage={() =>
                             nextCharPage(searchResults?.Page?.pageInfo?.hasNextPage, filter.search)
                         }
+                        onScrollHandler={scrollHandler}
+                        headerHeight={headerHeight + categoryHeight}
                     />
                 )}
                 {filter.searchType === 'staff' && (
@@ -310,6 +406,8 @@ const SearchPage = () => {
                         nextPage={() =>
                             nextStaffPage(searchResults?.Page?.pageInfo?.hasNextPage, filter.search)
                         }
+                        onScrollHandler={scrollHandler}
+                        headerHeight={headerHeight + categoryHeight}
                     />
                 )}
                 {filter.searchType === 'studios' && (
@@ -324,6 +422,16 @@ const SearchPage = () => {
                                 filter.search,
                             )
                         }
+                        onScrollHandler={scrollHandler}
+                        headerHeight={headerHeight + categoryHeight}
+                    />
+                )}
+                {filter.searchType === 'imageSearch' && (
+                    <ImageSearchList
+                        results={imageSearchResults}
+                        headerHeight={headerHeight + categoryHeight}
+                        onScrollHandler={scrollHandler}
+                        isLoading={imageUrlStatus.isFetching || localImageStatus.isLoading}
                     />
                 )}
                 {isFocused && (
@@ -358,6 +466,29 @@ const SearchPage = () => {
                         ))}
                     </Pressable>
                 )}
+                <StatusBar animated backgroundColor="" />
+                {/* {showCategory && (
+                    <Animated.View
+                        entering={SlideInUp.duration(500)}
+                        exiting={SlideOutDown}
+                        onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
+                        style={[
+                            stickyHeaderStyle,
+                            { maxHeight: 120, position: 'absolute', zIndex: 3 },
+                        ]}
+                    >
+                        <MediaSelectorMem
+                            selection={filter.searchType}
+                            onSelect={(type) => {
+                                dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
+                                appDispatch(updateSearchType(type));
+                                if (type !== MediaType.Anime && type !== MediaType.Manga) {
+                                    sheetRef?.current?.close();
+                                }
+                            }}
+                        />
+                    </Animated.View>
+                )} */}
             </View>
             <FilterSheet
                 sheetRef={sheetRef}
@@ -369,6 +500,14 @@ const SearchPage = () => {
                 toggleSheet={closeSheet}
                 genreTagData={genreTagResult.data}
             />
+            <Portal>
+                <ImageSearchDialog
+                    visible={showImageSearchDialog}
+                    onDismiss={() => setShowImageSearchDialog(false)}
+                    searchImage={(imgType) => searchImage(undefined, imgType === 'camera')}
+                    searchUrl={(url) => searchImage(url)}
+                />
+            </Portal>
         </FilterContext.Provider>
     );
 };

@@ -1,8 +1,8 @@
-import { FlashList } from '@shopify/flash-list';
-import { View, useWindowDimensions } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { FlashList, FlashListProps } from '@shopify/flash-list';
+import { NativeSyntheticEvent, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Button, Card, Chip, Text, useTheme } from 'react-native-paper';
 import { rgbToRgba, useColumns } from '@/utils';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { CharacterCard, MediaCard, MediaProgressBar, StaffCard, StudioCard } from '../cards';
 import { SearchFooter } from './footers';
 import { useAppSelector } from '@/store/hooks';
@@ -16,6 +16,19 @@ import {
 import { EmptyLoadView } from './loading';
 import { FilterReducerState } from '@/reducers/search/reducers';
 import { openWebBrowser } from '@/utils/webBrowser';
+import Animated, {
+    SharedValue,
+    useAnimatedReaction,
+    useAnimatedScrollHandler,
+    useSharedValue,
+} from 'react-native-reanimated';
+import { NativeScrollEvent } from 'react-native';
+import { Anilist, Result, SearchResult } from '@/store/services/tracemoe/traceMoeApi';
+import { Image } from 'expo-image';
+import { ResizeMode, Video } from 'expo-av';
+import { ImageSearchItem } from './media';
+
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 type AniMangListProps = {
     filter: FilterReducerState;
@@ -25,11 +38,16 @@ type AniMangListProps = {
     isLoading: boolean;
     nextPage: (currentPage: number, filter: FilterReducerState) => Promise<void>;
     onItemPress: (aniID: number, type: MediaType) => void;
+    onScrollHandler:
+        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+    headerHeight: number;
 };
 export const AniMangList = (props: AniMangListProps) => {
     const { width, height } = useWindowDimensions();
     const { dark, colors } = useTheme();
     const { columns, listKey } = useColumns(150);
+    const test = useSharedValue(0);
 
     const allowAdult = useAppSelector((state) => state.persistedSettings.showNSFW);
 
@@ -74,29 +92,21 @@ export const AniMangList = (props: AniMangListProps) => {
         [],
     );
 
-    const ListFooter = useCallback(() => {
-        return (
-            <SearchFooter
-                hasMore={props.results?.Page?.pageInfo?.hasNextPage}
-                nextPage={() =>
-                    props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter)
-                }
-                isUnitialized={props.searchStatus.isUninitialized}
-            />
-        );
-    }, [
-        props.results?.Page?.pageInfo?.hasNextPage,
-        props.results?.Page?.pageInfo?.currentPage,
-        allowAdult,
-        props.searchStatus.isUninitialized,
-        props.filter.filter,
-    ]);
-
-    // if (props.isLoading) return <EmptyLoadView isLoading={true} />;
+    useAnimatedReaction(
+        () => {
+            return test.value;
+        },
+        (currentVal, pastVal) => {
+            if (currentVal !== pastVal) {
+                console.log('test:', currentVal);
+            }
+        },
+        [],
+    );
 
     return (
         <View style={{ flex: 1, height: '100%', width }}>
-            <FlashList
+            <AnimatedFlashList
                 key={listKey}
                 data={props.results?.Page?.media}
                 nestedScrollEnabled
@@ -108,8 +118,10 @@ export const AniMangList = (props: AniMangListProps) => {
                 estimatedItemSize={240}
                 removeClippedSubviews
                 centerContent
+                onScroll={props.onScrollHandler}
                 contentContainerStyle={{
                     padding: 10,
+                    paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
                 }}
                 onEndReachedThreshold={0.4}
@@ -118,10 +130,6 @@ export const AniMangList = (props: AniMangListProps) => {
                         props.results?.Page?.media?.length > 0 &&
                         props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
                 }}
-                // ListFooterComponent={
-                //     !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
-                // }
-                // ListFooterComponentStyle={{ alignItems: 'center' }}
             />
         </View>
     );
@@ -131,6 +139,10 @@ type CharacterListProps = {
     results: CharacterSearchQuery;
     searchStatus: any;
     isLoading: boolean;
+    onScrollHandler:
+        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+    headerHeight: number;
     onNavigate: (id: number) => void;
     nextPage?: () => Promise<void>;
 };
@@ -179,7 +191,7 @@ export const CharacterList = (props: CharacterListProps) => {
 
     return (
         <View style={{ flex: 1, height: '100%', width }}>
-            <FlashList
+            <AnimatedFlashList
                 key={listKey}
                 data={props.results?.Page?.characters}
                 nestedScrollEnabled
@@ -189,8 +201,10 @@ export const CharacterList = (props: CharacterListProps) => {
                 estimatedItemSize={240}
                 removeClippedSubviews
                 centerContent
+                onScroll={props.onScrollHandler}
                 contentContainerStyle={{
                     padding: 10,
+                    paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.characters ? 110 / columns / 3 : undefined,
                 }}
                 ListFooterComponent={
@@ -206,6 +220,10 @@ type StaffListProps = {
     results: StaffSearchQuery;
     searchStatus: any;
     isLoading: boolean;
+    onScrollHandler:
+        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+    headerHeight: number;
     onNavigate: (id: number) => void;
     nextPage?: () => Promise<void>;
 };
@@ -254,7 +272,7 @@ export const StaffList = (props: StaffListProps) => {
 
     return (
         <View style={{ flex: 1, height: '100%', width }}>
-            <FlashList
+            <AnimatedFlashList
                 key={listKey}
                 data={props.results?.Page?.staff}
                 nestedScrollEnabled
@@ -264,8 +282,10 @@ export const StaffList = (props: StaffListProps) => {
                 estimatedItemSize={240}
                 removeClippedSubviews
                 centerContent
+                onScroll={props.onScrollHandler}
                 contentContainerStyle={{
                     padding: 10,
+                    paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.staff ? 110 / columns / 3 : undefined,
                 }}
                 ListFooterComponent={
@@ -281,6 +301,10 @@ type StudioListProps = {
     results: StudioSearchQuery;
     searchStatus: any;
     isLoading: boolean;
+    onScrollHandler:
+        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+    headerHeight: number;
     onNavigate: (id: number) => void;
     nextPage?: () => Promise<void>;
 };
@@ -328,7 +352,7 @@ export const StudioList = (props: StudioListProps) => {
 
     return (
         <View style={{ flex: 1, height: '100%', width }}>
-            <FlashList
+            <AnimatedFlashList
                 key={1}
                 data={props.results?.Page?.studios}
                 nestedScrollEnabled
@@ -338,14 +362,57 @@ export const StudioList = (props: StudioListProps) => {
                 estimatedItemSize={240}
                 removeClippedSubviews
                 centerContent
+                onScroll={props.onScrollHandler}
                 contentContainerStyle={{
                     padding: 10,
+                    paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.studios ? 110 / columns / 3 : undefined,
                 }}
                 ListFooterComponent={
                     !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
                 }
                 ListFooterComponentStyle={{ alignItems: 'center' }}
+            />
+        </View>
+    );
+};
+
+type ImageSearchListProps = {
+    results: SearchResult;
+    onScrollHandler:
+        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+    headerHeight: number;
+    isLoading: boolean;
+};
+export const ImageSearchList = (props: ImageSearchListProps) => {
+    const { width, height } = useWindowDimensions();
+
+    const keyExtract = useCallback((item, index: number) => index.toString(), []);
+
+    const RenderItem = ({ item }: { item: Result }) => {
+        return <ImageSearchItem item={item} />;
+    };
+
+    if (props.isLoading) return <EmptyLoadView isLoading={true} />;
+
+    return (
+        <View style={{ flex: 1, height: '100%', width }}>
+            <AnimatedFlashList
+                key={1}
+                data={props.results?.result}
+                nestedScrollEnabled
+                renderItem={RenderItem}
+                keyExtractor={keyExtract}
+                numColumns={1}
+                estimatedItemSize={240}
+                removeClippedSubviews
+                centerContent
+                onScroll={props.onScrollHandler}
+                contentContainerStyle={{
+                    padding: 10,
+                    paddingTop: props.headerHeight,
+                }}
             />
         </View>
     );
