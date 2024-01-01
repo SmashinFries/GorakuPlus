@@ -1,5 +1,5 @@
 export type animeSongsQuery = {
-    aniID: string;
+    aniId: string | number;
 };
 
 export interface MainMusic {
@@ -65,6 +65,14 @@ export interface Video {
     updated_at: Date;
     deleted_at: null;
     tags: string;
+    link: string;
+    audio: Audio;
+}
+
+export interface Audio {
+    id: number;
+    basename: string;
+    size: number;
     link: string;
 }
 

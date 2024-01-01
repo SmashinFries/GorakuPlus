@@ -24,7 +24,6 @@ import { StaffPrevListMem } from '@/components/media/sections/staff';
 import { FollowingPrevListMem } from '@/components/media/sections/following';
 import { RecListMem } from '@/components/media/sections/recoms';
 import { AnimeTrailer } from '@/components/media/sections/trailer';
-import MalImages from '@/components/media/sections/images';
 import MediaLinks from '@/components/media/sections/links';
 import { MuSearchDialog } from '@/components/media/dialogs';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
@@ -113,7 +112,6 @@ const MediaScreen = () => {
                         <BodyContainer>
                             <FrontCoverMem
                                 data={aniData?.data?.Media}
-                                music={videoData?.data?.data?.music_videos}
                                 toggleEP={toggleEPDialog}
                                 defaultTitle={mediaLanguage}
                             />
