@@ -129,6 +129,8 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
     const [totalDuration, setTotalDuration] = useState<number>(0);
     const [progress, setProgress] = useState<number>(0);
 
+    const [playIconHeight, setPlayIconHeight] = useState<number>(0);
+
     // Video
     const vidRef = useRef<Video>(null);
     const [vidLoading, setVidLoading] = useState<boolean>(false);
@@ -138,9 +140,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
     const _onPlaybackStatusUpdate = (playbackStatus: AVPlaybackStatus) => {
         if (!playbackStatus.isLoaded) {
             setProgress(0);
-            // Update your UI for the unloaded state
-            if (playbackStatus.error) {
-            }
         } else {
             // Update your UI for the loaded state
             setTotalDuration(playbackStatus.durationMillis);
@@ -196,6 +195,20 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
         setIsPlaying(false);
     };
 
+    const seek5Seconds = (direction: 'forward' | 'back') => {
+        if (sound) {
+            if (direction === 'forward') {
+                sound?.setPositionAsync(
+                    progress + 5000 <= totalDuration ? progress + 5000 : totalDuration,
+                );
+                setProgress(progress + 5000 <= totalDuration ? progress + 5000 : totalDuration);
+            } else {
+                sound?.setPositionAsync(progress - 5000 >= 0 ? progress - 5000 : 0);
+                setProgress(progress - 5000 >= 0 ? progress - 5000 : 0);
+            }
+        }
+    };
+
     useEffect(() => {
         return sound
             ? () => {
@@ -238,7 +251,7 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
                 initialExpand={initialOpen}
             >
                 <ProgressBar
-                    animatedValue={progress / totalDuration}
+                    animatedValue={sound?._loaded ? progress / totalDuration : 0}
                     style={{ marginHorizontal: 20 }}
                 />
                 <View
@@ -261,21 +274,31 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
                     )}
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <IconButton
-                            onPress={() => (isPlaying ? pauseSong() : playSong())}
+                            disabled={!sound?._loaded}
+                            onPress={() => seek5Seconds('back')}
+                            onLongPress={() => {
+                                sound?.setPositionAsync(0);
+                                setProgress(0);
+                            }}
                             icon={'step-backward'}
                         />
                         {isLoading ? (
-                            <ActivityIndicator animating style={{ height: 32, width: 32 }} />
+                            <ActivityIndicator
+                                animating
+                                style={{ height: playIconHeight, width: playIconHeight }}
+                            />
                         ) : (
                             <IconButton
                                 onPress={() => (isPlaying ? pauseSong() : playSong())}
                                 icon={isPlaying ? 'pause' : 'play'}
-                                size={32}
+                                size={36}
+                                onLayout={(e) => setPlayIconHeight(e.nativeEvent.layout.height)}
                             />
                         )}
                         <IconButton
-                            onPress={() => (isPlaying ? pauseSong() : playSong())}
+                            onPress={() => seek5Seconds('forward')}
                             icon={'step-forward'}
+                            disabled={!sound?._loaded}
                         />
                     </View>
                     <IconButton
