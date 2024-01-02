@@ -133,6 +133,7 @@ type SearchHeaderProps = NativeStackHeaderProps & {
     toggleIsFocused: (value: boolean) => void;
     setFilterSearch: (query: string) => void;
     openImageSearch: () => void;
+    openWaifuSearch: () => void;
     onFocus: () => void;
 };
 export const SearchHeader = ({
@@ -149,6 +150,7 @@ export const SearchHeader = ({
     toggleIsFocused,
     setFilterSearch,
     openImageSearch,
+    openWaifuSearch,
     onFocus,
 }: SearchHeaderProps) => {
     const [query, setQuery] = useState('');
@@ -200,9 +202,15 @@ export const SearchHeader = ({
                     traileringIcon={
                         currentType === MediaType.Anime || currentType === 'imageSearch'
                             ? 'image-search-outline'
+                            : currentType === 'characters' || currentType === 'waifuSearch'
+                            ? 'account-search-outline'
                             : undefined
                     }
-                    onTraileringIconPress={openImageSearch}
+                    onTraileringIconPress={
+                        currentType === 'characters' || currentType === 'waifuSearch'
+                            ? openWaifuSearch
+                            : openImageSearch
+                    }
                     style={{ flex: 1, backgroundColor: 'transparent' }}
                     inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
                     onClearIconPress={() => {
@@ -280,7 +288,6 @@ export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderPro
         <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title ?? ''} subtitle={'Test'} />
-            {/* <Appbar.Action icon="dots-vertical" onPress={() => console.log('test')} /> */}
         </Appbar.Header>
     );
 };

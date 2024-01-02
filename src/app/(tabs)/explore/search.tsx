@@ -7,6 +7,7 @@ import {
     ImageSearchList,
     StaffList,
     StudioList,
+    WaifuSearchList,
 } from '@/components/search/lists';
 import { MediaSelectorMem } from '@/components/search/mediaSelector';
 import { FilterContext } from '@/hooks/search/useFilter';
@@ -67,6 +68,7 @@ const SearchPage = () => {
     const [currentHistorySearch, setCurrentHistorySearch] = useState<string | null>(null);
 
     const [showImageSearchDialog, setShowImageSearchDialog] = useState(false);
+    const [showWaifuSearchDialog, setShowWaifuSearchDialog] = useState(false);
 
     const [headerHeight, setHeaderHeight] = useState(0);
     const [categoryHeight, setCategoryHeight] = useState(0);
@@ -111,6 +113,9 @@ const SearchPage = () => {
         imageSearchResults,
         imageUrlStatus,
         localImageStatus,
+        waifuImageResults,
+        waifuImageStatus,
+        searchWaifu,
         searchImage,
         updateNewResults,
         nextCharPage,
@@ -252,7 +257,11 @@ const SearchPage = () => {
             updateFilterHistory({
                 filter: { ...filter.filter, type: filter.filter.type },
                 searchType:
-                    filter.searchType === 'imageSearch' ? MediaType.Anime : filter.searchType,
+                    filter.searchType === 'imageSearch'
+                        ? MediaType.Anime
+                        : filter.searchType === 'waifuSearch'
+                        ? 'characters'
+                        : filter.searchType,
             }),
         );
         setFilterSearch(query);
@@ -335,7 +344,10 @@ const SearchPage = () => {
                                     Keyboard.dismiss();
                                     dispatch({
                                         type: 'CHANGE_SEARCHTYPE',
-                                        payload: MediaType.Anime,
+                                        payload:
+                                            filter.searchType === 'imageSearch'
+                                                ? MediaType.Anime
+                                                : filter.searchType,
                                     });
                                     appDispatch(updateSearchType(MediaType.Anime));
                                     openSheet();
@@ -354,6 +366,12 @@ const SearchPage = () => {
                                     appDispatch(updateSearchType('imageSearch'));
                                     setShowImageSearchDialog(true);
                                 }}
+                                openWaifuSearch={() => {
+                                    Keyboard.dismiss();
+                                    dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'waifuSearch' });
+                                    appDispatch(updateSearchType('waifuSearch'));
+                                    setShowWaifuSearchDialog(true);
+                                }}
                                 onFocus={() => {
                                     if (filter.searchType === 'imageSearch') {
                                         dispatch({
@@ -361,6 +379,12 @@ const SearchPage = () => {
                                             payload: MediaType.Anime,
                                         });
                                         appDispatch(updateSearchType(MediaType.Anime));
+                                    } else if (filter.searchType === 'waifuSearch') {
+                                        dispatch({
+                                            type: 'CHANGE_SEARCHTYPE',
+                                            payload: 'characters',
+                                        });
+                                        appDispatch(updateSearchType('characters'));
                                     }
                                 }}
                             />
@@ -431,6 +455,14 @@ const SearchPage = () => {
                         headerHeight={headerHeight + categoryHeight}
                         onScrollHandler={scrollHandler}
                         isLoading={imageUrlStatus.isFetching || localImageStatus.isLoading}
+                    />
+                )}
+                {filter.searchType === 'waifuSearch' && (
+                    <WaifuSearchList
+                        results={waifuImageResults}
+                        headerHeight={headerHeight + categoryHeight}
+                        onScrollHandler={scrollHandler}
+                        isLoading={waifuImageStatus.isFetching || waifuImageStatus.isLoading}
                     />
                 )}
                 {isFocused && (
@@ -505,6 +537,12 @@ const SearchPage = () => {
                     onDismiss={() => setShowImageSearchDialog(false)}
                     searchImage={(imgType) => searchImage(undefined, imgType === 'camera')}
                     searchUrl={(url) => searchImage(url)}
+                />
+                <ImageSearchDialog
+                    visible={showWaifuSearchDialog}
+                    onDismiss={() => setShowWaifuSearchDialog(false)}
+                    searchImage={(imgType) => searchWaifu(undefined, imgType === 'camera')}
+                    searchUrl={(url) => searchWaifu(url, false)}
                 />
             </Portal>
         </FilterContext.Provider>

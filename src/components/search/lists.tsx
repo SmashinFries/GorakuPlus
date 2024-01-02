@@ -2,7 +2,7 @@ import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { NativeSyntheticEvent, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Button, Card, Chip, Text, useTheme } from 'react-native-paper';
 import { rgbToRgba, useColumns } from '@/utils';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CharacterCard, MediaCard, MediaProgressBar, StaffCard, StudioCard } from '../cards';
 import { SearchFooter } from './footers';
 import { useAppSelector } from '@/store/hooks';
@@ -27,6 +27,9 @@ import { Anilist, Result, SearchResult } from '@/store/services/tracemoe/traceMo
 import { Image } from 'expo-image';
 import { ResizeMode, Video } from 'expo-av';
 import { ImageSearchItem } from './media';
+import { WdTaggerOutput } from '@/store/services/huggingface/types';
+import { useLazyCharacterSearchQuery } from '@/store/services/anilist/enhanced';
+import { router } from 'expo-router';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
@@ -400,6 +403,74 @@ export const ImageSearchList = (props: ImageSearchListProps) => {
                 contentContainerStyle={{
                     padding: 10,
                     paddingTop: props.headerHeight,
+                }}
+            />
+        </View>
+    );
+};
+
+type WdTaggerCharacters = [{ confidence?: number } & CharacterSearchQuery['Page']['characters'][0]];
+
+type WaifuSearchListProps = {
+    results: CharacterSearchQuery['Page']['characters'];
+    isLoading: boolean;
+    onScrollHandler:
+        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+    headerHeight: number;
+};
+export const WaifuSearchList = (props: WaifuSearchListProps) => {
+    const { width, height } = useWindowDimensions();
+    // const { dark, colors } = useTheme();
+    const { columns, listKey } = useColumns(110);
+
+    const keyExtract = useCallback(
+        (item, index: number) => item.id.toString() + index.toString(),
+        [],
+    );
+
+    const RenderItem = useCallback(
+        ({
+            item,
+        }: {
+            item: CharacterSearchQuery['Page']['characters'][0] & { confidence: number };
+        }) => {
+            return (
+                <View style={{ alignItems: 'center', marginVertical: 15 }}>
+                    <CharacterCard
+                        onPress={() => router.push('/characters/info/' + item.id)}
+                        imgUrl={item.image?.large}
+                        name={item.name?.full}
+                        nativeName={item.name?.native}
+                        isFavourite={item.isFavourite}
+                        role={`${(item.confidence * 100).toFixed(2)}% Match`}
+                    />
+                </View>
+            );
+        },
+        [],
+    );
+
+    if (props.isLoading)
+        return <EmptyLoadView isLoading={true} message={'May take some time (queuing system)'} />;
+
+    return (
+        <View style={{ flex: 1, height: '100%', width }}>
+            <AnimatedFlashList
+                key={listKey}
+                data={props.results}
+                nestedScrollEnabled
+                renderItem={RenderItem}
+                keyExtractor={keyExtract}
+                numColumns={columns}
+                estimatedItemSize={240}
+                removeClippedSubviews
+                centerContent
+                onScroll={props.onScrollHandler}
+                contentContainerStyle={{
+                    padding: 10,
+                    paddingTop: props.headerHeight,
+                    paddingLeft: props.results ? 110 / columns / 3 : undefined,
                 }}
             />
         </View>

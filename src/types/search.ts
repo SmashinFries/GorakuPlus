@@ -14,4 +14,5 @@ export type SearchType =
     | 'characters'
     | 'staff'
     | 'studios'
-    | 'imageSearch';
+    | 'imageSearch'
+    | 'waifuSearch';

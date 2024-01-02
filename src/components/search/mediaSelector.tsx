@@ -54,7 +54,7 @@ export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
                 buttons={[buttons[0], buttons[1]]}
             />
             <SegmentedButtons
-                value={selection}
+                value={selection === 'waifuSearch' ? 'characters' : selection}
                 onValueChange={onSelect}
                 density="small"
                 buttons={[buttons[2], buttons[3], buttons[4]]}

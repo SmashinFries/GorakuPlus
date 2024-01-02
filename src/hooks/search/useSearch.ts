@@ -23,8 +23,10 @@ import {
     usePostSearchMutation,
 } from '@/store/services/tracemoe/traceMoeApi';
 import { SearchType } from '@/types/search';
-import { selectImage } from '@/utils/images';
+import { getImageB64, selectImage } from '@/utils/images';
 import { ToastAndroid } from 'react-native';
+import { useLazyPredictWaifuQuery } from '@/store/services/huggingface/wdTagger';
+import { WdTaggerOutput } from '@/store/services/huggingface/types';
 
 export const useSearch = (searchType: SearchType) => {
     const [searchTrigger, searchStatus] = useLazyExploreMediaQuery();
@@ -34,6 +36,8 @@ export const useSearch = (searchType: SearchType) => {
 
     const [searchLocalImage, localImageStatus] = usePostSearchMutation();
     const [searchImageUrl, imageUrlStatus] = useLazyGetSearchQuery();
+    const [searchWaifuImage, waifuImageStatus] = useLazyPredictWaifuQuery();
+    const [searchWaifuData, searchWaifuDataStatus] = useLazyCharacterSearchQuery();
 
     const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
 
@@ -42,6 +46,9 @@ export const useSearch = (searchType: SearchType) => {
     const [staffResults, setStaffResults] = useState<StaffSearchQuery>();
     const [studioResults, setStudioResults] = useState<StudioSearchQuery>();
     const [imageSearchResults, setImageSearchResults] = useState<SearchResult>();
+    const [waifuImageResults, setWaifuImageResults] = useState<
+        CharacterSearchQuery['Page']['characters'] & { confidence: number }[]
+    >([]);
 
     const SearchTypes = {
         media: searchTrigger,
@@ -91,7 +98,39 @@ export const useSearch = (searchType: SearchType) => {
                         ToastAndroid.LONG,
                     );
                 }
+            } else {
+                ToastAndroid.show('Could not process imag.', ToastAndroid.LONG);
             }
+        }
+    };
+
+    const searchWaifu = async (url?: string, camera?: boolean) => {
+        setWaifuImageResults([]);
+        const imageBase64 = await getImageB64(camera, url);
+        if (imageBase64) {
+            try {
+                const response = await searchWaifuImage({
+                    data: [imageBase64, 'MOAT', 0.35, 0.35],
+                }).unwrap();
+                if (response?.data) {
+                    for (const predictResult of response?.data?.[3].confidences) {
+                        const searchresult = await searchWaifuData({
+                            name: predictResult.label.replaceAll('_', ' ').split('(')[0],
+                        });
+                        setWaifuImageResults((prev) => [
+                            ...prev,
+                            {
+                                ...searchresult?.data?.Page?.characters[0],
+                                confidence: predictResult.confidence,
+                            },
+                        ]);
+                    }
+                }
+            } catch (e) {
+                ToastAndroid.show('Something went wrong... 😅', ToastAndroid.LONG);
+            }
+        } else {
+            ToastAndroid.show('Could not process imag.', ToastAndroid.LONG);
         }
     };
 
@@ -243,6 +282,9 @@ export const useSearch = (searchType: SearchType) => {
         imageSearchResults,
         localImageStatus,
         imageUrlStatus,
+        waifuImageResults,
+        waifuImageStatus,
+        searchWaifu,
         searchImage,
         updateNewResults,
         addMoreResults,

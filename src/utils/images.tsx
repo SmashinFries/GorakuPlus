@@ -18,7 +18,7 @@ export const saveImage = async (url: string, name = null) => {
             await impactAsync(ImpactFeedbackStyle.Light);
             ToastAndroid.show('Image Saved', ToastAndroid.SHORT);
         } catch (e) {
-            console.log(e);
+            ToastAndroid.show('Image failed to save', ToastAndroid.LONG);
         }
     }
 };
@@ -82,11 +82,6 @@ export const selectImage = async (camera?: boolean): Promise<FormData | null> =>
 
     if (!result.canceled) {
         const imageType = result.assets[0].uri.split('.').at(-1);
-        // const imgBlob = imageURItoBlob(result.assets[0].uri);
-        // const blobUrl = URL.createObjectURL(imgBlob);
-        // const image_base64 =
-        //     `data:image/${imageType === 'jpg' ? 'jpeg' : imageType};base64,` +
-        //     result.assets[0].base64;
         data.append('image', {
             name: 'image',
             type: `image/${imageType === 'jpg' ? 'jpeg' : imageType}`,
@@ -95,5 +90,50 @@ export const selectImage = async (camera?: boolean): Promise<FormData | null> =>
         return data;
     } else {
         return null;
+    }
+};
+
+export const getImageB64 = async (camera?: boolean, url?: string): Promise<string | null> => {
+    if (url) {
+        const imgType = ['jpg', 'jpeg', 'png'].includes(url.split('.').at(-1))
+            ? url.split('.').at(-1)
+            : 'jpg';
+        try {
+            const { uri } = await FileSystem.downloadAsync(
+                url,
+                FileSystem.documentDirectory + `temp.${imgType}`,
+            );
+            const base64 = await FileSystem.readAsStringAsync(uri, {
+                encoding: 'base64',
+            });
+            return `data:image/${imgType};base64,${base64}`;
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
+    } else {
+        const result = camera
+            ? await ImagePicker.launchCameraAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.All,
+                  allowsEditing: true,
+                  quality: 0.75,
+                  base64: true,
+                  allowsMultipleSelection: false,
+              })
+            : await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.All,
+                  allowsEditing: true,
+                  quality: 1,
+                  base64: true,
+                  allowsMultipleSelection: false,
+              });
+        const imgType = ['jpg', 'jpeg', 'png'].includes(result.assets[0].uri.split('.').at(-1))
+            ? result.assets[0].uri.split('.').at(-1)
+            : 'jpg';
+        if (!result.canceled) {
+            return `data:image/${imgType};base64,${result.assets[0].base64}`;
+        } else {
+            return null;
+        }
     }
 };

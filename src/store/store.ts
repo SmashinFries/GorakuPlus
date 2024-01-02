@@ -34,6 +34,7 @@ import { listFilterSlice } from './slices/listSLice';
 import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
 import { calendarFilterSlice } from './slices/calendarSlice';
+import wdTaggerAPI from './services/huggingface/wdTagger';
 
 const secureStorage = createSecureStorage();
 
@@ -117,6 +118,7 @@ export const store = configureStore({
         [googleBooksApi.reducerPath]: googleBooksApi.reducer,
         [waifuItAPI.reducerPath]: waifuItAPI.reducer,
         [traceMoeApi.reducerPath]: traceMoeApi.reducer,
+        [wdTaggerAPI.reducerPath]: wdTaggerAPI.reducer,
         listFilter: listFilterSlice.reducer,
         calendarFilter: calendarFilterSlice.reducer,
         favSearch: favSearchSlice.reducer,
@@ -146,6 +148,7 @@ export const store = configureStore({
             traceMoeApi.middleware,
             googleBooksApi.middleware,
             waifuItAPI.middleware,
+            wdTaggerAPI.middleware,
         ]),
 });
 
