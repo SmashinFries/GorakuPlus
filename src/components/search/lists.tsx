@@ -164,20 +164,6 @@ export const CharacterList = (props: CharacterListProps) => {
         [],
     );
 
-    const ListFooter = useCallback(() => {
-        return (
-            <SearchFooter
-                hasMore={props.results?.Page?.pageInfo?.hasNextPage}
-                nextPage={props.nextPage}
-                isUnitialized={props.searchStatus.isUninitialized}
-            />
-        );
-    }, [
-        props.results?.Page?.pageInfo?.hasNextPage,
-        props.results?.Page?.pageInfo?.currentPage,
-        props.searchStatus.isUninitialized,
-    ]);
-
     if (props.isLoading) return <EmptyLoadView isLoading={true} />;
 
     return (
@@ -198,10 +184,12 @@ export const CharacterList = (props: CharacterListProps) => {
                     paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.characters ? 110 / columns / 3 : undefined,
                 }}
-                ListFooterComponent={
-                    !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
-                }
-                ListFooterComponentStyle={{ alignItems: 'center' }}
+                onEndReachedThreshold={0.4}
+                onEndReached={() => {
+                    props.results?.Page &&
+                        props.results?.Page?.characters?.length > 0 &&
+                        props.nextPage();
+                }}
             />
         </View>
     );
@@ -245,20 +233,6 @@ export const StaffList = (props: StaffListProps) => {
         [],
     );
 
-    const ListFooter = useCallback(() => {
-        return (
-            <SearchFooter
-                hasMore={props.results?.Page?.pageInfo?.hasNextPage}
-                nextPage={props.nextPage}
-                isUnitialized={props.searchStatus.isUninitialized}
-            />
-        );
-    }, [
-        props.results?.Page?.pageInfo?.hasNextPage,
-        props.results?.Page?.pageInfo?.currentPage,
-        props.searchStatus.isUninitialized,
-    ]);
-
     if (props.isLoading) return <EmptyLoadView isLoading={true} />;
 
     return (
@@ -279,10 +253,12 @@ export const StaffList = (props: StaffListProps) => {
                     paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.staff ? 110 / columns / 3 : undefined,
                 }}
-                ListFooterComponent={
-                    !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
-                }
-                ListFooterComponentStyle={{ alignItems: 'center' }}
+                onEndReachedThreshold={0.4}
+                onEndReached={() => {
+                    props.results?.Page &&
+                        props.results?.Page?.staff?.length > 0 &&
+                        props.nextPage();
+                }}
             />
         </View>
     );
@@ -325,20 +301,6 @@ export const StudioList = (props: StudioListProps) => {
         [],
     );
 
-    const ListFooter = useCallback(() => {
-        return (
-            <SearchFooter
-                hasMore={props.results?.Page?.pageInfo?.hasNextPage}
-                nextPage={props.nextPage}
-                isUnitialized={props.searchStatus.isUninitialized}
-            />
-        );
-    }, [
-        props.results?.Page?.pageInfo?.hasNextPage,
-        props.results?.Page?.pageInfo?.currentPage,
-        props.searchStatus.isUninitialized,
-    ]);
-
     if (props.isLoading) return <EmptyLoadView isLoading={true} />;
 
     return (
@@ -359,10 +321,12 @@ export const StudioList = (props: StudioListProps) => {
                     paddingTop: props.headerHeight,
                     paddingLeft: props.results?.Page?.studios ? 110 / columns / 3 : undefined,
                 }}
-                ListFooterComponent={
-                    !props.isLoading && props.results?.Page?.pageInfo?.hasNextPage && ListFooter
-                }
-                ListFooterComponentStyle={{ alignItems: 'center' }}
+                onEndReachedThreshold={0.4}
+                onEndReached={() => {
+                    props.results?.Page &&
+                        props.results?.Page?.studios?.length > 0 &&
+                        props.nextPage();
+                }}
             />
         </View>
     );
@@ -470,6 +434,11 @@ export const WaifuSearchList = (props: WaifuSearchListProps) => {
                     paddingTop: props.headerHeight,
                     paddingLeft: props.results ? 110 / columns / 3 : undefined,
                 }}
+                ListEmptyComponent={() => (
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                        <Text></Text>
+                    </View>
+                )}
             />
         </View>
     );
