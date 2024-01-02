@@ -409,8 +409,6 @@ export const ImageSearchList = (props: ImageSearchListProps) => {
     );
 };
 
-type WdTaggerCharacters = [{ confidence?: number } & CharacterSearchQuery['Page']['characters'][0]];
-
 type WaifuSearchListProps = {
     results: CharacterSearchQuery['Page']['characters'];
     isLoading: boolean;
