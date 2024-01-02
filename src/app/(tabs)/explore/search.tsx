@@ -33,7 +33,7 @@ import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/typ
 import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { Keyboard, Pressable, TextInput } from 'react-native';
+import { Keyboard, Pressable, TextInput, useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
 import { IconButton, List, Portal, Text, useTheme } from 'react-native-paper';
 import Animated, {
@@ -48,6 +48,7 @@ import Animated, {
     interpolate,
     Extrapolation,
     interpolateColor,
+    withTiming,
 } from 'react-native-reanimated';
 
 type ScrollCtx = {
@@ -61,6 +62,7 @@ const clamp = (value: number, lowerBound: number, upperBound: number) => {
 
 const SearchPage = () => {
     const { dark, colors } = useTheme();
+    const { height } = useWindowDimensions();
     const searchbarRef = useRef<TextInput>();
     const [filterSearch, setFilterSearch] = useState('');
     const [isFocused, setIsFocused] = useState(false);
@@ -309,7 +311,7 @@ const SearchPage = () => {
                 options={{
                     header: (props) => (
                         <Animated.View
-                            style={[{ position: 'absolute' }]}
+                            // style={[{ position: 'absolute' }]}
                             onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
                         >
                             <Animated.View
@@ -354,6 +356,7 @@ const SearchPage = () => {
                                 }}
                                 // setSearch={setSearch}
                                 // search={filter.search}
+                                isFocused={isFocused}
                                 historySelected={currentHistorySearch}
                                 onHistorySelected={() => setCurrentHistorySearch(null)}
                                 currentType={filter.searchType}
@@ -386,6 +389,7 @@ const SearchPage = () => {
                                         });
                                         appDispatch(updateSearchType('characters'));
                                     }
+                                    scrollClamp.value = withTiming(-categoryHeight);
                                 }}
                             />
                         </Animated.View>
@@ -404,7 +408,7 @@ const SearchPage = () => {
                         sheetRef={sheetRef}
                         onItemPress={onMediaPress}
                         onScrollHandler={scrollHandler}
-                        headerHeight={headerHeight + categoryHeight}
+                        headerHeight={categoryHeight}
                     />
                 )}
                 {filter.searchType === 'characters' && (
@@ -413,11 +417,9 @@ const SearchPage = () => {
                         onNavigate={onCharPress}
                         results={searchResults}
                         searchStatus={searchStatus}
-                        nextPage={() =>
-                            nextCharPage(searchResults?.Page?.pageInfo?.hasNextPage, filter.search)
-                        }
+                        nextPage={() => nextCharPage(filterSearch)}
                         onScrollHandler={scrollHandler}
-                        headerHeight={headerHeight + categoryHeight}
+                        headerHeight={categoryHeight}
                     />
                 )}
                 {filter.searchType === 'staff' && (
@@ -426,11 +428,9 @@ const SearchPage = () => {
                         onNavigate={onStaffPress}
                         results={searchResults}
                         searchStatus={searchStatus}
-                        nextPage={() =>
-                            nextStaffPage(searchResults?.Page?.pageInfo?.hasNextPage, filter.search)
-                        }
+                        nextPage={() => nextStaffPage(filterSearch)}
                         onScrollHandler={scrollHandler}
-                        headerHeight={headerHeight + categoryHeight}
+                        headerHeight={categoryHeight}
                     />
                 )}
                 {filter.searchType === 'studios' && (
@@ -439,20 +439,15 @@ const SearchPage = () => {
                         isLoading={loading}
                         results={searchResults}
                         searchStatus={searchStatus}
-                        nextPage={() =>
-                            nextStudioPage(
-                                searchResults?.Page?.pageInfo?.hasNextPage,
-                                filter.search,
-                            )
-                        }
+                        nextPage={() => nextStudioPage(filterSearch)}
                         onScrollHandler={scrollHandler}
-                        headerHeight={headerHeight + categoryHeight}
+                        headerHeight={categoryHeight}
                     />
                 )}
                 {filter.searchType === 'imageSearch' && (
                     <ImageSearchList
                         results={imageSearchResults}
-                        headerHeight={headerHeight + categoryHeight}
+                        headerHeight={categoryHeight}
                         onScrollHandler={scrollHandler}
                         isLoading={imageUrlStatus.isFetching || localImageStatus.isLoading}
                     />
@@ -460,44 +455,49 @@ const SearchPage = () => {
                 {filter.searchType === 'waifuSearch' && (
                     <WaifuSearchList
                         results={waifuImageResults}
-                        headerHeight={headerHeight + categoryHeight}
+                        headerHeight={categoryHeight}
                         onScrollHandler={scrollHandler}
                         isLoading={waifuImageStatus.isFetching || waifuImageStatus.isLoading}
                     />
                 )}
                 {isFocused && (
-                    <Pressable
-                        onPress={() => {
-                            searchbarRef.current?.blur();
-                            toggleIsFocused(false);
-                        }}
+                    <Animated.View
                         style={{
                             position: 'absolute',
-                            height: '100%',
+                            height: height - categoryHeight,
                             width: '100%',
                             backgroundColor: colors.background,
-                            top: 120,
+                            top: categoryHeight,
+                            zIndex: 1,
                         }}
+                        exiting={SlideOutDown}
+                        entering={SlideInDown}
                     >
-                        {history.search.map((term, idx) => (
-                            <List.Item
-                                key={idx}
-                                title={term}
-                                right={(props) => (
-                                    <IconButton
-                                        {...props}
-                                        icon={'delete-outline'}
-                                        onPress={() => appDispatch(removeSearchTerm(term))}
-                                    />
-                                )}
-                                onPress={() => {
-                                    setCurrentHistorySearch(term);
-                                }}
-                            />
-                        ))}
-                    </Pressable>
+                        <Pressable
+                            onPress={() => {
+                                searchbarRef.current?.blur();
+                                toggleIsFocused(false);
+                            }}
+                        >
+                            {history.search.map((term, idx) => (
+                                <List.Item
+                                    key={idx}
+                                    title={term}
+                                    right={(props) => (
+                                        <IconButton
+                                            {...props}
+                                            icon={'delete-outline'}
+                                            onPress={() => appDispatch(removeSearchTerm(term))}
+                                        />
+                                    )}
+                                    onPress={() => {
+                                        setCurrentHistorySearch(term);
+                                    }}
+                                />
+                            ))}
+                        </Pressable>
+                    </Animated.View>
                 )}
-                <StatusBar animated backgroundColor="" />
                 {/* {showCategory && (
                     <Animated.View
                         entering={SlideInUp.duration(500)}

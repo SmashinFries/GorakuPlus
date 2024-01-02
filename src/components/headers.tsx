@@ -4,6 +4,7 @@ import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
     BackHandler,
+    Keyboard,
     RefreshControlProps,
     Share,
     StyleSheet,
@@ -135,6 +136,7 @@ type SearchHeaderProps = NativeStackHeaderProps & {
     openImageSearch: () => void;
     openWaifuSearch: () => void;
     onFocus: () => void;
+    isFocused: boolean;
 };
 export const SearchHeader = ({
     navigation,
@@ -147,6 +149,7 @@ export const SearchHeader = ({
     onHistorySelected,
     currentType,
     searchbarRef,
+    isFocused,
     toggleIsFocused,
     setFilterSearch,
     openImageSearch,
@@ -157,6 +160,24 @@ export const SearchHeader = ({
     const { colors } = useTheme();
 
     const { right, left } = useSafeAreaInsets();
+
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+            toggleIsFocused(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+            toggleIsFocused(false);
+        });
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     useEffect(() => {
         if (historySelected) {
@@ -190,10 +211,14 @@ export const SearchHeader = ({
                     returnKeyType="search"
                     autoFocus
                     onFocus={() => {
+                        console.log('Now Focusing!');
+                        searchbarRef?.current?.focus();
                         toggleIsFocused(true);
                         onFocus();
                     }}
-                    onBlur={() => toggleIsFocused(false)}
+                    onBlur={() => {
+                        toggleIsFocused(false);
+                    }}
                     placeholder="Search sauce..."
                     mode="bar"
                     onIconPress={() => navigation.goBack()}
