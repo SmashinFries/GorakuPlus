@@ -211,7 +211,6 @@ export const SearchHeader = ({
                     returnKeyType="search"
                     autoFocus
                     onFocus={() => {
-                        console.log('Now Focusing!');
                         searchbarRef?.current?.focus();
                         toggleIsFocused(true);
                         onFocus();

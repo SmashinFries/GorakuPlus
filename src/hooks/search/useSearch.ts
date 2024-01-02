@@ -163,7 +163,6 @@ export const useSearch = (searchType: SearchType) => {
                     },
                 }));
             } else if (searchType === 'characters') {
-                console.log(results.Page.pageInfo);
                 setCharResults((prev) => ({
                     ...prev,
                     Page: {
@@ -219,7 +218,6 @@ export const useSearch = (searchType: SearchType) => {
     const nextCharPage = async (search: string) => {
         if (!searchStatus?.isFetching) {
             if (charResults?.Page?.pageInfo?.hasNextPage) {
-                console.log('Has More');
                 const response = await searchCharTrig({
                     name: search ?? undefined,
                     page: charResults?.Page?.pageInfo?.currentPage + 1,
@@ -231,8 +229,6 @@ export const useSearch = (searchType: SearchType) => {
                 }).unwrap();
 
                 addMoreResults(response);
-            } else {
-                console.log('No More');
             }
         }
     };
@@ -240,7 +236,6 @@ export const useSearch = (searchType: SearchType) => {
     const nextStaffPage = async (search: string) => {
         if (!searchStatus?.isFetching) {
             if (staffResults?.Page?.pageInfo?.hasNextPage) {
-                console.log('Has More');
                 const response = await searchStaffTrig({
                     name: search ?? undefined,
                     page: staffResults?.Page?.pageInfo?.currentPage + 1,
@@ -252,8 +247,6 @@ export const useSearch = (searchType: SearchType) => {
                 }).unwrap();
 
                 addMoreResults(response);
-            } else {
-                console.log('No More');
             }
         }
     };

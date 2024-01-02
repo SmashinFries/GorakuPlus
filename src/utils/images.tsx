@@ -108,7 +108,6 @@ export const getImageB64 = async (camera?: boolean, url?: string): Promise<strin
             });
             return `data:image/${imgType};base64,${base64}`;
         } catch (e) {
-            console.log(e);
             return null;
         }
     } else {
