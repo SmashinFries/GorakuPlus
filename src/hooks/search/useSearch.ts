@@ -114,16 +114,18 @@ export const useSearch = (searchType: SearchType) => {
                 }).unwrap();
                 if (response?.data) {
                     for (const predictResult of response?.data?.[3].confidences) {
-                        const searchresult = await searchWaifuData({
-                            name: predictResult.label.replaceAll('_', ' ').split('(')[0],
-                        });
-                        setWaifuImageResults((prev) => [
-                            ...prev,
-                            {
-                                ...searchresult?.data?.Page?.characters[0],
-                                confidence: predictResult.confidence,
-                            },
-                        ]);
+                        if (predictResult.label) {
+                            const searchresult = await searchWaifuData({
+                                name: predictResult.label.replaceAll('_', ' ').split('(')[0],
+                            });
+                            setWaifuImageResults((prev) => [
+                                ...prev,
+                                {
+                                    ...searchresult?.data?.Page?.characters[0],
+                                    confidence: predictResult.confidence,
+                                },
+                            ]);
+                        }
                     }
                 }
             } catch (e) {
@@ -157,16 +159,17 @@ export const useSearch = (searchType: SearchType) => {
                     Page: {
                         ...prev.Page,
                         media: [...prev.Page.media, ...results.Page.media],
-                        pageInfo: { ...results.Page.pageInfo },
+                        pageInfo: results.Page.pageInfo,
                     },
                 }));
             } else if (searchType === 'characters') {
+                console.log(results.Page.pageInfo);
                 setCharResults((prev) => ({
                     ...prev,
                     Page: {
                         ...prev.Page,
                         characters: [...prev.Page.characters, ...results.Page.characters],
-                        pageInfo: { ...results.Page.pageInfo },
+                        pageInfo: results.Page.pageInfo,
                     },
                 }));
             } else if (searchType === 'staff') {
@@ -213,50 +216,62 @@ export const useSearch = (searchType: SearchType) => {
         }
     };
 
-    const nextCharPage = async (currentPage: number, search: string, isbday?: boolean) => {
+    const nextCharPage = async (search: string) => {
         if (!searchStatus?.isFetching) {
-            const response = await searchCharTrig({
-                name: search,
-                page: currentPage + 1,
-                isBirthday: !search || search?.length < 1 ? true : undefined,
-                sort:
-                    !search || search?.length < 1
-                        ? [CharacterSort.FavouritesDesc]
-                        : [CharacterSort.SearchMatch],
-            }).unwrap();
+            if (charResults?.Page?.pageInfo?.hasNextPage) {
+                console.log('Has More');
+                const response = await searchCharTrig({
+                    name: search ?? undefined,
+                    page: charResults?.Page?.pageInfo?.currentPage + 1,
+                    isBirthday: !search || search?.length < 1 ? true : false,
+                    sort:
+                        !search || search?.length < 1
+                            ? [CharacterSort.FavouritesDesc]
+                            : [CharacterSort.SearchMatch],
+                }).unwrap();
 
-            addMoreResults(response);
+                addMoreResults(response);
+            } else {
+                console.log('No More');
+            }
         }
     };
 
-    const nextStaffPage = async (currentPage: number, search: string, isBday?: boolean) => {
+    const nextStaffPage = async (search: string) => {
         if (!searchStatus?.isFetching) {
-            const response = await searchStaffTrig({
-                name: search,
-                page: currentPage + 1,
-                isBirthday: !search || search?.length < 1 ? true : undefined,
-                sort:
-                    !search || search?.length < 1
-                        ? [StaffSort.FavouritesDesc]
-                        : [StaffSort.SearchMatch],
-            }).unwrap();
+            if (staffResults?.Page?.pageInfo?.hasNextPage) {
+                console.log('Has More');
+                const response = await searchStaffTrig({
+                    name: search ?? undefined,
+                    page: staffResults?.Page?.pageInfo?.currentPage + 1,
+                    isBirthday: !search || search?.length < 1 ? true : undefined,
+                    sort:
+                        !search || search?.length < 1
+                            ? [StaffSort.FavouritesDesc]
+                            : [StaffSort.SearchMatch],
+                }).unwrap();
 
-            addMoreResults(response);
+                addMoreResults(response);
+            } else {
+                console.log('No More');
+            }
         }
     };
 
-    const nextStudioPage = async (currentPage: number, search: string) => {
+    const nextStudioPage = async (search: string) => {
         if (!searchStatus?.isFetching) {
-            const response = await searchStudioTrig({
-                name: search,
-                page: currentPage + 1,
-                sort:
-                    !search || search?.length < 1
-                        ? [StudioSort.FavouritesDesc]
-                        : [StudioSort.SearchMatch],
-            }).unwrap();
+            if (studioResults?.Page?.pageInfo?.hasNextPage) {
+                const response = await searchStudioTrig({
+                    name: search ?? undefined,
+                    page: studioResults.Page?.pageInfo?.currentPage + 1,
+                    sort:
+                        !search || search?.length < 1
+                            ? [StudioSort.FavouritesDesc]
+                            : [StudioSort.SearchMatch],
+                }).unwrap();
 
-            addMoreResults(response);
+                addMoreResults(response);
+            }
         }
     };
 
