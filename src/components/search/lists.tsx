@@ -1,4 +1,4 @@
-import { FlashList, FlashListProps } from '@shopify/flash-list';
+import { FlashList, FlashListProps, ListRenderItem } from '@shopify/flash-list';
 import { NativeSyntheticEvent, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Button, Card, Chip, Text, useTheme } from 'react-native-paper';
 import { rgbToRgba, useColumns } from '@/utils';
@@ -147,8 +147,8 @@ export const CharacterList = (props: CharacterListProps) => {
         [],
     );
 
-    const RenderItem = useCallback(
-        ({ item }: { item: CharacterSearchQuery['Page']['characters'][0] }) => {
+    const RenderItem: ListRenderItem<CharacterSearchQuery['Page']['characters'][0]> = useCallback(
+        ({ item }) => {
             return (
                 <View style={{ alignItems: 'center', marginVertical: 15 }}>
                     <CharacterCard
@@ -216,8 +216,8 @@ export const StaffList = (props: StaffListProps) => {
         [],
     );
 
-    const RenderItem = useCallback(
-        ({ item }: { item: CharacterSearchQuery['Page']['characters'][0] }) => {
+    const RenderItem: ListRenderItem<StaffSearchQuery['Page']['staff'][0]> = useCallback(
+        ({ item }) => {
             return (
                 <View style={{ alignItems: 'center', marginVertical: 15 }}>
                     <StaffCard
@@ -285,8 +285,8 @@ export const StudioList = (props: StudioListProps) => {
         [],
     );
 
-    const RenderItem = useCallback(
-        ({ item }: { item: StudioSearchQuery['Page']['studios'][0] }) => {
+    const RenderItem: ListRenderItem<StudioSearchQuery['Page']['studios'][0]> = useCallback(
+        ({ item }) => {
             return (
                 <View style={{ flex: 1, width: '100%', alignItems: 'center', marginVertical: 15 }}>
                     <StudioCard
@@ -345,7 +345,7 @@ export const ImageSearchList = (props: ImageSearchListProps) => {
 
     const keyExtract = useCallback((item, index: number) => index.toString(), []);
 
-    const RenderItem = ({ item }: { item: Result }) => {
+    const RenderItem: ListRenderItem<Result> = ({ item }) => {
         return <ImageSearchItem item={item} />;
     };
 
@@ -391,27 +391,22 @@ export const WaifuSearchList = (props: WaifuSearchListProps) => {
         [],
     );
 
-    const RenderItem = useCallback(
-        ({
-            item,
-        }: {
-            item: CharacterSearchQuery['Page']['characters'][0] & { confidence: number };
-        }) => {
-            return (
-                <View style={{ alignItems: 'center', marginVertical: 15 }}>
-                    <CharacterCard
-                        onPress={() => router.push('/characters/info/' + item.id)}
-                        imgUrl={item.image?.large}
-                        name={item.name?.full}
-                        nativeName={item.name?.native}
-                        isFavourite={item.isFavourite}
-                        role={`${(item.confidence * 100).toFixed(2)}% Match`}
-                    />
-                </View>
-            );
-        },
-        [],
-    );
+    const RenderItem: ListRenderItem<
+        CharacterSearchQuery['Page']['characters'][0] & { confidence: number }
+    > = useCallback(({ item }) => {
+        return (
+            <View style={{ alignItems: 'center', marginVertical: 15 }}>
+                <CharacterCard
+                    onPress={() => router.push('/characters/info/' + item.id)}
+                    imgUrl={item.image?.large}
+                    name={item.name?.full}
+                    nativeName={item.name?.native}
+                    isFavourite={item.isFavourite}
+                    role={`${(item.confidence * 100).toFixed(2)}% Match`}
+                />
+            </View>
+        );
+    }, []);
 
     if (props.isLoading)
         return <EmptyLoadView isLoading={true} message={'May take some time (queuing system)'} />;
@@ -436,7 +431,7 @@ export const WaifuSearchList = (props: WaifuSearchListProps) => {
                 }}
                 ListEmptyComponent={() => (
                     <View style={{ flex: 1, alignItems: 'center' }}>
-                        <Text></Text>
+                        <Text>No Results</Text>
                     </View>
                 )}
             />
