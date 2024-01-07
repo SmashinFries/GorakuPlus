@@ -3,6 +3,7 @@ import {
     Avatar,
     Button,
     IconButton,
+    MD3DarkTheme,
     Portal,
     Text,
     useTheme,
@@ -188,7 +189,10 @@ const FavoriteItem = ({ images, title, size, delay, onPress }: FavoriteItemProps
                         alignItems: 'center',
                     }}
                 >
-                    <Text style={{ fontWeight: '900' }} variant="titleMedium">
+                    <Text
+                        style={{ fontWeight: '900', color: MD3DarkTheme.colors.onBackground }}
+                        variant="titleMedium"
+                    >
                         {title}
                     </Text>
                 </View>

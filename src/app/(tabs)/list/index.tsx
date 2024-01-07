@@ -175,7 +175,9 @@ const ListTabs = ({ type }: ListParams) => {
     return (
         <TabView
             navigationState={{ index, routes }}
-            renderScene={(props) => <ListScreen type={type} listName={props.route.title} />}
+            renderScene={(props) => (
+                <ListScreen type={type} listName={props.route.title as MediaListStatus} />
+            )}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
             renderTabBar={renderTabBar}
@@ -239,7 +241,7 @@ const ListPage = () => {
                 swipeEnabled={true}
             />
         );
-    }, []);
+    }, [colors]);
 
     return (
         <>
