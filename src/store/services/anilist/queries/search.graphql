@@ -264,6 +264,7 @@ query StaffSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [Staff
         }
         staff(search: $name, isBirthday: $isBirthday, sort: $sort) {
             id
+            isFavourite
             dateOfBirth {
                 year
                 month

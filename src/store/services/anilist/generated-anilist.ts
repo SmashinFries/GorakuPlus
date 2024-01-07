@@ -5217,7 +5217,7 @@ export type StaffSearchQueryVariables = Exact<{
 }>;
 
 
-export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
+export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
 
 export type StudioSearchQueryVariables = Exact<{
   name?: InputMaybe<Scalars['String']>;
@@ -7323,6 +7323,7 @@ export const StaffSearchDocument = `
     }
     staff(search: $name, isBirthday: $isBirthday, sort: $sort) {
       id
+      isFavourite
       dateOfBirth {
         year
         month
