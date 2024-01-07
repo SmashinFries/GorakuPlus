@@ -18,6 +18,7 @@ import {
 import { cleanFilter } from '@/utils/search/cleanFilter';
 import { useAppSelector } from '@/store/hooks';
 import {
+    SearchBody,
     SearchResult,
     useLazyGetSearchQuery,
     usePostSearchMutation,
@@ -87,7 +88,7 @@ export const useSearch = (searchType: SearchType) => {
             if (imageFormData) {
                 try {
                     const response = await searchLocalImage({
-                        searchBody: imageFormData,
+                        searchBody: imageFormData as SearchBody,
                         anilistInfo: 'true',
                         cutBorders: 'true',
                     }).unwrap();
