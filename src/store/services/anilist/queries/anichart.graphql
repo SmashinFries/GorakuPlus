@@ -8,6 +8,7 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
             id
             episode
             airingAt
+            timeUntilAiring
             media {
                 id
                 idMal

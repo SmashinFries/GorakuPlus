@@ -6,6 +6,7 @@ import {
     MediaRelation,
     MediaStatus,
     UserListCollectionQuery,
+    WeeklyAnimeQuery,
 } from '../generated-anilist';
 
 export const transformMediaDates = (media: AnimeTrendingQuery) => {
@@ -17,8 +18,29 @@ export const transformMediaDates = (media: AnimeTrendingQuery) => {
     for (const anime of newResponse?.Page?.media) {
         if (anime.nextAiringEpisode) {
             const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
-            const prefix = anime.format === MediaFormat.Movie ? 'Movie: ' : 'EP: ';
+            const prefix =
+                anime.format === MediaFormat.Movie
+                    ? 'Movie: '
+                    : `EP ${anime.nextAiringEpisode.episode}: `;
             anime.nextAiringEpisode.timeUntilAiring = prefix + timeTill;
+        }
+    }
+    return newResponse;
+};
+
+export const transformWeeklyDates = (media: WeeklyAnimeQuery) => {
+    const today = new Date().getTime() / 1000;
+    const newResponse = media;
+    // {format === MediaFormat.Movie ? 'Movie:' : 'EP'}{' '}
+    //                 {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
+    //                 {timeTill}
+    if (!newResponse?.Page) return newResponse;
+    for (const anime of newResponse?.Page?.airingSchedules) {
+        if (anime.airingAt) {
+            const timeTill = getTimeUntil(anime.airingAt);
+            const prefix =
+                anime.media.format === MediaFormat.Movie ? 'Movie: ' : `EP ${anime.episode}: `;
+            anime.timeUntilAiring = anime.airingAt < today ? 'Aired' : prefix + timeTill;
         }
     }
     return newResponse;

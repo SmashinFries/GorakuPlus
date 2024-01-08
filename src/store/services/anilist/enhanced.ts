@@ -6,6 +6,7 @@ import {
     transformListDates,
     transformMediaDates,
     transformMediaSorts,
+    transformWeeklyDates,
 } from './utils/transformQuery';
 
 // function sortAiring(data: any[]) {
@@ -683,6 +684,11 @@ export const api = generatedApi.enhanceEndpoints({
                           })),
                       ]
                     : ['StudiosFav'],
+        },
+        WeeklyAnime: {
+            transformResponse(baseQueryReturnValue, meta, arg) {
+                return transformWeeklyDates(baseQueryReturnValue);
+            },
         },
     },
 });
