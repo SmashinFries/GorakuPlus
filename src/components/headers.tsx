@@ -35,7 +35,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { updateListFilter } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
@@ -368,6 +368,7 @@ export const FadeHeaderProvider = ({
         useHeaderAnim(animationRange[0], animationRange[1]);
     const { width, height } = useWindowDimensions();
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
+    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
 
     const notifRotation = useSharedValue(0);
 
@@ -526,6 +527,7 @@ export const FadeHeaderProvider = ({
             headerTransparent: true,
             headerShown: loading ? false : true,
             header: (props) => <Header />,
+            animation: navAnimation,
         });
     }, [loading]);
 
@@ -569,16 +571,19 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
     // const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
+    useFocusEffect(() => {
         const backAction = () => {
+            console.log('back triggered!');
             setIsOpen(false);
             return true;
         };
 
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-        return () => backHandler.remove();
-    }, []);
+        return () => {
+            backHandler.remove();
+        };
+    });
 
     const { right, left } = useSafeAreaInsets();
 
