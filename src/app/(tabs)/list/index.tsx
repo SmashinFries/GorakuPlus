@@ -238,7 +238,7 @@ const ListPage = () => {
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={{ width: layout.width }}
-                renderTabBar={RenderTabBar}
+                renderTabBar={(props) => <RenderTabBar {...props} disableAutoWidth />}
                 swipeEnabled={true}
             />
         );
