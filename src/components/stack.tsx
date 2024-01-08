@@ -9,8 +9,8 @@ const AnimatedStack = (props: StackProps) => {
         <Stack
             {...props}
             screenOptions={{
-                animation: navAnimation,
                 ...props.screenOptions,
+                animation: navAnimation,
             }}
         >
             {props.children}
