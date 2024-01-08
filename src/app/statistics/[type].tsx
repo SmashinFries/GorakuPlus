@@ -1,12 +1,22 @@
 import { GeneralStatBlock } from '@/components/statistics/blocks';
 import { CountryPie, FormatPie, StatusPie } from '@/components/statistics/pies';
+import { RenderTabBar } from '@/components/tab';
 import { useUserAnimeStats, useUserMangaStats } from '@/hooks/statistics/useStats';
 import { useAppSelector } from '@/store/hooks';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
-import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import {
+    NavigationState,
+    Route,
+    SceneMap,
+    SceneRendererProps,
+    TabBar,
+    TabBarIndicator,
+    TabBarItem,
+    TabView,
+} from 'react-native-tab-view';
 
 const AnimeStatTab = () => {
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
@@ -160,19 +170,6 @@ const StatisticsPage = () => {
         { key: 'anime', title: 'Anime' },
         { key: 'manga', title: 'Manga' },
     ]);
-    const { colors } = useTheme();
-
-    const renderTabBar = (props) => (
-        <TabBar
-            {...props}
-            tabStyle={{ paddingTop: 10 }}
-            indicatorStyle={{ backgroundColor: colors.primary }}
-            style={{ backgroundColor: colors.surface }}
-            labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
-            scrollEnabled={true}
-            android_ripple={{ color: colors.primary, borderless: true }}
-        />
-    );
 
     const renderScene = SceneMap({
         anime: AnimeStatTab,
@@ -186,7 +183,7 @@ const StatisticsPage = () => {
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={{ width: layout.width }}
-                renderTabBar={renderTabBar}
+                renderTabBar={RenderTabBar}
                 swipeEnabled={true}
             />
         </>

@@ -1,5 +1,6 @@
 import { NetworkError } from '@/components/error';
 import { RefreshableScroll, SectionScrollMem } from '@/components/explore/lists';
+import { RenderTabBar } from '@/components/tab';
 import {
     useAnimeExplorer,
     useMangaExplorer,
@@ -302,7 +303,7 @@ const ExplorePage = () => {
             renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
-            renderTabBar={renderTabBar}
+            renderTabBar={RenderTabBar}
             swipeEnabled={true}
         />
     );

@@ -1,5 +1,6 @@
 import { CalendarFilterSheet } from '@/components/calendar/bottomsheet';
 import { DayTab } from '@/components/calendar/tabs';
+import { RenderTabBar } from '@/components/tab';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
 import { useAppSelector } from '@/store/hooks';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -146,7 +147,7 @@ const CalendarPage = () => {
                     renderScene={renderScene}
                     onIndexChange={setIndex}
                     initialLayout={{ width: layout.width }}
-                    renderTabBar={renderTabBar}
+                    renderTabBar={RenderTabBar}
                     swipeEnabled={true}
                 />
             ) : (

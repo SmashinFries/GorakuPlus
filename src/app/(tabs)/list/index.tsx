@@ -1,6 +1,7 @@
 import { MediaCard } from '@/components/cards';
 import { ListHeader } from '@/components/headers';
 import { ListFilterSheet } from '@/components/list/filtersheet';
+import { RenderTabBar } from '@/components/tab';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
     MediaListSort,
@@ -180,7 +181,7 @@ const ListTabs = ({ type }: ListParams) => {
             )}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
-            renderTabBar={renderTabBar}
+            renderTabBar={RenderTabBar}
             swipeEnabled={true}
         />
     );
@@ -237,7 +238,7 @@ const ListPage = () => {
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={{ width: layout.width }}
-                renderTabBar={renderTabBar}
+                renderTabBar={RenderTabBar}
                 swipeEnabled={true}
             />
         );
