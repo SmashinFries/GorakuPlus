@@ -9,6 +9,7 @@ import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
 import {
     AnilistIcon,
+    AnimeThemesIcon,
     DanbooruIcon,
     GumroadIcon,
     MalIcon,
@@ -96,6 +97,23 @@ const AboutPage = () => {
                         }
                         label="Danbooru"
                         icon={() => <DanbooruIcon />}
+                        transparentBg
+                    />
+                    <LinkButton
+                        url={'https://animethemes.moe/'}
+                        label="AnimeThemes"
+                        icon={() => <AnimeThemesIcon />}
+                        transparentBg
+                    />
+                    <LinkButton
+                        url={'https://trace.moe/'}
+                        label="trace.moe"
+                        icon={(props) => (
+                            <Image
+                                source={{ uri: 'https://trace.moe/favicon128.png' }}
+                                style={{ height: 46, width: 46 }}
+                            />
+                        )}
                         transparentBg
                     />
                     {/* <LinkButton
