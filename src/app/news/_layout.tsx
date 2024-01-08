@@ -1,13 +1,10 @@
 import PaperHeader from '@/components/headers';
-import { useAppSelector } from '@/store/hooks';
-import { Stack } from 'expo-router';
+import AnimatedStack from '@/components/stack';
 
 const NewsLayout = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     return (
-        <Stack
+        <AnimatedStack
             screenOptions={{
-                animation: navAnimation,
                 header: (props) => <PaperHeader {...props} />,
                 title: 'News',
             }}

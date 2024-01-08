@@ -21,6 +21,7 @@ import { displayNotification, parseNotif } from '@/utils/notifications/backgroun
 import { setStatusBarStyle } from 'expo-status-bar';
 import { ToastAndroid } from 'react-native';
 import Constants from 'expo-constants';
+import AnimatedStack from '@/components/stack';
 
 if (typeof window !== 'undefined') {
     // @ts-ignore
@@ -138,10 +139,7 @@ const AppProvider = () => {
                 }
             >
                 <BottomSheetModalProvider>
-                    <Stack
-                        initialRouteName="(tabs)"
-                        screenOptions={{ headerShown: false, animation: navAnimation }}
-                    >
+                    <AnimatedStack initialRouteName="(tabs)" screenOptions={{ headerShown: false }}>
                         <Stack.Screen name="(tabs)" />
                         <Stack.Screen
                             name="(media)/[...params]"
@@ -168,7 +166,7 @@ const AppProvider = () => {
                                 headerShown: true,
                             }}
                         />
-                    </Stack>
+                    </AnimatedStack>
                     <Portal>
                         <UpdateDialog
                             visible={showUpdateDialog}

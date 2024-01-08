@@ -1,13 +1,12 @@
 import PaperHeader, { ExploreHeader } from '@/components/headers';
+import AnimatedStack from '@/components/stack';
 import { useAppSelector } from '@/store/hooks';
 import { Slot, Stack } from 'expo-router';
 
 const ExploreLayout = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     return (
-        <Stack
+        <AnimatedStack
             screenOptions={{
-                animation: navAnimation,
                 header: (props) => <PaperHeader {...props} />,
             }}
         >
@@ -16,7 +15,7 @@ const ExploreLayout = () => {
                 options={{ title: 'Explore', header: (props) => <ExploreHeader {...props} /> }}
             />
             <Stack.Screen name="search" options={{ title: 'Search' }} />
-        </Stack>
+        </AnimatedStack>
     );
 };
 

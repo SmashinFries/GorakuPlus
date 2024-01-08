@@ -1,10 +1,12 @@
+import AnimatedStack from '@/components/stack';
+import { useAppSelector } from '@/store/hooks';
 import { Stack } from 'expo-router';
 
 const MediaLayout = () => {
     return (
-        <Stack screenOptions={{ headerShown: false }}>
+        <AnimatedStack screenOptions={{ headerShown: false }}>
             <Stack.Screen name={'[...params]'} getId={(params) => params?.params?.params} />
-        </Stack>
+        </AnimatedStack>
     );
 };
 

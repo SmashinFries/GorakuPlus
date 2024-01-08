@@ -1,13 +1,12 @@
 import PaperHeader from '@/components/headers';
+import AnimatedStack from '@/components/stack';
 import { useAppSelector } from '@/store/hooks';
 import { Stack } from 'expo-router';
 
 const StaffLayout = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     return (
-        <Stack
+        <AnimatedStack
             screenOptions={{
-                animation: navAnimation,
                 header: (props) => <PaperHeader {...props} />,
                 headerTransparent: false,
             }}
@@ -18,7 +17,7 @@ const StaffLayout = () => {
                 getId={(params) => params.params?.mediaId}
             />
             <Stack.Screen name="info" options={{ title: '', headerShown: false }} />
-        </Stack>
+        </AnimatedStack>
     );
 };
 

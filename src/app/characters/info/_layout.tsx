@@ -1,10 +1,11 @@
+import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 
 const CharacterInfoLayout = () => {
     return (
-        <Stack screenOptions={{ headerShown: false }}>
+        <AnimatedStack screenOptions={{ headerShown: false }}>
             <Stack.Screen name={'[charId]'} getId={(params) => params?.params?.charId} />
-        </Stack>
+        </AnimatedStack>
     );
 };
 

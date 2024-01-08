@@ -1,4 +1,5 @@
 import PaperHeader, { MoreHeader } from '@/components/headers';
+import AnimatedStack from '@/components/stack';
 import { useAppSelector } from '@/store/hooks';
 import { Stack } from 'expo-router';
 
@@ -8,11 +9,9 @@ export const unstable_settings = {
 };
 
 const SettingsLayout = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     return (
-        <Stack
+        <AnimatedStack
             screenOptions={{
-                animation: navAnimation,
                 header: (props) => <PaperHeader {...props} />,
             }}
         >
@@ -21,7 +20,7 @@ const SettingsLayout = () => {
             <Stack.Screen name="language" options={{ title: 'Language' }} />
             <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
             <Stack.Screen name="media" options={{ title: 'Media', headerShown: false }} />
-        </Stack>
+        </AnimatedStack>
     );
 };
 

@@ -1,13 +1,11 @@
-import PaperHeader, { ExploreHeader, FavoritesHeader } from '@/components/headers';
-import { useAppSelector } from '@/store/hooks';
+import { FavoritesHeader } from '@/components/headers';
+import AnimatedStack from '@/components/stack';
 import { Slot, Stack } from 'expo-router';
 
 const FavoritesLayout = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     return (
-        <Stack
+        <AnimatedStack
             screenOptions={{
-                animation: navAnimation,
                 headerShown: true,
             }}
         >
@@ -15,7 +13,7 @@ const FavoritesLayout = () => {
                 name="[tab]"
                 options={{ title: 'Favorites', header: (props) => <FavoritesHeader {...props} /> }}
             />
-        </Stack>
+        </AnimatedStack>
     );
 };
 

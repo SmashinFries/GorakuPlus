@@ -1,12 +1,8 @@
 import PaperHeader from '@/components/headers';
-import { Stack } from 'expo-router';
+import AnimatedStack from '@/components/stack';
 
 const StatisticsLayout = () => {
-    return (
-        <Stack
-            screenOptions={{ title: 'Statistics', header: (props) => <PaperHeader {...props} /> }}
-        />
-    );
+    return <AnimatedStack screenOptions={{ title: 'Statistics', headerShown: false }} />;
 };
 
 export default StatisticsLayout;

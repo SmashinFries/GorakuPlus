@@ -1,14 +1,11 @@
 import PaperHeader from '@/components/headers';
-import { useAppSelector } from '@/store/hooks';
+import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 
 const CharacterLayout = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
-
     return (
-        <Stack
+        <AnimatedStack
             screenOptions={{
-                animation: navAnimation,
                 header: (props) => <PaperHeader {...props} />,
             }}
         >
@@ -18,29 +15,7 @@ const CharacterLayout = () => {
                 getId={(params) => params.params?.params}
             />
             <Stack.Screen name="info" options={{ title: '', headerShown: false }} />
-        </Stack>
-        // <CharStackNav.Navigator
-        //     screenOptions={{
-        //         animation: navAnimation,
-        //         header: (props) => <PaperHeader {...props} />,
-        //     }}
-        //     initialRouteName="characterList"
-        // >
-        //     <CharStackNav.Screen
-        //         name="characterList"
-        //         component={CharListScreen}
-        //         options={{
-        //             title: 'Characters',
-        //         }}
-        //     />
-        //     <CharStackNav.Screen
-        //         name="character"
-        //         component={CharacterScreen}
-        //         options={{
-        //             title: '',
-        //         }}
-        //     />
-        // </CharStackNav.Navigator>
+        </AnimatedStack>
     );
 };
 
