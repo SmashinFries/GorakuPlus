@@ -159,6 +159,7 @@ query ExploreMedia(
             episodes
             chapters
             volumes
+            status
             title {
                 english
                 native
@@ -168,6 +169,7 @@ query ExploreMedia(
             coverImage {
                 medium
                 large
+                color
                 extraLarge
             }
             meanScore
