@@ -7,27 +7,37 @@ import {
     TabBarIndicator,
 } from 'react-native-tab-view';
 
+const TAB_MARGIN = 24;
+
 export const RenderTabBar = (
     props: SceneRendererProps & {
         navigationState: NavigationState<any>;
+        disableAutoWidth?: boolean;
     },
 ) => {
     const { colors } = useTheme();
-    const [titleWidth, setTitleWidth] = useState<number>(20);
+    // const [titleWidth, setTitleWidth] = useState<number>(20);
     return (
         <TabBar
             {...props}
-            tabStyle={{ paddingTop: 10 }}
-            indicatorStyle={{
-                backgroundColor: colors.primary,
-                borderRadius: 12,
-                height: 4,
-                width: titleWidth,
+            tabStyle={{
+                paddingTop: 10,
+                width:
+                    props.disableAutoWidth || props.navigationState?.routes.length < 3
+                        ? undefined
+                        : 'auto',
+                marginHorizontal: 20,
             }}
+            // indicatorStyle={{
+            //     backgroundColor: colors.primary,
+            //     borderRadius: 12,
+            //     height: 4,
+            //     width: titleWidth,
+            // }}
             style={{
                 backgroundColor: colors.surface,
-                borderBottomColor: colors.elevation.level3,
-                borderBottomWidth: 0.5,
+                borderBottomColor: colors.elevation.level5,
+                borderBottomWidth: 0.8,
             }}
             labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
             renderLabel={({ route, focused }) => (
@@ -36,29 +46,41 @@ export const RenderTabBar = (
                         textTransform: 'capitalize',
                         color: focused ? colors.primary : colors.onBackground,
                     }}
-                    onLayout={(e) => setTitleWidth(e.nativeEvent.layout.width)}
+                    // onLayout={(e) => setTitleWidth(e.nativeEvent.layout.width)}
                 >
                     {route.title}
                 </Text>
             )}
+            indicatorStyle={{
+                backgroundColor: colors.primary,
+                borderRadius: 12,
+                height: 4,
+                left: TAB_MARGIN / 2,
+            }}
             renderIndicator={(indicatorProps) => {
-                const width =
-                    indicatorProps.getTabWidth(props.navigationState.index) - titleWidth - 15;
                 return (
                     <TabBarIndicator
                         {...indicatorProps}
-                        style={{
-                            justifyContent: 'center',
-                            alignSelf: 'center',
-                            backgroundColor: colors.primary,
-                            borderRadius: 12,
-                            height: 4,
-                            width: titleWidth + 15,
-                            left: width / 2,
-                        }}
+                        width={indicatorProps.getTabWidth(props.navigationState.index) - TAB_MARGIN}
                     />
                 );
             }}
+            // renderIndicator={(indicatorProps) => {
+            //     const width = indicatorProps.getTabWidth(props.navigationState.index);
+            //     return (
+            //         <TabBarIndicator
+            //             {...indicatorProps}
+            //             style={{
+            //                 justifyContent: 'center',
+            //                 alignSelf: 'center',
+            //                 backgroundColor: colors.primary,
+            //                 borderRadius: 12,
+            //                 height: 4,
+            //                 // width: width / 3,
+            //             }}
+            //         />
+            //     );
+            // }}
             scrollEnabled={props.navigationState.routes.length > 3 ? true : false}
             android_ripple={{ color: colors.primary, borderless: true }}
         />
