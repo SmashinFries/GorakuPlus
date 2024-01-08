@@ -74,7 +74,8 @@ export const DayTab = ({ data, headerHeight }: DayTabProps) => {
                         averageScore={item.media?.averageScore}
                         meanScore={item.media?.meanScore}
                         showBanner
-                        bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
+                        bannerText={item.timeUntilAiring}
+                        // bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
                         navigate={() => {
                             // console.log(
                             //     `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
