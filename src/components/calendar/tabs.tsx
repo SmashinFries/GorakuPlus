@@ -52,19 +52,17 @@ const RenderEmpty = ({ message }: { message: string }) => {
 
 type DayTabProps = {
     data: WeeklyAnimeQuery['Page']['airingSchedules'];
-    headerHeight: number;
 };
-export const DayTab = ({ data, headerHeight }: DayTabProps) => {
-    const today = new Date().getTime() / 1000; // seconds
+export const DayTab = ({ data }: DayTabProps) => {
     const { columns, listKey } = useColumns(150);
     const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
     const { showListOnly } = useAppSelector((state) => state.calendarFilter);
-    const { height } = useWindowDimensions();
 
     const { dismissAll: dismissAllModals } = useBottomSheetModal();
 
     const RenderItem = React.useCallback(
         ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
+            const bannerText = item.timeUntilAiring as unknown as string;
             return (
                 <View style={{ padding: 15 }}>
                     <MediaCard
@@ -74,7 +72,7 @@ export const DayTab = ({ data, headerHeight }: DayTabProps) => {
                         averageScore={item.media?.averageScore}
                         meanScore={item.media?.meanScore}
                         showBanner
-                        bannerText={item.timeUntilAiring}
+                        bannerText={bannerText}
                         // bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
                         navigate={() => {
                             // console.log(
@@ -104,13 +102,14 @@ export const DayTab = ({ data, headerHeight }: DayTabProps) => {
             <FlashList
                 key={listKey}
                 data={data?.filter((ep) => (showListOnly ? ep.media?.mediaListEntry : true))}
+                // data={[]}
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={columns}
                 estimatedItemSize={211}
                 centerContent
                 ListEmptyComponent={() => (
-                    <View style={{ height: height - headerHeight * 2 }}>
+                    <View style={{ paddingVertical: 50 }}>
                         <RenderEmpty message={'Nothing to watch'} />
                     </View>
                 )}
