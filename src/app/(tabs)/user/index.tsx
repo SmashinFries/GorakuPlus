@@ -49,7 +49,7 @@ const UserPage = () => {
     const dismissAddFriend = useCallback(() => setShowAddFriend(false), []);
 
     const navToStats = () => {
-        router.push('/statistics');
+        router.push('/statistics/anime');
         // navigation.navigate('statistics', { userId: userID });
     };
 
