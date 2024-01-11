@@ -146,23 +146,6 @@ const WeebLabPage = () => {
         }
     };
 
-    // useEffect(() => {
-    //     if (owoDetails.error || uvuDetails.error || uwuDetails.error) {
-    //         // console.log(uvuDetails.error?.status);
-    //         ToastAndroid.show(
-    //             `Could not generate text! Error code: ${
-    //                 owoDetails.isError
-    //                     ? owoDetails.error?.status
-    //                     : uvuDetails.isError
-    //                     ? uvuDetails.error?.status
-    //                     : uwuDetails.error?.status
-    //             }`,
-    //             ToastAndroid.SHORT,
-    //         );
-    //     }
-    // }, [owoDetails, uvuDetails, uwuDetails]);
-
-    // const [] =
     return (
         <>
             <Stack.Screen options={{ title: 'Weeb Lab' }} />
