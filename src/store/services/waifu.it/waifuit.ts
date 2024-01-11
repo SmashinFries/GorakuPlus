@@ -10,7 +10,7 @@ import {
 } from './types';
 import { RootState } from '@/store/store';
 
-const WAIFUIT_URL = 'https://waifu.it/api';
+const WAIFUIT_URL = 'https://waifu.it/api/v4';
 
 const waifuItAPI = createApi({
     baseQuery: fetchBaseQuery({
