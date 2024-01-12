@@ -1,11 +1,12 @@
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import { impactAsync, ImpactFeedbackStyle } from 'expo-haptics';
-import { ToastAndroid } from 'react-native';
 import { Button, Dialog, Text } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import * as Burnt from 'burnt';
+import { TOAST } from '@/constants/toast';
 
 export const saveImage = async (url: string, name = null) => {
     const { status } = await MediaLibrary.requestPermissionsAsync();
@@ -16,9 +17,9 @@ export const saveImage = async (url: string, name = null) => {
             const result = await FileSystem.downloadAsync(url, fileUri);
             await MediaLibrary.saveToLibraryAsync(result.uri);
             await impactAsync(ImpactFeedbackStyle.Light);
-            ToastAndroid.show('Image Saved', ToastAndroid.SHORT);
+            Burnt.toast({ title: 'Image Saved', duration: TOAST.SHORT });
         } catch (e) {
-            ToastAndroid.show('Image failed to save', ToastAndroid.LONG);
+            Burnt.toast({ title: 'Image failed to save', duration: TOAST.LONG });
         }
     }
 };

@@ -9,7 +9,6 @@ import {
     Share,
     StyleSheet,
     TextInput,
-    ToastAndroid,
     View,
     useWindowDimensions,
 } from 'react-native';
@@ -94,22 +93,7 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
             )}
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title} />
-            {/* <Appbar.Action
-                icon="crystal-ball"
-                iconColor={colors.surfaceVariant}
-                onPress={() => ToastAndroid.show('Randomizer coming soon!', ToastAndroid.LONG)}
-            /> */}
-            <Appbar.Action
-                icon="barcode-scan"
-                // iconColor={colors.surfaceVariant}
-                // onPress={() => ToastAndroid.show('Barcode search coming soon!', ToastAndroid.LONG)}
-                onPress={() => setShowBCDialog(true)}
-            />
-            {/* <Appbar.Action
-                icon="image-search-outline"
-                iconColor={colors.surfaceVariant}
-                onPress={() => ToastAndroid.show('Image search coming soon!', ToastAndroid.LONG)}
-            /> */}
+            <Appbar.Action icon="barcode-scan" onPress={() => setShowBCDialog(true)} />
             <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
             <Portal>
                 <BarcodeScanDialog
@@ -609,13 +593,6 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
                         icon={'arrow-left'}
                         onIconPress={() => setIsOpen(false)}
                         mode="bar"
-                        // traileringIcon={'filter-outline'}
-                        // onTraileringIconPress={() =>
-                        //     ToastAndroid.show(
-                        //         'Filter/Display options coming soon!',
-                        //         ToastAndroid.LONG,
-                        //     )
-                        // }
                     />
                 </Animated.View>
             ) : (
@@ -672,27 +649,12 @@ export const FavoritesHeader = ({ navigation, options, route, back }: NativeStac
                         }}
                         placeholder={'Search favorites...'}
                         mode="bar"
-                        // traileringIcon={'filter-outline'}
-                        // onTraileringIconPress={() =>
-                        //     ToastAndroid.show(
-                        //         'Filter/Display options coming soon!',
-                        //         ToastAndroid.LONG,
-                        //     )
-                        // }
                     />
                 </Animated.View>
             ) : (
                 <Appbar.Content title={'Favorites'} />
             )}
             {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
-            {/* {!isOpen && (
-                <Appbar.Action
-                    icon="filter-outline"
-                    onPress={() =>
-                        ToastAndroid.show('Filter/Display options coming soon!', ToastAndroid.LONG)
-                    }
-                />
-            )} */}
         </Appbar.Header>
     );
 };

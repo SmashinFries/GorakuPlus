@@ -19,7 +19,6 @@ import PaperHeader from '@/components/headers';
 import { api } from '@/store/services/anilist/enhanced';
 import { displayNotification, parseNotif } from '@/utils/notifications/backgroundFetch';
 import { setStatusBarStyle } from 'expo-status-bar';
-import { ToastAndroid } from 'react-native';
 import Constants from 'expo-constants';
 import AnimatedStack from '@/components/stack';
 

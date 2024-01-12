@@ -25,9 +25,9 @@ import {
 } from '@/store/services/tracemoe/traceMoeApi';
 import { SearchType } from '@/types/search';
 import { getImageB64, selectImage } from '@/utils/images';
-import { ToastAndroid } from 'react-native';
 import { useLazyPredictWaifuQuery } from '@/store/services/huggingface/wdTagger';
-import { WdTaggerOutput } from '@/store/services/huggingface/types';
+import * as Burnt from 'burnt';
+import { TOAST } from '@/constants/toast';
 
 export const useSearch = (searchType: SearchType) => {
     const [searchTrigger, searchStatus] = useLazyExploreMediaQuery();
@@ -78,10 +78,10 @@ export const useSearch = (searchType: SearchType) => {
                 const response = await searchImageUrl({ url, anilistInfo: 'true' }).unwrap();
                 setImageSearchResults(response);
             } catch (e) {
-                ToastAndroid.show(
-                    `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
-                    ToastAndroid.LONG,
-                );
+                Burnt.toast({
+                    title: `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
+                    duration: TOAST.LONG,
+                });
             }
         } else {
             const imageFormData = await selectImage(camera);
@@ -94,13 +94,13 @@ export const useSearch = (searchType: SearchType) => {
                     }).unwrap();
                     setImageSearchResults(response);
                 } catch (e) {
-                    ToastAndroid.show(
-                        `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
-                        ToastAndroid.LONG,
-                    );
+                    Burnt.toast({
+                        title: `Error ${e?.status} - ${e?.data?.error?.split('http')[0]}`,
+                        duration: TOAST.LONG,
+                    });
                 }
             } else {
-                ToastAndroid.show('Could not process imag.', ToastAndroid.LONG);
+                Burnt.toast({ title: 'Could not process image', duration: TOAST.LONG });
             }
         }
     };
@@ -130,10 +130,10 @@ export const useSearch = (searchType: SearchType) => {
                     }
                 }
             } catch (e) {
-                ToastAndroid.show('Something went wrong... 😅', ToastAndroid.LONG);
+                Burnt.toast({ title: 'Something went wrong... 😅', duration: TOAST.LONG });
             }
         } else {
-            ToastAndroid.show('Could not process imag.', ToastAndroid.LONG);
+            Burnt.toast({ title: 'Could not process image', duration: TOAST.LONG });
         }
     };
 

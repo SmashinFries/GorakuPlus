@@ -1,7 +1,4 @@
-import { Api } from '@reduxjs/toolkit/dist/query';
-import { isSame } from '../../../utils/sort';
-import { ExploreMediaQuery, api as generatedApi } from './generated-anilist';
-import { ToastAndroid } from 'react-native';
+import { api as generatedApi } from './generated-anilist';
 import {
     transformListDates,
     transformMediaDates,

@@ -23,7 +23,7 @@ import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { Stack, router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, Share, ToastAndroid, View } from 'react-native';
+import { ScrollView, Share, View } from 'react-native';
 import {
     ActivityIndicator,
     Banner,
@@ -39,6 +39,8 @@ import {
     useTheme,
 } from 'react-native-paper';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import * as Burnt from 'burnt';
+import { TOAST } from '@/constants/toast';
 
 type TextInputContainerProps = {
     label: string;
@@ -113,10 +115,7 @@ const WeebLabPage = () => {
                     const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
                     setGeneratedText(owoifyResult.text);
                 } catch (e) {
-                    ToastAndroid.show(
-                        `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-                        ToastAndroid.SHORT,
-                    );
+                    Burnt.toast({ title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`, duration: TOAST.SHORT });
                 }
                 break;
             case TextGenOptions.uvuify:
@@ -124,10 +123,7 @@ const WeebLabPage = () => {
                     const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
                     setGeneratedText(uvuifyResult.text);
                 } catch (e) {
-                    ToastAndroid.show(
-                        `Error code: ${e?.status} --> ${e?.data?.statusMessage}`,
-                        ToastAndroid.SHORT,
-                    );
+                    Burnt.toast({ title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`, duration: TOAST.SHORT });
                 }
 
                 break;
@@ -136,10 +132,7 @@ const WeebLabPage = () => {
                     const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
                     setGeneratedText(uwuifyResult.text);
                 } catch (e) {
-                    ToastAndroid.show(
-                        `Error code: ${e?.status} --> ${e?.data?.statusMessage}`,
-                        ToastAndroid.SHORT,
-                    );
+                    Burnt.toast({ title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`, duration: TOAST.SHORT });
                 }
 
                 break;

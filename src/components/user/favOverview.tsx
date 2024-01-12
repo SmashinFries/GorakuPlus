@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ScrollView, StyleSheet, ToastAndroid, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { Text, useTheme } from 'react-native-paper';
 import { useSlideshow } from '@/hooks/slideshow';
@@ -7,6 +7,8 @@ import { UserOverviewQuery } from '@/store/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Selectable } from '../moti';
 import { ListHeading } from '../text';
+import { TOAST } from '@/constants/toast';
+import * as Burnt from 'burnt';
 
 type FavItemProps = {
     title: string;
@@ -19,7 +21,7 @@ export const FavItem = ({ images, onPress, title }: FavItemProps) => {
     return (
         <Selectable
             style={styles.container}
-            onPress={() => ToastAndroid.show('Favorites coming soon!', ToastAndroid.LONG)}
+            onPress={() => Burnt.toast({ title: 'Favorites coming soon!', duration: TOAST.SHORT })}
         >
             <MotiView
                 style={[

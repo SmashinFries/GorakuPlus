@@ -1,6 +1,6 @@
-import { Share, StyleSheet, ToastAndroid } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
-import { Divider, IconButton, Text, Tooltip, useTheme } from 'react-native-paper';
+import { IconButton, Tooltip, useTheme } from 'react-native-paper';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type InteractionBarProps = {

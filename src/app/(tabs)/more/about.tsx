@@ -3,7 +3,6 @@ import { Linking, ScrollView, View } from 'react-native';
 
 import * as Updates from 'expo-updates';
 import Constants from 'expo-constants';
-import { ToastAndroid } from 'react-native';
 import { ActivityIndicator, Button, List, Portal, Text } from 'react-native-paper';
 import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
@@ -18,6 +17,8 @@ import {
 import { useAppSelector } from '@/store/hooks';
 import { Image } from 'expo-image';
 import { UpdateDialog } from '@/components/updates';
+import * as Burnt from 'burnt';
+import { TOAST } from '@/constants/toast';
 
 const AboutPage = () => {
     const { showNSFW } = useAppSelector((state) => state.persistedSettings);
@@ -35,7 +36,7 @@ const AboutPage = () => {
             setUpdateLink(jsonResult[0]?.assets[0]?.browser_download_url);
             setShowUpdateDialog(true);
         } else {
-            ToastAndroid.show('No updates available', ToastAndroid.SHORT);
+            Burnt.toast({ title: 'No updates available', duration: TOAST.SHORT });
         }
         setIsCheckingUpdates(false);
     };

@@ -1,7 +1,7 @@
 import { AnimatePresence, MotiView } from 'moti';
 import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
 import { User } from '@/store/services/anilist/generated-anilist';
-import { ScrollView, ToastAndroid } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Selectable } from '../moti';
 import { openWebBrowser } from '@/utils/webBrowser';
 

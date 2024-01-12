@@ -25,7 +25,8 @@ import {
     useLazyRetrieveSeriesQuery,
     useSearchSeriesPostMutation,
 } from '@/store/services/mangaupdates/mangaUpdatesApi';
-import { ToastAndroid } from 'react-native';
+import * as Burnt from 'burnt';
+import { TOAST } from '@/constants/toast';
 
 export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?: number) => {
     const dispatch = useAppDispatch();
@@ -83,7 +84,7 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
                     id: muId ? muId : searchResults?.results[0]?.record?.series_id,
                 }).unwrap();
             } catch (e) {
-                ToastAndroid.show(`Manga Updates - Error ${e?.status}`, ToastAndroid.LONG);
+                Burnt.toast({ title: `Manga Updates - Error ${e?.status}`, duration: TOAST.LONG });
             }
             setIsMuLoading(false);
         } else {
