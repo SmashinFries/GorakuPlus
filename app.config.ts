@@ -7,7 +7,7 @@ const appName = IS_DEV ? 'Goraku Dev' : 'Goraku';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config,
-    owner: 'kuzutech',
+    owner: 'kuzulabz',
     slug: 'GorakuPlus',
     name: appName,
     version: '1.0',
@@ -60,7 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             ? './GoogleService-Info-dev.plist'
             : './GoogleService-Info.plist',
         supportsTablet: false,
-        bundleIdentifier: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
+        bundleIdentifier: IS_DEV ? 'com.kuzulabz.gorakuplus.dev' : 'com.kuzulabz.gorakuplus',
     },
     android: {
         package: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
