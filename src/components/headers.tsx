@@ -59,7 +59,7 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
     const [showBCDialog, setShowBCDialog] = useState(false);
 
     return (
-        <Appbar.Header>
+        <Appbar.Header mode="small">
             {mode === 'punpun' && (
                 <MotiView
                     from={{ translateX: width }}
