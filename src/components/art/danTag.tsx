@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import { Button, Chip, Portal } from 'react-native-paper';
+import { Button, Chip, MD3Colors, MD3DarkTheme, MD3LightTheme, Portal } from 'react-native-paper';
 import { ListHeading } from '../text';
 import { copyToClipboard } from '../../utils';
 import { useState } from 'react';
@@ -17,6 +17,7 @@ export const TagItem = ({ tag, color, onPress }: DanbooruTag) => {
             compact
             onPress={() => onPress(tag)}
             onLongPress={() => copyToClipboard(tag)}
+            textStyle={{ color: MD3DarkTheme.colors.onBackground }}
             style={{ margin: 8, backgroundColor: color }}
         >
             {tag}
