@@ -66,7 +66,7 @@ export const useHeaderAnim = (start = 40, end = 110) => {
     });
 
     const bgImageStyle = useAnimatedStyle(() => {
-        const scale = interpolate(scrollY.value, [0, start], [1.05, 1.1]);
+        const scale = interpolate(scrollY.value, [0, start], [1.05, 1.1], Extrapolate.CLAMP);
         return {
             transform: [{ translateY: bgTransY.value }, { scale: scale }],
         };
@@ -79,7 +79,7 @@ export const useHeaderAnim = (start = 40, end = 110) => {
         (currentValue, previousValue) => {
             if (currentValue !== previousValue) {
                 // bgTransY.value = withSpring(-(currentValue / 2), { damping: 10, mass: 0.5 });
-                bgTransY.value = -(currentValue / 3);
+                bgTransY.value = currentValue <= 0 ? 0 : -(currentValue / 3);
             }
         },
     );
@@ -175,7 +175,7 @@ export const ExpandableDescription = ({
     toggleUwuifier,
     children,
 }: AnimateHeightProps) => {
-    const { colors } = useTheme();
+    const { colors, dark } = useTheme();
     const height = useSharedValue(initialHeight);
     const [totalHeight, setTotalHeight] = useState<number>(0);
     const [currentHeight, setCurrentHeight] = useState<number>(initialHeight);
@@ -224,7 +224,7 @@ export const ExpandableDescription = ({
                 </View>
                 {!isExpanded && (
                     <LinearGradient
-                        colors={['transparent', colors.background]}
+                        colors={[dark ? 'rgba(0,0,0,0)' : 'rgba(255,255,255,0)', colors.background]}
                         locations={
                             Math.floor(currentHeight) < Math.floor(totalHeight) ? [0.5, 1] : [1, 1]
                         }
