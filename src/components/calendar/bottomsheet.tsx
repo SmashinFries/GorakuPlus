@@ -6,6 +6,7 @@ import { useWindowDimensions } from 'react-native';
 import { List, Switch, useTheme } from 'react-native-paper';
 import { CustomBackdrop } from '../animations';
 import { updateCalendarFilter } from '@/store/slices/calendarSlice';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((props, ref) => {
     const { height } = useWindowDimensions();
@@ -25,6 +26,8 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const dispatch = useAppDispatch();
 
+    const { bottom } = useSafeAreaInsets();
+
     const updateOnlyShowList = (val: boolean) => {
         dispatch(updateCalendarFilter({ entryType: 'showListOnly', value: val }));
     };
@@ -42,7 +45,10 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
                 <BottomSheetBackdrop {...props} pressBehavior={'close'} disappearsOnIndex={-1} />
             )}
         >
-            <BottomSheetView onLayout={(e) => setMainEntryHeight(e.nativeEvent.layout.height)}>
+            <BottomSheetView
+                style={{ paddingBottom: bottom }}
+                onLayout={(e) => setMainEntryHeight(e.nativeEvent.layout.height)}
+            >
                 <List.Item
                     title="Show List Only"
                     right={() => (

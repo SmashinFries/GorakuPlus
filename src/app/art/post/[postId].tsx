@@ -16,6 +16,7 @@ import { Commentary } from '@/components/art/commentary';
 import { PostImage } from '@/components/art/image';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const DanbooruPostPage = () => {
     const { postId } = useLocalSearchParams<{ postId: string }>();
@@ -26,6 +27,8 @@ const DanbooruPostPage = () => {
     const commentary = useGetArtistCommentaryQuery({ 'search[post_id]': id }, { skip: !id });
     const [aspectRatio, setAspectRatio] = useState<number>(1);
     const [titleHeight, setTitleHeight] = useState<number>(0);
+
+    const { bottom } = useSafeAreaInsets();
 
     // const { blurAmount, toggleBlur } = useNsfwBlur(data?.rating);
 
@@ -79,6 +82,7 @@ const DanbooruPostPage = () => {
                 />
                 <View
                     style={{
+                        paddingBottom: bottom,
                         backgroundColor: colors.background,
                     }}
                 >
