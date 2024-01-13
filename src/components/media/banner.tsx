@@ -42,7 +42,7 @@ export const MediaBanner = ({ url, style, allowMotion }: Props) => {
 
                 <LinearGradient
                     style={[styles.container]}
-                    locations={[0, 0.9]}
+                    locations={[0, 0.85]}
                     colors={['rgba(0,0,0,.2)', colors.background]}
                 />
             </Animated.View>
