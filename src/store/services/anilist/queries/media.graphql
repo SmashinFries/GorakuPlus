@@ -321,13 +321,11 @@ query AniMedia(
                 }
             }
         }
-        reviews(limit: 5, sort: [RATING_DESC, ID], page: 1, perPage: 20) {
+        reviews(sort: [RATING_DESC, ID], page: 1, perPage: 20) {
             edges {
                 node {
                     id
-                    userId
                     summary
-                    body(asHtml: true)
                     rating
                     ratingAmount
                     userRating
@@ -338,55 +336,9 @@ query AniMedia(
                     user {
                         id
                         name
-                        about(asHtml: true)
-                        bannerImage
-                        createdAt
-                        options {
-                            profileColor
-                        }
                         avatar {
                             large
                         }
-                        favourites {
-                            anime(perPage: 1) {
-                                nodes {
-                                    id
-                                    title {
-                                        userPreferred
-                                    }
-                                    coverImage {
-                                        extraLarge
-                                    }
-                                    siteUrl
-                                }
-                            }
-                            manga(perPage: 1) {
-                                nodes {
-                                    id
-                                    title {
-                                        userPreferred
-                                    }
-                                    coverImage {
-                                        extraLarge
-                                    }
-                                    siteUrl
-                                }
-                            }
-                            characters(perPage: 1) {
-                                nodes {
-                                    id
-                                    name {
-                                        userPreferred
-                                    }
-                                    image {
-                                        large
-                                    }
-                                    gender
-                                    siteUrl
-                                }
-                            }
-                        }
-                        donatorBadge
                         siteUrl
                     }
                 }
@@ -400,6 +352,14 @@ query AniMedia(
                     name
                     isFavourite
                 }
+            }
+        }
+        airingSchedule(page: 1, perPage: 25, notYetAired: true) {
+            nodes {
+                id
+                airingAt
+                timeUntilAiring
+                episode
             }
         }
         source(version: 3)

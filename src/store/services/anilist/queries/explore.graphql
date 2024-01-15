@@ -275,6 +275,36 @@ query MangaTopScored(
     }
 }
 
+query MangaNewReleases(
+    $page: Int
+    $perPage: Int
+    $startDate_greater: FuzzyDateInt
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: JP
+            status: RELEASING
+            isAdult: $isAdult
+            onList: $onList
+            tag_not_in: $tag_not_in
+            startDate_greater: $startDate_greater
+            format_not_in: [NOVEL, ONE_SHOT]
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
 query ManhwaTrending(
     $page: Int
     $perPage: Int
@@ -347,6 +377,36 @@ query ManhwaTopScored(
             onList: $onList
             sort: SCORE_DESC
             tag_not_in: $tag_not_in
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
+query ManhwaNewReleases(
+    $page: Int
+    $perPage: Int
+    $startDate_greater: FuzzyDateInt
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: KR
+            status: RELEASING
+            isAdult: $isAdult
+            onList: $onList
+            tag_not_in: $tag_not_in
+            startDate_greater: $startDate_greater
+            format_not_in: [NOVEL, ONE_SHOT]
+            sort: [TRENDING_DESC, POPULARITY_DESC]
         ) {
             ...MangaMeta
         }
@@ -431,6 +491,36 @@ query ManhuaTopScored(
     }
 }
 
+query ManhuaNewReleases(
+    $page: Int
+    $perPage: Int
+    $startDate_greater: FuzzyDateInt
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            countryOfOrigin: CN
+            status: RELEASING
+            isAdult: $isAdult
+            onList: $onList
+            tag_not_in: $tag_not_in
+            startDate_greater: $startDate_greater
+            format_not_in: [NOVEL, ONE_SHOT]
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+        ) {
+            ...MangaMeta
+        }
+    }
+}
+
 query NovelTrending(
     $page: Int
     $perPage: Int
@@ -505,6 +595,35 @@ query NovelTopScored(
             tag_not_in: $tag_not_in
         ) {
             ...NovelMeta
+        }
+    }
+}
+
+query NovelNewReleases(
+    $page: Int
+    $perPage: Int
+    $startDate_greater: FuzzyDateInt
+    $onList: Boolean
+    $isAdult: Boolean
+    $tag_not_in: [String]
+) {
+    Page(page: $page, perPage: $perPage) {
+        pageInfo {
+            hasNextPage
+            currentPage
+            total
+        }
+        media(
+            type: MANGA
+            status: RELEASING
+            isAdult: $isAdult
+            onList: $onList
+            tag_not_in: $tag_not_in
+            startDate_greater: $startDate_greater
+            format_in: NOVEL
+            sort: [TRENDING_DESC, POPULARITY_DESC]
+        ) {
+            ...MangaMeta
         }
     }
 }

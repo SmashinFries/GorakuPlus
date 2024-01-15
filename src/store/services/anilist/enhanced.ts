@@ -44,6 +44,9 @@ export const api = generatedApi.enhanceEndpoints({
         'StaffFav',
         'StudiosFav',
         'UserFavOverview',
+        'Reviews',
+        'ReviewFull',
+        'WeeklyAnime',
     ],
     endpoints: {
         ExploreMedia: {
@@ -112,6 +115,26 @@ export const api = generatedApi.enhanceEndpoints({
                     return currentArg.page > previousArg.page;
                 }
             },
+        },
+        Reviews: {
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs && queryArgs.mediaId) {
+                    return `${endpointName}${queryArgs.mediaId}`;
+                } else {
+                    return endpointName;
+                }
+                // return endpointName;
+            },
+            merge: (currentCache, newItems) => {
+                currentCache.Page.pageInfo = newItems.Page.pageInfo;
+                currentCache.Page.reviews.push(...newItems.Page.reviews);
+            },
+            forceRefetch({ currentArg, previousArg }) {
+                if (currentArg && previousArg) {
+                    return currentArg.page > previousArg.page;
+                }
+            },
+            providesTags: ['Reviews'],
         },
         AnimeTrending: {
             transformResponse(baseQueryReturnValue, meta, arg) {
@@ -202,21 +225,19 @@ export const api = generatedApi.enhanceEndpoints({
                       ]
                     : ['ExploreAnime'],
         },
+        MangaNewReleases: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreManga' as const,
+                              id: media.id,
+                          })),
+                          'ExploreManga',
+                      ]
+                    : ['ExploreManga'],
+        },
         MangaTrending: {
-            // serializeQueryArgs: ({ endpointName }) => {
-            //     return endpointName;
-            // },
-            // merge: (currentCache, newItems) => {
-            //     if (currentCache.Page.pageInfo.currentPage < newItems.Page.pageInfo.currentPage) {
-            //         currentCache.Page.pageInfo = newItems.Page.pageInfo;
-            //         currentCache.Page.media.push(...newItems.Page.media);
-            //     }
-            // },
-            // forceRefetch({ currentArg, previousArg }) {
-            //     if (currentArg && previousArg) {
-            //         return currentArg.page > previousArg.page;
-            //     }
-            // },
             providesTags: (result) =>
                 result
                     ? [
@@ -251,6 +272,18 @@ export const api = generatedApi.enhanceEndpoints({
                           'ExploreManga',
                       ]
                     : ['ExploreManga'],
+        },
+        ManhwaNewReleases: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreManhwa' as const,
+                              id: media.id,
+                          })),
+                          'ExploreManhwa',
+                      ]
+                    : ['ExploreManhwa'],
         },
         ManhwaTrending: {
             // serializeQueryArgs: ({ endpointName }) => {
@@ -302,21 +335,19 @@ export const api = generatedApi.enhanceEndpoints({
                       ]
                     : ['ExploreManhwa'],
         },
+        ManhuaNewReleases: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreManhua' as const,
+                              id: media.id,
+                          })),
+                          'ExploreManhua',
+                      ]
+                    : ['ExploreManhua'],
+        },
         ManhuaTrending: {
-            // serializeQueryArgs: ({ endpointName }) => {
-            //     return endpointName;
-            // },
-            // merge: (currentCache, newItems) => {
-            //     if (currentCache.Page.pageInfo.currentPage < newItems.Page.pageInfo.currentPage) {
-            //         currentCache.Page.pageInfo = newItems.Page.pageInfo;
-            //         currentCache.Page.media.push(...newItems.Page.media);
-            //     }
-            // },
-            // forceRefetch({ currentArg, previousArg }) {
-            //     if (currentArg && previousArg) {
-            //         return currentArg.page > previousArg.page;
-            //     }
-            // },
             providesTags: (result) =>
                 result
                     ? [
@@ -351,6 +382,18 @@ export const api = generatedApi.enhanceEndpoints({
                           'ExploreManhua',
                       ]
                     : ['ExploreManhua'],
+        },
+        NovelNewReleases: {
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.media?.map((media) => ({
+                              type: 'ExploreNovel' as const,
+                              id: media.id,
+                          })),
+                          'ExploreNovel',
+                      ]
+                    : ['ExploreNovel'],
         },
         NovelTrending: {
             providesTags: (result) =>
@@ -514,6 +557,19 @@ export const api = generatedApi.enhanceEndpoints({
                 return currentArg !== previousArg;
             },
             providesTags: ['StaffDetails'],
+        },
+        ReviewsById: {
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs) {
+                    return endpointName + queryArgs.reviewId.toString();
+                }
+                return endpointName;
+            },
+            // Refetch when the page arg changes
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg !== previousArg;
+            },
+            providesTags: ['ReviewFull'],
         },
         UserSearch: {
             providesTags: ['UserSearch'],
@@ -686,6 +742,16 @@ export const api = generatedApi.enhanceEndpoints({
             transformResponse(baseQueryReturnValue, meta, arg) {
                 return transformWeeklyDates(baseQueryReturnValue);
             },
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Page?.airingSchedules?.map((media) => ({
+                              type: 'WeeklyAnime' as const,
+                              id: media.media.id,
+                          })),
+                          'WeeklyAnime',
+                      ]
+                    : ['WeeklyAnime'],
         },
     },
 });
@@ -697,17 +763,22 @@ export const {
     useAnimePopularQuery,
     useAnimeTopScoredQuery,
 
+    useMangaNewReleasesQuery,
     useMangaTrendingQuery,
     useMangaPopularQuery,
     useMangaTopScoredQuery,
 
+    useManhwaNewReleasesQuery,
     useManhwaTrendingQuery,
     useManhwaPopularQuery,
     useManhwaTopScoredQuery,
+
+    useManhuaNewReleasesQuery,
     useManhuaTrendingQuery,
     useManhuaPopularQuery,
     useManhuaTopScoredQuery,
 
+    useNovelNewReleasesQuery,
     useNovelTrendingQuery,
     useNovelPopularQuery,
     useNovelTopScoredQuery,
