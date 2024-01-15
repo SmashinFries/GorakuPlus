@@ -8,17 +8,18 @@ type Props = {
     children: React.ReactNode;
 };
 const BodyContainer = ({ children }: Props) => {
-    const { colors } = useTheme();
+    const { dark } = useTheme();
 
-    if (Platform.OS === 'ios') {
-        return (
-            <View style={[styles.container, { backgroundColor: 'transparent' }]}>{children}</View>
-        );
-    } else {
-        <LinearGradient locations={[0.1, 0.2]} colors={['transparent', colors.background]}>
-            <View style={[styles.container, { backgroundColor: 'transparent' }]}>{children}</View>
-        </LinearGradient>;
-    }
+    return (
+        <View
+            style={[
+                styles.container,
+                { backgroundColor: dark ? 'transparent' : 'rgba(255,255,255,0)' },
+            ]}
+        >
+            {children}
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
