@@ -38,16 +38,62 @@ import { NumberPickerMode } from '@/components/picker';
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
 
+const ICON_SIZE = 24;
+
 type ListEntryViewProps = {
     id: number;
     type: MediaType;
+    status: MediaStatus;
+    chapter_message?: string;
     data: AniMediaQuery['Media']['mediaListEntry'];
     scoreFormat?: ScoreFormat;
     isFav: boolean;
+    onShowReleases: () => void;
     refreshData: () => void;
 };
 
-const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: ListEntryViewProps) => {
+type ActionIconProps = {
+    children: React.ReactNode;
+    icon?: string;
+    onPress: () => void;
+    onLongPress?: () => void;
+};
+const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconProps) => {
+    const { colors } = useTheme();
+    return (
+        <Pressable
+            onPress={onPress}
+            onLongPress={onLongPress}
+            android_ripple={{
+                borderless: false,
+                foreground: true,
+                color: colors.primary,
+            }}
+            style={{
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderRadius: 12,
+                overflow: 'hidden',
+                alignItems: 'center',
+            }}
+        >
+            {icon && <IconButton icon={icon} size={ICON_SIZE} />}
+            {children}
+        </Pressable>
+    );
+};
+
+const ListEntryView = ({
+    id,
+    type,
+    status,
+    chapter_message,
+    data,
+    scoreFormat,
+    isFav,
+    refreshData,
+    onShowReleases,
+}: ListEntryViewProps) => {
     const {
         deleteListItem,
         saveListItem,
@@ -64,10 +110,13 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: List
     const { isFilterOpen, openSheet } = useFilterSheet(sheetRef);
 
     const [showRemListDlg, setShowRemListDlg] = useState(false);
-    const [showListEntryDlg, setShowListEntryDlg] = useState(false);
     const [listStatus, setListStatus] = useState<MediaListStatus | string>(data?.status ?? '');
     const [listProgress, setListProgress] = useState<number | null>(data?.progress ?? null);
     const [isOnList, setIsOnList] = useState(data ? true : false);
+
+    const { width } = useWindowDimensions();
+
+    const containerWidth = status === MediaStatus.Releasing ? width / 3 : width / 2;
 
     const updateListEntry = useCallback(
         (variables?: SaveMediaListItemMutationVariables) => {
@@ -104,11 +153,31 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: List
                 <MotiView
                     style={{
                         flexDirection: 'row',
-                        justifyContent: 'space-evenly',
-                        marginVertical: 15,
+                        marginTop: 15,
                     }}
                 >
-                    <View>
+                    {status === MediaStatus.Releasing && (
+                        <View
+                            style={{
+                                width: containerWidth,
+                                borderRadius: 12,
+                                alignItems: 'center',
+                            }}
+                        >
+                            <ActionIcon icon={'timer-sand'} onPress={onShowReleases}>
+                                <Text
+                                    style={{
+                                        textTransform: 'capitalize',
+                                        color: colors.onSurfaceVariant,
+                                    }}
+                                    variant="labelMedium"
+                                >
+                                    {chapter_message ?? ''}
+                                </Text>
+                            </ActionIcon>
+                        </View>
+                    )}
+                    <View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
                         {iconStates.fav.isLoading ? (
                             <ActivityIndicator
                                 animating
@@ -116,11 +185,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: List
                                 style={{ transform: [{ scale: 0.9 }] }}
                             />
                         ) : (
-                            <IconButton
-                                icon={isFav ? FAV_ICONS[1] : FAV_ICONS[0]}
-                                iconColor={isFav ? 'red' : null}
-                                disabled={!iconStates.disabled ? false : true}
-                                size={32}
+                            <ActionIcon
                                 onPress={() =>
                                     toggleFav(
                                         type === MediaType.Anime
@@ -128,11 +193,36 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: List
                                             : { mangaId: id },
                                     )
                                 }
-                            />
+                            >
+                                <IconButton
+                                    icon={isFav ? FAV_ICONS[1] : FAV_ICONS[0]}
+                                    iconColor={isFav ? 'red' : null}
+                                    disabled={!iconStates.disabled ? false : true}
+                                    size={ICON_SIZE}
+                                />
+                                <Text
+                                    style={{
+                                        textTransform: 'capitalize',
+                                        color: colors.onSurfaceVariant,
+                                    }}
+                                    variant="labelMedium"
+                                >
+                                    {isFav ? 'Favorited' : 'Favorite'}
+                                </Text>
+                            </ActionIcon>
                         )}
                     </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ alignItems: 'center' }}>
+                    <View
+                        style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: containerWidth,
+                        }}
+                    >
+                        <ActionIcon
+                            onPress={() => (isOnList ? openSheet() : updateListEntry())}
+                            onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
+                        >
                             {iconStates.list.isLoading ? (
                                 <ActivityIndicator animating size={32} />
                             ) : (
@@ -140,9 +230,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: List
                                     disabled={!iconStates.disabled ? false : true}
                                     icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
                                     iconColor={isOnList ? colors.primary : null}
-                                    onPress={() => (isOnList ? openSheet() : updateListEntry())}
-                                    onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
-                                    size={32}
+                                    size={ICON_SIZE}
                                 />
                             )}
                             <Text
@@ -155,7 +243,7 @@ const ListEntryView = ({ id, type, data, scoreFormat, isFav, refreshData }: List
                                 {listStatus ? listStatus?.replaceAll('_', ' ') : ''}
                                 {listProgress ? ` · ${listProgress}` : ''}
                             </Text>
-                        </View>
+                        </ActionIcon>
                     </View>
                 </MotiView>
             </View>
