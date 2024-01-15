@@ -87,8 +87,15 @@ const AnimeTab = () => {
 };
 
 const MangaTab = () => {
-    const { trendResults, popularResults, topResults, isError, fetchManga, fetchMore } =
-        useMangaExplorer();
+    const {
+        trendResults,
+        popularResults,
+        topResults,
+        releasesResults,
+        isError,
+        fetchManga,
+        fetchMore,
+    } = useMangaExplorer();
     const { isRefreshing, onRefresh } = useRefresh(() => fetchManga(true));
 
     useEffect(() => {
@@ -102,6 +109,11 @@ const MangaTab = () => {
     return (
         <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
             <View style={{ marginVertical: 10 }}>
+                <SectionScrollMem
+                    category_title={'New Releases'}
+                    data={releasesResults.data}
+                    isLoading={releasesResults.isLoading}
+                />
                 <SectionScrollMem
                     category_title={'Trending'}
                     data={trendResults.data}
@@ -257,18 +269,6 @@ const ExplorePage = () => {
 
     const [index, setIndex] = useState(0);
 
-    const renderTabBar = (props) => (
-        <TabBar
-            {...props}
-            tabStyle={{ paddingTop: 10 }}
-            indicatorStyle={{ backgroundColor: colors.primary }}
-            style={{ backgroundColor: colors.surface }}
-            labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
-            scrollEnabled={exploreTabs.length > 3 ? true : false}
-            android_ripple={{ color: colors.primary, borderless: true }}
-        />
-    );
-
     const renderScene = useCallback(
         ({ route }: { route: { key: keyof ExploreTabsProps; title: keyof ExploreTabsProps } }) => {
             switch (route.key) {
@@ -305,6 +305,7 @@ const ExplorePage = () => {
             initialLayout={{ width: layout.width }}
             renderTabBar={RenderTabBar}
             swipeEnabled={true}
+            lazy={true}
         />
     );
 };
