@@ -66,7 +66,7 @@ export const useHeaderAnim = (start = 40, end = 110) => {
     });
 
     const bgImageStyle = useAnimatedStyle(() => {
-        const scale = interpolate(scrollY.value, [0, start], [1.05, 1.1], Extrapolate.CLAMP);
+        const scale = interpolate(scrollY.value, [0, end], [1.05, 1.2], Extrapolation.CLAMP);
         return {
             transform: [{ translateY: bgTransY.value }, { scale: scale }],
         };
@@ -205,7 +205,7 @@ export const ExpandableDescription = ({
     }, [isExpanded]);
 
     return (
-        <View style={{ marginVertical: 15 }}>
+        <View style={{ marginVertical: 25 }}>
             <Animated.View style={[animatedStyles, { overflow: 'hidden' }]}>
                 <View style={[StyleSheet.absoluteFill, { bottom: 'auto', paddingBottom: 10 }]}>
                     <View
