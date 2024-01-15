@@ -518,14 +518,14 @@ export const FadeHeaderProvider = ({
     return (
         <View>
             {BgImage && <BackgroundImage />}
-            <MotiScrollView
+            <Animated.ScrollView
                 refreshControl={RefreshControl ?? undefined}
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={16}
                 onScroll={scrollHandler}
             >
                 {children}
-            </MotiScrollView>
+            </Animated.ScrollView>
         </View>
     );
 };
