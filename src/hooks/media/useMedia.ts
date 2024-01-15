@@ -19,14 +19,16 @@ import {
     useLazyGetMangaFullByIdQuery,
 } from '@/store/services/mal/malApi';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import useMangaUpdates from './useMangaUpdates';
 import { updateDB } from '@/store/slices/muSlice';
 import {
+    useLazyRetrieveReleaseQuery,
     useLazyRetrieveSeriesQuery,
+    useSearchReleasesPostMutation,
     useSearchSeriesPostMutation,
 } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
+import { getChapterFrequency, getEstimatedChapterTime } from '@/utils';
 
 export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?: number) => {
     const dispatch = useAppDispatch();
@@ -43,6 +45,8 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
     // MU
     const [getMuSearchSeries] = useSearchSeriesPostMutation();
     const [getMuSeries, muData] = useLazyRetrieveSeriesQuery();
+    const [getMuReleases, muReleases] = useSearchReleasesPostMutation();
+    const [estimatedChapterTime, setEstimatedChapterTime] = useState('');
 
     const fetchAniContent = async () => {
         setIsAniLoading(true);
@@ -81,14 +85,42 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
                     },
                 }).unwrap();
                 await getMuSeries({
-                    id: muId ? muId : searchResults?.results[0]?.record?.series_id,
+                    id: searchResults?.results[0]?.record?.series_id,
                 }).unwrap();
+                const releases = await getMuReleases({
+                    releaseSearchRequestV1: {
+                        search_type: 'series',
+                        search: `${searchResults?.results[0]?.record?.series_id}`,
+                    },
+                }).unwrap();
+                if (releases?.results?.length > 1) {
+                    const latestDate = new Date(releases?.results[0]?.record?.release_date);
+                    const freq = getChapterFrequency(
+                        releases.results?.map((r) => r.record.release_date),
+                    );
+                    const timeleft = getEstimatedChapterTime(latestDate, freq);
+                    setEstimatedChapterTime(timeleft);
+                }
             } catch (e) {
                 Burnt.toast({ title: `Manga Updates - Error ${e?.status}`, duration: TOAST.LONG });
             }
             setIsMuLoading(false);
         } else {
             await getMuSeries({ id: muId }).unwrap();
+            const releases = await getMuReleases({
+                releaseSearchRequestV1: {
+                    search_type: 'series',
+                    search: `${muId}`,
+                },
+            }).unwrap();
+            if (releases?.results?.length > 1) {
+                const latestDate = new Date(releases?.results[0]?.record?.release_date);
+                const freq = getChapterFrequency(
+                    releases.results?.map((r) => r.record.release_date),
+                );
+                const timeleft = getEstimatedChapterTime(latestDate, freq);
+                setEstimatedChapterTime(timeleft);
+            }
             setIsMuLoading(false);
         }
     };
@@ -126,46 +158,6 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
             setIsMuLoading(false);
         }
     };
-    // const aniData = useAniMediaQuery({
-    //     id: id,
-    //     userId: userID,
-    //     skipUser: userID ? false : true,
-    //     perPage_c: 25,
-    //     perPage_rec: 25,
-    //     sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
-    // });
-
-    // const malData =
-    //     type === MediaType.Anime
-    //         ? useGetAnimeFullByIdQuery(
-    //               { id: aniData.data?.Media?.idMal },
-    //               { skip: !aniData.data?.Media?.idMal },
-    //           )
-    //         : useGetMangaFullByIdQuery(
-    //               { id: aniData.data?.Media?.idMal },
-    //               { skip: !aniData.data?.Media?.idMal },
-    //           );
-    // const videoData = useGetAnimeVideosQuery(
-    //     { id: aniData.data?.Media?.idMal },
-    //     { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
-    // );
-
-    // const animeImages = useGetAnimePicturesQuery(
-    //     { id: aniData.data?.Media?.idMal },
-    //     { skip: type !== MediaType.Anime && !aniData.data?.Media?.idMal },
-    // );
-
-    // const mangaImages = useGetMangaPicturesQuery(
-    //     { id: aniData.data?.Media?.idMal },
-    //     { skip: type === MediaType.Anime && !aniData.data?.Media?.idMal },
-    // );
-
-    // const { seriesData } = useMangaUpdates(
-    //     aniData?.data?.Media?.title.romaji,
-    //     aniData?.data?.Media?.format,
-    //     type === MediaType.Anime,
-    //     muID,
-    // );
 
     useEffect(() => {
         if (muData?.data?.series_id) {
@@ -179,19 +171,13 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
         fetchAll();
     }, []);
 
-    // useEffect(() => {
-    //     console.log('checking');
-    //     if (type !== MediaType.Anime && aniData.data?.Media && !mangaUpdates.data) {
-    //         console.log('searching mangaupdates');
-    //         getMangaUpdates(aniData?.data?.Media?.title.romaji);
-    //     }
-    // }, [aniData, mangaUpdates]);
-
     return {
         aniData: aniData,
         malData: type === MediaType.Anime ? malAnimeData : malMangaData,
         videoData: videoData,
         mangaUpdates: muData,
+        mangaReleases: muReleases,
+        estimatedChapterTime,
         refetchMUContent,
         refetchAniData,
         isAniLoading,

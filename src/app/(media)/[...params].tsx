@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
-import { Portal } from 'react-native-paper';
+import { Portal, Text } from 'react-native-paper';
 import { useCallback, useState } from 'react';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMedia } from '@/hooks/media/useMedia';
@@ -25,9 +25,11 @@ import { FollowingPrevListMem } from '@/components/media/sections/following';
 import { RecListMem } from '@/components/media/sections/recoms';
 import { AnimeTrailer } from '@/components/media/sections/trailer';
 import MediaLinks from '@/components/media/sections/links';
-import { MuSearchDialog } from '@/components/media/dialogs';
+import { MuSearchDialog, ReleasesDialog } from '@/components/media/dialogs';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { api } from '@/store/services/anilist/enhanced';
+import { getTimeUntil } from '@/utils';
+import { AnimeFull } from '@/store/services/mal/malApi';
 
 const MediaScreen = () => {
     const { params } = useLocalSearchParams<{ params: [string, string] }>(); // /anime/1234
@@ -39,8 +41,9 @@ const MediaScreen = () => {
     const {
         aniData,
         malData,
-        videoData,
         mangaUpdates,
+        mangaReleases,
+        estimatedChapterTime,
         refetchMUContent,
         refetchAniData,
         isAniLoading,
@@ -48,7 +51,7 @@ const MediaScreen = () => {
         isMuLoading,
     } = useMedia(aniID ?? 0, type, muDB['data'][aniID ?? 0]);
 
-    const [showEpDialog, setShowEpDialog] = useState(false);
+    const [showReleaseDialog, setShowReleaseDialog] = useState(false);
     const [showMuDialog, setShowMuDialog] = useState(false);
 
     const { mediaLanguage, scoreColors, allowSensorMotion } = useAppSelector(
@@ -58,7 +61,6 @@ const MediaScreen = () => {
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const dispatch = useAppDispatch();
 
-    const toggleEPDialog = useCallback(() => setShowEpDialog(true), []);
     const toggleMuDialog = useCallback(() => setShowMuDialog((prev) => !prev), []);
 
     const onConfirmMuDialog = useCallback((muId: number) => {
@@ -112,7 +114,6 @@ const MediaScreen = () => {
                         <BodyContainer>
                             <FrontCoverMem
                                 data={aniData?.data?.Media}
-                                toggleEP={toggleEPDialog}
                                 defaultTitle={mediaLanguage}
                             />
                             <TransYUpViewMem animation={true} delay={550}>
@@ -131,6 +132,20 @@ const MediaScreen = () => {
                                     <ListEntryViewMem
                                         id={aniID}
                                         type={aniData?.data?.Media?.type}
+                                        status={aniData?.data?.Media?.status}
+                                        chapter_message={
+                                            type === MediaType.Manga
+                                                ? estimatedChapterTime
+                                                : aniData?.data?.Media?.status ===
+                                                  MediaStatus.Releasing
+                                                ? getTimeUntil(
+                                                      aniData?.data?.Media?.nextAiringEpisode
+                                                          .airingAt,
+                                                      'days',
+                                                  )
+                                                : ''
+                                        }
+                                        onShowReleases={() => setShowReleaseDialog(true)}
                                         data={aniData?.data?.Media?.mediaListEntry}
                                         scoreFormat={
                                             aniData?.data?.User?.mediaListOptions?.scoreFormat
@@ -143,6 +158,7 @@ const MediaScreen = () => {
                                     aniDescription={aniData?.data?.Media?.description}
                                     malDescription={malData?.data?.data?.synopsis}
                                 />
+
                                 <MetaData
                                     data={aniData?.data?.Media}
                                     malData={malData?.data?.data}
@@ -201,21 +217,38 @@ const MediaScreen = () => {
                                 />
                             </TransYUpViewMem>
                         </BodyContainer>
-                        <Portal>
-                            {type === MediaType.Manga && (
-                                <MuSearchDialog
-                                    title={
-                                        aniData?.data?.Media?.title?.english ??
-                                        aniData?.data?.Media?.title?.romaji
-                                    }
-                                    currentMuID={muDB['data'][aniID]}
-                                    visible={showMuDialog}
-                                    onDismiss={toggleMuDialog}
-                                    onConfirm={onConfirmMuDialog}
-                                />
-                            )}
-                        </Portal>
                     </FadeHeaderProvider>
+                    <Portal>
+                        {type === MediaType.Manga && (
+                            <MuSearchDialog
+                                title={
+                                    aniData?.data?.Media?.title?.english ??
+                                    aniData?.data?.Media?.title?.romaji
+                                }
+                                currentMuID={muDB['data'][aniID]}
+                                visible={showMuDialog}
+                                onDismiss={toggleMuDialog}
+                                onConfirm={onConfirmMuDialog}
+                            />
+                        )}
+                        {aniData?.data?.Media?.status === MediaStatus.Releasing && (
+                            <ReleasesDialog
+                                visible={showReleaseDialog}
+                                onDismiss={() => setShowReleaseDialog(false)}
+                                releases={
+                                    type === MediaType.Manga
+                                        ? mangaReleases?.data?.results
+                                        : undefined
+                                }
+                                animeReleases={
+                                    type === MediaType.Anime
+                                        ? aniData?.data?.Media?.airingSchedule?.nodes
+                                        : undefined
+                                }
+                                streamingSites={(malData?.data?.data as AnimeFull)?.streaming}
+                            />
+                        )}
+                    </Portal>
                 </Animated.View>
             )}
         </View>

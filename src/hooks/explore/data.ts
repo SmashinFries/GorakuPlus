@@ -18,8 +18,10 @@ import {
     useManhuaTrendingQuery,
     useManhuaPopularQuery,
     useManhuaTopScoredQuery,
+    useMangaNewReleasesQuery,
 } from '@/store/services/anilist/enhanced';
 import { useAppSelector } from '@/store/hooks';
+import { subtractMonths } from '@/utils';
 
 export const useAnimeExplorer = () => {
     const thisSeasonParams = getSeason();
@@ -166,6 +168,10 @@ export const useMangaExplorer = () => {
         };
     };
 
+    const releases = useMangaNewReleasesQuery({
+        ...getParams(1),
+        startDate_greater: subtractMonths(3),
+    });
     const trend = useMangaTrendingQuery(getParams(trendPage), { skip: skip });
     const popular = useMangaPopularQuery(getParams(popularPage), { skip: skip });
     const top = useMangaTopScoredQuery(getParams(topPage), { skip: skip });
@@ -177,10 +183,11 @@ export const useMangaExplorer = () => {
             trend.refetch();
             popular.refetch();
             top.refetch();
+            releases.refetch();
         }
     };
 
-    const fetchMore = (category: 'trending' | 'popular' | 'score') => {
+    const fetchMore = (category: 'trending' | 'popular' | 'score' | 'releases') => {
         switch (category) {
             case 'trending':
                 setTrendPage((prev) => prev + 1);
@@ -195,15 +202,16 @@ export const useMangaExplorer = () => {
     };
 
     useEffect(() => {
-        if (trend.isError || popular.isError || top.isError) {
+        if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
         }
-    }, [trend.isError, popular.isError, top.isError]);
+    }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
     return {
         trendResults: trend,
         popularResults: popular,
         topResults: top,
+        releasesResults: releases,
         isError,
         fetchManga,
         fetchMore,

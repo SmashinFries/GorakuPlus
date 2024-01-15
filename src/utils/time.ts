@@ -72,10 +72,73 @@ export const convertDate = (date: FuzzyDate, bdayFormat?: boolean): string | nul
     return `${month ?? '??'}-${day ?? '??'}-${year ?? '????'}`;
 };
 
-export const getTimeUntil = (time: number, format: 'until' | 'createdAt' = 'until') => {
-    const today = new Date().getTime();
-    const episodeDate = new Date(time * 1000).getTime();
-    const diffTime = Math.abs(episodeDate - today);
+export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
+    const today = new Date();
+    const futureDate = new Date(new Date(latest).setDate(latest.getDate() + freq));
+    const estimated_days = Math.round(
+        (futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
+    );
+    const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
+    return `${
+        pos_estimated_days > 1
+            ? '~' + pos_estimated_days?.toString() + ' days'
+            : pos_estimated_days === 1
+            ? '~' + pos_estimated_days.toString() + ' day'
+            : 'On Break'
+    }`;
+};
+
+const getDateDifferences = (dates: Date[]) => {
+    const day_differences: number[] = [];
+    let count = 0;
+    for (const i in dates) {
+        if (dates.length > 1 && dates.length > count + 1) {
+            const time_diff = dates[count].getTime() - dates[count + 1].getTime();
+            const time_diff_days = Math.round(time_diff / (1000 * 3600 * 24));
+            day_differences.push(time_diff_days);
+            count += 1;
+        } else {
+            break;
+        }
+    }
+    return day_differences;
+};
+
+export const getChapterFrequency = (release_dates: string[]) => {
+    const dates = release_dates.map((date) => new Date(date));
+    const m = new Map();
+
+    const frequencies = getDateDifferences(dates);
+    if (!frequencies) return null;
+    for (const i in frequencies) {
+        if (!m.get(frequencies[i])) {
+            m.set(frequencies[i], 1);
+        } else {
+            m.set(frequencies[i], m.get(frequencies[i]) + 1);
+        }
+    }
+    let max = 0;
+    let common_freq;
+    m.forEach((val, key, map) => {
+        if (max < val) {
+            max = val;
+            common_freq = key;
+        }
+    });
+    return common_freq;
+};
+
+export const subtractMonths = (num_months: number) => {
+    const today = new Date();
+    today.setDate(0);
+    const newDate = new Date(today.setMonth(today.getMonth() - num_months));
+    return newDate.toISOString().split('T')[0].replaceAll('-', '').slice(0, -2) + '00';
+};
+
+export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days' = 'until') => {
+    const today = new Date();
+    const episodeDate = new Date(time * 1000);
+    const diffTime = Math.abs(episodeDate.getTime() - today.getTime());
     const diffMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7 * 4));
     const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -96,6 +159,9 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' = 'unti
             return `${diffHours > 1 ? `${diffHours} hours` : `${diffHours} hour`} ago`;
         if (diffMinutes > 0)
             return `${diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`} ago`;
+    }
+    if (format === 'days') {
+        return `${diffDays > 1 ? `${diffDays} days` : `${diffDays} day`}`;
     }
 };
 
