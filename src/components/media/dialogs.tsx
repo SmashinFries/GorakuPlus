@@ -24,11 +24,15 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Image } from 'expo-image';
 import { DatePopup, ProgressDropDown, StatusDropDown } from './entryActions';
 import {
+    SearchReleasesPostApiResponse,
     SeriesSearchResponseV1,
     useSearchSeriesPostMutation,
 } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { MotiPressable } from 'moti/interactions';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import { BasicDialogProps } from '@/types';
+import { AnimeFull } from '@/store/services/mal/malApi';
+import { openWebBrowser } from '@/utils/webBrowser';
 
 type TagDialogProps = {
     visible: boolean;
@@ -278,10 +282,8 @@ export const ListEntryEditDialog = ({
 type MuSearchProps = {
     title: string;
     currentMuID: number;
-    visible: boolean;
-    onDismiss: () => void;
     onConfirm: (id: number) => void;
-};
+} & BasicDialogProps;
 
 export const MuSearchDialog = ({
     title,
@@ -387,6 +389,78 @@ export const MuSearchDialog = ({
             <Dialog.Actions>
                 <Button onPress={onDismiss}>Cancel</Button>
                 <Button onPress={() => onConfirm(selected)}>Confirm</Button>
+            </Dialog.Actions>
+        </Dialog>
+    );
+};
+
+type ReleasesDialogProps = {
+    releases: SearchReleasesPostApiResponse['results'] | undefined;
+    animeReleases: AniMediaQuery['Media']['airingSchedule']['nodes'] | undefined;
+    streamingSites: AnimeFull['streaming'];
+} & BasicDialogProps;
+
+export const ReleasesDialog = ({
+    releases,
+    animeReleases,
+    streamingSites,
+    visible,
+    onDismiss,
+}: ReleasesDialogProps) => {
+    return (
+        <Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '70%' }}>
+            <Dialog.Title>Estimated Release</Dialog.Title>
+            <Dialog.Content>
+                <Text>
+                    {releases
+                        ? 'The estimated chapter release is based on the releases recorded on MangaUpdates.\n'
+                        : 'The episode release time is a direct reflection of the data provided by AniList.\n'}
+                </Text>
+                {streamingSites && (
+                    <ScrollView horizontal>
+                        {streamingSites?.map((site, idx) => (
+                            <Button
+                                key={idx}
+                                mode={'outlined'}
+                                onPress={() => openWebBrowser(site.url)}
+                            >
+                                {site.name}
+                            </Button>
+                        ))}
+                    </ScrollView>
+                )}
+                <Text variant="titleLarge">{releases ? 'Chapters' : 'Episodes'}</Text>
+            </Dialog.Content>
+            <Dialog.ScrollArea>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    {releases
+                        ? releases?.map((release, idx) => (
+                              <List.Item
+                                  key={idx}
+                                  title={release.record.chapter}
+                                  description={release.record?.groups[0]?.name}
+                                  right={(props) => (
+                                      <Text style={[props.style]}>
+                                          {release.record?.release_date}
+                                      </Text>
+                                  )}
+                              />
+                          ))
+                        : animeReleases?.map((episode, idx) => (
+                              <List.Item
+                                  key={idx}
+                                  title={`EP ${episode.episode}`}
+                                  right={(props) => (
+                                      <Text style={[props.style]}>
+                                          {new Date(episode.airingAt * 1000).toLocaleString()}
+                                      </Text>
+                                  )}
+                              />
+                          ))}
+                </ScrollView>
+            </Dialog.ScrollArea>
+            <Dialog.Actions>
+                <Button onPress={onDismiss}>Cool</Button>
             </Dialog.Actions>
         </Dialog>
     );
