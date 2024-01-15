@@ -1,4 +1,5 @@
 import { SearchHeader } from '@/components/headers';
+import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';
 import {
@@ -33,7 +34,7 @@ import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/typ
 import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { Keyboard, Pressable, TextInput, useWindowDimensions } from 'react-native';
+import { Keyboard, Pressable, ScrollView, TextInput, useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
 import { IconButton, List, Portal, Text, useTheme } from 'react-native-paper';
 import Animated, {
@@ -473,12 +474,7 @@ const SearchPage = () => {
                         exiting={SlideOutDown}
                         entering={SlideInDown}
                     >
-                        <Pressable
-                            onPress={() => {
-                                searchbarRef.current?.blur();
-                                toggleIsFocused(false);
-                            }}
-                        >
+                        <ScrollView>
                             {history.search.map((term, idx) => (
                                 <List.Item
                                     key={idx}
@@ -495,7 +491,8 @@ const SearchPage = () => {
                                     }}
                                 />
                             ))}
-                        </Pressable>
+                            <KeyboardSpacerView />
+                        </ScrollView>
                     </Animated.View>
                 )}
                 {/* {showCategory && (
