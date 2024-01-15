@@ -76,7 +76,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
                         contentFit="cover"
                         source={{ uri: data?.coverImage?.extraLarge }}
                     />
-                    {data?.status && <StatusAnim />}
+                    {/* {data?.status && <StatusAnim />} */}
                 </TransYUpViewMem>
 
                 {/* Right Icons */}
