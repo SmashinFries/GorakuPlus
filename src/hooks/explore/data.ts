@@ -19,6 +19,7 @@ import {
     useManhuaPopularQuery,
     useManhuaTopScoredQuery,
     useMangaNewReleasesQuery,
+    useManhwaNewReleasesQuery,
 } from '@/store/services/anilist/enhanced';
 import { useAppSelector } from '@/store/hooks';
 import { subtractMonths } from '@/utils';
@@ -180,10 +181,10 @@ export const useMangaExplorer = () => {
     const fetchManga = (refetch = false) => {
         setSkip(false);
         if (refetch) {
+            releases.refetch();
             trend.refetch();
             popular.refetch();
             top.refetch();
-            releases.refetch();
         }
     };
 
@@ -238,10 +239,15 @@ export const useManhwaExplorer = () => {
     const trend = useManhwaTrendingQuery(getParams(trendPage), { skip: skip });
     const popular = useManhwaPopularQuery(getParams(popularPage), { skip: skip });
     const top = useManhwaTopScoredQuery(getParams(topPage), { skip: skip });
+    const releases = useManhwaNewReleasesQuery({
+        ...getParams(1),
+        startDate_greater: subtractMonths(3),
+    });
 
     const fetchManhwa = (refetch = false) => {
         setSkip(false);
         if (refetch) {
+            releases.refetch();
             trend.refetch();
             popular.refetch();
             top.refetch();
@@ -263,15 +269,16 @@ export const useManhwaExplorer = () => {
     };
 
     useEffect(() => {
-        if (trend.isError || popular.isError || top.isError) {
+        if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
         }
-    }, [trend.isError, popular.isError, top.isError]);
+    }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
     return {
         trendResults: trend,
         popularResults: popular,
         topResults: top,
+        releasesResults: releases,
         isError,
         fetchManhwa,
         fetchMore,
@@ -298,10 +305,15 @@ export const useManhuaExplorer = () => {
     const trend = useManhuaTrendingQuery(getParams(trendPage), { skip: skip });
     const popular = useManhuaPopularQuery(getParams(popularPage), { skip: skip });
     const top = useManhuaTopScoredQuery(getParams(topPage), { skip: skip });
+    const releases = useManhwaNewReleasesQuery({
+        ...getParams(1),
+        startDate_greater: subtractMonths(3),
+    });
 
     const fetchManhua = (refetch = false) => {
         setSkip(false);
         if (refetch) {
+            releases.refetch();
             trend.refetch();
             popular.refetch();
             top.refetch();
@@ -323,15 +335,16 @@ export const useManhuaExplorer = () => {
     };
 
     useEffect(() => {
-        if (trend.isError || popular.isError || top.isError) {
+        if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
         }
-    }, [trend.isError, popular.isError, top.isError]);
+    }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
     return {
         trendResults: trend,
         popularResults: popular,
         topResults: top,
+        releasesResults: releases,
         isError,
         fetchManhua,
         fetchMore,
@@ -355,6 +368,10 @@ export const useNovelExplorer = () => {
         };
     };
 
+    const releases = useManhwaNewReleasesQuery({
+        ...getParams(1),
+        startDate_greater: subtractMonths(3),
+    });
     const trend = useNovelTrendingQuery(getParams(trendPage), { skip: skip });
     const popular = useNovelPopularQuery(getParams(popularPage), { skip: skip });
     const top = useNovelTopScoredQuery(getParams(topPage), { skip: skip });
@@ -362,6 +379,7 @@ export const useNovelExplorer = () => {
     const fetchNovels = (refetch = false) => {
         setSkip(false);
         if (refetch) {
+            releases.refetch();
             trend.refetch();
             popular.refetch();
             top.refetch();
@@ -383,15 +401,16 @@ export const useNovelExplorer = () => {
     };
 
     useEffect(() => {
-        if (trend.isError || popular.isError || top.isError) {
+        if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
         }
-    }, [trend.isError, popular.isError, top.isError]);
+    }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
     return {
         trendResults: trend,
         popularResults: popular,
         topResults: top,
+        releasesResults: releases,
         isError,
         fetchNovels,
         fetchMore,
