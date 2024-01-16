@@ -138,8 +138,15 @@ const MangaTab = () => {
 };
 
 const ManhwaTab = () => {
-    const { trendResults, popularResults, topResults, isError, fetchManhwa, fetchMore } =
-        useManhwaExplorer();
+    const {
+        trendResults,
+        popularResults,
+        topResults,
+        releasesResults,
+        isError,
+        fetchManhwa,
+        fetchMore,
+    } = useManhwaExplorer();
     const { isRefreshing, onRefresh } = useRefresh(() => fetchManhwa(true));
 
     useEffect(() => {
@@ -153,6 +160,11 @@ const ManhwaTab = () => {
     return (
         <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
             <View style={{ marginVertical: 10 }}>
+                <SectionScrollMem
+                    category_title={'New Releases'}
+                    data={releasesResults.data}
+                    isLoading={releasesResults.isLoading}
+                />
                 <SectionScrollMem
                     category_title={'Trending'}
                     data={trendResults.data}
@@ -177,8 +189,15 @@ const ManhwaTab = () => {
 };
 
 const ManhuaTab = () => {
-    const { trendResults, popularResults, topResults, isError, fetchManhua, fetchMore } =
-        useManhuaExplorer();
+    const {
+        trendResults,
+        popularResults,
+        topResults,
+        releasesResults,
+        isError,
+        fetchManhua,
+        fetchMore,
+    } = useManhuaExplorer();
     const { isRefreshing, onRefresh } = useRefresh(() => fetchManhua(true));
 
     useEffect(() => {
@@ -192,6 +211,11 @@ const ManhuaTab = () => {
     return (
         <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
             <View style={{ marginVertical: 10 }}>
+                <SectionScrollMem
+                    category_title={'New Releases'}
+                    data={releasesResults.data}
+                    isLoading={releasesResults.isLoading}
+                />
                 <SectionScrollMem
                     category_title={'Trending'}
                     data={trendResults.data}
@@ -216,8 +240,15 @@ const ManhuaTab = () => {
 };
 
 const NovelsTab = () => {
-    const { trendResults, popularResults, topResults, isError, fetchNovels, fetchMore } =
-        useNovelExplorer();
+    const {
+        trendResults,
+        popularResults,
+        topResults,
+        releasesResults,
+        isError,
+        fetchNovels,
+        fetchMore,
+    } = useNovelExplorer();
     const { isRefreshing, onRefresh } = useRefresh(() => fetchNovels(true));
 
     useEffect(() => {
@@ -231,6 +262,11 @@ const NovelsTab = () => {
     return (
         <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
             <View style={{ marginVertical: 10 }}>
+                <SectionScrollMem
+                    category_title={'New Releases'}
+                    data={releasesResults.data}
+                    isLoading={releasesResults.isLoading}
+                />
                 <SectionScrollMem
                     category_title={'Trending'}
                     data={trendResults.data}
