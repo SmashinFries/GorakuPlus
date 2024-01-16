@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Linking, ScrollView, View } from 'react-native';
 
 import * as Updates from 'expo-updates';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { ActivityIndicator, Button, List, Portal, Text } from 'react-native-paper';
 import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
@@ -50,11 +50,13 @@ const AboutPage = () => {
                 }`}
                 descriptionStyle={{ textTransform: 'capitalize' }}
             />
-            <List.Item
-                title={'Check for Updates'}
-                onPress={checkForUpdates}
-                right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
-            />
+            {Constants.executionEnvironment !== ExecutionEnvironment.StoreClient && (
+                <List.Item
+                    title={'Check for Updates'}
+                    onPress={checkForUpdates}
+                    right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
+                />
+            )}
             <Accordion title="Data Sources" titleFontSize={16} initialExpand>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <LinkButton
