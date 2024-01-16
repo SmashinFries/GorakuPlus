@@ -15,6 +15,7 @@ import {
     MediaListStatus,
     MediaStatus,
     MediaType,
+    SaveMediaListItemMutation,
     SaveMediaListItemMutationVariables,
     ScoreFormat,
 } from '@/store/services/anilist/generated-anilist';
@@ -22,7 +23,7 @@ import { useListEntry } from '@/hooks/media/useMutations';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
-import { ListEntryEditDialog, RemoveListItemDialog } from '@/components/media/dialogs';
+import { RemoveListItemDialog } from '@/components/media/dialogs';
 import { Pressable, StyleProp, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { NumberPickDialog } from '@/components/dialogs';
 import useFilterSheet from '@/hooks/search/useSheet';
@@ -123,7 +124,10 @@ const ListEntryView = ({
             saveListItem({ mediaId: id, status: MediaListStatus.Planning, ...variables }).then(
                 (res) => {
                     if (res) {
-                        setListStatus(res?.data?.SaveMediaListEntry?.status ?? null);
+                        setListStatus(
+                            (res as { data: SaveMediaListItemMutation })?.data?.SaveMediaListEntry
+                                ?.status ?? null,
+                        );
                         setIsOnList(true);
                         refreshData();
                     }
@@ -332,7 +336,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
             )
                 return;
             props.updateEntry({
-                status: tempParams.status,
+                status: tempParams.status as MediaListStatus,
                 progress: tempParams.progress,
                 score: tempParams.score,
                 startedAt: tempParams.start,
