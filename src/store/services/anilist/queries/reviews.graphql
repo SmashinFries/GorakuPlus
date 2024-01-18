@@ -39,6 +39,7 @@ query ReviewsById($reviewId: Int) {
         siteUrl
         createdAt
         updatedAt
+        userRating
         user {
             id
             name
