@@ -1,13 +1,15 @@
-import { getTimeUntil } from '../../../../utils';
+import { postProcessReviewBody } from '@/utils/reviews/postProcess';
 import {
     AniMediaQuery,
     AnimeTrendingQuery,
     MediaFormat,
     MediaRelation,
     MediaStatus,
+    ReviewsByIdQuery,
     UserListCollectionQuery,
     WeeklyAnimeQuery,
 } from '../generated-anilist';
+import { getTimeUntil } from '@/utils';
 
 export const transformMediaDates = (media: AnimeTrendingQuery) => {
     const newResponse = media;
@@ -43,6 +45,14 @@ export const transformWeeklyDates = (media: WeeklyAnimeQuery) => {
             anime.timeUntilAiring = anime.airingAt < today ? 'Aired' : prefix + timeTill;
         }
     }
+    return newResponse;
+};
+
+export const transformReviewBody = (review: ReviewsByIdQuery) => {
+    const newResponse = review;
+    const ppBody = postProcessReviewBody(newResponse.Review.body);
+
+    newResponse.Review.body = ppBody;
     return newResponse;
 };
 
