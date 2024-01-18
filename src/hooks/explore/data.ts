@@ -20,6 +20,8 @@ import {
     useManhuaTopScoredQuery,
     useMangaNewReleasesQuery,
     useManhwaNewReleasesQuery,
+    useNovelNewReleasesQuery,
+    useManhuaNewReleasesQuery,
 } from '@/store/services/anilist/enhanced';
 import { useAppSelector } from '@/store/hooks';
 import { subtractMonths } from '@/utils';
@@ -305,7 +307,7 @@ export const useManhuaExplorer = () => {
     const trend = useManhuaTrendingQuery(getParams(trendPage), { skip: skip });
     const popular = useManhuaPopularQuery(getParams(popularPage), { skip: skip });
     const top = useManhuaTopScoredQuery(getParams(topPage), { skip: skip });
-    const releases = useManhwaNewReleasesQuery({
+    const releases = useManhuaNewReleasesQuery({
         ...getParams(1),
         startDate_greater: subtractMonths(3),
     });
@@ -368,7 +370,7 @@ export const useNovelExplorer = () => {
         };
     };
 
-    const releases = useManhwaNewReleasesQuery({
+    const releases = useNovelNewReleasesQuery({
         ...getParams(1),
         startDate_greater: subtractMonths(3),
     });
