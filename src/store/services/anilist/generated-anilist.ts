@@ -5177,7 +5177,7 @@ export type ReviewsByIdQueryVariables = Exact<{
 }>;
 
 
-export type ReviewsByIdQuery = { __typename?: 'Query', Review?: { __typename?: 'Review', id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, htmlBody?: string | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null };
+export type ReviewsByIdQuery = { __typename?: 'Query', Review?: { __typename?: 'Review', id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, userRating?: ReviewRating | null, htmlBody?: string | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null };
 
 export type ExploreMediaQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -7294,6 +7294,7 @@ export const ReviewsByIdDocument = `
     siteUrl
     createdAt
     updatedAt
+    userRating
     user {
       id
       name
