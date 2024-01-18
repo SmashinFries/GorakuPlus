@@ -39,6 +39,7 @@ import { updateListFilter } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
 import { SearchType } from '@/types/search';
+import { openWebBrowser } from '@/utils/webBrowser';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -534,6 +535,43 @@ export const CharStaffHeader = ({ navigation, options, route, back }: NativeStac
     return (
         <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
+        </Appbar.Header>
+    );
+};
+
+type ReviewHeaderProps = NativeStackHeaderProps & {
+    onRenderSwitch: () => void;
+    shareLink?: string;
+    render_switch_icon?: string;
+};
+export const ReviewHeader = ({
+    navigation,
+    options,
+    route,
+    back,
+    shareLink,
+    render_switch_icon,
+    onRenderSwitch,
+}: ReviewHeaderProps) => {
+    const title = getHeaderTitle(options, route.name);
+    return (
+        <Appbar.Header>
+            {back && <Appbar.BackAction onPress={navigation.goBack} />}
+            <Appbar.Content title={title} />
+            <Appbar.Action icon={render_switch_icon} onPress={onRenderSwitch} />
+            <Appbar.Action
+                icon={'earth'}
+                onPress={() => {
+                    openWebBrowser(shareLink);
+                }}
+                // onPress={() =>
+                //     Share.share({
+                //         url: shareLink,
+                //         title: shareLink,
+                //         message: shareLink,
+                //     })
+                // }
+            />
         </Appbar.Header>
     );
 };
