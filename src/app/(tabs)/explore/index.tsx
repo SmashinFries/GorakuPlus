@@ -342,6 +342,7 @@ const ExplorePage = () => {
             renderTabBar={RenderTabBar}
             swipeEnabled={true}
             lazy={true}
+            renderLazyPlaceholder={(props) => <View />}
         />
     );
 };
