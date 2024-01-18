@@ -3,6 +3,7 @@ import {
     transformListDates,
     transformMediaDates,
     transformMediaSorts,
+    transformReviewBody,
     transformWeeklyDates,
 } from './utils/transformQuery';
 
@@ -559,6 +560,9 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: ['StaffDetails'],
         },
         ReviewsById: {
+            transformResponse(baseQueryReturnValue, meta, arg) {
+                return transformReviewBody(baseQueryReturnValue);
+            },
             serializeQueryArgs: ({ endpointName, queryArgs }) => {
                 if (queryArgs) {
                     return endpointName + queryArgs.reviewId.toString();
@@ -820,4 +824,9 @@ export const {
     useLazyUserStaffFavoritesQuery,
     useUserStudiosFavoritesQuery,
     useLazyUserStudiosFavoritesQuery,
+
+    useReviewsQuery,
+    useLazyReviewsQuery,
+    useReviewsByIdQuery,
+    useLazyReviewsByIdQuery,
 } = api;
