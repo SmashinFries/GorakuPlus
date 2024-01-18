@@ -30,6 +30,7 @@ import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { api } from '@/store/services/anilist/enhanced';
 import { getTimeUntil } from '@/utils';
 import { AnimeFull } from '@/store/services/mal/malApi';
+import ReviewsSection from '@/components/media/sections/reviews';
 
 const MediaScreen = () => {
     const { params } = useLocalSearchParams<{ params: [string, string] }>(); // /anime/1234
@@ -182,6 +183,12 @@ const MediaScreen = () => {
                                     data={aniData?.data?.Media?.staff}
                                     openMore={() =>
                                         router.push(`/staff/${aniData?.data?.Media?.id}`)
+                                    }
+                                />
+                                <ReviewsSection
+                                    data={aniData?.data?.Media?.reviews}
+                                    openMore={() =>
+                                        router.push(`/reviews/${aniData?.data?.Media?.id}`)
                                     }
                                 />
                                 {userID && (
