@@ -84,7 +84,7 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
             ? '~' + pos_estimated_days?.toString() + ' days'
             : pos_estimated_days === 1
             ? '~' + pos_estimated_days.toString() + ' day'
-            : 'On Break'
+            : 'Today'
     }`;
 };
 
