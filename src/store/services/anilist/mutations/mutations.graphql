@@ -95,7 +95,7 @@ mutation DeleteAct($id: Int) {
     }
 }
 
-mutation RateRev($id: Int, $rating: ReviewRating) {
+mutation ReviewRating($id: Int, $rating: ReviewRating) {
     RateReview(reviewId: $id, rating: $rating) {
         id
         userRating

@@ -3,6 +3,7 @@ query Reviews($mediaId: Int, $page: Int, $perPage: Int) {
         pageInfo {
             lastPage
             total
+            hasNextPage
         }
         reviews(mediaId: $mediaId, sort: [RATING_DESC, ID]) {
             id
@@ -29,7 +30,8 @@ query ReviewsById($reviewId: Int) {
     Review(id: $reviewId) {
         id
         summary
-        body(asHtml: true)
+        body(asHtml: false)
+        htmlBody: body(asHtml: true)
         mediaType
         rating
         ratingAmount
@@ -44,6 +46,7 @@ query ReviewsById($reviewId: Int) {
                 large
             }
             bannerImage
+            isFollowing
             siteUrl
         }
     }

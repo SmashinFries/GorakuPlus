@@ -322,6 +322,12 @@ query AniMedia(
             }
         }
         reviews(sort: [RATING_DESC, ID], page: 1, perPage: 20) {
+            pageInfo {
+                total
+                currentPage
+                lastPage
+                hasNextPage
+            }
             edges {
                 node {
                     id
