@@ -15,7 +15,7 @@ const ReviewsLayout = () => {
                 options={{ title: 'Reviews' }}
                 getId={(params) => params.params?.mediaId}
             />
-            <Stack.Screen name="info" options={{ title: '', headerShown: false }} />
+            <Stack.Screen name="full" options={{ title: '', headerShown: false }} />
         </AnimatedStack>
     );
 };
