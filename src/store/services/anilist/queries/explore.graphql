@@ -37,6 +37,12 @@ fragment MainMeta on Media {
         progressVolumes
         repeat
     }
+    stats {
+        scoreDistribution {
+            score
+            amount
+        }
+    }
 }
 
 fragment AnimeMeta on Media {

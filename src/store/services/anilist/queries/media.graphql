@@ -115,6 +115,16 @@ query AniMedia(
             site
             thumbnail
         }
+        stats {
+            statusDistribution {
+                status
+                amount
+            }
+            scoreDistribution {
+                score
+                amount
+            }
+        }
         relations {
             edges {
                 id
