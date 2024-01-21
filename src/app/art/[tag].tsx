@@ -20,7 +20,7 @@ const ArtListPage = () => {
     const onSearch = async (page_num = 1) => {
         setPage(page_num);
         const response = await searchPosts({
-            tags: showNSFW ? tag + ' solo' : tag + ' solo rating:g,s',
+            tags: showNSFW ? tag + ' solo' : tag + ' solo rating:g',
             limit: 24,
             page: page_num,
         }).unwrap();
