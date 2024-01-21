@@ -246,12 +246,14 @@ type ReleasesDialogProps = {
     releases: SearchReleasesPostApiResponse['results'] | undefined;
     animeReleases: AniMediaQuery['Media']['airingSchedule']['nodes'] | undefined;
     streamingSites: AnimeFull['streaming'];
+    status: MediaStatus;
 } & BasicDialogProps;
 
 export const ReleasesDialog = ({
     releases,
     animeReleases,
     streamingSites,
+    status,
     visible,
     onDismiss,
 }: ReleasesDialogProps) => {
@@ -259,54 +261,74 @@ export const ReleasesDialog = ({
         <Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '70%' }}>
             <Dialog.Title>Estimated Release</Dialog.Title>
             <Dialog.Content>
-                <Text>
-                    {releases
-                        ? 'The estimated chapter release is based on the releases recorded on MangaUpdates.\n'
-                        : 'The episode release time is a direct reflection of the data provided by AniList.\n'}
-                </Text>
+                <Text>{`This series is currently ${status
+                    .toLowerCase()
+                    .replaceAll('_', ' ')}.\n`}</Text>
+                {![MediaStatus.Cancelled, MediaStatus.Hiatus, MediaStatus.Finished].includes(
+                    status,
+                ) && (
+                    <Text>
+                        {releases
+                            ? 'The estimated chapter release is based on the releases recorded on MangaUpdates.\n'
+                            : 'The episode release time is a direct reflection of the data provided by AniList.\n'}
+                    </Text>
+                )}
                 {streamingSites && (
-                    <ScrollView horizontal>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ marginBottom: 15 }}
+                    >
                         {streamingSites?.map((site, idx) => (
                             <Button
                                 key={idx}
                                 mode={'outlined'}
                                 onPress={() => openWebBrowser(site.url)}
+                                style={{ marginHorizontal: 5 }}
                             >
                                 {site.name}
                             </Button>
                         ))}
                     </ScrollView>
                 )}
-                <Text variant="titleLarge">{releases ? 'Chapters' : 'Episodes'}</Text>
+                {(releases || animeReleases) && (
+                    <Text variant="titleLarge">{releases ? 'Chapters' : 'Episodes'}</Text>
+                )}
             </Dialog.Content>
-            <Dialog.ScrollArea>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    {releases
-                        ? releases?.map((release, idx) => (
-                              <List.Item
-                                  key={idx}
-                                  title={release.record.chapter}
-                                  description={release.record?.groups[0]?.name}
-                                  right={(props) => (
-                                      <Text style={[props.style]}>
-                                          {release.record?.release_date}
-                                      </Text>
-                                  )}
-                              />
-                          ))
-                        : animeReleases?.map((episode, idx) => (
-                              <List.Item
-                                  key={idx}
-                                  title={`EP ${episode.episode}`}
-                                  right={(props) => (
-                                      <Text style={[props.style]}>
-                                          {new Date(episode.airingAt * 1000).toLocaleString()}
-                                      </Text>
-                                  )}
-                              />
-                          ))}
-                </ScrollView>
-            </Dialog.ScrollArea>
+            {(releases || animeReleases) && (
+                <Dialog.ScrollArea>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        {releases
+                            ? releases?.map((release, idx) => (
+                                  <List.Item
+                                      key={idx}
+                                      title={
+                                          release.record.chapter?.length > 0
+                                              ? release.record.chapter
+                                              : `v${release.record.volume}`
+                                      }
+                                      description={release.record?.groups[0]?.name}
+                                      right={(props) => (
+                                          <Text style={[props.style]}>
+                                              {release.record?.release_date}
+                                          </Text>
+                                      )}
+                                  />
+                              ))
+                            : animeReleases?.map((episode, idx) => (
+                                  <List.Item
+                                      key={idx}
+                                      title={`EP ${episode.episode}`}
+                                      right={(props) => (
+                                          <Text style={[props.style]}>
+                                              {new Date(episode.airingAt * 1000).toLocaleString()}
+                                          </Text>
+                                      )}
+                                  />
+                              ))}
+                    </ScrollView>
+                </Dialog.ScrollArea>
+            )}
             <Dialog.Actions>
                 <Button onPress={onDismiss}>Cool</Button>
             </Dialog.Actions>
