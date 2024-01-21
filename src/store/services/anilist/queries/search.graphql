@@ -208,6 +208,12 @@ query ExploreMedia(
                 episode
                 mediaId
             }
+            stats {
+                scoreDistribution {
+                    score
+                    amount
+                }
+            }
             siteUrl
         }
     }

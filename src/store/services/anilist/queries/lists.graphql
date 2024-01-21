@@ -34,6 +34,7 @@ fragment mediaListEntry on MediaList {
         coverImage {
             extraLarge
             large
+            color
         }
         type
         format
@@ -65,6 +66,12 @@ fragment mediaListEntry on MediaList {
             timeUntilAiring
             episode
             mediaId
+        }
+        stats {
+            scoreDistribution {
+                score
+                amount
+            }
         }
     }
 }

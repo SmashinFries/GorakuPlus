@@ -149,6 +149,12 @@ query AniMedia(
                         large
                         color
                     }
+                    stats {
+                        scoreDistribution {
+                            score
+                            amount
+                        }
+                    }
                     averageScore
                     meanScore
                 }
@@ -263,6 +269,12 @@ query AniMedia(
                             score
                             progress
                             progressVolumes
+                        }
+                        stats {
+                            scoreDistribution {
+                                score
+                                amount
+                            }
                         }
                         meanScore
                         averageScore
@@ -548,6 +560,12 @@ query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) 
                         extraLarge
                         color
                     }
+                    stats {
+                        scoreDistribution {
+                            score
+                            amount
+                        }
+                    }
                 }
             }
         }
@@ -651,6 +669,12 @@ query StaffDetails(
                     coverImage {
                         extraLarge
                         color
+                    }
+                    stats {
+                        scoreDistribution {
+                            score
+                            amount
+                        }
                     }
                 }
             }

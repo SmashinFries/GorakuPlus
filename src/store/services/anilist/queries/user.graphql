@@ -510,6 +510,12 @@ query UserAnimeFavorites($userID: Int, $page: Int, $perPage: Int) {
                             }
                         }
                     }
+                    stats {
+                        scoreDistribution {
+                            score
+                            amount
+                        }
+                    }
                 }
             }
         }
@@ -557,6 +563,12 @@ query UserMangaFavorites($userID: Int, $page: Int, $perPage: Int) {
                                 full
                                 native
                             }
+                        }
+                    }
+                    stats {
+                        scoreDistribution {
+                            score
+                            amount
                         }
                     }
                 }

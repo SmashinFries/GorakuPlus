@@ -49,6 +49,12 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
                     progressVolumes
                     repeat
                 }
+                stats {
+                    scoreDistribution {
+                        score
+                        amount
+                    }
+                }
             }
         }
     }

@@ -662,6 +662,12 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                 }
                 meanScore
                 averageScore
+                stats {
+                    scoreDistribution {
+                        score
+                        amount
+                    }
+                }
             }
             mediaRecommendation {
                 id
@@ -677,6 +683,12 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
                 coverImage {
                     color
                     extraLarge
+                }
+                stats {
+                    scoreDistribution {
+                        score
+                        amount
+                    }
                 }
                 meanScore
                 averageScore
