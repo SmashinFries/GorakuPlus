@@ -37,9 +37,7 @@ const MediaSettingsPage = () => {
         exploreTabOrder,
         scoreColors,
         defaultScore,
-        scoreHealthBar,
-        scoreGlow,
-        scoreNumber,
+        scoreVisualType,
         mediaLanguage,
         showItemListStatus,
     } = useAppSelector((state) => state.persistedSettings);
@@ -231,9 +229,7 @@ const MediaSettingsPage = () => {
                 <MediaTileCustomizer
                     themeMode={mode}
                     visible={showMTCustomizer}
-                    scoreHealthBar={scoreHealthBar}
-                    scoreGlow={scoreGlow}
-                    scoreNumber={scoreNumber}
+                    scoreVisualType={scoreVisualType}
                     showItemListStatus={showItemListStatus}
                     onSettingChange={onSettingChange}
                     mediaLanguage={mediaLanguage}
