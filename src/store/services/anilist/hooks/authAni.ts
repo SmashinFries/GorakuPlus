@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import * as WebBrowser from 'expo-web-browser';
 import {
     makeRedirectUri,
-    useAuthRequest,
-    ResponseType,
-    DiscoveryDocument,
-    CodeChallengeMethod,
     AuthRequest,
     AuthSessionResult,
     AuthRequestPromptOptions,
@@ -15,13 +10,10 @@ import { setAniAuth } from '../authSlice';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { api } from '../enhanced';
-import { RootNavPaths } from '../../../../navigation/types';
 import { useLazyUserDataQuery } from '../generated-anilist';
 
 const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
 const ANI_WEB_ID = Constants.expoConfig?.extra?.ANI_WEB_ID;
-const ANI_EXPO_GO = Constants.expoConfig?.extra?.ANI_EXPO_GO;
-const ANI_EXPO_GO_IOS = Constants.expoConfig?.extra?.ANI_EXPO_GO_IOS;
 
 // https://anilist.co/api/v2/oauth/authorize?client_id={client_id}&response_type=token
 
@@ -89,6 +81,7 @@ export const useAnilistAuth = () => {
                             'ExploreManga',
                             'ExploreManhwa',
                             'ExploreNovel',
+                            'UserOverview',
                         ]),
                     );
                 }
