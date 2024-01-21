@@ -5,6 +5,7 @@ import {
     MediaListStatus,
     MediaStatus,
     MediaTitle,
+    ScoreDistribution,
 } from '@/store/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
 import { listColor, rgbToRgba } from '@/utils';
@@ -12,8 +13,9 @@ import { useAppSelector } from '@/store/hooks';
 import { DanPost } from '@/store/services/danbooru/types';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { NSFWLabel } from './labels';
-import { ScoreHealthBar, ScoreIconText } from './explore/itemScore';
+import { ScoreHealthBar, ScoreIconText, ScoreVisual } from './explore/itemScore';
 import { AiringBanner } from './explore/episodeBanner';
+import { ScoreVisualType } from '@/store/slices/settingsSlice';
 
 const BORDER_RADIUS = 12;
 
@@ -27,17 +29,18 @@ type MediaCardProps = {
     imgBgColor?: string;
     scorebgColor?: string;
     scoreColors?: any;
-    scoreNumber?: boolean;
-    showHealthBar?: boolean;
     showBanner?: boolean;
     bannerText?: string;
     editMode?: boolean;
     disablePress?: boolean;
+    scoreVisualType?: ScoreVisualType;
+    scoreDistributions?: ScoreDistribution[];
 };
 export const MediaCard = (props: MediaCardProps) => {
     const { colors } = useTheme();
-    const { scoreColors, scoreHealthBar, mediaLanguage, scoreNumber, defaultScore } =
-        useAppSelector((state) => state.persistedSettings);
+    const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
+        (state) => state.persistedSettings,
+    );
     return (
         <Pressable
             onPress={props.navigate && props.navigate}
@@ -76,47 +79,16 @@ export const MediaCard = (props: MediaCardProps) => {
                 colors={['transparent', 'black']}
             >
                 {(props.meanScore || props.averageScore) && (
-                    <View
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            width: '45%',
-                            padding: 3,
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                            borderBottomLeftRadius: BORDER_RADIUS,
-                            borderTopRightRadius: BORDER_RADIUS,
-                            backgroundColor: rgbToRgba(colors.primaryContainer, 0.75),
-                            flexDirection: 'row',
-                        }}
-                    >
-                        {(props.meanScore || props.averageScore) &&
-                        (scoreHealthBar || props.showHealthBar) ? (
-                            <ScoreHealthBar
-                                score={
-                                    defaultScore === 'average' && props.averageScore
-                                        ? props.averageScore
-                                        : props.meanScore
-                                }
-                                scoreColors={scoreColors}
-                                showScore={props.scoreNumber ?? scoreNumber}
-                                textColor={colors.onPrimaryContainer}
-                                heartColor={colors.onPrimaryContainer}
-                            />
-                        ) : (
-                            <ScoreIconText
-                                showScore={props.scoreNumber}
-                                score={
-                                    defaultScore === 'average' && props.averageScore
-                                        ? props.averageScore
-                                        : props.meanScore
-                                }
-                                scoreColors={scoreColors}
-                                textColor={colors.onPrimaryContainer}
-                            />
-                        )}
-                    </View>
+                    <ScoreVisual
+                        score={
+                            defaultScore === 'average' && props.averageScore
+                                ? props.averageScore
+                                : props.meanScore
+                        }
+                        scoreColors={scoreColors}
+                        scoreVisualType={props.scoreVisualType}
+                        scoreDistributions={props.scoreDistributions}
+                    />
                 )}
                 <Text
                     variant="titleSmall"
@@ -160,6 +132,7 @@ export const MediaProgressBar = ({
     showListStatus,
 }: MediaProgressBarProps) => {
     const { colors } = useTheme();
+    const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
     return (
         <View
             style={[
@@ -183,7 +156,7 @@ export const MediaProgressBar = ({
                 indeterminate={mediaListEntry?.status === MediaListStatus.Current && !total}
                 color={mediaListEntry?.status ? listColor(mediaListEntry?.status) : undefined}
             />
-            {showListStatus ? (
+            {showListStatus ?? showItemListStatus ? (
                 <Text
                     style={{
                         textAlign: 'center',
@@ -197,7 +170,7 @@ export const MediaProgressBar = ({
                         ? ' · ' +
                           mediaListEntry?.progress +
                           (mediaListEntry?.status !== MediaListStatus.Repeating
-                              ? '/' + (total && total !== 0 ? total : '??')
+                              ? '/' + (total && total !== 0 ? total : '∞')
                               : '')
                         : null}
                 </Text>
