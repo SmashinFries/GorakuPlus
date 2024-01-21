@@ -42,7 +42,7 @@ export const useCharDetail = (id: number) => {
             tags: currentArtTag
                 ? showNSFW
                     ? `${currentArtTag} solo`
-                    : `${currentArtTag} solo rating:g,s`
+                    : `${currentArtTag} solo rating:g`
                 : '',
             page: 1,
         },
