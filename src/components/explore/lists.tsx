@@ -53,7 +53,7 @@ export const SectionScroll = ({
     const { width, height } = useWindowDimensions();
     const { colors } = useTheme();
 
-    const { scoreColors, showItemListStatus } = useAppSelector((state) => state.persistedSettings);
+    const { scoreColors } = useAppSelector((state) => state.persistedSettings);
 
     const scorebgColor = useMemo(
         () => rgbToRgba(colors.primaryContainer, 0.75),
@@ -90,20 +90,18 @@ export const SectionScroll = ({
                     navigate={() => navigate(props.item.id, props.item.type)}
                     scoreColors={scoreColors}
                     scorebgColor={scorebgColor}
-                    showHealthBar={props.item.averageScore || props.item.meanScore ? true : false}
                     averageScore={props.item.averageScore}
                     meanScore={props.item.meanScore}
-                    // @ts-ignore timeUntilAiring is transformed to string via RTK Query
-                    bannerText={props.item.nextAiringEpisode?.timeUntilAiring}
+                    bannerText={props.item.nextAiringEpisode?.timeUntilAiring as unknown as string}
                     imgBgColor={props.item.coverImage?.color}
                     showBanner={props.item.nextAiringEpisode ? true : false}
+                    scoreDistributions={props.item.stats?.scoreDistribution}
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}
                     mediaListEntry={props.item.mediaListEntry}
                     mediaStatus={props.item?.status}
                     total={props.item.episodes ?? props.item.chapters ?? props.item.volumes ?? 0}
-                    showListStatus={showItemListStatus}
                 />
             </View>
         ),
