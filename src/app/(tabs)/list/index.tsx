@@ -7,6 +7,7 @@ import {
     MediaListSort,
     MediaListStatus,
     MediaType,
+    UserListCollectionQuery,
     useUserListCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
 import { updateListFilter } from '@/store/slices/listSLice';
@@ -49,48 +50,54 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
         refetch().then(() => setIsRefreshing(false));
     };
 
-    const RenderItem = useCallback(({ item }: { item: any }) => {
-        return (
-            // <View style={{ width: '100%', alignItems: 'center', marginVertical: 12 }}>
-            //     <MediaItemMem item={item.media} navigate={navigate} />
-            // </View>
-            // <TouchableOpacity
-            //     onPress={() => navigate(item.media.id, item.media.idMal, item.media.type)}
-            //     style={{
-            //         flex: 1,
-            //         alignItems: 'center',
-            //         marginVertical: 12,
-            //         marginHorizontal: width / 150 / 3,
-            //     }}
-            // >
-            <View
-                style={{
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    marginVertical: 12,
-                    // marginHorizontal: width / 150 / 3,
-                    // flex: 1,
-                }}
-            >
-                <MediaCard
-                    coverImg={item.media.coverImage.extraLarge}
-                    titles={item.media.title}
-                    navigate={() =>
-                        router.push(`/${item.media.type.toLowerCase()}/${item.media.id}`)
-                    }
-                    scorebgColor={scorebgColor}
-                    showHealthBar={item.media.averageScore || item.media.meanScore ? true : false}
-                    averageScore={item.media.averageScore}
-                    meanScore={item.media.meanScore}
-                    // @ts-ignore timeUntilAiring is transformed to string via RTK Query
-                    bannerText={item.media.nextAiringEpisode?.timeUntilAiring}
-                    imgBgColor={item.media.coverImage.color}
-                    showBanner={item.media.nextAiringEpisode ? true : false}
-                    scoreNumber={true}
-                />
-            </View>
-        );
-    }, []);
+    const RenderItem = useCallback(
+        ({
+            item,
+        }: {
+            item: UserListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0];
+        }) => {
+            return (
+                // <View style={{ width: '100%', alignItems: 'center', marginVertical: 12 }}>
+                //     <MediaItemMem item={item.media} navigate={navigate} />
+                // </View>
+                // <TouchableOpacity
+                //     onPress={() => navigate(item.media.id, item.media.idMal, item.media.type)}
+                //     style={{
+                //         flex: 1,
+                //         alignItems: 'center',
+                //         marginVertical: 12,
+                //         marginHorizontal: width / 150 / 3,
+                //     }}
+                // >
+                <View
+                    style={{
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                        marginVertical: 12,
+                        // marginHorizontal: width / 150 / 3,
+                        // flex: 1,
+                    }}
+                >
+                    <MediaCard
+                        coverImg={item.media.coverImage.extraLarge}
+                        titles={item.media.title}
+                        navigate={() =>
+                            router.push(`/${item.media.type.toLowerCase()}/${item.media.id}`)
+                        }
+                        scorebgColor={scorebgColor}
+                        averageScore={item.media.averageScore}
+                        meanScore={item.media.meanScore}
+                        // @ts-ignore timeUntilAiring is transformed to string via RTK Query
+                        bannerText={item.media.nextAiringEpisode?.timeUntilAiring}
+                        imgBgColor={item.media.coverImage.color}
+                        showBanner={item.media.nextAiringEpisode ? true : false}
+                        scoreDistributions={item.media.stats?.scoreDistribution}
+                    />
+                </View>
+            );
+        },
+        [],
+    );
 
     return (
         <View style={{ flex: 1, height: '100%', width: '100%' }}>
