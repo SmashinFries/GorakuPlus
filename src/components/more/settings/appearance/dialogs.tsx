@@ -1,7 +1,16 @@
-import { Dialog, Text, Button, useTheme, RadioButton, Divider, Checkbox } from 'react-native-paper';
+import {
+    Dialog,
+    Text,
+    Button,
+    useTheme,
+    RadioButton,
+    Divider,
+    Checkbox,
+    List,
+} from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ScoreContainer } from '../../../score';
 import {
     Media,
@@ -9,11 +18,16 @@ import {
     MediaListStatus,
     MediaStatus,
     MediaType,
+    ScoreDistribution,
 } from '@/store/services/anilist/generated-anilist';
 import { MediaCard, MediaProgressBar } from '../../../cards';
 import { rgbToRgba } from '@/utils';
 import { ThemeOptions } from '@/store/theme/theme';
-import { mediaCardAppearanceActions } from '@/store/slices/settingsSlice';
+import {
+    ScoreVisualType,
+    ScoreVisualTypeEnum,
+    mediaCardAppearanceActions,
+} from '@/store/slices/settingsSlice';
 
 type SliderViewProps = {
     title: string;
@@ -129,6 +143,130 @@ export const ScoreColorDialog = ({
     );
 };
 
+// {
+//     "score": 10,
+//     "amount": 64
+// },
+// {
+//     "score": 20,
+//     "amount": 47
+// },
+// {
+//     "score": 30,
+//     "amount": 60
+// },
+// {
+//     "score": 40,
+//     "amount": 101
+// },
+// {
+//     "score": 50,
+//     "amount": 152
+// },
+// {
+//     "score": 60,
+//     "amount": 234
+// },
+// {
+//     "score": 70,
+//     "amount": 278
+// },
+// {
+//     "score": 80,
+//     "amount": 162
+// },
+// {
+//     "score": 90,
+//     "amount": 147
+// },
+// {
+//     "score": 100,
+//     "amount": 97
+// }
+
+const ScoreStats: ScoreDistribution[] = [
+    {
+        score: 10,
+        amount: 64,
+    },
+    {
+        score: 20,
+        amount: 47,
+    },
+    {
+        score: 30,
+        amount: 60,
+    },
+    {
+        score: 40,
+        amount: 101,
+    },
+    {
+        score: 50,
+        amount: 152,
+    },
+    {
+        score: 60,
+        amount: 234,
+    },
+    {
+        score: 70,
+        amount: 278,
+    },
+    {
+        score: 80,
+        amount: 162,
+    },
+    {
+        score: 90,
+        amount: 147,
+    },
+    {
+        score: 100,
+        amount: 97,
+    },
+    // {
+    //     score: 10,
+    //     amount: 2227,
+    // },
+    // {
+    //     score: 20,
+    //     amount: 685,
+    // },
+    // {
+    //     score: 30,
+    //     amount: 1602,
+    // },
+    // {
+    //     score: 40,
+    //     amount: 2875,
+    // },
+    // {
+    //     score: 50,
+    //     amount: 7378,
+    // },
+    // {
+    //     score: 60,
+    //     amount: 14126,
+    // },
+    // {
+    //     score: 70,
+    //     amount: 43932,
+    // },
+    // {
+    //     score: 80,
+    //     amount: 99405,
+    // },
+    // {
+    //     score: 90,
+    //     amount: 138552,
+    // },
+    // {
+    //     score: 100,
+    //     amount: 123324,
+    // },
+];
+
 type ScoreDialogProps = {
     visible: boolean;
     defaultScore: 'average' | 'mean';
@@ -214,8 +352,14 @@ const dummyWTCData: Media = {
         color: '#e4a11a',
     },
     mediaListEntry: {
+        id: 1,
+        mediaId: 1,
+        userId: 1,
         progress: 26 / 2,
         status: MediaListStatus.Current,
+    },
+    stats: {
+        scoreDistribution: ScoreStats,
     },
     isFavouriteBlocked: false,
 };
@@ -254,8 +398,14 @@ const dummyPPData: Media = {
         color: '#e4c943',
     },
     mediaListEntry: {
+        id: 1,
+        mediaId: 1,
+        userId: 1,
         progress: 147 / 2,
         status: MediaListStatus.Current,
+    },
+    stats: {
+        scoreDistribution: ScoreStats,
     },
     isFavouriteBlocked: false,
 };
@@ -294,8 +444,14 @@ const dummyKawaiiData: Media = {
         color: '#f18650',
     },
     mediaListEntry: {
+        id: 1,
+        mediaId: 1,
+        userId: 1,
         status: MediaListStatus.Current,
         progress: 46 / 2,
+    },
+    stats: {
+        scoreDistribution: ScoreStats,
     },
     isFavouriteBlocked: false,
 };
@@ -332,8 +488,14 @@ const dummyHinataData: Media = {
             'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-YJvLbgJQPCoI.jpg',
     },
     mediaListEntry: {
+        id: 1,
+        mediaId: 1,
+        userId: 1,
         progress: 220 / 2,
         status: MediaListStatus.Current,
+    },
+    stats: {
+        scoreDistribution: ScoreStats,
     },
     isFavouriteBlocked: false,
 };
@@ -371,8 +533,14 @@ const dummyAquaData: Media = {
         color: '#e4860d',
     },
     mediaListEntry: {
+        id: 1,
+        mediaId: 1,
+        userId: 1,
         status: MediaListStatus.Current,
         progress: 127 / 2,
+    },
+    stats: {
+        scoreDistribution: ScoreStats,
     },
     isFavouriteBlocked: false,
 };
@@ -408,9 +576,16 @@ const dummyBerserkData: Media = {
         color: '#e4a143',
     },
     mediaListEntry: {
+        id: 1,
+        mediaId: 1,
+        userId: 1,
         status: MediaListStatus.Current,
         progress: 50,
     },
+    stats: {
+        scoreDistribution: ScoreStats,
+    },
+    isFavouriteBlocked: false,
 };
 
 type DummyData = {
@@ -427,10 +602,8 @@ const dummyData: DummyData = {
 
 type MediaTileCustomizerProps = {
     visible: boolean;
-    scoreHealthBar: boolean;
-    scoreGlow: boolean;
+    scoreVisualType: ScoreVisualType;
     scoreColors: { red: number; yellow: number };
-    scoreNumber: boolean;
     themeMode: ThemeOptions;
     showItemListStatus: boolean;
     mediaLanguage: 'english' | 'romaji' | 'native';
@@ -442,17 +615,13 @@ export const MediaTileCustomizer = ({
     onDismiss,
     onSettingChange,
     scoreColors,
-    scoreHealthBar,
-    scoreGlow,
-    scoreNumber,
+    scoreVisualType,
     themeMode,
     showItemListStatus,
     mediaLanguage,
 }: MediaTileCustomizerProps) => {
     const { colors } = useTheme();
-    const [showHB, setShowHB] = useState(scoreHealthBar);
-    const [showGlow, setShowGlow] = useState(scoreGlow);
-    const [showScoreNumber, setShowScoreNumber] = useState(scoreNumber);
+    const [visualPreset, setVisualPreset] = useState<ScoreVisualType>(scoreVisualType);
     const [showStatus, setShowStatus] = useState(showItemListStatus);
 
     const onCancel = () => {
@@ -461,9 +630,7 @@ export const MediaTileCustomizer = ({
 
     const onDone = () => {
         onSettingChange({
-            scoreGlow: showGlow,
-            scoreHealthBar: showHB,
-            scoreNumber: showScoreNumber,
+            scoreVisualType: visualPreset,
             showItemListStatus: showStatus,
         });
         onDismiss();
@@ -471,72 +638,75 @@ export const MediaTileCustomizer = ({
 
     useEffect(() => {
         if (visible) {
-            setShowHB(scoreHealthBar);
-            setShowGlow(scoreGlow);
-            setShowScoreNumber(scoreNumber);
+            setVisualPreset(scoreVisualType);
             setShowStatus(showItemListStatus);
         }
     }, [visible]);
 
     return (
-        <Dialog visible={visible} onDismiss={onDismiss}>
+        <Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
             <Dialog.Title>Tile Customization</Dialog.Title>
             <Dialog.Content>
-                <Dialog.ScrollArea>
-                    <View
-                        style={{
-                            alignSelf: 'center',
-                            marginVertical: 10,
-                        }}
-                    >
-                        <MediaCard
-                            coverImg={dummyData[themeMode].coverImage?.extraLarge}
-                            titles={dummyData[themeMode].title}
-                            meanScore={dummyData[themeMode].meanScore}
-                            averageScore={dummyData[themeMode].averageScore}
-                            showHealthBar={showHB}
-                            scoreColors={scoreColors}
-                            scoreNumber={showScoreNumber}
-                            scorebgColor={rgbToRgba(colors.primaryContainer, 0.75)}
-                            navigate={() => null}
-                        />
-                        <MediaProgressBar
-                            progress={
-                                (dummyData[themeMode].episodes ??
-                                    dummyData[themeMode].mediaListEntry.progress) / 2
-                            }
-                            total={dummyData[themeMode].episodes ?? dummyData[themeMode].chapters}
-                            mediaStatus={dummyData[themeMode].status}
-                            mediaListEntry={dummyData[themeMode].mediaListEntry}
-                            showListStatus={showStatus}
-                        />
-                    </View>
-                    <Divider />
-                    {/* <Checkbox.Item
-                        label="Score HealthBar"
-                        onPress={() => setShowHB(!showHB)}
-                        status={showHB ? 'checked' : 'unchecked'}
-                    /> */}
-                    {/* <Checkbox.Item
-                        label="Score Glow"
-                        onPress={() => setShowGlow(!showGlow)}
-                        status={showGlow ? 'checked' : 'unchecked'}
-                    /> */}
-                    <Checkbox.Item
-                        label="Score Number"
-                        onPress={() => setShowScoreNumber(!showScoreNumber)}
-                        status={showScoreNumber ? 'checked' : 'unchecked'}
+                <View
+                    style={{
+                        alignSelf: 'center',
+                        marginVertical: 10,
+                    }}
+                >
+                    <MediaCard
+                        coverImg={dummyData[themeMode].coverImage?.extraLarge}
+                        titles={dummyData[themeMode].title}
+                        meanScore={dummyData[themeMode].meanScore}
+                        averageScore={dummyData[themeMode].averageScore}
+                        scoreColors={scoreColors}
+                        scorebgColor={rgbToRgba(colors.primaryContainer, 0.75)}
+                        scoreVisualType={visualPreset}
+                        navigate={() => null}
+                        scoreDistributions={dummyData[themeMode].stats?.scoreDistribution}
                     />
-                    <Checkbox.Item
-                        label="List status / progress"
-                        onPress={() => setShowStatus(!showStatus)}
-                        status={showStatus ? 'checked' : 'unchecked'}
+                    <MediaProgressBar
+                        progress={
+                            (dummyData[themeMode].episodes ??
+                                dummyData[themeMode].mediaListEntry.progress) / 2
+                        }
+                        total={dummyData[themeMode].episodes ?? dummyData[themeMode].chapters}
+                        mediaStatus={dummyData[themeMode].status}
+                        mediaListEntry={dummyData[themeMode].mediaListEntry}
+                        showListStatus={showStatus}
                     />
-                    <Text variant="titleMedium" style={{ marginVertical: 10, textAlign: 'center' }}>
-                        More options soon!
-                    </Text>
-                </Dialog.ScrollArea>
+                </View>
             </Dialog.Content>
+            <Dialog.ScrollArea>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <List.Section title="Score Visual">
+                        {Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
+                            <List.Item
+                                key={idx}
+                                title={visual}
+                                right={(props) => (
+                                    <RadioButton.Android
+                                        style={[props.style]}
+                                        value={ScoreVisualTypeEnum[visual]}
+                                        status={
+                                            visualPreset === ScoreVisualTypeEnum[visual]
+                                                ? 'checked'
+                                                : 'unchecked'
+                                        }
+                                        onPress={() => setVisualPreset(ScoreVisualTypeEnum[visual])}
+                                    />
+                                )}
+                            />
+                        ))}
+                    </List.Section>
+                    <List.Section title="List Visual">
+                        <Checkbox.Item
+                            label="List status / progress"
+                            onPress={() => setShowStatus(!showStatus)}
+                            status={showStatus ? 'checked' : 'unchecked'}
+                        />
+                    </List.Section>
+                </ScrollView>
+            </Dialog.ScrollArea>
             <Dialog.Actions>
                 <Button onPress={onCancel}>Cancel</Button>
                 <Button onPress={onDone}>Done</Button>
