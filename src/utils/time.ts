@@ -159,15 +159,14 @@ export const getReleaseTime = (
         }
     } else if (type === MediaType.Anime && status !== MediaStatus.Hiatus) {
         if (nextEpisode) {
-            return getTimeUntil(nextEpisode.airingAt, 'days');
-        } else if (
-            episodes &&
-            [MediaStatus.Releasing, MediaStatus.NotYetReleased].includes(status)
-        ) {
+            return `${getTimeUntil(nextEpisode.airingAt, 'days')}${'\n'}EP ${nextEpisode.episode}`;
+        } else if (episodes && ![MediaStatus.NotYetReleased].includes(status)) {
             return `${episodes} Episodes`;
+        } else if (status === MediaStatus.NotYetReleased && !nextEpisode) {
+            return 'Unreleased';
         }
     } else {
-        return null;
+        return 'Unknown';
     }
 };
 
