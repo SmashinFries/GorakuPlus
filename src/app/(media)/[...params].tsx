@@ -28,9 +28,10 @@ import MediaLinks from '@/components/media/sections/links';
 import { MuSearchDialog, ReleasesDialog } from '@/components/media/dialogs';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { api } from '@/store/services/anilist/enhanced';
-import { getTimeUntil } from '@/utils';
+import { getReleaseTime, getTimeUntil } from '@/utils';
 import { AnimeFull } from '@/store/services/mal/malApi';
 import ReviewsSection from '@/components/media/sections/reviews';
+import { StatSection } from '@/components/media/sections/stats';
 
 const MediaScreen = () => {
     const { params } = useLocalSearchParams<{ params: [string, string] }>(); // /anime/1234
@@ -55,7 +56,7 @@ const MediaScreen = () => {
     const [showReleaseDialog, setShowReleaseDialog] = useState(false);
     const [showMuDialog, setShowMuDialog] = useState(false);
 
-    const { mediaLanguage, scoreColors, allowSensorMotion } = useAppSelector(
+    const { mediaLanguage, scoreColors, allowSensorMotion, mediaInfoDisplay } = useAppSelector(
         (state) => state.persistedSettings,
     );
 
@@ -134,18 +135,15 @@ const MediaScreen = () => {
                                         id={aniID}
                                         type={aniData?.data?.Media?.type}
                                         status={aniData?.data?.Media?.status}
-                                        chapter_message={
-                                            type === MediaType.Manga
-                                                ? estimatedChapterTime
-                                                : aniData?.data?.Media?.status ===
-                                                  MediaStatus.Releasing
-                                                ? getTimeUntil(
-                                                      aniData?.data?.Media?.nextAiringEpisode
-                                                          .airingAt,
-                                                      'days',
-                                                  )
-                                                : ''
-                                        }
+                                        releaseMessage={getReleaseTime(
+                                            type,
+                                            aniData?.data?.Media?.status,
+                                            aniData?.data?.Media?.nextAiringEpisode,
+                                            estimatedChapterTime,
+                                            aniData?.data?.Media?.chapters,
+                                            aniData?.data?.Media?.episodes,
+                                            aniData?.data?.Media?.volumes,
+                                        )}
                                         onShowReleases={() => setShowReleaseDialog(true)}
                                         data={aniData?.data?.Media?.mediaListEntry}
                                         scoreFormat={
@@ -163,6 +161,10 @@ const MediaScreen = () => {
                                 <MetaData
                                     data={aniData?.data?.Media}
                                     malData={malData?.data?.data}
+                                />
+                                <StatSection
+                                    rankData={aniData?.data?.Media?.rankings}
+                                    statData={aniData?.data?.Media?.stats}
                                 />
                                 {mangaUpdates && aniData?.data?.Media?.type !== MediaType.Anime && (
                                     <MUData
@@ -238,7 +240,8 @@ const MediaScreen = () => {
                                 onConfirm={onConfirmMuDialog}
                             />
                         )}
-                        {aniData?.data?.Media?.status === MediaStatus.Releasing && (
+                        {(aniData?.data?.Media?.airingSchedule?.nodes ||
+                            mangaReleases?.data?.results) && (
                             <ReleasesDialog
                                 visible={showReleaseDialog}
                                 onDismiss={() => setShowReleaseDialog(false)}
@@ -248,10 +251,11 @@ const MediaScreen = () => {
                                         : undefined
                                 }
                                 animeReleases={
-                                    type === MediaType.Anime
+                                    aniData?.data?.Media?.airingSchedule?.nodes?.length > 0
                                         ? aniData?.data?.Media?.airingSchedule?.nodes
                                         : undefined
                                 }
+                                status={aniData?.data?.Media?.status}
                                 streamingSites={(malData?.data?.data as AnimeFull)?.streaming}
                             />
                         )}
