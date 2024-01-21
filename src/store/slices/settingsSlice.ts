@@ -6,6 +6,24 @@ import { MediaListStatus } from '@/store/services/anilist/generated-anilist';
 import { DanbooruRating } from '@/store/services/danbooru/types';
 import { ExploreTabsProps } from '@/types/navigation';
 
+export type ScoreVisualType =
+    | 'healthbar-full'
+    | 'healthbar'
+    | 'number'
+    | 'gradient-bar'
+    | 'bar'
+    | 'bar-graph';
+export enum ScoreVisualTypeEnum {
+    'Healthbar Full' = 'healthbar-full',
+    Healthbar = 'healthbar',
+    Number = 'number',
+    Bar = 'bar',
+    'Gradient Bar' = 'gradient-bar',
+    'Bar Graph' = 'bar-graph',
+}
+
+export type MediaInfoDisplay = 'list' | 'tabs';
+
 // Define a type for the slice state
 export type SettingsState = {
     navAnimation?: StackAnimationTypes;
@@ -16,6 +34,7 @@ export type SettingsState = {
     exploreTabOrder?: (keyof ExploreTabsProps)[];
     listATabOrder?: (MediaListStatus | string)[];
     listMTabOrder?: (MediaListStatus | string)[];
+    mediaInfoDisplay?: MediaInfoDisplay;
     animeCustomLists?: string[];
     mangaCustomLists?: string[];
     mediaLanguage?: 'romaji' | 'english' | 'native';
@@ -27,9 +46,7 @@ export type SettingsState = {
         red: number;
         yellow: number;
     };
-    scoreGlow?: boolean;
-    scoreHealthBar?: boolean;
-    scoreNumber?: boolean;
+    scoreVisualType?: ScoreVisualType;
     showItemListStatus?: boolean;
     defaultScore?: 'average' | 'mean';
     defaultGenreLayout?: 'list' | 'row';
@@ -61,6 +78,7 @@ const initialState: SettingsState = {
         MediaListStatus.Paused,
         MediaListStatus.Dropped,
     ],
+    mediaInfoDisplay: 'list',
     animeCustomLists: [],
     mangaCustomLists: [],
     mediaLanguage: 'english',
@@ -72,9 +90,7 @@ const initialState: SettingsState = {
         red: 64,
         yellow: 74,
     },
-    scoreHealthBar: true,
-    scoreGlow: false,
-    scoreNumber: true,
+    scoreVisualType: 'healthbar-full',
     showItemListStatus: true,
     defaultScore: 'average',
     defaultGenreLayout: 'row',
@@ -88,9 +104,7 @@ type settingsActions = {
 };
 
 export type mediaCardAppearanceActions = {
-    scoreHealthBar: boolean;
-    scoreGlow: boolean;
-    scoreNumber: boolean;
+    scoreVisualType: ScoreVisualType;
     showItemListStatus: boolean;
 };
 
@@ -113,11 +127,9 @@ export const settingsSlice = createSlice({
             // state.scoreBorders = action.payload.scoreBorders ?? state.scoreBorders;
         },
         setMediaCardAppearance: (state, action: PayloadAction<mediaCardAppearanceActions>) => {
-            state.scoreGlow = action.payload.scoreGlow ?? state.scoreGlow;
-            state.scoreHealthBar = action.payload.scoreHealthBar ?? state.scoreHealthBar;
-            state.scoreNumber = action.payload.scoreNumber ?? state.scoreNumber;
             state.showItemListStatus =
                 action.payload.showItemListStatus ?? state.showItemListStatus;
+            state.scoreVisualType = action.payload.scoreVisualType ?? state.scoreVisualType;
         },
     },
 });
