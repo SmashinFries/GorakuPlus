@@ -74,6 +74,7 @@ const CharacterScreen = () => {
                         meanScore={item.node.meanScore}
                         imgBgColor={item.node.coverImage.color}
                         navigate={() => router.push(`/(media)/${item.node.type}/${item.node.id}`)}
+                        scoreDistributions={item.node.stats?.scoreDistribution}
                     />
                     <Text
                         variant="labelLarge"
