@@ -50,7 +50,6 @@ export const AniMangList = (props: AniMangListProps) => {
     const { width, height } = useWindowDimensions();
     const { dark, colors } = useTheme();
     const { columns, listKey } = useColumns(150);
-    const test = useSharedValue(0);
 
     const allowAdult = useAppSelector((state) => state.persistedSettings.showNSFW);
 
@@ -70,9 +69,7 @@ export const AniMangList = (props: AniMangListProps) => {
                     navigate={() => props.onItemPress(itemProps.item.id, itemProps.item.type)}
                     scorebgColor={scorebgColor}
                     imgBgColor={itemProps.item.coverImage.color}
-                    showHealthBar={
-                        itemProps.item.averageScore || itemProps.item.meanScore ? true : false
-                    }
+                    scoreDistributions={itemProps.item.stats?.scoreDistribution}
                     bannerText={itemProps.item.nextAiringEpisode?.timeUntilAiring}
                     showBanner={itemProps.item.nextAiringEpisode ? true : false}
                     averageScore={itemProps.item.averageScore}
@@ -88,7 +85,6 @@ export const AniMangList = (props: AniMangListProps) => {
                         itemProps.item.volumes ??
                         0
                     }
-                    showListStatus={true}
                 />
             </View>
         ),

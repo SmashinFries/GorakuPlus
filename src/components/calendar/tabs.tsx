@@ -73,7 +73,7 @@ export const DayTab = ({ data }: DayTabProps) => {
                         meanScore={item.media?.meanScore}
                         showBanner
                         bannerText={bannerText}
-                        // bannerText={item.airingAt < today ? 'Aired' : getTimeUntil(item.airingAt)}
+                        scoreDistributions={item.media.stats?.scoreDistribution}
                         navigate={() => {
                             // console.log(
                             //     `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
@@ -89,7 +89,6 @@ export const DayTab = ({ data }: DayTabProps) => {
                         mediaListEntry={item.media.mediaListEntry}
                         mediaStatus={item.media.status}
                         total={item.media.episodes ?? 0}
-                        showListStatus={showItemListStatus}
                     />
                 </View>
             );

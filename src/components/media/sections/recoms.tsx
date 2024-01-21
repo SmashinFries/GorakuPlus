@@ -29,6 +29,7 @@ const RecList = ({ data }: RecProps) => {
                             }`,
                         )
                     }
+                    scoreDistributions={item.node.mediaRecommendation?.stats?.scoreDistribution}
                 />
                 <Text
                     variant="labelLarge"

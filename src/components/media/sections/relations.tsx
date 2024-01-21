@@ -33,7 +33,7 @@ const Relations = ({ data }: RelationsProps) => {
                     averageScore={item.node.averageScore}
                     meanScore={item.node.meanScore}
                     imgBgColor={item.node.coverImage.color}
-                    showHealthBar
+                    scoreDistributions={item.node?.stats?.scoreDistribution}
                     navigate={() =>
                         router.push(`/${item.node?.type?.toLowerCase()}/${item.node?.id}`)
                     }

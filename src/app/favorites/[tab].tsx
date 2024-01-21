@@ -98,12 +98,10 @@ const AnimeTab = ({
                     navigate={() => router.push(`${itemProps.item.type}/${itemProps.item.id}`)}
                     // scorebgColor={scorebgColor}
                     imgBgColor={itemProps.item.coverImage.color}
-                    showHealthBar={
-                        itemProps.item.averageScore || itemProps.item.meanScore ? true : false
-                    }
                     showBanner={false}
                     averageScore={itemProps.item.averageScore}
                     meanScore={itemProps.item.meanScore}
+                    scoreDistributions={itemProps.item.stats?.scoreDistribution}
                 />
             </View>
         ),
@@ -255,12 +253,10 @@ const MangaTab = ({
                     titles={itemProps.item.title}
                     navigate={() => router.push(`${itemProps.item.type}/${itemProps.item.id}`)}
                     imgBgColor={itemProps.item.coverImage.color}
-                    showHealthBar={
-                        itemProps.item.averageScore || itemProps.item.meanScore ? true : false
-                    }
                     showBanner={false}
                     averageScore={itemProps.item.averageScore}
                     meanScore={itemProps.item.meanScore}
+                    scoreDistributions={itemProps.item.stats?.scoreDistribution}
                 />
             </View>
         ),

@@ -44,6 +44,7 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
                     //     type: item.media.type,
                     // })
                 }
+                scoreDistributions={item.media?.stats?.scoreDistribution}
             />
             <Text
                 variant="labelLarge"
@@ -112,7 +113,6 @@ export const ActivityOverview = ({
 
     const [showActDelConfirm, setShowActDelConfirm] = useState(false);
     const [actDelID, setActDelID] = useState<number | null>(null);
-    const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
     const onTrash = (id: number) => {
         setActDelID(id);

@@ -50,6 +50,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
                         closeDialog();
                         onNav(item.id, item.idMal, item.type);
                     }}
+                    scoreDistributions={item.stats?.scoreDistribution}
                 />
                 <Text
                     variant="labelMedium"
