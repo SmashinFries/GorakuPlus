@@ -45,7 +45,7 @@ type ListEntryViewProps = {
     id: number;
     type: MediaType;
     status: MediaStatus;
-    chapter_message?: string;
+    releaseMessage?: string;
     data: AniMediaQuery['Media']['mediaListEntry'];
     scoreFormat?: ScoreFormat;
     isFav: boolean;
@@ -88,7 +88,7 @@ const ListEntryView = ({
     id,
     type,
     status,
-    chapter_message,
+    releaseMessage,
     data,
     scoreFormat,
     isFav,
@@ -117,7 +117,7 @@ const ListEntryView = ({
 
     const { width } = useWindowDimensions();
 
-    const containerWidth = status === MediaStatus.Releasing ? width / 3 : width / 2;
+    const containerWidth = releaseMessage ? width / 3 : width / 2;
 
     const updateListEntry = useCallback(
         (variables?: SaveMediaListItemMutationVariables) => {
@@ -160,7 +160,7 @@ const ListEntryView = ({
                         marginTop: 15,
                     }}
                 >
-                    {status === MediaStatus.Releasing && (
+                    {releaseMessage && (
                         <View
                             style={{
                                 width: containerWidth,
@@ -168,7 +168,14 @@ const ListEntryView = ({
                                 alignItems: 'center',
                             }}
                         >
-                            <ActionIcon icon={'timer-sand'} onPress={onShowReleases}>
+                            <ActionIcon
+                                icon={
+                                    status === MediaStatus.Finished
+                                        ? 'timer-sand-full'
+                                        : 'timer-sand'
+                                }
+                                onPress={onShowReleases}
+                            >
                                 <Text
                                     style={{
                                         textTransform: 'capitalize',
@@ -176,7 +183,7 @@ const ListEntryView = ({
                                     }}
                                     variant="labelMedium"
                                 >
-                                    {chapter_message ?? ''}
+                                    {releaseMessage}
                                 </Text>
                             </ActionIcon>
                         </View>
@@ -244,7 +251,7 @@ const ListEntryView = ({
                                 }}
                                 variant="labelMedium"
                             >
-                                {listStatus ? listStatus?.replaceAll('_', ' ') : ''}
+                                {listStatus ? listStatus?.replaceAll('_', ' ') : 'Add to List'}
                                 {listProgress ? ` · ${listProgress}` : ''}
                             </Text>
                         </ActionIcon>
