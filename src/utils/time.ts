@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { FuzzyDate } from '@/store/services/anilist/generated-anilist';
+import {
+    AiringSchedule,
+    FuzzyDate,
+    MediaStatus,
+    MediaType,
+} from '@/store/services/anilist/generated-anilist';
 
 const monthByNumber = {
     [1]: 'Jan',
@@ -133,6 +138,37 @@ export const subtractMonths = (num_months: number) => {
     today.setDate(0);
     const newDate = new Date(today.setMonth(today.getMonth() - num_months));
     return newDate.toISOString().split('T')[0].replaceAll('-', '').slice(0, -2) + '00';
+};
+
+export const getReleaseTime = (
+    type: MediaType,
+    status: MediaStatus,
+    nextEpisode: AiringSchedule,
+    chapterTime: string,
+    chapters: number,
+    episodes: number,
+    volumes: number,
+) => {
+    if (type === MediaType.Manga && status !== MediaStatus.Hiatus) {
+        if (chapters) {
+            return `${chapters} chapters`;
+        } else if (volumes) {
+            return `${volumes} volumes`;
+        } else {
+            return chapterTime;
+        }
+    } else if (type === MediaType.Anime && status !== MediaStatus.Hiatus) {
+        if (nextEpisode) {
+            return getTimeUntil(nextEpisode.airingAt, 'days');
+        } else if (
+            episodes &&
+            [MediaStatus.Releasing, MediaStatus.NotYetReleased].includes(status)
+        ) {
+            return `${episodes} Episodes`;
+        }
+    } else {
+        return null;
+    }
 };
 
 export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days' = 'until') => {
