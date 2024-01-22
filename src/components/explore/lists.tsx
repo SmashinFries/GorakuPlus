@@ -55,11 +55,6 @@ export const SectionScroll = ({
 
     const { scoreColors } = useAppSelector((state) => state.persistedSettings);
 
-    const scorebgColor = useMemo(
-        () => rgbToRgba(colors.primaryContainer, 0.75),
-        [colors.primaryContainer],
-    );
-
     const navigate = (aniID: number, type: MediaType) => {
         router.push(`/${type.toLowerCase()}/${aniID}`);
     };
@@ -89,7 +84,6 @@ export const SectionScroll = ({
                     titles={props.item.title}
                     navigate={() => navigate(props.item.id, props.item.type)}
                     scoreColors={scoreColors}
-                    scorebgColor={scorebgColor}
                     averageScore={props.item.averageScore}
                     meanScore={props.item.meanScore}
                     bannerText={props.item.nextAiringEpisode?.timeUntilAiring as unknown as string}
@@ -162,7 +156,6 @@ export const SectionScroll = ({
                         showsHorizontalScrollIndicator={false}
                         estimatedListSize={{ height: 280, width: width }}
                         // onEndReached={() => {
-                        //     console.log('Fetching more');
                         //     fetchMore();
                         // }}
                         // drawDistance={width * 2}
