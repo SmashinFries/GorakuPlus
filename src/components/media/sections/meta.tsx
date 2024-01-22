@@ -1,4 +1,4 @@
-import { List, Text, useTheme } from 'react-native-paper';
+import { Button, List, Text, useTheme } from 'react-native-paper';
 import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
 import { convertDate } from '@/utils';
 import { View } from 'react-native';
@@ -7,6 +7,7 @@ import { useEffect, useMemo } from 'react';
 import { Accordion, TransYUpViewMem } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
 import { AnimeFull, MangaFull } from '@/store/services/mal/malApi';
+import { router } from 'expo-router';
 
 type MetaDataProps = {
     data: AniMediaQuery['Media'];
@@ -117,13 +118,31 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                     <List.Item
                         title="Studios"
                         right={(props) => (
-                            <Text selectable>
-                                {data.studios.edges.length > 0
-                                    ? data.studios.edges.map(
-                                          (studio, idx) => studio.isMain && studio.node.name,
-                                      )
-                                    : 'N/A'}
-                            </Text>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    flexWrap: 'wrap',
+                                    justifyContent: 'flex-end',
+                                    maxWidth: '65%',
+                                }}
+                            >
+                                {data.studios.edges.map(
+                                    (studio, idx) =>
+                                        studio.isMain && (
+                                            <Button
+                                                key={idx}
+                                                mode="elevated"
+                                                icon={'star'}
+                                                style={{ margin: 5 }}
+                                                onPress={() =>
+                                                    router.push(`/studio/${studio.node.id}`)
+                                                }
+                                            >
+                                                {studio.node?.name}
+                                            </Button>
+                                        ),
+                                )}
+                            </View>
                         )}
                     />
                 )}
@@ -131,13 +150,30 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                     <List.Item
                         title="Producers"
                         right={(props) => (
-                            <Text selectable style={{ width: '40%', textAlign: 'right' }}>
-                                {data.studios.edges.length > 0
-                                    ? data.studios.edges
-                                          .map((studio, idx) => !studio.isMain && studio.node.name)
-                                          .join(', ')
-                                    : 'N/A'}
-                            </Text>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    flexWrap: 'wrap',
+                                    justifyContent: 'flex-end',
+                                    maxWidth: '65%',
+                                }}
+                            >
+                                {data.studios.edges.map(
+                                    (studio, idx) =>
+                                        !studio.isMain && (
+                                            <Button
+                                                key={idx}
+                                                mode="elevated"
+                                                style={{ margin: 5 }}
+                                                onPress={() =>
+                                                    router.push(`/studio/${studio.node.id}`)
+                                                }
+                                            >
+                                                {studio.node?.name}
+                                            </Button>
+                                        ),
+                                )}
+                            </View>
                         )}
                     />
                 )}
