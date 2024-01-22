@@ -97,7 +97,6 @@ export const StatBar = ({ data }: StatusBarProps) => {
                     }}
                 />
             ))} */}
-            <Button onPress={() => console.log(sortedLocations)}>TEST</Button>
             <LinearGradient
                 colors={colors}
                 locations={sortedLocations}
