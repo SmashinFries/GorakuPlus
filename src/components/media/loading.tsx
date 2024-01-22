@@ -23,14 +23,14 @@ export const LoadingIcon = ({
 }) => {
     const iconAnimValue = useSharedValue({ transY: 0, rotateZ: '0deg' });
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateY: iconAnimValue.value.transY },
-                { rotateZ: iconAnimValue.value.rotateZ },
-            ],
-        };
-    });
+    // const animatedStyle = useAnimatedStyle(() => {
+    //     return {
+    //         transform: [
+    //             { translateY: iconAnimValue.value.transY },
+    //             { rotateZ: iconAnimValue.value.rotateZ },
+    //         ],
+    //     };
+    // });
 
     useEffect(() => {
         iconAnimValue.value = {
@@ -76,11 +76,10 @@ type LoadingItemProps = {
 };
 export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
     const [loadIcon, setLoadIcon] = useState('check');
+    const { colors } = useTheme();
     useEffect(() => {
         if (loading === null) {
             setLoadIcon('cancel');
-        } else if (error?.status === 'FETCH_ERROR') {
-            setLoadIcon('network-off-outline');
         } else if (loading === false && !error) {
             setLoadIcon('check');
         }
@@ -91,7 +90,10 @@ export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) =>
             {loading ? (
                 <ActivityIndicator style={{ paddingTop: 10 }} />
             ) : (
-                <IconButton icon={loadIcon} iconColor={loadIcon === 'check' ? 'green' : 'red'} />
+                <IconButton
+                    icon={loadIcon}
+                    iconColor={loadIcon === 'check' ? colors.primary : colors.error}
+                />
             )}
         </Animated.View>
     );
@@ -118,14 +120,6 @@ export const MediaLoading = ({
     mangaUpdatesError,
 }: LoadingProps) => {
     const { dark } = useTheme();
-
-    // const opacity = useSharedValue(1);
-
-    // const animatedStyle = useAnimatedStyle(() => {
-    //     return {
-    //         opacity: opacity.value,
-    //     }
-    // });
 
     return (
         <Animated.View
