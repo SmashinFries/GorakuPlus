@@ -22,7 +22,7 @@ import {
 import { useListEntry } from '@/hooks/media/useMutations';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RemoveListItemDialog } from '@/components/media/dialogs';
 import { Pressable, StyleProp, View, ViewStyle, useWindowDimensions } from 'react-native';
 import { NumberPickDialog } from '@/components/dialogs';
@@ -45,7 +45,7 @@ type ListEntryViewProps = {
     id: number;
     type: MediaType;
     status: MediaStatus;
-    releaseMessage?: string;
+    getReleaseMessage?: () => string;
     data: AniMediaQuery['Media']['mediaListEntry'];
     scoreFormat?: ScoreFormat;
     isFav: boolean;
@@ -88,7 +88,7 @@ const ListEntryView = ({
     id,
     type,
     status,
-    releaseMessage,
+    getReleaseMessage,
     data,
     scoreFormat,
     isFav,
@@ -117,10 +117,10 @@ const ListEntryView = ({
 
     const { width } = useWindowDimensions();
 
-    const containerWidth = releaseMessage ? width / 3 : width / 2;
-    const splitReleaseMessage = releaseMessage?.includes('\n')
-        ? releaseMessage?.split('\n')
-        : [releaseMessage];
+    const containerWidth = getReleaseMessage() ? width / 3 : width / 2;
+    const splitReleaseMessage = getReleaseMessage()?.includes('\n')
+        ? getReleaseMessage()?.split('\n')
+        : [getReleaseMessage()];
 
     const updateListEntry = useCallback(
         (variables?: SaveMediaListItemMutationVariables) => {
@@ -164,7 +164,7 @@ const ListEntryView = ({
                         alignItems: 'flex-start',
                     }}
                 >
-                    {releaseMessage && (
+                    {getReleaseMessage && (
                         <View
                             style={{
                                 width: containerWidth,
