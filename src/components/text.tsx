@@ -1,9 +1,14 @@
 import { openWebBrowser } from '@/utils/webBrowser';
+import { router } from 'expo-router';
 import { View } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { StyleProp, TextStyle } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
-import RenderHTML from 'react-native-render-html';
+import RenderHTML, {
+    CustomTagRendererRecord,
+    CustomTextualRenderer,
+    RenderersProps,
+} from 'react-native-render-html';
 
 type ListHeadingProps = {
     title: string;
@@ -64,6 +69,10 @@ export const ListHeading = ({
     );
 };
 
+const UwuTextRenderer: CustomTextualRenderer = ({ TDefaultRenderer, ...props }) => {
+    return <TDefaultRenderer {...props} />;
+};
+
 type HTMLTextProps = {
     html: string;
 };
@@ -71,11 +80,26 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
     const { width } = useWindowDimensions();
     const { colors } = useTheme();
 
-    const renderersProps = {
+    const renderers: CustomTagRendererRecord = {
+        p: UwuTextRenderer,
+    };
+
+    const renderersProps: Partial<RenderersProps> = {
         a: {
             onPress(event, url, htmlAttribs, target) {
-                // console.log(url, target);
-                openWebBrowser(url);
+                if (url.includes('https://anilist.co/character/')) {
+                    const id = url.split('/').at(-2);
+                    router.push(`https://anilist.co/characters/info/${id}`);
+                } else if (
+                    url.includes('https://anilist.co/manga/') ||
+                    url.includes('https://anilist.co/anime/')
+                ) {
+                    const type = url.split('/')[3];
+                    const id = url.split('/')[4];
+                    router.push(`/${type}/${id}`);
+                } else {
+                    openWebBrowser(url);
+                }
             },
         },
     };
@@ -86,6 +110,7 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
             contentWidth={width}
             baseStyle={{ color: colors.onBackground }}
             renderersProps={renderersProps}
+            renderers={renderers}
         />
     );
 };
