@@ -17,12 +17,14 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { LicensedSelector, NSFWSelector, OnListSelector, TagBanSwitch } from './buttons';
 import { ScoreSlider } from './slider';
 import { FilterActions, FilterReducerState } from '@/reducers/search/reducers';
+import { SearchType } from '@/types/search';
 
 type FilterSheetProps = {
     sheetRef: React.Ref<BottomSheetModalMethods>;
     filterData: FilterReducerState;
     genreTagData: GenreTagCollectionQuery;
     filterSearch: string;
+    filterType: SearchType;
     onSearch: (query: string) => void;
     handleSheetChange: (index: number) => void;
     updateFilter: (props: FilterActions) => void;
@@ -33,16 +35,15 @@ export const FilterSheet = ({
     filterData,
     genreTagData,
     filterSearch,
+    filterType,
     onSearch,
     handleSheetChange,
     updateFilter,
     toggleSheet,
 }: FilterSheetProps) => {
-    // const genreTagResult = useGenreTagCollectionQuery();
-    // const [presetDialogVisible, setPresetDialogVisible] = useState(false);
     const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+    const history = useAppSelector((state) => state.persistedHistory);
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
-    // const dispatch = useAppDispatch();
     const { colors } = useTheme();
     const snapPoints = useMemo(() => ['70%', '95%'], []);
 
@@ -81,7 +82,7 @@ export const FilterSheet = ({
                             }
                         />
                     )}
-                    {filterData.filter.type !== MediaType.Anime && (
+                    {filterType !== MediaType.Anime && (
                         <LicensedSelector
                             isLicensed={filterData.filter.isLicensed}
                             updateOnList={(isLicensed) =>
@@ -185,8 +186,7 @@ export const FilterSheet = ({
                         }
                     />
                 </BottomSheetView>
-                {/* <Button onPress={() => console.log(filterData.filter)}>Print Filter</Button> */}
-                {filterData.filter.type === MediaType.Anime && (
+                {filterType === MediaType.Anime && (
                     <BottomSheetView>
                         <Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
                             Season
