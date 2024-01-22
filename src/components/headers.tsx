@@ -40,6 +40,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
 import { SearchType } from '@/types/search';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { useToggleFavMutation } from '@/store/services/anilist/enhanced';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -121,7 +122,6 @@ type SearchHeaderProps = NativeStackHeaderProps & {
     openImageSearch: () => void;
     openWaifuSearch: () => void;
     onFocus: () => void;
-    isFocused: boolean;
 };
 export const SearchHeader = ({
     navigation,
@@ -134,7 +134,6 @@ export const SearchHeader = ({
     onHistorySelected,
     currentType,
     searchbarRef,
-    isFocused,
     toggleIsFocused,
     setFilterSearch,
     openImageSearch,
@@ -595,7 +594,6 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
 
     useFocusEffect(() => {
         const backAction = () => {
-            console.log('back triggered!');
             setIsOpen(false);
             return true;
         };
@@ -693,6 +691,55 @@ export const FavoritesHeader = ({ navigation, options, route, back }: NativeStac
                 <Appbar.Content title={'Favorites'} />
             )}
             {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
+        </Appbar.Header>
+    );
+};
+
+type StudioHeaderProps = NativeStackHeaderProps & {
+    isFav: boolean;
+    id: number;
+};
+export const StudioHeader = ({
+    navigation,
+    options,
+    route,
+    back,
+    isFav,
+    id,
+}: StudioHeaderProps) => {
+    const shareLink = 'https://anilist.co/studio/' + id;
+    const title = getHeaderTitle(options, route.name);
+    const { colors } = useTheme();
+    const [toggleFav] = useToggleFavMutation();
+    const [fav, setFav] = useState(isFav);
+
+    const onFavToggle = async () => {
+        const res = await toggleFav({ studioId: id }).unwrap();
+        setFav(
+            res.ToggleFavourite.studios?.edges.find((s) => s?.node?.id === id)?.node?.isFavourite ??
+                false,
+        );
+    };
+
+    return (
+        <Appbar.Header>
+            {back && <Appbar.BackAction onPress={navigation.goBack} />}
+            <Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
+            {/* <Appbar.Action
+                icon={fav ? 'heart' : 'heart-outline'}
+                color={fav ? colors.primary : undefined}
+                onPress={onFavToggle}
+            /> */}
+            <Appbar.Action
+                icon={'share-variant-outline'}
+                onPress={() =>
+                    Share.share({
+                        url: shareLink,
+                        title: shareLink,
+                        message: shareLink,
+                    })
+                }
+            />
         </Appbar.Header>
     );
 };
