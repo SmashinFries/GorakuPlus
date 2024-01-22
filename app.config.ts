@@ -10,7 +10,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     owner: 'kuzulabz',
     slug: 'GorakuPlus',
     name: appName,
-    version: '1.0',
+    version: '1.1',
     orientation: 'portrait',
     icon: './assets/iconsv1/icon.png',
     userInterfaceStyle: 'automatic',
