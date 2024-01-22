@@ -30,6 +30,7 @@ import { ImageSearchItem } from './media';
 import { WdTaggerOutput } from '@/store/services/huggingface/types';
 import { useLazyCharacterSearchQuery } from '@/store/services/anilist/enhanced';
 import { router } from 'expo-router';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
@@ -50,8 +51,7 @@ export const AniMangList = (props: AniMangListProps) => {
     const { width, height } = useWindowDimensions();
     const { dark, colors } = useTheme();
     const { columns, listKey } = useColumns(150);
-
-    const allowAdult = useAppSelector((state) => state.persistedSettings.showNSFW);
+    const { dismissAll } = useBottomSheetModal();
 
     const scorebgColor = useMemo(
         () => rgbToRgba(colors.primaryContainer, 0.75),
@@ -62,12 +62,14 @@ export const AniMangList = (props: AniMangListProps) => {
 
     const RenderItem = useCallback(
         (itemProps) => (
-            <View style={{ alignItems: 'center', marginVertical: 10 }}>
+            <View style={{ flex: 1, alignItems: 'center', marginVertical: 10 }}>
                 <MediaCard
                     coverImg={itemProps.item.coverImage.extraLarge}
                     titles={itemProps.item.title}
-                    navigate={() => props.onItemPress(itemProps.item.id, itemProps.item.type)}
-                    scorebgColor={scorebgColor}
+                    navigate={() => {
+                        dismissAll();
+                        props.onItemPress(itemProps.item.id, itemProps.item.type);
+                    }}
                     imgBgColor={itemProps.item.coverImage.color}
                     scoreDistributions={itemProps.item.stats?.scoreDistribution}
                     bannerText={itemProps.item.nextAiringEpisode?.timeUntilAiring}
@@ -107,9 +109,9 @@ export const AniMangList = (props: AniMangListProps) => {
                 centerContent
                 onScroll={props.onScrollHandler}
                 contentContainerStyle={{
-                    padding: 10,
+                    // padding: 10,
                     paddingTop: props.headerHeight,
-                    paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
+                    // paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
                 }}
                 onEndReachedThreshold={0.4}
                 onEndReached={() => {
@@ -137,6 +139,7 @@ export const CharacterList = (props: CharacterListProps) => {
     const { width, height } = useWindowDimensions();
     // const { dark, colors } = useTheme();
     const { columns, listKey } = useColumns(110);
+    const { dismissAll } = useBottomSheetModal();
 
     const keyExtract = useCallback(
         (item, index: number) => item.id.toString() + index.toString(),
@@ -146,9 +149,12 @@ export const CharacterList = (props: CharacterListProps) => {
     const RenderItem: ListRenderItem<CharacterSearchQuery['Page']['characters'][0]> = useCallback(
         ({ item }) => {
             return (
-                <View style={{ alignItems: 'center', marginVertical: 15 }}>
+                <View style={{ flex: 1, alignItems: 'center', marginVertical: 15 }}>
                     <CharacterCard
-                        onPress={() => props.onNavigate(item.id)}
+                        onPress={() => {
+                            dismissAll();
+                            props.onNavigate(item.id);
+                        }}
                         imgUrl={item.image?.large}
                         name={item.name?.full}
                         nativeName={item.name?.native}
@@ -176,9 +182,9 @@ export const CharacterList = (props: CharacterListProps) => {
                 centerContent
                 onScroll={props.onScrollHandler}
                 contentContainerStyle={{
-                    padding: 10,
+                    // padding: 10,
                     paddingTop: props.headerHeight,
-                    paddingLeft: props.results?.Page?.characters ? 110 / columns / 3 : undefined,
+                    // paddingLeft: props.results?.Page?.characters ? 110 / columns / 3 : undefined,
                 }}
                 onEndReachedThreshold={0.4}
                 onEndReached={() => {
@@ -204,7 +210,7 @@ type StaffListProps = {
 };
 export const StaffList = (props: StaffListProps) => {
     const { width, height } = useWindowDimensions();
-    // const { dark, colors } = useTheme();
+    const { dismissAll } = useBottomSheetModal();
     const { columns, listKey } = useColumns(110);
 
     const keyExtract = useCallback(
@@ -215,9 +221,12 @@ export const StaffList = (props: StaffListProps) => {
     const RenderItem: ListRenderItem<StaffSearchQuery['Page']['staff'][0]> = useCallback(
         ({ item }) => {
             return (
-                <View style={{ alignItems: 'center', marginVertical: 15 }}>
+                <View style={{ flex: 1, alignItems: 'center', marginVertical: 15 }}>
                     <StaffCard
-                        onPress={() => props.onNavigate(item.id)}
+                        onPress={() => {
+                            dismissAll();
+                            props.onNavigate(item.id);
+                        }}
                         imgUrl={item.image?.large}
                         name={item.name?.full}
                         nativeName={item.name?.native}
@@ -245,9 +254,7 @@ export const StaffList = (props: StaffListProps) => {
                 centerContent
                 onScroll={props.onScrollHandler}
                 contentContainerStyle={{
-                    padding: 10,
                     paddingTop: props.headerHeight,
-                    paddingLeft: props.results?.Page?.staff ? 110 / columns / 3 : undefined,
                 }}
                 onEndReachedThreshold={0.4}
                 onEndReached={() => {
@@ -268,12 +275,12 @@ type StudioListProps = {
         | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
         | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
     headerHeight: number;
-    onNavigate: (id: number) => void;
+    onNavigate: (studioId: number) => void;
     nextPage?: () => Promise<void>;
 };
 export const StudioList = (props: StudioListProps) => {
     const { width, height } = useWindowDimensions();
-    // const { dark, colors } = useTheme();
+    const { dismissAll } = useBottomSheetModal();
     const { columns, listKey } = useColumns(110);
 
     const keyExtract = useCallback(
@@ -284,10 +291,21 @@ export const StudioList = (props: StudioListProps) => {
     const RenderItem: ListRenderItem<StudioSearchQuery['Page']['studios'][0]> = useCallback(
         ({ item }) => {
             return (
-                <View style={{ flex: 1, width: '100%', alignItems: 'center', marginVertical: 15 }}>
+                <View
+                    style={{
+                        flex: 1,
+                        width: '100%',
+                        alignItems: 'center',
+                        marginVertical: 15,
+                        paddingHorizontal: 20,
+                    }}
+                >
                     <StudioCard
-                        // onPress={() => props.onNavigate(item.id)}
-                        onPress={() => openWebBrowser(item.siteUrl)}
+                        onPress={() => {
+                            dismissAll();
+                            props.onNavigate(item.id);
+                            // openWebBrowser(item.siteUrl);
+                        }}
                         name={item.name}
                         isFavourite={item.isFavourite}
                     />
@@ -313,9 +331,7 @@ export const StudioList = (props: StudioListProps) => {
                 centerContent
                 onScroll={props.onScrollHandler}
                 contentContainerStyle={{
-                    padding: 10,
                     paddingTop: props.headerHeight,
-                    paddingLeft: props.results?.Page?.studios ? 110 / columns / 3 : undefined,
                 }}
                 onEndReachedThreshold={0.4}
                 onEndReached={() => {
@@ -379,7 +395,7 @@ type WaifuSearchListProps = {
 };
 export const WaifuSearchList = (props: WaifuSearchListProps) => {
     const { width, height } = useWindowDimensions();
-    // const { dark, colors } = useTheme();
+    const { dismissAll } = useBottomSheetModal();
     const { columns, listKey } = useColumns(110);
 
     const keyExtract = useCallback(
@@ -393,7 +409,10 @@ export const WaifuSearchList = (props: WaifuSearchListProps) => {
         return (
             <View style={{ alignItems: 'center', marginVertical: 15 }}>
                 <CharacterCard
-                    onPress={() => router.push('/characters/info/' + item.id)}
+                    onPress={() => {
+                        dismissAll();
+                        router.push('/characters/info/' + item.id);
+                    }}
                     imgUrl={item.image?.large}
                     name={item.name?.full}
                     nativeName={item.name?.native}

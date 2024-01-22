@@ -8,12 +8,14 @@ import { Card, Chip, Text, useTheme } from 'react-native-paper';
 import { Pressable, useWindowDimensions } from 'react-native';
 import { useAppSelector } from '@/store/hooks';
 import { router } from 'expo-router';
+import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 type ImageSearchItemProps = {
     item: Result;
 };
 export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
     const { roundness } = useTheme();
+    const { dismissAll } = useBottomSheetModal();
     const { mediaLanguage, showNSFW } = useAppSelector((state) => state.persistedSettings);
     const { width } = useWindowDimensions();
     const anilist = item.anilist as Anilist;
@@ -36,7 +38,10 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
                 {/* <Card.Cover source={{ uri: item.image }} /> */}
                 <Pressable
                     style={{ height: 195, overflow: 'hidden', borderRadius: roundness * 3 }}
-                    onPress={() => router.push(`/${MediaType.Anime}/${anilist.id}`)}
+                    onPress={() => {
+                        dismissAll();
+                        router.push(`/${MediaType.Anime}/${anilist.id}`);
+                    }}
                 >
                     <Video
                         style={{
