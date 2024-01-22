@@ -179,7 +179,7 @@ const SearchPage = () => {
         router.push(`/staff/info/${staffID}`);
     }, []);
 
-    const onStudioPress = useCallback(() => null, []);
+    const onStudioPress = useCallback((studioId: number) => router.push(`/studio/${studioId}`), []);
 
     const onCharSearch = async (query: string) => {
         Keyboard.dismiss();
@@ -355,9 +355,6 @@ const SearchPage = () => {
                                     appDispatch(updateSearchType(MediaType.Anime));
                                     openSheet();
                                 }}
-                                // setSearch={setSearch}
-                                // search={filter.search}
-                                isFocused={isFocused}
                                 historySelected={currentHistorySearch}
                                 onHistorySelected={() => setCurrentHistorySearch(null)}
                                 currentType={filter.searchType}
@@ -474,7 +471,7 @@ const SearchPage = () => {
                         exiting={SlideOutDown}
                         entering={SlideInDown}
                     >
-                        <ScrollView>
+                        <ScrollView keyboardShouldPersistTaps={'always'}>
                             {history.search.map((term, idx) => (
                                 <List.Item
                                     key={idx}
@@ -524,6 +521,7 @@ const SearchPage = () => {
                 onSearch={(query: string) => onSearch(query)}
                 filterSearch={filterSearch}
                 filterData={filter}
+                filterType={filter.searchType}
                 updateFilter={updateFilter}
                 toggleSheet={closeSheet}
                 genreTagData={genreTagResult.data}
