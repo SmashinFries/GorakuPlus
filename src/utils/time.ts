@@ -86,9 +86,9 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
     const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
     return `${
         pos_estimated_days > 1
-            ? '~' + pos_estimated_days?.toString() + ' days'
+            ? pos_estimated_days?.toString() + ' days'
             : pos_estimated_days === 1
-            ? '~' + pos_estimated_days.toString() + ' day'
+            ? pos_estimated_days.toString() + ' day'
             : 'Today'
     }`;
 };
