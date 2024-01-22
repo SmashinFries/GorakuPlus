@@ -7,6 +7,46 @@ mutation ToggleFav($animeId: Int, $mangaId: Int, $characterId: Int, $staffId: In
         studioId: $studioId
     ) {
         __typename
+        anime {
+            edges {
+                node {
+                    id
+                    isFavourite
+                }
+            }
+        }
+        manga {
+            edges {
+                node {
+                    id
+                    isFavourite
+                }
+            }
+        }
+        characters {
+            edges {
+                node {
+                    id
+                    isFavourite
+                }
+            }
+        }
+        staff {
+            edges {
+                node {
+                    id
+                    isFavourite
+                }
+            }
+        }
+        studios {
+            edges {
+                node {
+                    id
+                    isFavourite
+                }
+            }
+        }
     }
 }
 

@@ -4678,7 +4678,7 @@ export type ToggleFavMutationVariables = Exact<{
 }>;
 
 
-export type ToggleFavMutation = { __typename?: 'Mutation', ToggleFavourite?: { __typename: 'Favourites' } | null };
+export type ToggleFavMutation = { __typename?: 'Mutation', ToggleFavourite?: { __typename: 'Favourites', anime?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, isFavourite: boolean } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, isFavourite: boolean } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', edges?: Array<{ __typename?: 'CharacterEdge', node?: { __typename?: 'Character', id: number, isFavourite: boolean } | null } | null> | null } | null, staff?: { __typename?: 'StaffConnection', edges?: Array<{ __typename?: 'StaffEdge', node?: { __typename?: 'Staff', id: number, isFavourite: boolean } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', node?: { __typename?: 'Studio', id: number, isFavourite: boolean } | null } | null> | null } | null } | null };
 
 export type SaveMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
@@ -5147,7 +5147,7 @@ export type StudioListQueryVariables = Exact<{
 }>;
 
 
-export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
+export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
 
 export type GetNotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -5629,6 +5629,46 @@ export const ToggleFavDocument = `
     studioId: $studioId
   ) {
     __typename
+    anime {
+      edges {
+        node {
+          id
+          isFavourite
+        }
+      }
+    }
+    manga {
+      edges {
+        node {
+          id
+          isFavourite
+        }
+      }
+    }
+    characters {
+      edges {
+        node {
+          id
+          isFavourite
+        }
+      }
+    }
+    staff {
+      edges {
+        node {
+          id
+          isFavourite
+        }
+      }
+    }
+    studios {
+      edges {
+        node {
+          id
+          isFavourite
+        }
+      }
+    }
   }
 }
     `;
@@ -7204,7 +7244,14 @@ export const StudioListDocument = `
     isAnimationStudio
     siteUrl
     isFavourite
-    media(page: $page, perPage: $perPage) {
+    media(page: $page, perPage: $perPage, sort: [TRENDING_DESC, POPULARITY_DESC]) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
       nodes {
         ...AnimeMeta
       }
