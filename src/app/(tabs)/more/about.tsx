@@ -46,9 +46,12 @@ const AboutPage = () => {
             <List.Item
                 title={'Version'}
                 description={`${Constants?.expoConfig?.version}${
-                    Updates.createdAt ? ` (${Updates.createdAt?.toLocaleString()})` : ''
-                }`}
+                    Constants.executionEnvironment !== ExecutionEnvironment.StoreClient
+                        ? ' (uncensored)'
+                        : ' (censored)'
+                }${Updates.createdAt ? `\n📅${Updates.createdAt?.toLocaleString()})` : ''}`}
                 descriptionStyle={{ textTransform: 'capitalize' }}
+                descriptionNumberOfLines={3}
             />
             {Constants.executionEnvironment !== ExecutionEnvironment.StoreClient && (
                 <List.Item
@@ -62,7 +65,7 @@ const AboutPage = () => {
                     <LinkButton
                         url="https://anilist.co/home"
                         label="Anilist"
-                        icon={() => <AnilistIcon />}
+                        icon={() => <AnilistIcon isDark />}
                     />
                     <LinkButton
                         url="https://jikan.moe/"
