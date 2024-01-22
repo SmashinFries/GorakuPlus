@@ -118,6 +118,9 @@ const ListEntryView = ({
     const { width } = useWindowDimensions();
 
     const containerWidth = releaseMessage ? width / 3 : width / 2;
+    const splitReleaseMessage = releaseMessage?.includes('\n')
+        ? releaseMessage?.split('\n')
+        : [releaseMessage];
 
     const updateListEntry = useCallback(
         (variables?: SaveMediaListItemMutationVariables) => {
@@ -158,6 +161,7 @@ const ListEntryView = ({
                     style={{
                         flexDirection: 'row',
                         marginTop: 15,
+                        alignItems: 'flex-start',
                     }}
                 >
                     {releaseMessage && (
@@ -180,11 +184,23 @@ const ListEntryView = ({
                                     style={{
                                         textTransform: 'capitalize',
                                         color: colors.onSurfaceVariant,
+                                        textAlign: 'center',
                                     }}
                                     variant="labelMedium"
                                 >
-                                    {releaseMessage}
+                                    {splitReleaseMessage[0]}
                                 </Text>
+                                {splitReleaseMessage?.length > 1 ? (
+                                    <Text
+                                        style={{
+                                            color: colors.onSurfaceVariant,
+                                            textAlign: 'center',
+                                        }}
+                                        variant="labelSmall"
+                                    >
+                                        {splitReleaseMessage.at(-1)}
+                                    </Text>
+                                ) : null}
                             </ActionIcon>
                         </View>
                     )}
@@ -207,14 +223,14 @@ const ListEntryView = ({
                             >
                                 <IconButton
                                     icon={isFav ? FAV_ICONS[1] : FAV_ICONS[0]}
-                                    iconColor={isFav ? 'red' : null}
+                                    iconColor={isFav ? colors.primary : null}
                                     disabled={!iconStates.disabled ? false : true}
                                     size={ICON_SIZE}
                                 />
                                 <Text
                                     style={{
                                         textTransform: 'capitalize',
-                                        color: colors.onSurfaceVariant,
+                                        color: isFav ? colors.primary : colors.onSurfaceVariant,
                                     }}
                                     variant="labelMedium"
                                 >
@@ -247,7 +263,7 @@ const ListEntryView = ({
                             <Text
                                 style={{
                                     textTransform: 'capitalize',
-                                    color: colors.onSurfaceVariant,
+                                    color: isOnList ? colors.primary : colors.onSurfaceVariant,
                                 }}
                                 variant="labelMedium"
                             >
