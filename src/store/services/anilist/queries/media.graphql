@@ -704,3 +704,18 @@ query StaffDetails(
         }
     }
 }
+
+query StudioList($studioId: Int, $page: Int, $perPage: Int) {
+    Studio(id: $studioId) {
+        id
+        name
+        isAnimationStudio
+        siteUrl
+        isFavourite
+        media(page: $page, perPage: $perPage) {
+            nodes {
+                ...AnimeMeta
+            }
+        }
+    }
+}
