@@ -46,12 +46,12 @@ export const historySlice = createSlice({
             state.searchType = action.payload;
         },
         addSearch: (state, action: PayloadAction<string>) => {
-            if (state.search?.includes(action.payload)) return;
+            if (state.search?.includes(action.payload.trim())) return;
             if (state.search?.length === state.searchLimit) {
                 state.search.pop();
             }
-            if (action.payload) {
-                state.search = [action.payload, ...state.search];
+            if (action.payload.trim()) {
+                state.search = [action.payload.trim(), ...state.search];
             }
         },
         clearSearch: (state) => {
