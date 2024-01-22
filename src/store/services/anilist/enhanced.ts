@@ -4,6 +4,7 @@ import {
     transformMediaDates,
     transformMediaSorts,
     transformReviewBody,
+    transformStudioMediaDates,
     transformWeeklyDates,
 } from './utils/transformQuery';
 
@@ -744,6 +745,9 @@ export const api = generatedApi.enhanceEndpoints({
                     : ['StudiosFav'],
         },
         StudioList: {
+            transformResponse(baseQueryReturnValue, meta, arg) {
+                return transformStudioMediaDates(baseQueryReturnValue);
+            },
             serializeQueryArgs: ({ endpointName, queryArgs }) => {
                 if (queryArgs && queryArgs.studioId) {
                     return `${endpointName}${queryArgs.studioId}`;

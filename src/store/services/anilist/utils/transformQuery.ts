@@ -6,6 +6,7 @@ import {
     MediaRelation,
     MediaStatus,
     ReviewsByIdQuery,
+    StudioListQuery,
     UserListCollectionQuery,
     WeeklyAnimeQuery,
 } from '../generated-anilist';
@@ -18,6 +19,25 @@ export const transformMediaDates = (media: AnimeTrendingQuery) => {
     //                 {timeTill}
     if (!newResponse?.Page) return newResponse;
     for (const anime of newResponse?.Page?.media) {
+        if (anime.nextAiringEpisode) {
+            const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
+            const prefix =
+                anime.format === MediaFormat.Movie
+                    ? 'Movie: '
+                    : `EP ${anime.nextAiringEpisode.episode}: `;
+            anime.nextAiringEpisode.timeUntilAiring = prefix + timeTill;
+        }
+    }
+    return newResponse;
+};
+
+export const transformStudioMediaDates = (media: StudioListQuery) => {
+    const newResponse = media;
+    if (!newResponse?.Studio) return newResponse;
+    newResponse.Studio.media.nodes = newResponse.Studio.media.nodes.filter(
+        (anime, index, self) => index === self.findIndex((t) => t.id === anime.id),
+    );
+    for (const anime of newResponse?.Studio?.media.nodes) {
         if (anime.nextAiringEpisode) {
             const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
             const prefix =
