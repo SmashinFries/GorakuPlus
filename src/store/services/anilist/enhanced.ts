@@ -48,6 +48,7 @@ export const api = generatedApi.enhanceEndpoints({
         'Reviews',
         'ReviewFull',
         'WeeklyAnime',
+        'StudioList',
     ],
     endpoints: {
         ExploreMedia: {
@@ -742,6 +743,34 @@ export const api = generatedApi.enhanceEndpoints({
                       ]
                     : ['StudiosFav'],
         },
+        StudioList: {
+            serializeQueryArgs: ({ endpointName, queryArgs }) => {
+                if (queryArgs && queryArgs.studioId) {
+                    return `${endpointName}${queryArgs.studioId}`;
+                } else {
+                    return endpointName;
+                }
+                // return endpointName;
+            },
+            merge: (currentCache, newItems) => {
+                currentCache.Studio.media.pageInfo = newItems.Studio.media.pageInfo;
+                currentCache.Studio.media.nodes.push(...newItems.Studio.media.nodes);
+            },
+            forceRefetch({ currentArg, previousArg }) {
+                if (currentArg && previousArg) {
+                    return currentArg.page > previousArg.page;
+                }
+            },
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.Studio?.media?.nodes.map((media) => ({
+                              type: 'StudioList' as const,
+                              id: media.id,
+                          })),
+                      ]
+                    : ['StudioList'],
+        },
         WeeklyAnime: {
             transformResponse(baseQueryReturnValue, meta, arg) {
                 return transformWeeklyDates(baseQueryReturnValue);
@@ -829,4 +858,7 @@ export const {
     useLazyReviewsQuery,
     useReviewsByIdQuery,
     useLazyReviewsByIdQuery,
+
+    useStudioListQuery,
+    useLazyStudioListQuery,
 } = api;
