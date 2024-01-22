@@ -57,10 +57,6 @@ const MediaTabs = () => {
 
     return (
         <>
-            {/* <Button onPress={() => console.log(new Date(getWeekStartEnd().start).toDateString())}>
-        time
-    </Button>
-    <Button onPress={() => console.log(data.length)}>AMOUNT</Button> */}
             {/* <Appbar.Header>
                 <Appbar.Content title="Calendar" />
                 <Appbar.Action

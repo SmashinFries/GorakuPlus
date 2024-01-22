@@ -124,7 +124,6 @@ export const useAnilistAuth = () => {
     // useEffect(() => {
     //     if (response && response.type === 'success') {
     //         const { accessToken, expiresIn } = response.authentication;
-    //         console.log(accessToken);
     //         dispatch(setAniAuth({ token: accessToken, timeTillDeath: expiresIn.toString() }));
     //     }
     // }, [response]);

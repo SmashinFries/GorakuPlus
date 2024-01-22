@@ -75,9 +75,6 @@ export const DayTab = ({ data }: DayTabProps) => {
                         bannerText={bannerText}
                         scoreDistributions={item.media.stats?.scoreDistribution}
                         navigate={() => {
-                            // console.log(
-                            //     `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
-                            // );
                             dismissAllModals();
                             router.push(
                                 `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
@@ -101,7 +98,6 @@ export const DayTab = ({ data }: DayTabProps) => {
             <FlashList
                 key={listKey}
                 data={data?.filter((ep) => (showListOnly ? ep.media?.mediaListEntry : true))}
-                // data={[]}
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={columns}
@@ -113,7 +109,6 @@ export const DayTab = ({ data }: DayTabProps) => {
                     </View>
                 )}
             />
-            {/* <Button onPress={() => console.log(data?.length)}>Print Amount</Button> */}
         </View>
     );
 };

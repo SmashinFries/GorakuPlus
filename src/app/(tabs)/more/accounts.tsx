@@ -53,7 +53,6 @@ const AccountsPage = () => {
                     title="Anilist"
                     description={deathDate && `Expires: ${deathDate}`}
                     onPress={() => (deathDate ? setShowAniAuth(true) : aniAuth.promptAsync())}
-                    // onPress={() => console.log(dark)}
                     right={(props) => (deathDate ? <ActiveIcon {...props} /> : null)}
                     left={(props) => <AnilistIcon style={props.style} isDark={dark} />}
                 />

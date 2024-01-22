@@ -14,7 +14,6 @@ export const useSlideshow = ({ images }: SlideShowProps) => {
         if (imagesLength > 1) {
             const nextID = imagesLength - 1 === bg.id ? 0 : bg.id + 1;
             const nextBG = images[nextID];
-            // console.log('Changed!', nextID, `LENGTH: ${imagesLength}`);
             setBg({ id: nextID, bg: nextBG });
             toggle();
         }
@@ -27,7 +26,6 @@ export const useSlideshow = ({ images }: SlideShowProps) => {
                     toggle();
                 }, 15000);
                 return () => {
-                    // console.log('clearing interval');
                     clearInterval(interval);
                 };
             }

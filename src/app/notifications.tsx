@@ -28,7 +28,6 @@ const NotificationPage = () => {
 
     return (
         <View style={{ width: width, height: height }}>
-            {/* <Button onPress={() => console.log(params)}>{'Unread'}</Button> */}
             {data?.Page && (
                 <FlashList
                     data={data.Page.notifications}
@@ -36,10 +35,6 @@ const NotificationPage = () => {
                     keyExtractor={(item, idx) => item.id.toString()}
                     estimatedItemSize={20}
                     contentContainerStyle={{ paddingVertical: 10 }}
-                    onEndReached={() => {
-                        // console.log('end:', page);
-                        // !isFetching && setPage((prev) => prev + 1);
-                    }}
                 />
             )}
         </View>

@@ -147,8 +147,6 @@ export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) =
                     onPress={() => {
                         closeMenu();
                         updateSort(sortMap[current][category][mode]);
-                        // console.log(sortMap[current][category][mode]);
-                        // console.log(sortMap[current][category][mode] === sort ? true : false);
                     }}
                     titleStyle={{ textTransform: 'capitalize' }}
                     title={category}

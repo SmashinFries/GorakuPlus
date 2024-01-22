@@ -101,7 +101,6 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
 
     return (
         <View style={{ flex: 1, height: '100%', width: '100%' }}>
-            {/* <Button onPress={() => console.log(MediaListStatus[listName])}>Print</Button> */}
             {!isFetching ? (
                 <FlashList
                     key={listKey}

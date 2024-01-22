@@ -56,10 +56,6 @@ export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) =>
         },
     });
 
-    // useEffect(() => {
-    //     console.log(statusState);
-    // }, [statusState]);
-
     return (
         <TapGestureHandler onGestureEvent={onGestureEvent}>
             <MotiView

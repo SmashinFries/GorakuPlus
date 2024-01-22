@@ -198,7 +198,6 @@ const ReviewPage = () => {
         html_block: (node, children, parent, styles) => {
             // we check that the parent array contans a td because <br> in paragraph setting will create a html_inlinde surrounded by a soft break, try removing the clause to see what happens (double spacing on the <br> between 'top one' and 'bottom one')
             if (node.content.trim() === '<br>') {
-                console.log('true');
                 return (
                     <Text key={node.key} style={{ flex: 1 }}>
                         {'\n'}
@@ -240,7 +239,6 @@ const ReviewPage = () => {
             );
         },
         code_inline: (node, children, parent, styles) => {
-            console.log('NODE:', node.content);
             return (
                 <Spoiler
                     key={node.key}

@@ -321,15 +321,7 @@ export const Accordion = ({
 
     useEffect(() => {
         if (isExpanded && totalHeight) {
-            // height.value === totalHeight
-            //     ? console.log('same')
-            //     : totalHeight - height.value + initialHeight;
             height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
-            // setCurrentHeight(
-            //     height.value === totalHeight
-            //         ? initialHeight
-            //         : totalHeight - height.value + initialHeight,
-            // );
         }
     }, [isExpanded, totalHeight]);
 

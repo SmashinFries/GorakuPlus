@@ -63,13 +63,6 @@ export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => 
     return (
         <MotiPressable
             onPress={navigate && onPress}
-            // onHoverIn={() => {
-            //     console.log('hovered');
-            //     fadeIn.transitionTo('hovered');
-            // }}
-            // onHoverOut={() => {
-            //     fadeIn.transitionTo('from');
-            // }}
             animate={useMemo(
                 () =>
                     ({ hovered, pressed }) => {

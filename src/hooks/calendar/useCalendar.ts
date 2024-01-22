@@ -16,7 +16,6 @@ export const useCalendar = () => {
         let page = 1;
         let fetchMore = true;
         while (fetchMore === true) {
-            // console.log(`Fetching page ${page}`);
             try {
                 const resp = await getWeeklyAnime({
                     page: page,
@@ -32,7 +31,6 @@ export const useCalendar = () => {
                     fetchMore = false;
                 }
             } catch (e) {
-                // console.log('PROBLEM!', e);
                 fetchMore = false;
             }
         }
