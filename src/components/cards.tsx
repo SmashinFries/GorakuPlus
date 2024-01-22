@@ -27,7 +27,6 @@ type MediaCardProps = {
     meanScore?: number;
     averageScore?: number;
     imgBgColor?: string;
-    scorebgColor?: string;
     scoreColors?: any;
     showBanner?: boolean;
     bannerText?: string;
