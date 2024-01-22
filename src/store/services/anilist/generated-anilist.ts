@@ -5043,6 +5043,15 @@ export type GenreTagCollectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GenreTagCollectionQuery = { __typename?: 'Query', GenreCollection?: Array<string | null> | null, MediaTagCollection?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null } | null> | null };
 
+export type StudioListQueryVariables = Exact<{
+  studioId?: InputMaybe<Scalars['Int']>;
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
+
 export type MediaListEntryFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, rank?: number | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null };
 
 export type UserListCollectionQueryVariables = Exact<{
@@ -5139,15 +5148,6 @@ export type StaffDetailsQueryVariables = Exact<{
 
 
 export type StaffDetailsQuery = { __typename?: 'Query', Staff?: { __typename?: 'Staff', languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, dateOfDeath?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, staffMedia?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'MediaEdge', staffRole?: string | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, status?: MediaStatus | null, averageScore?: number | null, meanScore?: number | null, format?: MediaFormat | null, isLicensed?: boolean | null, isFavourite: boolean, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', role?: CharacterRole | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
-
-export type StudioListQueryVariables = Exact<{
-  studioId?: InputMaybe<Scalars['Int']>;
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
-}>;
-
-
-export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
 
 export type GetNotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
@@ -6489,6 +6489,29 @@ export const GenreTagCollectionDocument = `
   }
 }
     `;
+export const StudioListDocument = `
+    query StudioList($studioId: Int, $page: Int, $perPage: Int) {
+  Studio(id: $studioId) {
+    id
+    name
+    isAnimationStudio
+    siteUrl
+    isFavourite
+    media(page: $page, perPage: $perPage, sort: [TRENDING_DESC, POPULARITY_DESC]) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
+      nodes {
+        ...AnimeMeta
+      }
+    }
+  }
+}
+    ${AnimeMetaFragmentDoc}`;
 export const UserListCollectionDocument = `
     query UserListCollection($userId: Int, $userName: String, $type: MediaType, $status: MediaListStatus, $sort: [MediaListSort]) {
   MediaListCollection(
@@ -7236,29 +7259,6 @@ export const StaffDetailsDocument = `
   }
 }
     `;
-export const StudioListDocument = `
-    query StudioList($studioId: Int, $page: Int, $perPage: Int) {
-  Studio(id: $studioId) {
-    id
-    name
-    isAnimationStudio
-    siteUrl
-    isFavourite
-    media(page: $page, perPage: $perPage, sort: [TRENDING_DESC, POPULARITY_DESC]) {
-      pageInfo {
-        total
-        perPage
-        currentPage
-        lastPage
-        hasNextPage
-      }
-      nodes {
-        ...AnimeMeta
-      }
-    }
-  }
-}
-    ${AnimeMetaFragmentDoc}`;
 export const GetNotificationsDocument = `
     query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
   Viewer {
@@ -8463,6 +8463,9 @@ const injectedRtkApi = api.injectEndpoints({
     GenreTagCollection: build.query<GenreTagCollectionQuery, GenreTagCollectionQueryVariables | void>({
       query: (variables) => ({ document: GenreTagCollectionDocument, variables })
     }),
+    StudioList: build.query<StudioListQuery, StudioListQueryVariables | void>({
+      query: (variables) => ({ document: StudioListDocument, variables })
+    }),
     UserListCollection: build.query<UserListCollectionQuery, UserListCollectionQueryVariables | void>({
       query: (variables) => ({ document: UserListCollectionDocument, variables })
     }),
@@ -8489,9 +8492,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     StaffDetails: build.query<StaffDetailsQuery, StaffDetailsQueryVariables | void>({
       query: (variables) => ({ document: StaffDetailsDocument, variables })
-    }),
-    StudioList: build.query<StudioListQuery, StudioListQueryVariables | void>({
-      query: (variables) => ({ document: StudioListDocument, variables })
     }),
     GetNotifications: build.query<GetNotificationsQuery, GetNotificationsQueryVariables | void>({
       query: (variables) => ({ document: GetNotificationsDocument, variables })
@@ -8563,5 +8563,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useReviewRatingMutation, useUpdateUserMutation, useToggleFollowMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useMangaNewReleasesQuery, useLazyMangaNewReleasesQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useManhwaNewReleasesQuery, useLazyManhwaNewReleasesQuery, useManhuaTrendingQuery, useLazyManhuaTrendingQuery, useManhuaPopularQuery, useLazyManhuaPopularQuery, useManhuaTopScoredQuery, useLazyManhuaTopScoredQuery, useManhuaNewReleasesQuery, useLazyManhuaNewReleasesQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useNovelNewReleasesQuery, useLazyNovelNewReleasesQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useGenreTagCollectionQuery, useLazyGenreTagCollectionQuery, useUserListCollectionQuery, useLazyUserListCollectionQuery, useUserCustomListsQuery, useLazyUserCustomListsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useMediaFollowingQuery, useLazyMediaFollowingQuery, useCharacterListQuery, useLazyCharacterListQuery, useCharacterDetailsQuery, useLazyCharacterDetailsQuery, useStaffListQuery, useLazyStaffListQuery, useStaffDetailsQuery, useLazyStaffDetailsQuery, useStudioListQuery, useLazyStudioListQuery, useGetNotificationsQuery, useLazyGetNotificationsQuery, useReviewsQuery, useLazyReviewsQuery, useReviewsByIdQuery, useLazyReviewsByIdQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useUserSearchQuery, useLazyUserSearchQuery, useCharacterSearchQuery, useLazyCharacterSearchQuery, useStaffSearchQuery, useLazyStaffSearchQuery, useStudioSearchQuery, useLazyStudioSearchQuery, useUserAnimeStatsQuery, useLazyUserAnimeStatsQuery, useUserMangaStatsQuery, useLazyUserMangaStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useExtUserDataQuery, useLazyExtUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery, useUserFavoritesOverviewQuery, useLazyUserFavoritesOverviewQuery, useUserAnimeFavoritesQuery, useLazyUserAnimeFavoritesQuery, useUserMangaFavoritesQuery, useLazyUserMangaFavoritesQuery, useUserWaifuFavoritesQuery, useLazyUserWaifuFavoritesQuery, useUserStaffFavoritesQuery, useLazyUserStaffFavoritesQuery, useUserStudiosFavoritesQuery, useLazyUserStudiosFavoritesQuery } = injectedRtkApi;
+export const { useToggleFavMutation, useSaveMediaListItemMutation, useDeleteMediaListItemMutation, useChangeLanguageMutation, useUpdateViewerMutation, useSaveRecomMutation, useDeleteActMutation, useReviewRatingMutation, useUpdateUserMutation, useToggleFollowMutation, useWeeklyAnimeQuery, useLazyWeeklyAnimeQuery, useAnimeTrendingQuery, useLazyAnimeTrendingQuery, useAnimePopularQuery, useLazyAnimePopularQuery, useAnimeTopScoredQuery, useLazyAnimeTopScoredQuery, useAnimeThisSeasonQuery, useLazyAnimeThisSeasonQuery, useAnimeNextSeasonQuery, useLazyAnimeNextSeasonQuery, useMangaTrendingQuery, useLazyMangaTrendingQuery, useMangaPopularQuery, useLazyMangaPopularQuery, useMangaTopScoredQuery, useLazyMangaTopScoredQuery, useMangaNewReleasesQuery, useLazyMangaNewReleasesQuery, useManhwaTrendingQuery, useLazyManhwaTrendingQuery, useManhwaPopularQuery, useLazyManhwaPopularQuery, useManhwaTopScoredQuery, useLazyManhwaTopScoredQuery, useManhwaNewReleasesQuery, useLazyManhwaNewReleasesQuery, useManhuaTrendingQuery, useLazyManhuaTrendingQuery, useManhuaPopularQuery, useLazyManhuaPopularQuery, useManhuaTopScoredQuery, useLazyManhuaTopScoredQuery, useManhuaNewReleasesQuery, useLazyManhuaNewReleasesQuery, useNovelTrendingQuery, useLazyNovelTrendingQuery, useNovelPopularQuery, useLazyNovelPopularQuery, useNovelTopScoredQuery, useLazyNovelTopScoredQuery, useNovelNewReleasesQuery, useLazyNovelNewReleasesQuery, useRecommendationsQuery, useLazyRecommendationsQuery, useGenreTagCollectionQuery, useLazyGenreTagCollectionQuery, useStudioListQuery, useLazyStudioListQuery, useUserListCollectionQuery, useLazyUserListCollectionQuery, useUserCustomListsQuery, useLazyUserCustomListsQuery, useRandomMediaQuery, useLazyRandomMediaQuery, useAniMediaQuery, useLazyAniMediaQuery, useMediaFollowingQuery, useLazyMediaFollowingQuery, useCharacterListQuery, useLazyCharacterListQuery, useCharacterDetailsQuery, useLazyCharacterDetailsQuery, useStaffListQuery, useLazyStaffListQuery, useStaffDetailsQuery, useLazyStaffDetailsQuery, useGetNotificationsQuery, useLazyGetNotificationsQuery, useReviewsQuery, useLazyReviewsQuery, useReviewsByIdQuery, useLazyReviewsByIdQuery, useExploreMediaQuery, useLazyExploreMediaQuery, useUserSearchQuery, useLazyUserSearchQuery, useCharacterSearchQuery, useLazyCharacterSearchQuery, useStaffSearchQuery, useLazyStaffSearchQuery, useStudioSearchQuery, useLazyStudioSearchQuery, useUserAnimeStatsQuery, useLazyUserAnimeStatsQuery, useUserMangaStatsQuery, useLazyUserMangaStatsQuery, useUserActivityQuery, useLazyUserActivityQuery, useUserDataQuery, useLazyUserDataQuery, useExtUserDataQuery, useLazyExtUserDataQuery, useUserOverviewQuery, useLazyUserOverviewQuery, useUserFollowingQuery, useLazyUserFollowingQuery, useUserFollowersQuery, useLazyUserFollowersQuery, useUserFavoritesOverviewQuery, useLazyUserFavoritesOverviewQuery, useUserAnimeFavoritesQuery, useLazyUserAnimeFavoritesQuery, useUserMangaFavoritesQuery, useLazyUserMangaFavoritesQuery, useUserWaifuFavoritesQuery, useLazyUserWaifuFavoritesQuery, useUserStaffFavoritesQuery, useLazyUserStaffFavoritesQuery, useUserStudiosFavoritesQuery, useLazyUserStudiosFavoritesQuery } = injectedRtkApi;
 

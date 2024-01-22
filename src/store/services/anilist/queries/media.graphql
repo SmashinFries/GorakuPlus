@@ -704,25 +704,3 @@ query StaffDetails(
         }
     }
 }
-
-query StudioList($studioId: Int, $page: Int, $perPage: Int) {
-    Studio(id: $studioId) {
-        id
-        name
-        isAnimationStudio
-        siteUrl
-        isFavourite
-        media(page: $page, perPage: $perPage, sort: [TRENDING_DESC, POPULARITY_DESC]) {
-            pageInfo {
-                total
-                perPage
-                currentPage
-                lastPage
-                hasNextPage
-            }
-            nodes {
-                ...AnimeMeta
-            }
-        }
-    }
-}
