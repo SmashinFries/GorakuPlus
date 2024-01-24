@@ -45,7 +45,7 @@ type ListEntryViewProps = {
     id: number;
     type: MediaType;
     status: MediaStatus;
-    getReleaseMessage?: () => string;
+    releaseMessage?: string;
     data: AniMediaQuery['Media']['mediaListEntry'];
     scoreFormat?: ScoreFormat;
     isFav: boolean;
@@ -88,7 +88,7 @@ const ListEntryView = ({
     id,
     type,
     status,
-    getReleaseMessage,
+    releaseMessage,
     data,
     scoreFormat,
     isFav,
@@ -117,10 +117,10 @@ const ListEntryView = ({
 
     const { width } = useWindowDimensions();
 
-    const containerWidth = getReleaseMessage() ? width / 3 : width / 2;
-    const splitReleaseMessage = getReleaseMessage()?.includes('\n')
-        ? getReleaseMessage()?.split('\n')
-        : [getReleaseMessage()];
+    const containerWidth = width / 3;
+    const splitReleaseMessage = releaseMessage?.includes('\n')
+        ? releaseMessage?.split('\n')
+        : [releaseMessage];
 
     const updateListEntry = useCallback(
         (variables?: SaveMediaListItemMutationVariables) => {
@@ -164,46 +164,43 @@ const ListEntryView = ({
                         alignItems: 'flex-start',
                     }}
                 >
-                    {getReleaseMessage && (
-                        <View
-                            style={{
-                                width: containerWidth,
-                                borderRadius: 12,
-                                alignItems: 'center',
-                            }}
+                    <View
+                        style={{
+                            width: containerWidth,
+                            borderRadius: 12,
+                            alignItems: 'center',
+                        }}
+                    >
+                        <ActionIcon
+                            icon={
+                                status === MediaStatus.Finished ? 'timer-sand-full' : 'timer-sand'
+                            }
+                            onPress={onShowReleases}
                         >
-                            <ActionIcon
-                                icon={
-                                    status === MediaStatus.Finished
-                                        ? 'timer-sand-full'
-                                        : 'timer-sand'
-                                }
-                                onPress={onShowReleases}
+                            <Text
+                                style={{
+                                    textTransform: 'capitalize',
+                                    color: colors.onSurfaceVariant,
+                                    textAlign: 'center',
+                                }}
+                                variant="labelMedium"
                             >
+                                {splitReleaseMessage[0] ?? 'Unknown'}
+                            </Text>
+                            {splitReleaseMessage?.length > 1 ? (
                                 <Text
                                     style={{
-                                        textTransform: 'capitalize',
                                         color: colors.onSurfaceVariant,
                                         textAlign: 'center',
                                     }}
-                                    variant="labelMedium"
+                                    variant="labelSmall"
                                 >
-                                    {splitReleaseMessage[0]}
+                                    {splitReleaseMessage.at(-1)}
                                 </Text>
-                                {splitReleaseMessage?.length > 1 ? (
-                                    <Text
-                                        style={{
-                                            color: colors.onSurfaceVariant,
-                                            textAlign: 'center',
-                                        }}
-                                        variant="labelSmall"
-                                    >
-                                        {splitReleaseMessage.at(-1)}
-                                    </Text>
-                                ) : null}
-                            </ActionIcon>
-                        </View>
-                    )}
+                            ) : null}
+                        </ActionIcon>
+                    </View>
+
                     <View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
                         {iconStates.fav.isLoading ? (
                             <ActivityIndicator
@@ -241,7 +238,7 @@ const ListEntryView = ({
                     </View>
                     <View
                         style={{
-                            justifyContent: 'center',
+                            justifyContent: 'flex-start',
                             alignItems: 'center',
                             width: containerWidth,
                         }}
@@ -251,7 +248,7 @@ const ListEntryView = ({
                             onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
                         >
                             {iconStates.list.isLoading ? (
-                                <ActivityIndicator animating size={32} />
+                                <ActivityIndicator animating size={ICON_SIZE} />
                             ) : (
                                 <IconButton
                                     disabled={!iconStates.disabled ? false : true}
