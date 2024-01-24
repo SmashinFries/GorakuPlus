@@ -4694,7 +4694,7 @@ export type SaveMediaListItemMutationVariables = Exact<{
 }>;
 
 
-export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, notes?: string | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
+export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, notes?: string | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, countryOfOrigin?: any | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
 
 export type DeleteMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
@@ -5694,6 +5694,7 @@ export const SaveMediaListItemDocument = `
     media {
       type
       format
+      countryOfOrigin
     }
     startedAt {
       year

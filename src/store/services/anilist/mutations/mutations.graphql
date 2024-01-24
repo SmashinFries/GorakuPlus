@@ -82,6 +82,7 @@ mutation SaveMediaListItem(
         media {
             type
             format
+            countryOfOrigin
         }
         startedAt {
             year
