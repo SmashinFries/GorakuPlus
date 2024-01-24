@@ -114,6 +114,15 @@ export const useAnimeExplorer = () => {
         ) {
             setIsError(true);
         }
+        if (
+            !trend.isError &&
+            !popular.isError &&
+            !top.isError &&
+            !curSeason.isError &&
+            !nxtSeason.isError
+        ) {
+            setIsError(false);
+        }
     }, [trend.isError, curSeason.isError, nxtSeason.isError, popular.isError, top.isError]);
 
     useEffect(() => {
@@ -208,6 +217,9 @@ export const useMangaExplorer = () => {
         if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
         }
+        if (!trend.isError && !popular.isError && !top.isError && !releases.isError) {
+            setIsError(false);
+        }
     }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
     return {
@@ -273,6 +285,9 @@ export const useManhwaExplorer = () => {
     useEffect(() => {
         if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
+        }
+        if (!trend.isError && !popular.isError && !top.isError && !releases.isError) {
+            setIsError(false);
         }
     }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
@@ -340,6 +355,9 @@ export const useManhuaExplorer = () => {
         if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
         }
+        if (!trend.isError && !popular.isError && !top.isError && !releases.isError) {
+            setIsError(false);
+        }
     }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
     return {
@@ -405,6 +423,9 @@ export const useNovelExplorer = () => {
     useEffect(() => {
         if (trend.isError || popular.isError || top.isError || releases.isError) {
             setIsError(true);
+        }
+        if (!trend.isError && !popular.isError && !top.isError && !releases.isError) {
+            setIsError(false);
         }
     }, [trend.isError, popular.isError, top.isError, releases.isError]);
 
