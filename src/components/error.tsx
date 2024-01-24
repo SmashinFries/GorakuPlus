@@ -1,18 +1,23 @@
 import { QueryStatus } from '@reduxjs/toolkit/dist/query';
-import { MotiView } from 'moti';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
 
-export const NetworkError = ({ status }: { status: QueryStatus }) => {
+export const NetworkError = ({
+    status,
+    onRefresh,
+}: {
+    status: QueryStatus;
+    onRefresh: () => void;
+}) => {
     const { colors } = useTheme();
 
     return (
-        <MotiView style={[styles.container]}>
-            <MotiView>
-                <IconButton icon="server-network-off" size={38} iconColor={colors.error} />
-            </MotiView>
+        <View style={[styles.container]}>
+            <View>
+                <IconButton onPress={onRefresh} icon="refresh" size={38} iconColor={colors.error} />
+            </View>
             <Text>{'Something went wrong :('}</Text>
-        </MotiView>
+        </View>
     );
 };
 
