@@ -168,7 +168,9 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
     }, [muData]);
 
     useEffect(() => {
-        fetchAll();
+        if (aniData?.isUninitialized) {
+            fetchAll();
+        }
     }, []);
 
     return {
