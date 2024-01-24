@@ -38,17 +38,14 @@ const AnimeTab = () => {
         fetchAnime();
     }, []);
 
-    if (isError) {
-        // @ts-ignore
-        return <NetworkError status={trendResults?.error} />;
-        // return null;
-    }
-
     return (
         <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
             <View style={{ flex: 1, width: width, marginVertical: 10 }}>
                 {isError ? (
-                    <NetworkError status={trendResults?.status} />
+                    <NetworkError
+                        status={trendResults?.status}
+                        onRefresh={() => fetchAnime(true)}
+                    />
                 ) : (
                     <>
                         <SectionScrollMem
@@ -103,7 +100,7 @@ const MangaTab = () => {
     }, []);
 
     if (isError) {
-        return <NetworkError status={popularResults.status} />;
+        return <NetworkError status={popularResults.status} onRefresh={() => fetchManga(true)} />;
     }
 
     return (
@@ -154,35 +151,44 @@ const ManhwaTab = () => {
     }, []);
 
     if (isError) {
-        return <NetworkError status={popularResults.status} />;
+        return <NetworkError status={popularResults.status} onRefresh={() => fetchManhwa(true)} />;
     }
 
     return (
         <RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
             <View style={{ marginVertical: 10 }}>
-                <SectionScrollMem
-                    category_title={'New Releases'}
-                    data={releasesResults.data}
-                    isLoading={releasesResults.isLoading}
-                />
-                <SectionScrollMem
-                    category_title={'Trending'}
-                    data={trendResults.data}
-                    isLoading={trendResults.isLoading}
-                    fetchMore={() => fetchMore('trending')}
-                />
-                <SectionScrollMem
-                    category_title={'Popular'}
-                    data={popularResults.data}
-                    isLoading={popularResults.isLoading}
-                    fetchMore={() => fetchMore('popular')}
-                />
-                <SectionScrollMem
-                    category_title={'Top Scored'}
-                    data={topResults.data}
-                    isLoading={topResults.isLoading}
-                    fetchMore={() => fetchMore('score')}
-                />
+                {isError ? (
+                    <NetworkError
+                        status={popularResults.status}
+                        onRefresh={() => fetchManhwa(true)}
+                    />
+                ) : (
+                    <>
+                        <SectionScrollMem
+                            category_title={'New Releases'}
+                            data={releasesResults.data}
+                            isLoading={releasesResults.isLoading}
+                        />
+                        <SectionScrollMem
+                            category_title={'Trending'}
+                            data={trendResults.data}
+                            isLoading={trendResults.isLoading}
+                            fetchMore={() => fetchMore('trending')}
+                        />
+                        <SectionScrollMem
+                            category_title={'Popular'}
+                            data={popularResults.data}
+                            isLoading={popularResults.isLoading}
+                            fetchMore={() => fetchMore('popular')}
+                        />
+                        <SectionScrollMem
+                            category_title={'Top Scored'}
+                            data={topResults.data}
+                            isLoading={topResults.isLoading}
+                            fetchMore={() => fetchMore('score')}
+                        />
+                    </>
+                )}
             </View>
         </RefreshableScroll>
     );
@@ -205,7 +211,7 @@ const ManhuaTab = () => {
     }, []);
 
     if (isError) {
-        return <NetworkError status={popularResults.status} />;
+        return <NetworkError status={popularResults.status} onRefresh={() => fetchManhua(true)} />;
     }
 
     return (
@@ -256,7 +262,7 @@ const NovelsTab = () => {
     }, []);
 
     if (isError) {
-        return <NetworkError status={trendResults.status} />;
+        return <NetworkError status={trendResults.status} onRefresh={() => fetchNovels(true)} />;
     }
 
     return (
