@@ -500,7 +500,11 @@ export const api = generatedApi.enhanceEndpoints({
                               ? { type: 'ExploreAnime', id: params?.mediaId }
                               : result.SaveMediaListEntry?.media?.format === 'NOVEL'
                               ? 'ExploreNovel'
-                              : 'ExploreManga',
+                              : result.SaveMediaListEntry?.media?.countryOfOrigin === 'JP'
+                              ? 'ExploreManga'
+                              : result.SaveMediaListEntry?.media?.countryOfOrigin === 'KR'
+                              ? 'ExploreManhwa'
+                              : 'ExploreManhua',
                           //   { type: 'AniMedia', id: params?.mediaId },
                           { type: 'AniSearch', id: params?.mediaId },
                       ]
