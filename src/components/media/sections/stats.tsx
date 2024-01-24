@@ -12,14 +12,25 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
     const { width } = useWindowDimensions();
     const sortedStatus = [...statData.statusDistribution].sort((a, b) => b.amount - a.amount);
     const sortedScores = [...statData.scoreDistribution].sort((a, b) => a.score - b.score);
-    const highestAmountObject = sortedScores.reduce((prev, current) => {
-        return prev.amount > current.amount ? prev : current;
-    });
-    let highestScore = highestAmountObject.score;
+    const highestAmountObject =
+        sortedScores?.length > 0
+            ? sortedScores?.reduce((prev, current) => {
+                  return prev.amount > current.amount ? prev : current;
+              })
+            : null;
+    let highestScore = highestAmountObject?.score ?? null;
 
     // Check if all amounts are the same
     if (sortedScores.every((item) => item.amount === highestAmountObject.amount)) {
         highestScore = 0;
+    }
+
+    if (
+        rankData?.length < 1 &&
+        statData?.scoreDistribution?.length < 1 &&
+        statData?.statusDistribution?.length < 1
+    ) {
+        return null;
     }
 
     return (
@@ -41,40 +52,44 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
                         </Chip>
                     ))}
                 </ScrollView>
-                <View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
-                    <Text variant="titleLarge" style={{ marginBottom: 5 }}>
-                        Status Distribution
-                    </Text>
-                    <StatBar data={sortedStatus} />
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            justifyContent: 'flex-start',
-                        }}
-                    >
-                        {sortedStatus.map((statusDis, idx) => (
-                            <StatusItem key={idx} status={statusDis} />
-                        ))}
+                {statData?.statusDistribution?.length > 0 ? (
+                    <View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
+                        <Text variant="titleLarge" style={{ marginBottom: 5 }}>
+                            Status Distribution
+                        </Text>
+                        <StatBar data={sortedStatus} />
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                flexWrap: 'wrap',
+                                justifyContent: 'flex-start',
+                            }}
+                        >
+                            {sortedStatus.map((statusDis, idx) => (
+                                <StatusItem key={idx} status={statusDis} />
+                            ))}
+                        </View>
                     </View>
-                </View>
-                <View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
-                    <Text variant="titleLarge" style={{ marginBottom: 5 }}>
-                        Score Distribution
-                    </Text>
-                    <StatBar data={statData.scoreDistribution} />
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            justifyContent: 'flex-start',
-                        }}
-                    >
-                        {sortedScores.map((scoreDis, idx) => (
-                            <ScoreItem key={idx} score={scoreDis} highestScore={highestScore} />
-                        ))}
+                ) : null}
+                {statData.scoreDistribution?.length > 0 && (
+                    <View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
+                        <Text variant="titleLarge" style={{ marginBottom: 5 }}>
+                            Score Distribution
+                        </Text>
+                        <StatBar data={statData.scoreDistribution} />
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                flexWrap: 'wrap',
+                                justifyContent: 'flex-start',
+                            }}
+                        >
+                            {sortedScores.map((scoreDis, idx) => (
+                                <ScoreItem key={idx} score={scoreDis} highestScore={highestScore} />
+                            ))}
+                        </View>
                     </View>
-                </View>
+                )}
             </Accordion>
         </TransYUpViewMem>
     );
