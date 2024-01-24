@@ -55,7 +55,7 @@ type DayTabProps = {
 };
 export const DayTab = ({ data }: DayTabProps) => {
     const { columns, listKey } = useColumns(150);
-    const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
+    const { showItemListStatus, showNSFW } = useAppSelector((state) => state.persistedSettings);
     const { showListOnly } = useAppSelector((state) => state.calendarFilter);
 
     const { dismissAll: dismissAllModals } = useBottomSheetModal();
@@ -63,6 +63,8 @@ export const DayTab = ({ data }: DayTabProps) => {
     const RenderItem = React.useCallback(
         ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
             const bannerText = item.timeUntilAiring as unknown as string;
+
+            if (!showNSFW && item.media?.isAdult) return null;
             return (
                 <View style={{ padding: 15 }}>
                     <MediaCard
@@ -90,7 +92,7 @@ export const DayTab = ({ data }: DayTabProps) => {
                 </View>
             );
         },
-        [data, showItemListStatus],
+        [data, showItemListStatus, showNSFW],
     );
 
     return (
