@@ -75,7 +75,7 @@ const MediaScreen = () => {
         openWebBrowser(`https://anilist.co/edit/${params[0]}/${aniID}`);
     }, []);
 
-    const getRelease = useCallback(() => {
+    const getRelease = () => {
         return getReleaseTime(
             type,
             aniData?.data?.Media?.status,
@@ -85,7 +85,7 @@ const MediaScreen = () => {
             aniData?.data?.Media?.episodes,
             aniData?.data?.Media?.volumes,
         );
-    }, [estimatedChapterTime, type, aniData?.data?.Media]);
+    };
 
     if (!params || !aniID) return null;
 
@@ -147,7 +147,7 @@ const MediaScreen = () => {
                                         id={aniID}
                                         type={aniData?.data?.Media?.type}
                                         status={aniData?.data?.Media?.status}
-                                        getReleaseMessage={getRelease}
+                                        releaseMessage={getRelease()}
                                         onShowReleases={() => setShowReleaseDialog(true)}
                                         data={aniData?.data?.Media?.mediaListEntry}
                                         scoreFormat={
