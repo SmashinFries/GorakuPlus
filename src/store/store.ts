@@ -35,6 +35,7 @@ import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
 import { calendarFilterSlice } from './slices/calendarSlice';
 import wdTaggerAPI from './services/huggingface/wdTagger';
+import setupSlice, { SetupState } from './slices/setupSlice';
 
 const secureStorage = createSecureStorage();
 
@@ -45,6 +46,11 @@ const persistThemeConfig: PersistConfig<any, any, any, any> = {
 
 const persistSettingsConfig: PersistConfig<any, any, any, any> = {
     key: 'settings',
+    storage: AsyncStorage,
+};
+
+const persistSetupConfig: PersistConfig<any, any, any, any> = {
+    key: 'setup',
     storage: AsyncStorage,
 };
 
@@ -89,6 +95,7 @@ const persistedSettings = persistReducer<SettingsState, AnyAction>(
     persistSettingsConfig,
     settingsSlice,
 );
+const persistedSetup = persistReducer<SetupState, AnyAction>(persistSetupConfig, setupSlice);
 
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
 const persistedWaifuItToken = persistReducer<WaifuItAuthState, AnyAction>(
@@ -124,6 +131,7 @@ export const store = configureStore({
         favSearch: favSearchSlice.reducer,
         persistedTheme,
         persistedSettings,
+        persistedSetup,
         persistedAniLogin,
         persistedWaifuItToken,
         persistedPresets,

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, router } from 'expo-router';
 import { PaperProvider, Portal, Text } from 'react-native-paper';
 import { ThemeProvider } from '@react-navigation/native';
 import * as Updates from 'expo-updates';
@@ -19,7 +19,7 @@ import PaperHeader from '@/components/headers';
 import { api } from '@/store/services/anilist/enhanced';
 import { displayNotification, parseNotif } from '@/utils/notifications/backgroundFetch';
 import { setStatusBarStyle } from 'expo-status-bar';
-import Constants from 'expo-constants';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
 
 if (typeof window !== 'undefined') {
@@ -77,8 +77,8 @@ TaskManager.defineTask('Notifs', async () => {
 });
 
 const AppProvider = () => {
-    const { navAnimation } = useAppSelector((state) => state.persistedSettings);
     const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
+    const { isFirstLaunch } = useAppSelector((state) => state.persistedSetup);
     const [updateLink, setUpdateLink] = useState<string | null>(null);
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
@@ -111,7 +111,11 @@ const AppProvider = () => {
     }, [isDark]);
 
     useEffect(() => {
-        checkForUpdates();
+        if (isFirstLaunch) {
+            router.push('/setup');
+        } else if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
+            checkForUpdates();
+        }
     }, []);
 
     return (
@@ -163,6 +167,13 @@ const AppProvider = () => {
                                 title: 'Notifications',
                                 header: (props) => <PaperHeader {...props} />,
                                 headerShown: true,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="setup"
+                            options={{
+                                headerShown: false,
+                                presentation: 'modal',
                             }}
                         />
                     </AnimatedStack>
