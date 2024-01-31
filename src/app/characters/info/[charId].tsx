@@ -29,7 +29,6 @@ import { SaveImageDialog } from '@/utils/images';
 import { updateCharArtDB } from '@/store/slices/charArtSlice';
 import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
-import { AnimatePresence } from 'moti';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 
 const CharacterScreen = () => {

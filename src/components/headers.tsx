@@ -52,7 +52,7 @@ const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProp
     );
 };
 
-export const ExploreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
@@ -93,7 +93,6 @@ export const ExploreHeader = ({ navigation, options, route, back }: NativeStackH
                     />
                 </MotiView>
             )}
-            {back && <Appbar.BackAction onPress={navigation.goBack} />}
             <Appbar.Content title={title} />
             <Appbar.Action icon="barcode-scan" onPress={() => setShowBCDialog(true)} />
             <Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
