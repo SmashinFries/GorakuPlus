@@ -7,8 +7,6 @@ import { setSettings } from '@/store/slices/settingsSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
 import { MotiPressable } from 'moti/interactions';
-import { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
 import { List, Switch, Text, useTheme } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
@@ -72,12 +70,8 @@ const AppearancePage = () => {
                 dispatch(setTheme({ mode: theme, isDark: isDark }));
             },
             animationConfig: {
-                type: 'fade', // circular aint workin
+                type: 'fade',
                 duration: 900,
-                // startingPoint: {
-                //     cy: py + height / 2,
-                //     cx: px + width / 2,
-                // },
             },
         });
     };
