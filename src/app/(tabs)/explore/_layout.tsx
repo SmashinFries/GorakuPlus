@@ -5,11 +5,7 @@ import { Slot, Stack } from 'expo-router';
 
 const ExploreLayout = () => {
     return (
-        <AnimatedStack
-            screenOptions={{
-                header: (props) => <PaperHeader {...props} />,
-            }}
-        >
+        <AnimatedStack>
             <Stack.Screen
                 name="index"
                 options={{ title: 'Explore', header: (props) => <ExploreHeader {...props} /> }}
