@@ -26,7 +26,7 @@ const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
     Platform.OS === 'web' ? ANI_WEB_ID : ANI_ID
 }&response_type=token`;
 
-export const useAnilistAuth = () => {
+export const useAnilistAuth = (redirect?: string) => {
     const [request, setRequest] = useState<AuthRequest | null>(null);
     const [result, setResult] = useState<AuthSessionResult | null>(null);
     const dispatch = useDispatch();
@@ -48,6 +48,7 @@ export const useAnilistAuth = () => {
             // Still provides the token though.
             if (result?.type === 'success' || result?.type === 'error') {
                 const accessToken = result.authentication?.accessToken;
+                console.log('accessToken', accessToken?.length > 0 ? 'true' : 'false');
                 const expiresAt = new Date();
                 expiresAt.setFullYear(expiresAt.getFullYear() + 1);
                 if (accessToken) {
@@ -96,7 +97,7 @@ export const useAnilistAuth = () => {
         if (AniListURL) {
             const request = new AuthRequest({
                 usePKCE: false,
-                redirectUri,
+                redirectUri: redirect ?? redirectUri,
                 scopes: [],
                 clientId: '',
                 // responseType: ResponseType.Token,
