@@ -4,7 +4,7 @@ import { ScoreDistribution } from '@/store/services/anilist/generated-anilist';
 import { ScoreVisualType } from '@/store/slices/settingsSlice';
 import { rgbToRgba } from '@/utils';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -83,11 +83,13 @@ export const ScoreHealthBar = ({
 };
 
 type ScoreBarProps = {
+    height: number;
     scores: ScoreDistribution[];
     isGradient?: boolean;
     isGraph?: boolean;
 };
 export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
+    const [card_width, setCardWidth] = useState(0);
     const colors: string[] = scores?.map((stat) => {
         return ScoreColors[stat?.score];
     });
@@ -110,7 +112,10 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
         highestScore = 0;
     }
     return (
-        <View style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}>
+        <View
+            onLayout={(e) => setCardWidth(e.nativeEvent.layout.width)}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%' }}
+        >
             {isGraph ? (
                 <View
                     style={{
@@ -129,7 +134,7 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
                             style={{
                                 backgroundColor: ScoreColors[stat?.score].replaceAll('1)', '0.9)'),
                                 height: `${(stat.amount / total_users) * 100}%`,
-                                width: 150 / scores.length,
+                                width: card_width / scores.length,
                                 borderTopLeftRadius: idx === 0 ? 12 : 0,
                                 borderTopRightRadius: idx === scores.length - 1 ? 12 : 0,
                             }}
@@ -171,12 +176,14 @@ type ScoreVisualProps = {
     scoreVisualType: ScoreVisualType;
     scoreColors: { red: number; yellow: number };
     scoreDistributions: ScoreDistribution[];
+    height: number;
 };
 export const ScoreVisual = ({
     score,
     scoreDistributions,
     scoreColors,
     scoreVisualType,
+    height,
 }: ScoreVisualProps) => {
     const { colors } = useTheme();
     const settings = useAppSelector((state) => state.persistedSettings);
@@ -210,10 +217,10 @@ export const ScoreVisual = ({
                 />
             );
         case 'bar':
-            return <ScoreBar scores={scoreDistributions} />;
+            return <ScoreBar scores={scoreDistributions} height={height} />;
         case 'gradient-bar':
-            return <ScoreBar scores={scoreDistributions} isGradient />;
+            return <ScoreBar scores={scoreDistributions} isGradient height={height} />;
         case 'bar-graph':
-            return <ScoreBar scores={scoreDistributions} isGraph />;
+            return <ScoreBar scores={scoreDistributions} isGraph height={height} />;
     }
 };
