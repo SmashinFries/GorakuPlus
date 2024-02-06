@@ -21,6 +21,11 @@ import { displayNotification, parseNotif } from '@/utils/notifications/backgroun
 import { setStatusBarStyle } from 'expo-status-bar';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
+import { Toaster } from 'burnt/web';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 if (typeof window !== 'undefined') {
     // @ts-ignore
@@ -81,6 +86,9 @@ const AppProvider = () => {
     const { isFirstLaunch } = useAppSelector((state) => state.persistedSetup);
     const [updateLink, setUpdateLink] = useState<string | null>(null);
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+    const [fontsLoaded, fontError] = useFonts({
+        Caveat: 'https://fonts.googleapis.com/css2?family=Caveat&display=swap',
+    });
 
     // const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     // const updatesListener = (e: Updates.UpdateEvent) => {
@@ -101,6 +109,18 @@ const AppProvider = () => {
             setShowUpdateDialog(true);
         }
     };
+
+    useEffect(() => {
+        if (fontsLoaded || fontError) {
+            // Hide the splash screen after the fonts have loaded (or an error was returned) and the UI is ready.
+            SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded, fontError]);
+
+    // Prevent rendering until the font has loaded or an error was returned
+    if (!fontsLoaded && !fontError) {
+        return null;
+    }
 
     useEffect(() => {
         if (isDark) {
@@ -184,6 +204,7 @@ const AppProvider = () => {
                             updateLink={updateLink}
                         />
                     </Portal>
+                    <Toaster position="bottom-right" />
                 </BottomSheetModalProvider>
             </ThemeProvider>
             {/* <Portal>
