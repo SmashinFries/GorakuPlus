@@ -31,6 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         '@react-native-firebase/crashlytics',
         'expo-localization',
         'expo-router',
+        'expo-font',
         [
             'expo-build-properties',
             {
@@ -116,6 +117,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     web: {
         favicon: './assets/favicon.png',
+        bundler: 'metro',
+        output: 'single',
     },
     extra: {
         eas: {
