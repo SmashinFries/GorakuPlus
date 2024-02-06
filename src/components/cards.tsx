@@ -8,12 +8,12 @@ import {
     ScoreDistribution,
 } from '@/store/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
-import { listColor, rgbToRgba } from '@/utils';
+import { listColor } from '@/utils';
 import { useAppSelector } from '@/store/hooks';
 import { DanPost } from '@/store/services/danbooru/types';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { NSFWLabel } from './labels';
-import { ScoreHealthBar, ScoreIconText, ScoreVisual } from './explore/itemScore';
+import { ScoreVisual } from './explore/itemScore';
 import { AiringBanner } from './explore/episodeBanner';
 import { ScoreVisualType } from '@/store/slices/settingsSlice';
 
@@ -34,8 +34,11 @@ type MediaCardProps = {
     disablePress?: boolean;
     scoreVisualType?: ScoreVisualType;
     scoreDistributions?: ScoreDistribution[];
+    titleLang?: 'english' | 'romaji' | 'native';
+    height?: number;
 };
 export const MediaCard = (props: MediaCardProps) => {
+    const card_height = props.height ?? 230;
     const { colors } = useTheme();
     const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
         (state) => state.persistedSettings,
@@ -43,13 +46,15 @@ export const MediaCard = (props: MediaCardProps) => {
     return (
         <Pressable
             onPress={props.navigate && props.navigate}
-            android_ripple={{ color: colors.primary, foreground: true }}
+            android_ripple={
+                props.navigate ? { color: colors.primary, foreground: true } : undefined
+            }
             // disabled={props.disablePress}
             style={{
                 marginHorizontal: 10,
                 overflow: 'hidden',
-                height: 230,
-                width: 150,
+                height: card_height,
+                aspectRatio: 115 / 163, // anilist cover image AR \_(ツ)_/
                 borderRadius: BORDER_RADIUS,
                 backgroundColor: 'transparent',
             }}
@@ -87,6 +92,7 @@ export const MediaCard = (props: MediaCardProps) => {
                         scoreColors={scoreColors}
                         scoreVisualType={props.scoreVisualType}
                         scoreDistributions={props.scoreDistributions}
+                        height={card_height}
                     />
                 )}
                 <Text
@@ -102,7 +108,9 @@ export const MediaCard = (props: MediaCardProps) => {
                     }}
                     numberOfLines={2}
                 >
-                    {props.titles[mediaLanguage] ?? props.titles.romaji}
+                    {props.titles[props.titleLang] ??
+                        props.titles[mediaLanguage] ??
+                        props.titles.romaji}
                 </Text>
                 {props.showBanner ? (
                     <AiringBanner
