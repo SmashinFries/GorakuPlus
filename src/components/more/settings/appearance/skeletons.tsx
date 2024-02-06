@@ -17,7 +17,7 @@ export const ThemeSkeleton = ({ theme, active }: SkeletonProps) => {
                 {
                     borderColor: colors.primary,
                     backgroundColor: colors.background,
-                    elevation: 20,
+                    // elevation: 20,
                     shadowColor: active ? colors.primary : undefined,
                     shadowRadius: 5,
                     shadowOpacity: 20,
