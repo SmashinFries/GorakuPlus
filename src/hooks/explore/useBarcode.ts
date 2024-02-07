@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { useLazySearchISBNQuery } from '@/store/services/google-books/googleApi';
 import { useLazyExploreMediaQuery } from '@/store/services/anilist/enhanced';
 import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppSelector } from '@/store/hooks';
+import { BarcodeScanningResult } from 'expo-camera/next';
 
 // https://www.googleapis.com/books/v1/volumes?q=isbn:1974736474
 
 export const useBarcode = () => {
-    const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [isbn, setIsbn] = useState<string>();
 
@@ -37,17 +36,7 @@ export const useBarcode = () => {
         setIsLoading(false);
     };
 
-    const getBarCodeScannerPermissions = async () => {
-        const { status } = await BarCodeScanner.requestPermissionsAsync();
-        setHasPermission(status === 'granted');
-    };
-
-    // useEffect(() => {
-
-    //     getBarCodeScannerPermissions();
-    // }, []);
-
-    const handleBarCodeScanned: BarCodeScannedCallback = ({ type, data }) => {
+    const handleBarCodeScanned = ({ data, bounds, cornerPoints }: BarcodeScanningResult) => {
         setScanned(true);
         setIsbn(data);
         findBook(data);
@@ -65,13 +54,11 @@ export const useBarcode = () => {
 
     return {
         aniData: data,
-        hasPermission,
         scanned,
         isbn,
         isLoading,
         resetScan,
         triggerScan,
         handleBarCodeScanned,
-        getBarCodeScannerPermissions,
     };
 };

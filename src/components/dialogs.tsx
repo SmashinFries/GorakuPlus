@@ -1,5 +1,4 @@
 import { Dialog, Button, Text, ActivityIndicator, useTheme } from 'react-native-paper';
-import { BarCodeScanner, Constants as BarCodeConstants } from 'expo-barcode-scanner';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { BasicDialogProps } from '@/types';
 import { View } from 'react-native';
@@ -11,23 +10,16 @@ import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated
 import { MediaCard } from './cards';
 import { copyToClipboard } from '@/utils';
 import { NumberPicker, NumberPickerProps } from './picker';
+import { useCameraPermissions, CameraView, BarCodeType } from 'expo-camera/next';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
     onNav: (aniId: number, malId: number, type: MediaType) => void;
 };
 export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDialogProps) => {
     const { colors } = useTheme();
-    const {
-        aniData,
-        isLoading,
-        isbn,
-        scanned,
-        hasPermission,
-        handleBarCodeScanned,
-        triggerScan,
-        resetScan,
-        getBarCodeScannerPermissions,
-    } = useBarcode();
+    const [permission, requestPermission] = useCameraPermissions();
+    const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
+        useBarcode();
 
     const closeDialog = () => {
         resetScan();
@@ -60,38 +52,32 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
                         color: colors.onSurfaceVariant,
                     }}
                 >
-                    {/* {item.isLicensed
-                    ? item?.format
-                    : 'Doujin'}{' '}
-                · {item.st?.replaceAll('_', ' ') ?? '??'} */}
                     {item?.format}
                 </Text>
             </View>
         );
     };
 
-    // useEffect(() => {
-    //     if (isbn && scanned && !isbnData.data) {
-    //         findBook(isbn);
-    //     }
-    // }, [isbn, isbnData, scanned]);
-
     useEffect(() => {
         if (visible) {
-            getBarCodeScannerPermissions();
+            if (!permission.granted) {
+                requestPermission();
+            }
         }
-    }, [visible]);
+    }, [visible, permission]);
 
     return (
         <Dialog visible={visible} onDismiss={onDismiss}>
             <Dialog.Title>Book Scanner</Dialog.Title>
             <Dialog.Content>
-                {!scanned && hasPermission ? (
+                {!scanned && permission.granted ? (
                     <Animated.View entering={FadeIn} exiting={FadeOut} style={{ height: 400 }}>
-                        <BarCodeScanner
+                        <CameraView
                             style={[{ height: 400 }]}
-                            barCodeTypes={[BarCodeConstants.BarCodeType.ean13]}
-                            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                            barcodeScannerSettings={{ barCodeTypes: ['ean13'] }}
+                            onBarcodeScanned={(scanningResult) =>
+                                handleBarCodeScanned(scanningResult)
+                            }
                         />
                     </Animated.View>
                 ) : (
