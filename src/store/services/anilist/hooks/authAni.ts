@@ -13,6 +13,7 @@ import { api } from '../enhanced';
 import { useLazyUserDataQuery } from '../generated-anilist';
 
 const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
+const ANI_ID_SETUP = Constants.expoConfig?.extra?.ANI_ID_SETUP;
 const ANI_WEB_ID = Constants.expoConfig?.extra?.ANI_WEB_ID;
 
 // https://anilist.co/api/v2/oauth/authorize?client_id={client_id}&response_type=token
@@ -21,12 +22,14 @@ const redirectUri = makeRedirectUri({
     path: 'more/accounts',
     // queryParams: { rootPath: rootPath },
 });
+const redirectSetupUri = makeRedirectUri({
+    path: 'setup',
+});
 
-const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
-    Platform.OS === 'web' ? ANI_WEB_ID : ANI_ID
-}&response_type=token`;
-
-export const useAnilistAuth = (redirect?: string) => {
+export const useAnilistAuth = (isSetup = false) => {
+    const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
+        Platform.OS === 'web' ? ANI_WEB_ID : isSetup ? ANI_ID_SETUP : ANI_ID
+    }&response_type=token`;
     const [request, setRequest] = useState<AuthRequest | null>(null);
     const [result, setResult] = useState<AuthSessionResult | null>(null);
     const dispatch = useDispatch();
@@ -48,7 +51,7 @@ export const useAnilistAuth = (redirect?: string) => {
             // Still provides the token though.
             if (result?.type === 'success' || result?.type === 'error') {
                 const accessToken = result.authentication?.accessToken;
-                console.log('accessToken', accessToken?.length > 0 ? 'true' : 'false');
+                // console.log('accessToken', accessToken?.length > 0 ? 'true' : 'false');
                 const expiresAt = new Date();
                 expiresAt.setFullYear(expiresAt.getFullYear() + 1);
                 if (accessToken) {
@@ -97,7 +100,7 @@ export const useAnilistAuth = (redirect?: string) => {
         if (AniListURL) {
             const request = new AuthRequest({
                 usePKCE: false,
-                redirectUri: redirect ?? redirectUri,
+                redirectUri: isSetup ? redirectSetupUri : redirectUri,
                 scopes: [],
                 clientId: '',
                 // responseType: ResponseType.Token,
