@@ -19,5 +19,6 @@ web-build/
 *.env
 
 .builds/
+.downloads/
 
 *.apk
