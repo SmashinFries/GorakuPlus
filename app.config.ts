@@ -42,9 +42,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
             },
         ],
         [
-            'expo-barcode-scanner',
+            'expo-camera',
             {
-                cameraPermission: `Allow ${appName} to access camera for barcode scanning.`,
+                cameraPermission: `Allow ${appName} to access camera for book scanning.`,
             },
         ],
         [
