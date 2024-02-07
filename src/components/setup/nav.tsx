@@ -47,7 +47,7 @@ const PageIndicator = ({ page, numPages }: PageIndicatorProps) => {
             if (page === idx) {
                 pageAnimVal.value = withRepeat(
                     withSequence(
-                        withTiming(1.2, { duration: 750 }),
+                        withTiming(1.3, { duration: 750 }),
                         withTiming(1, { duration: 750 }),
                     ),
                     -1,
