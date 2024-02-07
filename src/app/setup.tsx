@@ -4,19 +4,42 @@ import { SetupNavBar } from '@/components/setup/nav';
 import { AnilistIcon } from '@/components/svgs';
 import dummyData from '@/constants/dummyData';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+    GenreTagCollectionQuery,
+    useGenreTagCollectionQuery,
+} from '@/store/services/anilist/generated-anilist';
 import { useAnilistAuth } from '@/store/services/anilist/hooks/authAni';
-import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/slices/settingsSlice';
+import { ScoreVisualType, ScoreVisualTypeEnum, setSettings } from '@/store/slices/settingsSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
 import { rgbToRgba } from '@/utils';
+import { openWebBrowser } from '@/utils/webBrowser';
+import { makeRedirectUri } from 'expo-auth-session';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiPressable } from 'moti/interactions';
-import { useEffect, useState } from 'react';
-import { ScrollView, useWindowDimensions } from 'react-native';
-import { Pressable, ViewStyle } from 'react-native';
-import { StyleProp, View } from 'react-native';
-import { Avatar, Button, Chip, IconButton, List, Switch, Text, useTheme } from 'react-native-paper';
+import { useCallback, useEffect, useState } from 'react';
+import {
+    ScrollView,
+    useWindowDimensions,
+    Pressable,
+    StyleProp,
+    View,
+    ViewStyle,
+    FlatList,
+} from 'react-native';
+import {
+    Avatar,
+    Button,
+    Chip,
+    Divider,
+    IconButton,
+    List,
+    Searchbar,
+    Switch,
+    Text,
+    useTheme,
+} from 'react-native-paper';
 import Animated, {
     AnimatedStyle,
     SlideInLeft,
@@ -29,7 +52,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import switchTheme from 'react-native-theme-switch-animation';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const SETUP_PAGES = 5;
+const SETUP_PAGES = 6;
 
 type Page = {
     page: number;
@@ -118,7 +141,7 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const onDarkChange = (darkMode: boolean, py: number, px: number) => {
         switchTheme({
             switchThemeFunction: () => {
-                dispatch(setTheme({ isDark: !isDark, mode: mode }));
+                dispatch(setTheme({ isDark: darkMode, mode: mode }));
             },
             animationConfig: {
                 type: 'fade',
@@ -268,21 +291,21 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 
 const Page2 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { token, username, avatar } = useAppSelector((state) => state.persistedAniLogin);
-    const { request, result, promptAsync } = useAnilistAuth();
+    const { request, result, promptAsync } = useAnilistAuth(true);
 
     return (
         <Body style={{ justifyContent: 'center' }} pageAnim={pageAnim}>
             <AnilistIcon isDark={true} height={100} width={100} />
             <TitleText
                 title={'Connect to Anilist'}
-                description="Connect your Anilist acount for the full experience"
+                description="Connect your Anilist acount for the full experience."
                 containerStyle={{ flex: 0, justifyContent: 'center', paddingBottom: 20 }}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 30 }}>
                 {!token && (
                     <Button
                         mode="contained"
-                        onPress={() => promptAsync()}
+                        onPress={() => openWebBrowser('https://anilist.co/signup', true)}
                         style={{ marginRight: 10 }}
                     >
                         {'Create Account'}
@@ -314,6 +337,7 @@ const Page2 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 };
 
 const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+    const dispatch = useAppDispatch();
     const { scoreColors, defaultScore, scoreVisualType, mediaLanguage } = useAppSelector(
         (state) => state.persistedSettings,
     );
@@ -322,11 +346,20 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { width, height } = useWindowDimensions();
     const [visualPreset, setVisualPreset] = useState<ScoreVisualType>(scoreVisualType);
     const [titleLang, setTitleLang] = useState<typeof mediaLanguage>(mediaLanguage);
+
+    const onScoreDesignChange = (preset: ScoreVisualType) => {
+        dispatch(setSettings({ entryType: 'scoreVisualType', value: preset }));
+    };
+
+    const onTitleLanguageChange = (lang: typeof mediaLanguage) => {
+        dispatch(setSettings({ entryType: 'mediaLanguage', value: lang }));
+    };
+
     return (
         <Body pageAnim={pageAnim}>
             <TitleText
                 title={'Card Customization'}
-                description={'Customize the look of media cards that are shown throughout the app'}
+                description={'Customize the look of media cards that are shown throughout the app.'}
             />
             <View style={{ justifyContent: 'center', paddingVertical: 30 }}>
                 <View
@@ -340,9 +373,9 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         meanScore={dummyData[mode].meanScore}
                         averageScore={dummyData[mode].averageScore}
                         scoreColors={scoreColors}
-                        scoreVisualType={visualPreset}
+                        // scoreVisualType={scoreVisualType}
                         scoreDistributions={dummyData[mode].stats?.scoreDistribution}
-                        titleLang={titleLang}
+                        // titleLang={titleLang}
                     />
                     <MediaProgressBar
                         progress={
@@ -366,12 +399,12 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                             key={idx}
                             mode="outlined"
                             selected={visualPreset === ScoreVisualTypeEnum[visual]}
-                            onPress={() => setVisualPreset(ScoreVisualTypeEnum[visual])}
+                            onPress={() => onScoreDesignChange(ScoreVisualTypeEnum[visual])}
                             textStyle={{
                                 color:
                                     visualPreset === ScoreVisualTypeEnum[visual]
                                         ? colors.primary
-                                        : undefined,
+                                        : colors.onBackground,
                             }}
                             selectedColor={colors.primary}
                             style={{
@@ -397,12 +430,15 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         <Chip
                             key={idx}
                             mode="outlined"
-                            selected={titleLang === lang}
-                            onPress={() => setTitleLang(lang as 'english' | 'romaji' | 'native')}
+                            selected={mediaLanguage === lang}
+                            onPress={() =>
+                                onTitleLanguageChange(lang as 'english' | 'romaji' | 'native')
+                            }
                             style={{ marginHorizontal: 5, justifyContent: 'center' }}
                             textStyle={{
                                 textTransform: 'capitalize',
-                                color: titleLang === lang ? colors.primary : undefined,
+                                color:
+                                    mediaLanguage === lang ? colors.primary : colors.onBackground,
                             }}
                             selectedColor={colors.primary}
                         >
@@ -416,9 +452,152 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 };
 
 const Page4 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+    const { colors } = useTheme();
+    const { width } = useWindowDimensions();
+    const { tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+    const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
+    const [search, setSearch] = useState<string>('');
+    const [searchResults, setSearchResults] = useState<
+        GenreTagCollectionQuery['MediaTagCollection']
+    >([]);
+
+    const dispatch = useAppDispatch();
+
+    const { data, isFetching, isError } = useGenreTagCollectionQuery(undefined);
+
+    const TagChip = useCallback(
+        ({ name, onPress, icon }) => (
+            <Chip
+                style={{ margin: 8, borderColor: colors.primary }}
+                icon={icon ?? undefined}
+                mode="outlined"
+                // selectedColor={isSelected(name) ? colors.primary : undefined}
+                onPress={() => onPress(name)}
+            >
+                {name}
+            </Chip>
+        ),
+        [tags],
+    );
+
+    const onAdd = (tag: string) => {
+        dispatch(setSettings({ entryType: 'tagBlacklist', value: [...tagBlacklist, tag] }));
+    };
+
+    const onRemove = (tag: string) => {
+        dispatch(
+            setSettings({
+                entryType: 'tagBlacklist',
+                value: tagBlacklist.filter((t) => t !== tag),
+            }),
+        );
+    };
+
+    useEffect(() => {
+        if (data) {
+            setSearchResults(data.MediaTagCollection);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (data && tagBlacklist) {
+            setSearchResults(
+                data.MediaTagCollection?.filter((t) => !tagBlacklist.includes(t.name)),
+            );
+        }
+    }, [data, tagBlacklist]);
+
+    useEffect(() => {
+        if (data && search.length > 0) {
+            setSearchResults(
+                data.MediaTagCollection?.filter((t) =>
+                    t.name.toLowerCase().includes(search.toLowerCase()),
+                ),
+            );
+        }
+    }, [search, data]);
+
     return (
         <Body pageAnim={pageAnim}>
-            <TitleText title={'Blacklist Tags'} />
+            <TitleText
+                title={'Blacklist Tags'}
+                description="Select tags that you want hidden. This will globally exclude content containing any of these tags."
+            />
+            <ScrollView
+                horizontal
+                contentContainerStyle={{ alignItems: 'flex-start' }}
+                style={{ minHeight: 50, marginVertical: 5 }}
+            >
+                {tagBlacklist.map((tag, idx) => (
+                    <TagChip key={idx} name={tag} onPress={() => onRemove(tag)} icon={'close'} />
+                ))}
+            </ScrollView>
+            <Searchbar
+                style={{
+                    margin: 10,
+                    backgroundColor: colors.background,
+                    borderColor: colors.primary,
+                }}
+                value={search}
+                onChangeText={(txt) => setSearch(txt)}
+                mode="bar"
+            />
+            <Divider style={{ width: '100%' }} />
+            {/* <ScrollView
+                style={{ marginVertical: 10 }}
+                contentContainerStyle={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                }}
+            >
+                {searchResults?.map(
+                    (tag, idx) =>
+                        !tag.isAdult && (
+                            <Chip key={idx} mode="outlined" style={{ margin: 5 }}>
+                                {tag.name}
+                            </Chip>
+                        ),
+                )}
+            </ScrollView> */}
+            <FlatList
+                data={searchResults}
+                contentContainerStyle={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    paddingBottom: 50,
+                }}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) =>
+                    !item.isAdult && (
+                        <Chip
+                            mode="outlined"
+                            onPress={() => onAdd(item.name)}
+                            style={{
+                                margin: 5,
+                            }}
+                        >
+                            {item.name}
+                        </Chip>
+                    )
+                }
+            />
+            <Divider style={{ width: '100%', marginBottom: 10 }} />
+        </Body>
+    );
+};
+
+const Page5 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+    return (
+        <Body pageAnim={pageAnim}>
+            <TitleText
+                title={'Explore Tabs'}
+                description="Select what type of content you want quick access to."
+            />
+            {/* <List.Item title="Anime" right={(props) } /> */}
+            <List.Item title="Anime" />
+            <List.Item title="Anime" />
+            <List.Item title="Anime" />
+            <List.Item title="Anime" />
         </Body>
     );
 };
@@ -435,6 +614,8 @@ const RenderPage = ({ page, pageAnim }: Page) => {
             return <Page3 pageAnim={pageAnim} />;
         case 4:
             return <Page4 pageAnim={pageAnim} />;
+        case 5:
+            return <Page5 pageAnim={pageAnim} />;
         default:
             return <View />;
     }
