@@ -10,8 +10,10 @@ import {
 } from '@/store/services/anilist/generated-anilist';
 import { useAnilistAuth } from '@/store/services/anilist/hooks/authAni';
 import { ScoreVisualType, ScoreVisualTypeEnum, setSettings } from '@/store/slices/settingsSlice';
+import { finishSetup } from '@/store/slices/setupSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
+import { ExploreTabsProps } from '@/types/navigation';
 import { rgbToRgba } from '@/utils';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { makeRedirectUri } from 'expo-auth-session';
@@ -28,9 +30,15 @@ import {
     ViewStyle,
     FlatList,
 } from 'react-native';
+import DraggableFlatList, {
+    RenderItemParams,
+    ScaleDecorator,
+} from 'react-native-draggable-flatlist';
+import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
 import {
     Avatar,
     Button,
+    Checkbox,
     Chip,
     Divider,
     IconButton,
@@ -344,7 +352,6 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
     const { colors } = useTheme();
     const { width, height } = useWindowDimensions();
-    const [visualPreset, setVisualPreset] = useState<ScoreVisualType>(scoreVisualType);
     const [titleLang, setTitleLang] = useState<typeof mediaLanguage>(mediaLanguage);
 
     const onScoreDesignChange = (preset: ScoreVisualType) => {
@@ -398,11 +405,11 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         <Chip
                             key={idx}
                             mode="outlined"
-                            selected={visualPreset === ScoreVisualTypeEnum[visual]}
+                            selected={scoreVisualType === ScoreVisualTypeEnum[visual]}
                             onPress={() => onScoreDesignChange(ScoreVisualTypeEnum[visual])}
                             textStyle={{
                                 color:
-                                    visualPreset === ScoreVisualTypeEnum[visual]
+                                    scoreVisualType === ScoreVisualTypeEnum[visual]
                                         ? colors.primary
                                         : colors.onBackground,
                             }}
@@ -587,17 +594,82 @@ const Page4 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 };
 
 const Page5 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+    const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
+    const dispatch = useAppDispatch();
+
+    const editExploreTabs = (tabs: string[]) => {
+        dispatch(setSettings({ entryType: 'exploreTabs', value: tabs }));
+    };
+
+    const updateTabOrder = (tabs: string[]) => {
+        dispatch(setSettings({ entryType: 'exploreTabOrder', value: tabs }));
+    };
+
+    const renderItem = ({ item, drag, isActive }: RenderItemParams<keyof ExploreTabsProps>) => {
+        return (
+            <ScaleDecorator>
+                <TouchableOpacity
+                    style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                    onPress={() =>
+                        editExploreTabs(
+                            exploreTabs.includes(item)
+                                ? exploreTabs.filter((tab) => tab !== item)
+                                : [...exploreTabs, item],
+                        )
+                    }
+                    activeOpacity={1}
+                    disabled={isActive}
+                >
+                    {/* <Checkbox.Item
+                        label={item}
+                        disabled={isActive}
+                        status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
+                    /> */}
+                    <Text style={{ textTransform: 'capitalize', paddingLeft: 15 }}>{item}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Checkbox
+                            // disabled={isActive}
+                            status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
+                        />
+                        <IconButton icon="drag-vertical" onLongPress={drag} />
+                    </View>
+                    {/* <Text>{item}</Text> */}
+                </TouchableOpacity>
+            </ScaleDecorator>
+            // <ScaleDecorator>
+            //     <TouchableOpacity
+            //         activeOpacity={1}
+            //         onLongPress={drag}
+            //         disabled={isActive}
+            //         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
+            //     >
+            //         <Text style={styles.text}>{item}</Text>
+            //     </TouchableOpacity>
+            // </ScaleDecorator>
+        );
+    };
+
     return (
         <Body pageAnim={pageAnim}>
             <TitleText
                 title={'Explore Tabs'}
                 description="Select what type of content you want quick access to."
             />
-            {/* <List.Item title="Anime" right={(props) } /> */}
-            <List.Item title="Anime" />
-            <List.Item title="Anime" />
-            <List.Item title="Anime" />
-            <List.Item title="Anime" />
+            <GestureHandlerRootView>
+                <DraggableFlatList
+                    data={exploreTabOrder}
+                    renderItem={renderItem}
+                    keyExtractor={(item, idx) => idx.toString()}
+                    onDragEnd={({ data }) => {
+                        updateTabOrder(data);
+                    }}
+                />
+            </GestureHandlerRootView>
         </Body>
     );
 };
@@ -625,11 +697,20 @@ const SetupModal = () => {
     const [page, setPage] = useState<Page>({ page: 0, pageAnim: 'next' });
     const { colors } = useTheme();
 
-    const onPageChange = (navType: 'next' | 'prev') => {
-        if (navType === 'next') {
-            setPage((prevPage) => ({ page: prevPage.page + 1, pageAnim: 'next' }));
-        } else if (navType === 'prev' && page.page > 0) {
-            setPage((prevPage) => ({ page: prevPage.page - 1, pageAnim: 'prev' }));
+    const dispatch = useAppDispatch();
+
+    const onPageChange = (navType: 'next' | 'prev' | number) => {
+        if (typeof navType === 'number' && navType !== page.page) {
+            setPage((prevPage) => ({
+                page: navType,
+                pageAnim: prevPage.page < navType ? 'next' : 'prev',
+            }));
+        } else {
+            if (navType === 'next') {
+                setPage((prevPage) => ({ page: prevPage.page + 1, pageAnim: 'next' }));
+            } else if (navType === 'prev' && page.page > 0) {
+                setPage((prevPage) => ({ page: prevPage.page - 1, pageAnim: 'prev' }));
+            }
         }
     };
 
@@ -637,7 +718,7 @@ const SetupModal = () => {
         <View style={{ flex: 1 }}>
             {/* [colors.background, rgbToRgba(colors.primary, 0.4)] */}
             <LinearGradient
-                colors={[rgbToRgba(colors.primary, 0.4), colors.background]}
+                colors={[colors.background, rgbToRgba(colors.primaryContainer, 0.4)]}
                 style={{
                     position: 'absolute',
                     width: '100%',
@@ -655,7 +736,11 @@ const SetupModal = () => {
                     Next
                 </Button>
             ) : (
-                <Button mode="contained" style={{ marginBottom: 30, marginHorizontal: 20 }}>
+                <Button
+                    mode="contained"
+                    onPress={() => dispatch(finishSetup())}
+                    style={{ marginBottom: 30, marginHorizontal: 20 }}
+                >
                     Complete
                 </Button>
             )}
