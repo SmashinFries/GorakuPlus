@@ -36,9 +36,11 @@ type MediaCardProps = {
     scoreDistributions?: ScoreDistribution[];
     titleLang?: 'english' | 'romaji' | 'native';
     height?: number;
+    width?: number;
+    fitToParent?: boolean;
 };
 export const MediaCard = (props: MediaCardProps) => {
-    const card_height = props.height ?? 230;
+    const card_height = props.height ?? 210;
     const { colors } = useTheme();
     const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
         (state) => state.persistedSettings,
@@ -53,8 +55,11 @@ export const MediaCard = (props: MediaCardProps) => {
             style={{
                 marginHorizontal: 10,
                 overflow: 'hidden',
-                height: card_height,
-                aspectRatio: 115 / 163, // anilist cover image AR \_(ツ)_/
+                height: !props.width && !props.fitToParent ? card_height : undefined,
+                width: props.fitToParent ? '100%' : props.width ?? undefined,
+                // aspectRatio: 115 / 163, // anilist cover image AR
+                // aspectRatio: 1 / 1.55,
+                aspectRatio: 2 / 3,
                 borderRadius: BORDER_RADIUS,
                 backgroundColor: 'transparent',
             }}
