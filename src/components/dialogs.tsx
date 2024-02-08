@@ -4,7 +4,7 @@ import { BasicDialogProps } from '@/types';
 import { View } from 'react-native';
 import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from './cards';
@@ -21,46 +21,55 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
     const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
         useBarcode();
 
+    const [dialog_width, setDialogWidth] = useState(0);
+
     const closeDialog = () => {
         resetScan();
         onDismiss();
     };
 
-    const RenderItem = ({ item }: { item: ExploreMediaQuery['Page']['media'][0] }) => {
-        return (
-            <View
-                style={{
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    marginVertical: 10,
-                }}
-            >
-                <MediaCard
-                    titles={item.title}
-                    coverImg={item.coverImage.extraLarge}
-                    navigate={() => {
-                        closeDialog();
-                        onNav(item.id, item.idMal, item.type);
-                    }}
-                    scoreDistributions={item.stats?.scoreDistribution}
-                />
-                <Text
-                    variant="labelMedium"
+    const RenderItem = useCallback(
+        ({ item }: { item: ExploreMediaQuery['Page']['media'][0] }) => {
+            return (
+                <View
                     style={{
-                        textTransform: 'capitalize',
-                        textAlign: 'center',
-                        color: colors.onSurfaceVariant,
+                        flex: 1,
+                        width: '100%',
+                        alignItems: 'center',
+                        marginVertical: 10,
+                        marginHorizontal: 10,
                     }}
                 >
-                    {item?.format}
-                </Text>
-            </View>
-        );
-    };
+                    <MediaCard
+                        titles={item.title}
+                        coverImg={item.coverImage.extraLarge}
+                        navigate={() => {
+                            closeDialog();
+                            onNav(item.id, item.idMal, item.type);
+                        }}
+                        scoreDistributions={item.stats?.scoreDistribution}
+                        // height={dialog_width / 2 - 5}
+                        fitToParent
+                    />
+                    <Text
+                        variant="labelMedium"
+                        style={{
+                            textTransform: 'capitalize',
+                            textAlign: 'center',
+                            color: colors.onSurfaceVariant,
+                        }}
+                    >
+                        {item?.format}
+                    </Text>
+                </View>
+            );
+        },
+        [dialog_width],
+    );
 
     useEffect(() => {
         if (visible) {
-            if (!permission.granted) {
+            if (!permission?.granted) {
                 requestPermission();
             }
         }
@@ -70,7 +79,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
         <Dialog visible={visible} onDismiss={onDismiss}>
             <Dialog.Title>Book Scanner</Dialog.Title>
             <Dialog.Content>
-                {!scanned && permission.granted ? (
+                {!scanned && permission?.granted ? (
                     <Animated.View entering={FadeIn} exiting={FadeOut} style={{ height: 400 }}>
                         <CameraView
                             style={[{ height: 400 }]}
@@ -96,11 +105,10 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
                 )}
             </Dialog.Content>
             {scanned && (
-                <Dialog.ScrollArea>
+                <Dialog.ScrollArea onLayout={(e) => setDialogWidth(e.nativeEvent.layout.width)}>
                     <View
                         style={{
                             height: 450,
-                            width: '100%',
                         }}
                     >
                         {!isLoading ? (
@@ -113,7 +121,6 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
                                 numColumns={2}
                                 showsVerticalScrollIndicator={false}
                                 centerContent
-                                contentContainerStyle={{ paddingRight: 15, paddingLeft: -5 }}
                             />
                         ) : (
                             <View
