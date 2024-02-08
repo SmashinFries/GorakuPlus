@@ -7,6 +7,7 @@ import { setSettings } from '@/store/slices/settingsSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
 import { MotiPressable } from 'moti/interactions';
+import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
 import { List, Switch, Text, useTheme } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
@@ -70,8 +71,14 @@ const AppearancePage = () => {
                 dispatch(setTheme({ mode: theme, isDark: isDark }));
             },
             animationConfig: {
-                type: 'fade',
+                // type: 'fade',
+                // duration: 900,
+                type: 'circular',
                 duration: 900,
+                startingPoint: {
+                    cy: py,
+                    cx: px,
+                },
             },
         });
     };
@@ -114,57 +121,80 @@ const AppearancePage = () => {
                         // onPress={() => setExpandThemes((prev) => !prev)}
                     >
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View style={{ flexDirection: 'row' }}>
-                                {themeOptions.map((theme, index) => (
-                                    <MotiPressable
-                                        key={index}
-                                        animate={({ hovered, pressed }) => {
-                                            'worklet';
+                            {themeOptions.map((theme, index) => (
+                                <View key={index} style={{ marginVertical: 10 }}>
+                                    <Pressable
+                                        // animate={({ hovered, pressed }) => {
+                                        //     'worklet';
 
-                                            return {
-                                                scale: pressed ? 0.8 : 1,
-                                            };
-                                        }}
+                                        //     return {
+                                        //         scale: pressed ? 0.8 : 1,
+                                        //     };
+                                        // }}
+                                        // style={{
+                                        //     borderWidth: mode === theme ? 1 : 0,
+                                        //     borderColor:
+                                        //         mode === theme ? colors.primary : undefined,
+                                        //     borderRadius: 12,
+                                        //     marginHorizontal: 10,
+                                        //     marginVertical: 10,
+                                        //     alignItems: 'center',
+                                        //     paddingHorizontal: 15,
+                                        //     paddingVertical: 10,
+                                        // }}
+                                        // onPress={(e) =>
+                                        //     onThemeChange(
+                                        //         theme,
+                                        //         e.nativeEvent.pageY,
+                                        //         e.nativeEvent.pageX,
+                                        //     )
+                                        // }
                                         style={{
-                                            borderWidth: mode === theme ? 1 : 0,
-                                            borderColor:
-                                                mode === theme ? colors.primary : undefined,
-                                            borderRadius: 12,
                                             marginHorizontal: 10,
-                                            marginVertical: 10,
-                                            alignItems: 'center',
-                                            paddingHorizontal: 15,
-                                            paddingVertical: 10,
+                                            borderRadius: 12,
                                         }}
-                                        // @ts-ignore
                                         onPress={(e) =>
-                                            e.currentTarget.measure(
-                                                (x1, y1, width, height, px, py) => {
-                                                    onThemeChange(theme, py, px);
-                                                },
+                                            onThemeChange(
+                                                theme,
+                                                e.nativeEvent.pageY,
+                                                e.nativeEvent.pageX,
                                             )
                                         }
                                     >
-                                        <ThemeSkeleton
-                                            theme={
-                                                availableThemes[isDark ? 'dark' : 'light'][theme]
-                                            }
-                                            active={mode === theme}
-                                        />
-                                        <Text
+                                        <View
                                             style={{
-                                                paddingHorizontal: 10,
-                                                paddingTop: 10,
-                                                textTransform: 'capitalize',
-                                                alignSelf: 'center',
+                                                borderWidth: 1,
+                                                borderColor:
+                                                    mode === theme ? colors.primary : 'transparent',
+                                                borderRadius: 12,
+                                                alignItems: 'center',
+                                                paddingHorizontal: 15,
+                                                paddingVertical: 10,
                                             }}
-                                            numberOfLines={2}
                                         >
-                                            {theme.replaceAll('_', ' ')}
-                                        </Text>
-                                    </MotiPressable>
-                                ))}
-                            </View>
+                                            <ThemeSkeleton
+                                                theme={
+                                                    availableThemes[isDark ? 'dark' : 'light'][
+                                                        theme
+                                                    ]
+                                                }
+                                                active={mode === theme}
+                                            />
+                                            <Text
+                                                style={{
+                                                    paddingHorizontal: 10,
+                                                    paddingTop: 10,
+                                                    textTransform: 'capitalize',
+                                                    alignSelf: 'center',
+                                                }}
+                                                numberOfLines={2}
+                                            >
+                                                {theme.replaceAll('_', ' ')}
+                                            </Text>
+                                        </View>
+                                    </Pressable>
+                                </View>
+                            ))}
                         </ScrollView>
                     </Accordion>
                 </List.Section>
