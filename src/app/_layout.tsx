@@ -2,7 +2,6 @@ import 'react-native-gesture-handler';
 import { Link, Stack, router } from 'expo-router';
 import { PaperProvider, Portal, Text } from 'react-native-paper';
 import { ThemeProvider } from '@react-navigation/native';
-import * as Updates from 'expo-updates';
 import * as Linking from 'expo-linking';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
@@ -22,7 +21,7 @@ import { setStatusBarStyle } from 'expo-status-bar';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
 import { Toaster } from 'burnt/web';
-import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 if (typeof window !== 'undefined') {
     // @ts-ignore
@@ -114,11 +113,17 @@ const AppProvider = () => {
 
     useEffect(() => {
         if (isFirstLaunch) {
-            router.push('/setup');
-        } else if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
-            checkForUpdates();
+            router.replace('/setup');
+        } else {
+            router.replace('/(tabs)/explore');
         }
     }, [isFirstLaunch]);
+
+    useEffect(() => {
+        if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
+            checkForUpdates();
+        }
+    }, []);
 
     return (
         <PaperProvider
@@ -143,51 +148,56 @@ const AppProvider = () => {
                         : availableThemes['light']['default']
                 }
             >
-                <BottomSheetModalProvider>
-                    <AnimatedStack initialRouteName="(tabs)" screenOptions={{ headerShown: false }}>
-                        <Stack.Screen name="(tabs)" />
-                        <Stack.Screen
-                            name="(media)/[...params]"
-                            getId={(params) => params?.params?.params}
-                        />
-                        <Stack.Screen name="music" />
-                        <Stack.Screen name="characters" />
-                        <Stack.Screen name="staff" />
-                        <Stack.Screen name="news" />
-                        <Stack.Screen name="art" />
-                        <Stack.Screen
-                            name="statistics"
-                            options={{
-                                title: 'Statistics',
-                                header: (props) => <PaperHeader {...props} />,
-                                headerShown: true,
-                            }}
-                        />
-                        <Stack.Screen
-                            name="notifications"
-                            options={{
-                                title: 'Notifications',
-                                header: (props) => <PaperHeader {...props} />,
-                                headerShown: true,
-                            }}
-                        />
-                        <Stack.Screen
-                            name="setup"
-                            options={{
-                                headerShown: false,
-                                presentation: 'modal',
-                            }}
-                        />
-                    </AnimatedStack>
-                    <Portal>
-                        <UpdateDialog
-                            visible={showUpdateDialog}
-                            onDismiss={() => setShowUpdateDialog(false)}
-                            updateLink={updateLink}
-                        />
-                    </Portal>
-                    <Toaster position="bottom-right" />
-                </BottomSheetModalProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                    <BottomSheetModalProvider>
+                        <AnimatedStack
+                            initialRouteName="(tabs)"
+                            screenOptions={{ headerShown: false }}
+                        >
+                            <Stack.Screen name="(tabs)" />
+                            <Stack.Screen
+                                name="(media)/[params]"
+                                // getId={(params) => params?.params?.params}
+                            />
+                            <Stack.Screen name="music" />
+                            <Stack.Screen name="characters" />
+                            <Stack.Screen name="staff" />
+                            <Stack.Screen name="news" />
+                            <Stack.Screen name="art" />
+                            <Stack.Screen
+                                name="statistics"
+                                options={{
+                                    title: 'Statistics',
+                                    header: (props) => <PaperHeader {...props} />,
+                                    headerShown: true,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="notifications"
+                                options={{
+                                    title: 'Notifications',
+                                    header: (props) => <PaperHeader {...props} />,
+                                    headerShown: true,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="setup"
+                                options={{
+                                    headerShown: false,
+                                    presentation: 'modal',
+                                }}
+                            />
+                        </AnimatedStack>
+                        <Portal>
+                            <UpdateDialog
+                                visible={showUpdateDialog}
+                                onDismiss={() => setShowUpdateDialog(false)}
+                                updateLink={updateLink}
+                            />
+                        </Portal>
+                        <Toaster position="bottom-right" />
+                    </BottomSheetModalProvider>
+                </GestureHandlerRootView>
             </ThemeProvider>
             {/* <Portal>
                 <UpdateDialog
