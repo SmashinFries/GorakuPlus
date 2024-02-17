@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -34,11 +34,11 @@ import ReviewsSection from '@/components/media/sections/reviews';
 import { StatSection } from '@/components/media/sections/stats';
 
 const MediaScreen = () => {
-    const { params } = useLocalSearchParams<{ params: [string, string] }>(); // /anime/1234
+    const { media } = useLocalSearchParams<{ media: [string, string] }>(); // /anime/1234
     // const params2 = useGlobalSearchParams();
 
-    const aniID = Number(params[1]);
-    const type = params[0].toLowerCase() === 'anime' ? MediaType.Anime : MediaType.Manga;
+    const aniID = Number(media[1]);
+    const type = media[0].toLowerCase() === 'anime' ? MediaType.Anime : MediaType.Manga;
     const muDB = useAppSelector((state) => state.peresistedMuDB);
     const {
         aniData,
@@ -72,7 +72,7 @@ const MediaScreen = () => {
     }, []);
 
     const openEdit = useCallback(() => {
-        openWebBrowser(`https://anilist.co/edit/${params[0]}/${aniID}`);
+        openWebBrowser(`https://anilist.co/edit/${type}/${aniID}`);
     }, []);
 
     const getRelease = () => {
@@ -87,7 +87,7 @@ const MediaScreen = () => {
         );
     };
 
-    if (!params || !aniID) return null;
+    if (!media || !aniID) return null;
 
     return (
         <View>
@@ -166,10 +166,15 @@ const MediaScreen = () => {
                                     data={aniData?.data?.Media}
                                     malData={malData?.data?.data}
                                 />
-                                <StatSection
-                                    rankData={aniData?.data?.Media?.rankings}
-                                    statData={aniData?.data?.Media?.stats}
-                                />
+                                {(aniData?.data?.Media?.rankings?.length > 0 ||
+                                    aniData?.data?.Media?.stats?.scoreDistribution?.length > 0 ||
+                                    aniData?.data?.Media?.stats?.statusDistribution?.length >
+                                        0) && (
+                                    <StatSection
+                                        rankData={aniData?.data?.Media?.rankings}
+                                        statData={aniData?.data?.Media?.stats}
+                                    />
+                                )}
                                 {mangaUpdates && aniData?.data?.Media?.type !== MediaType.Anime && (
                                     <MUData
                                         data={mangaUpdates?.data}
@@ -269,12 +274,5 @@ const MediaScreen = () => {
         </View>
     );
 };
-
-const Styles = StyleSheet.create({
-    container: {
-        width: '100%',
-        height: '100%',
-    },
-});
 
 export default MediaScreen;

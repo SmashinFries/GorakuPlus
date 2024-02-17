@@ -10,7 +10,7 @@ const CharacterLayout = () => {
             }}
         >
             <Stack.Screen
-                name="[...params]"
+                name="[...characters]"
                 options={{ title: 'Characters' }}
                 getId={(params) => params.params?.params}
             />

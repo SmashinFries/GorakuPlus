@@ -9,9 +9,9 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 
 const CharacterListPage = () => {
-    const { params } = useLocalSearchParams<{ params: [string, string] }>();
-    const type = params[0] as MediaType;
-    const id = parseInt(params[1]);
+    const { characters } = useLocalSearchParams<{ characters: [string, string] }>();
+    const type = characters[0] as MediaType;
+    const id = parseInt(characters[1]);
     const { charData, loadMore } = useCharactersList(id, type);
     const { colors } = useTheme();
     const { height } = useWindowDimensions();

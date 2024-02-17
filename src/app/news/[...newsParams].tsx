@@ -14,9 +14,9 @@ type RenderItemProps = {
 };
 
 const NewsPage = () => {
-    const { params } = useLocalSearchParams<{ params: [string, string] }>();
-    const type = params[0] as MediaType;
-    const malId = parseInt(params[1]);
+    const { newsParams } = useLocalSearchParams<{ newsParams: [string, string] }>();
+    const type = newsParams[0] as MediaType;
+    const malId = parseInt(newsParams[1]);
     const { news } = useNews(type, malId);
     const { width, height } = useWindowDimensions();
 

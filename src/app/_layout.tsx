@@ -156,7 +156,7 @@ const AppProvider = () => {
                         >
                             <Stack.Screen name="(tabs)" />
                             <Stack.Screen
-                                name="(media)/[params]"
+                                name="(media)/[...media]"
                                 // getId={(params) => params?.params?.params}
                             />
                             <Stack.Screen name="music" />
