@@ -19,10 +19,13 @@ export const setupSlice = createSlice({
         finishSetup: (state) => {
             state['isFirstLaunch'] = false;
         },
+        restartSetup: (state) => {
+            state['isFirstLaunch'] = true;
+        },
     },
 });
 
-export const { finishSetup } = setupSlice.actions;
+export const { finishSetup, restartSetup } = setupSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.persistedReducer.;

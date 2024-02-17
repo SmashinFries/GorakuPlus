@@ -4,7 +4,7 @@ import { getTimeUntil, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { MediaType, WeeklyAnimeQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
-import { MediaCard, MediaProgressBar } from '../cards';
+import { MediaCard, MediaCardRow, MediaProgressBar } from '../cards';
 import { useAppSelector } from '@/store/hooks';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import Animated, {
@@ -14,7 +14,7 @@ import Animated, {
     withSequence,
     withTiming,
 } from 'react-native-reanimated';
-import { Text } from 'react-native-paper';
+import { ProgressBar, Text } from 'react-native-paper';
 import { useWindowDimensions } from 'react-native';
 
 const RenderEmpty = ({ message }: { message: string }) => {
@@ -52,11 +52,13 @@ const RenderEmpty = ({ message }: { message: string }) => {
 
 type DayTabProps = {
     data: WeeklyAnimeQuery['Page']['airingSchedules'];
+    updateTitle?: (dataLength: number) => void;
 };
-export const DayTab = ({ data }: DayTabProps) => {
-    const { columns, listKey } = useColumns(150);
+export const DayTab = ({ data, updateTitle }: DayTabProps) => {
+    const { width } = useWindowDimensions();
+    const { listKey } = useColumns(width / 2 - 15);
     const { showItemListStatus, showNSFW } = useAppSelector((state) => state.persistedSettings);
-    const { showListOnly } = useAppSelector((state) => state.calendarFilter);
+    const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
 
     const { dismissAll: dismissAllModals } = useBottomSheetModal();
 
@@ -66,7 +68,14 @@ export const DayTab = ({ data }: DayTabProps) => {
 
             if (!showNSFW && item.media?.isAdult) return null;
             return (
-                <View style={{ padding: 15 }}>
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        marginVertical: item.media.mediaListEntry ? 5 : 0,
+                        marginHorizontal: 5,
+                    }}
+                >
                     <MediaCard
                         titles={item.media?.title}
                         coverImg={item.media.coverImage.extraLarge}
@@ -82,6 +91,7 @@ export const DayTab = ({ data }: DayTabProps) => {
                                 `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
                             );
                         }}
+                        fitToParent
                     />
                     <MediaProgressBar
                         progress={item.media.mediaListEntry?.progress}
@@ -95,16 +105,64 @@ export const DayTab = ({ data }: DayTabProps) => {
         [data, showItemListStatus, showNSFW],
     );
 
+    const RenderItemTest = React.useCallback(
+        ({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
+            const bannerText = item.timeUntilAiring as unknown as string;
+
+            if (!showNSFW && item.media?.isAdult) return null;
+            return (
+                <View>
+                    <MediaCardRow
+                        titles={item.media?.title}
+                        coverImg={item.media.coverImage.extraLarge}
+                        bannerImg={item.media.bannerImage}
+                        imgBgColor={item.media.coverImage.color}
+                        averageScore={item.media?.averageScore}
+                        meanScore={item.media?.meanScore}
+                        showBanner
+                        bannerText={bannerText}
+                        scoreDistributions={item.media.stats?.scoreDistribution}
+                        navigate={() => {
+                            dismissAllModals();
+                            router.push(
+                                `/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
+                            );
+                        }}
+                        scoreWidth={'20%'}
+                    />
+                    {item.media.mediaListEntry?.progress && (
+                        <ProgressBar
+                            style={{ width: '100%' }}
+                            progress={
+                                item.media.episodes && item.media.mediaListEntry?.progress
+                                    ? item.media.mediaListEntry?.progress / item.media.episodes
+                                    : 1
+                            }
+                        />
+                    )}
+                </View>
+            );
+        },
+        [data, showItemListStatus, showNSFW],
+    );
+
+    React.useEffect(() => {
+        if (data && updateTitle) {
+            updateTitle(data.length);
+        }
+    }, []);
+
     return (
         <View style={{ width: '100%', height: '100%' }}>
             <FlashList
-                key={listKey}
-                data={data?.filter((ep) => (showListOnly ? ep.media?.mediaListEntry : true))}
+                key={calendar.grid_size ?? 2}
+                data={data?.filter((ep) => (calendar.list_only ? ep.media?.mediaListEntry : true))}
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id.toString()}
-                numColumns={columns}
+                numColumns={calendar.grid_size ?? 2}
                 estimatedItemSize={211}
                 centerContent
+                contentContainerStyle={{ paddingVertical: 10}}
                 ListEmptyComponent={() => (
                     <View style={{ paddingVertical: 50 }}>
                         <RenderEmpty message={'Nothing to watch'} />

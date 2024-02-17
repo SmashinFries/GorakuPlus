@@ -33,9 +33,9 @@ import { favSearchSlice } from './slices/favoritesSlice';
 import { listFilterSlice } from './slices/listSLice';
 import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
-import { calendarFilterSlice } from './slices/calendarSlice';
 import wdTaggerAPI from './services/huggingface/wdTagger';
 import setupSlice, { SetupState } from './slices/setupSlice';
+import displaySettingSlice, { DisplaySettingState } from './slices/displaySlice';
 
 const secureStorage = createSecureStorage();
 
@@ -85,6 +85,11 @@ const anilistAuthPersistConfig: PersistConfig<any, any, any, any> = {
     storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
 };
 
+const displaySettingsPersistConfig: PersistConfig<any, any, any, any> = {
+    key: 'displaySettings',
+    storage: AsyncStorage,
+};
+
 const waifuItAuthPersistConfig: PersistConfig<any, any, any, any> = {
     key: 'waifuItAuth',
     storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
@@ -95,6 +100,7 @@ const persistedSettings = persistReducer<SettingsState, AnyAction>(
     persistSettingsConfig,
     settingsSlice,
 );
+const persistedDisplaySettings = persistReducer<DisplaySettingState, AnyAction>(displaySettingsPersistConfig, displaySettingSlice);
 const persistedSetup = persistReducer<SetupState, AnyAction>(persistSetupConfig, setupSlice);
 
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
@@ -127,7 +133,6 @@ export const store = configureStore({
         [traceMoeApi.reducerPath]: traceMoeApi.reducer,
         [wdTaggerAPI.reducerPath]: wdTaggerAPI.reducer,
         listFilter: listFilterSlice.reducer,
-        calendarFilter: calendarFilterSlice.reducer,
         favSearch: favSearchSlice.reducer,
         persistedTheme,
         persistedSettings,
@@ -139,6 +144,7 @@ export const store = configureStore({
         peresistedMuDB,
         persistedCharArtDB,
         persistedNotifs,
+        persistedDisplaySettings
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

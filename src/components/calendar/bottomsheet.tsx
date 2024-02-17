@@ -5,8 +5,9 @@ import React, { useMemo, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { List, Switch, useTheme } from 'react-native-paper';
 import { CustomBackdrop } from '../animations';
-import { updateCalendarFilter } from '@/store/slices/calendarSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { updateCalendarDisplay } from '@/store/slices/displaySlice';
+import Slider from '@react-native-community/slider';
 
 export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((props, ref) => {
     const { height } = useWindowDimensions();
@@ -22,14 +23,18 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
         [mainEntryHeight, height],
     );
 
-    const { showListOnly } = useAppSelector((state) => state.calendarFilter);
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
+    const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
     const dispatch = useAppDispatch();
 
     const { bottom } = useSafeAreaInsets();
 
     const updateOnlyShowList = (val: boolean) => {
-        dispatch(updateCalendarFilter({ entryType: 'showListOnly', value: val }));
+        dispatch(updateCalendarDisplay({list_only: val}));
+    };
+
+    const updateGridSize = (val: number) => {
+        dispatch(updateCalendarDisplay({grid_size: val}));
     };
 
     return (
@@ -46,19 +51,21 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
             )}
         >
             <BottomSheetView
-                style={{ paddingBottom: bottom }}
+                style={{ paddingBottom: bottom + 30 }}
                 onLayout={(e) => setMainEntryHeight(e.nativeEvent.layout.height)}
             >
-                <List.Item
+                {userID && <List.Item
                     title="Show List Only"
                     right={() => (
                         <Switch
-                            value={showListOnly}
+                            value={calendar.list_only}
                             onValueChange={updateOnlyShowList}
                             disabled={!userID}
                         />
                     )}
-                />
+                />}
+                <List.Subheader>Grid Size: {calendar.grid_size ?? 2} per row</List.Subheader>
+                <Slider value={calendar.grid_size ?? 2} onValueChange={val => updateGridSize(val)} step={1} minimumValue={1} maximumValue={3} thumbTintColor={colors.primary}/>
             </BottomSheetView>
         </BottomSheetModal>
     );
