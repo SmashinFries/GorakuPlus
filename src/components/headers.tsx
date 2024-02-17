@@ -225,6 +225,14 @@ export const SearchHeader = ({
                     }}
                 />
                 <IconButton
+                    icon={'filter-variant'} //filter-variant
+                    onPress={openFilter}
+                    // onPress={() => setIsFilterOpen((prev) => !prev)}
+                    disabled={
+                        ![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
+                    }
+                />
+                <IconButton
                     icon={'filter-outline'}
                     onPress={openFilter}
                     // onPress={() => setIsFilterOpen((prev) => !prev)}
@@ -249,7 +257,7 @@ export const MoreHeader = ({ navigation, options, route, back }: NativeStackHead
                 source={
                     mode === 'punpun'
                         ? require('../../assets/punpunRotate.gif')
-                        : require('../../assets/icon3-trans.png')
+                        : require('../../assets/iconsv2/icon-trans.png')
                 }
                 style={{
                     width: width,

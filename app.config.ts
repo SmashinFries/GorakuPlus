@@ -12,7 +12,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     name: appName,
     version: '1.1',
     orientation: 'portrait',
-    icon: './assets/iconsv1/icon.png',
+    icon: './assets/iconsv2/icon.png',
     userInterfaceStyle: 'automatic',
     experiments: {
         tsconfigPaths: true,
@@ -23,7 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     runtimeVersion: 'appVersion',
     splash: {
-        image: './assets/iconsv1/splash.png',
+        image: './assets/iconsv2/splash.png',
         resizeMode: 'cover',
     },
     plugins: [
@@ -68,7 +68,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         package: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
         googleServicesFile: IS_DEV ? './google-services-dev.json' : './google-services.json',
         adaptiveIcon: {
-            foregroundImage: './assets/iconsv1/adaptive-icon.png',
+            foregroundImage: './assets/iconsv2/adaptive-icon.png',
         },
         softwareKeyboardLayoutMode: 'pan',
         intentFilters: [
@@ -116,7 +116,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ],
     },
     web: {
-        favicon: './assets/favicon.png',
+        favicon: './assets/iconsv2/favicon.png',
         bundler: 'metro',
         output: 'single',
     },
