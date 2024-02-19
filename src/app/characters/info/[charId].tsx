@@ -130,12 +130,11 @@ const CharacterScreen = () => {
         [],
     );
 
-    const ArtRenderItem = useCallback(({ item }: { item: DanPost }) => {
+    const ArtRenderItem = ({ item }: { item: DanPost }) => {
         return (
             <View style={{ margin: 8 }}>
                 <DanbooruImageCard
                     item={item}
-                    disableAR
                     onNavigate={() =>
                         // @ts-ignore
                         // navigation.navigate('danbooruStack', {
@@ -147,7 +146,7 @@ const CharacterScreen = () => {
                 />
             </View>
         );
-    }, []);
+    };
 
     const EmptyArt = useCallback(() => {
         return (

@@ -466,10 +466,11 @@ export const DanbooruImageCard = ({
                 contentFit="cover"
                 style={{
                     aspectRatio: disableAR ? undefined : preview?.width / preview?.height,
-                    borderRadius: 12,
-                    width: width / 2 - 8,
+                    borderRadius: 6,
+                    // width: width / 2 - 8,
+                    width: 200,
                     height: disableAR ? preview?.height : undefined,
-                    maxHeight: height / 2,
+                    maxHeight: 200,
                 }}
             />
             <NSFWLabel level={item.rating} />
