@@ -14,8 +14,8 @@ type MetaDataProps = {
     malData?: AnimeFull | MangaFull;
 };
 export const MetaData = ({ data, malData }: MetaDataProps) => {
-    const startDate = convertDate(data.startDate, true);
-    const endDate = convertDate(data.endDate, true);
+    const startDate = data?.startDate ? convertDate(data?.startDate, true) : null;
+    const endDate = data?.endDate ? convertDate(data?.endDate, true) : null;
 
     // delay={960}
 
