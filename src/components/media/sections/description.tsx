@@ -34,7 +34,9 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
         />
     );
     const MalDesc = () => (
-        <Text>{isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}</Text>
+        <Text selectable>
+            {isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
+        </Text>
     );
 
     const DescView = () => {
