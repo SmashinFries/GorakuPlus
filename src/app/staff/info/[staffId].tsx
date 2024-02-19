@@ -237,7 +237,7 @@ const StafPage = () => {
                         />
                     </Accordion>
                     {data?.Staff?.staffMedia?.edges?.length > 0 && (
-                        <Accordion title="Media">
+                        <Accordion title="Media" initialExpand>
                             <FlashList
                                 data={data?.Staff?.staffMedia?.edges}
                                 renderItem={StaffMediaRenderItem}
