@@ -24,10 +24,10 @@ const SettingsHomePage = () => {
                 )}
             />
             <List.Item
-                title={'Media'}
+                title={'Content'}
                 description={'Tabs, NSFW, filters, media cards'}
                 onPress={() => {
-                    router.push('/more/settings/media');
+                    router.push('/more/settings/content');
                 }}
                 left={(props) => <List.Icon {...props} color={colors.primary} icon="television" />}
             />
