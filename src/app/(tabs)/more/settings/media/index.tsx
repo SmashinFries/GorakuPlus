@@ -171,12 +171,7 @@ const MediaSettingsPage = () => {
                     onPress={() => router.push('/more/settings/media/tagBlacklist')}
                 />
                 <List.Section>
-                    <ListSubheader title="Media Tile" />
-                    <List.Item
-                        title={'Layout'}
-                        description={'Customize the look of media tiles'}
-                        onPress={() => setShowMTCustomizer(true)}
-                    />
+                    <ListSubheader title="Scoring" />
                     <List.Item
                         title={'Default Score Type'}
                         description={defaultScore}
