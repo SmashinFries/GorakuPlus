@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { IconButton, useTheme } from 'react-native-paper';
 import Animated, {
     SharedValue,
@@ -11,7 +11,9 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-const PAGE_ITEM_SIZE = 10;
+const PAGE_ITEM_SIZE = 12;
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type SetupNavButtonProps = {
     icon: string;
@@ -25,8 +27,9 @@ const SetupNavButton = ({ icon, disabled, onPress }: SetupNavButtonProps) => {
 type PageIndicatorProps = {
     page: number;
     numPages: number;
+    onPress: (page: number) => void;
 };
-const PageIndicator = ({ page, numPages }: PageIndicatorProps) => {
+const PageIndicator = ({ page, numPages, onPress }: PageIndicatorProps) => {
     const { colors } = useTheme();
     const PageItem = (idx: number) => {
         const pageAnimVal = useSharedValue(1);
@@ -58,8 +61,9 @@ const PageIndicator = ({ page, numPages }: PageIndicatorProps) => {
         }, [page, idx]);
 
         return (
-            <Animated.View
+            <AnimatedPressable
                 key={idx}
+                onPress={() => onPress(idx)}
                 style={[
                     animatedStyle,
                     {
@@ -80,7 +84,7 @@ const PageIndicator = ({ page, numPages }: PageIndicatorProps) => {
 type SetupNavBarProps = {
     page: number;
     numPages: number;
-    onPageChange: (navType: 'next' | 'prev') => void;
+    onPageChange: (navType: 'next' | 'prev' | number) => void;
 };
 export const SetupNavBar = ({ page, numPages, onPageChange }: SetupNavBarProps) => {
     return (
@@ -90,7 +94,11 @@ export const SetupNavBar = ({ page, numPages, onPageChange }: SetupNavBarProps) 
                 onPress={() => onPageChange('prev')}
                 disabled={page === 0}
             />
-            <PageIndicator page={page} numPages={numPages} />
+            <PageIndicator
+                page={page}
+                numPages={numPages}
+                onPress={(page: number) => onPageChange(page)}
+            />
             <SetupNavButton
                 icon="arrow-right"
                 onPress={() => {
