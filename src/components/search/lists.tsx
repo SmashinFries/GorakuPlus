@@ -62,7 +62,13 @@ export const AniMangList = (props: AniMangListProps) => {
 
     const RenderItem = useCallback(
         (itemProps) => (
-            <View style={{ flex: 1, alignItems: 'center', marginVertical: 10 }}>
+            <View
+                style={{ flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginVertical: 10,
+                    marginHorizontal: 5, }}
+            >
                 <MediaCard
                     coverImg={itemProps.item.coverImage.extraLarge}
                     titles={itemProps.item.title}
@@ -76,6 +82,7 @@ export const AniMangList = (props: AniMangListProps) => {
                     showBanner={itemProps.item.nextAiringEpisode ? true : false}
                     averageScore={itemProps.item.averageScore}
                     meanScore={itemProps.item.meanScore}
+                    fitToParent
                 />
                 <MediaProgressBar
                     progress={itemProps.item.mediaListEntry?.progress}
@@ -103,7 +110,7 @@ export const AniMangList = (props: AniMangListProps) => {
                 keyExtractor={keyExtract}
                 keyboardShouldPersistTaps="never"
                 keyboardDismissMode="interactive"
-                numColumns={columns}
+                numColumns={3}
                 estimatedItemSize={240}
                 removeClippedSubviews
                 centerContent
