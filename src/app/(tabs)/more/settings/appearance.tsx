@@ -1,15 +1,17 @@
 import { Accordion } from '@/components/animations';
+import { MediaTileCustomizer } from '@/components/more/settings/appearance/dialogs';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { MotiButton } from '@/components/moti';
 import { ListSubheader } from '@/components/titles';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setSettings } from '@/store/slices/settingsSlice';
+import { mediaCardAppearanceActions, setMediaCardAppearance, setSettings } from '@/store/slices/settingsSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
 import { MotiPressable } from 'moti/interactions';
+import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
-import { List, Switch, Text, useTheme } from 'react-native-paper';
+import { List, Portal, Switch, Text, useTheme } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
 import switchTheme from 'react-native-theme-switch-animation';
 
@@ -35,12 +37,14 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 
 const AppearancePage = () => {
     const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
-    const { btmTabLabels, btmTabShifting, navAnimation, allowSensorMotion } = useAppSelector(
+    const { btmTabLabels, btmTabShifting, navAnimation, allowSensorMotion, scoreVisualType, showItemListStatus, mediaLanguage, scoreColors } = useAppSelector(
         (state) => state.persistedSettings,
     );
 
     const dispatch = useAppDispatch();
     const { colors } = useTheme();
+
+    const [showMTCustomizer, setShowMTCustomizer] = useState(false);
 
     const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
 
@@ -94,6 +98,11 @@ const AppearancePage = () => {
     const onAllowSensorMotionChange = () => {
         dispatch(setSettings({ entryType: 'allowSensorMotion', value: !allowSensorMotion }));
     };
+
+    const onMediaCardChange = (props: mediaCardAppearanceActions) => {
+        dispatch(setMediaCardAppearance(props));
+    };
+    
 
     return (
         <>
@@ -178,7 +187,7 @@ const AppearancePage = () => {
                     <List.Item
                         title={'Layout'}
                         description={'Customize the look of media tiles'}
-                        // onPress={() => setShowMTCustomizer(true)}
+                        onPress={() => setShowMTCustomizer(true)}
                     />
                 </List.Section>
                 <List.Section>
@@ -260,6 +269,18 @@ const AppearancePage = () => {
                     </Accordion>
                 </List.Section>
             </ScrollView>
+            <Portal>
+                <MediaTileCustomizer
+                    themeMode={mode}
+                    visible={showMTCustomizer}
+                    scoreVisualType={scoreVisualType}
+                    showItemListStatus={showItemListStatus}
+                    onSettingChange={onMediaCardChange}
+                    mediaLanguage={mediaLanguage}
+                    scoreColors={scoreColors}
+                    onDismiss={() => setShowMTCustomizer(false)}
+                />
+            </Portal>
         </>
     );
 };
