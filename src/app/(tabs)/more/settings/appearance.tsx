@@ -124,31 +124,6 @@ const AppearancePage = () => {
                             {themeOptions.map((theme, index) => (
                                 <View key={index} style={{ marginVertical: 10 }}>
                                     <Pressable
-                                        // animate={({ hovered, pressed }) => {
-                                        //     'worklet';
-
-                                        //     return {
-                                        //         scale: pressed ? 0.8 : 1,
-                                        //     };
-                                        // }}
-                                        // style={{
-                                        //     borderWidth: mode === theme ? 1 : 0,
-                                        //     borderColor:
-                                        //         mode === theme ? colors.primary : undefined,
-                                        //     borderRadius: 12,
-                                        //     marginHorizontal: 10,
-                                        //     marginVertical: 10,
-                                        //     alignItems: 'center',
-                                        //     paddingHorizontal: 15,
-                                        //     paddingVertical: 10,
-                                        // }}
-                                        // onPress={(e) =>
-                                        //     onThemeChange(
-                                        //         theme,
-                                        //         e.nativeEvent.pageY,
-                                        //         e.nativeEvent.pageX,
-                                        //     )
-                                        // }
                                         style={{
                                             marginHorizontal: 10,
                                             borderRadius: 12,
@@ -197,6 +172,14 @@ const AppearancePage = () => {
                             ))}
                         </ScrollView>
                     </Accordion>
+                </List.Section>
+                <List.Section>
+                    <ListSubheader title="Media Card" />
+                    <List.Item
+                        title={'Layout'}
+                        description={'Customize the look of media tiles'}
+                        // onPress={() => setShowMTCustomizer(true)}
+                    />
                 </List.Section>
                 <List.Section>
                     <ListSubheader title="Navigation" />
