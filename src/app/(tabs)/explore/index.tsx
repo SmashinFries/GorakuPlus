@@ -352,6 +352,7 @@ const ExplorePage = () => {
             /> */}
             <TabView
                 navigationState={{ index, routes }}
+                // @ts-ignore
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={{ width: layout.width }}
