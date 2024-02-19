@@ -17,11 +17,11 @@ export const InteractionBar = ({ url, name, share_url }: InteractionBarProps) =>
             <Divider />
             <View style={[styles.iconsContainer]}>
                 <IconButton icon="download-outline" onPress={() => saveImage(url, name)} />
-                <IconButton
+                {/* <IconButton
                     icon="heart-outline"
                     iconColor={colors.onSurfaceVariant}
                     onPress={() => Burnt.toast({ title: 'Coming Soon!', duration: TOAST.SHORT })}
-                />
+                /> */}
                 <IconButton
                     icon="share-variant"
                     onPress={() => Share.share({ url: share_url, message: share_url })}
