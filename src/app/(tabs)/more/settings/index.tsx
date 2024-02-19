@@ -15,7 +15,7 @@ const SettingsHomePage = () => {
         <ScrollView>
             <List.Item
                 title={'Appearance'}
-                description={'Themes, animations, labels'}
+                description={'Themes, media cards, and more'}
                 onPress={() => {
                     router.push('/more/settings/appearance');
                 }}
@@ -25,9 +25,9 @@ const SettingsHomePage = () => {
             />
             <List.Item
                 title={'Content'}
-                description={'Tabs, NSFW, filters, media cards'}
+                description={'NSFW, Tab Blacklist, scoring, and more'}
                 onPress={() => {
-                    router.push('/more/settings/content');
+                    router.push('/more/settings/media');
                 }}
                 left={(props) => <List.Icon {...props} color={colors.primary} icon="television" />}
             />
