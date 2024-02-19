@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { MotiView } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { TransYUpView } from '../animations';
 import { IconButton, MD2LightTheme, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
 import { Selectable } from '../moti';
@@ -18,8 +18,7 @@ type StaffItemProps = {
 export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItemProps) => {
     const { colors } = useTheme();
     return (
-        <TransYUpView style={[styles.container]} animation={true}>
-            <Selectable animation="opacity" onPress={() => onNavigation(item.node?.id)}>
+        <Pressable style={[styles.container]} onPress={() => onNavigation(item.node?.id)}>
                 <Image
                     source={{ uri: item.node?.image?.large }}
                     style={[styles.img]}
@@ -45,7 +44,6 @@ export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItem
                         <IconButton icon="heart" iconColor="red" />
                     </View>
                 )}
-            </Selectable>
             <Text
                 numberOfLines={2}
                 variant="labelLarge"
@@ -63,7 +61,7 @@ export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItem
             >
                 ❤️ {item.node?.favourites}
             </Text>
-        </TransYUpView>
+        </Pressable>
     );
 };
 
