@@ -18,6 +18,8 @@ import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+
+
 const DanbooruPostPage = () => {
     const { postId } = useLocalSearchParams<{ postId: string }>();
     const id = parseInt(postId);
@@ -27,6 +29,7 @@ const DanbooruPostPage = () => {
     const commentary = useGetArtistCommentaryQuery({ 'search[post_id]': id }, { skip: !id });
     const [aspectRatio, setAspectRatio] = useState<number>(1);
     const [titleHeight, setTitleHeight] = useState<number>(0);
+    const [imageHeight, setImageHeight] = useState<number>(0);
 
     const { bottom } = useSafeAreaInsets();
 
@@ -70,13 +73,15 @@ const DanbooruPostPage = () => {
                         style={style}
                         img_url={data?.file_url}
                         blurAmount={0}
+                        setImageHeight={(ht) => setImageHeight(ht)}
                     />
                 )}
             >
                 <Pressable
                     // onPress={toggleBlur}
                     style={{
-                        height: aspectRatio ? width / aspectRatio : 0,
+                        // height: aspectRatio ? width / aspectRatio : 0,
+                        height: imageHeight+ 20,
                         width: width,
                     }}
                 />
