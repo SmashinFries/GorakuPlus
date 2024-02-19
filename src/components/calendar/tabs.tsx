@@ -72,7 +72,8 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
                     style={{
                         flex: 1,
                         alignItems: 'center',
-                        marginVertical: item.media.mediaListEntry ? 5 : 0,
+                        justifyContent: 'flex-start',
+                        marginVertical: 10,
                         marginHorizontal: 5,
                     }}
                 >
@@ -155,11 +156,11 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
     return (
         <View style={{ width: '100%', height: '100%' }}>
             <FlashList
-                key={calendar.grid_size ?? 2}
+                key={3}
                 data={data?.filter((ep) => (calendar.list_only ? ep.media?.mediaListEntry : true))}
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id.toString()}
-                numColumns={calendar.grid_size ?? 2}
+                numColumns={3}
                 estimatedItemSize={211}
                 centerContent
                 contentContainerStyle={{ paddingVertical: 10}}
