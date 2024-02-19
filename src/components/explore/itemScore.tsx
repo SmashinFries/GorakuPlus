@@ -5,7 +5,7 @@ import { ScoreVisualType } from '@/store/slices/settingsSlice';
 import { rgbToRgba } from '@/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useState } from 'react';
-import { View } from 'react-native';
+import { DimensionValue, View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -17,6 +17,8 @@ type ScoreHealthBarProps = {
     heartColor?: string;
     showScore?: boolean;
     textColor?: string;
+    width?: DimensionValue;
+    horizontal?: boolean;
 };
 type ScoreIconProps = ScoreHealthBarProps & { textColor: string; showScore?: boolean };
 export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: ScoreIconProps) => {
@@ -38,7 +40,7 @@ export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: Scor
                 flexDirection: 'row',
             }}
         >
-            <Text style={{ color: textColor, fontWeight: '900' }}>{score}</Text>
+            <Text variant='labelMedium' style={{ color: textColor, }}>{score}</Text>
         </View>
     );
 };
@@ -49,6 +51,8 @@ export const ScoreHealthBar = ({
     textColor,
     heartColor = 'red',
     showScore = false,
+    width = '45%',
+    horizontal = false,
 }: ScoreHealthBarProps) => {
     const { colors } = useTheme();
     const leftHeart = 'heart';
@@ -61,20 +65,20 @@ export const ScoreHealthBar = ({
                 position: 'absolute',
                 top: 0,
                 right: 0,
-                width: '45%',
                 padding: 3,
                 alignItems: 'center',
                 justifyContent: 'space-evenly',
                 borderBottomLeftRadius: BORDER_RADIUS,
-                borderTopRightRadius: BORDER_RADIUS,
+                borderTopRightRadius: horizontal ? 0 : BORDER_RADIUS,
+                borderTopLeftRadius: horizontal ? BORDER_RADIUS : 0,
                 backgroundColor: rgbToRgba(colors.primaryContainer, 0.75),
                 flexDirection: 'row',
             }}
         >
-            <MCIcons size={16} color={heartColor} name={leftHeart} />
-            <MCIcons size={16} color={heartColor} name={middleHeart} />
-            <MCIcons size={16} color={heartColor} name={rightHeart} />
-            {showScore ? <Text style={{ color: textColor }}> {score}</Text> : null}
+            <MCIcons size={12} color={heartColor} name={leftHeart} />
+            <MCIcons size={12} color={heartColor} name={middleHeart} />
+            <MCIcons size={12} color={heartColor} name={rightHeart} />
+            {showScore ? <Text variant='labelMedium' style={{ color: textColor }}> {score}</Text> : null}
             {/* {leftHeart && <MCIcons name={'heart'} size={16} color={'red'} />}
             {middleHeart && <MCIcons name={'heart'} size={16} color={'red'} />}
             {rightHeart && <MCIcons name={'heart'} size={16} color={'red'} />} */}
@@ -177,6 +181,8 @@ type ScoreVisualProps = {
     scoreColors: { red: number; yellow: number };
     scoreDistributions: ScoreDistribution[];
     height: number;
+    width?: DimensionValue;
+    horizontal?: boolean;
 };
 export const ScoreVisual = ({
     score,
@@ -184,6 +190,8 @@ export const ScoreVisual = ({
     scoreColors,
     scoreVisualType,
     height,
+    width,
+    horizontal = false,
 }: ScoreVisualProps) => {
     const { colors } = useTheme();
     const settings = useAppSelector((state) => state.persistedSettings);
@@ -195,6 +203,8 @@ export const ScoreVisual = ({
                     scoreColors={scoreColors}
                     textColor={colors.onPrimaryContainer}
                     heartColor={colors.onPrimaryContainer}
+                    width={width ?? '45%'}
+                    horizontal={horizontal}
                     showScore
                 />
             );
@@ -205,6 +215,7 @@ export const ScoreVisual = ({
                     scoreColors={scoreColors}
                     textColor={colors.onPrimaryContainer}
                     heartColor={colors.onPrimaryContainer}
+                    width={width ?? '45%'}
                 />
             );
         case 'number':
