@@ -13,7 +13,7 @@ const MediaSettingsLayout = () => {
             <Stack.Screen
                 name="index"
                 options={{
-                    title: 'Media',
+                    title: 'Content',
                 }}
             />
             <Stack.Screen
