@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import { StaffItem } from '@/components/staff/card';
 import { useStaffList } from '@/hooks/staff/useStaff';
 import { router, useLocalSearchParams } from 'expo-router';
+import { CharacterItem, CharacterLabel } from '@/components/characters/card';
 
 const StaffListScreen = () => {
     const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
@@ -16,11 +17,18 @@ const StaffListScreen = () => {
 
     const RenderItem = useCallback(
         (props) => (
-            <StaffItem
-                {...props}
-                subTextColor={colors.onSurfaceVariant}
-                onNavigation={(id) => router.push(`/staff/info/${mediaId}`)}
-            />
+            <View style={{ flex: 1,
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                marginVertical: 10,
+                marginHorizontal: 5, }}>
+                <CharacterItem
+                    {...props}
+                    subTextColor={colors.onSurfaceVariant}
+                    onNavigation={(id) => router.push(`/staff/info/${id}`)}
+                />
+                <CharacterLabel role={props.item.role} favourites={props.item.node?.favourites} fontColor={colors.onSurfaceVariant} />
+            </View>
         ),
         [],
     );
@@ -36,8 +44,8 @@ const StaffListScreen = () => {
     return (
         <View style={{ height: '100%', width: '100%' }}>
             <FlashList
-                numColumns={columns}
-                key={listKey}
+                numColumns={3}
+                key={3}
                 data={staffData.data?.Media?.staff?.edges}
                 keyExtractor={(item, idx) => idx.toString()}
                 renderItem={RenderItem}

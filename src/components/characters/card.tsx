@@ -3,9 +3,9 @@ import { MotiView } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { CharacterEdge, CharacterListQuery } from '@/store/services/anilist/generated-anilist';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { TransYUpView } from '../animations';
-import { IconButton, MD3DarkTheme, Text } from 'react-native-paper';
+import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
 import { Selectable } from '../moti';
 import { memo } from 'react';
 
@@ -16,26 +16,26 @@ type CharacterItemProps = {
     onNavigation: (id: number) => void;
 };
 
+const BORDER_RADIUS = 12;
+
 export const CharacterItem = ({ item, subTextColor, onNavigation }: CharacterItemProps) => {
+    const { colors } = useTheme();
     return (
-        <TransYUpView style={[styles.container]} animation>
-            <Selectable
-                animation="opacity"
-                onPress={onNavigation ? () => onNavigation(item.node?.id) : null}
-            >
+        <Pressable style={[styles.container]} android_ripple={{ color: colors.primary, foreground: true }} onPress={onNavigation ? () => onNavigation(item.node?.id) : null}>
                 <Image source={{ uri: item.node?.image?.large }} style={[styles.img]} />
                 <LinearGradient
                     style={{
                         position: 'absolute',
                         width: '100%',
                         height: '100%',
-                        borderRadius: 12,
+                        borderRadius: BORDER_RADIUS,
+                        overflow: 'hidden',
                     }}
                     locations={[0.4, 0.95]}
                     colors={['transparent', 'black']}
                 />
                 <View style={[styles.btmContainer]}>
-                    <Text numberOfLines={2} style={[styles.name]}>
+                    <Text variant='labelMedium' numberOfLines={2} style={[styles.name]}>
                         {item.node?.name?.full}
                     </Text>
                 </View>
@@ -44,21 +44,27 @@ export const CharacterItem = ({ item, subTextColor, onNavigation }: CharacterIte
                         <IconButton icon="heart" iconColor="red" />
                     </View>
                 )}
-            </Selectable>
-            <Text variant="labelLarge" style={{ textTransform: 'capitalize', textAlign: 'center' }}>
-                {item.role}
+        </Pressable>
+    );
+};
+
+export const CharacterLabel = ({role, favourites, fontColor}:{role:string; favourites:number; fontColor?:string}) => {
+    return(
+        <View>
+            <Text variant="labelSmall" style={{ textTransform: 'capitalize', textAlign: 'center' }}>
+                {role}
             </Text>
             <Text
-                variant="labelMedium"
+                variant="labelSmall"
                 style={{
                     textTransform: 'capitalize',
                     textAlign: 'center',
-                    color: subTextColor ?? 'white',
+                    color: fontColor ?? 'white',
                 }}
             >
-                ❤️ {item.node?.favourites}
+                ❤️ {favourites}
             </Text>
-        </TransYUpView>
+        </View>
     );
 };
 
@@ -66,14 +72,17 @@ export const CharacterItemMemo = memo(CharacterItem);
 
 const styles = StyleSheet.create({
     container: {
-        width: 180,
-        margin: 10,
-        borderRadius: 12,
+        width: '100%',
+        height:undefined,
+        overflow: 'hidden',
+        aspectRatio: 2/3,
+        borderRadius: BORDER_RADIUS,
     },
     img: {
-        height: 250,
-        width: 180,
-        borderRadius: 12,
+        height: '100%',
+        width: '100%',
+        // borderRadius: 12,
+        borderRadius: BORDER_RADIUS,
     },
     btmContainer: {
         position: 'absolute',

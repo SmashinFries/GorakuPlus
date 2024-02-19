@@ -2,11 +2,11 @@ import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, useTheme } from 'react-native-paper';
 import { useColumns } from '@/utils';
-import { CharacterItemMemo } from '@/components/characters/card';
+import { CharacterItem, CharacterItemMemo, CharacterLabel } from '@/components/characters/card';
 import { useCallback } from 'react';
 import { useCharactersList } from '@/hooks/characters/useCharacters';
 import { router, useLocalSearchParams } from 'expo-router';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { CharacterListQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 
 const CharacterListPage = () => {
     const { characters } = useLocalSearchParams<{ characters: [string, string] }>();
@@ -16,15 +16,22 @@ const CharacterListPage = () => {
     const { colors } = useTheme();
     const { height } = useWindowDimensions();
 
-    const { columns, listKey } = useColumns(180);
+    // const { columns, listKey } = useColumns(180);
 
     const RenderItem = useCallback(
-        (props) => (
-            <CharacterItemMemo
-                {...props}
-                subTextColor={colors.onSurfaceVariant}
-                onNavigation={(id) => router.push(`characters/info/${id}`)}
-            />
+        (props:{item:CharacterListQuery['Media']['characters']['edges'][0]; index:number}) => (
+            <View style={{ flex: 1,
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                marginVertical: 10,
+                marginHorizontal: 5, }}>
+                <CharacterItem
+                    {...props}
+                    subTextColor={colors.onSurfaceVariant}
+                    onNavigation={(id) => router.push(`characters/info/${id}`)}
+                />
+                <CharacterLabel role={props.item.role} favourites={props.item.node?.favourites} fontColor={colors.onSurfaceVariant} />
+            </View>
         ),
         [],
     );
@@ -41,8 +48,8 @@ const CharacterListPage = () => {
         <View style={{ height: '100%', width: '100%' }}>
             {/* <Button onPress={() => data?.Media?.characters?.edges.length}>Print Length</Button> */}
             <FlashList
-                numColumns={columns}
-                key={listKey}
+                numColumns={3}
+                key={3}
                 data={charData.data?.Media?.characters?.edges}
                 keyExtractor={(item) => item?.node?.id.toString()}
                 renderItem={RenderItem}
