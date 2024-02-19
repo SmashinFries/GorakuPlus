@@ -23,9 +23,10 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 
 type ListParams = {
     type: MediaType;
+    updateTitle?: (dataLength: number) => void;
 };
 
-const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus }) => {
+const ListScreen = ({ type, listName, updateTitle }: ListParams & { listName: MediaListStatus }) => {
     const { colors } = useTheme();
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { data, isFetching, isError, error, refetch } = useUserListCollectionQuery({
@@ -71,11 +72,11 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
                 // >
                 <View
                     style={{
+                        flex: 1,
                         alignItems: 'center',
-                        alignSelf: 'center',
-                        marginVertical: 12,
-                        // marginHorizontal: width / 150 / 3,
-                        // flex: 1,
+                        justifyContent: 'flex-start',
+                        marginVertical: 10,
+                        marginHorizontal: 5,
                     }}
                 >
                     <MediaCard
@@ -92,6 +93,7 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
                         imgBgColor={item.media.coverImage.color}
                         showBanner={item.media.nextAiringEpisode ? true : false}
                         scoreDistributions={item.media.stats?.scoreDistribution}
+                        fitToParent
                     />
                 </View>
             );
@@ -99,11 +101,17 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
         [],
     );
 
+    useEffect(() => {
+        if (data) {
+            updateTitle(data?.MediaListCollection?.lists[0]?.entries.length ?? 0)
+        }
+    },[data])
+
     return (
         <View style={{ flex: 1, height: '100%', width: '100%' }}>
             {!isFetching ? (
                 <FlashList
-                    key={listKey}
+                    key={3}
                     data={data?.MediaListCollection?.lists[0]?.entries.filter(
                         (item) =>
                             item.media.title.romaji
@@ -121,14 +129,13 @@ const ListScreen = ({ type, listName }: ListParams & { listName: MediaListStatus
                     renderItem={RenderItem}
                     keyExtractor={(item, idx) => item?.media?.id.toString() ?? idx.toString()}
                     estimatedItemSize={238}
-                    numColumns={columns}
+                    numColumns={3}
                     onRefresh={refreshList}
                     refreshing={isRefreshing}
                     // terrible performance without
                     drawDistance={0}
                     contentContainerStyle={{
                         padding: 10,
-                        paddingLeft: 150 / columns / 3,
                     }}
                     centerContent
                     removeClippedSubviews
@@ -154,6 +161,12 @@ const ListTabs = ({ type }: ListParams) => {
                   return { key: category, title: category };
               }),
     );
+
+    const updateTitle = (key:string, newTitle: string) => {
+        setRoutes((prevRoutes) =>
+            prevRoutes.map((route) => (route.key === key ? { ...route, title: newTitle } : route)),
+        );
+    };
 
     const renderTabBar = (props) => (
         <TabBar
@@ -183,7 +196,7 @@ const ListTabs = ({ type }: ListParams) => {
         <TabView
             navigationState={{ index, routes }}
             renderScene={(props) => (
-                <ListScreen type={type} listName={props.route.title as MediaListStatus} />
+                <ListScreen type={type} listName={props.route.title as MediaListStatus} updateTitle={(dataLength) => updateTitle(props.route.key, `${props.route.title} (${dataLength})`)} />
             )}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}
