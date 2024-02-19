@@ -64,8 +64,8 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
                         />
                     )}
                 />}
-                <List.Subheader>Grid Size: {calendar.grid_size ?? 2} per row</List.Subheader>
-                <Slider value={calendar.grid_size ?? 2} onValueChange={val => updateGridSize(val)} step={1} minimumValue={1} maximumValue={3} thumbTintColor={colors.primary}/>
+                {/* <List.Subheader>Grid Size: {calendar.grid_size ?? 2} per row</List.Subheader>
+                <Slider value={calendar.grid_size ?? 2} onValueChange={val => updateGridSize(val)} step={1} minimumValue={1} maximumValue={3} thumbTintColor={colors.primary}/> */}
             </BottomSheetView>
         </BottomSheetModal>
     );
