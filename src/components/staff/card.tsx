@@ -1,12 +1,8 @@
 import { Image } from 'expo-image';
-import { MotiView } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { TransYUpView } from '../animations';
-import { IconButton, MD2LightTheme, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
-import { Selectable } from '../moti';
-import { StaffListQuery } from '../../../app/services/anilist/generated-anilist';
+import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
+import { StaffListQuery } from '@/store/services/anilist/generated-anilist';
 
 type StaffItemProps = {
     item: StaffListQuery['Media']['staff']['edges'][0];
