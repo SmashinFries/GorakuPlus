@@ -340,16 +340,29 @@ const ExplorePage = () => {
     }, [exploreTabOrder, exploreTabs]);
 
     return (
-        <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: layout.width }}
-            renderTabBar={RenderTabBar}
-            swipeEnabled={true}
-            lazy={true}
-            renderLazyPlaceholder={(props) => <View />}
-        />
+        <>
+            {/* <LinearGradient
+                colors={[colors.background, rgbToRgba(colors.primaryContainer, 0.1)]}
+                style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'center',
+                }}
+            /> */}
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: layout.width }}
+                renderTabBar={(props) => (
+                    <RenderTabBar {...props} disableAutoWidth={routes.length < 4} />
+                )}
+                swipeEnabled={true}
+                lazy={true}
+                renderLazyPlaceholder={(props) => <View />}
+            />
+        </>
     );
 };
 
