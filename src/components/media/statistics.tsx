@@ -80,7 +80,7 @@ export const StatBar = ({ data }: StatusBarProps) => {
     const sortedLocations = locations?.sort((a, b) => a - b);
 
     return (
-        <View style={{ width: bar_width, alignSelf: 'center' }}>
+        <View style={{ width: bar_width, alignSelf: 'center', borderRadius: 12 }}>
             {/* {data?.map((stat, idx) => (
                 <View
                     key={idx}
@@ -97,13 +97,18 @@ export const StatBar = ({ data }: StatusBarProps) => {
                     }}
                 />
             ))} */}
-            <LinearGradient
+            {
+                colors.length > 1 ?
+                <LinearGradient
                 colors={colors}
                 locations={sortedLocations}
                 start={[0, 1]}
                 end={[1, 0]}
                 style={{ height: 10, borderRadius: 12, width: '100%' }}
             />
+                :
+                <View style={{ height: 10, borderRadius: 12, width: '100%', backgroundColor: colors[0] }}/>
+        }
         </View>
     );
 };
