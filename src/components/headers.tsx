@@ -249,8 +249,9 @@ export const MoreHeader = ({ navigation, options, route, back }: NativeStackHead
     const { mode } = useAppSelector((state: RootState) => state.persistedTheme);
     const title = getHeaderTitle(options, route.name);
     const { width } = useWindowDimensions();
+    const { top } = useSafeAreaInsets();
     return (
-        <Appbar.Header style={{ height: 200 }}>
+        <Appbar.Header style={{ height: 200 + top }}>
             {back && <Appbar.BackAction onPress={navigation.goBack} />}
             {/* <Appbar.Content title={title} /> */}
             <Image
