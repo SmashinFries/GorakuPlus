@@ -14,10 +14,11 @@ import { finishSetup } from '@/store/slices/setupSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
 import { ExploreTabsProps } from '@/types/navigation';
-import { rgbToRgba } from '@/utils';
+import { rgbToRgba, useColumns } from '@/utils';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { makeRedirectUri } from 'expo-auth-session';
-import { Image } from 'expo-image';
+import { BlurView } from 'expo-blur';
+import { Image, ImageStyle } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MotiPressable } from 'moti/interactions';
 import { useCallback, useEffect, useState } from 'react';
@@ -29,6 +30,7 @@ import {
     View,
     ViewStyle,
     FlatList,
+    DimensionValue,
 } from 'react-native';
 import DraggableFlatList, {
     RenderItemParams,
@@ -50,17 +52,28 @@ import {
 } from 'react-native-paper';
 import Animated, {
     AnimatedStyle,
+    Easing,
+    Extrapolation,
     SlideInLeft,
     SlideInRight,
     SlideOutLeft,
     SlideOutRight,
+    clamp,
+    interpolate,
+    runOnJS,
+    useAnimatedStyle,
     useSharedValue,
+    withClamp,
+    withDelay,
+    withRepeat,
+    withSequence,
+    withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import switchTheme from 'react-native-theme-switch-animation';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const SETUP_PAGES = 6;
+const SETUP_PAGES = 7;
 
 type Page = {
     page: number;
@@ -90,9 +103,12 @@ type TitleTextProps = {
     title: string;
     description?: string;
     containerStyle?: StyleProp<ViewStyle>;
+    showLogo?: boolean;
+    isAnim?: boolean;
 };
-const TitleText = ({ title, description, containerStyle }: TitleTextProps) => {
+const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: TitleTextProps) => {
     const { top } = useSafeAreaInsets();
+    const { colors, dark } = useTheme();
     return (
         <View
             style={[
@@ -104,49 +120,130 @@ const TitleText = ({ title, description, containerStyle }: TitleTextProps) => {
                 containerStyle,
             ]}
         >
-            <Text variant="headlineMedium" style={{ fontWeight: '900' }}>
-                {title}
-            </Text>
-            {description ? (
-                <Text
-                    variant="titleMedium"
-                    style={{
-                        marginTop: 10,
-                        paddingHorizontal: 20,
-                    }}
-                >
-                    {description}
+            {showLogo && <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} />}
+            <BlurView tint={dark ? 'systemMaterialDark' : 'systemMaterialLight'} intensity={isAnim ? 60 : 0} style={{alignItems: 'center', borderRadius:12, overflow: 'hidden', paddingVertical:10}}>
+                <Text variant="headlineMedium" style={{ fontWeight: '900' }}>
+                    {title}
                 </Text>
-            ) : null}
+                {description ? (
+                    <Text
+                        variant="titleMedium"
+                        style={{
+                            marginTop: 10,
+                            paddingHorizontal: 20,
+                        }}
+                    >
+                        {description}
+                    </Text>
+                ) : null}
+            </BlurView>
         </View>
     );
 };
 
+const getRandomInt = (min:number, max:number) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+const getAnimConfig = (init_size:number) => {
+    const fallDuration = getRandomInt(6000, 8000);
+    const fallDelay = getRandomInt(500, 10000);
+    const size = getRandomInt(init_size - 20, init_size + 10);
+    const rotationDuration = getRandomInt(2000, 10000);
+    const rotationDirection = getRandomInt(0, 1);
+    const xPosition = `${getRandomInt(0, 100)}%`;
+
+    return {
+        size,
+        fallDelay,
+        fallDuration,
+        rotationDuration,
+        rotationDirection,
+        xPosition
+    }
+}
+
+const MovingChibi = ({size, width, height, index}:{size:number; width:number; height:number, index:number}) => {
+    const [animState, setAnimState] = useState(() => getAnimConfig(size));
+    const transY = useSharedValue(-size);
+    const rotation = useSharedValue(0);
+
+    const animCallback = () => {
+        const newAnimState = getAnimConfig(size);
+        setAnimState(newAnimState);
+    };
+
+    const runAnim = () => {
+        transY.value = -size;
+        rotation.value = 0;
+        rotation.value = withRepeat(withTiming(1, { duration: animState.rotationDuration, easing:Easing.linear}), -1)
+    
+        transY.value = withDelay(animState.fallDelay, withTiming(height+size, {duration: animState.fallDuration, easing:Easing.linear}, (finished) => {
+            runOnJS(animCallback)();
+        }));
+    };
+
+    // @ts-ignore
+    const animationStyle = useAnimatedStyle<ImageStyle>(() => {
+        return {
+            transform: [{translateY: transY.value}, {rotate: interpolate(rotation.value, [-1, 1], animState.rotationDirection ? [0, 360] : [360, 0]) + "deg"}]
+        }
+    })
+
+    useEffect(() => {
+        if (animState) {
+            runAnim();
+        }
+      }, [animState]);
+
+    return(<Animated.Image
+        source={require('../../assets/iconsv2/icon-trans.png')}
+        resizeMode="contain"
+        style={[animationStyle, { width: size, height: size, position:'absolute', left:animState.xPosition as DimensionValue }]}
+    />)
+};
+
+const BackgroundAnimation = () => {
+    const SIZE = 50;
+    const { height, width } = useWindowDimensions();
+    const {columns} = useColumns(SIZE);
+    
+    return(
+        <>
+            <View style={{ position:'absolute', top:0, width:'100%', height:'100%', backgroundColor:'transparent'}}>
+                {/* {
+                    Array.from({length:columns}).map((_, idx) => <MovingChibi key={idx} size={SIZE} index={idx} start_loc={SIZE *2} />)
+                } */}
+                {
+                    height && Array.from({length:columns + Math.round(height / SIZE)*1.5}).map((_, idx) => <MovingChibi key={idx} size={SIZE} index={idx} height={height} width={width} />)
+                }
+                </View>
+                {/* <View style={{position:'absolute', width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,.4)'}} /> */}
+            </>
+    );
+};
+
 const IntroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+    
     return (
-        <Body pageAnim={pageAnim}>
+        <Body pageAnim={pageAnim} style={{flex:1, justifyContent:'center'}}>
+            {/* <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} /> */}
             <TitleText
                 title={'Welcome to Goraku'}
                 description="Take a moment to setup the app for an optimal experience!"
+                containerStyle={{ flex:0, justifyContent:'center', paddingTop:0 }}
+                showLogo
             />
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Image
-                    source={{ uri: 'https://placewaifu.com/image/200' }}
-                    contentFit="contain"
-                    style={{ width: 200, height: 200 }}
-                />
-            </View>
         </Body>
     );
 };
 
-const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
-    // const { width, height } = useWindowDimensions();
+const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { dark, colors } = useTheme();
     const dispatch = useAppDispatch();
     const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
 
-    const onDarkChange = (darkMode: boolean, py: number, px: number) => {
+    const onDarkChange = (darkMode: boolean) => {
         switchTheme({
             switchThemeFunction: () => {
                 dispatch(setTheme({ isDark: darkMode, mode: mode }));
@@ -155,14 +252,6 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                 type: 'fade',
                 duration: 900,
             },
-            // animationConfig: {
-            //     type: 'circular',
-            //     duration: 900,
-            //     startingPoint: {
-            //         cy: py,
-            //         cx: px,
-            //     },
-            // },
         });
     };
 
@@ -196,7 +285,7 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                 >
                     <Pressable
                         onPress={(e) =>
-                            onDarkChange(false, e.nativeEvent.pageY, e.nativeEvent.pageX)
+                            onDarkChange(false)
                         }
                         style={{
                             alignItems: 'center',
@@ -209,7 +298,7 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                     </Pressable>
                     <Pressable
                         onPress={(e) =>
-                            onDarkChange(true, e.nativeEvent.pageY, e.nativeEvent.pageX)
+                            onDarkChange(true)
                         }
                         style={{
                             alignItems: 'center',
@@ -230,20 +319,6 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         }}
                     >
                         {themeOptions.map((theme, idx) => (
-                            // <Pressable
-                            //     key={idx}
-                            //     style={{
-                            //         width: 40,
-                            //         height: 40,
-                            //         borderRadius: 20,
-                            //         marginHorizontal: 5,
-                            //         backgroundColor:
-                            //             availableThemes[dark ? 'dark' : 'light'][theme].colors.primary,
-                            //     }}
-                            //     onPress={(e) =>
-                            //         onThemeChange(theme, e.nativeEvent.pageY, e.nativeEvent.pageX)
-                            //     }
-                            // />
                             <View key={idx}>
                                 <Pressable
                                     style={{
@@ -297,13 +372,14 @@ const Page1 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     );
 };
 
-const Page2 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const AnilistSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { token, username, avatar } = useAppSelector((state) => state.persistedAniLogin);
     const { request, result, promptAsync } = useAnilistAuth(true);
+    const { dark } = useTheme();
 
     return (
         <Body style={{ justifyContent: 'center' }} pageAnim={pageAnim}>
-            <AnilistIcon isDark={true} height={100} width={100} />
+            <AnilistIcon isDark={dark} height={100} width={100} />
             <TitleText
                 title={'Connect to Anilist'}
                 description="Connect your Anilist acount for the full experience."
@@ -344,7 +420,7 @@ const Page2 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     );
 };
 
-const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const dispatch = useAppDispatch();
     const { scoreColors, defaultScore, scoreVisualType, mediaLanguage } = useAppSelector(
         (state) => state.persistedSettings,
@@ -363,17 +439,15 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     };
 
     return (
-        <Body pageAnim={pageAnim}>
+        <Body pageAnim={pageAnim} >
             <TitleText
                 title={'Card Customization'}
                 description={'Customize the look of media cards that are shown throughout the app.'}
+                containerStyle={{paddingTop:20}}
             />
+            
             <View style={{ justifyContent: 'center', paddingVertical: 30 }}>
-                <View
-                    style={{
-                        alignSelf: 'center',
-                    }}
-                >
+                <View style={{width:'35%', alignSelf:'center'}}>
                     <MediaCard
                         coverImg={dummyData[mode].coverImage?.extraLarge}
                         titles={dummyData[mode].title}
@@ -382,83 +456,90 @@ const Page3 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         scoreColors={scoreColors}
                         // scoreVisualType={scoreVisualType}
                         scoreDistributions={dummyData[mode].stats?.scoreDistribution}
-                        // titleLang={titleLang}
+                        // height={210}
+                        fitToParent
                     />
-                    <MediaProgressBar
-                        progress={
-                            (dummyData[mode].episodes ?? dummyData[mode].mediaListEntry.progress) /
-                            2
-                        }
-                        total={dummyData[mode].episodes ?? dummyData[mode].chapters}
-                        mediaStatus={dummyData[mode].status}
-                        mediaListEntry={dummyData[mode].mediaListEntry}
-                        showListStatus={true}
-                    />
-                </View>
-                <List.Subheader>Score Design</List.Subheader>
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={{ maxHeight: 50, paddingHorizontal: 10 }}
-                >
-                    {Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
-                        <Chip
-                            key={idx}
-                            mode="outlined"
-                            selected={scoreVisualType === ScoreVisualTypeEnum[visual]}
-                            onPress={() => onScoreDesignChange(ScoreVisualTypeEnum[visual])}
-                            textStyle={{
-                                color:
-                                    scoreVisualType === ScoreVisualTypeEnum[visual]
-                                        ? colors.primary
-                                        : colors.onBackground,
-                            }}
-                            selectedColor={colors.primary}
-                            style={{
-                                marginHorizontal: 5,
-                                justifyContent: 'center',
-                                // borderColor:
-                                //     visualPreset === ScoreVisualTypeEnum[visual]
-                                //         ? colors.primary
-                                //         : undefined,
-                            }}
-                        >
-                            {visual}
-                        </Chip>
-                    ))}
-                </ScrollView>
-                <List.Subheader>Title Language</List.Subheader>
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={{ maxHeight: 50, paddingHorizontal: 10 }}
-                >
-                    {['english', 'romaji', 'native'].map((lang, idx) => (
-                        <Chip
-                            key={idx}
-                            mode="outlined"
-                            selected={mediaLanguage === lang}
-                            onPress={() =>
-                                onTitleLanguageChange(lang as 'english' | 'romaji' | 'native')
+                    <View>
+                        <MediaProgressBar
+                            progress={
+                                (dummyData[mode].episodes ?? dummyData[mode].mediaListEntry.progress) /
+                                2
                             }
-                            style={{ marginHorizontal: 5, justifyContent: 'center' }}
-                            textStyle={{
-                                textTransform: 'capitalize',
-                                color:
-                                    mediaLanguage === lang ? colors.primary : colors.onBackground,
-                            }}
-                            selectedColor={colors.primary}
-                        >
-                            {lang}
-                        </Chip>
-                    ))}
+                            total={dummyData[mode].episodes ?? dummyData[mode].chapters}
+                            mediaStatus={dummyData[mode].status}
+                            mediaListEntry={dummyData[mode].mediaListEntry}
+                            showListStatus={true}
+                        />
+                    </View>
+                </View>
+                <ScrollView style={{flex:1}}>
+                    <List.Subheader>Score Design</List.Subheader>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={{flex:1}}
+                        contentContainerStyle={{ paddingHorizontal: 10 }}
+                    >
+                        {Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
+                            <Chip
+                                key={idx}
+                                mode="outlined"
+                                selected={scoreVisualType === ScoreVisualTypeEnum[visual]}
+                                onPress={() => onScoreDesignChange(ScoreVisualTypeEnum[visual])}
+                                textStyle={{
+                                    color:
+                                        scoreVisualType === ScoreVisualTypeEnum[visual]
+                                            ? colors.primary
+                                            : colors.onBackground,
+                                }}
+                                selectedColor={colors.primary}
+                                style={{
+                                    marginHorizontal: 5,
+                                    justifyContent: 'center',
+                                    // borderColor:
+                                    //     visualPreset === ScoreVisualTypeEnum[visual]
+                                    //         ? colors.primary
+                                    //         : undefined,
+                                }}
+                            >
+                                {visual}
+                            </Chip>
+                        ))}
+                    </ScrollView>
+                    <List.Subheader>Title Language</List.Subheader>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={{flex:1}}
+                        contentContainerStyle={{paddingHorizontal:10,}}
+                    >
+                        {['english', 'romaji', 'native'].map((lang, idx) => (
+                            <Chip
+                                key={idx}
+                                mode="outlined"
+                                selected={mediaLanguage === lang}
+                                onPress={() =>
+                                    onTitleLanguageChange(lang as 'english' | 'romaji' | 'native')
+                                }
+                                style={{ marginHorizontal: 5, justifyContent: 'center' }}
+                                textStyle={{
+                                    textTransform: 'capitalize',
+                                    color:
+                                        mediaLanguage === lang ? colors.primary : colors.onBackground,
+                                }}
+                                selectedColor={colors.primary}
+                            >
+                                {lang}
+                            </Chip>
+                        ))}
+                    </ScrollView>
                 </ScrollView>
             </View>
         </Body>
     );
 };
 
-const Page4 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const TagBLSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
     const { tagBlacklist } = useAppSelector((state) => state.persistedSettings);
@@ -529,6 +610,7 @@ const Page4 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
             <TitleText
                 title={'Blacklist Tags'}
                 description="Select tags that you want hidden. This will globally exclude content containing any of these tags."
+                containerStyle={{paddingTop: 10}}
             />
             <ScrollView
                 horizontal
@@ -549,7 +631,6 @@ const Page4 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                 onChangeText={(txt) => setSearch(txt)}
                 mode="bar"
             />
-            <Divider style={{ width: '100%' }} />
             {/* <ScrollView
                 style={{ marginVertical: 10 }}
                 contentContainerStyle={{
@@ -593,7 +674,7 @@ const Page4 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     );
 };
 
-const Page5 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
     const dispatch = useAppDispatch();
 
@@ -630,7 +711,7 @@ const Page5 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         disabled={isActive}
                         status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
                     /> */}
-                    <Text style={{ textTransform: 'capitalize', paddingLeft: 15 }}>{item}</Text>
+                    <Text variant='titleMedium' style={{ textTransform: 'capitalize', paddingLeft: 15 }}>{item}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Checkbox
                             // disabled={isActive}
@@ -655,12 +736,13 @@ const Page5 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     };
 
     return (
-        <Body pageAnim={pageAnim}>
+        <Body pageAnim={pageAnim} style={{flex:1, justifyContent:'center'}}>
             <TitleText
                 title={'Explore Tabs'}
                 description="Select what type of content you want quick access to."
+                containerStyle={{paddingBottom: 20}}
             />
-            <GestureHandlerRootView>
+            <GestureHandlerRootView style={{flex:1, justifyContent:'center'}}>
                 <DraggableFlatList
                     data={exploreTabOrder}
                     renderItem={renderItem}
@@ -674,20 +756,30 @@ const Page5 = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     );
 };
 
+const OutroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+    return(
+        <Body pageAnim={pageAnim}>
+            <TitleText title='Setup Complete!' description={`For further customization, advanced settings can be found in the "More" tab. This setup can also be restarted from there.`} showLogo />
+        </Body>
+    );
+};
+
 const RenderPage = ({ page, pageAnim }: Page) => {
     switch (page) {
         case 0:
             return <IntroPage pageAnim={pageAnim} />;
         case 1:
-            return <Page1 pageAnim={pageAnim} />;
+            return <ThemeSetup pageAnim={pageAnim} />;
         case 2:
-            return <Page2 pageAnim={pageAnim} />;
+            return <AnilistSetup pageAnim={pageAnim} />;
         case 3:
-            return <Page3 pageAnim={pageAnim} />;
+            return <CardSetup pageAnim={pageAnim} />;
         case 4:
-            return <Page4 pageAnim={pageAnim} />;
+            return <TagBLSetup pageAnim={pageAnim} />;
         case 5:
-            return <Page5 pageAnim={pageAnim} />;
+            return <TabSetup pageAnim={pageAnim} />;
+        case 6:
+            return <OutroPage pageAnim={pageAnim} />
         default:
             return <View />;
     }
@@ -698,6 +790,8 @@ const SetupModal = () => {
     const { colors } = useTheme();
 
     const dispatch = useAppDispatch();
+
+    const {top} = useSafeAreaInsets();
 
     const onPageChange = (navType: 'next' | 'prev' | number) => {
         if (typeof navType === 'number' && navType !== page.page) {
@@ -726,6 +820,11 @@ const SetupModal = () => {
                     alignItems: 'center',
                 }}
             />
+            {/* <BackgroundAnimation /> */}
+            <View style={{width:'100%', paddingTop:top + 10, flexDirection:'row', alignItems:'center', padding: 10, justifyContent:'flex-end', }}>
+                {/* <IconButton icon='animation-outline' /> */}
+                <Button onPress={() => dispatch(finishSetup())}>Skip Setup</Button>
+            </View>
             <RenderPage page={page.page} pageAnim={page.pageAnim} />
             {page.page + 1 < SETUP_PAGES ? (
                 <Button
