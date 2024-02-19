@@ -19,17 +19,25 @@ const CalendarPage = () => {
     const { colors } = useTheme();
     const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 
+    const { userID } = useAppSelector((state) => state.persistedAniLogin);
+
     const { data, loading, refetch, week } = useCalendar();
 
     const [index, setIndex] = useState(dayOfWeek);
 
-    const [routes] = useState<{ key: string; title: string }[]>(
+    const [routes, setRoutes] = useState<{ key: string; title: string }[]>(
         Days.map((day) => {
             return { key: day, title: day };
         }),
     );
 
-    const renderScene = ({ route }: { route: { key: WeekDay; title: WeekDay } }) => {
+    const updateTitle = (key: string, newTitle: string) => {
+        setRoutes((prevRoutes) =>
+            prevRoutes.map((route) => (route.key === key ? { ...route, title: newTitle } : route)),
+        );
+    };
+
+    const renderScene = ({ route }: { route: { key: WeekDay; title: WeekDay | string } }) => {
         switch (route.key) {
             case 'sunday':
                 return (
@@ -37,6 +45,9 @@ const CalendarPage = () => {
                         data={data.filter(
                             (ep) => ep.airingAt > week.start && ep.airingAt < week.start + 86400,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('sunday', `Sunday (${dataLength})`)
+                        }
                     />
                 );
             // return <DayTab data={null} />;
@@ -48,6 +59,9 @@ const CalendarPage = () => {
                                 ep.airingAt > week.start + 86400 &&
                                 ep.airingAt < week.start + 86400 * 2,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('monday', `Monday (${dataLength})`)
+                        }
                     />
                 );
             case 'tuesday':
@@ -58,6 +72,9 @@ const CalendarPage = () => {
                                 ep.airingAt > week.start + 86400 * 2 &&
                                 ep.airingAt < week.start + 86400 * 3,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('tuesday', `Tuesday (${dataLength})`)
+                        }
                     />
                 );
             case 'wednesday':
@@ -68,6 +85,9 @@ const CalendarPage = () => {
                                 ep.airingAt > week.start + 86400 * 3 &&
                                 ep.airingAt < week.start + 86400 * 4,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('wednesday', `Wednesday (${dataLength})`)
+                        }
                     />
                 );
             case 'thursday':
@@ -78,6 +98,9 @@ const CalendarPage = () => {
                                 ep.airingAt > week.start + 86400 * 4 &&
                                 ep.airingAt < week.start + 86400 * 5,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('thursday', `Thursday (${dataLength})`)
+                        }
                     />
                 );
             case 'friday':
@@ -88,6 +111,9 @@ const CalendarPage = () => {
                                 ep.airingAt > week.start + 86400 * 5 &&
                                 ep.airingAt < week.start + 86400 * 6,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('friday', `Friday (${dataLength})`)
+                        }
                     />
                 );
             case 'saturday':
@@ -96,6 +122,9 @@ const CalendarPage = () => {
                         data={data.filter(
                             (ep) => ep.airingAt > week.start + 86400 * 6 && ep.airingAt < week.end,
                         )}
+                        updateTitle={(dataLength) =>
+                            updateTitle('saturday', `Saturday (${dataLength})`)
+                        }
                     />
                 );
             default:
@@ -120,10 +149,10 @@ const CalendarPage = () => {
         <>
             <Appbar.Header>
                 <Appbar.Content title="Calendar" />
-                <Appbar.Action
-                    icon="filter-outline"
-                    onPress={() => filterSheetRef.current.present()}
-                />
+                    {userID && <Appbar.Action
+                        icon="filter-outline"
+                        onPress={() => filterSheetRef.current.present()}
+                    />}
             </Appbar.Header>
             {!loading ? (
                 <TabView
