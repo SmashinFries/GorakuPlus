@@ -9,9 +9,20 @@ type StatSectionProps = {
     rankData: AniMediaQuery['Media']['rankings'];
 };
 export const StatSection = ({ rankData, statData }: StatSectionProps) => {
-    const { width } = useWindowDimensions();
-    const sortedStatus = [...statData.statusDistribution].sort((a, b) => b.amount - a.amount);
-    const sortedScores = [...statData.scoreDistribution].sort((a, b) => a.score - b.score);
+    if (
+        rankData?.length < 1 &&
+        statData?.scoreDistribution?.length < 1 &&
+        statData?.statusDistribution?.length < 1
+    ) {
+        return null;
+    }
+
+    const sortedStatus = statData?.statusDistribution
+        ? [...statData?.statusDistribution]?.sort((a, b) => b.amount - a.amount)
+        : null;
+    const sortedScores = statData?.scoreDistribution
+        ? [...statData?.scoreDistribution]?.sort((a, b) => a.score - b.score)
+        : null;
     const highestAmountObject =
         sortedScores?.length > 0
             ? sortedScores?.reduce((prev, current) => {
@@ -21,16 +32,8 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
     let highestScore = highestAmountObject?.score ?? null;
 
     // Check if all amounts are the same
-    if (sortedScores.every((item) => item.amount === highestAmountObject.amount)) {
+    if (sortedScores?.every((item) => item?.amount === highestAmountObject?.amount)) {
         highestScore = 0;
-    }
-
-    if (
-        rankData?.length < 1 &&
-        statData?.scoreDistribution?.length < 1 &&
-        statData?.statusDistribution?.length < 1
-    ) {
-        return null;
     }
 
     return (
@@ -65,18 +68,18 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
                                 justifyContent: 'flex-start',
                             }}
                         >
-                            {sortedStatus.map((statusDis, idx) => (
+                            {sortedStatus?.map((statusDis, idx) => (
                                 <StatusItem key={idx} status={statusDis} />
                             ))}
                         </View>
                     </View>
                 ) : null}
-                {statData.scoreDistribution?.length > 0 && (
+                {statData?.scoreDistribution?.length > 0 && (
                     <View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
                         <Text variant="titleLarge" style={{ marginBottom: 5 }}>
                             Score Distribution
                         </Text>
-                        <StatBar data={statData.scoreDistribution} />
+                        <StatBar data={statData?.scoreDistribution} />
                         <View
                             style={{
                                 flexDirection: 'row',
