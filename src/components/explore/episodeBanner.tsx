@@ -1,6 +1,7 @@
 import { MotiView } from 'moti';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { memo } from 'react';
+import { Text } from 'react-native-paper';
 
 type AiringBannerProps = {
     containerColor: string;
@@ -15,20 +16,20 @@ export const AiringBanner = ({ containerColor, textColor, text }: AiringBannerPr
     // if (!nextEpisode && !startDate) return null;
 
     return (
-        <MotiView style={[Styles.container, { backgroundColor: containerColor }]}>
+        <View style={[Styles.container, { backgroundColor: containerColor }]}>
             {/* {startDate && !nextEpisode ? (
                 <Text numberOfLines={1} style={[Styles.txt, { color: textColor }]}>{`${
                     startDate.month ?? '??'
                 }/${startDate.day ?? '??'}/${startDate.year ?? '????'}`}</Text>
             ) : ( */}
-            <Text numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
+            <Text variant='labelSmall' numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
                 {/* {format === MediaFormat.Movie ? 'Movie:' : 'EP'}{' '}
                     {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
                     {timeTill} */}
                 {text}
             </Text>
             {/* )} */}
-        </MotiView>
+        </View>
     );
 };
 
@@ -42,13 +43,13 @@ const Styles = StyleSheet.create({
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
         width: '100%',
-        height: '12%',
         overflow: 'visible',
+        padding: 3,
+        paddingVertical: 1,
+        justifyContent:'center',
     },
     txt: {
         textAlign: 'center',
-        fontWeight: 'bold',
-        padding: 5,
-        fontSize: 12,
+        fontWeight: '900',
     },
 });
