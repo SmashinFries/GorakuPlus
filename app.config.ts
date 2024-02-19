@@ -10,7 +10,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     owner: 'kuzulabz',
     slug: 'GorakuPlus',
     name: appName,
-    version: '1.1',
+    version: '1.2',
     orientation: 'portrait',
     icon: './assets/iconsv2/icon.png',
     userInterfaceStyle: 'automatic',
@@ -25,6 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     splash: {
         image: './assets/iconsv2/splash.png',
         resizeMode: 'cover',
+        backgroundColor: '#141414',
     },
     plugins: [
         '@react-native-firebase/app',
