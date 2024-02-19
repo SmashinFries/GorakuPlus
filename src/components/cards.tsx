@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Pressable, View, useWindowDimensions } from 'react-native';
+import { DimensionValue, Pressable, View, useWindowDimensions } from 'react-native';
 import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
 import {
     MediaListStatus,
@@ -101,15 +101,15 @@ export const MediaCard = (props: MediaCardProps) => {
                     />
                 )}
                 <Text
-                    variant="titleSmall"
+                    variant="labelMedium"
                     style={{
                         position: 'absolute',
                         alignSelf: 'center',
                         textAlign: 'center',
                         bottom: props.showBanner ? '15%' : 5,
-                        fontWeight: 'bold',
+                        // fontWeight: 'bold',
                         color: 'white',
-                        padding: 5,
+                        paddingHorizontal: 3,
                     }}
                     numberOfLines={2}
                 >
@@ -124,6 +124,98 @@ export const MediaCard = (props: MediaCardProps) => {
                         text={props.bannerText}
                     />
                 ) : null}
+            </LinearGradient>
+        </Pressable>
+    );
+};
+
+type MediaCardRowProps = {
+    coverImg: string;
+    bannerImg: string;
+    titles: MediaTitle;
+    mediaListEntry?: any;
+    navigate?: () => void;
+    meanScore?: number;
+    averageScore?: number;
+    imgBgColor?: string;
+    scoreColors?: any;
+    showBanner?: boolean;
+    bannerText?: string;
+    editMode?: boolean;
+    disablePress?: boolean;
+    scoreVisualType?: ScoreVisualType;
+    scoreDistributions?: ScoreDistribution[];
+    titleLang?: 'english' | 'romaji' | 'native';
+    height?: number;
+    scoreWidth?: DimensionValue;
+};
+export const MediaCardRow = (props: MediaCardRowProps) => {
+    const card_height = props.height ?? 110;
+    const { colors } = useTheme();
+    const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
+        (state) => state.persistedSettings,
+    );
+    return (
+        <Pressable
+            onPress={props.navigate && props.navigate}
+            style={{
+                overflow: 'hidden',
+                height: card_height,
+                width: '100%',
+                backgroundColor: 'transparent',
+            }}
+        >
+            <Image
+                contentFit="cover"
+                transition={800}
+                source={{ uri: props.bannerImg ?? props.coverImg }}
+                style={{
+                    height: '100%',
+                    width: '100%',
+                    position: 'absolute',
+                    backgroundColor: props.imgBgColor ?? undefined,
+                }}
+            />
+            <LinearGradient
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    overflow: 'hidden',
+                }}
+                colors={['black', 'rgba(000,000,000, 0.1)', 'black']}
+            >
+                {(props.meanScore || props.averageScore) && (
+                    <ScoreVisual
+                        score={
+                            defaultScore === 'average' && props.averageScore
+                                ? props.averageScore
+                                : props.meanScore
+                        }
+                        scoreColors={scoreColors}
+                        scoreVisualType={props.scoreVisualType}
+                        scoreDistributions={props.scoreDistributions}
+                        height={card_height}
+                        width={props.scoreWidth}
+                        horizontal
+                    />
+                )}
+                <Text
+                    variant="titleSmall"
+                    style={{
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        textAlign: 'center',
+                        bottom: 5,
+                        fontWeight: 'bold',
+                        color: 'white',
+                        padding: 5,
+                    }}
+                    numberOfLines={1}
+                >
+                    {props.titles[props.titleLang] ??
+                        props.titles[mediaLanguage] ??
+                        props.titles.romaji}
+                </Text>
             </LinearGradient>
         </Pressable>
     );
@@ -150,15 +242,14 @@ export const MediaProgressBar = ({
             style={[
                 {
                     alignSelf: 'center',
-                    width: 150,
-                    paddingVertical: 10,
+                    paddingTop: 10,
+                    width: '90%',
                 },
             ]}
         >
             <ProgressBar
                 progress={total && progress ? progress / total : 1}
                 style={{
-                    width: '90%',
                     alignSelf: 'center',
                     height: 8,
                     borderRadius: 4,
