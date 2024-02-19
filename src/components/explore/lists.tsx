@@ -1,12 +1,10 @@
 import { Platform, RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
 import { ExploreMediaQuery, Media, MediaType } from '@/store/services/anilist/generated-anilist';
 import { FlashList } from '@shopify/flash-list';
 import React, { memo, useCallback, useMemo } from 'react';
 import { Image } from 'expo-image';
 import { useAppSelector } from '@/store/hooks';
-import { rgbToRgba } from '@/utils';
-import { transformMediaDates } from '@/store/services/anilist/utils/transformQuery';
 import { MediaCard, MediaProgressBar } from '../cards';
 import { router } from 'expo-router';
 import { BackgroundArt } from './bg';
@@ -61,19 +59,9 @@ export const SectionScroll = ({
 
     const RenderItem = useCallback(
         (props: { item: ExploreMediaQuery['Page']['media'][0] }) => (
-            // <MediaItemTest
-            //     {...props}
-            //     height={height}
-            //     width={width}
-            //     scoreColor={scoreColor}
-            //     itemScore={itemScore}
-            //     mediaLanguage={mediaLanguage}
-            //     scoreGlow={scoreGlow}
-            //     navigate={navigate}
-            // />
-            // <RenderMediaItem {...props} navigate={navigate} />
             <View
                 style={{
+                    flex:1,
                     alignItems: 'center',
                     overflow: 'hidden',
                     borderRadius: 12,
@@ -90,6 +78,7 @@ export const SectionScroll = ({
                     imgBgColor={props.item.coverImage?.color}
                     showBanner={props.item.nextAiringEpisode ? true : false}
                     scoreDistributions={props.item.stats?.scoreDistribution}
+                    height={220}
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}
@@ -138,7 +127,6 @@ export const SectionScroll = ({
                     flex: 1,
                     width: width,
                     maxHeight: 280,
-                    minHeight: 230,
                 }}
             >
                 {!isLoading && data ? (
@@ -165,14 +153,16 @@ export const SectionScroll = ({
                         style={{
                             justifyContent: 'center',
                             width: '100%',
+                            height: 280,
                             alignItems: 'center',
                         }}
                     >
-                        <Image
+                        {/* <Image
                             source={require('../../../assets/load.gif')}
                             style={{ alignSelf: 'center', height: 240, width: 230 }}
                             contentFit="contain"
-                        />
+                        /> */}
+                        <ActivityIndicator size={'large'} />
                     </View>
                 )}
             </View>
