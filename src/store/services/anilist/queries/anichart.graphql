@@ -36,6 +36,7 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
                 meanScore
                 bannerImage
                 isAdult
+                isFavourite
                 coverImage {
                     extraLarge
                     color

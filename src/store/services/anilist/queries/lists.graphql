@@ -49,6 +49,7 @@ fragment mediaListEntry on MediaList {
         countryOfOrigin
         genres
         synonyms
+        isFavourite
         tags {
             id
             name
