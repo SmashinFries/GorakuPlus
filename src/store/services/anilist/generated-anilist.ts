@@ -5299,7 +5299,7 @@ export type StudioSearchQueryVariables = Exact<{
 }>;
 
 
-export type StudioSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null } | null> | null } | null };
+export type StudioSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', bannerImage?: string | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null } | null> | null } | null } | null> | null } | null };
 
 export type UserAnimeStatsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']>;
@@ -7687,6 +7687,16 @@ export const StudioSearchDocument = `
     studios(search: $name, sort: $sort) {
       id
       name
+      media(page: 1, perPage: 5) {
+        edges {
+          node {
+            bannerImage
+            coverImage {
+              extraLarge
+            }
+          }
+        }
+      }
       isFavourite
       siteUrl
     }

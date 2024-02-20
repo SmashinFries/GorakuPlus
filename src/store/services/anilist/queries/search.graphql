@@ -301,8 +301,19 @@ query StudioSearch($name: String, $page: Int, $sort: [StudioSort]) {
         studios(search: $name, sort: $sort) {
             id
             name
+            media(page: 1, perPage: 5) {
+				edges {
+					node {
+						bannerImage
+						coverImage {
+							extraLarge
+						}
+					}
+				}
+			}
             isFavourite
             siteUrl
+
         }
     }
 }
