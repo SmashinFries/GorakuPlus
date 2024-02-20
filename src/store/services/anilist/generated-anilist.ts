@@ -7687,7 +7687,7 @@ export const StudioSearchDocument = `
     studios(search: $name, sort: $sort) {
       id
       name
-      media(page: 1, perPage: 5) {
+      media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
         edges {
           node {
             bannerImage
