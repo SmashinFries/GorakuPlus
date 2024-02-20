@@ -40,6 +40,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                     useFrameworks: 'static',
                     deploymentTarget: '17.0',
                 },
+                android: {
+                    extractNativeLibs: false
+                }
             },
         ],
         [
