@@ -13,9 +13,7 @@ import { StudioHeader } from '@/components/headers';
 const StudioMediaListScreen = () => {
     const { studioId } = useLocalSearchParams<{ studioId: string }>();
     const { loadMore, studioData } = useStudioList(Number(studioId));
-    const { columns, listKey } = useColumns(150);
     const { height } = useWindowDimensions();
-    const { colors } = useTheme();
     const { scoreColors } = useAppSelector((state) => state.persistedSettings);
 
     const RenderItem = useCallback(
