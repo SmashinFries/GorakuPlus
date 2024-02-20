@@ -315,6 +315,7 @@ export const StudioList = (props: StudioListProps) => {
                         }}
                         name={item.name}
                         isFavourite={item.isFavourite}
+                        banners={item.media?.edges?.length > 0 ? item.media?.edges?.map((edge) => edge?.node?.bannerImage) : undefined}
                     />
                 </View>
             );
