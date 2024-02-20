@@ -17,7 +17,7 @@ import { UpdateDialog } from '@/components/updates';
 import PaperHeader from '@/components/headers';
 import { api } from '@/store/services/anilist/enhanced';
 import { displayNotification, parseNotif } from '@/utils/notifications/backgroundFetch';
-import { setStatusBarStyle } from 'expo-status-bar';
+import { StatusBar, setStatusBarStyle } from 'expo-status-bar';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
 import { Toaster } from 'burnt/web';
@@ -198,6 +198,7 @@ const AppProvider = () => {
                         <Toaster position="bottom-right" />
                     </BottomSheetModalProvider>
                 </GestureHandlerRootView>
+                <StatusBar style={isDark ? 'light' : 'dark'} />
             </ThemeProvider>
             {/* <Portal>
                 <UpdateDialog
