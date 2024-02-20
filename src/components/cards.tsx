@@ -103,13 +103,13 @@ export const MediaCard = (props: MediaCardProps) => {
                 <Text
                     variant="labelMedium"
                     style={{
-                        position: 'absolute',
+                        // position: 'absolute',
                         alignSelf: 'center',
-                        textAlign: 'center',
-                        bottom: props.showBanner ? '15%' : 5,
+                        // bottom: props.showBanner ? '15%' : 10,
                         // fontWeight: 'bold',
+                        paddingHorizontal: 6,
+                        paddingVertical: 10,
                         color: 'white',
-                        paddingHorizontal: 3,
                     }}
                     numberOfLines={2}
                 >
@@ -266,7 +266,7 @@ export const MediaProgressBar = ({
                         color: colors.onSurfaceVariant,
                         textTransform: 'capitalize',
                     }}
-                    variant="labelLarge"
+                    variant="labelMedium"
                 >
                     {mediaListEntry?.status}
                     {mediaListEntry?.progress && mediaStatus !== MediaStatus.Finished
