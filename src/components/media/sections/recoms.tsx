@@ -13,8 +13,8 @@ type RecProps = {
 const RecList = ({ data }: RecProps) => {
     const { colors } = useTheme();
     const keyExtractor = useCallback((item, index) => index.toString(), []);
-    const renderItem = useCallback(
-        ({ item }: { item: AniMediaQuery['Media']['recommendations']['edges'][0] }) => (
+    const renderItem = ({ item }: { item: AniMediaQuery['Media']['recommendations']['edges'][0] }) => {
+        return(
             <View style={{ marginHorizontal: 10, maxHeight: 260 }}>
                 <MediaCard
                     coverImg={item.node.mediaRecommendation.coverImage.extraLarge}
@@ -30,6 +30,7 @@ const RecList = ({ data }: RecProps) => {
                         )
                     }
                     scoreDistributions={item.node.mediaRecommendation?.stats?.scoreDistribution}
+                    isFavorite={item.node.mediaRecommendation.isFavourite}
                 />
                 <Text
                     variant="labelLarge"
@@ -56,19 +57,9 @@ const RecList = ({ data }: RecProps) => {
                         : 'Doujin'}{' '}
                     · {item.node?.mediaRecommendation?.status?.replaceAll('_', ' ') ?? '??'}
                 </Text>
-                {item.node?.mediaRecommendation?.isFavourite && (
-                    <IconButton
-                        icon="heart"
-                        iconColor="red"
-                        mode="contained"
-                        size={18}
-                        style={{ position: 'absolute', top: -10, left: -5 }}
-                    />
-                )}
             </View>
-        ),
-        [],
-    );
+        );
+    }
 
     if (data?.edges?.length < 1) {
         return null;

@@ -79,6 +79,7 @@ export const SectionScroll = ({
                     showBanner={props.item.nextAiringEpisode ? true : false}
                     scoreDistributions={props.item.stats?.scoreDistribution}
                     height={220}
+                    isFavorite={props.item.isFavourite}
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}

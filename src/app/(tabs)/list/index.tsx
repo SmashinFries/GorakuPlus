@@ -94,6 +94,7 @@ const ListScreen = ({ type, listName, updateTitle }: ListParams & { listName: Me
                         showBanner={item.media.nextAiringEpisode ? true : false}
                         scoreDistributions={item.media.stats?.scoreDistribution}
                         fitToParent
+                        isFavorite={item.media.isFavourite}
                     />
                 </View>
             );

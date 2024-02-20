@@ -93,6 +93,7 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
                             );
                         }}
                         fitToParent
+                        isFavorite={item.media.isFavourite}
                     />
                     <MediaProgressBar
                         progress={item.media.mediaListEntry?.progress}

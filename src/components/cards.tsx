@@ -38,6 +38,7 @@ type MediaCardProps = {
     height?: number;
     width?: number;
     fitToParent?: boolean;
+    isFavorite?: boolean;
 };
 export const MediaCard = (props: MediaCardProps) => {
     const card_height = props.height ?? 210;
@@ -85,8 +86,9 @@ export const MediaCard = (props: MediaCardProps) => {
                     overflow: 'hidden',
                     justifyContent: 'flex-end',
                 }}
-                colors={['transparent', 'black']}
+                colors={['transparent', 'rgba(0,0,0,.4)', props.isFavorite ? 'rgba(79, 0, 0, 1)' : 'black']}
             >
+                
                 {(props.meanScore || props.averageScore) && (
                     <ScoreVisual
                         score={
@@ -372,7 +374,7 @@ export const CharacterCard = (props: CharacterCardProps) => {
             }}
         >
             <Avatar.Image source={{ uri: props.imgUrl }} size={110} />
-            <Text numberOfLines={2} style={{ textAlign: 'center' }}>
+            <Text numberOfLines={2} style={{ textAlign: 'center', color: props.isFavourite ? colors.primary : colors.onBackground }}>
                 {mediaLanguage === 'native' ? props.nativeName : props.name}
             </Text>
             {props.role ? (
@@ -390,15 +392,6 @@ export const CharacterCard = (props: CharacterCardProps) => {
                     {props.role}
                 </Text>
             ) : null}
-            {props.isFavourite && (
-                <IconButton
-                    icon="heart"
-                    iconColor="red"
-                    mode="contained"
-                    size={16}
-                    style={{ position: 'absolute', top: -5, left: -5 }}
-                />
-            )}
         </Pressable>
     );
 };

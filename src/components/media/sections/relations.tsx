@@ -37,8 +37,8 @@ const Relations = ({ data }: RelationsProps) => {
                     navigate={() =>
                         router.push(`/${item.node?.type?.toLowerCase()}/${item.node?.id}`)
                     }
+                    isFavorite={item.node?.isFavourite}
                 />
-
                 <Text
                     variant="labelLarge"
                     style={{ textTransform: 'capitalize', textAlign: 'center' }}
@@ -60,15 +60,6 @@ const Relations = ({ data }: RelationsProps) => {
                         : 'Doujin'}{' '}
                     · {item.node?.status?.replaceAll('_', ' ') ?? '??'}
                 </Text>
-                {item.node?.isFavourite && (
-                    <IconButton
-                        icon="heart"
-                        iconColor="red"
-                        mode="contained"
-                        size={18}
-                        style={{ position: 'absolute', top: -15, left: -5 }}
-                    />
-                )}
             </View>
         ),
         [],
