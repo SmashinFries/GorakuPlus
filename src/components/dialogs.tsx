@@ -48,8 +48,11 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
                             onNav(item.id, item.idMal, item.type);
                         }}
                         scoreDistributions={item.stats?.scoreDistribution}
+                        meanScore={item.meanScore}
+                        averageScore={item.averageScore}
                         // height={dialog_width / 2 - 5}
                         fitToParent
+                        isFavorite={item.isFavourite}
                     />
                     <Text
                         variant="labelMedium"
