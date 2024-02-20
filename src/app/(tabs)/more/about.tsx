@@ -49,7 +49,7 @@ const AboutPage = () => {
                     Constants.executionEnvironment !== ExecutionEnvironment.StoreClient
                         ? ' (uncensored)'
                         : ' (censored)'
-                }${Updates.createdAt ? `\n📅${Updates.createdAt?.toLocaleString()})` : ''}`}
+                }${Updates.createdAt ? `\n📅 ${Updates.createdAt?.toLocaleString()}` : ''}`}
                 descriptionStyle={{ textTransform: 'capitalize' }}
                 descriptionNumberOfLines={3}
             />
@@ -151,12 +151,13 @@ const AboutPage = () => {
                     @smashinfries
                 </Button> */}
                 <LinkButton url="https://goraku.kuzulabz.com/" icon={'earth'} size={28} />
-                <LinkButton
+                {/* <LinkButton
                     url="https://github.com/KuzuLabz/gorakusite"
                     icon={'github'}
                     size={28}
-                />
-                <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} />
+                /> */}
+                <LinkButton url="https://discord.gg/gdenWHjXBv" icon={'discord'} size={28} />
+                {/* <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} /> */}
                 <LinkButton url="https://www.kuzumerch.com" icon={'storefront-outline'} size={28} />
             </View>
             <Portal>
