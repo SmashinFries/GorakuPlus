@@ -50,7 +50,6 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
               }, 8000);
             
             return () => {
-                console.log(`clearing interval`);
                 clearInterval(interval);
             };
         }
