@@ -41,7 +41,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
                     deploymentTarget: '17.0',
                 },
                 android: {
-                    extractNativeLibs: false
+                    useLegacyPackaging: true,
                 }
             },
         ],
