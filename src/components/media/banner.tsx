@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Animated, {
@@ -12,10 +13,17 @@ import Animated, {
 type Props = {
     style?: any;
     url: string;
+    additionalUrls?: string[];
     allowMotion?: boolean;
 };
-export const MediaBanner = ({ url, style, allowMotion }: Props) => {
+export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) => {
+    const all_urls = additionalUrls ? [url, ...new Set(additionalUrls)].filter(n => n) : [url];
     const { colors } = useTheme();
+    const [image_src_idx, setImageSrcIdx] = useState<number>(0);
+
+    const updateImageSrc = () => {
+        setImageSrcIdx(prev => ((prev+1) % all_urls.length));
+    };
 
     const rotation = allowMotion
         ? useAnimatedSensor(SensorType.ROTATION, {
@@ -35,10 +43,23 @@ export const MediaBanner = ({ url, style, allowMotion }: Props) => {
           })
         : null;
 
+    useEffect(() => {
+        if (additionalUrls) {
+            const interval = setInterval(() => {
+                updateImageSrc();
+              }, 8000);
+            
+            return () => {
+                console.log(`clearing interval`);
+                clearInterval(interval);
+            };
+        }
+    },[])
+
     return (
         <Animated.View style={[style, styles.container]}>
             <Animated.View style={[animatedStyle, { paddingBottom: 10 }]}>
-                <Image source={{ uri: url }} style={[styles.img]} contentFit="cover" />
+                <Image source={{ uri: all_urls[image_src_idx] }} style={[styles.img]} cachePolicy='memory' transition={2000} contentFit="cover" />
 
                 <LinearGradient
                     style={[styles.container]}
