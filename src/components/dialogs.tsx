@@ -101,6 +101,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
                                 style={{ color: colors.primary }}
                             >
                                 {isbn}{' '}
+                                {/* @ts-ignore | Icon still appears.? */}
                                 <MaterialCommunityIcon name="content-copy" color={colors.primary} />
                             </Text>{' '}
                         </Text>
