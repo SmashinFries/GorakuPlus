@@ -1,3 +1,4 @@
+import useImageRotation from '@/hooks/useImageRotation';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
@@ -17,13 +18,8 @@ type Props = {
     allowMotion?: boolean;
 };
 export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) => {
-    const all_urls = additionalUrls ? [url, ...new Set(additionalUrls)].filter(n => n) : [url];
     const { colors } = useTheme();
-    const [image_src_idx, setImageSrcIdx] = useState<number>(0);
-
-    const updateImageSrc = () => {
-        setImageSrcIdx(prev => ((prev+1) % all_urls.length));
-    };
+    const img_src = useImageRotation(url, additionalUrls);
 
     const rotation = allowMotion
         ? useAnimatedSensor(SensorType.ROTATION, {
@@ -43,22 +39,10 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
           })
         : null;
 
-    useEffect(() => {
-        if (additionalUrls) {
-            const interval = setInterval(() => {
-                updateImageSrc();
-              }, 8000);
-            
-            return () => {
-                clearInterval(interval);
-            };
-        }
-    },[])
-
     return (
         <Animated.View style={[style, styles.container]}>
             <Animated.View style={[animatedStyle, { paddingBottom: 10 }]}>
-                <Image source={{ uri: all_urls[image_src_idx] }} style={[styles.img]} cachePolicy='memory' transition={2000} contentFit="cover" />
+                <Image source={{ uri: img_src }} style={[styles.img]} cachePolicy='memory' transition={2000} contentFit="cover" />
 
                 <LinearGradient
                     style={[styles.container]}
