@@ -87,9 +87,12 @@ export const MediaCard = (props: MediaCardProps) => {
                     overflow: 'hidden',
                     justifyContent: 'flex-end',
                 }}
-                colors={['transparent', 'rgba(0,0,0,.4)', props.isFavorite ? 'rgba(79, 0, 0, 1)' : 'black']}
+                colors={[
+                    'transparent',
+                    'rgba(0,0,0,.4)',
+                    props.isFavorite ? 'rgba(79, 0, 0, 1)' : 'black',
+                ]}
             >
-                
                 {(props.meanScore || props.averageScore) && (
                     <ScoreVisual
                         score={
@@ -375,7 +378,13 @@ export const CharacterCard = (props: CharacterCardProps) => {
             }}
         >
             <Avatar.Image source={{ uri: props.imgUrl }} size={110} />
-            <Text numberOfLines={2} style={{ textAlign: 'center', color: props.isFavourite ? colors.primary : colors.onBackground }}>
+            <Text
+                numberOfLines={2}
+                style={{
+                    textAlign: 'center',
+                    color: props.isFavourite ? colors.primary : colors.onBackground,
+                }}
+            >
                 {mediaLanguage === 'native' ? props.nativeName : props.name}
             </Text>
             {props.role ? (
@@ -417,8 +426,17 @@ export const StudioCard = (props: StudioCardProps) => {
                 borderRadius: 20,
             }}
         >
-            <ImageBackground source={{uri: img_src}} transition={2000} style={{ flex:1, width:'100%'}}>
-                <LinearGradient end={{x:1, y:0.5}} start={{x:0, y:0.5}} colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.9)', 'rgba(0,0,0,0.3)']} style={{position:'absolute', width:'100%', height:'100%'}} />
+            <ImageBackground
+                source={{ uri: img_src }}
+                transition={2000}
+                style={{ flex: 1, width: '100%' }}
+            >
+                <LinearGradient
+                    end={{ x: 1, y: 0.5 }}
+                    start={{ x: 0, y: 0.5 }}
+                    colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.9)', 'rgba(0,0,0,0.3)']}
+                    style={{ position: 'absolute', width: '100%', height: '100%' }}
+                />
                 <Button
                     icon={props.isFavourite ? 'heart' : undefined}
                     onPress={props.onPress}

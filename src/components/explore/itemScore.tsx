@@ -40,7 +40,9 @@ export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: Scor
                 flexDirection: 'row',
             }}
         >
-            <Text variant='labelMedium' style={{ color: textColor, }}>{score}</Text>
+            <Text variant="labelMedium" style={{ color: textColor }}>
+                {score}
+            </Text>
         </View>
     );
 };
@@ -78,7 +80,12 @@ export const ScoreHealthBar = ({
             <MCIcons size={12} color={heartColor} name={leftHeart} />
             <MCIcons size={12} color={heartColor} name={middleHeart} />
             <MCIcons size={12} color={heartColor} name={rightHeart} />
-            {showScore ? <Text variant='labelMedium' style={{ color: textColor }}> {score}</Text> : null}
+            {showScore ? (
+                <Text variant="labelMedium" style={{ color: textColor }}>
+                    {' '}
+                    {score}
+                </Text>
+            ) : null}
             {/* {leftHeart && <MCIcons name={'heart'} size={16} color={'red'} />}
             {middleHeart && <MCIcons name={'heart'} size={16} color={'red'} />}
             {rightHeart && <MCIcons name={'heart'} size={16} color={'red'} />} */}

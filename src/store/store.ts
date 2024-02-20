@@ -100,7 +100,10 @@ const persistedSettings = persistReducer<SettingsState, AnyAction>(
     persistSettingsConfig,
     settingsSlice,
 );
-const persistedDisplaySettings = persistReducer<DisplaySettingState, AnyAction>(displaySettingsPersistConfig, displaySettingSlice);
+const persistedDisplaySettings = persistReducer<DisplaySettingState, AnyAction>(
+    displaySettingsPersistConfig,
+    displaySettingSlice,
+);
 const persistedSetup = persistReducer<SetupState, AnyAction>(persistSetupConfig, setupSlice);
 
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
@@ -144,7 +147,7 @@ export const store = configureStore({
         peresistedMuDB,
         persistedCharArtDB,
         persistedNotifs,
-        persistedDisplaySettings
+        persistedDisplaySettings,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

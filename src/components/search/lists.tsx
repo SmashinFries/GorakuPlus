@@ -63,11 +63,13 @@ export const AniMangList = (props: AniMangListProps) => {
     const RenderItem = useCallback(
         (itemProps) => (
             <View
-                style={{ flex: 1,
+                style={{
+                    flex: 1,
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     marginVertical: 10,
-                    marginHorizontal: 5, }}
+                    marginHorizontal: 5,
+                }}
             >
                 <MediaCard
                     coverImg={itemProps.item.coverImage.extraLarge}
@@ -315,7 +317,11 @@ export const StudioList = (props: StudioListProps) => {
                         }}
                         name={item.name}
                         isFavourite={item.isFavourite}
-                        banners={item.media?.edges?.length > 0 ? item.media?.edges?.map((edge) => edge?.node?.bannerImage) : undefined}
+                        banners={
+                            item.media?.edges?.length > 0
+                                ? item.media?.edges?.map((edge) => edge?.node?.bannerImage)
+                                : undefined
+                        }
                     />
                 </View>
             );

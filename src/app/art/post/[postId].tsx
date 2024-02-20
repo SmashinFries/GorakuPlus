@@ -18,8 +18,6 @@ import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-
-
 const DanbooruPostPage = () => {
     const { postId } = useLocalSearchParams<{ postId: string }>();
     const id = parseInt(postId);
@@ -81,7 +79,7 @@ const DanbooruPostPage = () => {
                     // onPress={toggleBlur}
                     style={{
                         // height: aspectRatio ? width / aspectRatio : 0,
-                        height: imageHeight+ 20,
+                        height: imageHeight + 20,
                         width: width,
                     }}
                 />

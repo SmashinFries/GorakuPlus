@@ -17,17 +17,25 @@ const StaffListScreen = () => {
 
     const RenderItem = useCallback(
         (props) => (
-            <View style={{ flex: 1,
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                marginVertical: 10,
-                marginHorizontal: 5, }}>
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginVertical: 10,
+                    marginHorizontal: 5,
+                }}
+            >
                 <CharacterItem
                     {...props}
                     subTextColor={colors.onSurfaceVariant}
                     onNavigation={(id) => router.push(`/staff/info/${id}`)}
                 />
-                <CharacterLabel role={props.item.role} favourites={props.item.node?.favourites} fontColor={colors.onSurfaceVariant} />
+                <CharacterLabel
+                    role={props.item.role}
+                    favourites={props.item.node?.favourites}
+                    fontColor={colors.onSurfaceVariant}
+                />
             </View>
         ),
         [],

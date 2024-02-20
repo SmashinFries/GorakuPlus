@@ -97,18 +97,24 @@ export const StatBar = ({ data }: StatusBarProps) => {
                     }}
                 />
             ))} */}
-            {
-                colors.length > 1 ?
+            {colors.length > 1 ? (
                 <LinearGradient
-                colors={colors}
-                locations={sortedLocations}
-                start={[0, 1]}
-                end={[1, 0]}
-                style={{ height: 10, borderRadius: 12, width: '100%' }}
-            />
-                :
-                <View style={{ height: 10, borderRadius: 12, width: '100%', backgroundColor: colors[0] }}/>
-        }
+                    colors={colors}
+                    locations={sortedLocations}
+                    start={[0, 1]}
+                    end={[1, 0]}
+                    style={{ height: 10, borderRadius: 12, width: '100%' }}
+                />
+            ) : (
+                <View
+                    style={{
+                        height: 10,
+                        borderRadius: 12,
+                        width: '100%',
+                        backgroundColor: colors[0],
+                    }}
+                />
+            )}
         </View>
     );
 };

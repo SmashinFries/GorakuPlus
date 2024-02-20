@@ -19,18 +19,26 @@ const CharacterListPage = () => {
     // const { columns, listKey } = useColumns(180);
 
     const RenderItem = useCallback(
-        (props:{item:CharacterListQuery['Media']['characters']['edges'][0]; index:number}) => (
-            <View style={{ flex: 1,
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                marginVertical: 10,
-                marginHorizontal: 5, }}>
+        (props: { item: CharacterListQuery['Media']['characters']['edges'][0]; index: number }) => (
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    marginVertical: 10,
+                    marginHorizontal: 5,
+                }}
+            >
                 <CharacterItem
                     {...props}
                     subTextColor={colors.onSurfaceVariant}
                     onNavigation={(id) => router.push(`characters/info/${id}`)}
                 />
-                <CharacterLabel role={props.item.role} favourites={props.item.node?.favourites} fontColor={colors.onSurfaceVariant} />
+                <CharacterLabel
+                    role={props.item.role}
+                    favourites={props.item.node?.favourites}
+                    fontColor={colors.onSurfaceVariant}
+                />
             </View>
         ),
         [],

@@ -26,7 +26,11 @@ type ListParams = {
     updateTitle?: (dataLength: number) => void;
 };
 
-const ListScreen = ({ type, listName, updateTitle }: ListParams & { listName: MediaListStatus }) => {
+const ListScreen = ({
+    type,
+    listName,
+    updateTitle,
+}: ListParams & { listName: MediaListStatus }) => {
     const { colors } = useTheme();
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { data, isFetching, isError, error, refetch } = useUserListCollectionQuery({
@@ -104,9 +108,9 @@ const ListScreen = ({ type, listName, updateTitle }: ListParams & { listName: Me
 
     useEffect(() => {
         if (data) {
-            updateTitle(data?.MediaListCollection?.lists[0]?.entries.length ?? 0)
+            updateTitle(data?.MediaListCollection?.lists[0]?.entries.length ?? 0);
         }
-    },[data])
+    }, [data]);
 
     return (
         <View style={{ flex: 1, height: '100%', width: '100%' }}>
@@ -163,7 +167,7 @@ const ListTabs = ({ type }: ListParams) => {
               }),
     );
 
-    const updateTitle = (key:string, newTitle: string) => {
+    const updateTitle = (key: string, newTitle: string) => {
         setRoutes((prevRoutes) =>
             prevRoutes.map((route) => (route.key === key ? { ...route, title: newTitle } : route)),
         );
@@ -197,7 +201,13 @@ const ListTabs = ({ type }: ListParams) => {
         <TabView
             navigationState={{ index, routes }}
             renderScene={(props) => (
-                <ListScreen type={type} listName={props.route.title as MediaListStatus} updateTitle={(dataLength) => updateTitle(props.route.key, `${props.route.title} (${dataLength})`)} />
+                <ListScreen
+                    type={type}
+                    listName={props.route.title as MediaListStatus}
+                    updateTitle={(dataLength) =>
+                        updateTitle(props.route.key, `${props.route.title} (${dataLength})`)
+                    }
+                />
             )}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}

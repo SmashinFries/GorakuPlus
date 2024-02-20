@@ -185,7 +185,9 @@ const ListEntryView = ({
                                 }}
                                 variant="labelMedium"
                             >
-                                {splitReleaseMessage[0]?.length > 0 ? splitReleaseMessage[0] : 'Unknown'}
+                                {splitReleaseMessage[0]?.length > 0
+                                    ? splitReleaseMessage[0]
+                                    : 'Unknown'}
                             </Text>
                             {splitReleaseMessage?.length > 1 ? (
                                 <Text

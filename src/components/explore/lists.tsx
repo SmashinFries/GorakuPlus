@@ -61,7 +61,7 @@ export const SectionScroll = ({
         (props: { item: ExploreMediaQuery['Page']['media'][0] }) => (
             <View
                 style={{
-                    flex:1,
+                    flex: 1,
                     alignItems: 'center',
                     overflow: 'hidden',
                     borderRadius: 12,

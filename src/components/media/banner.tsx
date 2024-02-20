@@ -42,7 +42,13 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
     return (
         <Animated.View style={[style, styles.container]}>
             <Animated.View style={[animatedStyle, { paddingBottom: 10 }]}>
-                <Image source={{ uri: img_src }} style={[styles.img]} cachePolicy='memory' transition={2000} contentFit="cover" />
+                <Image
+                    source={{ uri: img_src }}
+                    style={[styles.img]}
+                    cachePolicy="memory"
+                    transition={2000}
+                    contentFit="cover"
+                />
 
                 <LinearGradient
                     style={[styles.container]}

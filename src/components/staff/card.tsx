@@ -15,31 +15,31 @@ export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItem
     const { colors } = useTheme();
     return (
         <Pressable style={[styles.container]} onPress={() => onNavigation(item.node?.id)}>
-                <Image
-                    source={{ uri: item.node?.image?.large }}
-                    style={[styles.img]}
-                    transition={1000}
-                />
-                <LinearGradient
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 12,
-                    }}
-                    locations={[0.4, 0.95]}
-                    colors={['transparent', 'black']}
-                />
-                <View style={[styles.btmContainer]}>
-                    <Text numberOfLines={2} style={[styles.name]}>
-                        {item.node?.name?.full}
-                    </Text>
+            <Image
+                source={{ uri: item.node?.image?.large }}
+                style={[styles.img]}
+                transition={1000}
+            />
+            <LinearGradient
+                style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 12,
+                }}
+                locations={[0.4, 0.95]}
+                colors={['transparent', 'black']}
+            />
+            <View style={[styles.btmContainer]}>
+                <Text numberOfLines={2} style={[styles.name]}>
+                    {item.node?.name?.full}
+                </Text>
+            </View>
+            {item.node.isFavourite && (
+                <View style={{ position: 'absolute', top: -5, right: -5 }}>
+                    <IconButton icon="heart" iconColor="red" />
                 </View>
-                {item.node.isFavourite && (
-                    <View style={{ position: 'absolute', top: -5, right: -5 }}>
-                        <IconButton icon="heart" iconColor="red" />
-                    </View>
-                )}
+            )}
             <Text
                 numberOfLines={2}
                 variant="labelLarge"

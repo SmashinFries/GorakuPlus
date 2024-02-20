@@ -1,7 +1,4 @@
-import {
-    MD3DarkTheme,
-    Text,
-} from 'react-native-paper';
+import { MD3DarkTheme, Text } from 'react-native-paper';
 import { ListHeading } from '../text';
 import { Pressable, View, useWindowDimensions } from 'react-native';
 import { router } from 'expo-router';
@@ -77,9 +74,15 @@ type FavoritesOverviewProps = {
 };
 const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
     const { width } = useWindowDimensions();
-    const anime_images = data?.anime?.nodes?.map((anime) => anime?.coverImage?.extraLarge)?.slice(0, 10);
-    const manga_images = data?.manga?.nodes?.map((manga) => manga?.coverImage?.extraLarge)?.slice(0, 10);
-    const character_images = data?.characters?.nodes?.map((character) => character?.image?.large)?.slice(0, 10);
+    const anime_images = data?.anime?.nodes
+        ?.map((anime) => anime?.coverImage?.extraLarge)
+        ?.slice(0, 10);
+    const manga_images = data?.manga?.nodes
+        ?.map((manga) => manga?.coverImage?.extraLarge)
+        ?.slice(0, 10);
+    const character_images = data?.characters?.nodes
+        ?.map((character) => character?.image?.large)
+        ?.slice(0, 10);
     const staff_images = data?.staff?.nodes?.map((staff) => staff?.image?.large)?.slice(0, 10);
     return (
         <View style={{ width: width, overflow: 'visible' }}>

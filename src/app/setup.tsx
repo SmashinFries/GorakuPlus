@@ -120,8 +120,22 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
                 containerStyle,
             ]}
         >
-            {showLogo && <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} />}
-            <BlurView tint={dark ? 'systemMaterialDark' : 'systemMaterialLight'} intensity={isAnim ? 60 : 0} style={{alignItems: 'center', borderRadius:12, overflow: 'hidden', paddingVertical:10}}>
+            {showLogo && (
+                <Image
+                    source={require('../../assets/iconsv2/icon-trans.png')}
+                    style={{ width: '70%', aspectRatio: 1 / 1 }}
+                />
+            )}
+            <BlurView
+                tint={dark ? 'systemMaterialDark' : 'systemMaterialLight'}
+                intensity={isAnim ? 60 : 0}
+                style={{
+                    alignItems: 'center',
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    paddingVertical: 10,
+                }}
+            >
                 <Text variant="headlineMedium" style={{ fontWeight: '900' }}>
                     {title}
                 </Text>
@@ -141,11 +155,11 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
     );
 };
 
-const getRandomInt = (min:number, max:number) => {
+const getRandomInt = (min: number, max: number) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+};
 
-const getAnimConfig = (init_size:number) => {
+const getAnimConfig = (init_size: number) => {
     const fallDuration = getRandomInt(6000, 8000);
     const fallDelay = getRandomInt(500, 10000);
     const size = getRandomInt(init_size - 20, init_size + 10);
@@ -159,11 +173,21 @@ const getAnimConfig = (init_size:number) => {
         fallDuration,
         rotationDuration,
         rotationDirection,
-        xPosition
-    }
-}
+        xPosition,
+    };
+};
 
-const MovingChibi = ({size, width, height, index}:{size:number; width:number; height:number, index:number}) => {
+const MovingChibi = ({
+    size,
+    width,
+    height,
+    index,
+}: {
+    size: number;
+    width: number;
+    height: number;
+    index: number;
+}) => {
     const [animState, setAnimState] = useState(() => getAnimConfig(size));
     const transY = useSharedValue(-size);
     const rotation = useSharedValue(0);
@@ -176,62 +200,108 @@ const MovingChibi = ({size, width, height, index}:{size:number; width:number; he
     const runAnim = () => {
         transY.value = -size;
         rotation.value = 0;
-        rotation.value = withRepeat(withTiming(1, { duration: animState.rotationDuration, easing:Easing.linear}), -1)
-    
-        transY.value = withDelay(animState.fallDelay, withTiming(height+size, {duration: animState.fallDuration, easing:Easing.linear}, (finished) => {
-            runOnJS(animCallback)();
-        }));
+        rotation.value = withRepeat(
+            withTiming(1, { duration: animState.rotationDuration, easing: Easing.linear }),
+            -1,
+        );
+
+        transY.value = withDelay(
+            animState.fallDelay,
+            withTiming(
+                height + size,
+                { duration: animState.fallDuration, easing: Easing.linear },
+                (finished) => {
+                    runOnJS(animCallback)();
+                },
+            ),
+        );
     };
 
     // @ts-ignore
     const animationStyle = useAnimatedStyle<ImageStyle>(() => {
         return {
-            transform: [{translateY: transY.value}, {rotate: interpolate(rotation.value, [-1, 1], animState.rotationDirection ? [0, 360] : [360, 0]) + "deg"}]
-        }
-    })
+            transform: [
+                { translateY: transY.value },
+                {
+                    rotate:
+                        interpolate(
+                            rotation.value,
+                            [-1, 1],
+                            animState.rotationDirection ? [0, 360] : [360, 0],
+                        ) + 'deg',
+                },
+            ],
+        };
+    });
 
     useEffect(() => {
         if (animState) {
             runAnim();
         }
-      }, [animState]);
+    }, [animState]);
 
-    return(<Animated.Image
-        source={require('../../assets/iconsv2/icon-trans.png')}
-        resizeMode="contain"
-        style={[animationStyle, { width: size, height: size, position:'absolute', left:animState.xPosition as DimensionValue }]}
-    />)
+    return (
+        <Animated.Image
+            source={require('../../assets/iconsv2/icon-trans.png')}
+            resizeMode="contain"
+            style={[
+                animationStyle,
+                {
+                    width: size,
+                    height: size,
+                    position: 'absolute',
+                    left: animState.xPosition as DimensionValue,
+                },
+            ]}
+        />
+    );
 };
 
 const BackgroundAnimation = () => {
     const SIZE = 50;
     const { height, width } = useWindowDimensions();
-    const {columns} = useColumns(SIZE);
-    
-    return(
+    const { columns } = useColumns(SIZE);
+
+    return (
         <>
-            <View style={{ position:'absolute', top:0, width:'100%', height:'100%', backgroundColor:'transparent'}}>
+            <View
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'transparent',
+                }}
+            >
                 {/* {
                     Array.from({length:columns}).map((_, idx) => <MovingChibi key={idx} size={SIZE} index={idx} start_loc={SIZE *2} />)
                 } */}
-                {
-                    height && Array.from({length:columns + Math.round(height / SIZE)*1.5}).map((_, idx) => <MovingChibi key={idx} size={SIZE} index={idx} height={height} width={width} />)
-                }
-                </View>
-                {/* <View style={{position:'absolute', width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,.4)'}} /> */}
-            </>
+                {height &&
+                    Array.from({ length: columns + Math.round(height / SIZE) * 1.5 }).map(
+                        (_, idx) => (
+                            <MovingChibi
+                                key={idx}
+                                size={SIZE}
+                                index={idx}
+                                height={height}
+                                width={width}
+                            />
+                        ),
+                    )}
+            </View>
+            {/* <View style={{position:'absolute', width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,.4)'}} /> */}
+        </>
     );
 };
 
 const IntroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
-    
     return (
-        <Body pageAnim={pageAnim} style={{flex:1, justifyContent:'center'}}>
+        <Body pageAnim={pageAnim} style={{ flex: 1, justifyContent: 'center' }}>
             {/* <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} /> */}
             <TitleText
                 title={'Welcome to Goraku'}
                 description="Take a moment to setup the app for an optimal experience!"
-                containerStyle={{ flex:0, justifyContent:'center', paddingTop:0 }}
+                containerStyle={{ flex: 0, justifyContent: 'center', paddingTop: 0 }}
                 showLogo
             />
         </Body>
@@ -284,9 +354,7 @@ const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                     }}
                 >
                     <Pressable
-                        onPress={(e) =>
-                            onDarkChange(false)
-                        }
+                        onPress={(e) => onDarkChange(false)}
                         style={{
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -297,9 +365,7 @@ const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         <Text variant="labelLarge">Light Mode</Text>
                     </Pressable>
                     <Pressable
-                        onPress={(e) =>
-                            onDarkChange(true)
-                        }
+                        onPress={(e) => onDarkChange(true)}
                         style={{
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -439,15 +505,15 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     };
 
     return (
-        <Body pageAnim={pageAnim} >
+        <Body pageAnim={pageAnim}>
             <TitleText
                 title={'Card Customization'}
                 description={'Customize the look of media cards that are shown throughout the app.'}
-                containerStyle={{paddingTop:20}}
+                containerStyle={{ paddingTop: 20 }}
             />
-            
+
             <View style={{ justifyContent: 'center', paddingVertical: 30 }}>
-                <View style={{width:'35%', alignSelf:'center'}}>
+                <View style={{ width: '35%', alignSelf: 'center' }}>
                     <MediaCard
                         coverImg={dummyData[mode].coverImage?.extraLarge}
                         titles={dummyData[mode].title}
@@ -462,8 +528,8 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                     <View>
                         <MediaProgressBar
                             progress={
-                                (dummyData[mode].episodes ?? dummyData[mode].mediaListEntry.progress) /
-                                2
+                                (dummyData[mode].episodes ??
+                                    dummyData[mode].mediaListEntry.progress) / 2
                             }
                             total={dummyData[mode].episodes ?? dummyData[mode].chapters}
                             mediaStatus={dummyData[mode].status}
@@ -472,12 +538,12 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         />
                     </View>
                 </View>
-                <ScrollView style={{flex:1}}>
+                <ScrollView style={{ flex: 1 }}>
                     <List.Subheader>Score Design</List.Subheader>
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        style={{flex:1}}
+                        style={{ flex: 1 }}
                         contentContainerStyle={{ paddingHorizontal: 10 }}
                     >
                         {Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
@@ -510,8 +576,8 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        style={{flex:1}}
-                        contentContainerStyle={{paddingHorizontal:10,}}
+                        style={{ flex: 1 }}
+                        contentContainerStyle={{ paddingHorizontal: 10 }}
                     >
                         {['english', 'romaji', 'native'].map((lang, idx) => (
                             <Chip
@@ -525,7 +591,9 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                                 textStyle={{
                                     textTransform: 'capitalize',
                                     color:
-                                        mediaLanguage === lang ? colors.primary : colors.onBackground,
+                                        mediaLanguage === lang
+                                            ? colors.primary
+                                            : colors.onBackground,
                                 }}
                                 selectedColor={colors.primary}
                             >
@@ -610,7 +678,7 @@ const TagBLSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
             <TitleText
                 title={'Blacklist Tags'}
                 description="Select tags that you want hidden. This will globally exclude content containing any of these tags."
-                containerStyle={{paddingTop: 10}}
+                containerStyle={{ paddingTop: 10 }}
             />
             <ScrollView
                 horizontal
@@ -711,7 +779,12 @@ const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
                         disabled={isActive}
                         status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
                     /> */}
-                    <Text variant='titleMedium' style={{ textTransform: 'capitalize', paddingLeft: 15 }}>{item}</Text>
+                    <Text
+                        variant="titleMedium"
+                        style={{ textTransform: 'capitalize', paddingLeft: 15 }}
+                    >
+                        {item}
+                    </Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Checkbox
                             // disabled={isActive}
@@ -736,13 +809,13 @@ const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
     };
 
     return (
-        <Body pageAnim={pageAnim} style={{flex:1, justifyContent:'center'}}>
+        <Body pageAnim={pageAnim} style={{ flex: 1, justifyContent: 'center' }}>
             <TitleText
                 title={'Explore Tabs'}
                 description="Select what type of content you want quick access to."
-                containerStyle={{paddingBottom: 20}}
+                containerStyle={{ paddingBottom: 20 }}
             />
-            <GestureHandlerRootView style={{flex:1, justifyContent:'center'}}>
+            <GestureHandlerRootView style={{ flex: 1, justifyContent: 'center' }}>
                 <DraggableFlatList
                     data={exploreTabOrder}
                     renderItem={renderItem}
@@ -757,9 +830,15 @@ const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 };
 
 const OutroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
-    return(
+    return (
         <Body pageAnim={pageAnim}>
-            <TitleText title='Setup Complete!' description={`For further customization, advanced settings can be found in the "More" tab. This setup can also be restarted from there.`} showLogo />
+            <TitleText
+                title="Setup Complete!"
+                description={
+                    'For further customization, advanced settings can be found in the "More" tab. This setup can also be restarted from there.'
+                }
+                showLogo
+            />
         </Body>
     );
 };
@@ -779,7 +858,7 @@ const RenderPage = ({ page, pageAnim }: Page) => {
         case 5:
             return <TabSetup pageAnim={pageAnim} />;
         case 6:
-            return <OutroPage pageAnim={pageAnim} />
+            return <OutroPage pageAnim={pageAnim} />;
         default:
             return <View />;
     }
@@ -791,7 +870,7 @@ const SetupModal = () => {
 
     const dispatch = useAppDispatch();
 
-    const {top} = useSafeAreaInsets();
+    const { top } = useSafeAreaInsets();
 
     const onPageChange = (navType: 'next' | 'prev' | number) => {
         if (typeof navType === 'number' && navType !== page.page) {
@@ -821,7 +900,16 @@ const SetupModal = () => {
                 }}
             />
             {/* <BackgroundAnimation /> */}
-            <View style={{width:'100%', paddingTop:top + 10, flexDirection:'row', alignItems:'center', padding: 10, justifyContent:'flex-end', }}>
+            <View
+                style={{
+                    width: '100%',
+                    paddingTop: top + 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: 10,
+                    justifyContent: 'flex-end',
+                }}
+            >
                 {/* <IconButton icon='animation-outline' /> */}
                 <Button onPress={() => dispatch(finishSetup())}>Skip Setup</Button>
             </View>

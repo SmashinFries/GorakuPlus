@@ -302,18 +302,17 @@ query StudioSearch($name: String, $page: Int, $sort: [StudioSort]) {
             id
             name
             media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
-				edges {
-					node {
-						bannerImage
-						coverImage {
-							extraLarge
-						}
-					}
-				}
-			}
+                edges {
+                    node {
+                        bannerImage
+                        coverImage {
+                            extraLarge
+                        }
+                    }
+                }
+            }
             isFavourite
             siteUrl
-
         }
     }
 }

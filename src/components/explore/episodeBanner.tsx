@@ -22,7 +22,7 @@ export const AiringBanner = ({ containerColor, textColor, text }: AiringBannerPr
                     startDate.month ?? '??'
                 }/${startDate.day ?? '??'}/${startDate.year ?? '????'}`}</Text>
             ) : ( */}
-            <Text variant='labelSmall' numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
+            <Text variant="labelSmall" numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
                 {/* {format === MediaFormat.Movie ? 'Movie:' : 'EP'}{' '}
                     {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
                     {timeTill} */}
@@ -46,7 +46,7 @@ const Styles = StyleSheet.create({
         overflow: 'visible',
         padding: 3,
         paddingVertical: 1,
-        justifyContent:'center',
+        justifyContent: 'center',
     },
     txt: {
         textAlign: 'center',

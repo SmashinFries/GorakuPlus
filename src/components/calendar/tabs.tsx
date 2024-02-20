@@ -164,7 +164,7 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
                 numColumns={3}
                 estimatedItemSize={211}
                 centerContent
-                contentContainerStyle={{ paddingVertical: 10}}
+                contentContainerStyle={{ paddingVertical: 10 }}
                 ListEmptyComponent={() => (
                     <View style={{ paddingVertical: 50 }}>
                         <RenderEmpty message={'Nothing to watch'} />

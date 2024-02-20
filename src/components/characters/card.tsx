@@ -21,35 +21,47 @@ const BORDER_RADIUS = 12;
 export const CharacterItem = ({ item, subTextColor, onNavigation }: CharacterItemProps) => {
     const { colors } = useTheme();
     return (
-        <Pressable style={[styles.container]} android_ripple={{ color: colors.primary, foreground: true }} onPress={onNavigation ? () => onNavigation(item.node?.id) : null}>
-                <Image source={{ uri: item.node?.image?.large }} style={[styles.img]} />
-                <LinearGradient
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: BORDER_RADIUS,
-                        overflow: 'hidden',
-                    }}
-                    locations={[0.4, 0.95]}
-                    colors={['transparent', 'black']}
-                />
-                <View style={[styles.btmContainer]}>
-                    <Text variant='labelMedium' numberOfLines={2} style={[styles.name]}>
-                        {item.node?.name?.full}
-                    </Text>
+        <Pressable
+            style={[styles.container]}
+            android_ripple={{ color: colors.primary, foreground: true }}
+            onPress={onNavigation ? () => onNavigation(item.node?.id) : null}
+        >
+            <Image source={{ uri: item.node?.image?.large }} style={[styles.img]} />
+            <LinearGradient
+                style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: BORDER_RADIUS,
+                    overflow: 'hidden',
+                }}
+                locations={[0.4, 0.95]}
+                colors={['transparent', 'black']}
+            />
+            <View style={[styles.btmContainer]}>
+                <Text variant="labelMedium" numberOfLines={2} style={[styles.name]}>
+                    {item.node?.name?.full}
+                </Text>
+            </View>
+            {item.node.isFavourite && (
+                <View style={{ position: 'absolute', top: -5, right: -5 }}>
+                    <IconButton icon="heart" iconColor="red" />
                 </View>
-                {item.node.isFavourite && (
-                    <View style={{ position: 'absolute', top: -5, right: -5 }}>
-                        <IconButton icon="heart" iconColor="red" />
-                    </View>
-                )}
+            )}
         </Pressable>
     );
 };
 
-export const CharacterLabel = ({role, favourites, fontColor}:{role:string; favourites:number; fontColor?:string}) => {
-    return(
+export const CharacterLabel = ({
+    role,
+    favourites,
+    fontColor,
+}: {
+    role: string;
+    favourites: number;
+    fontColor?: string;
+}) => {
+    return (
         <View>
             <Text variant="labelSmall" style={{ textTransform: 'capitalize', textAlign: 'center' }}>
                 {role}
@@ -73,9 +85,9 @@ export const CharacterItemMemo = memo(CharacterItem);
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        height:undefined,
+        height: undefined,
         overflow: 'hidden',
-        aspectRatio: 2/3,
+        aspectRatio: 2 / 3,
         borderRadius: BORDER_RADIUS,
     },
     img: {

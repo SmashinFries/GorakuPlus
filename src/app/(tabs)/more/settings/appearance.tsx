@@ -4,7 +4,11 @@ import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { MotiButton } from '@/components/moti';
 import { ListSubheader } from '@/components/titles';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { mediaCardAppearanceActions, setMediaCardAppearance, setSettings } from '@/store/slices/settingsSlice';
+import {
+    mediaCardAppearanceActions,
+    setMediaCardAppearance,
+    setSettings,
+} from '@/store/slices/settingsSlice';
 import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
 import { setTheme } from '@/store/theme/themeSlice';
 import { MotiPressable } from 'moti/interactions';
@@ -37,9 +41,16 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 
 const AppearancePage = () => {
     const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
-    const { btmTabLabels, btmTabShifting, navAnimation, allowSensorMotion, scoreVisualType, showItemListStatus, mediaLanguage, scoreColors } = useAppSelector(
-        (state) => state.persistedSettings,
-    );
+    const {
+        btmTabLabels,
+        btmTabShifting,
+        navAnimation,
+        allowSensorMotion,
+        scoreVisualType,
+        showItemListStatus,
+        mediaLanguage,
+        scoreColors,
+    } = useAppSelector((state) => state.persistedSettings);
 
     const dispatch = useAppDispatch();
     const { colors } = useTheme();
@@ -102,7 +113,6 @@ const AppearancePage = () => {
     const onMediaCardChange = (props: mediaCardAppearanceActions) => {
         dispatch(setMediaCardAppearance(props));
     };
-    
 
     return (
         <>

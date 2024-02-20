@@ -115,7 +115,10 @@ const WeebLabPage = () => {
                     const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
                     setGeneratedText(owoifyResult.text);
                 } catch (e) {
-                    Burnt.toast({ title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`, duration: TOAST.SHORT });
+                    Burnt.toast({
+                        title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+                        duration: TOAST.SHORT,
+                    });
                 }
                 break;
             case TextGenOptions.uvuify:
@@ -123,7 +126,10 @@ const WeebLabPage = () => {
                     const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
                     setGeneratedText(uvuifyResult.text);
                 } catch (e) {
-                    Burnt.toast({ title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`, duration: TOAST.SHORT });
+                    Burnt.toast({
+                        title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+                        duration: TOAST.SHORT,
+                    });
                 }
 
                 break;
@@ -132,7 +138,10 @@ const WeebLabPage = () => {
                     const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
                     setGeneratedText(uwuifyResult.text);
                 } catch (e) {
-                    Burnt.toast({ title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`, duration: TOAST.SHORT });
+                    Burnt.toast({
+                        title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+                        duration: TOAST.SHORT,
+                    });
                 }
 
                 break;

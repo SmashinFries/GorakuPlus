@@ -20,7 +20,7 @@ const CalendarPage = () => {
     const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
-    const {showNSFW} = useAppSelector((state) => state.persistedSettings);
+    const { showNSFW } = useAppSelector((state) => state.persistedSettings);
 
     const { data, loading, refetch, week } = useCalendar();
 
@@ -43,9 +43,12 @@ const CalendarPage = () => {
             case 'sunday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) => ep.airingAt > week.start && ep.airingAt < week.start + 86400,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start && ep.airingAt < week.start + 86400,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('sunday', `Sunday (${dataLength})`)
                         }
@@ -54,11 +57,13 @@ const CalendarPage = () => {
             case 'monday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) =>
-                                ep.airingAt > week.start + 86400 &&
-                                ep.airingAt < week.start + 86400 * 2,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 &&
+                                    ep.airingAt < week.start + 86400 * 2,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('monday', `Monday (${dataLength})`)
                         }
@@ -67,11 +72,13 @@ const CalendarPage = () => {
             case 'tuesday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) =>
-                                ep.airingAt > week.start + 86400 * 2 &&
-                                ep.airingAt < week.start + 86400 * 3,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 2 &&
+                                    ep.airingAt < week.start + 86400 * 3,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('tuesday', `Tuesday (${dataLength})`)
                         }
@@ -80,11 +87,13 @@ const CalendarPage = () => {
             case 'wednesday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) =>
-                                ep.airingAt > week.start + 86400 * 3 &&
-                                ep.airingAt < week.start + 86400 * 4,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 3 &&
+                                    ep.airingAt < week.start + 86400 * 4,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('wednesday', `Wednesday (${dataLength})`)
                         }
@@ -93,11 +102,13 @@ const CalendarPage = () => {
             case 'thursday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) =>
-                                ep.airingAt > week.start + 86400 * 4 &&
-                                ep.airingAt < week.start + 86400 * 5,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 4 &&
+                                    ep.airingAt < week.start + 86400 * 5,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('thursday', `Thursday (${dataLength})`)
                         }
@@ -106,11 +117,13 @@ const CalendarPage = () => {
             case 'friday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) =>
-                                ep.airingAt > week.start + 86400 * 5 &&
-                                ep.airingAt < week.start + 86400 * 6,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 5 &&
+                                    ep.airingAt < week.start + 86400 * 6,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('friday', `Friday (${dataLength})`)
                         }
@@ -119,9 +132,12 @@ const CalendarPage = () => {
             case 'saturday':
                 return (
                     <DayTab
-                        data={data.filter(
-                            (ep) => ep.airingAt > week.start + 86400 * 6 && ep.airingAt < week.end,
-                        ).filter(media => showNSFW || !media.media.isAdult)}
+                        data={data
+                            .filter(
+                                (ep) =>
+                                    ep.airingAt > week.start + 86400 * 6 && ep.airingAt < week.end,
+                            )
+                            .filter((media) => showNSFW || !media.media.isAdult)}
                         updateTitle={(dataLength) =>
                             updateTitle('saturday', `Saturday (${dataLength})`)
                         }
@@ -149,10 +165,12 @@ const CalendarPage = () => {
         <>
             <Appbar.Header>
                 <Appbar.Content title="Calendar" />
-                    {userID && <Appbar.Action
+                {userID && (
+                    <Appbar.Action
                         icon="filter-outline"
                         onPress={() => filterSheetRef.current.present()}
-                    />}
+                    />
+                )}
             </Appbar.Header>
             {!loading ? (
                 <TabView

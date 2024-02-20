@@ -30,11 +30,11 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
     const { bottom } = useSafeAreaInsets();
 
     const updateOnlyShowList = (val: boolean) => {
-        dispatch(updateCalendarDisplay({list_only: val}));
+        dispatch(updateCalendarDisplay({ list_only: val }));
     };
 
     const updateGridSize = (val: number) => {
-        dispatch(updateCalendarDisplay({grid_size: val}));
+        dispatch(updateCalendarDisplay({ grid_size: val }));
     };
 
     return (
@@ -54,16 +54,18 @@ export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods>((pr
                 style={{ paddingBottom: bottom + 30 }}
                 onLayout={(e) => setMainEntryHeight(e.nativeEvent.layout.height)}
             >
-                {userID && <List.Item
-                    title="Show List Only"
-                    right={() => (
-                        <Switch
-                            value={calendar.list_only}
-                            onValueChange={updateOnlyShowList}
-                            disabled={!userID}
-                        />
-                    )}
-                />}
+                {userID && (
+                    <List.Item
+                        title="Show List Only"
+                        right={() => (
+                            <Switch
+                                value={calendar.list_only}
+                                onValueChange={updateOnlyShowList}
+                                disabled={!userID}
+                            />
+                        )}
+                    />
+                )}
                 {/* <List.Subheader>Grid Size: {calendar.grid_size ?? 2} per row</List.Subheader>
                 <Slider value={calendar.grid_size ?? 2} onValueChange={val => updateGridSize(val)} step={1} minimumValue={1} maximumValue={3} thumbTintColor={colors.primary}/> */}
             </BottomSheetView>
