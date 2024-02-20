@@ -9,6 +9,7 @@ import {
 const { Navigator } = createMaterialBottomTabNavigator();
 
 export const MaterialBottomTabs = withLayoutContext<
+// @ts-ignore
     MaterialBottomTabNavigationOptions,
     typeof Navigator
 >(Navigator);
