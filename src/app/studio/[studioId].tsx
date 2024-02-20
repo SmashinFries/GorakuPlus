@@ -24,9 +24,9 @@ const StudioMediaListScreen = () => {
                 style={{
                     flex: 1,
                     alignItems: 'center',
-                    overflow: 'hidden',
-                    borderRadius: 12,
+                    justifyContent: 'flex-start',
                     marginVertical: 10,
+                    marginHorizontal: 5,
                 }}
             >
                 <MediaCard
@@ -42,6 +42,8 @@ const StudioMediaListScreen = () => {
                     imgBgColor={props.item.coverImage?.color}
                     showBanner={props.item.nextAiringEpisode ? true : false}
                     scoreDistributions={props.item.stats?.scoreDistribution}
+                    fitToParent
+                    isFavorite={props.item.isFavourite}
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}
@@ -78,8 +80,8 @@ const StudioMediaListScreen = () => {
                 }}
             />
             <FlashList
-                key={listKey}
-                numColumns={columns}
+                key={3}
+                numColumns={3}
                 data={studioData.data?.Studio.media?.nodes}
                 keyExtractor={(item, idx) => idx.toString()}
                 renderItem={RenderItem}
