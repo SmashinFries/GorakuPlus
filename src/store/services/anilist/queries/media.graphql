@@ -137,6 +137,7 @@ query AniMedia(
                     format
                     isFavourite
                     isLicensed
+                    bannerImage
                     status(version: 2)
                     title {
                         romaji
@@ -556,6 +557,7 @@ query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) 
                     meanScore
                     isAdult
                     isFavourite
+                    bannerImage
                     coverImage {
                         extraLarge
                         color
@@ -661,6 +663,7 @@ query StaffDetails(
                     format
                     isLicensed
                     isFavourite
+                    bannerImage
                     title {
                         romaji
                         english
