@@ -1,4 +1,4 @@
-import { Image } from 'expo-image';
+import { Image, ImageBackground } from 'expo-image';
 import { DimensionValue, Pressable, View, useWindowDimensions } from 'react-native';
 import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
 import {
@@ -16,6 +16,7 @@ import { NSFWLabel } from './labels';
 import { ScoreVisual } from './explore/itemScore';
 import { AiringBanner } from './explore/episodeBanner';
 import { ScoreVisualType } from '@/store/slices/settingsSlice';
+import useImageRotation from '@/hooks/useImageRotation';
 
 const BORDER_RADIUS = 12;
 
@@ -402,8 +403,10 @@ type StudioCardProps = {
     onPress: () => void;
     name: string;
     isFavourite?: boolean;
+    banners?: string[];
 };
 export const StudioCard = (props: StudioCardProps) => {
+    const img_src = useImageRotation(props.banners[0], props.banners);
     return (
         <View
             style={{
@@ -411,17 +414,20 @@ export const StudioCard = (props: StudioCardProps) => {
                 marginHorizontal: 10,
                 alignItems: 'center',
                 overflow: 'hidden',
-                borderRadius: 12,
+                borderRadius: 20,
             }}
         >
-            <Button
-                icon={props.isFavourite ? 'heart' : undefined}
-                onPress={props.onPress}
-                style={{ flex: 1, width: '100%' }}
-                mode="outlined"
-            >
-                {props.name}
-            </Button>
+            <ImageBackground source={{uri: img_src}} transition={2000} style={{ flex:1, width:'100%'}}>
+                <LinearGradient end={{x:1, y:0.5}} start={{x:0, y:0.5}} colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.9)', 'rgba(0,0,0,0.3)']} style={{position:'absolute', width:'100%', height:'100%'}} />
+                <Button
+                    icon={props.isFavourite ? 'heart' : undefined}
+                    onPress={props.onPress}
+                    style={{ flex: 1, width: '100%' }}
+                    mode="outlined"
+                >
+                    {props.name}
+                </Button>
+            </ImageBackground>
         </View>
     );
 };
