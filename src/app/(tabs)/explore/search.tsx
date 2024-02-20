@@ -32,7 +32,6 @@ import {
 import { cleanFilter } from '@/utils/search/cleanFilter';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { Stack, router } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Keyboard, Pressable, ScrollView, TextInput, useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
