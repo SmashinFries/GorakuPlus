@@ -30,6 +30,7 @@ import { updateCharArtDB } from '@/store/slices/charArtSlice';
 import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
+import { MediaBanner } from '@/components/media/banner';
 
 const CharacterScreen = () => {
     const { charId } = useLocalSearchParams<{ charId: string }>();
@@ -209,6 +210,7 @@ const CharacterScreen = () => {
                         loading={charData.isLoading}
                         shareLink={charData.data?.Character?.siteUrl}
                         onEdit={() => openWebBrowser(`https://anilist.co/edit/character/${charId}`)}
+                        BgImage={({style}) => charData?.data?.Character?.media?.edges?.length > 0 && <MediaBanner url={charData?.data?.Character?.media?.edges[0]?.node?.bannerImage ?? charData?.data?.Character?.media?.edges[0]?.node?.coverImage?.extraLarge} additionalUrls={charData?.data?.Character?.media?.edges?.length > 0 ? charData?.data?.Character?.media?.edges?.map(edge => edge.node.bannerImage) : undefined} style={style} />}
                     >
                         <View style={[styles.bodyContainer, { backgroundColor: 'transparent' }]}>
                             <TransYUpViewMem animation={true} delay={550}>

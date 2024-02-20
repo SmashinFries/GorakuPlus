@@ -121,6 +121,7 @@ const MediaScreen = () => {
                                     aniData?.data?.Media?.bannerImage ??
                                     aniData?.data?.Media?.coverImage?.extraLarge
                                 }
+                                additionalUrls={aniData?.data?.Media?.relations?.edges?.length > 0 ? aniData?.data?.Media?.relations?.edges?.map(edge => edge.node.bannerImage) : undefined}
                                 allowMotion={allowSensorMotion}
                             />
                         )}

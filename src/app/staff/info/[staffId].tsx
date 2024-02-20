@@ -25,6 +25,7 @@ import { FlashList } from '@shopify/flash-list';
 import { StaffMediaCard } from '@/components/staff/media';
 import { router, useLocalSearchParams } from 'expo-router';
 import { HTMLText } from '@/components/text';
+import { MediaBanner } from '@/components/media/banner';
 
 const StafPage = () => {
     const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -90,6 +91,7 @@ const StafPage = () => {
             loading={isLoading}
             shareLink={data?.Staff?.siteUrl}
             onEdit={() => openWebBrowser(`https://anilist.co/edit/staff/${id}`)}
+            BgImage={({style}) => data?.Staff?.staffMedia?.edges?.length > 0 && <MediaBanner url={data?.Staff?.staffMedia?.edges[0]?.node?.bannerImage ?? data?.Staff?.staffMedia?.edges[0]?.node?.coverImage?.extraLarge} additionalUrls={data?.Staff?.staffMedia?.edges?.length > 0 ? data?.Staff?.staffMedia?.edges?.map(edge => edge.node.bannerImage) : undefined} style={style} />}
             // favorite={data?.Staff?.isFavourite}
         >
             <TransYUpView style={{ paddingTop: 100 }}>
