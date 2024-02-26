@@ -11,6 +11,7 @@ fragment mediaListEntry on MediaList {
     hiddenFromStatusLists
     customLists
     advancedScores
+    createdAt
     notes
     updatedAt
     startedAt {
@@ -53,7 +54,11 @@ fragment mediaListEntry on MediaList {
         tags {
             id
             name
-            rank
+            description
+            isAdult
+            isMediaSpoiler
+            isGeneralSpoiler
+            category
         }
         bannerImage
         startDate {
@@ -77,18 +82,15 @@ fragment mediaListEntry on MediaList {
     }
 }
 
-query UserListCollection(
+query UserAnimeListCollection(
     $userId: Int
     $userName: String
-    $type: MediaType
-    $status: MediaListStatus
     $sort: [MediaListSort]
 ) {
     MediaListCollection(
         userId: $userId
         userName: $userName
-        type: $type
-        status: $status
+        type: ANIME
         sort: $sort
     ) {
         lists {
@@ -99,15 +101,48 @@ query UserListCollection(
                 ...mediaListEntry
             }
         }
+        user {
+			statistics {
+				anime {
+					count
+				}
+				manga {
+					count
+				}
+			}
+		}
     }
-    GenreCollection
-    MediaTagCollection {
-        id
-        name
-        isAdult
-        description
-        isGeneralSpoiler
-        isMediaSpoiler
+}
+
+query UserMangaListCollection(
+    $userId: Int
+    $userName: String
+    $sort: [MediaListSort]
+) {
+    MediaListCollection(
+        userId: $userId
+        userName: $userName
+        type: MANGA
+        sort: $sort
+    ) {
+        lists {
+            name
+            isCustomList
+            isCompletedList: isSplitCompletedList
+            entries {
+                ...mediaListEntry
+            }
+        }
+        user {
+			statistics {
+				anime {
+					count
+				}
+				manga {
+					count
+				}
+			}
+		}
     }
 }
 
