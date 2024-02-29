@@ -111,6 +111,7 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
             baseStyle={{ color: colors.onBackground }}
             renderersProps={renderersProps}
             renderers={renderers}
+            defaultTextProps={{selectable: true, selectionColor: colors.inversePrimary}}
         />
     );
 };
