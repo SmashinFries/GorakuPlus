@@ -25,7 +25,7 @@ const SettingsHomePage = () => {
             />
             <List.Item
                 title={'Content'}
-                description={'NSFW, Tab Blacklist, scoring, and more'}
+                description={'Tab Order, NSFW, Tag Blacklist, and more'}
                 onPress={() => {
                     router.push('/more/settings/media');
                 }}
