@@ -12,6 +12,8 @@ import { DanbooruRating } from '@/store/services/danbooru/types';
 import { BasicDialogProps } from '@/types';
 import { ExploreTabsProps } from '@/types/navigation';
 import { setSettings } from '@/store/slices/settingsSlice';
+import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { updateListFilter } from '@/store/slices/listSlice';
 
 type DefaultDescDialogProps = BasicDialogProps & {
     defaultValue: 'ani' | 'mal';
@@ -102,6 +104,106 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
                             // disabled={isActive}
                             status={validTabs.includes(item) ? 'checked' : 'unchecked'}
                         />
+                        <IconButton icon="drag-vertical" onLongPress={drag} />
+                    </View>
+                    {/* <Text>{item}</Text> */}
+                </TouchableOpacity>
+            </ScaleDecorator>
+            // <ScaleDecorator>
+            //     <TouchableOpacity
+            //         activeOpacity={1}
+            //         onLongPress={drag}
+            //         disabled={isActive}
+            //         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
+            //     >
+            //         <Text style={styles.text}>{item}</Text>
+            //     </TouchableOpacity>
+            // </ScaleDecorator>
+        );
+    };
+
+    return (
+        <Dialog visible={visible} onDismiss={onDismiss}>
+            <Dialog.Title>Edit Explore Tabs</Dialog.Title>
+            <Dialog.Content style={{ overflow: 'hidden' }}>
+                <GestureHandlerRootView>
+                    <DraggableFlatList
+                        data={tabOrder}
+                        renderItem={renderItem}
+                        keyExtractor={(item, idx) => idx.toString()}
+                        onDragEnd={({ data }) => {
+                            setTabOrder(data);
+                        }}
+                    />
+                </GestureHandlerRootView>
+            </Dialog.Content>
+            <Dialog.Actions>
+                <Button onPress={onDismiss}>Cancel</Button>
+                <Button onPress={onDone}>Done</Button>
+            </Dialog.Actions>
+        </Dialog>
+    );
+};
+
+export const ListTabsDialog = ({
+    visible,
+    type,
+    onDismiss,
+}: BasicDialogProps & { type: MediaType }) => {
+    const dispatch = useAppDispatch();
+    const { animeTabOrder, mangaTabOrder } = useAppSelector((state) => state.listFilter);
+
+    const [tabOrder, setTabOrder] = useState<string[]>(
+        type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
+    );
+    // const [validTabs, setValidTabs] = useState<(keyof ExploreTabsProps)[]>(exploreTabs);
+
+    const onDone = () => {
+        updateTabOrder(tabOrder);
+        onDismiss();
+    };
+
+    const updateTabOrder = (tabs: string[]) => {
+        dispatch(
+            updateListFilter({
+                entryType: type === MediaType.Anime ? 'animeTabOrder' : 'mangaTabOrder',
+                value: tabs,
+            }),
+        );
+    };
+
+    const renderItem = ({ item, drag, isActive }: RenderItemParams<string>) => {
+        if (!item) return null;
+        return (
+            <ScaleDecorator>
+                <TouchableOpacity
+                    style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                    // onPress={() =>
+                    //     setValidTabs(
+                    //         validTabs.includes(item)
+                    //             ? validTabs.filter((tab) => tab !== item)
+                    //             : [...validTabs, item],
+                    //     )
+                    // }
+                    activeOpacity={1}
+                    disabled={isActive}
+                >
+                    {/* <Checkbox.Item
+                        label={item}
+                        disabled={isActive}
+                        status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
+                    /> */}
+                    <Text style={{ textTransform: 'capitalize', paddingLeft: 15 }}>{item}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {/* <Checkbox
+                            // disabled={isActive}
+                            status={validTabs.includes(item) ? 'checked' : 'unchecked'}
+                        /> */}
                         <IconButton icon="drag-vertical" onLongPress={drag} />
                     </View>
                     {/* <Text>{item}</Text> */}
