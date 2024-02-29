@@ -9,6 +9,9 @@ import { StatusIconMem } from '@/components/media/icons';
 import { MediaTitleView } from '@/components/media/text';
 import { useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
+import use3dPan from '@/hooks/animations/use3dPan';
+import { GestureDetector } from 'react-native-gesture-handler';
+import Animated from 'react-native-reanimated';
 
 type FrontCoverProps = {
     data: AniMediaQuery['Media'];
@@ -18,6 +21,7 @@ type FrontCoverProps = {
 export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
     const { width } = useWindowDimensions();
     const { colors } = useTheme();
+    const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 
     const StatusAnim = useCallback(() => {
         return (
@@ -71,11 +75,18 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 
                 {/* Cover Image */}
                 <TransYUpViewMem>
-                    <Image
-                        style={[styles.coverImg, { backgroundColor: colors.onSurfaceVariant }]}
-                        contentFit="cover"
-                        source={{ uri: data?.coverImage?.extraLarge }}
-                    />
+                    <GestureDetector gesture={panGesture}>
+                        <Animated.Image
+                            style={[
+                                animatedStyle,
+                                styles.coverImg,
+                                { backgroundColor: colors.onSurfaceVariant },
+                            ]}
+                            // contentFit="cover"
+                            resizeMode={'cover'}
+                            source={{ uri: data?.coverImage?.extraLarge }}
+                        />
+                    </GestureDetector>
                     {/* {data?.status && <StatusAnim />} */}
                 </TransYUpViewMem>
 
