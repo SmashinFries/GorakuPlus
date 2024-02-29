@@ -21,23 +21,21 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
     const { colors } = useTheme();
     const img_src = useImageRotation(url, additionalUrls);
 
-    const rotation = allowMotion
-        ? useAnimatedSensor(SensorType.ROTATION, {
-              interval: 20,
-          })
-        : null;
+    const { sensor } = useAnimatedSensor(SensorType.ROTATION, { interval: 20 });
 
-    const animatedStyle = allowMotion
-        ? useAnimatedStyle(() => {
-              const { pitch, roll } = rotation?.sensor.value;
-              return {
-                  transform: [
-                      { translateX: withSpring(-roll * 25, { damping: 200 }) },
-                      { translateY: withSpring(-pitch * 25, { damping: 200 }) },
-                  ],
-              };
-          })
-        : null;
+    const animatedStyle =
+        allowMotion && sensor
+            ? useAnimatedStyle(() => {
+                  const { pitch, roll } = sensor?.value;
+                  return {
+                      transform: [
+                          { translateX: withSpring(-roll * 25, { damping: 200 }) },
+                          { translateY: withSpring(-pitch * 25, { damping: 200 }) },
+                          { matrix: [] },
+                      ],
+                  };
+              })
+            : {};
 
     return (
         <Animated.View style={[style, styles.container]}>
