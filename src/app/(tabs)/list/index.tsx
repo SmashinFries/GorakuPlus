@@ -344,28 +344,7 @@ const ListTabs = ({
     const [index, setIndex] = useState(0);
     const [tabRoutes, setTabRoutes] = useState<{ key: string; title: string }[]>(routes);
 
-    // const reorderedRoutes = useMemo(() => {
-    //     if (!routes) return [];
-    //     const orderedRouteNames =
-    //         type === MediaType.Anime
-    //             ? animeTabOrder.map((routeName) => routeName)
-    //             : mangaTabOrder.map((routeName) => routeName);
-    //     const newRoutes =
-    //         type === MediaType.Anime
-    //             ? animeTabOrder.map((routeName) => ({ key: routeName, title: routeName }))
-    //             : mangaTabOrder.map((routeName) => ({ key: routeName, title: routeName }));
-    //     for (const route of routes) {
-    //         if (!orderedRouteNames.includes(route.key)) {
-    //             console.log('adding', route.key);
-    //             newRoutes.push(route);
-    //         }
-    //     }
-    //     console.log('newRoutes:', newRoutes);
-    //     return newRoutes;
-    // }, [animeTabOrder, mangaTabOrder, routes]);
-
     const updateTitleCount = (key: string, total: number) => {
-        console.log('updating title:', key, total);
         setTabRoutes((prevRoutes) =>
             prevRoutes.map((route) =>
                 route.key === key ? { ...route, title: `${route.title} (${total})` } : route,
@@ -390,7 +369,6 @@ const ListTabs = ({
 
     // useEffect(() => {
     //     if (data) {
-    //         console.log('lists:', data?.MediaListCollection?.lists.length)
     //         setRoutes(data?.MediaListCollection?.lists.map((list) => ({ key: list.name, title: list.name })));
     //     }
     //     // setRoutes(
@@ -422,7 +400,6 @@ const ListTabs = ({
                       }));
             for (const route of routes) {
                 if (!orderedRouteNames.includes(route.key)) {
-                    console.log('adding', route.key);
                     newRoutes.push(route);
                 }
             }
@@ -434,7 +411,6 @@ const ListTabs = ({
                     ? prevRoutes
                     : newRoutes,
             );
-            console.log('set new route order!');
         }
     }, [data, animeTabOrder, mangaTabOrder]);
 
@@ -501,9 +477,7 @@ const ListPage = () => {
     };
 
     useEffect(() => {
-        console.log('root routes:', rootRoutes);
         if (rootRoutes.length > 0) {
-            console.log('setting routes:', rootRoutes);
             setRoutes(rootRoutes);
         }
     }, [rootRoutes]);

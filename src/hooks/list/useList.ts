@@ -106,7 +106,6 @@ export const useList = (userId: number) => {
 		setAnimeRoutes(aRoutes);
 		setMangaRoutes(mRoutes);
 		setLoading(false);
-		console.log('FETCHED ALL');
 	};
 
 	const refreshAnimeList = async () => {
@@ -128,12 +127,9 @@ export const useList = (userId: number) => {
 		const newRoutes = animeTabOrder.map((routeName) => ({ key: routeName, title: routeName }));
 		for (const route of animeRoutes) {
 			if (!orderedRouteNames.includes(route.key)) {
-				console.log('adding', route.key)
 				newRoutes.push(route);
 			}
 		}
-		console.log('NEW ROUTES:', newRoutes);
-		console.log('ORDERED ROUTES:', orderedRouteNames);
 		return newRoutes
 	}, [animeTabOrder, animeRoutes])
 
@@ -158,7 +154,6 @@ export const useList = (userId: number) => {
 
 	useEffect(() => {
 		if (userId && animeList.isUninitialized && mangaList.isUninitialized) {
-			console.log('FETCHING ALL LISTS')
 			fetchAll();
 		}
 	}, [])
