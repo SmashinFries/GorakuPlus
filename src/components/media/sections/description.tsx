@@ -31,10 +31,11 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
             contentWidth={width}
             baseStyle={{ color: colors.onBackground }}
             source={{ html: aniDescription }}
+            defaultTextProps={{selectable: true, selectionColor: colors.inversePrimary}}
         />
     );
     const MalDesc = () => (
-        <Text selectable>
+        <Text selectable selectionColor={colors.inversePrimary}>
             {isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
         </Text>
     );
