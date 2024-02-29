@@ -50,6 +50,16 @@ const SettingsHomePage = () => {
                 )}
             />
             <List.Item
+                title={'Storage'}
+                description={'Clear caches'}
+                onPress={() => {
+                    router.push('/more/settings/storage');
+                }}
+                left={(props) => (
+                    <List.Icon {...props} color={colors.primary} icon="database-cog-outline" />
+                )}
+            />
+            <List.Item
                 title={'Setup Guide'}
                 description={'Guide for a minimal and easy setup'}
                 onPress={() => dispatch(restartSetup())}
