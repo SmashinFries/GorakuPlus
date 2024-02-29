@@ -2,6 +2,7 @@ import { Image, ImageBackground } from 'expo-image';
 import { DimensionValue, Pressable, View, useWindowDimensions } from 'react-native';
 import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
 import {
+    MediaList,
     MediaListStatus,
     MediaStatus,
     MediaTitle,
@@ -17,6 +18,7 @@ import { ScoreVisual } from './explore/itemScore';
 import { AiringBanner } from './explore/episodeBanner';
 import { ScoreVisualType } from '@/store/slices/settingsSlice';
 import useImageRotation from '@/hooks/useImageRotation';
+import { useAppTheme } from '@/store/theme/theme';
 
 const BORDER_RADIUS = 12;
 
@@ -43,7 +45,7 @@ type MediaCardProps = {
 };
 export const MediaCard = (props: MediaCardProps) => {
     const card_height = props.height ?? 210;
-    const { colors } = useTheme();
+    const { colors } = useAppTheme();
     const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
         (state) => state.persistedSettings,
     );
@@ -68,8 +70,11 @@ export const MediaCard = (props: MediaCardProps) => {
         >
             <Image
                 contentFit="cover"
-                transition={800}
+                recyclingKey={props.coverImg}
+                transition={1200}
                 source={{ uri: props.coverImg }}
+                placeholder={colors.blurhash}
+                placeholderContentFit='cover'
                 style={{
                     height: '100%',
                     width: '100%',
@@ -228,7 +233,7 @@ export const MediaCardRow = (props: MediaCardRowProps) => {
 };
 
 type MediaProgressBarProps = {
-    mediaListEntry?: any;
+    mediaListEntry?: MediaList;
     progress: number;
     showListStatus?: boolean;
     mediaStatus?: MediaStatus;
@@ -254,7 +259,7 @@ export const MediaProgressBar = ({
             ]}
         >
             <ProgressBar
-                progress={total && progress ? progress / total : 1}
+                progress={total && progress ? progress / total : progress === 0 ? 0 : 1}
                 style={{
                     alignSelf: 'center',
                     height: 8,
@@ -265,25 +270,23 @@ export const MediaProgressBar = ({
                 indeterminate={mediaListEntry?.status === MediaListStatus.Current && !total}
                 color={mediaListEntry?.status ? listColor(mediaListEntry?.status) : undefined}
             />
-            {showListStatus ?? showItemListStatus ? (
-                <Text
-                    style={{
-                        textAlign: 'center',
-                        color: colors.onSurfaceVariant,
-                        textTransform: 'capitalize',
-                    }}
-                    variant="labelMedium"
-                >
-                    {mediaListEntry?.status}
-                    {mediaListEntry?.progress && mediaStatus !== MediaStatus.Finished
-                        ? ' · ' +
-                          mediaListEntry?.progress +
-                          (mediaListEntry?.status !== MediaListStatus.Repeating
-                              ? '/' + (total && total !== 0 ? total : '∞')
-                              : '')
-                        : null}
-                </Text>
-            ) : null}
+            <Text
+                style={{
+                    textAlign: 'center',
+                    color: colors.onSurfaceVariant,
+                    textTransform: 'capitalize',
+                }}
+                variant="labelMedium"
+            >
+                {showListStatus ?? showItemListStatus ? mediaListEntry?.status : null}
+                {mediaListEntry?.progress >= 0 
+                    ? `${showListStatus ?? showItemListStatus ? ' · ' : ''}` +
+                        mediaListEntry?.progress +
+                        (mediaListEntry?.status !== MediaListStatus.Repeating
+                            ? '/' + (total && total !== 0 ? total : '∞')
+                            : '')
+                    : null}
+            </Text>
         </View>
     );
 };
@@ -460,6 +463,7 @@ export const DanbooruImageCard = ({
     disableAR = false,
     onNavigate,
 }: DanbooruImageCardProps) => {
+    const { colors } = useAppTheme();
     const { width, height } = useWindowDimensions();
     // const { blurNSFW } = useAppSelector((state) => state.persistedSettings);
     const { blurAmount, toggleBlur } = useNsfwBlur(item.rating);
@@ -474,6 +478,7 @@ export const DanbooruImageCard = ({
             onPress={() => onNavigate(item.id)}
             style={{
                 borderRadius: 12,
+                aspectRatio: disableAR ? undefined : preview?.width / preview?.height,
             }}
         >
             <Image
@@ -481,13 +486,15 @@ export const DanbooruImageCard = ({
                 transition={800}
                 source={{ uri: preview.url }}
                 contentFit="cover"
+                placeholder={colors.blurhash}
+                placeholderContentFit='cover'
+                recyclingKey={preview.url}
                 style={{
-                    aspectRatio: disableAR ? undefined : preview?.width / preview?.height,
+                    aspectRatio: !disableAR ? undefined : preview?.width / preview?.height,
                     borderRadius: 6,
-                    // width: width / 2 - 8,
-                    width: 200,
-                    height: disableAR ? preview?.height : undefined,
-                    maxHeight: 200,
+                    width: disableAR ? width / 2 - 8 : '100%',
+                    height:disableAR ? 200 : '100%',
+                    maxHeight: disableAR ? 200 : undefined,
                 }}
             />
             <NSFWLabel level={item.rating} />
