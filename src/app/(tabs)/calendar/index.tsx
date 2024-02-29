@@ -1,17 +1,21 @@
 import { CalendarFilterSheet } from '@/components/calendar/bottomsheet';
-import { DayTab } from '@/components/calendar/tabs';
-import { RenderTabBar } from '@/components/tab';
+import { DayTabMemo as DayTab } from '@/components/calendar/tabs';
+import { RenderTabBar, TabBarWithChip } from '@/components/tab';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
 import { useAppSelector } from '@/store/hooks';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Appbar, useTheme } from 'react-native-paper';
-import { TabBar, TabView } from 'react-native-tab-view';
-
-const Days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+import { TabBar, TabView, SceneRendererProps } from 'react-native-tab-view';
 
 type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+const Days:WeekDay[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+
+type CalendarRenderSceneProps = SceneRendererProps & {
+    route: { key: WeekDay; title: WeekDay | string }
+}
 
 const CalendarPage = () => {
     const dayOfWeek = new Date().getDay();
@@ -32,115 +36,63 @@ const CalendarPage = () => {
         }),
     );
 
-    const updateTitle = (key: string, newTitle: string) => {
-        setRoutes((prevRoutes) =>
-            prevRoutes.map((route) => (route.key === key ? { ...route, title: newTitle } : route)),
-        );
+    const updateAllTitles = (listOnly = false) => {
+        let newRouteTitles = [];
+        if (listOnly) {
+            for (const day of Days) {
+                newRouteTitles.push({ key: day, title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).filter((ep) => (ep.media?.mediaListEntry)).length})` });
+            }
+        } else {
+            for (const day of Days) {
+                newRouteTitles.push({ key: day, title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).length})` })
+            }
+        }
+        setRoutes(newRouteTitles);
+
     };
 
-    const renderScene = ({ route }: { route: { key: WeekDay; title: WeekDay | string } }) => {
+    const renderScene = ({ route }: CalendarRenderSceneProps) => {
         switch (route.key) {
             case 'sunday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start && ep.airingAt < week.start + 86400,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('sunday', `Sunday (${dataLength})`)
-                        }
+                        data={data.sunday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             case 'monday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 &&
-                                    ep.airingAt < week.start + 86400 * 2,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('monday', `Monday (${dataLength})`)
-                        }
+                        data={data.monday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             case 'tuesday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 2 &&
-                                    ep.airingAt < week.start + 86400 * 3,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('tuesday', `Tuesday (${dataLength})`)
-                        }
+                        data={data.tuesday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             case 'wednesday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 3 &&
-                                    ep.airingAt < week.start + 86400 * 4,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('wednesday', `Wednesday (${dataLength})`)
-                        }
+                        data={data.wednesday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             case 'thursday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 4 &&
-                                    ep.airingAt < week.start + 86400 * 5,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('thursday', `Thursday (${dataLength})`)
-                        }
+                        data={data.thursday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             case 'friday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 5 &&
-                                    ep.airingAt < week.start + 86400 * 6,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('friday', `Friday (${dataLength})`)
-                        }
+                        data={data.friday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             case 'saturday':
                 return (
                     <DayTab
-                        data={data
-                            .filter(
-                                (ep) =>
-                                    ep.airingAt > week.start + 86400 * 6 && ep.airingAt < week.end,
-                            )
-                            .filter((media) => showNSFW || !media.media.isAdult)}
-                        updateTitle={(dataLength) =>
-                            updateTitle('saturday', `Saturday (${dataLength})`)
-                        }
+                        data={data.saturday.filter((media) => showNSFW || !media.media.isAdult)}
                     />
                 );
             default:
@@ -161,6 +113,12 @@ const CalendarPage = () => {
     //     );
     // }, [colors, data]);
 
+    useEffect(() => {
+        if (data) {
+            updateAllTitles();
+        }
+    },[data, showNSFW])
+
     return (
         <>
             <Appbar.Header>
@@ -178,15 +136,15 @@ const CalendarPage = () => {
                     renderScene={renderScene}
                     onIndexChange={setIndex}
                     initialLayout={{ width: layout.width }}
-                    renderTabBar={RenderTabBar}
+                    renderTabBar={TabBarWithChip}
                     swipeEnabled={true}
                 />
             ) : (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <ActivityIndicator size={'large'} />
+                    <ActivityIndicator size={'small'} />
                 </View>
             )}
-            <CalendarFilterSheet ref={filterSheetRef} />
+            <CalendarFilterSheet ref={filterSheetRef} updateAllTitles={(onList:boolean) => updateAllTitles(onList)} />
         </>
     );
 };
