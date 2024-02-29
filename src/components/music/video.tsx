@@ -153,10 +153,10 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
             }
 
             if (playbackStatus.isBuffering) {
-                setIsLoading(true);
+                // setIsLoading(true);
                 // Update your UI for the buffering state
             } else {
-                setIsLoading(false);
+                // setIsLoading(false);
             }
 
             if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
@@ -179,11 +179,11 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
             const song = await Audio.Sound.createAsync({
                 uri: theme?.animethemeentries[0].videos[0]?.audio?.link,
             });
+            setIsLoading(false);
             song.sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
             if (song.status.isLoaded) {
                 setTotalDuration(song.status.durationMillis);
             }
-            setIsLoading(false);
             setSound(song.sound);
             setIsPlaying(true);
             await song.sound.playAsync();
