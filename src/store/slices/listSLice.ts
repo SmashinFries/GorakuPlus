@@ -1,10 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { MediaListSort, MediaListStatus, MediaTag } from '../services/anilist/generated-anilist';
 
 // Define a type for the slice state
 export interface ListFilterState {
     query?: string;
+    sort?: MediaListSort;
     genre?: string[];
+    tags_include?: MediaTag[];
+    tags_exclude?: MediaTag[];
+    animeTabOrder?: MediaListStatus[] | string[];
+    mangaTabOrder?: MediaListStatus[] | string[];
 }
 
 type filterActions = {
@@ -15,7 +21,26 @@ type filterActions = {
 // Define the initial state using that type
 const initialState: ListFilterState = {
     query: '',
+    sort: MediaListSort.AddedTimeDesc,
     genre: [],
+    tags_include: [],
+    tags_exclude: [],
+    animeTabOrder: [
+        "Watching",
+        "Planning",
+        "Completed",
+        "Rewatching",
+        "Paused",
+        "Dropped"
+    ],
+    mangaTabOrder: [
+        "Reading",
+        "Planning",
+        "Completed",
+        "Rereading",
+        "Paused",
+        "Dropped"
+    ],
 };
 
 export const listFilterSlice = createSlice({
