@@ -6,6 +6,7 @@ import {
 import {
     DefaultDescDialog,
     ExploreTabsDialog,
+    ListTabsDialog,
     NSFWLevelDialog,
 } from '@/components/more/settings/media/dialog';
 import { FetchIntervalDialog } from '@/components/more/settings/notifications/dialog';
@@ -25,6 +26,7 @@ import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { List, Portal, Switch, Text, useTheme } from 'react-native-paper';
+import { MediaType } from '@/store/services/anilist/generated-anilist';
 
 const MediaSettingsPage = () => {
     const {
@@ -43,6 +45,7 @@ const MediaSettingsPage = () => {
     } = useAppSelector((state) => state.persistedSettings);
     const { searchLimit } = useAppSelector((state) => state.persistedHistory);
     const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
+    const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
     const dispatch = useAppDispatch();
     const { colors } = useTheme();
@@ -55,8 +58,12 @@ const MediaSettingsPage = () => {
     const [showNsfwLevelDialog, setShowNsfwLevelDialog] = useState(false);
 
     const [expTbsVis, setExpTbsVis] = useState<boolean>(false);
+    const [animeListTabVis, setAnimeListTabVis] = useState<boolean>(false);
+    const [mangaListTabVis, setMangaListTabVis] = useState<boolean>(false);
 
     const toggleExploreTabOptions = (isVis: boolean) => setExpTbsVis(isVis);
+    const toggleAnimeListTabOptions = (isVis: boolean) => setAnimeListTabVis(isVis);
+    const toggleMangaListTabOptions = (isVis: boolean) => setMangaListTabVis(isVis);
 
     const editExploreTabs = useCallback((tabs: (keyof ExploreTabsProps)[]) => {
         dispatch(setSettings({ entryType: 'exploreTabs', value: tabs }));
@@ -69,7 +76,7 @@ const MediaSettingsPage = () => {
     return (
         <>
             <ScrollView>
-                <ListSubheader title="Display" />
+                <ListSubheader title="Tab Order" />
                 <List.Item
                     title={'Explore Tabs'}
                     description={exploreTabOrder
@@ -78,6 +85,19 @@ const MediaSettingsPage = () => {
                     descriptionStyle={{ textTransform: 'capitalize' }}
                     onPress={() => toggleExploreTabOptions(true)}
                 />
+                <List.Item
+                    title={'Anime List Tabs'}
+                    description={'Customize the order of your anime lists'}
+                    onPress={() => toggleAnimeListTabOptions(true)}
+                    disabled={!userID}
+                />
+                <List.Item
+                    title={'Manga List Tabs'}
+                    description={'Customize the order of your manga lists'}
+                    onPress={() => toggleMangaListTabOptions(true)}
+                    disabled={!userID}
+                />
+                <ListSubheader title="Description Source" />
                 <List.Item
                     title="Default Description"
                     description={defaultDescription === 'ani' ? 'AniList' : 'MyAnimeList'}
@@ -194,6 +214,16 @@ const MediaSettingsPage = () => {
                 <ExploreTabsDialog
                     visible={expTbsVis}
                     onDismiss={() => toggleExploreTabOptions(false)}
+                />
+                <ListTabsDialog
+                    visible={animeListTabVis}
+                    onDismiss={() => toggleAnimeListTabOptions(false)}
+                    type={MediaType.Anime}
+                />
+                <ListTabsDialog
+                    visible={mangaListTabVis}
+                    onDismiss={() => toggleMangaListTabOptions(false)}
+                    type={MediaType.Manga}
                 />
                 <DefaultScoreDialog
                     visible={showDefaultScoreDialog}
