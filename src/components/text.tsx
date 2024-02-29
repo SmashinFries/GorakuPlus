@@ -46,7 +46,7 @@ export const ListHeading = ({
                 <Text variant="titleLarge">{title}</Text>
                 {subtitle ? (
                     <Text
-                        variant="titleSmall"
+                        variant="labelLarge"
                         onPress={subtitlePress}
                         style={subtitleStyle ?? undefined}
                     >
@@ -111,7 +111,7 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
             baseStyle={{ color: colors.onBackground }}
             renderersProps={renderersProps}
             renderers={renderers}
-            defaultTextProps={{selectable: true, selectionColor: colors.inversePrimary}}
+            defaultTextProps={{ selectable: true, selectionColor: colors.inversePrimary }}
         />
     );
 };
