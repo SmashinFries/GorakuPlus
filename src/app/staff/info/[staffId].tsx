@@ -26,6 +26,9 @@ import { StaffMediaCard } from '@/components/staff/media';
 import { router, useLocalSearchParams } from 'expo-router';
 import { HTMLText } from '@/components/text';
 import { MediaBanner } from '@/components/media/banner';
+import Animated from 'react-native-reanimated';
+import use3dPan from '@/hooks/animations/use3dPan';
+import { GestureDetector } from 'react-native-gesture-handler';
 
 const StafPage = () => {
     const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -36,6 +39,8 @@ const StafPage = () => {
 
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
+
+    const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 
     const { colors } = useTheme();
     const { data, isLoading, isError } = useStaffDetailsQuery(
@@ -112,35 +117,37 @@ const StafPage = () => {
             // favorite={data?.Staff?.isFavourite}
         >
             <TransYUpView style={{ paddingTop: 100 }}>
-                <MotiView style={[styles.container]}>
-                    <MotiView style={{ width: 200 }}>
-                        <Image
-                            source={{ uri: data?.Staff?.image?.large }}
-                            style={styles.avatar}
-                            contentFit="cover"
-                        />
+                <View style={[styles.container]}>
+                    <GestureDetector gesture={panGesture}>
+                        <Animated.View style={[animatedStyle, { height: 240, aspectRatio: 2 / 3 }]}>
+                            <Image
+                                source={{ uri: data?.Staff?.image?.large }}
+                                style={styles.avatar}
+                                contentFit="cover"
+                            />
 
-                        <MotiView style={[styles.avatarFavsContainer]}>
-                            <RNText
-                                style={{
-                                    fontWeight: 'bold',
-                                    color: MD3DarkTheme.colors.onBackground,
-                                }}
-                            >
-                                {data?.Staff?.favourites} ❤
-                            </RNText>
-                        </MotiView>
-                    </MotiView>
+                            <View style={[styles.avatarFavsContainer]}>
+                                <RNText
+                                    style={{
+                                        fontWeight: 'bold',
+                                        color: MD3DarkTheme.colors.onBackground,
+                                    }}
+                                >
+                                    {data?.Staff?.favourites} ❤
+                                </RNText>
+                            </View>
+                        </Animated.View>
+                    </GestureDetector>
                     {userID && (
                         <IconButton
                             icon={fav ? 'heart' : 'heart-outline'}
                             iconColor={colors.primary}
-                            style={{ width: styles.avatar.width }}
+                            style={{ width: '50%', marginTop: 30 }}
                             mode={'outlined'}
                             onPress={onToggleFavorite}
                         />
                     )}
-                </MotiView>
+                </View>
                 <Text style={[styles.staffName]} variant="titleLarge">
                     {mediaLanguage === 'native'
                         ? data?.Staff?.name?.native
@@ -242,8 +249,8 @@ const StafPage = () => {
                                     {data?.Staff?.yearsActive.length > 1
                                         ? data?.Staff?.yearsActive.join(' - ')
                                         : data?.Staff?.yearsActive.length === 1
-                                        ? `${data?.Staff?.yearsActive[0]} - Present`
-                                        : 'N/A'}
+                                          ? `${data?.Staff?.yearsActive[0]} - Present`
+                                          : 'N/A'}
                                 </Text>
                             )}
                         />
@@ -304,8 +311,8 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     avatar: {
-        height: 280,
-        width: 200,
+        height: '100%',
+        width: '100%',
         borderRadius: 12,
     },
     avatarFavsContainer: {
@@ -314,6 +321,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         alignItems: 'center',
         padding: 10,
+        paddingVertical: 5,
         borderRadius: 12,
         borderBottomLeftRadius: 0,
         borderTopRightRadius: 0,
