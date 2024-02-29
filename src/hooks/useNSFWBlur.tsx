@@ -31,3 +31,13 @@ export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
 
     return { blurAmount, toggleBlur };
 };
+
+export const useBlur = (blurStrength = 200) => {
+    const [isBlur, setIsBlur] = useState<boolean>(true);
+
+    const toggleBlur = () => setIsBlur((prev) => !prev);
+
+    const blurAmount = useMemo(() => (isBlur ? blurStrength : 0), [isBlur]);
+
+    return { blurAmount, toggleBlur };
+};
