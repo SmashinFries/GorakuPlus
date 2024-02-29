@@ -45,6 +45,8 @@ const AppearancePage = () => {
         btmTabLabels,
         btmTabShifting,
         navAnimation,
+        interaction3D,
+        autoRotation,
         allowSensorMotion,
         scoreVisualType,
         showItemListStatus,
@@ -104,6 +106,14 @@ const AppearancePage = () => {
 
     const onBtmTabShiftingChange = () => {
         dispatch(setSettings({ entryType: 'btmTabShifting', value: !btmTabShifting }));
+    };
+
+    const onEnableInteraction3DChange = () => {
+        dispatch(setSettings({ entryType: 'interaction3D', value: !interaction3D }));
+    };
+
+    const onAutoRotationChange = () => {
+        dispatch(setSettings({ entryType: 'autoRotation', value: !autoRotation }));
     };
 
     const onAllowSensorMotionChange = () => {
@@ -235,21 +245,7 @@ const AppearancePage = () => {
                             />
                         )}
                     />
-                    <List.Item
-                        title={'Sensor Motion (experimental)'}
-                        // onPress={() => {
-                        //     dispatch(setTheme({ isDark: !isDark, mode: mode }));
-                        // }}
-                        description={'Will probably drain your battery...'}
-                        right={(props) => (
-                            <Switch
-                                value={allowSensorMotion}
-                                {...props}
-                                thumbColor={allowSensorMotion ? colors.primary : undefined}
-                                onValueChange={onAllowSensorMotionChange}
-                            />
-                        )}
-                    />
+
                     <Accordion
                         title={'Screen Transition'}
                         titleFontSize={16}
@@ -277,6 +273,51 @@ const AppearancePage = () => {
                             ))}
                         </ScrollView>
                     </Accordion>
+                </List.Section>
+                <List.Section>
+                    <ListSubheader title="3D Effects (experimental)" />
+                    <List.Item
+                        title={'3D Interactions'}
+                        description={
+                            'Allows 3D interaction for certain things. Pointless but cool.'
+                        }
+                        right={(props) => (
+                            <Switch
+                                value={interaction3D}
+                                {...props}
+                                thumbColor={interaction3D ? colors.primary : undefined}
+                                onValueChange={onEnableInteraction3DChange}
+                            />
+                        )}
+                    />
+                    <List.Item
+                        title={'Auto Rotation'}
+                        description={'3D Interactions must be enabled for this to take effect.'}
+                        right={(props) => (
+                            <Switch
+                                value={autoRotation}
+                                {...props}
+                                thumbColor={autoRotation ? colors.primary : undefined}
+                                onValueChange={onAutoRotationChange}
+                                disabled={!interaction3D}
+                            />
+                        )}
+                    />
+                    <List.Item
+                        title={'Sensor Motion'}
+                        description={
+                            'Enables a parallax motion effect for the media banner image using the device rotation'
+                        }
+                        descriptionNumberOfLines={3}
+                        right={(props) => (
+                            <Switch
+                                value={allowSensorMotion}
+                                {...props}
+                                thumbColor={allowSensorMotion ? colors.primary : undefined}
+                                onValueChange={onAllowSensorMotionChange}
+                            />
+                        )}
+                    />
                 </List.Section>
             </ScrollView>
             <Portal>
