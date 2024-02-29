@@ -40,8 +40,6 @@ query RandomMedia($random: Int, $perRandom: Int, $type: MediaType, $isAdult: Boo
 
 query AniMedia(
     $id: Int
-    $userId: Int
-    $skipUser: Boolean!
     $sort_c: [CharacterSort]
     $role_c: CharacterRole
     $page_c: Int
@@ -49,8 +47,14 @@ query AniMedia(
     $page_rec: Int
     $perPage_rec: Int
 ) {
-    User(id: $userId) @skip(if: $skipUser) {
+    Viewer {
         mediaListOptions {
+            animeList {
+                customLists
+            }
+            mangaList {
+                customLists
+            }
             scoreFormat
         }
     }
