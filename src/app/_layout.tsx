@@ -148,13 +148,13 @@ const AppProvider = () => {
                         : availableThemes['light']['default']
                 }
             >
-                <GestureHandlerRootView style={{ flex: 1 }}>
+                <GestureHandlerRootView style={{ flex: 1, backgroundColor: availableThemes[isDark ? 'dark' : 'light'][mode].colors.background }}>
                     <BottomSheetModalProvider>
                         <AnimatedStack
                             initialRouteName="(tabs)"
                             screenOptions={{ headerShown: false }}
                         >
-                            <Stack.Screen name="(tabs)" />
+                            <Stack.Screen name="(tabs)" options={{animation: 'fade'}} />
                             <Stack.Screen
                                 name="(media)/[...media]"
                                 // getId={(params) => params?.params?.params}
