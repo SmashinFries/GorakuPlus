@@ -135,8 +135,8 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
                             scores.length > 4
                                 ? 230 * 0.4
                                 : highestScore === 0 && scores.length === 1
-                                ? 230 * 0.05
-                                : 230 * 0.15,
+                                    ? 230 * 0.05
+                                    : 230 * 0.15,
                     }}
                 >
                     {scores?.map((stat, idx) => (
@@ -203,42 +203,42 @@ export const ScoreVisual = ({
     const { colors } = useTheme();
     const settings = useAppSelector((state) => state.persistedSettings);
     switch (scoreVisualType ?? settings.scoreVisualType) {
-        case 'healthbar-full':
-            return (
-                <ScoreHealthBar
-                    score={score}
-                    scoreColors={scoreColors}
-                    textColor={colors.onPrimaryContainer}
-                    heartColor={colors.onPrimaryContainer}
-                    width={width ?? '45%'}
-                    horizontal={horizontal}
-                    showScore
-                />
-            );
-        case 'healthbar':
-            return (
-                <ScoreHealthBar
-                    score={score}
-                    scoreColors={scoreColors}
-                    textColor={colors.onPrimaryContainer}
-                    heartColor={colors.onPrimaryContainer}
-                    width={width ?? '45%'}
-                />
-            );
-        case 'number':
-            return (
-                <ScoreIconText
-                    showScore
-                    score={score}
-                    scoreColors={scoreColors}
-                    textColor={colors.onPrimaryContainer}
-                />
-            );
-        case 'bar':
-            return <ScoreBar scores={scoreDistributions} height={height} />;
-        case 'gradient-bar':
-            return <ScoreBar scores={scoreDistributions} isGradient height={height} />;
-        case 'bar-graph':
-            return <ScoreBar scores={scoreDistributions} isGraph height={height} />;
+    case 'healthbar-full':
+        return (
+            <ScoreHealthBar
+                score={score}
+                scoreColors={scoreColors}
+                textColor={colors.onPrimaryContainer}
+                heartColor={colors.onPrimaryContainer}
+                width={width ?? '45%'}
+                horizontal={horizontal}
+                showScore
+            />
+        );
+    case 'healthbar':
+        return (
+            <ScoreHealthBar
+                score={score}
+                scoreColors={scoreColors}
+                textColor={colors.onPrimaryContainer}
+                heartColor={colors.onPrimaryContainer}
+                width={width ?? '45%'}
+            />
+        );
+    case 'number':
+        return (
+            <ScoreIconText
+                showScore
+                score={score}
+                scoreColors={scoreColors}
+                textColor={colors.onPrimaryContainer}
+            />
+        );
+    case 'bar':
+        return <ScoreBar scores={scoreDistributions} height={height} />;
+    case 'gradient-bar':
+        return <ScoreBar scores={scoreDistributions} isGradient height={height} />;
+    case 'bar-graph':
+        return <ScoreBar scores={scoreDistributions} isGraph height={height} />;
     }
 };
