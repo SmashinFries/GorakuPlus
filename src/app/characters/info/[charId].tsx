@@ -144,6 +144,7 @@ const CharacterScreen = () => {
                         // })
                         router.push(`/art/post/${item.id}`)
                     }
+                    disableAR
                 />
             </View>
         );
