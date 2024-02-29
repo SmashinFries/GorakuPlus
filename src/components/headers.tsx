@@ -1,5 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Appbar, Badge, IconButton, Portal, Searchbar, useTheme } from 'react-native-paper';
+import {
+    Appbar,
+    Badge,
+    Icon,
+    IconButton,
+    Menu,
+    Portal,
+    Searchbar,
+    Text,
+    useTheme,
+} from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
@@ -33,7 +43,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { AniMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router, useFocusEffect } from 'expo-router';
@@ -43,6 +53,7 @@ import { updateFavSearch } from '@/store/slices/favoritesSlice';
 import { SearchType } from '@/types/search';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useToggleFavMutation } from '@/store/services/anilist/enhanced';
+import { getStreamingSiteEmoji } from '@/utils/emoji';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -212,8 +223,8 @@ export const SearchHeader = ({
                         currentType === MediaType.Anime || currentType === 'imageSearch'
                             ? 'image-search-outline'
                             : currentType === 'characters' || currentType === 'waifuSearch'
-                            ? 'account-search-outline'
-                            : undefined
+                              ? 'account-search-outline'
+                              : undefined
                     }
                     onTraileringIconPress={
                         currentType === 'characters' || currentType === 'waifuSearch'
@@ -298,15 +309,174 @@ export const BanTagHeader = ({
     );
 };
 
-type MediaHeaderProps = NativeStackHeaderProps;
-export const MediaHeader = ({ navigation, options, route, back }: MediaHeaderProps) => {
-    const title = getHeaderTitle(options, route.name);
+type MediaHeaderProps = {
+    navigation: NativeStackNavigationProp<any>;
+    title: string;
+    headerTitleStyle?: any;
+    headerActionStyle?: any;
+    headerStyle?: any;
+    shareLink: string;
+    streamingLinks?: AniMediaQuery['Media']['externalLinks'];
+    onBack: () => void;
+    onEdit: () => void;
+};
+export const MediaHeader = ({
+    navigation,
+    title,
+    shareLink,
+    headerActionStyle,
+    headerStyle,
+    headerTitleStyle,
+    streamingLinks,
+    onBack,
+    onEdit,
+}: MediaHeaderProps) => {
+    const [streamVisible, setStreamVisible] = useState(false);
+    const [moreVisible, setMoreVisible] = useState(false);
+
+    const openStreamMenu = () => setStreamVisible(true);
+    const closeStreamMenu = () => setStreamVisible(false);
+
+    const openMoreMenu = () => setMoreVisible(true);
+    const closeMoreMenu = () => setMoreVisible(false);
 
     return (
-        <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
-            {back && <Appbar.BackAction onPress={navigation.goBack} />}
-            <Appbar.Content title={title ?? ''} subtitle={'Test'} />
-        </Appbar.Header>
+        <Animated.View style={[headerStyle]}>
+            <Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
+                <Animated.View
+                    style={[
+                        {
+                            borderRadius: 100,
+                            height: 42,
+                            width: 42,
+                            marginLeft: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        },
+                        headerActionStyle,
+                    ]}
+                >
+                    <Appbar.BackAction
+                        onPress={() => {
+                            navigation.goBack();
+                            onBack ? onBack() : null;
+                        }}
+                    />
+                </Animated.View>
+                <Animated.View
+                    style={[
+                        headerTitleStyle,
+                        {
+                            flex: 1,
+                            height: '50%',
+                            justifyContent: 'center',
+                        },
+                    ]}
+                >
+                    <Appbar.Content
+                        title={title ?? ''}
+                        titleStyle={{ textTransform: 'capitalize' }}
+                    />
+                </Animated.View>
+                {streamingLinks?.length > 0 && (
+                    <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
+                        <Menu
+                            visible={streamVisible}
+                            onDismiss={closeStreamMenu}
+                            anchorPosition="bottom"
+                            anchor={
+                                <Appbar.Action
+                                    icon={
+                                        shareLink?.includes('anime')
+                                            ? 'play-box-multiple-outline'
+                                            : 'book-open-page-variant-outline'
+                                    }
+                                    onPress={() =>
+                                        streamingLinks?.length > 1
+                                            ? openStreamMenu()
+                                            : openWebBrowser(streamingLinks[0]?.url)
+                                    }
+                                />
+                            }
+                        >
+                            {streamingLinks.map((link, idx) => (
+                                <Menu.Item
+                                    leadingIcon={
+                                        link.language
+                                            ? (props) => (
+                                                  <Text {...props}>
+                                                      {getStreamingSiteEmoji(link.language)}
+                                                  </Text>
+                                              )
+                                            : undefined
+                                    }
+                                    trailingIcon={
+                                        link.icon
+                                            ? (props) => (
+                                                  <Icon
+                                                      {...props}
+                                                      source={{ uri: link.icon }}
+                                                      color={link?.color ?? props.color}
+                                                  />
+                                              )
+                                            : undefined
+                                    }
+                                    onPress={() => openWebBrowser(link.url)}
+                                    title={link.site}
+                                />
+                            ))}
+                        </Menu>
+                    </Animated.View>
+                )}
+                {onEdit !== undefined && (!shareLink || streamingLinks?.length < 1) && (
+                    <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
+                        <Appbar.Action icon="file-document-edit-outline" onPress={onEdit} />
+                    </Animated.View>
+                )}
+                {shareLink && (onEdit === undefined || streamingLinks?.length < 1) && (
+                    <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
+                        <Appbar.Action
+                            icon="share-variant-outline"
+                            onPress={() =>
+                                Share.share({
+                                    url: shareLink,
+                                    title: shareLink,
+                                    message: shareLink,
+                                })
+                            }
+                            disabled={!shareLink}
+                        />
+                    </Animated.View>
+                )}
+                {shareLink && onEdit && streamingLinks?.length > 0 && (
+                    <Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
+                        <Menu
+                            visible={moreVisible}
+                            onDismiss={closeMoreMenu}
+                            anchorPosition="bottom"
+                            anchor={<Appbar.Action icon="dots-vertical" onPress={openMoreMenu} />}
+                        >
+                            <Menu.Item
+                                leadingIcon={'file-document-edit-outline'}
+                                onPress={onEdit}
+                                title={'Edit Data'}
+                            />
+                            <Menu.Item
+                                leadingIcon={'share-variant-outline'}
+                                onPress={() =>
+                                    Share.share({
+                                        url: shareLink,
+                                        title: shareLink,
+                                        message: shareLink,
+                                    })
+                                }
+                                title={'Share'}
+                            />
+                        </Menu>
+                    </Animated.View>
+                )}
+            </Appbar.Header>
+        </Animated.View>
     );
 };
 
@@ -319,6 +489,7 @@ type FadeHeaderProps = {
     title: string;
     shareLink?: string;
     favorite?: boolean;
+    streamingLinks?: AniMediaQuery['Media']['externalLinks'];
     onFavorite?: () => void;
     onEdit?: () => void;
     loading?: boolean;
@@ -334,6 +505,7 @@ type FadeHeaderProps = {
         string | React.JSXElementConstructor<any>
     >;
     animationRange?: number[];
+    isMediaScreen?: boolean;
     BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
     onBack?: () => void;
 };
@@ -341,6 +513,7 @@ export const FadeHeaderProvider = ({
     children,
     title,
     shareLink,
+    streamingLinks,
     favorite,
     onFavorite,
     onEdit,
@@ -353,6 +526,7 @@ export const FadeHeaderProvider = ({
     RefreshControl,
     disableBack = false,
     animationRange = [40, 110],
+    isMediaScreen = false,
     BgImage,
     onBack,
 }: FadeHeaderProps) => {
@@ -520,7 +694,22 @@ export const FadeHeaderProvider = ({
             title: title,
             headerTransparent: true,
             headerShown: loading ? false : true,
-            header: (props) => <Header />,
+            header: (props) =>
+                isMediaScreen ? (
+                    <MediaHeader
+                        navigation={props.navigation}
+                        onBack={onBack}
+                        onEdit={onEdit}
+                        shareLink={shareLink}
+                        title={title}
+                        headerActionStyle={headerActionStyle}
+                        headerStyle={headerStyle}
+                        headerTitleStyle={headerTitleStyle}
+                        streamingLinks={streamingLinks}
+                    />
+                ) : (
+                    <Header />
+                ),
             animation: navAnimation,
         });
     }, [loading]);
@@ -644,7 +833,11 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
             ) : (
                 <Appbar.Content title={'List'} />
             )}
-            {!isOpen && <Animated.View exiting={FadeOut}><Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} /></Animated.View>}
+            {!isOpen && (
+                <Animated.View exiting={FadeOut}>
+                    <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />
+                </Animated.View>
+            )}
             <Appbar.Action icon="filter-variant" onPress={openFilter} />
             {/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
         </Appbar.Header>
