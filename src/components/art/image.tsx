@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/theme';
 import { Image } from 'expo-image';
 import { Pressable, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -20,6 +21,7 @@ export const PostImage = ({
     setImageHeight,
 }: PostImageProps) => {
     const { width, height } = useWindowDimensions();
+    const { colors } = useAppTheme();
 
     if (!img_url) return null;
 
@@ -39,7 +41,8 @@ export const PostImage = ({
         >
             <Image
                 blurRadius={blurAmount}
-                placeholder={blurhash}
+                placeholder={colors.blurhash}
+                placeholderContentFit='contain'
                 source={{ uri: img_url }}
                 contentFit="contain"
                 onLayout={(e) => setImageHeight(e.nativeEvent.layout.height)}
