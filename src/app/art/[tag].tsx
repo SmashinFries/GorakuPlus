@@ -1,7 +1,7 @@
 import { MasonryFlashList } from '@shopify/flash-list';
 import { useLazySearchPostsQuery } from '@/store/services/danbooru/danbooruApi';
 import { useAppSelector } from '@/store/hooks';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { DanPost } from '@/store/services/danbooru/types';
 import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
@@ -36,7 +36,7 @@ const ArtListPage = () => {
 
     const RenderItem = useCallback(({ item }: { item: DanPost }) => {
         return (
-            <View style={{ width: width / 2, margin: 5, maxHeight: height / 2 }}>
+            <View style={{ flex:1, margin: 5,  }}>
                 <DanbooruImageCard item={item} onNavigate={(id) => router.push(`art/post/${id}`)} />
             </View>
         );
