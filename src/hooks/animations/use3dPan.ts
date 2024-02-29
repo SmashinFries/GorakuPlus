@@ -1,6 +1,8 @@
+import { useAppSelector } from "@/store/hooks";
 import { ImageStyle } from "expo-image";
+import { useEffect } from "react";
 import { Gesture } from "react-native-gesture-handler";
-import { clamp, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { Easing, clamp, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
 type Use3dPanConfig = {
     xLimit: [number, number];
@@ -13,12 +15,13 @@ const animConfig: Use3dPanConfig = {
 }
 
 const use3dPan = (config = animConfig) => {
+    const { interaction3D, autoRotation } = useAppSelector((state) => state.persistedSettings);
     const xRotation = useSharedValue(0);
     const yRotation = useSharedValue(0);
 
     const panGesture = Gesture.Pan()
         .onUpdate((e) => {
-            yRotation.value = clamp(e.translationX * 1, config.yLimit[0], config.yLimit[1]);
+            yRotation.value = clamp(e.translationX * 1, autoRotation ? -360 : config.yLimit[0], autoRotation ? 360 : config.yLimit[1]);
             xRotation.value = clamp(e.translationY * -1, config.xLimit[0], config.xLimit[1]);
         })
         .onEnd((e) => {
@@ -30,7 +33,13 @@ const use3dPan = (config = animConfig) => {
         transform: [{ perspective: 500 }, { rotateX: `${xRotation.value}deg` }, { rotateY: `${yRotation.value}deg` }],
     }));
 
-    return { panGesture, animatedStyle };
+    useEffect(() => {
+        if (autoRotation) {
+            yRotation.value = withRepeat(withTiming(360, { duration: 15000, easing: Easing.linear }), -1);
+        }
+    }, [autoRotation])
+
+    return { panGesture, animatedStyle: interaction3D ? animatedStyle : {} };
 };
 
 export default use3dPan;
