@@ -12,6 +12,7 @@ import { router } from 'expo-router';
 import use3dPan from '@/hooks/animations/use3dPan';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
+import { useAppSelector } from '@/store/hooks';
 
 type FrontCoverProps = {
     data: AniMediaQuery['Media'];
@@ -22,16 +23,6 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
     const { width } = useWindowDimensions();
     const { colors } = useTheme();
     const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
-
-    const StatusAnim = useCallback(() => {
-        return (
-            <StatusIconMem
-                status={data?.status}
-                release_date={data?.startDate}
-                nextEP={data?.nextAiringEpisode}
-            />
-        );
-    }, []);
 
     return (
         <MotiView style={[styles.container, { width: width }]}>
