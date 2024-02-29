@@ -29,7 +29,8 @@ export const api = generatedApi.enhanceEndpoints({
         'ExploreNovel',
         'AniMedia',
         'AniSearch',
-        'UserList',
+        'UserAnimeList',
+        'UserMangaList',
         'CharacterDetails',
         'StaffDetails',
         'UserSearch',
@@ -483,11 +484,20 @@ export const api = generatedApi.enhanceEndpoints({
                           'CharacterSearch',
                       ],
         },
-        UserListCollection: {
+        UserAnimeListCollection: {
             transformResponse(baseQueryReturnValue, meta, arg) {
                 return transformListDates(baseQueryReturnValue);
             },
-            providesTags: (result) => ['UserList'],
+            providesTags: (result) => ['UserAnimeList'],
+            // transformResponse(baseQueryReturnValue, meta, arg) {
+            //     return transformMediaDates(baseQueryReturnValue);
+            // },
+        },
+        UserMangaListCollection: {
+            transformResponse(baseQueryReturnValue, meta, arg) {
+                return transformListDates(baseQueryReturnValue);
+            },
+            providesTags: (result) => ['UserMangaList'],
             // transformResponse(baseQueryReturnValue, meta, arg) {
             //     return transformMediaDates(baseQueryReturnValue);
             // },
@@ -869,4 +879,9 @@ export const {
 
     useStudioListQuery,
     useLazyStudioListQuery,
+
+    useUserAnimeListCollectionQuery,
+    useLazyUserAnimeListCollectionQuery,
+    useUserMangaListCollectionQuery,
+    useLazyUserMangaListCollectionQuery
 } = api;
