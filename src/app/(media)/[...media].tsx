@@ -1,7 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import { Portal, Text } from 'react-native-paper';
 import { useCallback, useEffect, useState } from 'react';
-import { MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
+import {
+    ExternalLinkType,
+    MediaStatus,
+    MediaType,
+} from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMedia } from '@/hooks/media/useMedia';
@@ -32,6 +36,7 @@ import { getReleaseTime, getTimeUntil } from '@/utils';
 import { AnimeFull } from '@/store/services/mal/malApi';
 import ReviewsSection from '@/components/media/sections/reviews';
 import { StatSection } from '@/components/media/sections/stats';
+import ScreenshotImages from '@/components/media/sections/screenshots';
 
 const MediaScreen = () => {
     const { media } = useLocalSearchParams<{ media: [string, string] }>(); // /anime/1234
@@ -131,6 +136,10 @@ const MediaScreen = () => {
                                 allowMotion={allowSensorMotion}
                             />
                         )}
+                        isMediaScreen
+                        streamingLinks={aniData?.data?.Media?.externalLinks?.filter(
+                            (link) => link.type === ExternalLinkType.Streaming,
+                        )}
                     >
                         <BodyContainer>
                             <FrontCoverMem
@@ -222,6 +231,11 @@ const MediaScreen = () => {
                                 /> */}
                                 {type === MediaType.Anime && (
                                     <AnimeTrailer video={aniData?.data?.Media?.trailer?.id} />
+                                )}
+                                {type === MediaType.Anime && (
+                                    <ScreenshotImages
+                                        data={aniData?.data?.Media?.streamingEpisodes}
+                                    />
                                 )}
                                 {/* {type === MediaType.Anime && (
                                     <StreamingLinks
