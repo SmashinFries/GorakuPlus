@@ -30,12 +30,13 @@ import googleBooksApi from '@/store/services/google-books/googleApi';
 import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
 import waifuItAPI from './services/waifu.it/waifuit';
 import { favSearchSlice } from './slices/favoritesSlice';
-import { listFilterSlice } from './slices/listSLice';
+import listFilterSlice, { ListFilterState } from './slices/listSlice';
 import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
 import wdTaggerAPI from './services/huggingface/wdTagger';
 import setupSlice, { SetupState } from './slices/setupSlice';
 import displaySettingSlice, { DisplaySettingState } from './slices/displaySlice';
+import { rtkQueryErrorLogger } from './middleware';
 
 const secureStorage = createSecureStorage();
 
@@ -95,6 +96,11 @@ const waifuItAuthPersistConfig: PersistConfig<any, any, any, any> = {
     storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
 };
 
+const listFilterPersistConfig: PersistConfig<any, any, any, any> = {
+    key: 'listFilterStorage',
+    storage: AsyncStorage,
+};
+
 const persistedTheme = persistReducer<ThemeState, AnyAction>(persistThemeConfig, themeSlice);
 const persistedSettings = persistReducer<SettingsState, AnyAction>(
     persistSettingsConfig,
@@ -123,6 +129,8 @@ const persistedCharArtDB = persistReducer<CharacterArtState, AnyAction>(
     charArtDBSlice,
 );
 const persistedNotifs = persistReducer<NotifState, AnyAction>(persistNotifConfig, notifSlice);
+const persistedListFilter = persistReducer<ListFilterState, AnyAction>(listFilterPersistConfig, listFilterSlice);
+
 
 export const store = configureStore({
     reducer: {
@@ -135,7 +143,7 @@ export const store = configureStore({
         [waifuItAPI.reducerPath]: waifuItAPI.reducer,
         [traceMoeApi.reducerPath]: traceMoeApi.reducer,
         [wdTaggerAPI.reducerPath]: wdTaggerAPI.reducer,
-        listFilter: listFilterSlice.reducer,
+        listFilter: persistedListFilter,
         favSearch: favSearchSlice.reducer,
         persistedTheme,
         persistedSettings,
@@ -166,6 +174,7 @@ export const store = configureStore({
             googleBooksApi.middleware,
             waifuItAPI.middleware,
             wdTaggerAPI.middleware,
+            rtkQueryErrorLogger
         ]),
 });
 
