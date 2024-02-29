@@ -10,12 +10,19 @@ import { ActivityIndicator, Appbar, useTheme } from 'react-native-paper';
 import { TabBar, TabView, SceneRendererProps } from 'react-native-tab-view';
 
 type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
-const Days:WeekDay[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-
+const Days: WeekDay[] = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+];
 
 type CalendarRenderSceneProps = SceneRendererProps & {
-    route: { key: WeekDay; title: WeekDay | string }
-}
+    route: { key: WeekDay; title: WeekDay | string };
+};
 
 const CalendarPage = () => {
     const dayOfWeek = new Date().getDay();
@@ -25,6 +32,7 @@ const CalendarPage = () => {
 
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+    const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
 
     const { data, loading, refetch, week } = useCalendar();
 
@@ -40,15 +48,20 @@ const CalendarPage = () => {
         let newRouteTitles = [];
         if (listOnly) {
             for (const day of Days) {
-                newRouteTitles.push({ key: day, title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).filter((ep) => (ep.media?.mediaListEntry)).length})` });
+                newRouteTitles.push({
+                    key: day,
+                    title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).filter((ep) => ep.media?.mediaListEntry).length})`,
+                });
             }
         } else {
             for (const day of Days) {
-                newRouteTitles.push({ key: day, title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).length})` })
+                newRouteTitles.push({
+                    key: day,
+                    title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).length})`,
+                });
             }
         }
         setRoutes(newRouteTitles);
-
     };
 
     const renderScene = ({ route }: CalendarRenderSceneProps) => {
@@ -115,9 +128,9 @@ const CalendarPage = () => {
 
     useEffect(() => {
         if (data) {
-            updateAllTitles();
+            updateAllTitles(calendar.list_only);
         }
-    },[data, showNSFW])
+    }, [data, showNSFW]);
 
     return (
         <>
@@ -144,7 +157,10 @@ const CalendarPage = () => {
                     <ActivityIndicator size={'small'} />
                 </View>
             )}
-            <CalendarFilterSheet ref={filterSheetRef} updateAllTitles={(onList:boolean) => updateAllTitles(onList)} />
+            <CalendarFilterSheet
+                ref={filterSheetRef}
+                updateAllTitles={(onList: boolean) => updateAllTitles(onList)}
+            />
         </>
     );
 };
