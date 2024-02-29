@@ -17,11 +17,13 @@ import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated, {
     Easing,
+    FadeOut,
     SlideInDown,
     SlideInLeft,
     SlideInRight,
     SlideInUp,
     SlideOutDown,
+    SlideOutLeft,
     SlideOutRight,
     useAnimatedStyle,
     useSharedValue,
@@ -35,7 +37,7 @@ import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router, useFocusEffect } from 'expo-router';
-import { updateListFilter } from '@/store/slices/listSLice';
+import { updateListFilter } from '@/store/slices/listSlice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
 import { SearchType } from '@/types/search';
@@ -619,8 +621,8 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
         <Appbar.Header>
             {isOpen ? (
                 <Animated.View
-                    entering={SlideInRight}
-                    exiting={SlideOutRight}
+                    entering={SlideInLeft}
+                    exiting={SlideOutLeft}
                     style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -642,7 +644,8 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
             ) : (
                 <Appbar.Content title={'List'} />
             )}
-            {!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
+            {!isOpen && <Animated.View exiting={FadeOut}><Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} /></Animated.View>}
+            <Appbar.Action icon="filter-variant" onPress={openFilter} />
             {/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
         </Appbar.Header>
     );
