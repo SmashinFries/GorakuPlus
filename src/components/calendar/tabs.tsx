@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { getTimeUntil, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
-import { MediaType, WeeklyAnimeQuery } from '@/store/services/anilist/generated-anilist';
+import { MediaList, MediaType, WeeklyAnimeQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
 import { MediaCard, MediaCardRow, MediaProgressBar } from '../cards';
 import { useAppSelector } from '@/store/hooks';
@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { ProgressBar, Text } from 'react-native-paper';
 import { useWindowDimensions } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 
 const RenderEmpty = ({ message }: { message: string }) => {
     const rotate = useSharedValue(0);
@@ -52,11 +53,9 @@ const RenderEmpty = ({ message }: { message: string }) => {
 
 type DayTabProps = {
     data: WeeklyAnimeQuery['Page']['airingSchedules'];
-    updateTitle?: (dataLength: number) => void;
 };
-export const DayTab = ({ data, updateTitle }: DayTabProps) => {
+export const DayTab = ({ data }: DayTabProps) => {
     const { width } = useWindowDimensions();
-    const { listKey } = useColumns(width / 2 - 15);
     const { showItemListStatus, showNSFW } = useAppSelector((state) => state.persistedSettings);
     const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
 
@@ -75,6 +74,7 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
                         justifyContent: 'flex-start',
                         marginVertical: 10,
                         marginHorizontal: 5,
+                        maxWidth: width / 3 - 10,
                     }}
                 >
                     <MediaCard
@@ -97,7 +97,7 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
                     />
                     <MediaProgressBar
                         progress={item.media.mediaListEntry?.progress}
-                        mediaListEntry={item.media.mediaListEntry}
+                        mediaListEntry={item.media.mediaListEntry as MediaList}
                         mediaStatus={item.media.status}
                         total={item.media.episodes ?? 0}
                     />
@@ -148,12 +148,6 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
         [data, showItemListStatus, showNSFW],
     );
 
-    React.useEffect(() => {
-        if (data && updateTitle) {
-            updateTitle(data.length);
-        }
-    }, []);
-
     return (
         <View style={{ width: '100%', height: '100%' }}>
             <FlashList
@@ -162,6 +156,10 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
                 renderItem={RenderItem}
                 keyExtractor={(item) => item.id.toString()}
                 numColumns={3}
+                // columnWrapperStyle={{
+                //     flex:1,
+                //     justifyContent: 'flex-start',
+                // }}
                 estimatedItemSize={211}
                 centerContent
                 contentContainerStyle={{ paddingVertical: 10 }}
@@ -174,3 +172,5 @@ export const DayTab = ({ data, updateTitle }: DayTabProps) => {
         </View>
     );
 };
+
+export const DayTabMemo = React.memo(DayTab);
