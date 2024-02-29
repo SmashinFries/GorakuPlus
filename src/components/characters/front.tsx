@@ -5,6 +5,9 @@ import { StyleSheet } from 'react-native';
 import { View, Text as RNText } from 'react-native';
 import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
 import { copyToClipboard } from '../../utils';
+import use3dPan from '@/hooks/animations/use3dPan';
+import Animated from 'react-native-reanimated';
+import { GestureDetector } from 'react-native-gesture-handler';
 
 type CharacterFrontProps = {
     id: number;
@@ -30,28 +33,35 @@ export const CharacterFront = ({
 }: CharacterFrontProps) => {
     const { colors } = useTheme();
     const [fav, setFav] = useState(isFavorite);
+    const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 
     return (
         <View>
-            <MotiView style={[styles.container]}>
-                <MotiView style={{ width: 200 }}>
-                    <Image source={{ uri: image_url }} style={styles.avatar} contentFit="cover" />
-                    <MotiView style={[styles.avatarFavsContainer]}>
-                        <RNText
-                            style={{
-                                fontWeight: 'bold',
-                                color: MD3DarkTheme.colors.onBackground,
-                            }}
-                        >
-                            {favorites} ❤
-                        </RNText>
-                    </MotiView>
-                </MotiView>
+            <View style={[styles.container]}>
+                <GestureDetector gesture={panGesture}>
+                    <Animated.View style={[animatedStyle, { height: 240, aspectRatio: 2 / 3 }]}>
+                        <Image
+                            source={{ uri: image_url }}
+                            style={[styles.avatar]}
+                            contentFit={'cover'}
+                        />
+                        <View style={[styles.avatarFavsContainer]}>
+                            <RNText
+                                style={{
+                                    fontWeight: 'bold',
+                                    color: MD3DarkTheme.colors.onBackground,
+                                }}
+                            >
+                                {favorites} ❤
+                            </RNText>
+                        </View>
+                    </Animated.View>
+                </GestureDetector>
                 {userID && (
                     <IconButton
                         icon={fav ? 'heart' : 'heart-outline'}
                         iconColor={colors.primary}
-                        style={{ width: styles.avatar.width }}
+                        style={{ width: '50%', marginTop: 30 }}
                         mode={'outlined'}
                         onPress={() => {
                             setFav((prev) => !prev);
@@ -59,7 +69,7 @@ export const CharacterFront = ({
                         }}
                     />
                 )}
-            </MotiView>
+            </View>
             <Text
                 onLongPress={() => copyToClipboard(primaryName)}
                 style={[styles.staffName]}
@@ -101,8 +111,8 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     avatar: {
-        height: 280,
-        width: 200,
+        height: '100%',
+        width: '100%',
         borderRadius: 12,
     },
     avatarFavsContainer: {
