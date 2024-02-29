@@ -30,6 +30,8 @@ export type SettingsState = {
     btmTabLabels?: boolean;
     btmTabShifting?: boolean;
     allowSensorMotion?: boolean;
+    interaction3D?: boolean;
+    autoRotation?: boolean;
     exploreTabs?: (keyof ExploreTabsProps)[];
     exploreTabOrder?: (keyof ExploreTabsProps)[];
     mediaInfoDisplay?: MediaInfoDisplay;
@@ -58,6 +60,8 @@ const initialState: SettingsState = {
     btmTabLabels: true,
     btmTabShifting: true,
     allowSensorMotion: false,
+    interaction3D: false,
+    autoRotation: false,
     exploreTabs: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
     exploreTabOrder: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
     mediaInfoDisplay: 'list',
