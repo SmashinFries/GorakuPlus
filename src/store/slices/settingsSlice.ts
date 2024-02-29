@@ -32,8 +32,6 @@ export type SettingsState = {
     allowSensorMotion?: boolean;
     exploreTabs?: (keyof ExploreTabsProps)[];
     exploreTabOrder?: (keyof ExploreTabsProps)[];
-    listATabOrder?: (MediaListStatus | string)[];
-    listMTabOrder?: (MediaListStatus | string)[];
     mediaInfoDisplay?: MediaInfoDisplay;
     animeCustomLists?: string[];
     mangaCustomLists?: string[];
@@ -62,22 +60,6 @@ const initialState: SettingsState = {
     allowSensorMotion: false,
     exploreTabs: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
     exploreTabOrder: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
-    listATabOrder: [
-        MediaListStatus.Current,
-        MediaListStatus.Planning,
-        MediaListStatus.Completed,
-        MediaListStatus.Repeating,
-        MediaListStatus.Paused,
-        MediaListStatus.Dropped,
-    ],
-    listMTabOrder: [
-        MediaListStatus.Current,
-        MediaListStatus.Planning,
-        MediaListStatus.Completed,
-        MediaListStatus.Repeating,
-        MediaListStatus.Paused,
-        MediaListStatus.Dropped,
-    ],
     mediaInfoDisplay: 'list',
     animeCustomLists: [],
     mangaCustomLists: [],
