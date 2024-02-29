@@ -19,6 +19,7 @@ const SettingsLayout = () => {
             <Stack.Screen name="appearance" options={{ title: 'Appearance' }} />
             <Stack.Screen name="language" options={{ title: 'Language' }} />
             <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
+            <Stack.Screen name="storage" options={{ title: 'Storage' }} />
             <Stack.Screen name="media" options={{ title: 'Content', headerShown: false }} />
         </AnimatedStack>
     );
