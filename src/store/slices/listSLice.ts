@@ -9,8 +9,8 @@ export interface ListFilterState {
     genre?: string[];
     tags_include?: MediaTag[];
     tags_exclude?: MediaTag[];
-    animeTabOrder?: MediaListStatus[] | string[];
-    mangaTabOrder?: MediaListStatus[] | string[];
+    animeTabOrder?: string[];
+    mangaTabOrder?: string[];
 }
 
 type filterActions = {
