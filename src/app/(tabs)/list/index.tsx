@@ -1,10 +1,6 @@
 import { MediaCard, MediaProgressBar } from '@/components/cards';
 import { ListHeader } from '@/components/headers';
-import {
-    ListFilterSheet,
-    ListSortOptions,
-    ListSortOptionsType,
-} from '@/components/list/filtersheet';
+import { ListFilterSheet } from '@/components/list/filtersheet';
 import { RenderTabBar, TabBarWithChip } from '@/components/tab';
 import { useList } from '@/hooks/list/useList';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -19,6 +15,7 @@ import {
 import { updateListFilter } from '@/store/slices/listSlice';
 import { rgbToRgba, useColumns } from '@/utils';
 import { compareArrays } from '@/utils/compare';
+import { sortListTabs, sortLists } from '@/utils/sort';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, router } from 'expo-router';
@@ -27,142 +24,6 @@ import { useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
 import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-paper';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
-
-// EntrySort.UPDATED => (a, b) {
-//     final comparison = a.updatedAt!.compareTo(b.updatedAt!);
-//     if (comparison != 0) return comparison;
-//     return a.titles[0].toUpperCase().compareTo(b.titles[0].toUpperCase());
-//   },
-
-const sortLists = (
-    data: UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]['entries'],
-    sort: ListSortOptionsType,
-) => {
-    if (!data) {
-        return [];
-    }
-    const data_copy: UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]['entries'] = [
-        ...data,
-    ];
-    switch (sort) {
-        case ListSortOptions.AddedTimeDesc:
-            return data_copy.sort((a, b) => b.createdAt - a.createdAt);
-        case ListSortOptions.AddedTime:
-            return data_copy.sort((a, b) => a.createdAt - b.createdAt);
-
-        case ListSortOptions.ProgressDesc:
-            return data_copy.sort((a, b) => b.progress - a.progress);
-        case ListSortOptions.Progress:
-            return data_copy.sort((a, b) => a.progress - b.progress);
-
-        case ListSortOptions.UpdatedTimeDesc:
-            return data_copy.sort((a, b) =>
-                b.updatedAt - a.updatedAt === 0
-                    ? a.media.title.romaji.toUpperCase() < b.media.title.romaji.toUpperCase()
-                        ? -1
-                        : 1
-                    : b.updatedAt - a.updatedAt,
-            );
-        case ListSortOptions.UpdatedTime:
-            return data_copy.sort((a, b) =>
-                a.updatedAt - b.updatedAt === 0
-                    ? a.media.title.romaji.toUpperCase() < b.media.title.romaji.toUpperCase()
-                        ? -1
-                        : 1
-                    : a.updatedAt - b.updatedAt,
-            );
-
-        case ListSortOptions.MediaTitleRomajiDesc:
-            return data_copy.sort((a, b) =>
-                a.media.title.romaji.toUpperCase() < b.media.title.romaji.toUpperCase() ? -1 : 1,
-            );
-        case ListSortOptions.MediaTitleRomaji:
-            return data_copy.sort((a, b) =>
-                a.media.title.romaji.toUpperCase() < b.media.title.romaji.toUpperCase() ? 1 : -1,
-            );
-
-        case ListSortOptions.MediaTitleEnglishDesc:
-            return data_copy.sort((a, b) => {
-                if (!a.media.title.english) {
-                    return 1;
-                }
-                if (!b.media.title.english) {
-                    return -1;
-                }
-                return a.media.title.english?.toUpperCase() < b.media.title.english?.toUpperCase()
-                    ? -1
-                    : 1;
-            });
-        case ListSortOptions.MediaTitleEnglish:
-            return data_copy.sort((a, b) => {
-                if (!a.media.title.english) {
-                    return -1;
-                }
-                if (!b.media.title.english) {
-                    return 1;
-                }
-                return a.media.title.english?.toUpperCase() < b.media.title.english?.toUpperCase()
-                    ? -1
-                    : 1;
-            });
-
-        case ListSortOptions.AverageScoreDesc:
-            return data_copy.sort((a, b) => {
-                if (!a.media.averageScore) {
-                    return 1;
-                }
-                if (!b.media.averageScore) {
-                    return -1;
-                }
-                if (a.media.averageScore === b.media.averageScore) {
-                    return 0;
-                }
-                return b.media.meanScore - a.media.meanScore;
-            });
-        case ListSortOptions.AverageScore:
-            return data_copy.sort((a, b) => {
-                if (!a.media.averageScore) {
-                    return -1;
-                }
-                if (!b.media.averageScore) {
-                    return 1;
-                }
-                if (a.media.averageScore === b.media.averageScore) {
-                    return 0;
-                }
-                return a.media.meanScore - b.media.meanScore;
-            });
-
-        case ListSortOptions.MeanScoreDesc:
-            return data_copy.sort((a, b) => {
-                if (!a.media.meanScore) {
-                    return 1;
-                }
-                if (!b.media.meanScore) {
-                    return -1;
-                }
-                if (a.media.meanScore === b.media.meanScore) {
-                    return 0;
-                }
-                return b.media.meanScore - a.media.meanScore;
-            });
-        case ListSortOptions.MeanScore:
-            return data_copy.sort((a, b) => {
-                if (!a.media.meanScore) {
-                    return -1;
-                }
-                if (!b.media.meanScore) {
-                    return 1;
-                }
-                if (a.media.meanScore === b.media.meanScore) {
-                    return 0;
-                }
-                return a.media.meanScore - b.media.meanScore;
-            });
-        // case MediaListSort.StartedOnDesc:
-        //     return data_copy.sort((a, b) => () - a.startedAt);
-    }
-};
 
 type ListParams = {
     data:
@@ -179,7 +40,6 @@ const ListScreen = ({ data, updateTitle }: ListParams) => {
     const { sort } = useAppSelector((state) => state.listFilter);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const { columns, listKey } = useColumns(150);
 
     const scorebgColor = useMemo(
         () => rgbToRgba(colors.primaryContainer, 0.75),
@@ -343,6 +203,7 @@ const ListTabs = ({
     const layout = useWindowDimensions();
     const [index, setIndex] = useState(0);
     const [tabRoutes, setTabRoutes] = useState<{ key: string; title: string }[]>(routes);
+    const [listData, setListData] = useState(data);
 
     const updateTitleCount = (key: string, total: number) => {
         setTabRoutes((prevRoutes) =>
@@ -367,52 +228,27 @@ const ListTabs = ({
         );
     };
 
-    // useEffect(() => {
-    //     if (data) {
-    //         setRoutes(data?.MediaListCollection?.lists.map((list) => ({ key: list.name, title: list.name })));
-    //     }
-    //     // setRoutes(
-    //     //     type === MediaType.Anime
-    //     //         ? listATabOrder.map((category) => {
-    //     //               return { key: category, title: category };
-    //     //           })
-    //     //         : listMTabOrder.map((category) => {
-    //     //               return { key: category, title: category };
-    //     //           }),
-    //     // );
-    // }, [data, listATabOrder, listMTabOrder]);
-
     useEffect(() => {
-        if (routes && data) {
-            const orderedRouteNames =
-                type === MediaType.Anime
-                    ? animeTabOrder.map((routeName) => routeName)
-                    : mangaTabOrder.map((routeName) => routeName);
-            const newRoutes =
-                type === MediaType.Anime
-                    ? animeTabOrder.map((routeName) => ({
-                          key: routeName,
-                          title: `${routeName} (${data.lists.find((val) => val.name === routeName).entries.length})`,
-                      }))
-                    : mangaTabOrder.map((routeName) => ({
-                          key: routeName,
-                          title: `${routeName} (${data.lists.find((val) => val.name === routeName).entries.length})`,
-                      }));
-            for (const route of routes) {
-                if (!orderedRouteNames.includes(route.key)) {
-                    newRoutes.push(route);
-                }
+        if (tabRoutes && listData) {
+            const listCounts = {};
+            for (const list of listData?.lists) {
+                listCounts[list.name] = list.entries.length;
             }
-            setTabRoutes((prevRoutes) =>
-                compareArrays(
-                    prevRoutes.map((route) => route.key),
-                    orderedRouteNames,
-                )
-                    ? prevRoutes
-                    : newRoutes,
+            const newRoutes = sortListTabs(
+                tabRoutes.map((route) => route.key),
+                type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
+                listCounts,
             );
+            const isOrderSame = compareArrays(
+                tabRoutes.map((route) => route.key),
+                newRoutes,
+            );
+
+            if (!isOrderSame) {
+                setTabRoutes(newRoutes);
+            }
         }
-    }, [data, animeTabOrder, mangaTabOrder]);
+    }, [listData, animeTabOrder, mangaTabOrder]);
 
     return tabRoutes.length > 0 ? (
         <TabView
