@@ -1,6 +1,6 @@
 import { Platform, RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
-import { ExploreMediaQuery, Media, MediaType } from '@/store/services/anilist/generated-anilist';
+import { ExploreMediaQuery, Media, MediaList, MediaType } from '@/store/services/anilist/generated-anilist';
 import { FlashList } from '@shopify/flash-list';
 import React, { memo, useCallback, useMemo } from 'react';
 import { Image } from 'expo-image';
@@ -8,6 +8,7 @@ import { useAppSelector } from '@/store/hooks';
 import { MediaCard, MediaProgressBar } from '../cards';
 import { router } from 'expo-router';
 import { BackgroundArt } from './bg';
+import { FlatList } from 'react-native-gesture-handler';
 
 type RefreshableScrollProps = {
     children: React.ReactNode;
@@ -52,6 +53,7 @@ export const SectionScroll = ({
     const { colors } = useTheme();
 
     const { scoreColors } = useAppSelector((state) => state.persistedSettings);
+    // const { } = useAppSelector(() => state.);
 
     const navigate = (aniID: number, type: MediaType) => {
         router.push(`/${type.toLowerCase()}/${aniID}`);
@@ -83,7 +85,7 @@ export const SectionScroll = ({
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}
-                    mediaListEntry={props.item.mediaListEntry}
+                    mediaListEntry={props.item.mediaListEntry as MediaList}
                     mediaStatus={props.item?.status}
                     total={props.item.episodes ?? props.item.chapters ?? props.item.volumes ?? 0}
                 />
@@ -91,16 +93,6 @@ export const SectionScroll = ({
         ),
         [],
     );
-
-    // useEffect(() => {
-    //     // Prefetch images in the list
-    //     data?.Page?.media.forEach((media) => {
-    //         const image = media?.bannerImage ?? media?.coverImage?.extraLarge ?? '';
-    //         Image.prefetch(image);
-    //     });
-    // }, [data]);
-
-    // if (isLoading) return <AnimatedLoading />;
 
     return (
         <View
