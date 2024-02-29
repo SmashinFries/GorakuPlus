@@ -89,7 +89,6 @@ export const RenderTabBar = (
     );
 };
 
-
 export const TabBarWithChip = (
     props: SceneRendererProps & {
         navigationState: NavigationState<any>;
@@ -117,7 +116,7 @@ export const TabBarWithChip = (
             }}
             labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
             renderLabel={({ route, focused }) => (
-                <View style={{flexDirection:'row', alignItems:'center'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text
                         style={{
                             textTransform: 'capitalize',
@@ -128,9 +127,20 @@ export const TabBarWithChip = (
                     >
                         {route.title.split(' (')[0]}
                     </Text>
-                    {!isNaN(route.title.split(' (').at(-1).split(')')[0]) ? <View style={{backgroundColor:colors.surfaceVariant, padding:2, paddingHorizontal:5, borderRadius:16}}>
-                        <Text variant='labelSmall' style={{color: colors.onSurfaceVariant}}>{route.title.split(' (').at(-1).split(')')[0]}</Text>
-                    </View> : null}
+                    {route.title.split(' (').at(-1).split(')')[0] ? (
+                        <View
+                            style={{
+                                backgroundColor: colors.surfaceVariant,
+                                padding: 2,
+                                paddingHorizontal: 5,
+                                borderRadius: 16,
+                            }}
+                        >
+                            <Text variant="labelSmall" style={{ color: colors.onSurfaceVariant }}>
+                                {route.title.split(' (').at(-1).split(')')[0]}
+                            </Text>
+                        </View>
+                    ) : null}
                 </View>
             )}
             indicatorStyle={{
