@@ -166,6 +166,13 @@ const MediaScreen = () => {
                                         releaseMessage={getRelease()}
                                         onShowReleases={() => setShowReleaseDialog(true)}
                                         data={aniData?.data?.Media?.mediaListEntry}
+                                        customLists={
+                                            type === MediaType.Anime
+                                                ? aniData?.data?.Viewer?.mediaListOptions?.animeList
+                                                      ?.customLists ?? []
+                                                : aniData?.data?.Viewer?.mediaListOptions?.mangaList
+                                                      ?.customLists ?? []
+                                        }
                                         scoreFormat={
                                             aniData?.data?.Viewer?.mediaListOptions?.scoreFormat
                                         }
