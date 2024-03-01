@@ -52,6 +52,8 @@ export const NumberPicker = ({
         console.log('index:', index);
         if (Object.values(ScoreFormat).includes(mode as ScoreFormat)) {
             onChange && onChange(scoreStringToNumber(currentOptions[index], mode as ScoreFormat));
+        } else {
+            onChange && onChange(parseInt(currentOptions[index]));
         }
     }, [index]);
 
