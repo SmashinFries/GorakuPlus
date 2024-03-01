@@ -30,26 +30,21 @@ type ListParams = {
         | UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]
         | UserMangaListCollectionQuery['MediaListCollection']['lists'][0];
     updateTitle?: (dataLength: number) => void;
+    isRefreshing?: boolean;
+    onRefresh?: () => void;
     type?: MediaType;
 };
 
-const ListScreen = ({ data, updateTitle }: ListParams) => {
+const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
     const [entries, setEntries] = useState(data?.entries);
     const { colors } = useTheme();
     const { query } = useAppSelector((state) => state.listFilter);
     const { sort } = useAppSelector((state) => state.listFilter);
 
-    const [isRefreshing, setIsRefreshing] = useState(false);
-
     const scorebgColor = useMemo(
         () => rgbToRgba(colors.primaryContainer, 0.75),
         [colors.primaryContainer],
     );
-
-    const refreshList = () => {
-        setIsRefreshing(true);
-        // refetch().then(() => setIsRefreshing(false));
-    };
 
     const sortedItems = useMemo(() => {
         return sortLists(entries, sort);
@@ -170,7 +165,7 @@ const ListScreen = ({ data, updateTitle }: ListParams) => {
                 keyExtractor={(item, idx) => item?.media?.id.toString()}
                 estimatedItemSize={238}
                 numColumns={3}
-                // onRefresh={refreshList}
+                // onRefresh={onRefresh}
                 // refreshing={isRefreshing}
                 // terrible performance without
                 drawDistance={0}
@@ -190,6 +185,8 @@ const ListTabs = ({
     data,
     routes,
     loading,
+    isRefreshing,
+    onRefresh,
 }: {
     type: MediaType;
     loading: boolean;
@@ -197,6 +194,8 @@ const ListTabs = ({
     data:
         | UserAnimeListCollectionQuery['MediaListCollection']
         | UserMangaListCollectionQuery['MediaListCollection'];
+    isRefreshing: boolean;
+    onRefresh: () => void;
 }) => {
     const { animeTabOrder, mangaTabOrder } = useAppSelector((state) => state.listFilter);
     const { colors } = useTheme();
@@ -224,6 +223,8 @@ const ListTabs = ({
             <ListScreen
                 data={data?.lists.find((list) => list.name === route.key)}
                 updateTitle={(dataLength: number) => updateTitleCount(route.key, dataLength)}
+                isRefreshing={isRefreshing}
+                onRefresh={onRefresh}
             />
         );
     };
@@ -268,8 +269,19 @@ const ListPage = () => {
     const { userID } = useAppSelector((state) => state.persistedAniLogin);
     const [index, setIndex] = useState(0);
 
-    const { animeList, mangaList, rootRoutes, animeRoutes, mangaRoutes, tags, genres, loading } =
-        useList(userID);
+    const {
+        animeList,
+        mangaList,
+        rootRoutes,
+        animeRoutes,
+        mangaRoutes,
+        tags,
+        genres,
+        loading,
+        isRefreshing,
+        refreshAnimeList,
+        refreshMangaList,
+    } = useList(userID);
 
     const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 
@@ -296,6 +308,8 @@ const ListPage = () => {
                         data={animeList?.data?.MediaListCollection}
                         routes={animeRoutes}
                         loading={loading}
+                        isRefreshing={isRefreshing}
+                        onRefresh={refreshAnimeList}
                     />
                 );
             case 'manga':
@@ -305,6 +319,8 @@ const ListPage = () => {
                         data={mangaList?.data?.MediaListCollection}
                         routes={mangaRoutes}
                         loading={loading}
+                        isRefreshing={isRefreshing}
+                        onRefresh={refreshAnimeList}
                     />
                 );
             default:
@@ -320,8 +336,11 @@ const ListPage = () => {
 
     return (
         <>
-            <ListHeader openFilter={() => filterSheetRef.current?.present()} />
-            {!loading && routes.length > 0 ? (
+            <ListHeader
+                openFilter={() => filterSheetRef.current?.present()}
+                onRefresh={index === 0 ? refreshAnimeList : refreshMangaList}
+            />
+            {!loading && !isRefreshing && routes.length > 0 ? (
                 <TabView
                     navigationState={{ index, routes }}
                     renderScene={renderScene}
