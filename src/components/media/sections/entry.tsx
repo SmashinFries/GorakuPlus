@@ -1,6 +1,7 @@
 import { MotiView } from 'moti';
 import {
     ActivityIndicator,
+    Button,
     Checkbox,
     IconButton,
     List,
@@ -37,6 +38,8 @@ import {
 import { DatePopup, StatusDropDown } from '../entryActions';
 import { NumberPickerMode } from '@/components/picker';
 import { useAppTheme } from '@/store/theme/theme';
+import { ScrollView } from 'react-native-gesture-handler';
+import { compareArrays } from '@/utils/compare';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -51,6 +54,7 @@ type ListEntryViewProps = {
     data: AniMediaQuery['Media']['mediaListEntry'];
     scoreFormat?: ScoreFormat;
     isFav: boolean;
+    customLists: string[];
     onShowReleases: () => void;
     refreshData: () => void;
 };
@@ -94,6 +98,7 @@ const ListEntryView = ({
     data,
     scoreFormat,
     isFav,
+    customLists,
     refreshData,
     onShowReleases,
 }: ListEntryViewProps) => {
@@ -132,6 +137,10 @@ const ListEntryView = ({
                         setListStatus(
                             (res as { data: SaveMediaListItemMutation })?.data?.SaveMediaListEntry
                                 ?.status ?? null,
+                        );
+                        setListProgress(
+                            (res as { data: SaveMediaListItemMutation })?.data?.SaveMediaListEntry
+                                ?.progress ?? null,
                         );
                         setIsOnList(true);
                         refreshData();
@@ -304,6 +313,7 @@ const ListEntryView = ({
                     scoreFormat={scoreFormat}
                     status={listStatus}
                     updateEntry={updateListEntry}
+                    customLists={customLists}
                 />
             )}
         </>
@@ -363,6 +373,52 @@ const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInputProps)
     );
 };
 
+type ProgressInputProps = {
+    value: number | null | undefined;
+    maxValue?: number;
+    onChange: (value: number) => void;
+    disabled?: boolean;
+};
+const ProgressInput = ({ value, maxValue, onChange, disabled }: ProgressInputProps) => {
+    const [showNumPick, setShowNumPick] = useState(false);
+    const [containerHeight, setContainerHeight] = useState(0);
+    const { colors } = useAppTheme();
+
+    return (
+        <>
+            <Pressable
+                onLayout={({ nativeEvent }) =>
+                    setContainerHeight(Math.floor(nativeEvent.layout.height - 10))
+                }
+                android_ripple={{
+                    color: colors.primary,
+                    borderless: true,
+                    foreground: true,
+                    radius: containerHeight ?? 40,
+                }}
+                onPress={() => setShowNumPick(true)}
+                disabled={disabled}
+            >
+                <List.Subheader style={{ textAlign: 'center' }}>{'Progress'}</List.Subheader>
+                <Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>{value}</Text>
+            </Pressable>
+            <Portal>
+                <NumberPickDialog
+                    title={'Set Progress'}
+                    onChange={onChange}
+                    visible={showNumPick}
+                    onDismiss={() => setShowNumPick(false)}
+                    defaultValue={value}
+                    mode={!maxValue ? 'unknown_chapters' : null}
+                    options={
+                        maxValue ? Array.from(Array(maxValue).keys()).map((i) => `${i}`) : null
+                    }
+                />
+            </Portal>
+        </>
+    );
+};
+
 type EntryNumInputProps = {
     value: any | null | undefined;
     title: string;
@@ -375,6 +431,7 @@ type ListEntrySheetProps = {
     entryData: AniMediaQuery['Media']['mediaListEntry'];
     status: MediaListStatus | string;
     scoreFormat: ScoreFormat;
+    customLists: string[];
     updateEntry: (variables: SaveMediaListItemMutationVariables) => void;
 };
 export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntrySheetProps>(
@@ -403,6 +460,10 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
             notes: props.entryData?.notes,
             private: props.entryData?.private,
             hideFromStatusList: props.entryData?.hiddenFromStatusLists,
+            customLists:
+                Object.keys(props.entryData?.customLists as { [key: string]: boolean }).filter(
+                    (val, idx) => props.entryData?.customLists[val] === true,
+                ) ?? [],
         });
 
         const submitNewEntry = () => {
@@ -415,7 +476,13 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                 tempParams.repeat === props.entryData?.repeat &&
                 tempParams.notes === props.entryData?.notes &&
                 tempParams.private === props.entryData?.private &&
-                tempParams.hideFromStatusList === props.entryData?.hiddenFromStatusLists
+                tempParams.hideFromStatusList === props.entryData?.hiddenFromStatusLists &&
+                compareArrays(
+                    tempParams.customLists,
+                    Object.keys(props.entryData?.customLists as { [key: string]: boolean }).filter(
+                        (val, idx) => props.entryData?.customLists[val] === true,
+                    ) ?? [],
+                )
             )
                 return;
             props.updateEntry({
@@ -428,6 +495,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                 notes: tempParams.notes,
                 private: tempParams.private,
                 hideFromStatusList: tempParams.hideFromStatusList,
+                customLists: tempParams.customLists,
             });
         };
 
@@ -436,25 +504,34 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                 | 'status'
                 | 'score'
                 | 'progress'
-                | 'start'
-                | 'end'
+                | 'startedAt'
+                | 'completedAt'
                 | 'repeat'
                 | 'notes'
                 | 'private'
-                | 'hideFromStatusList',
+                | 'hideFromStatusList'
+                | 'customLists',
             value: MediaListStatus | number | FuzzyDate | string | boolean,
         ) => {
             if (key === 'score') {
                 let scoreformats: ScoreFormat;
-                switch (scoreformats) {
-                    case ScoreFormat.Point_3:
-                        console.log('3 score length:', (value as string).length);
-                    // setTempParams((prev) => ({ ...prev, [key]: value }));
-                    case ScoreFormat.Point_5:
-                        console.log('5 score length:', (value as string).length);
-                    default:
-                        setTempParams((prev) => ({ ...prev, ['score']: value as number }));
-                }
+                setTempParams((prev) => ({ ...prev, ['score']: value as number }));
+                // switch (scoreformats) {
+                //     case ScoreFormat.Point_3:
+                //         console.log('3 score:', value);
+                //     // setTempParams((prev) => ({ ...prev, [key]: value }));
+                //     case ScoreFormat.Point_5:
+                //         console.log('5 score:', value);
+                //     default:
+                //         setTempParams((prev) => ({ ...prev, ['score']: value as number }));
+                // }
+            } else if (key === 'customLists') {
+                setTempParams((prev) => ({
+                    ...prev,
+                    customLists: prev.customLists?.includes(value as string)
+                        ? (prev.customLists as string[])?.filter((val) => val !== (value as string))
+                        : [...prev.customLists, value as string],
+                }));
             } else {
                 setTempParams((prev) => ({ ...prev, [key]: value }));
             }
@@ -475,12 +552,11 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                 props.entryData.media?.volumes;
             const mode: NumberPickerMode =
                 title === 'Progress'
-                    ? props.entryData.media?.episodes ||
-                      props.entryData.media?.chapters ||
-                      props.entryData.media?.volumes
-                        ? null
-                        : 'unknown_chapters'
-                    : null;
+                    ? props.entryData.media?.episodes ??
+                      props.entryData.media?.chapters ??
+                      props.entryData.media?.volumes ??
+                      null
+                    : 'unknown_chapters';
 
             if (props.entryData.media?.status === MediaStatus.NotYetReleased) return null;
             return (
@@ -516,7 +592,10 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                 title={title}
                                 containerHeight={containerHeight}
                                 onSelect={(item) =>
-                                    updateParams(title.includes('Start') ? 'start' : 'end', item)
+                                    updateParams(
+                                        title.includes('Start') ? 'startedAt' : 'completedAt',
+                                        item,
+                                    )
                                 }
                             />
                         )}
@@ -619,12 +698,24 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                             overflow: 'hidden',
                                         }}
                                     >
-                                        <EntryNumInput
+                                        <ProgressInput
+                                            value={tempParams.progress}
+                                            onChange={(val) => updateParams('progress', val)}
+                                            maxValue={
+                                                props.entryData?.media?.nextAiringEpisode
+                                                    ?.episode ??
+                                                props.entryData?.media?.episodes ??
+                                                props.entryData?.media?.chapters ??
+                                                props.entryData?.media?.volumes ??
+                                                null
+                                            }
+                                        />
+                                        {/* <EntryNumInput
                                             title="Progress"
                                             inputType="number"
                                             value={tempParams.progress}
                                             onChange={(val) => updateParams('progress', val)}
-                                        />
+                                        /> */}
                                         <View
                                             style={{
                                                 height: '100%',
@@ -680,6 +771,13 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                             value={tempParams.startedAt}
                                             onChange={(val) => null}
                                         />
+                                        {/* <Button
+                                            onPress={() =>
+                                                console.log('Date:', tempParams.startedAt)
+                                            }
+                                        >
+                                            TEST
+                                        </Button> */}
                                         <View
                                             style={{
                                                 height: '100%',
@@ -695,6 +793,26 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                         />
                                     </View>
                                 </>
+                            )}
+                            {props.customLists && (
+                                <List.Section title="Custom Lists">
+                                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                        {props.customLists?.map((list, idx) => (
+                                            <Checkbox.Item
+                                                key={idx}
+                                                label={list}
+                                                status={
+                                                    tempParams.customLists?.includes(list)
+                                                        ? 'checked'
+                                                        : 'unchecked'
+                                                }
+                                                labelVariant="labelMedium"
+                                                mode="android"
+                                                onPress={() => updateParams('customLists', list)}
+                                            />
+                                        ))}
+                                    </ScrollView>
+                                </List.Section>
                             )}
                             <List.Section title="Notes">
                                 <BottomSheetTextInput
