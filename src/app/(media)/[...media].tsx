@@ -167,7 +167,7 @@ const MediaScreen = () => {
                                         onShowReleases={() => setShowReleaseDialog(true)}
                                         data={aniData?.data?.Media?.mediaListEntry}
                                         scoreFormat={
-                                            aniData?.data?.User?.mediaListOptions?.scoreFormat
+                                            aniData?.data?.Viewer?.mediaListOptions?.scoreFormat
                                         }
                                         isFav={aniData?.data?.Media?.isFavourite}
                                         refreshData={refetchAniData}
