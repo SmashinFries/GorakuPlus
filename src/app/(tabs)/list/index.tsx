@@ -12,7 +12,7 @@ import {
     UserAnimeListCollectionQuery,
     UserMangaListCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
-import { updateListFilter } from '@/store/slices/listSlice';
+import { updateListFilter } from '@/store/slices/listSLice';
 import { rgbToRgba, useColumns } from '@/utils';
 import { compareArrays } from '@/utils/compare';
 import { sortListTabs, sortLists } from '@/utils/sort';

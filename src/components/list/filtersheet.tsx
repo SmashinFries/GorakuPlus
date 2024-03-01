@@ -9,7 +9,7 @@ import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/typ
 import React, { useMemo, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Button, Chip, List, Switch, useTheme } from 'react-native-paper';
-import { updateListFilter } from '@/store/slices/listSlice';
+import { updateListFilter } from '@/store/slices/listSLice';
 import { MediaListSort, MediaTag, MediaType } from '@/store/services/anilist/generated-anilist';
 import { TabView } from 'react-native-tab-view';
 import { RenderTabBar } from '../tab';

@@ -4,7 +4,7 @@ import Burnt from 'burnt';
 import { MediaList, MediaListSort, MediaTag, UserAnimeListCollectionQuery, UserMangaListCollectionQuery } from '@/store/services/anilist/generated-anilist';
 import { sendErrorMessage } from '@/utils/toast';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { updateListFilter } from '@/store/slices/listSlice';
+import { updateListFilter } from '@/store/slices/listSLice';
 import { AnimatedFlashList } from '@shopify/flash-list';
 import { sortListTabs } from '@/utils/sort';
 

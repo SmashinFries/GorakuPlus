@@ -49,6 +49,7 @@ export const listFilterSlice = createSlice({
     initialState,
     reducers: {
         updateListFilter: (state, action: PayloadAction<filterActions>) => {
+            // @ts-ignore
             state[action.payload.entryType] = action.payload.value;
         },
     },

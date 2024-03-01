@@ -48,7 +48,7 @@ import { AniMediaQuery, MediaType } from '@/store/services/anilist/generated-ani
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router, useFocusEffect } from 'expo-router';
-import { updateListFilter } from '@/store/slices/listSlice';
+import { updateListFilter } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { updateFavSearch } from '@/store/slices/favoritesSlice';
 import { SearchType } from '@/types/search';

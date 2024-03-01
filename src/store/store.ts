@@ -30,7 +30,7 @@ import googleBooksApi from '@/store/services/google-books/googleApi';
 import charArtDBSlice, { CharacterArtState } from '@/store/slices/charArtSlice';
 import waifuItAPI from './services/waifu.it/waifuit';
 import { favSearchSlice } from './slices/favoritesSlice';
-import listFilterSlice, { ListFilterState } from './slices/listSlice';
+import listFilterSlice, { ListFilterState } from './slices/listSLice';
 import animeThemesApi from './services/animethemes/animeThemesApi';
 import { traceMoeApi } from './services/tracemoe/traceMoeApi';
 import wdTaggerAPI from './services/huggingface/wdTagger';

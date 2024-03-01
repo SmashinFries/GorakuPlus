@@ -13,7 +13,7 @@ import { BasicDialogProps } from '@/types';
 import { ExploreTabsProps } from '@/types/navigation';
 import { setSettings } from '@/store/slices/settingsSlice';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
-import { updateListFilter } from '@/store/slices/listSlice';
+import { updateListFilter } from '@/store/slices/listSLice';
 
 type DefaultDescDialogProps = BasicDialogProps & {
     defaultValue: 'ani' | 'mal';
