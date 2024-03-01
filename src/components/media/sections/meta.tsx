@@ -1,6 +1,6 @@
 import { Button, List, Text, useTheme } from 'react-native-paper';
 import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
-import { convertDate } from '@/utils';
+import { convertDate, copyToClipboard } from '@/utils';
 import { View } from 'react-native';
 import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { useEffect, useMemo } from 'react';
@@ -94,7 +94,11 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 />
                 <List.Item
                     title="Format"
-                    right={(props) => <Text {...props}>{data.format ?? 'N/A'}</Text>}
+                    right={(props) => (
+                        <Text {...props} style={{ textTransform: 'capitalize' }}>
+                            {data.format?.replaceAll('_', ' ') ?? 'N/A'}
+                        </Text>
+                    )}
                 />
                 <List.Item
                     title="Trending Rank"
@@ -110,23 +114,50 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 />
                 <List.Item
                     title="HashTag"
-                    right={(props) => <Text selectable>{data?.hashtag ?? 'N/A'}</Text>}
+                    right={(props) => (
+                        <Text selectable>{data?.hashtag?.length > 0 ? data?.hashtag : 'N/A'}</Text>
+                    )}
                 />
                 <List.Item
                     title="Synonyms"
+                    description={
+                        data?.synonyms?.length > 0
+                            ? () => (
+                                  <View
+                                      style={{
+                                          flexDirection: 'row',
+                                          flexWrap: 'wrap',
+                                      }}
+                                  >
+                                      {data?.synonyms?.map((name, idx) => (
+                                          <Button
+                                              key={idx}
+                                              mode="elevated"
+                                              style={{ margin: 5 }}
+                                              onPress={() => copyToClipboard(name)}
+                                          >
+                                              {name}
+                                          </Button>
+                                      ))}
+                                  </View>
+                              )
+                            : null
+                    }
                     // description={
                     //     data.synonyms.length > 0
                     //         ? data.synonyms.map((name, idx) => name).join(', ')
                     //         : 'N/A'
                     // }
                     // descriptionNumberOfLines={10}
-                    right={(props) => (
-                        <Text selectable {...props} style={{ width: '50%', textAlign: 'right' }}>
-                            {data?.synonyms?.length > 0
-                                ? data?.synonyms?.map((name, idx) => name)?.join(', ')
-                                : 'N/A'}
-                        </Text>
-                    )}
+                    right={
+                        data?.synonyms?.length < 1
+                            ? (props) => (
+                                  <Text {...props} style={{ width: '50%', textAlign: 'right' }}>
+                                      {'N/A'}
+                                  </Text>
+                              )
+                            : null
+                    }
                 />
                 {data?.type !== MediaType.Manga && (
                     <List.Item
