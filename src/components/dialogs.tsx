@@ -156,7 +156,6 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 type NumberPickDialogProps = BasicDialogProps &
     NumberPickerProps & {
         title: string;
-        scoreFormat?: string;
     };
 export const NumberPickDialog = ({
     title,
@@ -165,7 +164,6 @@ export const NumberPickDialog = ({
     onChange,
     options,
     visible,
-    scoreFormat,
     onDismiss,
 }: NumberPickDialogProps) => {
     const [tempVal, setTempVal] = useState(defaultValue ?? 0);
