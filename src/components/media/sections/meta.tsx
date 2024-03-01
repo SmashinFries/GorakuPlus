@@ -131,13 +131,11 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 {data?.type !== MediaType.Manga && (
                     <List.Item
                         title="Studios"
-                        right={(props) => (
+                        description={() => (
                             <View
                                 style={{
                                     flexDirection: 'row',
                                     flexWrap: 'wrap',
-                                    justifyContent: 'flex-end',
-                                    maxWidth: '65%',
                                 }}
                             >
                                 {data?.studios?.edges?.map(
@@ -163,13 +161,12 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 {data?.type !== MediaType.Manga && (
                     <List.Item
                         title="Producers"
-                        right={(props) => (
+                        description={() => (
                             <View
                                 style={{
                                     flexDirection: 'row',
                                     flexWrap: 'wrap',
-                                    justifyContent: 'flex-end',
-                                    maxWidth: '65%',
+                                    // justifyContent: 'flex-end',
                                 }}
                             >
                                 {data?.studios?.edges?.map(
