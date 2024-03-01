@@ -550,13 +550,6 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                 props.entryData.media?.episodes ??
                 props.entryData.media?.chapters ??
                 props.entryData.media?.volumes;
-            const mode: NumberPickerMode =
-                title === 'Progress'
-                    ? props.entryData.media?.episodes ??
-                      props.entryData.media?.chapters ??
-                      props.entryData.media?.volumes ??
-                      null
-                    : 'unknown_chapters';
 
             if (props.entryData.media?.status === MediaStatus.NotYetReleased) return null;
             return (
@@ -603,7 +596,6 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                     <Portal>
                         <NumberPickDialog
                             title={'Set ' + title}
-                            mode={mode}
                             onChange={onChange}
                             visible={showNumPick}
                             onDismiss={() => setShowNumPick(false)}
