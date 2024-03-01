@@ -66,8 +66,7 @@ export const useList = (userId: number) => {
 	const [fetchAnimeList, animeList] = useLazyUserAnimeListCollectionQuery();
 	const [fetchMangaList, mangaList] = useLazyUserMangaListCollectionQuery();
 	const [loading, setLoading] = useState<boolean>(true);
-	const [isAnimeRefresh, setIsAnimeRefresh] = useState<boolean>(false);
-	const [isMangaRefresh, setIsMangaRefresh] = useState<boolean>(false);
+	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 	const [animeRoutes, setAnimeRoutes] = useState<{ key: string, title: string }[]>([]);
 	const [mangaRoutes, setMangaRoutes] = useState<{ key: string, title: string }[]>([]);
 	const [rootRoutes, setRootRoutes] = useState<{ key: string, title: string }[]>([]);
@@ -126,61 +125,16 @@ export const useList = (userId: number) => {
 	};
 
 	const refreshAnimeList = async () => {
-		setIsAnimeRefresh(true);
+		setIsRefreshing(true);
 		await fetchAnimeList({ userId: userId, sort: MediaListSort.AddedTimeDesc });
-		setIsAnimeRefresh(false);
+		setIsRefreshing(false);
 	};
 
 	const refreshMangaList = async () => {
-		setIsMangaRefresh(true);
+		setIsRefreshing(true);
 		await fetchMangaList({ userId: userId, sort: MediaListSort.AddedTimeDesc });
-		setIsMangaRefresh(false);
+		setIsRefreshing(false);
 	};
-
-	// const reorderedAnimeRoutes = useMemo(() => {
-
-	// 	if (!animeRoutes) return [];
-	// 	const orderedRouteNames = animeTabOrder.map((routeName) => routeName);
-	// 	const newRoutes = animeTabOrder.map((routeName) => ({ key: routeName, title: routeName }));
-	// 	for (const route of animeRoutes) {
-	// 		if (!orderedRouteNames.includes(route.key)) {
-	// 			newRoutes.push(route);
-	// 		}
-	// 	}
-	// 	return newRoutes
-	// }, [animeTabOrder, animeRoutes])
-
-	// const reorderedMangaRoutes = useMemo(() => {
-
-	// 	if (!mangaRoutes) return [];
-	// 	const orderedRouteNames = mangaTabOrder.map((routeName) => routeName);
-	// 	const newRoutes = mangaTabOrder.map((routeName) => ({ key: routeName, title: routeName }));
-	// 	for (const route of mangaRoutes) {
-	// 		if (!orderedRouteNames.includes(route.key)) {
-	// 			newRoutes.push(route);
-	// 		}
-	// 	}
-	// 	return newRoutes
-	// }, [mangaTabOrder, mangaRoutes])
-
-	// useEffect(() => {
-	//     if (animeList.isError || mangaList.isError) {
-	//         sendErrorMessage(animeList.isError ? animeList.error?.message : mangaList.error?.message);
-	//     }
-	// },[animeList, mangaList])
-
-	// useEffect(() => {
-	//     const orderedRouteNames = animeTabOrder.map((routeName) => routeName);
-	//     for (const route of routes) {
-	//         if (!orderedRouteNames.includes(route.key)) {
-	//             console.log('adding', route.key)
-	//             orderedRouteNames.push(route.key);
-	//         }
-	//     }
-	//     setTabRoutes(
-	//         orderedRouteNames.map((routeName) => ({ key: routeName, title: routeName })),
-	//     );
-	// }, [animeTabOrder]);
 
 	useEffect(() => {
 		if (userId && animeList.isUninitialized && mangaList.isUninitialized) {
@@ -189,5 +143,5 @@ export const useList = (userId: number) => {
 	}, [])
 
 
-	return { animeList, mangaList, rootRoutes, animeRoutes, mangaRoutes, genres, tags, loading, isAnimeRefresh, isMangaRefresh, refreshAnimeList, refreshMangaList };
+	return { animeList, mangaList, rootRoutes, animeRoutes, mangaRoutes, genres, tags, loading, isRefreshing, refreshAnimeList, refreshMangaList };
 };
