@@ -22,7 +22,6 @@ export const scoreToIndex = (score: number, format: ScoreFormat) => {
     switch (format) {
         case ScoreFormat.Point_100:
             index = scoreValues[ScoreFormat.Point_100].findIndex((val) => val === `${score}`);
-            console.log('found index:', index, scoreValues[ScoreFormat.Point_100][index])
             return index > -1 ? index : 0;
         case ScoreFormat.Point_10:
             index = scoreValues[ScoreFormat.Point_10].findIndex((val) => val === `${score}`);

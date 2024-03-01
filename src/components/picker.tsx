@@ -28,7 +28,6 @@ export const NumberPicker = ({
     options = null,
     onChange,
 }: NumberPickerProps) => {
-    console.log('FIRST INDEX', defaultValue);
     const currentOptions: string[] = options
         ? options
         : mode === 'hours'
@@ -49,7 +48,6 @@ export const NumberPicker = ({
     };
 
     useEffect(() => {
-        console.log('index:', index);
         if (Object.values(ScoreFormat).includes(mode as ScoreFormat)) {
             onChange && onChange(scoreStringToNumber(currentOptions[index], mode as ScoreFormat));
         } else {
