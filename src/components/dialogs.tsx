@@ -6,11 +6,16 @@ import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useCallback, useEffect, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
-import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
+import {
+    ExploreMediaQuery,
+    MediaType,
+    ScoreFormat,
+} from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from './cards';
 import { copyToClipboard } from '@/utils';
 import { NumberPicker, NumberPickerProps } from './picker';
 import { useCameraPermissions, CameraView, BarCodeType } from 'expo-camera/next';
+import { scoreToIndex } from '@/utils/scores';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
     onNav: (aniId: number, malId: number, type: MediaType) => void;
@@ -151,6 +156,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 type NumberPickDialogProps = BasicDialogProps &
     NumberPickerProps & {
         title: string;
+        scoreFormat?: string;
     };
 export const NumberPickDialog = ({
     title,
@@ -159,10 +165,10 @@ export const NumberPickDialog = ({
     onChange,
     options,
     visible,
+    scoreFormat,
     onDismiss,
 }: NumberPickDialogProps) => {
-    const { colors } = useTheme();
-    const [tempVal, setTempVal] = useState(defaultValue);
+    const [tempVal, setTempVal] = useState(defaultValue ?? 0);
 
     return (
         <Dialog visible={visible} onDismiss={onDismiss}>
