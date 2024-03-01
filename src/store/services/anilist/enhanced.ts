@@ -74,12 +74,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'AniSearch' as const,
-                              id: media.id,
-                          })),
-                          'AniSearch',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'AniSearch' as const,
+                            id: media.id,
+                        })),
+                        'AniSearch',
+                    ]
                     : ['AniSearch'],
         },
         CharacterList: {
@@ -147,12 +147,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreAnime' as const,
-                              id: media.id,
-                          })),
-                          'ExploreAnime',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreAnime' as const,
+                            id: media.id,
+                        })),
+                        'ExploreAnime',
+                    ]
                     : ['ExploreAnime'],
         },
         AnimeThisSeason: {
@@ -176,12 +176,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreAnime' as const,
-                              id: media.id,
-                          })),
-                          'ExploreAnime',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreAnime' as const,
+                            id: media.id,
+                        })),
+                        'ExploreAnime',
+                    ]
                     : ['ExploreAnime'],
         },
         AnimeNextSeason: {
@@ -191,12 +191,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreAnime' as const,
-                              id: media.id,
-                          })),
-                          'ExploreAnime',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreAnime' as const,
+                            id: media.id,
+                        })),
+                        'ExploreAnime',
+                    ]
                     : ['ExploreAnime'],
         },
         AnimePopular: {
@@ -206,12 +206,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreAnime' as const,
-                              id: media.id,
-                          })),
-                          'ExploreAnime',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreAnime' as const,
+                            id: media.id,
+                        })),
+                        'ExploreAnime',
+                    ]
                     : ['ExploreAnime'],
         },
         AnimeTopScored: {
@@ -221,72 +221,72 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreAnime' as const,
-                              id: media.id,
-                          })),
-                          'ExploreAnime',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreAnime' as const,
+                            id: media.id,
+                        })),
+                        'ExploreAnime',
+                    ]
                     : ['ExploreAnime'],
         },
         MangaNewReleases: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManga' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManga',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManga' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManga',
+                    ]
                     : ['ExploreManga'],
         },
         MangaTrending: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManga' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManga',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManga' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManga',
+                    ]
                     : ['ExploreManga'],
         },
         MangaPopular: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManga' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManga',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManga' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManga',
+                    ]
                     : ['ExploreManga'],
         },
         MangaTopScored: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManga' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManga',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManga' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManga',
+                    ]
                     : ['ExploreManga'],
         },
         ManhwaNewReleases: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhwa' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhwa',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhwa' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhwa',
+                    ]
                     : ['ExploreManhwa'],
         },
         ManhwaTrending: {
@@ -307,120 +307,120 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhwa' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhwa',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhwa' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhwa',
+                    ]
                     : ['ExploreManhwa'],
         },
         ManhwaPopular: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhwa' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhwa',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhwa' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhwa',
+                    ]
                     : ['ExploreManhwa'],
         },
         ManhwaTopScored: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhwa' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhwa',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhwa' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhwa',
+                    ]
                     : ['ExploreManhwa'],
         },
         ManhuaNewReleases: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhua' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhua',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhua' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhua',
+                    ]
                     : ['ExploreManhua'],
         },
         ManhuaTrending: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhua' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhua',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhua' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhua',
+                    ]
                     : ['ExploreManhua'],
         },
         ManhuaPopular: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhua' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhua',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhua' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhua',
+                    ]
                     : ['ExploreManhua'],
         },
         ManhuaTopScored: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreManhua' as const,
-                              id: media.id,
-                          })),
-                          'ExploreManhua',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreManhua' as const,
+                            id: media.id,
+                        })),
+                        'ExploreManhua',
+                    ]
                     : ['ExploreManhua'],
         },
         NovelNewReleases: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreNovel' as const,
-                              id: media.id,
-                          })),
-                          'ExploreNovel',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreNovel' as const,
+                            id: media.id,
+                        })),
+                        'ExploreNovel',
+                    ]
                     : ['ExploreNovel'],
         },
         NovelTrending: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreNovel' as const,
-                              id: media.id,
-                          })),
-                          'ExploreNovel',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreNovel' as const,
+                            id: media.id,
+                        })),
+                        'ExploreNovel',
+                    ]
                     : ['ExploreNovel'],
         },
         NovelPopular: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreNovel' as const,
-                              id: media.id,
-                          })),
-                          'ExploreNovel',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreNovel' as const,
+                            id: media.id,
+                        })),
+                        'ExploreNovel',
+                    ]
                     : ['ExploreNovel'],
         },
         NovelTopScored: {
@@ -441,54 +441,56 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.media?.map((media) => ({
-                              type: 'ExploreNovel' as const,
-                              id: media.id,
-                          })),
-                          'ExploreNovel',
-                      ]
+                        ...result.Page?.media?.map((media) => ({
+                            type: 'ExploreNovel' as const,
+                            id: media.id,
+                        })),
+                        'ExploreNovel',
+                    ]
                     : ['ExploreNovel'],
         },
         AniMedia: {
             transformResponse(baseQueryReturnValue, meta, arg) {
                 return transformMediaSorts(baseQueryReturnValue);
             },
-            providesTags: (result, error, arg) => [{ type: 'AniMedia', id: arg?.id }],
+            providesTags: (result, error, arg) => [{ type: 'AniMedia', id: arg.id }],
         },
         ToggleFav: {
             invalidatesTags: (result, error, arg) =>
                 arg
                     ? [
-                          arg?.animeId
-                              ? { type: 'ExploreAnime', id: arg?.animeId }
-                              : arg.mangaId
-                              ? { type: 'ExploreManga', id: arg?.mangaId }
-                              : arg.characterId
-                              ? { type: 'CharacterSearch', id: arg?.characterId }
-                              : arg.staffId
-                              ? { type: 'StaffSearch', id: arg?.staffId }
-                              : { type: 'StudioSearch', id: arg?.studioId },
-                          'AniMedia',
-                          'CharacterDetails',
-                          'StaffDetails',
-                      ]
+                        arg?.animeId
+                            ? { type: 'ExploreAnime', id: arg?.animeId }
+                            : arg.mangaId
+                                ? { type: 'ExploreManga', id: arg?.mangaId }
+                                : arg.characterId
+                                    ? { type: 'CharacterSearch', id: arg?.characterId }
+                                    : arg.staffId
+                                        ? { type: 'StaffSearch', id: arg?.staffId }
+                                        : { type: 'StudioSearch', id: arg?.studioId },
+                        'AniMedia',
+                        'CharacterDetails',
+                        'StaffDetails',
+                    ]
                     : [
-                          'ExploreAnime',
-                          'ExploreManga',
-                          'ExploreManhwa',
-                          'ExploreNovel',
-                          'AniMedia',
-                          'AniSearch',
-                          'CharacterDetails',
-                          'StaffDetails',
-                          'CharacterSearch',
-                      ],
+                        'ExploreAnime',
+                        'ExploreManga',
+                        'ExploreManhwa',
+                        'ExploreNovel',
+                        'AniMedia',
+                        'AniSearch',
+                        'CharacterDetails',
+                        'StaffDetails',
+                        'CharacterSearch',
+                    ],
         },
         UserAnimeListCollection: {
             transformResponse(baseQueryReturnValue, meta, arg) {
                 return transformListDates(baseQueryReturnValue);
             },
-            providesTags: (result) => ['UserAnimeList'],
+            providesTags: (result) => result ? [
+                ...[].concat(...result.MediaListCollection?.lists?.map(obj => obj.entries.map(entry => ({ type: 'UserAnimeList' as const, id: entry.media.id })))),
+            ] : ['UserAnimeList'],
             // transformResponse(baseQueryReturnValue, meta, arg) {
             //     return transformMediaDates(baseQueryReturnValue);
             // },
@@ -506,25 +508,28 @@ export const api = generatedApi.enhanceEndpoints({
             invalidatesTags: (result, error, params) =>
                 params
                     ? [
-                          result.SaveMediaListEntry?.media?.type === 'ANIME'
-                              ? { type: 'ExploreAnime', id: params?.mediaId }
-                              : result.SaveMediaListEntry?.media?.format === 'NOVEL'
-                              ? 'ExploreNovel'
-                              : result.SaveMediaListEntry?.media?.countryOfOrigin === 'JP'
-                              ? 'ExploreManga'
-                              : result.SaveMediaListEntry?.media?.countryOfOrigin === 'KR'
-                              ? 'ExploreManhwa'
-                              : 'ExploreManhua',
-                          //   { type: 'AniMedia', id: params?.mediaId },
-                          { type: 'AniSearch', id: params?.mediaId },
-                      ]
+                        result.SaveMediaListEntry?.media?.type === 'ANIME'
+                            ? { type: 'ExploreAnime', id: params?.mediaId }
+                            : result.SaveMediaListEntry?.media?.format === 'NOVEL'
+                                ? 'ExploreNovel'
+                                : result.SaveMediaListEntry?.media?.countryOfOrigin === 'JP'
+                                    ? 'ExploreManga'
+                                    : result.SaveMediaListEntry?.media?.countryOfOrigin === 'KR'
+                                        ? 'ExploreManhwa'
+                                        : 'ExploreManhua',
+                        //   { type: 'AniMedia', id: params?.mediaId },
+                        { type: 'AniSearch', id: params?.mediaId },
+                        { type: result.SaveMediaListEntry?.media?.type === 'ANIME' ? 'UserAnimeList' : 'UserMangaList', id: params?.mediaId },
+                    ]
                     : [
-                          'ExploreAnime',
-                          'ExploreManga',
-                          'ExploreManhwa',
-                          'ExploreNovel',
-                          'AniSearch',
-                      ],
+                        'ExploreAnime',
+                        'ExploreManga',
+                        'ExploreManhwa',
+                        'ExploreNovel',
+                        'AniSearch',
+                        'UserAnimeList',
+                        'UserMangaList',
+                    ],
         },
         DeleteMediaListItem: {
             invalidatesTags: (result, error, params) => [
@@ -608,36 +613,36 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.characters?.map((char) => ({
-                              type: 'CharacterSearch' as const,
-                              id: char.id,
-                          })),
-                          'CharacterSearch',
-                      ]
+                        ...result.Page?.characters?.map((char) => ({
+                            type: 'CharacterSearch' as const,
+                            id: char.id,
+                        })),
+                        'CharacterSearch',
+                    ]
                     : ['CharacterSearch'],
         },
         StaffSearch: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.staff?.map((staff) => ({
-                              type: 'StaffSearch' as const,
-                              id: staff.id,
-                          })),
-                          'StaffSearch',
-                      ]
+                        ...result.Page?.staff?.map((staff) => ({
+                            type: 'StaffSearch' as const,
+                            id: staff.id,
+                        })),
+                        'StaffSearch',
+                    ]
                     : ['StaffSearch'],
         },
         StudioSearch: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.studios?.map((studio) => ({
-                              type: 'StudioSearch' as const,
-                              id: studio.id,
-                          })),
-                          'StudioSearch',
-                      ]
+                        ...result.Page?.studios?.map((studio) => ({
+                            type: 'StudioSearch' as const,
+                            id: studio.id,
+                        })),
+                        'StudioSearch',
+                    ]
                     : ['StudioSearch'],
         },
         UserActivity: {
@@ -666,12 +671,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.activities?.map((activity) => ({
-                              type: 'Activity' as const,
-                              // @ts-ignore
-                              id: activity.id,
-                          })),
-                      ]
+                        ...result.Page?.activities?.map((activity) => ({
+                            type: 'Activity' as const,
+                            // @ts-ignore
+                            id: activity.id,
+                        })),
+                    ]
                     : ['Activity'],
         },
         GetNotifications: {
@@ -707,55 +712,55 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.User?.favourites?.anime?.nodes.map((media) => ({
-                              type: 'AnimeFav' as const,
-                              id: media.id,
-                          })),
-                      ]
+                        ...result.User?.favourites?.anime?.nodes.map((media) => ({
+                            type: 'AnimeFav' as const,
+                            id: media.id,
+                        })),
+                    ]
                     : ['AnimeFav'],
         },
         UserMangaFavorites: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.User?.favourites?.manga?.nodes.map((media) => ({
-                              type: 'MangaFav' as const,
-                              id: media.id,
-                          })),
-                      ]
+                        ...result.User?.favourites?.manga?.nodes.map((media) => ({
+                            type: 'MangaFav' as const,
+                            id: media.id,
+                        })),
+                    ]
                     : ['MangaFav'],
         },
         UserWaifuFavorites: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.User?.favourites?.characters?.nodes.map((char) => ({
-                              type: 'CharFav' as const,
-                              id: char.id,
-                          })),
-                      ]
+                        ...result.User?.favourites?.characters?.nodes.map((char) => ({
+                            type: 'CharFav' as const,
+                            id: char.id,
+                        })),
+                    ]
                     : ['CharFav'],
         },
         UserStaffFavorites: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.User?.favourites?.staff?.nodes.map((staff) => ({
-                              type: 'StaffFav' as const,
-                              id: staff.id,
-                          })),
-                      ]
+                        ...result.User?.favourites?.staff?.nodes.map((staff) => ({
+                            type: 'StaffFav' as const,
+                            id: staff.id,
+                        })),
+                    ]
                     : ['StaffFav'],
         },
         UserStudiosFavorites: {
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.User?.favourites?.studios?.nodes.map((studios) => ({
-                              type: 'StudiosFav' as const,
-                              id: studios.id,
-                          })),
-                      ]
+                        ...result.User?.favourites?.studios?.nodes.map((studios) => ({
+                            type: 'StudiosFav' as const,
+                            id: studios.id,
+                        })),
+                    ]
                     : ['StudiosFav'],
         },
         StudioList: {
@@ -782,11 +787,11 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Studio?.media?.nodes.map((media) => ({
-                              type: 'StudioList' as const,
-                              id: media.id,
-                          })),
-                      ]
+                        ...result.Studio?.media?.nodes.map((media) => ({
+                            type: 'StudioList' as const,
+                            id: media.id,
+                        })),
+                    ]
                     : ['StudioList'],
         },
         WeeklyAnime: {
@@ -796,12 +801,12 @@ export const api = generatedApi.enhanceEndpoints({
             providesTags: (result) =>
                 result
                     ? [
-                          ...result.Page?.airingSchedules?.map((media) => ({
-                              type: 'WeeklyAnime' as const,
-                              id: media.media.id,
-                          })),
-                          'WeeklyAnime',
-                      ]
+                        ...result.Page?.airingSchedules?.map((media) => ({
+                            type: 'WeeklyAnime' as const,
+                            id: media.media.id,
+                        })),
+                        'WeeklyAnime',
+                    ]
                     : ['WeeklyAnime'],
         },
     },
