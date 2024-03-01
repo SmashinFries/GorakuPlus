@@ -25,7 +25,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 <List.Item
                     title={'Source'}
                     right={(props) => (
-                        <Text style={{ textTransform: 'capitalize' }}>
+                        <Text {...props} style={{ textTransform: 'capitalize' }}>
                             {data.source?.replaceAll('_', ' ') ?? '??'}
                         </Text>
                     )}
@@ -35,17 +35,19 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                         data.type === 'ANIME'
                             ? 'Episodes'
                             : data.format === MediaFormat.Novel
-                            ? 'Volumes'
-                            : 'Chapters'
+                              ? 'Volumes'
+                              : 'Chapters'
                     }
                     right={(props) => (
-                        <Text>{data.chapters ?? data.volumes ?? data.episodes ?? 'N/A'}</Text>
+                        <Text {...props}>
+                            {data.chapters ?? data.volumes ?? data.episodes ?? 'N/A'}
+                        </Text>
                     )}
                 />
                 <List.Item
                     title="Origin"
                     right={(props) => (
-                        <Text>
+                        <Text {...props}>
                             {data.countryOfOrigin
                                 ? COUNTRY_OPTIONS[data.countryOfOrigin]['name']
                                 : 'N/A'}
@@ -55,14 +57,14 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 {data.type === MediaType.Anime && (
                     <List.Item
                         title="Duration"
-                        right={(props) => <Text>{data.duration ?? 'N/A'}</Text>}
+                        right={(props) => <Text {...props}>{data.duration ?? 'N/A'}</Text>}
                     />
                 )}
                 {data.season && (
                     <List.Item
                         title="Season"
                         right={(props) => (
-                            <Text style={{ textTransform: 'capitalize' }}>
+                            <Text {...props} style={{ textTransform: 'capitalize' }}>
                                 {`${data.season} ${data.seasonYear}` ?? 'N/A'}
                             </Text>
                         )}
@@ -70,33 +72,45 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 )}
                 <List.Item
                     title="Start Date"
-                    right={(props) => <Text>{startDate ?? 'N/A'}</Text>}
+                    right={(props) => <Text {...props}>{startDate ?? 'N/A'}</Text>}
                 />
-                <List.Item title="End Date" right={(props) => <Text>{endDate ?? 'N/A'}</Text>} />
+                <List.Item
+                    title="End Date"
+                    right={(props) => <Text {...props}>{endDate ?? 'N/A'}</Text>}
+                />
                 <List.Item
                     title="Maturity Rating"
                     right={(props) => (
-                        <Text selectable style={{ width: '50%', textAlign: 'right' }}>
+                        <Text selectable {...props} style={{ width: '50%', textAlign: 'right' }}>
                             {(malData as AnimeFull)?.rating ?? 'N/A'}
                         </Text>
                     )}
                 />
                 <List.Item
                     title="Favorites"
-                    right={(props) => <Text>{data.favourites?.toLocaleString() ?? 'N/A'}</Text>}
+                    right={(props) => (
+                        <Text {...props}>{data?.favourites?.toLocaleString() ?? 'N/A'}</Text>
+                    )}
                 />
-                <List.Item title="Format" right={(props) => <Text>{data.format ?? 'N/A'}</Text>} />
+                <List.Item
+                    title="Format"
+                    right={(props) => <Text {...props}>{data.format ?? 'N/A'}</Text>}
+                />
                 <List.Item
                     title="Trending Rank"
-                    right={(props) => <Text>{data.trending?.toLocaleString() ?? 'N/A'}</Text>}
+                    right={(props) => (
+                        <Text {...props}>{data?.trending?.toLocaleString() ?? 'N/A'}</Text>
+                    )}
                 />
                 <List.Item
                     title="Popularity Rank"
-                    right={(props) => <Text>{data.popularity?.toLocaleString() ?? 'N/A'}</Text>}
+                    right={(props) => (
+                        <Text {...props}>{data?.popularity?.toLocaleString() ?? 'N/A'}</Text>
+                    )}
                 />
                 <List.Item
                     title="HashTag"
-                    right={(props) => <Text selectable>{data.hashtag ?? 'N/A'}</Text>}
+                    right={(props) => <Text selectable>{data?.hashtag ?? 'N/A'}</Text>}
                 />
                 <List.Item
                     title="Synonyms"
@@ -107,9 +121,9 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                     // }
                     // descriptionNumberOfLines={10}
                     right={(props) => (
-                        <Text selectable style={{ width: '50%', textAlign: 'right' }}>
-                            {data.synonyms.length > 0
-                                ? data.synonyms.map((name, idx) => name).join(', ')
+                        <Text selectable {...props} style={{ width: '50%', textAlign: 'right' }}>
+                            {data?.synonyms?.length > 0
+                                ? data?.synonyms?.map((name, idx) => name)?.join(', ')
                                 : 'N/A'}
                         </Text>
                     )}
@@ -126,7 +140,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                     maxWidth: '65%',
                                 }}
                             >
-                                {data.studios.edges.map(
+                                {data?.studios?.edges?.map(
                                     (studio, idx) =>
                                         studio.isMain && (
                                             <Button
@@ -138,7 +152,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                                     router.push(`/studio/${studio.node.id}`)
                                                 }
                                             >
-                                                {studio.node?.name}
+                                                {studio?.node?.name}
                                             </Button>
                                         ),
                                 )}
@@ -158,7 +172,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                     maxWidth: '65%',
                                 }}
                             >
-                                {data.studios.edges.map(
+                                {data?.studios?.edges?.map(
                                     (studio, idx) =>
                                         !studio.isMain && (
                                             <Button
