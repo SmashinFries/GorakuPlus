@@ -401,6 +401,7 @@ export const MediaHeader = ({
                         >
                             {streamingLinks.map((link, idx) => (
                                 <Menu.Item
+                                    key={idx}
                                     leadingIcon={
                                         link.language
                                             ? (props) => (
