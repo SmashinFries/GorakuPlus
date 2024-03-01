@@ -59,7 +59,9 @@ type DatePopupProps = {
     onSelect: (item: FuzzyDate) => void;
 };
 export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopupProps) => {
-    const [date, setDate] = useState<Date>(value?.day ? getFuzzytoDate(value) : new Date());
+    const [date, setDate] = useState<Date>(
+        value?.day && value?.month && value?.year ? getFuzzytoDate(value) : new Date(),
+    );
     const [vis, setVis] = useState<boolean>(false);
     const platform = Platform.OS;
     const { colors } = useTheme();
