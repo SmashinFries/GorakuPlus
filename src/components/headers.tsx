@@ -27,6 +27,7 @@ import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image } from 'expo-image';
 import Animated, {
     Easing,
+    FadeIn,
     FadeOut,
     SlideInDown,
     SlideInLeft,
@@ -54,6 +55,7 @@ import { SearchType } from '@/types/search';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useToggleFavMutation } from '@/store/services/anilist/enhanced';
 import { getStreamingSiteEmoji } from '@/utils/emoji';
+import { useAppTheme } from '@/store/theme/theme';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
     const title = getHeaderTitle(options, route.name);
@@ -237,14 +239,14 @@ export const SearchHeader = ({
                         setQuery('');
                     }}
                 />
-                <IconButton
+                {/* <IconButton
                     icon={'filter-variant'} //filter-variant
                     onPress={openFilter}
                     // onPress={() => setIsFilterOpen((prev) => !prev)}
                     disabled={
                         ![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
                     }
-                />
+                /> */}
                 <IconButton
                     icon={'filter-outline'}
                     onPress={openFilter}
@@ -788,6 +790,7 @@ const HeaderStyles = StyleSheet.create({
 
 export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
     const { query } = useAppSelector((state) => state.listFilter);
+    const { colors } = useAppTheme();
     const dispatch = useAppDispatch();
     // const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
@@ -811,8 +814,8 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
         <Appbar.Header>
             {isOpen ? (
                 <Animated.View
-                    entering={SlideInLeft}
-                    exiting={SlideOutLeft}
+                    entering={FadeIn}
+                    exiting={FadeOut}
                     style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -828,7 +831,9 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
                         }}
                         icon={'arrow-left'}
                         onIconPress={() => setIsOpen(false)}
+                        style={{ backgroundColor: colors.surface }}
                         mode="bar"
+                        autoFocus
                     />
                 </Animated.View>
             ) : (
