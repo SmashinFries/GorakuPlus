@@ -329,6 +329,9 @@ query UserData {
             large
         }
         bannerImage
+        mediaListOptions {
+            scoreFormat
+        }
     }
 }
 
@@ -340,6 +343,9 @@ query ExtUserData($id: Int, $name: String) {
             large
         }
         bannerImage
+        mediaListOptions {
+            scoreFormat
+        }
     }
 }
 
@@ -373,6 +379,9 @@ query UserOverview {
                 chaptersRead
                 volumesRead
             }
+        }
+        mediaListOptions {
+            scoreFormat
         }
         unreadNotificationCount
         siteUrl

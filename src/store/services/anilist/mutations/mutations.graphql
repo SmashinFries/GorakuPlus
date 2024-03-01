@@ -55,12 +55,16 @@ mutation SaveMediaListItem(
     $mediaId: Int
     $status: MediaListStatus
     $score: Float
+    $scoreRaw: Int
     $progress: Int
     $progressVolumes: Int
+    $private: Boolean
+    $hideFromStatusList: Boolean
     $repeat: Int
     $startedAt: FuzzyDateInput
     $completedAt: FuzzyDateInput
     $notes: String
+    $customLists: [String]
 ) {
     SaveMediaListEntry(
         id: $id
@@ -73,6 +77,10 @@ mutation SaveMediaListItem(
         startedAt: $startedAt
         completedAt: $completedAt
         notes: $notes
+        private: $private
+        hiddenFromStatusLists: $hideFromStatusList
+        scoreRaw: $scoreRaw
+        customLists: $customLists
     ) {
         id
         status
@@ -95,6 +103,8 @@ mutation SaveMediaListItem(
             day
         }
         notes
+        private
+        hiddenFromStatusLists
     }
 }
 

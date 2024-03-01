@@ -4685,16 +4685,20 @@ export type SaveMediaListItemMutationVariables = Exact<{
   mediaId?: InputMaybe<Scalars['Int']>;
   status?: InputMaybe<MediaListStatus>;
   score?: InputMaybe<Scalars['Float']>;
+  scoreRaw?: InputMaybe<Scalars['Int']>;
   progress?: InputMaybe<Scalars['Int']>;
   progressVolumes?: InputMaybe<Scalars['Int']>;
+  private?: InputMaybe<Scalars['Boolean']>;
+  hideFromStatusList?: InputMaybe<Scalars['Boolean']>;
   repeat?: InputMaybe<Scalars['Int']>;
   startedAt?: InputMaybe<FuzzyDateInput>;
   completedAt?: InputMaybe<FuzzyDateInput>;
   notes?: InputMaybe<Scalars['String']>;
+  customLists?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
 }>;
 
 
-export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, notes?: string | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, countryOfOrigin?: any | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
+export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, countryOfOrigin?: any | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
 
 export type DeleteMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
@@ -5333,7 +5337,7 @@ export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'P
 export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', medium?: string | null, large?: string | null } | null } | null };
+export type UserDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', medium?: string | null, large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null };
 
 export type ExtUserDataQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
@@ -5341,12 +5345,12 @@ export type ExtUserDataQueryVariables = Exact<{
 }>;
 
 
-export type ExtUserDataQuery = { __typename?: 'Query', User?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null };
+export type ExtUserDataQuery = { __typename?: 'Query', User?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null };
 
 export type UserOverviewQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserOverviewQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number } | null } | null } | null };
+export type UserOverviewQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null };
 
 export type UserFollowingQueryVariables = Exact<{
   userId: Scalars['Int'];
@@ -5684,7 +5688,7 @@ export const ToggleFavDocument = `
 }
     `;
 export const SaveMediaListItemDocument = `
-    mutation SaveMediaListItem($id: Int, $mediaId: Int, $status: MediaListStatus, $score: Float, $progress: Int, $progressVolumes: Int, $repeat: Int, $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput, $notes: String) {
+    mutation SaveMediaListItem($id: Int, $mediaId: Int, $status: MediaListStatus, $score: Float, $scoreRaw: Int, $progress: Int, $progressVolumes: Int, $private: Boolean, $hideFromStatusList: Boolean, $repeat: Int, $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput, $notes: String, $customLists: [String]) {
   SaveMediaListEntry(
     id: $id
     mediaId: $mediaId
@@ -5696,6 +5700,10 @@ export const SaveMediaListItemDocument = `
     startedAt: $startedAt
     completedAt: $completedAt
     notes: $notes
+    private: $private
+    hiddenFromStatusLists: $hideFromStatusList
+    scoreRaw: $scoreRaw
+    customLists: $customLists
   ) {
     id
     status
@@ -5718,6 +5726,8 @@ export const SaveMediaListItemDocument = `
       day
     }
     notes
+    private
+    hiddenFromStatusLists
   }
 }
     `;
@@ -8083,6 +8093,9 @@ export const UserDataDocument = `
       large
     }
     bannerImage
+    mediaListOptions {
+      scoreFormat
+    }
   }
 }
     `;
@@ -8095,6 +8108,9 @@ export const ExtUserDataDocument = `
       large
     }
     bannerImage
+    mediaListOptions {
+      scoreFormat
+    }
   }
 }
     `;
@@ -8129,6 +8145,9 @@ export const UserOverviewDocument = `
         chaptersRead
         volumesRead
       }
+    }
+    mediaListOptions {
+      scoreFormat
     }
     unreadNotificationCount
     siteUrl
