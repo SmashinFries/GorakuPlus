@@ -60,6 +60,9 @@ const AboutPage = () => {
                     right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
                 />
             )}
+            <Accordion title="Other Apps" titleFontSize={16}>
+                <Text style={{ marginLeft: 20 }}>Visual novel browser coming soon!</Text>
+            </Accordion>
             <Accordion title="Data Sources" titleFontSize={16} initialExpand>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <LinkButton
@@ -138,27 +141,49 @@ const AboutPage = () => {
             <View
                 style={{
                     flex: 1,
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
                 }}
             >
-                {/* <Text>When you find bugs or issues, send me a DM!</Text>
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        marginBottom: 10,
+                    }}
+                >
+                    <Text>Created by KuzuLabz ❤️</Text>
+                </View>
+
+                <View
+                    style={{
+                        alignItems: 'flex-end',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                    }}
+                >
+                    {/* <Text>When you find bugs or issues, send me a DM!</Text>
                 <Button
                     icon={'instagram'}
                     onPress={() => Linking.openURL('https://www.instagram.com/smashinfries')}
                 >
                     @smashinfries
                 </Button> */}
-                <LinkButton url="https://goraku.kuzulabz.com/" icon={'earth'} size={28} />
-                {/* <LinkButton
+                    <LinkButton url="https://goraku.kuzulabz.com/" icon={'earth'} size={28} />
+                    {/* <LinkButton
                     url="https://github.com/KuzuLabz/gorakusite"
                     icon={'github'}
                     size={28}
                 /> */}
-                <LinkButton url="https://discord.gg/gdenWHjXBv" icon={'discord'} size={28} />
-                {/* <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} /> */}
-                <LinkButton url="https://www.kuzumerch.com" icon={'storefront-outline'} size={28} />
+                    <LinkButton url="https://discord.gg/gdenWHjXBv" icon={'discord'} size={28} />
+                    {/* <LinkButton url="https://www.instagram.com/kuzulabz" icon={'instagram'} size={28} /> */}
+                    <LinkButton
+                        url="https://www.kuzumerch.com"
+                        icon={'storefront-outline'}
+                        size={28}
+                    />
+                </View>
             </View>
             <Portal>
                 <UpdateDialog
