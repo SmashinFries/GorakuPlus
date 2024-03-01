@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
 import { Button, Card, Text, useTheme } from 'react-native-paper';
-import { GetAnimeNewsApiResponse, GetMangaNewsApiResponse } from '../../../app/services/mal/malApi';
-import { openWebBrowser } from '../../utils/webBrowser';
+import { GetAnimeNewsApiResponse, GetMangaNewsApiResponse } from '@/store/services/mal/malApi';
+import { openWebBrowser } from '@/utils/webBrowser';
 
 type NewsItemProps = {
     news: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0];
