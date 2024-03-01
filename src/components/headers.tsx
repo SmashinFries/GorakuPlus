@@ -788,7 +788,13 @@ const HeaderStyles = StyleSheet.create({
     },
 });
 
-export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
+export const ListHeader = ({
+    openFilter,
+    onRefresh,
+}: {
+    openFilter: () => void;
+    onRefresh: () => void;
+}) => {
     const { query } = useAppSelector((state) => state.listFilter);
     const { colors } = useAppTheme();
     const dispatch = useAppDispatch();
@@ -844,6 +850,7 @@ export const ListHeader = ({ openFilter }: { openFilter: () => void }) => {
                     <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />
                 </Animated.View>
             )}
+            <Appbar.Action icon="refresh" onPress={onRefresh} />
             <Appbar.Action icon="filter-variant" onPress={openFilter} />
             {/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
         </Appbar.Header>
