@@ -1,6 +1,7 @@
 import { MotiView } from 'moti';
 import {
     ActivityIndicator,
+    Checkbox,
     IconButton,
     List,
     Portal,
@@ -35,6 +36,7 @@ import {
 } from '@gorhom/bottom-sheet';
 import { DatePopup, StatusDropDown } from '../entryActions';
 import { NumberPickerMode } from '@/components/picker';
+import { useAppTheme } from '@/store/theme/theme';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -266,7 +268,9 @@ const ListEntryView = ({
                                 }}
                                 variant="labelMedium"
                             >
-                                {listStatus ? listStatus?.replaceAll('_', ' ') : 'Add to List'}
+                                {listStatus
+                                    ? `${listStatus?.replaceAll('_', ' ')}${data?.private ? '🔒' : ''}`
+                                    : 'Add to List'}
                                 {listProgress ? ` · ${listProgress}` : ''}
                             </Text>
                         </ActionIcon>
@@ -306,6 +310,59 @@ const ListEntryView = ({
     );
 };
 
+type ScoreInputProps = {
+    value: number;
+    scoreFormat: ScoreFormat;
+    onChange: (value: number) => void;
+    disabled?: boolean;
+};
+const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInputProps) => {
+    const [showNumPick, setShowNumPick] = useState(false);
+    const [containerHeight, setContainerHeight] = useState(0);
+    const { colors } = useAppTheme();
+
+    const blankScore = {
+        [ScoreFormat.Point_100]: 0,
+        [ScoreFormat.Point_10]: 0,
+        [ScoreFormat.Point_10Decimal]: 0.0,
+        [ScoreFormat.Point_5]: '❌',
+        [ScoreFormat.Point_3]: '❌',
+    };
+
+    return (
+        <>
+            <Pressable
+                onLayout={({ nativeEvent }) =>
+                    setContainerHeight(Math.floor(nativeEvent.layout.height - 10))
+                }
+                android_ripple={{
+                    color: colors.primary,
+                    borderless: true,
+                    foreground: true,
+                    radius: containerHeight ?? 40,
+                }}
+                onPress={() => setShowNumPick(true)}
+                disabled={disabled}
+            >
+                <List.Subheader style={{ textAlign: 'center' }}>{'Score'}</List.Subheader>
+                <Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>
+                    {value && value > 0 ? value : blankScore[scoreFormat]}
+                </Text>
+            </Pressable>
+            <Portal>
+                <NumberPickDialog
+                    title={'Set Score'}
+                    mode={scoreFormat}
+                    onChange={onChange}
+                    visible={showNumPick}
+                    onDismiss={() => setShowNumPick(false)}
+                    defaultValue={value ?? 0}
+                />
+            </Portal>
+        </>
+    );
+};
+
 type EntryNumInputProps = {
     value: any | null | undefined;
     title: string;
@@ -336,14 +393,16 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
             [mainEntryHeight, height],
         );
 
-        const [tempParams, setTempParams] = useState({
-            status: props.status,
+        const [tempParams, setTempParams] = useState<SaveMediaListItemMutationVariables>({
+            status: props.status as MediaListStatus,
             score: props.entryData?.score,
             progress: props.entryData?.progress,
-            start: props.entryData?.startedAt,
-            end: props.entryData?.completedAt,
+            startedAt: props.entryData?.startedAt as FuzzyDate,
+            completedAt: props.entryData?.completedAt as FuzzyDate,
             repeat: props.entryData?.repeat,
             notes: props.entryData?.notes,
+            private: props.entryData?.private,
+            hideFromStatusList: props.entryData?.hiddenFromStatusLists,
         });
 
         const submitNewEntry = () => {
@@ -351,28 +410,54 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                 tempParams.status === props.status &&
                 tempParams.progress === props.entryData?.progress &&
                 tempParams.score === props.entryData?.score &&
-                tempParams.start === props.entryData?.startedAt &&
-                tempParams.end === props.entryData?.completedAt &&
+                tempParams.startedAt === props.entryData?.startedAt &&
+                tempParams.completedAt === props.entryData?.completedAt &&
                 tempParams.repeat === props.entryData?.repeat &&
-                tempParams.notes === props.entryData?.notes
+                tempParams.notes === props.entryData?.notes &&
+                tempParams.private === props.entryData?.private &&
+                tempParams.hideFromStatusList === props.entryData?.hiddenFromStatusLists
             )
                 return;
             props.updateEntry({
                 status: tempParams.status as MediaListStatus,
                 progress: tempParams.progress,
                 score: tempParams.score,
-                startedAt: tempParams.start,
-                completedAt: tempParams.end,
+                startedAt: tempParams.startedAt,
+                completedAt: tempParams.completedAt,
                 repeat: tempParams.repeat,
                 notes: tempParams.notes,
+                private: tempParams.private,
+                hideFromStatusList: tempParams.hideFromStatusList,
             });
         };
 
         const updateParams = (
-            key: 'status' | 'score' | 'progress' | 'start' | 'end' | 'repeat' | 'notes',
-            value: MediaListStatus | number | FuzzyDate | string,
+            key:
+                | 'status'
+                | 'score'
+                | 'progress'
+                | 'start'
+                | 'end'
+                | 'repeat'
+                | 'notes'
+                | 'private'
+                | 'hideFromStatusList',
+            value: MediaListStatus | number | FuzzyDate | string | boolean,
         ) => {
-            setTempParams((prev) => ({ ...prev, [key]: value }));
+            if (key === 'score') {
+                let scoreformats: ScoreFormat;
+                switch (scoreformats) {
+                    case ScoreFormat.Point_3:
+                        console.log('3 score length:', (value as string).length);
+                    // setTempParams((prev) => ({ ...prev, [key]: value }));
+                    case ScoreFormat.Point_5:
+                        console.log('5 score length:', (value as string).length);
+                    default:
+                        setTempParams((prev) => ({ ...prev, ['score']: value as number }));
+                }
+            } else {
+                setTempParams((prev) => ({ ...prev, [key]: value }));
+            }
         };
 
         const EntryNumInput = ({
@@ -395,7 +480,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                       props.entryData.media?.volumes
                         ? null
                         : 'unknown_chapters'
-                    : 'scores';
+                    : null;
 
             if (props.entryData.media?.status === MediaStatus.NotYetReleased) return null;
             return (
@@ -486,6 +571,35 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                     onSelect={(item) => updateParams('status', item)}
                                 />
                             </View>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-evenly',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Checkbox.Item
+                                    label="Private"
+                                    status={tempParams.private ? 'checked' : 'unchecked'}
+                                    labelVariant="labelMedium"
+                                    mode="android"
+                                    onPress={() =>
+                                        updateParams('private', !tempParams.private as boolean)
+                                    }
+                                />
+                                <Checkbox.Item
+                                    label="Hide from status lists"
+                                    status={tempParams.hideFromStatusList ? 'checked' : 'unchecked'}
+                                    labelVariant="labelMedium"
+                                    mode="android"
+                                    onPress={() =>
+                                        updateParams(
+                                            'hideFromStatusList',
+                                            !tempParams.hideFromStatusList as boolean,
+                                        )
+                                    }
+                                />
+                            </View>
                             {props.entryData.media?.status !== MediaStatus.NotYetReleased && (
                                 <>
                                     <View
@@ -518,12 +632,17 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                                 backgroundColor: '#000',
                                             }}
                                         />
-                                        <EntryNumInput
+                                        <ScoreInput
+                                            value={tempParams.score ?? 0}
+                                            onChange={(val) => updateParams('score', val)}
+                                            scoreFormat={props.scoreFormat}
+                                        />
+                                        {/* <EntryNumInput
                                             title="Score"
                                             inputType="number"
                                             value={tempParams.score}
                                             onChange={(val) => updateParams('score', val)}
-                                        />
+                                        /> */}
                                         <View
                                             style={{
                                                 height: '100%',
@@ -558,7 +677,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                         <EntryNumInput
                                             title="Start Date"
                                             inputType="date"
-                                            value={tempParams.start}
+                                            value={tempParams.startedAt}
                                             onChange={(val) => null}
                                         />
                                         <View
@@ -569,33 +688,33 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
                                             }}
                                         />
                                         <EntryNumInput
-                                            title="End Date "
+                                            title="End Date"
                                             inputType="date"
-                                            value={tempParams.end}
+                                            value={tempParams.completedAt}
                                             onChange={(val) => null}
                                         />
                                     </View>
                                 </>
                             )}
+                            <List.Section title="Notes">
+                                <BottomSheetTextInput
+                                    multiline
+                                    value={tempParams.notes}
+                                    clearButtonMode="while-editing"
+                                    onChangeText={(text) => updateParams('notes', text)}
+                                    style={{
+                                        alignSelf: 'stretch',
+                                        marginHorizontal: 12,
+                                        marginBottom: 12,
+                                        padding: 12,
+                                        borderRadius: 12,
+                                        backgroundColor: colors.elevation.level1,
+                                        color: colors.onSurface,
+                                        fontSize: 14,
+                                    }}
+                                />
+                            </List.Section>
                         </View>
-                        <List.Section title="Notes">
-                            <BottomSheetTextInput
-                                multiline
-                                value={tempParams.notes}
-                                clearButtonMode="while-editing"
-                                onChangeText={(text) => updateParams('notes', text)}
-                                style={{
-                                    alignSelf: 'stretch',
-                                    marginHorizontal: 12,
-                                    marginBottom: 12,
-                                    padding: 12,
-                                    borderRadius: 12,
-                                    backgroundColor: colors.elevation.level1,
-                                    color: colors.onSurface,
-                                    fontSize: 14,
-                                }}
-                            />
-                        </List.Section>
                     </BottomSheetScrollView>
                 </BottomSheetModal>
             </>
