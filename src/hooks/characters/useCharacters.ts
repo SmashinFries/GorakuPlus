@@ -13,7 +13,7 @@ export const useCharactersList = (id: number, type: MediaType) => {
         type: type,
         page: page,
         perPage: 25,
-        sort: CharacterSort.Relevance,
+        sort: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
     });
 
     const loadMore = useCallback(() => {
