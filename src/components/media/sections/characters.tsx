@@ -9,8 +9,8 @@ import { router } from 'expo-router';
 // router.push(`/characters/info/${item.node.id}`)
 
 type CharacterPrevListProps = {
-    data: AniMediaQuery['Media']['characters'];
-    openMore: () => void;
+	data: AniMediaQuery['Media']['characters'];
+	openMore: () => void;
 };
 export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) => {
 	const keyExtractor = useCallback((item, index) => index.toString(), []);

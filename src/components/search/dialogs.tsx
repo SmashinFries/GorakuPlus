@@ -42,10 +42,10 @@ export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 };
 
 type ScoreDialogProps = BasicDialogProps & {
-    updateScore: (score: number) => void;
-    initialScore?: number;
-    minValue?: number;
-    maxValue?: number;
+	updateScore: (score: number) => void;
+	initialScore?: number;
+	minValue?: number;
+	maxValue?: number;
 };
 export const ScoreDialog = ({
 	visible,
@@ -78,8 +78,8 @@ export const ScoreDialog = ({
 };
 
 type ImageSearchDialogProps = BasicDialogProps & {
-    searchImage: (imageType: 'camera' | 'upload') => void;
-    searchUrl: (url: string) => void;
+	searchImage: (imageType: 'camera' | 'upload') => void;
+	searchUrl: (url: string) => void;
 };
 export const ImageSearchDialog = ({
 	visible,

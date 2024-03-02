@@ -2,8 +2,8 @@ import { MotiView } from 'moti';
 import { Avatar, Text } from 'react-native-paper';
 
 type UserHeaderProps = {
-    avatar: string;
-    name: string;
+	avatar: string;
+	name: string;
 };
 export const UserHeader = ({ avatar, name }: UserHeaderProps) => {
 	return (

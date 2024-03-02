@@ -5,13 +5,13 @@ import { IconButton, Text } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
 type LinkButtonProps = {
-    url: string;
-    icon: IconSource;
-    label?: string;
-    iconColor?: string;
-    transparentBg?: boolean;
-    bgColor?: string;
-    size?: number;
+	url: string;
+	icon: IconSource;
+	label?: string;
+	iconColor?: string;
+	transparentBg?: boolean;
+	bgColor?: string;
+	size?: number;
 };
 export const LinkButton = ({
 	url,

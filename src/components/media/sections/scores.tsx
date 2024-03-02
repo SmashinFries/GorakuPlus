@@ -4,10 +4,10 @@ import { ScoreContainer } from '@/components/score';
 import { getScoreColor } from '@/utils';
 
 type ScoreViewProps = {
-    meanScore: number;
-    avgScore: number;
-    malScore: number;
-    userScore: number;
+	meanScore: number;
+	avgScore: number;
+	malScore: number;
+	userScore: number;
 };
 export const ScoreCircles = ({
 	avgScore,

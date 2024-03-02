@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { MediaTag } from '@/store/services/anilist/generated-anilist';
 
 type TagProps = {
-    tag: MediaTag;
-    openTag: (tag: MediaTag) => void;
-    allowAdult?: boolean;
+	tag: MediaTag;
+	openTag: (tag: MediaTag) => void;
+	allowAdult?: boolean;
 };
 export const Tag = ({ tag, openTag, allowAdult }: TagProps) => {
 	const isSpoiler = tag?.isGeneralSpoiler || tag?.isMediaSpoiler;

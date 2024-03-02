@@ -25,10 +25,10 @@ export const saveImage = async (url: string, name = null) => {
 };
 
 type SaveImageDialogProps = {
-    img_url: string;
-    prefix?: string;
-    filename?: string;
-    onDismiss: () => void;
+	img_url: string;
+	prefix?: string;
+	filename?: string;
+	onDismiss: () => void;
 };
 export const SaveImageDialog = ({
 	img_url,
@@ -56,7 +56,7 @@ export const SaveImageDialog = ({
 			<Dialog.Actions>
 				<Button onPress={onDismiss}>Cancel</Button>
 				<Button icon={'download'} onPress={onSave}>
-                    Save
+					Save
 				</Button>
 			</Dialog.Actions>
 		</Dialog>
@@ -67,19 +67,19 @@ export const selectImage = async (camera?: boolean): Promise<FormData | null> =>
 	const data = new FormData();
 	const result = camera
 		? await ImagePicker.launchCameraAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.All,
-			allowsEditing: true,
-			quality: 0.75,
-			base64: true,
-			allowsMultipleSelection: false,
-		})
+				mediaTypes: ImagePicker.MediaTypeOptions.All,
+				allowsEditing: true,
+				quality: 0.75,
+				base64: true,
+				allowsMultipleSelection: false,
+			})
 		: await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.All,
-			allowsEditing: true,
-			quality: 1,
-			base64: true,
-			allowsMultipleSelection: false,
-		});
+				mediaTypes: ImagePicker.MediaTypeOptions.All,
+				allowsEditing: true,
+				quality: 1,
+				base64: true,
+				allowsMultipleSelection: false,
+			});
 
 	if (!result.canceled) {
 		const imageType = result.assets[0].uri.split('.').at(-1);
@@ -114,19 +114,19 @@ export const getImageB64 = async (camera?: boolean, url?: string): Promise<strin
 	} else {
 		const result = camera
 			? await ImagePicker.launchCameraAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.All,
-				allowsEditing: true,
-				quality: 0.75,
-				base64: true,
-				allowsMultipleSelection: false,
-			})
+					mediaTypes: ImagePicker.MediaTypeOptions.All,
+					allowsEditing: true,
+					quality: 0.75,
+					base64: true,
+					allowsMultipleSelection: false,
+				})
 			: await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.All,
-				allowsEditing: true,
-				quality: 1,
-				base64: true,
-				allowsMultipleSelection: false,
-			});
+					mediaTypes: ImagePicker.MediaTypeOptions.All,
+					allowsEditing: true,
+					quality: 1,
+					base64: true,
+					allowsMultipleSelection: false,
+				});
 		const imgType = ['jpg', 'jpeg', 'png'].includes(result.assets[0].uri.split('.').at(-1))
 			? result.assets[0].uri.split('.').at(-1)
 			: 'jpg';

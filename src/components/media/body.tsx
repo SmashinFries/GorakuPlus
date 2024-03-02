@@ -5,7 +5,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 type Props = {
-    children: React.ReactNode;
+	children: React.ReactNode;
 };
 const BodyContainer = ({ children }: Props) => {
 	const { dark } = useTheme();

@@ -157,7 +157,7 @@ const MediaSettingsPage = () => {
 							}}
 							disabled={
 								Constants.executionEnvironment ===
-                                    ExecutionEnvironment.StoreClient || !showNSFW
+									ExecutionEnvironment.StoreClient || !showNSFW
 							}
 						/>
 					)}

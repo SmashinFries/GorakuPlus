@@ -4,9 +4,9 @@ import { View } from 'react-native';
 import { Button, Divider, IconButton, Text, useTheme } from 'react-native-paper';
 
 type StatisticsBarProps = {
-    favorites: number;
-    up_score?: number;
-    down_score?: number;
+	favorites: number;
+	up_score?: number;
+	down_score?: number;
 };
 export const StatisticsBar = ({ favorites, up_score, down_score }: StatisticsBarProps) => {
 	const { colors } = useTheme();

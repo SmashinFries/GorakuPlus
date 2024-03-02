@@ -100,7 +100,7 @@ const dummyWTCData: Media = {
 	format: MediaFormat.Tv,
 	isFavourite: false,
 	description:
-        'After moving into the quiet town of Hinamizawa, Maebara Keiichi spends his days blissfully in school often playing games with his local friends. However, appearances can be deceiving. One fateful day, Keiichi stumbles upon news of a murder that had occurred in Hinamizawa. From this point on, horrific events unfold in front of Keiichi, as he soon learns his close friends may not be all that they seem. Based on the amateur mystery game by 07th Expansion, the story is told in a series of different scenarios. ',
+		'After moving into the quiet town of Hinamizawa, Maebara Keiichi spends his days blissfully in school often playing games with his local friends. However, appearances can be deceiving. One fateful day, Keiichi stumbles upon news of a murder that had occurred in Hinamizawa. From this point on, horrific events unfold in front of Keiichi, as he soon learns his close friends may not be all that they seem. Based on the amateur mystery game by 07th Expansion, the story is told in a series of different scenarios. ',
 	genres: ['Horror', 'Mystery', 'Psychological', 'Supernatural', 'Thriller'],
 	status: MediaStatus.Finished,
 	siteUrl: 'https://anilist.co/anime/934',
@@ -119,7 +119,7 @@ const dummyWTCData: Media = {
 	},
 	coverImage: {
 		extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx934-EOn2UlXaLUtj.jpg',
+			'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx934-EOn2UlXaLUtj.jpg',
 		large: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx934-EOn2UlXaLUtj.jpg',
 		medium: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx934-EOn2UlXaLUtj.jpg',
 		color: '#e4a11a',
@@ -146,7 +146,7 @@ const dummyPPData: Media = {
 	isFavourite: false,
 	chapters: 147,
 	description:
-        'Meet Punpun Punyama. He’s an average kid in an average town.<br>\nHe wants to win a Nobel Prize and save the world.<br>\nHe wants the girl he has a crush on to like him back.<br>\nHe wants to find some porn.<br>\nThat’s what he wants, but what does he get…?\n<br><br>\n(Source: Viz Media)',
+		'Meet Punpun Punyama. He’s an average kid in an average town.<br>\nHe wants to win a Nobel Prize and save the world.<br>\nHe wants the girl he has a crush on to like him back.<br>\nHe wants to find some porn.<br>\nThat’s what he wants, but what does he get…?\n<br><br>\n(Source: Viz Media)',
 	genres: ['Drama', 'Psychological', 'Slice of Life'],
 	status: MediaStatus.Finished,
 	siteUrl: 'https://anilist.co/manga/34632',
@@ -165,7 +165,7 @@ const dummyPPData: Media = {
 	},
 	coverImage: {
 		extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx34632-14deknANZitb.png',
+			'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx34632-14deknANZitb.png',
 		large: 'https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/nx34632-14deknANZitb.png',
 		medium: 'https://s4.anilist.co/file/anilistcdn/media/manga/cover/small/nx34632-14deknANZitb.png',
 		color: '#e4c943',
@@ -191,7 +191,7 @@ const dummyKawaiiData: Media = {
 	format: MediaFormat.Tv,
 	isFavourite: false,
 	description:
-        'Usagi Tsukino is an average student and crybaby klutz who constantly scores low on her tests. Unexpectedly, her humdrum life is turned upside down when she saves a cat with a crescent moon on its head from danger. The cat, named Luna, later reveals that their meeting was not an accident: Usagi is destined to become Sailor Moon, a planetary guardian with the power to protect the Earth. Given a special brooch that allows her to transform, she must use her new powers to save the city from evil energy-stealing monsters sent by the malevolent Queen Beryl of the Dark Kingdom.<br>\n<br>\nBut getting accustomed to her powers and fighting villains are not the only things she has to worry about. She must find the lost princess of the Moon Kingdom, the other Sailor Guardians, and the Legendary Silver Crystal in order to save the planet from destruction.<br>\n<br>\n(Source: MAL Rewrite)',
+		'Usagi Tsukino is an average student and crybaby klutz who constantly scores low on her tests. Unexpectedly, her humdrum life is turned upside down when she saves a cat with a crescent moon on its head from danger. The cat, named Luna, later reveals that their meeting was not an accident: Usagi is destined to become Sailor Moon, a planetary guardian with the power to protect the Earth. Given a special brooch that allows her to transform, she must use her new powers to save the city from evil energy-stealing monsters sent by the malevolent Queen Beryl of the Dark Kingdom.<br>\n<br>\nBut getting accustomed to her powers and fighting villains are not the only things she has to worry about. She must find the lost princess of the Moon Kingdom, the other Sailor Guardians, and the Legendary Silver Crystal in order to save the planet from destruction.<br>\n<br>\n(Source: MAL Rewrite)',
 	genres: ['Action', 'Adventure', 'Fantasy', 'Mahou Shoujo', 'Romance'],
 	status: MediaStatus.Finished,
 	siteUrl: 'https://anilist.co/anime/530',
@@ -211,7 +211,7 @@ const dummyKawaiiData: Media = {
 	},
 	coverImage: {
 		extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx530-DsF6LirJUEii.jpg',
+			'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx530-DsF6LirJUEii.jpg',
 		large: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx530-DsF6LirJUEii.jpg',
 		medium: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/bx530-DsF6LirJUEii.jpg',
 		color: '#f18650',
@@ -238,7 +238,7 @@ const dummyHinataData: Media = {
 	episodes: 220,
 	isFavourite: false,
 	description:
-        '<p>Naruto Uzumaki, a hyperactive and knuckle-headed ninja, lives in Konohagakure, the Hidden Leaf village. Moments prior to his birth, a huge demon known as the Kyuubi, the Nine-tailed Fox, attacked Konohagakure and wreaked havoc. In order to put an end to the Kyuubi\'s rampage, the leader of the village, the 4th Hokage, sacrificed his life and sealed the monstrous beast inside the newborn Naruto. <br><br><br />\nShunned because of the presence of the Kyuubi inside him, Naruto struggles to find his place in the village. He strives to become the Hokage of Konohagakure, and he meets many friends and foes along the way. <br><br><br />\n(Source: MAL Rewrite)</p>',
+		"<p>Naruto Uzumaki, a hyperactive and knuckle-headed ninja, lives in Konohagakure, the Hidden Leaf village. Moments prior to his birth, a huge demon known as the Kyuubi, the Nine-tailed Fox, attacked Konohagakure and wreaked havoc. In order to put an end to the Kyuubi's rampage, the leader of the village, the 4th Hokage, sacrificed his life and sealed the monstrous beast inside the newborn Naruto. <br><br><br />\nShunned because of the presence of the Kyuubi inside him, Naruto struggles to find his place in the village. He strives to become the Hokage of Konohagakure, and he meets many friends and foes along the way. <br><br><br />\n(Source: MAL Rewrite)</p>",
 	genres: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Supernatural'],
 	status: MediaStatus.Finished,
 	siteUrl: 'https://anilist.co/anime/20',
@@ -258,7 +258,7 @@ const dummyHinataData: Media = {
 	coverImage: {
 		color: '#e47850',
 		extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-YJvLbgJQPCoI.jpg',
+			'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-YJvLbgJQPCoI.jpg',
 	},
 	mediaListEntry: {
 		id: 1,
@@ -295,12 +295,12 @@ const dummyAquaData: Media = {
 	title: {
 		userPreferred: 'Kono Subarashii Sekai ni Shukufuku wo!',
 		romaji: 'Kono Subarashii Sekai ni Shukufuku wo!',
-		english: 'Konosuba: God\'s Blessing on This Wonderful World!',
+		english: "Konosuba: God's Blessing on This Wonderful World!",
 		native: 'この素晴らしい世界に祝福を!',
 	},
 	coverImage: {
 		extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx86238-PvTZXUWWg2gd.jpg',
+			'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx86238-PvTZXUWWg2gd.jpg',
 		large: 'https://s4.anilist.co/file/anilistcdn/media/manga/cover/medium/nx86238-PvTZXUWWg2gd.jpg',
 		medium: 'https://s4.anilist.co/file/anilistcdn/media/manga/cover/small/nx86238-PvTZXUWWg2gd.jpg',
 		color: '#e4860d',
@@ -345,7 +345,7 @@ const dummyBerserkData: Media = {
 	},
 	coverImage: {
 		extraLarge:
-            'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30002-7EzO7o21jzeF.jpg',
+			'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30002-7EzO7o21jzeF.jpg',
 		color: '#e4a143',
 	},
 	mediaListEntry: {
@@ -362,7 +362,7 @@ const dummyBerserkData: Media = {
 };
 
 type DummyData = {
-    [k in ThemeOptions]: Media;
+	[k in ThemeOptions]: Media;
 };
 const dummyData: DummyData = {
 	punpun: dummyPPData,

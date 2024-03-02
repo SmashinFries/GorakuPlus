@@ -31,7 +31,7 @@ const UnauthedPage = () => {
 					router.push('/more/accounts');
 				}}
 			>
-                Login to AniList for the full experience!
+				Login to AniList for the full experience!
 			</Button>
 			<Stack.Screen options={{ headerShown: false }} />
 		</View>
@@ -43,7 +43,7 @@ const UserPage = () => {
 	const { allowSensorMotion } = useAppSelector((state) => state.persistedSettings);
 
 	const { user, favorites, activity, followers, following, isLoading, isRefreshing, onRefresh } =
-        useUser();
+		useUser();
 
 	const [showAddFriend, setShowAddFriend] = useState(false);
 

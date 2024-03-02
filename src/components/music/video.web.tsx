@@ -20,9 +20,9 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type MusicVideoProps = {
-    theme: Animetheme;
-    anime_slug: string;
-    initialOpen?: boolean;
+	theme: Animetheme;
+	anime_slug: string;
+	initialOpen?: boolean;
 };
 export const MusicVideo = ({ theme }: MusicVideoProps) => {
 	const vidRef = useRef<Video>(null);
@@ -76,11 +76,11 @@ const FullscreenVideo = ({
 	onDoneLoading,
 	onDismiss,
 }: {
-    vidRef: MutableRefObject<Video>;
-    video_url: string;
-    onStatus: (status: AVPlaybackStatus) => void;
-    onDismiss: () => void;
-    onDoneLoading: () => void;
+	vidRef: MutableRefObject<Video>;
+	video_url: string;
+	onStatus: (status: AVPlaybackStatus) => void;
+	onDismiss: () => void;
+	onDoneLoading: () => void;
 }) => {
 	const onExit = () => {
 		vidRef?.current?.unloadAsync();
@@ -212,10 +212,10 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 	useEffect(() => {
 		return sound
 			? () => {
-				setProgress(0);
-				sound.unloadAsync();
-				setIsPlaying(false);
-			}
+					setProgress(0);
+					sound.unloadAsync();
+					setIsPlaying(false);
+				}
 			: undefined;
 	}, [sound]);
 
@@ -316,7 +316,7 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 };
 
 type MusicVideoYTProps = {
-    music_video: AnimeVideos['data']['music_videos'][0];
+	music_video: AnimeVideos['data']['music_videos'][0];
 };
 export const MusicVideoYT = ({ music_video }: MusicVideoYTProps) => {
 	const vidRef = useRef<YoutubeIframeRef>(null);

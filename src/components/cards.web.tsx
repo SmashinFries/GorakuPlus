@@ -20,21 +20,21 @@ import { ScoreVisualType } from '@/store/slices/settingsSlice';
 const BORDER_RADIUS = 12;
 
 type MediaCardProps = {
-    coverImg: string;
-    titles: MediaTitle;
-    mediaListEntry?: any;
-    navigate?: () => void;
-    meanScore?: number;
-    averageScore?: number;
-    imgBgColor?: string;
-    scoreColors?: any;
-    showBanner?: boolean;
-    bannerText?: string;
-    editMode?: boolean;
-    disablePress?: boolean;
-    scoreVisualType?: ScoreVisualType;
-    scoreDistributions?: ScoreDistribution[];
-    titleLang?: 'english' | 'romaji' | 'native';
+	coverImg: string;
+	titles: MediaTitle;
+	mediaListEntry?: any;
+	navigate?: () => void;
+	meanScore?: number;
+	averageScore?: number;
+	imgBgColor?: string;
+	scoreColors?: any;
+	showBanner?: boolean;
+	bannerText?: string;
+	editMode?: boolean;
+	disablePress?: boolean;
+	scoreVisualType?: ScoreVisualType;
+	scoreDistributions?: ScoreDistribution[];
+	titleLang?: 'english' | 'romaji' | 'native';
 };
 export const MediaCard = (props: MediaCardProps) => {
 	const { colors } = useTheme();
@@ -107,8 +107,8 @@ export const MediaCard = (props: MediaCardProps) => {
 					numberOfLines={2}
 				>
 					{props.titles[props.titleLang] ??
-                        props.titles[mediaLanguage] ??
-                        props.titles.romaji}
+						props.titles[mediaLanguage] ??
+						props.titles.romaji}
 				</Text>
 				{props.showBanner ? (
 					<AiringBanner
@@ -123,11 +123,11 @@ export const MediaCard = (props: MediaCardProps) => {
 };
 
 type MediaProgressBarProps = {
-    mediaListEntry?: any;
-    progress: number;
-    showListStatus?: boolean;
-    mediaStatus?: MediaStatus;
-    total?: number;
+	mediaListEntry?: any;
+	progress: number;
+	showListStatus?: boolean;
+	mediaStatus?: MediaStatus;
+	total?: number;
 };
 export const MediaProgressBar = ({
 	mediaListEntry,
@@ -173,10 +173,10 @@ export const MediaProgressBar = ({
 					{mediaListEntry?.status}
 					{mediaListEntry?.progress && mediaStatus !== MediaStatus.Finished
 						? ' · ' +
-                          mediaListEntry?.progress +
-                          (mediaListEntry?.status !== MediaListStatus.Repeating
-                          	? '/' + (total && total !== 0 ? total : '∞')
-                          	: '')
+							mediaListEntry?.progress +
+							(mediaListEntry?.status !== MediaListStatus.Repeating
+								? '/' + (total && total !== 0 ? total : '∞')
+								: '')
 						: null}
 				</Text>
 			) : null}
@@ -185,14 +185,14 @@ export const MediaProgressBar = ({
 };
 
 type UserCardProps = {
-    avatarImg: string;
-    username: string;
-    isFollowing?: boolean;
-    isFollower?: boolean;
-    status?: string;
-    progress?: string;
-    size?: number;
-    onPress?: () => void;
+	avatarImg: string;
+	username: string;
+	isFollowing?: boolean;
+	isFollower?: boolean;
+	status?: string;
+	progress?: string;
+	size?: number;
+	onPress?: () => void;
 };
 export const UserCard = (props: UserCardProps) => {
 	const { colors } = useTheme();
@@ -252,12 +252,12 @@ export const UserCard = (props: UserCardProps) => {
 };
 
 type CharacterCardProps = {
-    onPress: () => void;
-    imgUrl: string;
-    name: string;
-    nativeName: string;
-    role?: string;
-    isFavourite?: boolean;
+	onPress: () => void;
+	imgUrl: string;
+	name: string;
+	nativeName: string;
+	role?: string;
+	isFavourite?: boolean;
 };
 export const CharacterCard = (props: CharacterCardProps) => {
 	const { colors } = useTheme();
@@ -308,9 +308,9 @@ export const CharacterCard = (props: CharacterCardProps) => {
 export const StaffCard = CharacterCard;
 
 type StudioCardProps = {
-    onPress: () => void;
-    name: string;
-    isFavourite?: boolean;
+	onPress: () => void;
+	name: string;
+	isFavourite?: boolean;
 };
 export const StudioCard = (props: StudioCardProps) => {
 	return (
@@ -336,9 +336,9 @@ export const StudioCard = (props: StudioCardProps) => {
 };
 
 type DanbooruImageCardProps = {
-    item: DanPost;
-    disableAR?: boolean;
-    onNavigate: (id: number) => void;
+	item: DanPost;
+	disableAR?: boolean;
+	onNavigate: (id: number) => void;
 };
 export const DanbooruImageCard = ({
 	item,

@@ -48,23 +48,23 @@ const LIST_ICONS = ['plus', 'playlist-edit'];
 const ICON_SIZE = 24;
 
 type ListEntryViewProps = {
-    id: number;
-    type: MediaType;
-    status: MediaStatus;
-    releaseMessage?: string;
-    data: AniMediaQuery['Media']['mediaListEntry'];
-    scoreFormat?: ScoreFormat;
-    isFav: boolean;
-    customLists: string[];
-    onShowReleases: () => void;
-    refreshData: () => void;
+	id: number;
+	type: MediaType;
+	status: MediaStatus;
+	releaseMessage?: string;
+	data: AniMediaQuery['Media']['mediaListEntry'];
+	scoreFormat?: ScoreFormat;
+	isFav: boolean;
+	customLists: string[];
+	onShowReleases: () => void;
+	refreshData: () => void;
 };
 
 type ActionIconProps = {
-    children: React.ReactNode;
-    icon?: string;
-    onPress: () => void;
-    onLongPress?: () => void;
+	children: React.ReactNode;
+	icon?: string;
+	onPress: () => void;
+	onLongPress?: () => void;
 };
 const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconProps) => {
 	const { colors } = useTheme();
@@ -322,10 +322,10 @@ const ListEntryView = ({
 };
 
 type ScoreInputProps = {
-    value: number;
-    scoreFormat: ScoreFormat;
-    onChange: (value: number) => void;
-    disabled?: boolean;
+	value: number;
+	scoreFormat: ScoreFormat;
+	onChange: (value: number) => void;
+	disabled?: boolean;
 };
 const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInputProps) => {
 	const [showNumPick, setShowNumPick] = useState(false);
@@ -375,10 +375,10 @@ const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInputProps)
 };
 
 type ProgressInputProps = {
-    value: number | null | undefined;
-    maxValue?: number;
-    onChange: (value: number) => void;
-    disabled?: boolean;
+	value: number | null | undefined;
+	maxValue?: number;
+	onChange: (value: number) => void;
+	disabled?: boolean;
 };
 const ProgressInput = ({ value, maxValue, onChange, disabled }: ProgressInputProps) => {
 	const [showNumPick, setShowNumPick] = useState(false);
@@ -421,19 +421,19 @@ const ProgressInput = ({ value, maxValue, onChange, disabled }: ProgressInputPro
 };
 
 type EntryNumInputProps = {
-    value: any | null | undefined;
-    title: string;
-    inputType: 'number' | 'date' | 'string';
-    onChange: (value: any) => void;
-    style?: StyleProp<ViewStyle>;
+	value: any | null | undefined;
+	title: string;
+	inputType: 'number' | 'date' | 'string';
+	onChange: (value: any) => void;
+	style?: StyleProp<ViewStyle>;
 };
 
 type ListEntrySheetProps = {
-    entryData: AniMediaQuery['Media']['mediaListEntry'];
-    status: MediaListStatus | string;
-    scoreFormat: ScoreFormat;
-    customLists: string[];
-    updateEntry: (variables: SaveMediaListItemMutationVariables) => void;
+	entryData: AniMediaQuery['Media']['mediaListEntry'];
+	status: MediaListStatus | string;
+	scoreFormat: ScoreFormat;
+	customLists: string[];
+	updateEntry: (variables: SaveMediaListItemMutationVariables) => void;
 };
 export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntrySheetProps>(
 	(props, ref) => {
@@ -461,29 +461,32 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 			notes: props.entryData?.notes,
 			private: props.entryData?.private,
 			hideFromStatusList: props.entryData?.hiddenFromStatusLists,
-			customLists: props.entryData?.customLists ?
-				Object.keys(props.entryData?.customLists as { [key: string]: boolean })?.filter(
-					(val, idx) => props.entryData?.customLists[val] === true,
-				) : [],
+			customLists: props.entryData?.customLists
+				? Object.keys(props.entryData?.customLists as { [key: string]: boolean })?.filter(
+						(val, _idx) => props.entryData?.customLists[val] === true,
+					)
+				: [],
 		});
 
 		const submitNewEntry = () => {
 			if (
 				tempParams.status === props.status &&
-                tempParams.progress === props.entryData?.progress &&
-                tempParams.score === props.entryData?.score &&
-                tempParams.startedAt === props.entryData?.startedAt &&
-                tempParams.completedAt === props.entryData?.completedAt &&
-                tempParams.repeat === props.entryData?.repeat &&
-                tempParams.notes === props.entryData?.notes &&
-                tempParams.private === props.entryData?.private &&
-                tempParams.hideFromStatusList === props.entryData?.hiddenFromStatusLists &&
-                compareArrays(
-                	tempParams.customLists ?? [],
-                	props.entryData?.customLists ? Object.keys(props.entryData?.customLists as { [key: string]: boolean })?.filter(
-                		(val, idx) => props.entryData?.customLists[val] === true,
-                	) : []
-                )
+				tempParams.progress === props.entryData?.progress &&
+				tempParams.score === props.entryData?.score &&
+				tempParams.startedAt === props.entryData?.startedAt &&
+				tempParams.completedAt === props.entryData?.completedAt &&
+				tempParams.repeat === props.entryData?.repeat &&
+				tempParams.notes === props.entryData?.notes &&
+				tempParams.private === props.entryData?.private &&
+				tempParams.hideFromStatusList === props.entryData?.hiddenFromStatusLists &&
+				compareArrays(
+					tempParams.customLists ?? [],
+					props.entryData?.customLists
+						? Object.keys(
+								props.entryData?.customLists as { [key: string]: boolean },
+							)?.filter((val, _idx) => props.entryData?.customLists[val] === true)
+						: [],
+				)
 			)
 				return;
 			props.updateEntry({
@@ -492,7 +495,10 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 				score: tempParams.score,
 				startedAt: tempParams.startedAt,
 				completedAt: tempParams.completedAt,
-				repeat: tempParams.status === MediaListStatus.Repeating && tempParams.repeat === 0 ? 1 : tempParams.repeat,
+				repeat:
+					tempParams.status === MediaListStatus.Repeating && tempParams.repeat === 0
+						? 1
+						: tempParams.repeat,
 				notes: tempParams.notes,
 				private: tempParams.private,
 				hideFromStatusList: tempParams.hideFromStatusList,
@@ -502,22 +508,22 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 
 		const updateParams = (
 			key:
-                | 'status'
-                | 'score'
-                | 'progress'
-                | 'startedAt'
-                | 'completedAt'
-                | 'repeat'
-                | 'notes'
-                | 'private'
-                | 'hideFromStatusList'
-                | 'customLists',
+				| 'status'
+				| 'score'
+				| 'progress'
+				| 'startedAt'
+				| 'completedAt'
+				| 'repeat'
+				| 'notes'
+				| 'private'
+				| 'hideFromStatusList'
+				| 'customLists',
 			value: MediaListStatus | number | FuzzyDate | string | boolean,
 		) => {
 			switch (key) {
-			case 'score':
-				let scoreformats: ScoreFormat;
-				setTempParams((prev) => ({ ...prev, ['score']: value as number }));
+				case 'score':
+					setTempParams((prev) => ({ ...prev, ['score']: value as number }));
+					return;
 				// switch (scoreformats) {
 				//     case ScoreFormat.Point_3:
 				//         console.log('3 score:', value);
@@ -527,21 +533,25 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 				//     default:
 				//         setTempParams((prev) => ({ ...prev, ['score']: value as number }));
 				// }
-			case 'customLists':
-				setTempParams((prev) => ({
-					...prev,
-					customLists: prev.customLists?.includes(value as string)
-						? (prev.customLists as string[])?.filter((val) => val !== (value as string))
-						: [...prev.customLists, value as string],
-				}));
+				case 'customLists':
+					setTempParams((prev) => ({
+						...prev,
+						customLists: prev.customLists?.includes(value as string)
+							? (prev.customLists as string[])?.filter(
+									(val) => val !== (value as string),
+								)
+							: [...prev.customLists, value as string],
+					}));
+					return;
 				// case 'status':
 				//     if (value as MediaListStatus === MediaListStatus.Repeating && tempParams.repeat === 0) {
 				//         setTempParams((prev) => ({ ...prev, repeat: 1 }));
 				//     } else {
 				//         setTempParams((prev) => ({ ...prev, [key]: value }));
 				//     }
-			default:
-				setTempParams((prev) => ({ ...prev, [key]: value }));
+				default:
+					setTempParams((prev) => ({ ...prev, [key]: value }));
+					return;
 			}
 		};
 
@@ -555,9 +565,10 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 			const [showNumPick, setShowNumPick] = useState(false);
 			const [containerHeight, setContainerHeight] = useState(0);
 			const totalProgress =
-                props.entryData?.media?.episodes ??
-                props.entryData?.media?.chapters ??
-                props.entryData?.media?.volumes ?? 0;
+				props.entryData?.media?.episodes ??
+				props.entryData?.media?.chapters ??
+				props.entryData?.media?.volumes ??
+				0;
 
 			if (props.entryData?.media?.status === MediaStatus.NotYetReleased) return null;
 			return (
@@ -613,7 +624,9 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 									? Array.from(Array(totalProgress + 1).keys()).map((i) => `${i}`)
 									: null
 							}
-							mode={!totalProgress && title === 'Progress' ? 'unknown_chapters' : null}
+							mode={
+								!totalProgress && title === 'Progress' ? 'unknown_chapters' : null
+							}
 						/>
 					</Portal>
 				</>
@@ -628,10 +641,14 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 					snapPoints={snapPoints}
 					backgroundStyle={{ backgroundColor: colors.elevation.level5 }}
 					backdropComponent={(props) => (
-						<BottomSheetBackdrop {...props} pressBehavior={'close'} disappearsOnIndex={-1} />
+						<BottomSheetBackdrop
+							{...props}
+							pressBehavior={'close'}
+							disappearsOnIndex={-1}
+						/>
 					)}
 					onDismiss={() => submitNewEntry()}
-                    
+
 					// onChange={handleSheetChange}
 				>
 					<BottomSheetScrollView style={{ flex: 1 }} nestedScrollEnabled>
@@ -679,7 +696,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 									onPress={() =>
 										updateParams(
 											'hideFromStatusList',
-                                            !tempParams.hideFromStatusList as boolean,
+											!tempParams.hideFromStatusList as boolean,
 										)
 									}
 								/>
@@ -709,10 +726,10 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 											maxValue={
 												props.entryData?.media?.nextAiringEpisode
 													?.episode ??
-                                                props.entryData?.media?.episodes ??
-                                                props.entryData?.media?.chapters ??
-                                                props.entryData?.media?.volumes ??
-                                                null
+												props.entryData?.media?.episodes ??
+												props.entryData?.media?.chapters ??
+												props.entryData?.media?.volumes ??
+												null
 											}
 										/>
 										{/* <EntryNumInput
@@ -774,7 +791,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 											title="Start Date"
 											inputType="date"
 											value={tempParams.startedAt}
-											onChange={(val) => null}
+											onChange={(_val) => null}
 										/>
 										<View
 											style={{
@@ -787,7 +804,7 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 											title="End Date"
 											inputType="date"
 											value={tempParams.completedAt}
-											onChange={(val) => null}
+											onChange={(_val) => null}
 										/>
 									</View>
 								</>

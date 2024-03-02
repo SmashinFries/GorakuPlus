@@ -9,34 +9,34 @@ import {
 export type MediaSearchSelection = MediaType.Anime | MediaType.Manga | 'NOVEL';
 
 export type SearchTypes =
-    | MediaType.Anime
-    | MediaType.Manga
-    | 'users'
-    | 'characters'
-    | 'staff'
-    | 'studios';
+	| MediaType.Anime
+	| MediaType.Manga
+	| 'users'
+	| 'characters'
+	| 'staff'
+	| 'studios';
 
 export type CommonSort =
-    | 'Trending'
-    | 'Popularity'
-    | 'Score'
-    | 'Updated At'
-    | 'Start Date'
-    | 'End Date';
+	| 'Trending'
+	| 'Popularity'
+	| 'Score'
+	| 'Updated At'
+	| 'Start Date'
+	| 'End Date';
 export type AnimeSort = CommonSort | 'Episodes' | 'Duration';
 export type MangaSort = CommonSort | 'Chapters' | 'Volumes';
 export type SortCategories =
-    | 'Search Match'
-    | 'Trending'
-    | 'Popularity'
-    | 'Score'
-    | 'Updated At'
-    | 'Episodes'
-    | 'Duration'
-    | 'Chapters'
-    | 'Volumes'
-    | 'Start Date'
-    | 'End Date';
+	| 'Search Match'
+	| 'Trending'
+	| 'Popularity'
+	| 'Score'
+	| 'Updated At'
+	| 'Episodes'
+	| 'Duration'
+	| 'Chapters'
+	| 'Volumes'
+	| 'Start Date'
+	| 'End Date';
 
 export const commonSorts: SortCategories[] = [
 	'Search Match',
@@ -84,18 +84,18 @@ const commonSortMap = {
 };
 
 type SortMap = {
-    [MediaType.Anime]: {
-        [key in AnimeSort]: {
-            desc: MediaSort[];
-            asc: MediaSort[];
-        };
-    };
-    [MediaType.Manga]: {
-        [key in MangaSort]: {
-            desc: MediaSort[];
-            asc: MediaSort[];
-        };
-    };
+	[MediaType.Anime]: {
+		[key in AnimeSort]: {
+			desc: MediaSort[];
+			asc: MediaSort[];
+		};
+	};
+	[MediaType.Manga]: {
+		[key in MangaSort]: {
+			desc: MediaSort[];
+			asc: MediaSort[];
+		};
+	};
 };
 export const sortMap: SortMap = {
 	ANIME: {

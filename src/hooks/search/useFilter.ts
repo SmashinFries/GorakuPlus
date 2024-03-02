@@ -1,57 +1,57 @@
 import React, {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useReducer,
-    useRef,
-    useState,
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
 } from 'react';
 import {
-    ExploreMediaQueryVariables,
-    MediaFormat,
-    MediaType,
+	ExploreMediaQueryVariables,
+	MediaFormat,
+	MediaType,
 } from '@/store/services/anilist/generated-anilist';
 import { useAppSelector } from '@/store/hooks';
 
 export const FilterContext = createContext({});
 
 export const useFilterContext = () => {
-    return useContext(FilterContext);
+	return useContext(FilterContext);
 };
 
 type FilterState = ExploreMediaQueryVariables;
 
 type FilterActions = {
-    type: 'SET_SEARCH' | 'SET_TYPE' | 'SET_FILTER' | 'REMOVE_FILTER';
-    key?: keyof ExploreMediaQueryVariables;
-    payload?: ExploreMediaQueryVariables[keyof ExploreMediaQueryVariables];
-    mediaType?: 'anime' | 'manga' | 'manhwa' | 'novel';
+	type: 'SET_SEARCH' | 'SET_TYPE' | 'SET_FILTER' | 'REMOVE_FILTER';
+	key?: keyof ExploreMediaQueryVariables;
+	payload?: ExploreMediaQueryVariables[keyof ExploreMediaQueryVariables];
+	mediaType?: 'anime' | 'manga' | 'manhwa' | 'novel';
 };
 
 const filterReducer = (state: FilterState, action: FilterActions): FilterState => {
-    switch (action.type) {
-        case 'SET_SEARCH':
-            return { ...state, search: action.payload.length > 0 ? action.payload : null };
-        case 'SET_TYPE':
-            return {
-                ...state,
-                type: action.mediaType === 'anime' ? MediaType.Anime : MediaType.Manga,
-                format: action.mediaType === 'novel' ? MediaFormat.Novel : null,
-            };
-        case 'SET_FILTER':
-            return { ...state, [action.key]: action.payload };
-        case 'REMOVE_FILTER':
-            delete state[action.key];
-            return { ...state };
-        default:
-            return state;
-    }
+	switch (action.type) {
+		case 'SET_SEARCH':
+			return { ...state, search: action.payload.length > 0 ? action.payload : null };
+		case 'SET_TYPE':
+			return {
+				...state,
+				type: action.mediaType === 'anime' ? MediaType.Anime : MediaType.Manga,
+				format: action.mediaType === 'novel' ? MediaFormat.Novel : null,
+			};
+		case 'SET_FILTER':
+			return { ...state, [action.key]: action.payload };
+		case 'REMOVE_FILTER':
+			delete state[action.key];
+			return { ...state };
+		default:
+			return state;
+	}
 };
 
 const useFilter = () => {
-    const history = useAppSelector((state) => state.persistedHistory);
-    const [filter, dispatch] = useReducer(filterReducer, history.filter);
+	const history = useAppSelector((state) => state.persistedHistory);
+	const [filter, dispatch] = useReducer(filterReducer, history.filter);
 };
 
 // export type FilterValues = {

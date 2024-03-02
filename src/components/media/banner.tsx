@@ -12,10 +12,10 @@ import Animated, {
 } from 'react-native-reanimated';
 
 type Props = {
-    style?: any;
-    url: string;
-    additionalUrls?: string[];
-    allowMotion?: boolean;
+	style?: any;
+	url: string;
+	additionalUrls?: string[];
+	allowMotion?: boolean;
 };
 export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) => {
 	const { colors } = useTheme();
@@ -23,19 +23,16 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
 
 	const { sensor } = useAnimatedSensor(SensorType.ROTATION, { interval: 20 });
 
-	const animatedStyle =
-        allowMotion && sensor
-        	? useAnimatedStyle(() => {
-        		const { pitch, roll } = sensor?.value;
-        		return {
-        			transform: [
-        				{ translateX: withSpring(-roll * 25, { damping: 200 }) },
-        				{ translateY: withSpring(-pitch * 25, { damping: 200 }) },
-        				{ matrix: [] },
-        			],
-        		};
-        	})
-        	: {};
+	const animatedStyle = useAnimatedStyle(() => {
+		const { pitch, roll } = sensor?.value ?? { pitch: 0, roll: 0 };
+		return {
+			transform: [
+				{ translateX: allowMotion ? withSpring(-roll * 25, { damping: 200 }) : 0 },
+				{ translateY: allowMotion ? withSpring(-pitch * 25, { damping: 200 }) : 0 },
+				{ matrix: [] },
+			],
+		};
+	});
 
 	return (
 		<Animated.View style={[style, styles.container]}>

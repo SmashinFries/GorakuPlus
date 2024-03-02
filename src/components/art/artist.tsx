@@ -7,9 +7,9 @@ import { openWebBrowser } from '../../utils/webBrowser';
 const PIX_IV_URL = 'https://www.pixiv.net/en/artworks/';
 
 type ArtistBarProps = {
-    artist_name: string;
-    pixiv_id?: number;
-    source?: string;
+	artist_name: string;
+	pixiv_id?: number;
+	source?: string;
 };
 export const ArtistBar = ({ artist_name, pixiv_id, source }: ArtistBarProps) => {
 	const [totalHeight, setTotalHeight] = useState<number>(0);

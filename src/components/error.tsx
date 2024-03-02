@@ -6,8 +6,8 @@ export const NetworkError = ({
 	status,
 	onRefresh,
 }: {
-    status: QueryStatus;
-    onRefresh: () => void;
+	status: QueryStatus;
+	onRefresh: () => void;
 }) => {
 	const { colors } = useTheme();
 

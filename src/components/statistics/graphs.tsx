@@ -10,7 +10,7 @@ import { ListHeading } from '../text';
 import { ChartData } from 'react-native-chart-kit/dist/HelperTypes';
 
 type ScoreGraphProps = {
-    scores: UserAnimeStatsQuery['User']['statistics']['anime']['scores'];
+	scores: UserAnimeStatsQuery['User']['statistics']['anime']['scores'];
 };
 export const ScoreGraph = ({ scores }: ScoreGraphProps) => {
 	const { width } = useWindowDimensions();

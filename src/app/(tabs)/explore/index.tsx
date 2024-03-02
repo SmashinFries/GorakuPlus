@@ -314,16 +314,16 @@ const ExplorePage = () => {
 	const renderScene = useCallback(
 		({ route }: { route: { key: keyof ExploreTabsProps; title: keyof ExploreTabsProps } }) => {
 			switch (route.key) {
-			case 'anime':
-				return <AnimeTab />;
-			case 'manga':
-				return <MangaTab />;
-			case 'manhwa':
-				return <ManhwaTab />;
-			case 'manhua':
-				return <ManhuaTab />;
-			case 'novels':
-				return <NovelsTab />;
+				case 'anime':
+					return <AnimeTab />;
+				case 'manga':
+					return <MangaTab />;
+				case 'manhwa':
+					return <ManhwaTab />;
+				case 'manhua':
+					return <ManhuaTab />;
+				case 'novels':
+					return <NovelsTab />;
 			}
 		},
 		[],

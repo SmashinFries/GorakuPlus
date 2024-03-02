@@ -18,8 +18,8 @@ import { View } from 'react-native';
 import { Divider, List, Portal, Switch, Text } from 'react-native-paper';
 
 type NotifOption = {
-    type: GetNotificationsQuery['Page']['notifications'][0]['__typename'];
-    title: string;
+	type: GetNotificationsQuery['Page']['notifications'][0]['__typename'];
+	title: string;
 };
 
 const notifMedia: NotifOption[] = [

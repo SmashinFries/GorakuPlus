@@ -102,13 +102,13 @@ const StafPage = () => {
 					<MediaBanner
 						url={
 							data?.Staff?.staffMedia?.edges[0]?.node?.bannerImage ??
-                            data?.Staff?.staffMedia?.edges[0]?.node?.coverImage?.extraLarge
+							data?.Staff?.staffMedia?.edges[0]?.node?.coverImage?.extraLarge
 						}
 						additionalUrls={
 							data?.Staff?.staffMedia?.edges?.length > 0
 								? data?.Staff?.staffMedia?.edges?.map(
-									(edge) => edge.node.bannerImage,
-								)
+										(edge) => edge.node.bannerImage,
+									)
 								: undefined
 						}
 						style={style}
@@ -276,7 +276,7 @@ const StafPage = () => {
 								showsHorizontalScrollIndicator={false}
 								onEndReached={() => {
 									data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
-                                        setSmPage((prev) => prev + 1);
+										setSmPage((prev) => prev + 1);
 								}}
 							/>
 						</Accordion>
@@ -284,7 +284,7 @@ const StafPage = () => {
 					{data?.Staff?.characters?.edges?.length > 0 && (
 						<Accordion title="Characters">
 							<Text style={{ textAlign: 'center', marginTop: 15 }}>
-                                Characters coming soon!
+								Characters coming soon!
 							</Text>
 							{/* <FlashList
                                 data={data?.Staff?.staffMedia?.edges}

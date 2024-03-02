@@ -23,8 +23,8 @@ import { router } from 'expo-router';
 import { useAppSelector } from '@/store/hooks';
 
 type ActivityItemProps = {
-    item: ListActivity;
-    onTrash: (id: number) => void;
+	item: ListActivity;
+	onTrash: (id: number) => void;
 };
 
 export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
@@ -66,7 +66,7 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
 					: item.media?.isLicensed
 						? item.media?.format
 						: 'Doujin'}{' '}
-                · {item.media?.status?.replaceAll('_', ' ') ?? '??'}
+				· {item.media?.status?.replaceAll('_', ' ') ?? '??'}
 			</Text>
 			<Text
 				variant="labelMedium"
@@ -106,8 +106,8 @@ export const ActivityOverview = ({
 	data,
 	onDelete,
 }: {
-    data: UserActivityQuery['Page']['activities'];
-    onDelete?: (id: number) => void;
+	data: UserActivityQuery['Page']['activities'];
+	onDelete?: (id: number) => void;
 }) => {
 	const { width } = useWindowDimensions();
 

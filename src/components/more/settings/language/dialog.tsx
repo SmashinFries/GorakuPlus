@@ -4,9 +4,9 @@ import { setSettings } from '@/store/slices/settingsSlice';
 import { useAppDispatch } from '@/store/hooks';
 
 type MediaLanguageDialogProps = {
-    visible: boolean;
-    defaultLanguage: 'romaji' | 'english' | 'native';
-    hideDialog: () => void;
+	visible: boolean;
+	defaultLanguage: 'romaji' | 'english' | 'native';
+	hideDialog: () => void;
 };
 export const MediaLanguageDialog = ({
 	visible,

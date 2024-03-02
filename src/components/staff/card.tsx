@@ -5,10 +5,10 @@ import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
 import { StaffListQuery } from '@/store/services/anilist/generated-anilist';
 
 type StaffItemProps = {
-    item: StaffListQuery['Media']['staff']['edges'][0];
-    index: number;
-    subTextColor?: string;
-    onNavigation: (id: number) => void;
+	item: StaffListQuery['Media']['staff']['edges'][0];
+	index: number;
+	subTextColor?: string;
+	onNavigation: (id: number) => void;
 };
 
 export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItemProps) => {
@@ -55,7 +55,7 @@ export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItem
 					color: subTextColor ?? 'white',
 				}}
 			>
-                ❤️ {item.node?.favourites}
+				❤️ {item.node?.favourites}
 			</Text>
 		</Pressable>
 	);

@@ -22,7 +22,7 @@ const Days: WeekDay[] = [
 ];
 
 type CalendarRenderSceneProps = SceneRendererProps & {
-    route: { key: WeekDay; title: WeekDay | string };
+	route: { key: WeekDay; title: WeekDay | string };
 };
 
 const CalendarPage = () => {
@@ -67,50 +67,50 @@ const CalendarPage = () => {
 
 	const renderScene = ({ route }: CalendarRenderSceneProps) => {
 		switch (route.key) {
-		case 'sunday':
-			return (
-				<DayTab
-					data={data.sunday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		case 'monday':
-			return (
-				<DayTab
-					data={data.monday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		case 'tuesday':
-			return (
-				<DayTab
-					data={data.tuesday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		case 'wednesday':
-			return (
-				<DayTab
-					data={data.wednesday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		case 'thursday':
-			return (
-				<DayTab
-					data={data.thursday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		case 'friday':
-			return (
-				<DayTab
-					data={data.friday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		case 'saturday':
-			return (
-				<DayTab
-					data={data.saturday.filter((media) => showNSFW || !media.media.isAdult)}
-				/>
-			);
-		default:
-			return null;
+			case 'sunday':
+				return (
+					<DayTab
+						data={data.sunday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			case 'monday':
+				return (
+					<DayTab
+						data={data.monday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			case 'tuesday':
+				return (
+					<DayTab
+						data={data.tuesday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			case 'wednesday':
+				return (
+					<DayTab
+						data={data.wednesday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			case 'thursday':
+				return (
+					<DayTab
+						data={data.thursday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			case 'friday':
+				return (
+					<DayTab
+						data={data.friday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			case 'saturday':
+				return (
+					<DayTab
+						data={data.saturday.filter((media) => showNSFW || !media.media.isAdult)}
+					/>
+				);
+			default:
+				return null;
 		}
 	};
 
@@ -156,7 +156,7 @@ const CalendarPage = () => {
 			) : (
 				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 					{/* <ActivityIndicator size={'small'} /> */}
-					<GorakuActivityIndicator size='large' />
+					<GorakuActivityIndicator size="large" />
 				</View>
 			)}
 			<CalendarFilterSheet

@@ -3,13 +3,13 @@ import { Text, useTheme } from 'react-native-paper';
 import { MotiView } from 'moti';
 
 type ScoreContainerProps = {
-    title?: string;
-    score: number;
-    opacity?: number;
-    color?: string;
-    isMal?: boolean;
-    animate?: boolean;
-    delay?: number;
+	title?: string;
+	score: number;
+	opacity?: number;
+	color?: string;
+	isMal?: boolean;
+	animate?: boolean;
+	delay?: number;
 };
 export const ScoreContainer = ({
 	title,

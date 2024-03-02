@@ -4,7 +4,7 @@ import { GetAnimeNewsApiResponse, GetMangaNewsApiResponse } from '@/store/servic
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type NewsItemProps = {
-    news: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0];
+	news: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0];
 };
 export const NewsItem = ({ news }: NewsItemProps) => {
 	const { colors } = useTheme();

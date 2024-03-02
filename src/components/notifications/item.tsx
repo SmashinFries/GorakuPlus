@@ -7,8 +7,8 @@ import { getNotificationMessage, getTimeUntil, rgbToRgba } from '../../utils';
 import { useAppSelector } from '@/store/hooks';
 
 type NotifItemProps = {
-    item: GetNotificationsQuery['Page']['notifications'][0];
-    onNav: () => void;
+	item: GetNotificationsQuery['Page']['notifications'][0];
+	onNav: () => void;
 };
 export const NotifItem = ({ item, onNav }: NotifItemProps) => {
 	const { colors } = useTheme();
@@ -64,7 +64,7 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
 									: mediaLanguage === 'romaji'
 										? item?.media?.title?.romaji
 										: item?.media?.title?.english ??
-                                      item?.media?.title?.romaji}{' '}
+											item?.media?.title?.romaji}{' '}
 							</Text>
 							{'\n'}
 							{getNotificationMessage(item, mediaLanguage)}

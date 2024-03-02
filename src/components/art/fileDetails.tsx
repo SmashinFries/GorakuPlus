@@ -12,11 +12,11 @@ const ratings = {
 };
 
 type FileDetailsProps = {
-    size: number;
-    height: number;
-    width: number;
-    format: string;
-    rating: DanRatings | string;
+	size: number;
+	height: number;
+	width: number;
+	format: string;
+	rating: DanRatings | string;
 };
 export const FileDetails = ({ size, format, height, width, rating }: FileDetailsProps) => {
 	return (

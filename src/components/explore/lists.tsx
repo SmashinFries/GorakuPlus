@@ -1,6 +1,11 @@
 import { Platform, RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
-import { ExploreMediaQuery, Media, MediaList, MediaType } from '@/store/services/anilist/generated-anilist';
+import {
+	ExploreMediaQuery,
+	Media,
+	MediaList,
+	MediaType,
+} from '@/store/services/anilist/generated-anilist';
 import { FlashList } from '@shopify/flash-list';
 import React, { memo, useCallback, useMemo } from 'react';
 import { Image } from 'expo-image';
@@ -12,9 +17,9 @@ import { FlatList } from 'react-native-gesture-handler';
 import { GorakuActivityIndicator } from '../loading';
 
 type RefreshableScrollProps = {
-    children: React.ReactNode;
-    onRefresh: () => void;
-    refreshing: boolean;
+	children: React.ReactNode;
+	onRefresh: () => void;
+	refreshing: boolean;
 };
 export const RefreshableScroll = ({ children, refreshing, onRefresh }: RefreshableScrollProps) => {
 	return (
@@ -34,10 +39,10 @@ export const RefreshableScroll = ({ children, refreshing, onRefresh }: Refreshab
 };
 
 type SectionScrollProps = {
-    category_title: string;
-    data: ExploreMediaQuery;
-    isLoading: boolean;
-    fetchMore?: () => void;
+	category_title: string;
+	data: ExploreMediaQuery;
+	isLoading: boolean;
+	fetchMore?: () => void;
 };
 
 export const SectionScroll = ({
@@ -48,7 +53,7 @@ export const SectionScroll = ({
 }: SectionScrollProps) => {
 	// const playSelectSound = useSound('selection');
 	const initialBG =
-        data?.Page?.media[0]?.bannerImage ?? data?.Page?.media[0]?.coverImage?.extraLarge ?? '';
+		data?.Page?.media[0]?.bannerImage ?? data?.Page?.media[0]?.coverImage?.extraLarge ?? '';
 
 	const { width, height } = useWindowDimensions();
 	const { colors } = useTheme();
@@ -162,7 +167,7 @@ export const SectionScroll = ({
 				)}
 			</View>
 			{data && Platform.OS === 'web' ? (
-			// setting height to minHeight of parent causes artifacts at top of each section (LinearGradient)
+				// setting height to minHeight of parent causes artifacts at top of each section (LinearGradient)
 				<BackgroundArt data={data} currentBG={initialBG} width={width} height={440} />
 			) : null}
 		</View>

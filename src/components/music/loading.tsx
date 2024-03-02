@@ -8,8 +8,8 @@ import { LoadingItem } from '../media/loading';
 import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
 
 type LoadingProps = {
-    isLoading: boolean;
-    error?: FetchBaseQueryError | SerializedError;
+	isLoading: boolean;
+	error?: FetchBaseQueryError | SerializedError;
 };
 
 export const MusicLoading = ({ isLoading, error }: LoadingProps) => {

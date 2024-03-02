@@ -7,8 +7,8 @@ import { useAppSelector } from '@/store/hooks';
 import Uwuifier from 'uwuifier';
 
 type DescriptionProps = {
-    aniDescription: string;
-    malDescription: string;
+	aniDescription: string;
+	malDescription: string;
 };
 export const Description = ({ aniDescription, malDescription }: DescriptionProps) => {
 	const { width } = useWindowDimensions();
@@ -31,7 +31,7 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 			contentWidth={width}
 			baseStyle={{ color: colors.onBackground }}
 			source={{ html: aniDescription }}
-			defaultTextProps={{selectable: true, selectionColor: colors.inversePrimary}}
+			defaultTextProps={{ selectable: true, selectionColor: colors.inversePrimary }}
 		/>
 	);
 	const MalDesc = () => (

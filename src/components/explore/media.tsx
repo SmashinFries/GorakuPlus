@@ -14,13 +14,13 @@ const IMAGE_BORDER_RADIUS = 12;
 const AIRING_BANNER_BANS = [MediaStatus.Cancelled, MediaStatus.Finished];
 
 const blurhash =
-    '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+	'|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 type MediaItemProps = {
-    item: Media;
-    width?: number;
-    height?: number;
-    navigate?: (aniID: number, malID: number, type: MediaType) => void;
+	item: Media;
+	width?: number;
+	height?: number;
+	navigate?: (aniID: number, malID: number, type: MediaType) => void;
 };
 export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => {
 	// const { colors } = useTheme();
@@ -199,10 +199,10 @@ export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => 
 export const MediaItemMem = memo(MediaItem);
 
 type RenderMediaItemProps = {
-    item: Media;
-    index: number;
-    delay?: boolean;
-    navigate?: (aniID: number, malID: number, type: MediaType) => void;
+	item: Media;
+	index: number;
+	delay?: boolean;
+	navigate?: (aniID: number, malID: number, type: MediaType) => void;
 };
 export const RenderMediaItem = ({ item, index, navigate, delay = true }: RenderMediaItemProps) => {
 	// const { colors } = useTheme();
@@ -245,13 +245,13 @@ export const RenderMediaItem = ({ item, index, navigate, delay = true }: RenderM
 	// }, [item.mediaListEntry?.status]);
 
 	return (
-	// <AnimatePresence>
-	// <Tooltip
-	// title={showItemListStatus ? 'true' : 'false'}
-	//     title={`Status: ${
-	//         item.mediaListEntry?.status ?? 'None'
-	//     } | Progress: ${progress}/${total}`}
-	// >
+		// <AnimatePresence>
+		// <Tooltip
+		// title={showItemListStatus ? 'true' : 'false'}
+		//     title={`Status: ${
+		//         item.mediaListEntry?.status ?? 'None'
+		//     } | Progress: ${progress}/${total}`}
+		// >
 		<MotiView
 			key={index}
 			from={{ opacity: 0, scale: 0 }}
@@ -318,8 +318,8 @@ export const RenderMediaItem = ({ item, index, navigate, delay = true }: RenderM
                 </View>
             ) : null} */}
 		</MotiView>
-	// </Tooltip>
-	// </AnimatePresence>
+		// </Tooltip>
+		// </AnimatePresence>
 	);
 };
 

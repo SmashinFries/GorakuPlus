@@ -27,13 +27,13 @@ import { ActivityIndicator, IconButton, Text, useTheme } from 'react-native-pape
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 
 type ListParams = {
-    data:
-        | UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]
-        | UserMangaListCollectionQuery['MediaListCollection']['lists'][0];
-    updateTitle?: (dataLength: number) => void;
-    isRefreshing?: boolean;
-    onRefresh?: () => void;
-    type?: MediaType;
+	data:
+		| UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]
+		| UserMangaListCollectionQuery['MediaListCollection']['lists'][0];
+	updateTitle?: (dataLength: number) => void;
+	isRefreshing?: boolean;
+	onRefresh?: () => void;
+	type?: MediaType;
 };
 
 const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
@@ -56,11 +56,11 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 			return sortedItems.filter(
 				(item) =>
 					item.media.title.romaji?.toLowerCase()?.includes(search?.toLowerCase()) ||
-                    item.media.title.english?.toLowerCase()?.includes(search?.toLowerCase()) ||
-                    item.media.title.native?.includes(search) ||
-                    item.media.synonyms?.some((value, index) =>
-                    	value.toLowerCase()?.includes(search?.toLowerCase()),
-                    ),
+					item.media.title.english?.toLowerCase()?.includes(search?.toLowerCase()) ||
+					item.media.title.native?.includes(search) ||
+					item.media.synonyms?.some((value, index) =>
+						value.toLowerCase()?.includes(search?.toLowerCase()),
+					),
 			);
 		} else {
 			return sortedItems;
@@ -75,23 +75,23 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 		({
 			item,
 		}: {
-            item:
-                | UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0]
-                | UserMangaListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0];
-        }) => {
+			item:
+				| UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0]
+				| UserMangaListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0];
+		}) => {
 			return (
-			// <View style={{ width: '100%', alignItems: 'center', marginVertical: 12 }}>
-			//     <MediaItemMem item={item.media} navigate={navigate} />
-			// </View>
-			// <TouchableOpacity
-			//     onPress={() => navigate(item.media.id, item.media.idMal, item.media.type)}
-			//     style={{
-			//         flex: 1,
-			//         alignItems: 'center',
-			//         marginVertical: 12,
-			//         marginHorizontal: width / 150 / 3,
-			//     }}
-			// >
+				// <View style={{ width: '100%', alignItems: 'center', marginVertical: 12 }}>
+				//     <MediaItemMem item={item.media} navigate={navigate} />
+				// </View>
+				// <TouchableOpacity
+				//     onPress={() => navigate(item.media.id, item.media.idMal, item.media.type)}
+				//     style={{
+				//         flex: 1,
+				//         alignItems: 'center',
+				//         marginVertical: 12,
+				//         marginHorizontal: width / 150 / 3,
+				//     }}
+				// >
 				<View
 					style={{
 						flex: 1,
@@ -129,9 +129,9 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 							mediaStatus={item.media.status}
 							total={
 								item.media.episodes ??
-                                item.media.chapters ??
-                                item.media.volumes ??
-                                0
+								item.media.chapters ??
+								item.media.volumes ??
+								0
 							}
 							showListStatus={false}
 						/>
@@ -189,14 +189,14 @@ const ListTabs = ({
 	isRefreshing,
 	onRefresh,
 }: {
-    type: MediaType;
-    loading: boolean;
-    routes: { key: string; title: string }[];
-    data:
-        | UserAnimeListCollectionQuery['MediaListCollection']
-        | UserMangaListCollectionQuery['MediaListCollection'];
-    isRefreshing: boolean;
-    onRefresh: () => void;
+	type: MediaType;
+	loading: boolean;
+	routes: { key: string; title: string }[];
+	data:
+		| UserAnimeListCollectionQuery['MediaListCollection']
+		| UserMangaListCollectionQuery['MediaListCollection'];
+	isRefreshing: boolean;
+	onRefresh: () => void;
 }) => {
 	const { animeTabOrder, mangaTabOrder } = useAppSelector((state) => state.listFilter);
 	const { colors } = useTheme();
@@ -231,9 +231,9 @@ const ListTabs = ({
 	};
 
 	useEffect(() => {
-		if (tabRoutes && listData) {
+		if (tabRoutes && listData?.lists) {
 			const listCounts = {};
-			for (const list of listData?.lists) {
+			for (const list of listData.lists) {
 				listCounts[list.name] = list.entries.length;
 			}
 			const newRoutes = sortListTabs(
@@ -302,30 +302,30 @@ const ListPage = () => {
 
 	const renderScene = ({ route }) => {
 		switch (route.key) {
-		case 'anime':
-			return (
-				<ListTabs
-					type={MediaType.Anime}
-					data={animeList?.data?.MediaListCollection}
-					routes={animeRoutes}
-					loading={loading}
-					isRefreshing={isRefreshing}
-					onRefresh={refreshAnimeList}
-				/>
-			);
-		case 'manga':
-			return (
-				<ListTabs
-					type={MediaType.Manga}
-					data={mangaList?.data?.MediaListCollection}
-					routes={mangaRoutes}
-					loading={loading}
-					isRefreshing={isRefreshing}
-					onRefresh={refreshAnimeList}
-				/>
-			);
-		default:
-			return null;
+			case 'anime':
+				return (
+					<ListTabs
+						type={MediaType.Anime}
+						data={animeList?.data?.MediaListCollection}
+						routes={animeRoutes}
+						loading={loading}
+						isRefreshing={isRefreshing}
+						onRefresh={refreshAnimeList}
+					/>
+				);
+			case 'manga':
+				return (
+					<ListTabs
+						type={MediaType.Manga}
+						data={mangaList?.data?.MediaListCollection}
+						routes={mangaRoutes}
+						loading={loading}
+						isRefreshing={isRefreshing}
+						onRefresh={refreshAnimeList}
+					/>
+				);
+			default:
+				return null;
 		}
 	};
 

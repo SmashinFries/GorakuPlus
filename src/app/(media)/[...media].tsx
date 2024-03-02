@@ -114,7 +114,7 @@ const MediaScreen = () => {
 						}}
 						title={
 							aniData?.data?.Media?.title[mediaLanguage] ??
-                            aniData?.data?.Media?.title?.romaji
+							aniData?.data?.Media?.title?.romaji
 						}
 						shareLink={aniData?.data?.Media?.siteUrl}
 						onEdit={openEdit}
@@ -124,13 +124,13 @@ const MediaScreen = () => {
 								style={style}
 								url={
 									aniData?.data?.Media?.bannerImage ??
-                                    aniData?.data?.Media?.coverImage?.extraLarge
+									aniData?.data?.Media?.coverImage?.extraLarge
 								}
 								additionalUrls={
 									aniData?.data?.Media?.relations?.edges?.length > 0
 										? aniData?.data?.Media?.relations?.edges?.map(
-											(edge) => edge.node.bannerImage,
-										)
+												(edge) => edge.node.bannerImage,
+											)
 										: undefined
 								}
 								allowMotion={allowSensorMotion}
@@ -169,9 +169,9 @@ const MediaScreen = () => {
 										customLists={
 											type === MediaType.Anime
 												? aniData?.data?.Viewer?.mediaListOptions?.animeList
-													?.customLists ?? []
+														?.customLists ?? []
 												: aniData?.data?.Viewer?.mediaListOptions?.mangaList
-													?.customLists ?? []
+														?.customLists ?? []
 										}
 										scoreFormat={
 											aniData?.data?.Viewer?.mediaListOptions?.scoreFormat
@@ -190,9 +190,9 @@ const MediaScreen = () => {
 									malData={malData?.data?.data}
 								/>
 								{(aniData?.data?.Media?.rankings?.length > 0 ||
-                                    aniData?.data?.Media?.stats?.scoreDistribution?.length > 0 ||
-                                    aniData?.data?.Media?.stats?.statusDistribution?.length >
-                                        0) && (
+									aniData?.data?.Media?.stats?.scoreDistribution?.length > 0 ||
+									aniData?.data?.Media?.stats?.statusDistribution?.length >
+										0) && (
 									<StatSection
 										rankData={aniData?.data?.Media?.rankings}
 										statData={aniData?.data?.Media?.stats}
@@ -255,8 +255,8 @@ const MediaScreen = () => {
 									malLink={
 										aniData?.data?.Media?.idMal
 											? `https://myanimelist.net/${aniData?.data?.Media?.type.toLowerCase()}/${
-												aniData?.data?.Media?.idMal
-											}`
+													aniData?.data?.Media?.idMal
+												}`
 											: null
 									}
 									muLink={mangaUpdates?.data?.url}
@@ -269,9 +269,14 @@ const MediaScreen = () => {
 							<MuSearchDialog
 								title={
 									aniData?.data?.Media?.title?.english ??
-                                    aniData?.data?.Media?.title?.romaji
+									aniData?.data?.Media?.title?.romaji
 								}
-								altTitles={[...new Set([...Object.values(aniData?.data?.Media?.title), ...aniData?.data?.Media?.synonyms])]}
+								altTitles={[
+									...new Set([
+										...Object.values(aniData?.data?.Media?.title),
+										...(aniData?.data?.Media?.synonyms ?? []),
+									]),
+								]}
 								currentMuID={muDB['data'][aniID]}
 								visible={showMuDialog}
 								onDismiss={toggleMuDialog}
@@ -279,7 +284,7 @@ const MediaScreen = () => {
 							/>
 						)}
 						{(aniData?.data?.Media?.airingSchedule?.nodes ||
-                            mangaReleases?.data?.results) && (
+							mangaReleases?.data?.results) && (
 							<ReleasesDialog
 								visible={showReleaseDialog}
 								onDismiss={() => setShowReleaseDialog(false)}

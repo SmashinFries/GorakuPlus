@@ -6,9 +6,9 @@ import { Text, useTheme } from 'react-native-paper';
 import { UserOverviewQuery } from '@/store/services/anilist/generated-anilist';
 
 type MediaStatIsland = {
-    icon: string;
-    title: string;
-    value: number;
+	icon: string;
+	title: string;
+	value: number;
 };
 export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
 	const { colors } = useTheme();
@@ -22,7 +22,7 @@ export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
 				style={[styles.container]}
 			>
 				{/* <IconButton icon={icon} />
-                 */}
+				 */}
 				<Text numberOfLines={2} style={{ textAlign: 'center' }}>
 					{title}
 				</Text>
@@ -37,14 +37,14 @@ export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
 };
 
 type StatOverview = {
-    anime: {
-        minutesWatched: number;
-        episodesWatched: number;
-    };
-    manga: {
-        chaptersRead: number;
-        volumesRead: number;
-    };
+	anime: {
+		minutesWatched: number;
+		episodesWatched: number;
+	};
+	manga: {
+		chaptersRead: number;
+		volumesRead: number;
+	};
 };
 export const StatOverview = ({ anime, manga }: StatOverview) => {
 	return (

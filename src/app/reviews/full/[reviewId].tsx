@@ -23,11 +23,11 @@ import { ReviewRating, useReviewRatingMutation } from '@/store/services/anilist/
 import { GorakuActivityIndicator } from '@/components/loading';
 
 const Spoiler = (props: {
-    node: ASTNode;
-    children: React.ReactNode[];
-    styles: any;
-    textColor?: string;
-    bgColor?: string;
+	node: ASTNode;
+	children: React.ReactNode[];
+	styles: any;
+	textColor?: string;
+	bgColor?: string;
 }) => {
 	const { width } = useWindowDimensions();
 	const [show, setShow] = useState(false);
@@ -73,12 +73,12 @@ const Spoiler = (props: {
 };
 
 type ScoreProps = {
-    reviewId: number;
-    score: number;
-    scoreColor?: string;
-    ratingAmount: number;
-    rating: number;
-    userRating?: ReviewRating;
+	reviewId: number;
+	score: number;
+	scoreColor?: string;
+	ratingAmount: number;
+	rating: number;
+	userRating?: ReviewRating;
 };
 const Score = ({ reviewId, score, scoreColor, ratingAmount, rating, userRating }: ScoreProps) => {
 	const { colors } = useTheme();
@@ -140,10 +140,10 @@ const Score = ({ reviewId, score, scoreColor, ratingAmount, rating, userRating }
 						{score}
 					</Text>
 					<Text variant="headlineMedium" style={{ color: MD3DarkTheme.colors.onSurface }}>
-                        /
+						/
 					</Text>
 					<Text variant="labelLarge" style={{ color: MD3DarkTheme.colors.onSurface }}>
-                        100
+						100
 					</Text>
 				</View>
 				<View style={{ alignItems: 'center' }}>
@@ -243,12 +243,13 @@ const ReviewPage = () => {
 			return (
 				<Spoiler
 					key={node.key}
-					children={children}
 					node={node}
 					styles={styles}
 					textColor={colors.primary}
 					bgColor={colors.backdrop}
-				/>
+				>
+					{children}
+				</Spoiler>
 			);
 		},
 		// image: (node, children, parent, styles, allowedImageHandlers, defaultImageHandler) => {
@@ -466,7 +467,7 @@ const ReviewPage = () => {
 								mode="elevated"
 								onPress={() => openWebBrowser(data?.Review?.user?.siteUrl)}
 							>
-                                View Profile
+								View Profile
 							</Button>
 							<Button
 								onPress={onFollowPress}
@@ -503,7 +504,7 @@ const ReviewPage = () => {
 							data?.Review?.score <= scoreColors.red
 								? 'red'
 								: data?.Review?.score <= scoreColors.yellow &&
-                                  data?.Review?.score >= scoreColors.red
+									  data?.Review?.score >= scoreColors.red
 									? 'orange'
 									: 'green'
 						}
@@ -515,10 +516,10 @@ const ReviewPage = () => {
 				<WebView
 					source={{
 						html:
-                            data?.Review?.htmlBody +
-                            webScore +
-                            '<meta name="viewport" content="initial-scale=1.0" />' +
-                            webStyle,
+							data?.Review?.htmlBody +
+							webScore +
+							'<meta name="viewport" content="initial-scale=1.0" />' +
+							webStyle,
 					}}
 					overScrollMode="never"
 					style={{

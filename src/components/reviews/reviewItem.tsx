@@ -6,13 +6,13 @@ import { Avatar, Text } from 'react-native-paper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type ReviewItemProps = {
-    textColor?: string;
-    backgroundColor?: string;
-    iconColor?: string;
-    maxWidth?: DimensionValue;
-    marginVertical?: number;
-    item: AniMediaQuery['Media']['reviews']['edges'][0] | ReviewsQuery['Page']['reviews'][0];
-    index: number;
+	textColor?: string;
+	backgroundColor?: string;
+	iconColor?: string;
+	maxWidth?: DimensionValue;
+	marginVertical?: number;
+	item: AniMediaQuery['Media']['reviews']['edges'][0] | ReviewsQuery['Page']['reviews'][0];
+	index: number;
 };
 export const ReviewItem = ({
 	item,
@@ -22,8 +22,8 @@ export const ReviewItem = ({
 	marginVertical = 0,
 }: ReviewItemProps) => {
 	const review =
-        (item as AniMediaQuery['Media']['reviews']['edges'][0])?.node ??
-        (item as ReviewsQuery['Page']['reviews'][0]);
+		(item as AniMediaQuery['Media']['reviews']['edges'][0])?.node ??
+		(item as ReviewsQuery['Page']['reviews'][0]);
 	return (
 		<Pressable
 			onPress={() => router.push(`/reviews/full/${review?.id}`)}

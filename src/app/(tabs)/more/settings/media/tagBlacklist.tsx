@@ -14,9 +14,9 @@ import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Chip, List, Searchbar, Text, useTheme } from 'react-native-paper';
 
 type TagChipProps = {
-    name: string;
-    onPress: (tag: string) => void;
-    icon?: string;
+	name: string;
+	onPress: (tag: string) => void;
+	icon?: string;
 };
 
 const TagBlackListPage = () => {
@@ -28,8 +28,8 @@ const TagBlackListPage = () => {
 	const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
 	const [search, setSearch] = useState<string>('');
 	const [searchResults, setSearchResults] = useState<
-        GenreTagCollectionQuery['MediaTagCollection']
-    >([]);
+		GenreTagCollectionQuery['MediaTagCollection']
+	>([]);
 
 	const { data, isFetching, isError } = useGenreTagCollectionQuery();
 

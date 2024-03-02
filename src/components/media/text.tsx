@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 type MediaTitleView = {
-    data: AniMediaQuery['Media'];
-    defaultTitle: 'romaji' | 'english' | 'native';
+	data: AniMediaQuery['Media'];
+	defaultTitle: 'romaji' | 'english' | 'native';
 };
 export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
 	const [title, setTitle] = useState<MediaTitleView['defaultTitle']>(

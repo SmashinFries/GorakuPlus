@@ -27,18 +27,18 @@ const WaifuItTokenDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 			<Dialog.Title>{'Waifu.It Login'}</Dialog.Title>
 			<Dialog.Content>
 				<Text style={{ paddingBottom: 10, fontWeight: '900' }}>
-                    Discord login required!
+					Discord login required!
 				</Text>
 				<Text>
-                    To use Waifu.It, you need to claim a token. Once you have a token, enter it
-                    below.
+					To use Waifu.It, you need to claim a token. Once you have a token, enter it
+					below.
 				</Text>
 				<Button
 					mode="elevated"
 					onPress={() => openWebBrowser('https://docs.waifu.it/faq')}
 					style={{ marginVertical: 20 }}
 				>
-                    Get Token
+					Get Token
 				</Button>
 				<TextInput
 					mode="outlined"

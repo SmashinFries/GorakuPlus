@@ -52,7 +52,7 @@ const RenderEmpty = ({ message }: { message: string }) => {
 };
 
 type DayTabProps = {
-    data: WeeklyAnimeQuery['Page']['airingSchedules'];
+	data: WeeklyAnimeQuery['Page']['airingSchedules'];
 };
 export const DayTab = ({ data }: DayTabProps) => {
 	const { width } = useWindowDimensions();

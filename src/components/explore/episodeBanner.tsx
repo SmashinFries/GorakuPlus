@@ -4,9 +4,9 @@ import { memo } from 'react';
 import { Text } from 'react-native-paper';
 
 type AiringBannerProps = {
-    containerColor: string;
-    textColor: string;
-    text: string;
+	containerColor: string;
+	textColor: string;
+	text: string;
 };
 export const AiringBanner = ({ containerColor, textColor, text }: AiringBannerProps) => {
 	// const timeTill = useMemo(() => {

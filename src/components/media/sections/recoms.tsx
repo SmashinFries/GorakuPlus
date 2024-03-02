@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 import { ListHeading } from '@/components/text';
 
 type RecProps = {
-    data: AniMediaQuery['Media']['recommendations'];
+	data: AniMediaQuery['Media']['recommendations'];
 };
 const RecList = ({ data }: RecProps) => {
 	const { colors } = useTheme();
@@ -16,8 +16,8 @@ const RecList = ({ data }: RecProps) => {
 	const renderItem = ({
 		item,
 	}: {
-        item: AniMediaQuery['Media']['recommendations']['edges'][0];
-    }) => {
+		item: AniMediaQuery['Media']['recommendations']['edges'][0];
+	}) => {
 		return (
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
 				<MediaCard
@@ -59,7 +59,7 @@ const RecList = ({ data }: RecProps) => {
 						: item.node?.mediaRecommendation?.isLicensed
 							? item.node?.mediaRecommendation?.format
 							: 'Doujin'}{' '}
-                    · {item.node?.mediaRecommendation?.status?.replaceAll('_', ' ') ?? '??'}
+					· {item.node?.mediaRecommendation?.status?.replaceAll('_', ' ') ?? '??'}
 				</Text>
 			</View>
 		);

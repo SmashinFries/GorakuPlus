@@ -1,4 +1,4 @@
 export type BasicDialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
+	visible: boolean;
+	onDismiss: () => void;
 };

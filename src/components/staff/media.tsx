@@ -4,8 +4,8 @@ import { IconButton, Text, useTheme } from 'react-native-paper';
 import { MediaFormat, StaffDetailsQuery } from '@/store/services/anilist/generated-anilist';
 
 type StaffMediaCardProps = {
-    item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0];
-    onNav: any;
+	item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0];
+	onNav: any;
 };
 export const StaffMediaCard = ({ item, onNav }: StaffMediaCardProps) => {
 	const { colors } = useTheme();
@@ -40,7 +40,7 @@ export const StaffMediaCard = ({ item, onNav }: StaffMediaCardProps) => {
 					: item.node?.isLicensed
 						? item.node?.format
 						: 'Doujin'}{' '}
-                · {item.node?.status?.replaceAll('_', ' ') ?? '??'}
+				· {item.node?.status?.replaceAll('_', ' ') ?? '??'}
 			</Text>
 			{item.node?.isFavourite && (
 				<IconButton

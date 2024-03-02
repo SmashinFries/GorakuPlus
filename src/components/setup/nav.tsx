@@ -16,18 +16,18 @@ const PAGE_ITEM_SIZE = 12;
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 type SetupNavButtonProps = {
-    icon: string;
-    onPress: () => void;
-    disabled?: boolean;
+	icon: string;
+	onPress: () => void;
+	disabled?: boolean;
 };
 const SetupNavButton = ({ icon, disabled, onPress }: SetupNavButtonProps) => {
 	return <IconButton icon={icon} disabled={disabled} onPress={onPress} />;
 };
 
 type PageIndicatorProps = {
-    page: number;
-    numPages: number;
-    onPress: (page: number) => void;
+	page: number;
+	numPages: number;
+	onPress: (page: number) => void;
 };
 const PageIndicator = ({ page, numPages, onPress }: PageIndicatorProps) => {
 	const { colors } = useTheme();
@@ -36,13 +36,13 @@ const PageIndicator = ({ page, numPages, onPress }: PageIndicatorProps) => {
 		const animatedStyle = useAnimatedStyle(() => {
 			return {
 				transform:
-                    page === idx
-                    	? [
-                    		{
-                    			scale: pageAnimVal.value,
-                    		},
-                    	]
-                    	: undefined,
+					page === idx
+						? [
+								{
+									scale: pageAnimVal.value,
+								},
+							]
+						: undefined,
 			};
 		});
 
@@ -82,9 +82,9 @@ const PageIndicator = ({ page, numPages, onPress }: PageIndicatorProps) => {
 };
 
 type SetupNavBarProps = {
-    page: number;
-    numPages: number;
-    onPageChange: (navType: 'next' | 'prev' | number) => void;
+	page: number;
+	numPages: number;
+	onPageChange: (navType: 'next' | 'prev' | number) => void;
 };
 export const SetupNavBar = ({ page, numPages, onPageChange }: SetupNavBarProps) => {
 	return (

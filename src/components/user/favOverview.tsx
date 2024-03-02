@@ -11,9 +11,9 @@ import { TOAST } from '@/constants/toast';
 import * as Burnt from 'burnt';
 
 type FavItemProps = {
-    title: string;
-    images?: string[];
-    onPress?: () => void;
+	title: string;
+	images?: string[];
+	onPress?: () => void;
 };
 export const FavItem = ({ images, onPress, title }: FavItemProps) => {
 	const { bg, visible, updateBG } = useSlideshow({ images: images || [] });
@@ -62,7 +62,7 @@ export const FavItem = ({ images, onPress, title }: FavItemProps) => {
 };
 
 type FavOverviewProps = {
-    favorites: UserOverviewQuery['Viewer']['favourites'];
+	favorites: UserOverviewQuery['Viewer']['favourites'];
 };
 export const FavOverview = ({ favorites }: FavOverviewProps) => {
 	const animeImages = useMemo(

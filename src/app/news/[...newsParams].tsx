@@ -10,8 +10,8 @@ import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 
 type RenderItemProps = {
-    item: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0];
-    index: number;
+	item: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0];
+	index: number;
 };
 
 const NewsPage = () => {

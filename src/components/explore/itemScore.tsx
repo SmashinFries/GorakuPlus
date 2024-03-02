@@ -12,13 +12,13 @@ import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const BORDER_RADIUS = 12;
 
 type ScoreHealthBarProps = {
-    score: number;
-    scoreColors: { red: number; yellow: number };
-    heartColor?: string;
-    showScore?: boolean;
-    textColor?: string;
-    width?: DimensionValue;
-    horizontal?: boolean;
+	score: number;
+	scoreColors: { red: number; yellow: number };
+	heartColor?: string;
+	showScore?: boolean;
+	textColor?: string;
+	width?: DimensionValue;
+	horizontal?: boolean;
 };
 type ScoreIconProps = ScoreHealthBarProps & { textColor: string; showScore?: boolean };
 export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: ScoreIconProps) => {
@@ -94,10 +94,10 @@ export const ScoreHealthBar = ({
 };
 
 type ScoreBarProps = {
-    height: number;
-    scores: ScoreDistribution[];
-    isGradient?: boolean;
-    isGraph?: boolean;
+	height: number;
+	scores: ScoreDistribution[];
+	isGradient?: boolean;
+	isGraph?: boolean;
 };
 export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
 	const [card_width, setCardWidth] = useState(0);
@@ -132,11 +132,11 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
 					style={{
 						flexDirection: 'row',
 						height:
-                            scores.length > 4
-                            	? 230 * 0.4
-                            	: highestScore === 0 && scores.length === 1
-                            		? 230 * 0.05
-                            		: 230 * 0.15,
+							scores.length > 4
+								? 230 * 0.4
+								: highestScore === 0 && scores.length === 1
+									? 230 * 0.05
+									: 230 * 0.15,
 					}}
 				>
 					{scores?.map((stat, idx) => (
@@ -183,13 +183,13 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
 };
 
 type ScoreVisualProps = {
-    score: number;
-    scoreVisualType: ScoreVisualType;
-    scoreColors: { red: number; yellow: number };
-    scoreDistributions: ScoreDistribution[];
-    height: number;
-    width?: DimensionValue;
-    horizontal?: boolean;
+	score: number;
+	scoreVisualType: ScoreVisualType;
+	scoreColors: { red: number; yellow: number };
+	scoreDistributions: ScoreDistribution[];
+	height: number;
+	width?: DimensionValue;
+	horizontal?: boolean;
 };
 export const ScoreVisual = ({
 	score,
@@ -203,42 +203,42 @@ export const ScoreVisual = ({
 	const { colors } = useTheme();
 	const settings = useAppSelector((state) => state.persistedSettings);
 	switch (scoreVisualType ?? settings.scoreVisualType) {
-	case 'healthbar-full':
-		return (
-			<ScoreHealthBar
-				score={score}
-				scoreColors={scoreColors}
-				textColor={colors.onPrimaryContainer}
-				heartColor={colors.onPrimaryContainer}
-				width={width ?? '45%'}
-				horizontal={horizontal}
-				showScore
-			/>
-		);
-	case 'healthbar':
-		return (
-			<ScoreHealthBar
-				score={score}
-				scoreColors={scoreColors}
-				textColor={colors.onPrimaryContainer}
-				heartColor={colors.onPrimaryContainer}
-				width={width ?? '45%'}
-			/>
-		);
-	case 'number':
-		return (
-			<ScoreIconText
-				showScore
-				score={score}
-				scoreColors={scoreColors}
-				textColor={colors.onPrimaryContainer}
-			/>
-		);
-	case 'bar':
-		return <ScoreBar scores={scoreDistributions} height={height} />;
-	case 'gradient-bar':
-		return <ScoreBar scores={scoreDistributions} isGradient height={height} />;
-	case 'bar-graph':
-		return <ScoreBar scores={scoreDistributions} isGraph height={height} />;
+		case 'healthbar-full':
+			return (
+				<ScoreHealthBar
+					score={score}
+					scoreColors={scoreColors}
+					textColor={colors.onPrimaryContainer}
+					heartColor={colors.onPrimaryContainer}
+					width={width ?? '45%'}
+					horizontal={horizontal}
+					showScore
+				/>
+			);
+		case 'healthbar':
+			return (
+				<ScoreHealthBar
+					score={score}
+					scoreColors={scoreColors}
+					textColor={colors.onPrimaryContainer}
+					heartColor={colors.onPrimaryContainer}
+					width={width ?? '45%'}
+				/>
+			);
+		case 'number':
+			return (
+				<ScoreIconText
+					showScore
+					score={score}
+					scoreColors={scoreColors}
+					textColor={colors.onPrimaryContainer}
+				/>
+			);
+		case 'bar':
+			return <ScoreBar scores={scoreDistributions} height={height} />;
+		case 'gradient-bar':
+			return <ScoreBar scores={scoreDistributions} isGradient height={height} />;
+		case 'bar-graph':
+			return <ScoreBar scores={scoreDistributions} isGraph height={height} />;
 	}
 };

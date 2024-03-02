@@ -26,9 +26,9 @@ const data1 = {
 };
 
 type ReleaseYearsLineChartProps = {
-    data:
-        | UserAnimeStatsQuery['User']['statistics']['anime']['releaseYears']
-        | UserMangaStatsQuery['User']['statistics']['manga']['releaseYears'];
+	data:
+		| UserAnimeStatsQuery['User']['statistics']['anime']['releaseYears']
+		| UserMangaStatsQuery['User']['statistics']['manga']['releaseYears'];
 };
 export const ReleaseYearsLineChart = ({ data }: ReleaseYearsLineChartProps) => {
 	const { colors } = useTheme();

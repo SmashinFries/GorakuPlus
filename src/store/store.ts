@@ -2,15 +2,15 @@ import { Action, AnyAction, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-    persistStore,
-    persistReducer,
-    PersistConfig,
-    FLUSH,
-    REHYDRATE,
-    PAUSE,
-    PERSIST,
-    PURGE,
-    REGISTER,
+	persistStore,
+	persistReducer,
+	PersistConfig,
+	FLUSH,
+	REHYDRATE,
+	PAUSE,
+	PERSIST,
+	PURGE,
+	REGISTER,
 } from 'redux-persist';
 import themeSlice, { ThemeState } from '@/store/theme/themeSlice';
 import createSecureStorage from '@/store/persist-securestore';
@@ -41,141 +41,143 @@ import { rtkQueryErrorLogger } from './middleware';
 const secureStorage = createSecureStorage();
 
 const persistThemeConfig: PersistConfig<any, any, any, any> = {
-    key: 'theme',
-    storage: AsyncStorage,
+	key: 'theme',
+	storage: AsyncStorage,
 };
 
 const persistSettingsConfig: PersistConfig<any, any, any, any> = {
-    key: 'settings',
-    storage: AsyncStorage,
+	key: 'settings',
+	storage: AsyncStorage,
 };
 
 const persistSetupConfig: PersistConfig<any, any, any, any> = {
-    key: 'setup',
-    storage: AsyncStorage,
+	key: 'setup',
+	storage: AsyncStorage,
 };
 
 const persistHistoryConfig: PersistConfig<any, any, any, any> = {
-    key: 'search-history',
-    storage: AsyncStorage,
+	key: 'search-history',
+	storage: AsyncStorage,
 };
 
 const persistPresetsConfig: PersistConfig<any, any, any, any> = {
-    key: 'presets',
-    storage: AsyncStorage,
+	key: 'presets',
+	storage: AsyncStorage,
 };
 
 // aniId --> manga updates id
 const persistMuDBConfig: PersistConfig<any, any, any, any> = {
-    key: 'mu-db',
-    storage: AsyncStorage,
+	key: 'mu-db',
+	storage: AsyncStorage,
 };
 
 const persistCharArtDBConfig: PersistConfig<any, any, any, any> = {
-    key: 'charArt-db',
-    storage: AsyncStorage,
+	key: 'charArt-db',
+	storage: AsyncStorage,
 };
 
 const persistNotifConfig: PersistConfig<any, any, any, any> = {
-    key: 'notifications',
-    storage: AsyncStorage,
+	key: 'notifications',
+	storage: AsyncStorage,
 };
 
 const anilistAuthPersistConfig: PersistConfig<any, any, any, any> = {
-    key: 'anilistAuth',
-    storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
+	key: 'anilistAuth',
+	storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
 };
 
 const displaySettingsPersistConfig: PersistConfig<any, any, any, any> = {
-    key: 'displaySettings',
-    storage: AsyncStorage,
+	key: 'displaySettings',
+	storage: AsyncStorage,
 };
 
 const waifuItAuthPersistConfig: PersistConfig<any, any, any, any> = {
-    key: 'waifuItAuth',
-    storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
+	key: 'waifuItAuth',
+	storage: Platform.OS === 'web' ? AsyncStorage : secureStorage,
 };
 
 const listFilterPersistConfig: PersistConfig<any, any, any, any> = {
-    key: 'listFilterStorage',
-    storage: AsyncStorage,
+	key: 'listFilterStorage',
+	storage: AsyncStorage,
 };
 
 const persistedTheme = persistReducer<ThemeState, AnyAction>(persistThemeConfig, themeSlice);
 const persistedSettings = persistReducer<SettingsState, AnyAction>(
-    persistSettingsConfig,
-    settingsSlice,
+	persistSettingsConfig,
+	settingsSlice,
 );
 const persistedDisplaySettings = persistReducer<DisplaySettingState, AnyAction>(
-    displaySettingsPersistConfig,
-    displaySettingSlice,
+	displaySettingsPersistConfig,
+	displaySettingSlice,
 );
 const persistedSetup = persistReducer<SetupState, AnyAction>(persistSetupConfig, setupSlice);
 
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
 const persistedWaifuItToken = persistReducer<WaifuItAuthState, AnyAction>(
-    waifuItAuthPersistConfig,
-    waifuItSlice,
+	waifuItAuthPersistConfig,
+	waifuItSlice,
 );
 
 const persistedHistory = persistReducer<HistoryState, AnyAction>(
-    persistHistoryConfig,
-    historySlice,
+	persistHistoryConfig,
+	historySlice,
 );
 const persistedPresets = persistReducer<PresetState, AnyAction>(persistPresetsConfig, presetSlice);
 const peresistedMuDB = persistReducer<MuDBState, AnyAction>(persistMuDBConfig, muSlice);
 const persistedCharArtDB = persistReducer<CharacterArtState, AnyAction>(
-    persistCharArtDBConfig,
-    charArtDBSlice,
+	persistCharArtDBConfig,
+	charArtDBSlice,
 );
 const persistedNotifs = persistReducer<NotifState, AnyAction>(persistNotifConfig, notifSlice);
-const persistedListFilter = persistReducer<ListFilterState, AnyAction>(listFilterPersistConfig, listFilterSlice);
-
+const persistedListFilter = persistReducer<ListFilterState, AnyAction>(
+	listFilterPersistConfig,
+	listFilterSlice,
+);
 
 export const store = configureStore({
-    reducer: {
-        [anilistApi.reducerPath]: anilistApi.reducer,
-        [danbooruApi.reducerPath]: danbooruApi.reducer,
-        [malApi.reducerPath]: malApi.reducer,
-        [animeThemesApi.reducerPath]: animeThemesApi.reducer,
-        [mangaUpdatesApi.reducerPath]: mangaUpdatesApi.reducer,
-        [googleBooksApi.reducerPath]: googleBooksApi.reducer,
-        [waifuItAPI.reducerPath]: waifuItAPI.reducer,
-        [traceMoeApi.reducerPath]: traceMoeApi.reducer,
-        [wdTaggerAPI.reducerPath]: wdTaggerAPI.reducer,
-        listFilter: persistedListFilter,
-        favSearch: favSearchSlice.reducer,
-        persistedTheme,
-        persistedSettings,
-        persistedSetup,
-        persistedAniLogin,
-        persistedWaifuItToken,
-        persistedPresets,
-        persistedHistory,
-        peresistedMuDB,
-        persistedCharArtDB,
-        persistedNotifs,
-        persistedDisplaySettings,
-    },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            // serializableCheck: {
-            //     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-            // },
-            immutableCheck: false,
-            serializableCheck: false,
-        }).concat([
-            anilistApi.middleware,
-            malApi.middleware,
-            danbooruApi.middleware,
-            animeThemesApi.middleware,
-            mangaUpdatesApi.middleware,
-            traceMoeApi.middleware,
-            googleBooksApi.middleware,
-            waifuItAPI.middleware,
-            wdTaggerAPI.middleware,
-            rtkQueryErrorLogger
-        ]),
+	reducer: {
+		[anilistApi.reducerPath]: anilistApi.reducer,
+		[danbooruApi.reducerPath]: danbooruApi.reducer,
+		[malApi.reducerPath]: malApi.reducer,
+		[animeThemesApi.reducerPath]: animeThemesApi.reducer,
+		[mangaUpdatesApi.reducerPath]: mangaUpdatesApi.reducer,
+		[googleBooksApi.reducerPath]: googleBooksApi.reducer,
+		[waifuItAPI.reducerPath]: waifuItAPI.reducer,
+		[traceMoeApi.reducerPath]: traceMoeApi.reducer,
+		[wdTaggerAPI.reducerPath]: wdTaggerAPI.reducer,
+		listFilter: persistedListFilter,
+		favSearch: favSearchSlice.reducer,
+		persistedTheme,
+		persistedSettings,
+		persistedSetup,
+		persistedAniLogin,
+		persistedWaifuItToken,
+		persistedPresets,
+		persistedHistory,
+		peresistedMuDB,
+		persistedCharArtDB,
+		persistedNotifs,
+		persistedDisplaySettings,
+	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			// serializableCheck: {
+			//     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+			// },
+			immutableCheck: false,
+			serializableCheck: false,
+		}).concat([
+			anilistApi.middleware,
+			malApi.middleware,
+			danbooruApi.middleware,
+			animeThemesApi.middleware,
+			mangaUpdatesApi.middleware,
+			traceMoeApi.middleware,
+			googleBooksApi.middleware,
+			waifuItAPI.middleware,
+			wdTaggerAPI.middleware,
+			rtkQueryErrorLogger,
+		]),
 });
 
 export const persistor = persistStore(store);

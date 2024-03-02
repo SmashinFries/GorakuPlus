@@ -14,8 +14,8 @@ import { View } from 'react-native';
 import { useAppDispatch } from '@/store/hooks';
 
 type StatDialogProps = BasicDialogProps & {
-    animeStats: UserOverviewQuery['Viewer']['statistics']['anime'];
-    mangaStats: UserOverviewQuery['Viewer']['statistics']['manga'];
+	animeStats: UserOverviewQuery['Viewer']['statistics']['anime'];
+	mangaStats: UserOverviewQuery['Viewer']['statistics']['manga'];
 };
 export const StatDialog = ({ animeStats, mangaStats, visible, onDismiss }: StatDialogProps) => {
 	return (
@@ -109,7 +109,7 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 					onSubmitEditing={({ nativeEvent }) => onSearch(nativeEvent.text)}
 				/>
 				<Button mode="outlined" onPress={() => onSearch(query)}>
-                    Search
+					Search
 				</Button>
 			</Dialog.Content>
 			{results && (
@@ -137,7 +137,7 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 					disabled
 					// disabled={!selectedUser}
 				>
-                    View
+					View
 				</Button>
 				{!isFollowLoading ? (
 					<Button

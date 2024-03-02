@@ -11,13 +11,13 @@ import RenderHTML, {
 } from 'react-native-render-html';
 
 type ListHeadingProps = {
-    title: string;
-    subtitle?: string;
-    subtitleStyle?: StyleProp<TextStyle>;
-    subtitlePress?: () => void;
-    style?: StyleProp<TextStyle>;
-    icon?: string;
-    onIconPress?: () => void;
+	title: string;
+	subtitle?: string;
+	subtitleStyle?: StyleProp<TextStyle>;
+	subtitlePress?: () => void;
+	style?: StyleProp<TextStyle>;
+	icon?: string;
+	onIconPress?: () => void;
 };
 export const ListHeading = ({
 	title,
@@ -74,7 +74,7 @@ const UwuTextRenderer: CustomTextualRenderer = ({ TDefaultRenderer, ...props }) 
 };
 
 type HTMLTextProps = {
-    html: string;
+	html: string;
 };
 export const HTMLText = ({ html }: HTMLTextProps) => {
 	const { width } = useWindowDimensions();
@@ -92,7 +92,7 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
 					router.push(`https://anilist.co/characters/info/${id}`);
 				} else if (
 					url.includes('https://anilist.co/manga/') ||
-                    url.includes('https://anilist.co/anime/')
+					url.includes('https://anilist.co/anime/')
 				) {
 					const type = url.split('/')[3];
 					const id = url.split('/')[4];

@@ -6,10 +6,10 @@ import { AVPlaybackStatus, Video } from 'expo-av';
 import { useEffect, useState } from 'react';
 
 type ControlIconProps = {
-    icon: string;
-    size?: number;
-    disabled?: boolean;
-    onPress?: () => void;
+	icon: string;
+	size?: number;
+	disabled?: boolean;
+	onPress?: () => void;
 };
 const ControlIcon = ({ icon, size, disabled, onPress }: ControlIconProps) => {
 	return (
@@ -26,8 +26,8 @@ const ControlIcon = ({ icon, size, disabled, onPress }: ControlIconProps) => {
 };
 
 type VideoControlsProps = {
-    status: AVPlaybackStatus;
-    vidRef: React.RefObject<Video>;
+	status: AVPlaybackStatus;
+	vidRef: React.RefObject<Video>;
 };
 export const VideoControls = ({ status, vidRef }: VideoControlsProps) => {
 	const [playIcon, setPlayIcon] = useState<string>('play-circle-outline');
@@ -72,10 +72,10 @@ export const VideoControls = ({ status, vidRef }: VideoControlsProps) => {
 };
 
 type VideoControlsYTProps = {
-    // vidRef: React.MutableRefObject<YoutubeIframeRef>;
-    seek: (amount: number) => void;
-    isPlaying: boolean;
-    togglePlay: () => void;
+	// vidRef: React.MutableRefObject<YoutubeIframeRef>;
+	seek: (amount: number) => void;
+	isPlaying: boolean;
+	togglePlay: () => void;
 };
 export const VideoControlsYT = ({ isPlaying, seek, togglePlay }: VideoControlsYTProps) => {
 	return (

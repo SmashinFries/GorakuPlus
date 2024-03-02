@@ -148,13 +148,19 @@ const AppProvider = () => {
 							: availableThemes['light']['default']
 				}
 			>
-				<GestureHandlerRootView style={{ flex: 1, backgroundColor: availableThemes[isDark ? 'dark' : 'light'][mode].colors.background }}>
+				<GestureHandlerRootView
+					style={{
+						flex: 1,
+						backgroundColor:
+							availableThemes[isDark ? 'dark' : 'light'][mode].colors.background,
+					}}
+				>
 					<BottomSheetModalProvider>
 						<AnimatedStack
 							initialRouteName="(tabs)"
 							screenOptions={{ headerShown: false }}
 						>
-							<Stack.Screen name="(tabs)" options={{animation: 'fade'}} />
+							<Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
 							<Stack.Screen
 								name="(media)/[...media]"
 								// getId={(params) => params?.params?.params}
@@ -214,10 +220,11 @@ const RootLayout = () => {
 	useEffect(() => {
 		return notifee.onForegroundEvent(({ type, detail }) => {
 			switch (type) {
-			case EventType.PRESS:
-				const link = Linking.createURL(detail.notification?.data?.url as string);
-				Linking.openURL(link ?? 'gorakuplus://user');
-				break;
+				case EventType.PRESS: {
+					const link = Linking.createURL(detail.notification?.data?.url as string);
+					Linking.openURL(link ?? 'gorakuplus://user');
+					break;
+				}
 			}
 		});
 	}, []);

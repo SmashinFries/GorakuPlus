@@ -33,25 +33,25 @@ export const MediaListsPH = () => {
 	const placeHolders = new Array(12).fill('');
 	const { colors, dark } = useTheme();
 	return (
-	// <FlashList
-	//     data={placeHolders}
-	//     keyExtractor={(item, index) => index.toString()}
-	//     renderItem={({ item, index }) => (
-	//         <Skeleton
-	//             show={true}
-	//             height={Platform.OS === 'web' ? 400 : 230}
-	//             width={Platform.OS === 'web' ? 300 : 150}
-	//             // colors={[colors.secondaryContainer, colors.secondary]}
-	//             colorMode={dark ? 'dark' : 'light'}
-	//         />
-	//     )}
-	//     horizontal={true}
-	//     estimatedItemSize={300}
-	//     contentContainerStyle={{ padding: 20, paddingVertical: 40 }}
-	//     ItemSeparatorComponent={() => <MotiView style={{ width: 20 }} />}
-	//     showsHorizontalScrollIndicator={false}
-	//     style={{ minHeight: 450 }}
-	// />
+		// <FlashList
+		//     data={placeHolders}
+		//     keyExtractor={(item, index) => index.toString()}
+		//     renderItem={({ item, index }) => (
+		//         <Skeleton
+		//             show={true}
+		//             height={Platform.OS === 'web' ? 400 : 230}
+		//             width={Platform.OS === 'web' ? 300 : 150}
+		//             // colors={[colors.secondaryContainer, colors.secondary]}
+		//             colorMode={dark ? 'dark' : 'light'}
+		//         />
+		//     )}
+		//     horizontal={true}
+		//     estimatedItemSize={300}
+		//     contentContainerStyle={{ padding: 20, paddingVertical: 40 }}
+		//     ItemSeparatorComponent={() => <MotiView style={{ width: 20 }} />}
+		//     showsHorizontalScrollIndicator={false}
+		//     style={{ minHeight: 450 }}
+		// />
 		<MotiView
 			style={{
 				height: Platform.OS === 'web' ? 400 : 230,

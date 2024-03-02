@@ -4,9 +4,9 @@ import { Text as RNText } from 'react-native';
 import { Button, IconButton, Text, useTheme } from 'react-native-paper';
 
 type LoadMoreButtonProps = {
-    title: string;
-    vertical?: boolean;
-    onPress?: () => void;
+	title: string;
+	vertical?: boolean;
+	onPress?: () => void;
 };
 export const LoadMoreButton = ({ title, vertical, onPress }: LoadMoreButtonProps) => {
 	return (
@@ -41,9 +41,9 @@ export const LoadMoreButton = ({ title, vertical, onPress }: LoadMoreButtonProps
 };
 
 type FavoriteButtonProps = {
-    isFavorite?: boolean;
-    onToggle?: () => void;
-    favorites?: number;
+	isFavorite?: boolean;
+	onToggle?: () => void;
+	favorites?: number;
 };
 export const FavoriteButton = ({ isFavorite = false, favorites = 200 }: FavoriteButtonProps) => {
 	const { colors } = useTheme();

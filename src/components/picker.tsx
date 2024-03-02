@@ -17,10 +17,10 @@ const unknownChapterTotal = Array.from(Array(2001).keys()).map((i) => `${i}`);
 export type NumberPickerMode = 'hours' | 'unknown_chapters' | ScoreFormat;
 
 export type NumberPickerProps = {
-    defaultValue?: number;
-    mode?: NumberPickerMode;
-    options?: string[] | null;
-    onChange?: (value: number) => void;
+	defaultValue?: number;
+	mode?: NumberPickerMode;
+	options?: string[] | null;
+	onChange?: (value: number) => void;
 };
 export const NumberPicker = ({
 	defaultValue = 0,

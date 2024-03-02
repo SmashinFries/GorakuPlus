@@ -20,15 +20,15 @@ import { FilterActions, FilterReducerState } from '@/reducers/search/reducers';
 import { SearchType } from '@/types/search';
 
 type FilterSheetProps = {
-    sheetRef: React.Ref<BottomSheetModalMethods>;
-    filterData: FilterReducerState;
-    genreTagData: GenreTagCollectionQuery;
-    filterSearch: string;
-    filterType: SearchType;
-    onSearch: (query: string) => void;
-    handleSheetChange: (index: number) => void;
-    updateFilter: (props: FilterActions) => void;
-    toggleSheet: () => void;
+	sheetRef: React.Ref<BottomSheetModalMethods>;
+	filterData: FilterReducerState;
+	genreTagData: GenreTagCollectionQuery;
+	filterSearch: string;
+	filterType: SearchType;
+	onSearch: (query: string) => void;
+	handleSheetChange: (index: number) => void;
+	updateFilter: (props: FilterActions) => void;
+	toggleSheet: () => void;
 };
 export const FilterSheet = ({
 	sheetRef,
@@ -66,7 +66,7 @@ export const FilterSheet = ({
 					}}
 					style={{ marginHorizontal: 8, marginTop: 20, marginBottom: 10 }}
 				>
-                    Search
+					Search
 				</Button>
 				<BottomSheetView
 					style={[
@@ -189,7 +189,7 @@ export const FilterSheet = ({
 				{filterType === MediaType.Anime && (
 					<BottomSheetView>
 						<Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
-                            Season
+							Season
 						</Text>
 						<BottomSheetView style={[styles.dropdownRow, { paddingTop: 8 }]}>
 							<SeasonDropdownMem

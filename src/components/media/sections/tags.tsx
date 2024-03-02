@@ -8,8 +8,8 @@ import { TagDialog } from '../dialogs';
 import { Tag } from '../tag';
 
 type TagViewProps = {
-    genres: string[];
-    tags?: MediaTag[];
+	genres: string[];
+	tags?: MediaTag[];
 };
 const TagView = ({ genres, tags }: TagViewProps) => {
 	const [currentTag, setCurrentTag] = React.useState<MediaTag | null>(tags[0] ?? null);

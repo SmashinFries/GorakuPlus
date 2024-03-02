@@ -3,10 +3,10 @@ import { Platform, View } from 'react-native';
 import { Button, Dialog, MD3Colors } from 'react-native-paper';
 
 type AniListLoginDialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
-    onLogout: () => void;
-    onRelogin: () => void;
+	visible: boolean;
+	onDismiss: () => void;
+	onLogout: () => void;
+	onRelogin: () => void;
 };
 const AniListLogoutDialog = ({
 	visible,
@@ -35,7 +35,7 @@ const AniListLogoutDialog = ({
 				onDismiss();
 			}}
 		>
-            Re-login
+			Re-login
 		</Button>
 	);
 

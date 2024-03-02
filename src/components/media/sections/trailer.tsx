@@ -5,7 +5,7 @@ import { AppState } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 
 type AnimeTrailerProps = {
-    video: string;
+	video: string;
 };
 export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
 	const [playing, setPlaying] = useState(false);

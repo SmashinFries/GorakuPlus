@@ -3,10 +3,10 @@ import { Chip, MD3LightTheme } from 'react-native-paper';
 import { DanbooruRating } from '@/store/services/danbooru/types';
 
 type RatingLevels = {
-    [key in DanbooruRating]: {
-        text: string;
-        color: string;
-    } | null;
+	[key in DanbooruRating]: {
+		text: string;
+		color: string;
+	} | null;
 };
 const ratingLevels: RatingLevels = {
 	[DanbooruRating.General]: null,
@@ -25,7 +25,7 @@ const ratingLevels: RatingLevels = {
 };
 
 type NSFWLabelProps = {
-    level: DanbooruRating;
+	level: DanbooruRating;
 };
 export const NSFWLabel = ({ level }: NSFWLabelProps) => {
 	if (!ratingLevels[level]) return null;

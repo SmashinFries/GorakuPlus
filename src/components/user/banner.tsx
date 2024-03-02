@@ -5,7 +5,7 @@ import { View, useWindowDimensions } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 type UserBannerProps = {
-    bannerImage: string;
+	bannerImage: string;
 };
 export const UserBanner = ({ bannerImage }: UserBannerProps) => {
 	const { width } = useWindowDimensions();

@@ -88,10 +88,10 @@ export const useHeaderAnim = (start = 40, end = 110) => {
 };
 
 type AnimViewProps = {
-    style?: StyleProp<ViewStyle>;
-    animation?: boolean;
-    delay?: number;
-    children: React.ReactNode;
+	style?: StyleProp<ViewStyle>;
+	animation?: boolean;
+	delay?: number;
+	children: React.ReactNode;
 };
 export const TransYUpView = ({ children, style, delay, animation = true }: AnimViewProps) => {
 	const { height } = useWindowDimensions();
@@ -138,7 +138,7 @@ export const TransXInViewMem = memo(TransXInView);
 export const TransYUpViewMem = memo(TransYUpView);
 
 type ToggableChevronProps = {
-    isExpanded: boolean;
+	isExpanded: boolean;
 };
 const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
 	const iconRotation = useSharedValue(0);
@@ -166,9 +166,9 @@ const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
 };
 
 type AnimateHeightProps = {
-    initialHeight: number;
-    children: ReactNode;
-    toggleUwuifier?: () => void;
+	initialHeight: number;
+	children: ReactNode;
+	toggleUwuifier?: () => void;
 };
 export const ExpandableDescription = ({
 	initialHeight,
@@ -261,17 +261,17 @@ export const ExpandableDescription = ({
 };
 
 type AccordionProps = {
-    title: string;
-    titleNumberOfLines?: number;
-    titleFontSize?: number;
-    titleStyle?: StyleProp<TextStyle>;
-    description?: string;
-    descriptionNumberOfLines?: number;
-    descriptionStyle?: StyleProp<TextStyle>;
-    children: ReactNode;
-    initialExpand?: boolean;
-    containerKey?: string | number;
-    left?: ReactNode;
+	title: string;
+	titleNumberOfLines?: number;
+	titleFontSize?: number;
+	titleStyle?: StyleProp<TextStyle>;
+	description?: string;
+	descriptionNumberOfLines?: number;
+	descriptionStyle?: StyleProp<TextStyle>;
+	children: ReactNode;
+	initialExpand?: boolean;
+	containerKey?: string | number;
+	left?: ReactNode;
 };
 export const Accordion = ({
 	title,

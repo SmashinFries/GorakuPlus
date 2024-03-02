@@ -10,15 +10,15 @@ import Animated from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 type CharacterFrontProps = {
-    id: number;
-    favorites: number;
-    isFavorite: boolean;
-    image_url: string;
-    userID?: number;
-    primaryName: string;
-    secondaryName: string;
-    alternativeNames: string[];
-    onToggleFavorite: (id: number) => void;
+	id: number;
+	favorites: number;
+	isFavorite: boolean;
+	image_url: string;
+	userID?: number;
+	primaryName: string;
+	secondaryName: string;
+	alternativeNames: string[];
+	onToggleFavorite: (id: number) => void;
 };
 export const CharacterFront = ({
 	id,

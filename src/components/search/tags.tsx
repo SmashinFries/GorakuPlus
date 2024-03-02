@@ -14,10 +14,10 @@ import { FilterActions } from '@/reducers/search/reducers';
 import { setSettings } from '@/store/slices/settingsSlice';
 
 type TagProps = {
-    name: string;
-    state?: 'in' | 'not_in' | undefined;
-    disabled?: boolean;
-    onToggle: (mode: 'in' | 'not_in' | 'remove') => void;
+	name: string;
+	state?: 'in' | 'not_in' | undefined;
+	disabled?: boolean;
+	onToggle: (mode: 'in' | 'not_in' | 'remove') => void;
 };
 const Tag = ({ name, state, onToggle, disabled }: TagProps) => {
 	return (
@@ -46,20 +46,20 @@ const Tag = ({ name, state, onToggle, disabled }: TagProps) => {
 const TagMem = memo(Tag);
 
 type TagSelectionProps = {
-    data: GenreTagCollectionQuery['MediaTagCollection'];
-    tags_in: ExploreMediaQueryVariables['tag_in'];
-    tags_not_in: ExploreMediaQueryVariables['tag_not_in'];
-    isAdult: boolean;
-    tagBanEnabled: boolean;
-    toggleGenreTag: (props: FilterActions) => void;
+	data: GenreTagCollectionQuery['MediaTagCollection'];
+	tags_in: ExploreMediaQueryVariables['tag_in'];
+	tags_not_in: ExploreMediaQueryVariables['tag_not_in'];
+	isAdult: boolean;
+	tagBanEnabled: boolean;
+	toggleGenreTag: (props: FilterActions) => void;
 };
 
 type GenreSelectionProps = {
-    data: GenreTagCollectionQuery['GenreCollection'];
-    genre_in: ExploreMediaQueryVariables['genre_in'];
-    genre_not_in: ExploreMediaQueryVariables['genre_not_in'];
-    isAdult: boolean;
-    toggleGenreTag: (props: FilterActions) => void;
+	data: GenreTagCollectionQuery['GenreCollection'];
+	genre_in: ExploreMediaQueryVariables['genre_in'];
+	genre_not_in: ExploreMediaQueryVariables['genre_not_in'];
+	isAdult: boolean;
+	toggleGenreTag: (props: FilterActions) => void;
 };
 
 const TagSelection = ({
@@ -129,7 +129,7 @@ const TagSelection = ({
 		<BottomSheetView style={{ flex: 1, marginTop: 20 }}>
 			<BottomSheetView style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<Text style={{ paddingHorizontal: 10 }} variant="titleLarge">
-                    Tags
+					Tags
 				</Text>
 				<View>
 					<IconButton icon={'filter-off-outline'} onPress={() => resetTag()} />
@@ -224,7 +224,7 @@ const GenreSelection = ({
 		<BottomSheetView>
 			<MotiView style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<Text style={{ paddingHorizontal: 10 }} variant="titleLarge">
-                    Genres
+					Genres
 				</Text>
 				<IconButton
 					icon={

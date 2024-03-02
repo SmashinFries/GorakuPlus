@@ -11,8 +11,8 @@ import { router } from 'expo-router';
 import { useAppTheme } from '@/store/theme/theme';
 
 type MetaDataProps = {
-    data: AniMediaQuery['Media'];
-    malData?: AnimeFull | MangaFull;
+	data: AniMediaQuery['Media'];
+	malData?: AnimeFull | MangaFull;
 };
 export const MetaData = ({ data, malData }: MetaDataProps) => {
 	const { colors, roundness } = useAppTheme();
@@ -119,115 +119,173 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					description={
 						data?.hashtag?.includes('#') && data?.hashtag?.split('#')?.length > 2
 							? () => (
-								<View
-									style={{
-										flexDirection: 'row',
-										flexWrap: 'wrap',
-									}}
-								>
-									{data?.hashtag?.split('#')?.map((name, idx) => name.length > 1 && (
-										<Button
-											key={idx}
-											mode="elevated"
-											style={{ margin: 5 }}
-											onPress={() => copyToClipboard(`#${name}`)}
-										>
-											{`#${name}`}
-										</Button>
-									))}
-								</View>
-							)
+									<View
+										style={{
+											flexDirection: 'row',
+											flexWrap: 'wrap',
+										}}
+									>
+										{data?.hashtag?.split('#')?.map(
+											(name, idx) =>
+												name.length > 1 && (
+													<Button
+														key={idx}
+														mode="elevated"
+														style={{ margin: 5 }}
+														onPress={() => copyToClipboard(`#${name}`)}
+													>
+														{`#${name}`}
+													</Button>
+												),
+										)}
+									</View>
+								)
 							: null
 					}
-					right={data?.hashtag?.split('#')?.length < 3 && data?.hashtag?.split('#')?.length > 0 && data?.hashtag?.includes('#') ? (props) => (
-						<Button
-							mode="elevated"
-							onPress={() => copyToClipboard(data?.hashtag)}
-						>
-							{data?.hashtag}
-						</Button>
-                        
-					) : !data?.hashtag?.includes('#') ? (props) => <Text {...props}>{'N/A'}</Text> : null}
+					right={
+						data?.hashtag?.split('#')?.length < 3 &&
+						data?.hashtag?.split('#')?.length > 0 &&
+						data?.hashtag?.includes('#')
+							? (props) => (
+									<Button
+										mode="elevated"
+										onPress={() => copyToClipboard(data?.hashtag)}
+									>
+										{data?.hashtag}
+									</Button>
+								)
+							: !data?.hashtag?.includes('#')
+								? (props) => <Text {...props}>{'N/A'}</Text>
+								: null
+					}
 				/>
 				<List.Item
 					title="Synonyms"
 					description={
 						data?.synonyms?.length > 0
 							? () => (
-								<View
-									style={{
-										flexDirection: 'row',
-										flexWrap: 'wrap',
-									}}
-								>
-									{data?.synonyms?.map((name, idx) => (
-										//   <Button
-										//       key={idx}
-										//       mode="elevated"
-										//       style={{ margin: 5 }}
-										//       onPress={() => copyToClipboard(name)}
-										//   >
-										//       {name}
-										//   </Button>
-										<Surface key={idx} mode='elevated' style={{margin:5, borderRadius:roundness * 5}}>
-											<TouchableRipple borderless style={{borderRadius: roundness * 5}} rippleColor={rgbToRgba(colors.primary, 0.12)} onPress={() => copyToClipboard(name)}>
-												<Text style={{color:colors.primary, marginVertical: 10, marginHorizontal: 24,}}>{name}</Text>
-											</TouchableRipple>
-										</Surface>
-									))}
-								</View>
-							)
+									<View
+										style={{
+											flexDirection: 'row',
+											flexWrap: 'wrap',
+										}}
+									>
+										{data?.synonyms?.map((name, idx) => (
+											//   <Button
+											//       key={idx}
+											//       mode="elevated"
+											//       style={{ margin: 5 }}
+											//       onPress={() => copyToClipboard(name)}
+											//   >
+											//       {name}
+											//   </Button>
+											<Surface
+												key={idx}
+												mode="elevated"
+												style={{ margin: 5, borderRadius: roundness * 5 }}
+											>
+												<TouchableRipple
+													borderless
+													style={{ borderRadius: roundness * 5 }}
+													rippleColor={rgbToRgba(colors.primary, 0.12)}
+													onPress={() => copyToClipboard(name)}
+												>
+													<Text
+														style={{
+															color: colors.primary,
+															marginVertical: 10,
+															marginHorizontal: 24,
+														}}
+													>
+														{name}
+													</Text>
+												</TouchableRipple>
+											</Surface>
+										))}
+									</View>
+								)
 							: null
 					}
-					right={data?.synonyms?.length < 1 ? (props) => (
-						<Text {...props} style={{ width: '50%', textAlign: 'right' }}>
-							{'N/A'}
-						</Text>
-					)
-						: null
+					right={
+						data?.synonyms?.length < 1
+							? (props) => (
+									<Text {...props} style={{ width: '50%', textAlign: 'right' }}>
+										{'N/A'}
+									</Text>
+								)
+							: null
 					}
 				/>
 				{data?.type !== MediaType.Manga && (
 					<List.Item
 						title="Studios"
-						description={ data?.studios?.edges.filter((val) => val.isMain === true).length > 1 ? () => (
-							<View
-								style={{
-									flexDirection: 'row',
-									flexWrap: 'wrap',
-								}}
-							>
-								{data?.studios?.edges?.map(
-									(studio, idx) =>
-										studio.isMain && (
-											<Button
-												key={idx}
-												mode="elevated"
-												icon={'star'}
-												style={{ margin: 5 }}
-												onPress={() =>
-													router.push(`/studio/${studio.node.id}`)
-												}
-												onLongPress={() => copyToClipboard(studio.node.name)}
+						description={
+							data?.studios?.edges.filter((val) => val.isMain === true).length > 1
+								? () => (
+										<View
+											style={{
+												flexDirection: 'row',
+												flexWrap: 'wrap',
+											}}
+										>
+											{data?.studios?.edges?.map(
+												(studio, idx) =>
+													studio.isMain && (
+														<Button
+															key={idx}
+															mode="elevated"
+															icon={'star'}
+															style={{ margin: 5 }}
+															onPress={() =>
+																router.push(
+																	`/studio/${studio.node.id}`,
+																)
+															}
+															onLongPress={() =>
+																copyToClipboard(studio.node.name)
+															}
+														>
+															{studio?.node?.name}
+														</Button>
+													),
+											)}
+										</View>
+									)
+								: null
+						}
+						right={
+							data?.studios?.edges.filter((val) => val.isMain === true).length === 1
+								? () => (
+										<Button
+											mode="elevated"
+											icon={'star'}
+											onPress={() =>
+												router.push(
+													`/studio/${data?.studios?.edges[0].node.id}`,
+												)
+											}
+											onLongPress={() =>
+												copyToClipboard(data?.studios?.edges[0].node.name)
+											}
+										>
+											{
+												data?.studios?.edges.filter(
+													(val) => val.isMain === true,
+												)[0].node?.name
+											}
+										</Button>
+									)
+								: data?.studios?.edges.length < 1
+									? (props) => (
+											<Text
+												{...props}
+												style={{ width: '50%', textAlign: 'right' }}
 											>
-												{studio?.node?.name}
-											</Button>
-										),
-								)}
-							</View>
-						) : null}
-						right={data?.studios?.edges.filter((val) => val.isMain === true).length === 1 ? () => <Button
-							mode="elevated"
-							icon={'star'}
-							onPress={() =>
-								router.push(`/studio/${data?.studios?.edges[0].node.id}`)
-							}
-							onLongPress={() => copyToClipboard(data?.studios?.edges[0].node.name)}
-						>
-							{data?.studios?.edges.filter((val) => val.isMain === true)[0].node?.name}
-						</Button> : data?.studios?.edges.length < 1 ? (props) => (<Text {...props} style={{ width: '50%', textAlign: 'right' }}>
-							{'N/A'}
-						</Text>) : null}
+												{'N/A'}
+											</Text>
+										)
+									: null
+						}
 					/>
 				)}
 				{data?.type !== MediaType.Manga && (
@@ -251,7 +309,9 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 												onPress={() =>
 													router.push(`/studio/${studio.node.id}`)
 												}
-												onLongPress={() => copyToClipboard(studio.node.name)}
+												onLongPress={() =>
+													copyToClipboard(studio.node.name)
+												}
 											>
 												{studio.node?.name}
 											</Button>
@@ -259,12 +319,18 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 								)}
 							</View>
 						)}
-						right={data?.studios?.edges?.filter((val) => val.isMain === false)?.length < 1 ? 
-							(props) => (
-								<Text {...props} style={{ width: '50%', textAlign: 'right' }}>
-									{'N/A'}
-								</Text>
-							) : null}
+						right={
+							data?.studios?.edges?.filter((val) => val.isMain === false)?.length < 1
+								? (props) => (
+										<Text
+											{...props}
+											style={{ width: '50%', textAlign: 'right' }}
+										>
+											{'N/A'}
+										</Text>
+									)
+								: null
+						}
 					/>
 				)}
 			</Accordion>
@@ -276,8 +342,8 @@ export const MUData = ({
 	data,
 	openMuDialog,
 }: {
-    data: RetrieveSeriesApiResponse;
-    openMuDialog: () => void;
+	data: RetrieveSeriesApiResponse;
+	openMuDialog: () => void;
 }) => {
 	const { colors } = useTheme();
 	const isEnglishTrans = useMemo(

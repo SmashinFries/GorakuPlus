@@ -16,7 +16,7 @@ import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { updateListFilter } from '@/store/slices/listSLice';
 
 type DefaultDescDialogProps = BasicDialogProps & {
-    defaultValue: 'ani' | 'mal';
+	defaultValue: 'ani' | 'mal';
 };
 export const DefaultDescDialog = ({ defaultValue, visible, onDismiss }: DefaultDescDialogProps) => {
 	const [value, setValue] = useState<'ani' | 'mal'>(defaultValue);
@@ -109,16 +109,16 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 					{/* <Text>{item}</Text> */}
 				</TouchableOpacity>
 			</ScaleDecorator>
-		// <ScaleDecorator>
-		//     <TouchableOpacity
-		//         activeOpacity={1}
-		//         onLongPress={drag}
-		//         disabled={isActive}
-		//         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
-		//     >
-		//         <Text style={styles.text}>{item}</Text>
-		//     </TouchableOpacity>
-		// </ScaleDecorator>
+			// <ScaleDecorator>
+			//     <TouchableOpacity
+			//         activeOpacity={1}
+			//         onLongPress={drag}
+			//         disabled={isActive}
+			//         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
+			//     >
+			//         <Text style={styles.text}>{item}</Text>
+			//     </TouchableOpacity>
+			// </ScaleDecorator>
 		);
 	};
 
@@ -209,16 +209,16 @@ export const ListTabsDialog = ({
 					{/* <Text>{item}</Text> */}
 				</TouchableOpacity>
 			</ScaleDecorator>
-		// <ScaleDecorator>
-		//     <TouchableOpacity
-		//         activeOpacity={1}
-		//         onLongPress={drag}
-		//         disabled={isActive}
-		//         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
-		//     >
-		//         <Text style={styles.text}>{item}</Text>
-		//     </TouchableOpacity>
-		// </ScaleDecorator>
+			// <ScaleDecorator>
+			//     <TouchableOpacity
+			//         activeOpacity={1}
+			//         onLongPress={drag}
+			//         disabled={isActive}
+			//         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
+			//     >
+			//         <Text style={styles.text}>{item}</Text>
+			//     </TouchableOpacity>
+			// </ScaleDecorator>
 		);
 	};
 
@@ -276,7 +276,7 @@ export const NSFWLevelDialog = ({ onDismiss, visible }: BasicDialogProps) => {
 						onDismiss();
 					}}
 				>
-                    Confirm
+					Confirm
 				</Button>
 			</Dialog.Actions>
 		</Dialog>

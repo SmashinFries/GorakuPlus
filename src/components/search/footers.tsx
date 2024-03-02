@@ -1,9 +1,9 @@
 import { LoadMoreButton } from '../buttons';
 
 type SearchFooterProps = {
-    hasMore: boolean;
-    isUnitialized: boolean;
-    nextPage: () => void;
+	hasMore: boolean;
+	isUnitialized: boolean;
+	nextPage: () => void;
 };
 export const SearchFooter = ({ hasMore, isUnitialized, nextPage }: SearchFooterProps) => {
 	if (hasMore) {

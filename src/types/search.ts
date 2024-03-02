@@ -8,11 +8,11 @@ export type UpdateFilter = (filter: ExploreMediaQueryVariables) => void;
 export type SortModes = keyof typeof commonSorts;
 
 export type SearchType =
-    | MediaType.Anime
-    | MediaType.Manga
-    | 'users'
-    | 'characters'
-    | 'staff'
-    | 'studios'
-    | 'imageSearch'
-    | 'waifuSearch';
+	| MediaType.Anime
+	| MediaType.Manga
+	| 'users'
+	| 'characters'
+	| 'staff'
+	| 'studios'
+	| 'imageSearch'
+	| 'waifuSearch';

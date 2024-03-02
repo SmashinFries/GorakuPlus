@@ -31,10 +31,10 @@ const LoadingIcon = ({ icon, dark }: { icon: 'ani' | 'danbooru'; dark: boolean }
 };
 
 type LoadingItemProps = {
-    loading: boolean;
-    dark: boolean;
-    error?: ErrorResponse | SerializedError | FetchBaseQueryError;
-    icon: 'ani' | 'danbooru';
+	loading: boolean;
+	dark: boolean;
+	error?: ErrorResponse | SerializedError | FetchBaseQueryError;
+	icon: 'ani' | 'danbooru';
 };
 const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
 	const [loadIcon, setLoadIcon] = useState('check');
@@ -61,10 +61,10 @@ const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
 };
 
 type LoadingProps = {
-    aniLoading: boolean;
-    artLoading: boolean;
-    aniError?: ErrorResponse | SerializedError;
-    artError?: SerializedError | FetchBaseQueryError;
+	aniLoading: boolean;
+	artLoading: boolean;
+	aniError?: ErrorResponse | SerializedError;
+	artError?: SerializedError | FetchBaseQueryError;
 };
 
 export const CharacterLoading = ({ aniLoading, artLoading, aniError, artError }: LoadingProps) => {

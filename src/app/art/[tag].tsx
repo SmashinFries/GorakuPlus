@@ -37,7 +37,7 @@ const ArtListPage = () => {
 
 	const RenderItem = useCallback(({ item }: { item: DanPost }) => {
 		return (
-			<View style={{ flex:1, margin: 5,  }}>
+			<View style={{ flex: 1, margin: 5 }}>
 				<DanbooruImageCard item={item} onNavigate={(id) => router.push(`art/post/${id}`)} />
 			</View>
 		);

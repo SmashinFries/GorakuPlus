@@ -21,7 +21,7 @@ const commitsData = [
 ];
 
 type UserHeatmapProps = {
-    data: UserOverviewQuery['Viewer']['stats']['activityHistory'];
+	data: UserOverviewQuery['Viewer']['stats']['activityHistory'];
 };
 export const UserHeatmap = ({ data }: UserHeatmapProps) => {
 	const { colors } = useTheme();

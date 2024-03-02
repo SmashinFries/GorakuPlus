@@ -35,17 +35,17 @@ import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 type AniMangListProps = {
-    filter: FilterReducerState;
-    results: ExploreMediaQuery;
-    searchStatus: any;
-    sheetRef: any;
-    isLoading: boolean;
-    nextPage: (currentPage: number, filter: FilterReducerState) => Promise<void>;
-    onItemPress: (aniID: number, type: MediaType) => void;
-    onScrollHandler:
-        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-    headerHeight: number;
+	filter: FilterReducerState;
+	results: ExploreMediaQuery;
+	searchStatus: any;
+	sheetRef: any;
+	isLoading: boolean;
+	nextPage: (currentPage: number, filter: FilterReducerState) => Promise<void>;
+	onItemPress: (aniID: number, type: MediaType) => void;
+	onScrollHandler:
+		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+	headerHeight: number;
 };
 export const AniMangList = (props: AniMangListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -92,9 +92,9 @@ export const AniMangList = (props: AniMangListProps) => {
 					mediaStatus={itemProps.item.status}
 					total={
 						itemProps.item.episodes ??
-                        itemProps.item.chapters ??
-                        itemProps.item.volumes ??
-                        0
+						itemProps.item.chapters ??
+						itemProps.item.volumes ??
+						0
 					}
 				/>
 			</View>
@@ -125,8 +125,8 @@ export const AniMangList = (props: AniMangListProps) => {
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					props.results?.Page &&
-                        props.results?.Page?.media?.length > 0 &&
-                        props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
+						props.results?.Page?.media?.length > 0 &&
+						props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
 				}}
 			/>
 		</View>
@@ -134,15 +134,15 @@ export const AniMangList = (props: AniMangListProps) => {
 };
 
 type CharacterListProps = {
-    results: CharacterSearchQuery;
-    searchStatus: any;
-    isLoading: boolean;
-    onScrollHandler:
-        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-    headerHeight: number;
-    onNavigate: (id: number) => void;
-    nextPage?: () => Promise<void>;
+	results: CharacterSearchQuery;
+	searchStatus: any;
+	isLoading: boolean;
+	onScrollHandler:
+		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+	headerHeight: number;
+	onNavigate: (id: number) => void;
+	nextPage?: () => Promise<void>;
 };
 export const CharacterList = (props: CharacterListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -198,8 +198,8 @@ export const CharacterList = (props: CharacterListProps) => {
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					props.results?.Page &&
-                        props.results?.Page?.characters?.length > 0 &&
-                        props.nextPage();
+						props.results?.Page?.characters?.length > 0 &&
+						props.nextPage();
 				}}
 			/>
 		</View>
@@ -207,15 +207,15 @@ export const CharacterList = (props: CharacterListProps) => {
 };
 
 type StaffListProps = {
-    results: StaffSearchQuery;
-    searchStatus: any;
-    isLoading: boolean;
-    onScrollHandler:
-        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-    headerHeight: number;
-    onNavigate: (id: number) => void;
-    nextPage?: () => Promise<void>;
+	results: StaffSearchQuery;
+	searchStatus: any;
+	isLoading: boolean;
+	onScrollHandler:
+		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+	headerHeight: number;
+	onNavigate: (id: number) => void;
+	nextPage?: () => Promise<void>;
 };
 export const StaffList = (props: StaffListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -268,8 +268,8 @@ export const StaffList = (props: StaffListProps) => {
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					props.results?.Page &&
-                        props.results?.Page?.staff?.length > 0 &&
-                        props.nextPage();
+						props.results?.Page?.staff?.length > 0 &&
+						props.nextPage();
 				}}
 			/>
 		</View>
@@ -277,15 +277,15 @@ export const StaffList = (props: StaffListProps) => {
 };
 
 type StudioListProps = {
-    results: StudioSearchQuery;
-    searchStatus: any;
-    isLoading: boolean;
-    onScrollHandler:
-        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-    headerHeight: number;
-    onNavigate: (studioId: number) => void;
-    nextPage?: () => Promise<void>;
+	results: StudioSearchQuery;
+	searchStatus: any;
+	isLoading: boolean;
+	onScrollHandler:
+		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+	headerHeight: number;
+	onNavigate: (studioId: number) => void;
+	nextPage?: () => Promise<void>;
 };
 export const StudioList = (props: StudioListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -350,8 +350,8 @@ export const StudioList = (props: StudioListProps) => {
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					props.results?.Page &&
-                        props.results?.Page?.studios?.length > 0 &&
-                        props.nextPage();
+						props.results?.Page?.studios?.length > 0 &&
+						props.nextPage();
 				}}
 			/>
 		</View>
@@ -359,12 +359,12 @@ export const StudioList = (props: StudioListProps) => {
 };
 
 type ImageSearchListProps = {
-    results: SearchResult;
-    onScrollHandler:
-        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-    headerHeight: number;
-    isLoading: boolean;
+	results: SearchResult;
+	onScrollHandler:
+		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+	headerHeight: number;
+	isLoading: boolean;
 };
 export const ImageSearchList = (props: ImageSearchListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -400,12 +400,12 @@ export const ImageSearchList = (props: ImageSearchListProps) => {
 };
 
 type WaifuSearchListProps = {
-    results: CharacterSearchQuery['Page']['characters'];
-    isLoading: boolean;
-    onScrollHandler:
-        | ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-        | Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-    headerHeight: number;
+	results: CharacterSearchQuery['Page']['characters'];
+	isLoading: boolean;
+	onScrollHandler:
+		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+	headerHeight: number;
 };
 export const WaifuSearchList = (props: WaifuSearchListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -418,24 +418,24 @@ export const WaifuSearchList = (props: WaifuSearchListProps) => {
 	);
 
 	const RenderItem: ListRenderItem<
-        CharacterSearchQuery['Page']['characters'][0] & { confidence: number }
-    > = useCallback(({ item }) => {
-    	return (
-    		<View style={{ alignItems: 'center', marginVertical: 15 }}>
-    			<CharacterCard
-    				onPress={() => {
-    					dismissAll();
-    					router.push('/characters/info/' + item.id);
-    				}}
-    				imgUrl={item.image?.large}
-    				name={item.name?.full}
-    				nativeName={item.name?.native}
-    				isFavourite={item.isFavourite}
-    				role={`${(item.confidence * 100).toFixed(2)}% Match`}
-    			/>
-    		</View>
-    	);
-    }, []);
+		CharacterSearchQuery['Page']['characters'][0] & { confidence: number }
+	> = useCallback(({ item }) => {
+		return (
+			<View style={{ alignItems: 'center', marginVertical: 15 }}>
+				<CharacterCard
+					onPress={() => {
+						dismissAll();
+						router.push('/characters/info/' + item.id);
+					}}
+					imgUrl={item.image?.large}
+					name={item.name?.full}
+					nativeName={item.name?.native}
+					isFavourite={item.isFavourite}
+					role={`${(item.confidence * 100).toFixed(2)}% Match`}
+				/>
+			</View>
+		);
+	}, []);
 
 	if (props.isLoading)
 		return <EmptyLoadView isLoading={true} message={'May take some time (queuing system)'} />;

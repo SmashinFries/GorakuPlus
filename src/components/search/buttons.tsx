@@ -3,14 +3,14 @@ import { StyleSheet, View } from 'react-native';
 import { Button, IconButton, Checkbox, Text, useTheme, Switch } from 'react-native-paper';
 
 type ListOptions = {
-    label: string;
-    value: boolean | null;
-    status: 'checked' | 'unchecked' | 'indeterminate';
+	label: string;
+	value: boolean | null;
+	status: 'checked' | 'unchecked' | 'indeterminate';
 };
 
 type DButtonProps = {
-    onList: boolean | undefined;
-    updateOnList: (onList: boolean | undefined) => void;
+	onList: boolean | undefined;
+	updateOnList: (onList: boolean | undefined) => void;
 };
 
 export const OnListSelector = ({ onList, updateOnList }: DButtonProps) => {
@@ -56,8 +56,8 @@ export const OnListSelector = ({ onList, updateOnList }: DButtonProps) => {
 };
 
 type LicensedSelectorProps = {
-    isLicensed: boolean | undefined;
-    updateOnList: (isLicensed: boolean | undefined) => void;
+	isLicensed: boolean | undefined;
+	updateOnList: (isLicensed: boolean | undefined) => void;
 };
 
 export const LicensedSelector = ({ isLicensed, updateOnList }: LicensedSelectorProps) => {
@@ -103,8 +103,8 @@ export const LicensedSelector = ({ isLicensed, updateOnList }: LicensedSelectorP
 };
 
 type NSFWSelectorProps = {
-    isAdult: boolean | undefined;
-    updateIsAdult: (allowNSFW: boolean | undefined) => void;
+	isAdult: boolean | undefined;
+	updateIsAdult: (allowNSFW: boolean | undefined) => void;
 };
 export const NSFWSelector = ({ isAdult = false, updateIsAdult }: NSFWSelectorProps) => {
 	const { colors } = useTheme();
@@ -143,7 +143,7 @@ export const NSFWSelector = ({ isAdult = false, updateIsAdult }: NSFWSelectorPro
 };
 
 type PresetButtonProps = {
-    onPress: () => void;
+	onPress: () => void;
 };
 export const PresetButton = ({ onPress }: PresetButtonProps) => {
 	const [icon, setIcon] = useState('bookmark-multiple-outline');
@@ -158,9 +158,9 @@ export const PresetButton = ({ onPress }: PresetButtonProps) => {
 };
 
 type TagBanSwitchProps = {
-    initialState: boolean;
-    totalBanned: number;
-    onPress: (value: boolean) => void;
+	initialState: boolean;
+	totalBanned: number;
+	onPress: (value: boolean) => void;
 };
 export const TagBanSwitch = ({ onPress, totalBanned, initialState }: TagBanSwitchProps) => {
 	const [state, setState] = useState<boolean>(initialState);

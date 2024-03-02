@@ -10,9 +10,9 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 
 type DropdownMenuProps = {
-    value: string;
-    isUnreleased?: boolean;
-    onSelect: (item: any) => void;
+	value: string;
+	isUnreleased?: boolean;
+	onSelect: (item: any) => void;
 };
 export const StatusDropDown = ({ value, isUnreleased, onSelect }: DropdownMenuProps) => {
 	const listStatusOptions = Object.values(MediaListStatus);
@@ -53,10 +53,10 @@ export const StatusDropDown = ({ value, isUnreleased, onSelect }: DropdownMenuPr
 };
 
 type DatePopupProps = {
-    title: string;
-    containerHeight?: number;
-    value: FuzzyDate;
-    onSelect: (item: FuzzyDate) => void;
+	title: string;
+	containerHeight?: number;
+	value: FuzzyDate;
+	onSelect: (item: FuzzyDate) => void;
 };
 export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopupProps) => {
 	const [date, setDate] = useState<Date>(
@@ -114,13 +114,13 @@ export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopup
 };
 
 type ProgressDropDownProps = {
-    total?: number;
-    maxValue?: number;
-    value: number;
-    step?: number;
-    disableSlider?: boolean;
-    disableLimit?: boolean;
-    onSelect: (item: number) => void;
+	total?: number;
+	maxValue?: number;
+	value: number;
+	step?: number;
+	disableSlider?: boolean;
+	disableLimit?: boolean;
+	onSelect: (item: number) => void;
 };
 export const ProgressDropDown = ({
 	total,

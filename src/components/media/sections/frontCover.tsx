@@ -15,9 +15,9 @@ import Animated from 'react-native-reanimated';
 import { useAppSelector } from '@/store/hooks';
 
 type FrontCoverProps = {
-    data: AniMediaQuery['Media'];
-    defaultTitle: 'romaji' | 'english' | 'native';
-    toggleEP?: () => void;
+	data: AniMediaQuery['Media'];
+	defaultTitle: 'romaji' | 'english' | 'native';
+	toggleEP?: () => void;
 };
 export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 	const { width } = useWindowDimensions();
@@ -50,8 +50,8 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 						}}
 						disabled={
 							data?.type !== MediaType.Anime ||
-                            (data?.status !== MediaStatus.Releasing &&
-                                data?.status !== MediaStatus.Finished)
+							(data?.status !== MediaStatus.Releasing &&
+								data?.status !== MediaStatus.Finished)
 						}
 						icon="music-box-multiple-outline"
 					/>

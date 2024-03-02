@@ -18,13 +18,13 @@ import { useCameraPermissions, CameraView, BarCodeType } from 'expo-camera/next'
 import { scoreToIndex } from '@/utils/scores';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
-    onNav: (aniId: number, malId: number, type: MediaType) => void;
+	onNav: (aniId: number, malId: number, type: MediaType) => void;
 };
 export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDialogProps) => {
 	const { colors } = useTheme();
 	const [permission, requestPermission] = useCameraPermissions();
 	const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
-        useBarcode();
+		useBarcode();
 
 	const [dialog_width, setDialogWidth] = useState(0);
 
@@ -100,7 +100,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 				) : (
 					<Animated.View entering={FadeIn} exiting={FadeOut}>
 						<Text>
-                            ISBN:{' '}
+							ISBN:{' '}
 							<Text
 								onPress={() => copyToClipboard(isbn)}
 								style={{ color: colors.primary }}
@@ -154,9 +154,9 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 };
 
 type NumberPickDialogProps = BasicDialogProps &
-    NumberPickerProps & {
-        title: string;
-    };
+	NumberPickerProps & {
+		title: string;
+	};
 export const NumberPickDialog = ({
 	title,
 	defaultValue,
@@ -187,7 +187,7 @@ export const NumberPickDialog = ({
 						onDismiss();
 					}}
 				>
-                    Confirm
+					Confirm
 				</Button>
 			</Dialog.Actions>
 		</Dialog>

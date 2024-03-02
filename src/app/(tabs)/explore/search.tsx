@@ -52,7 +52,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 type ScrollCtx = {
-    prevY: number;
+	prevY: number;
 };
 
 const clamp = (value: number, lowerBound: number, upperBound: number) => {
@@ -130,7 +130,7 @@ const SearchPage = () => {
 	const sheetRef = useRef<BottomSheetModalMethods>(null);
 	const genreTagResult = useGenreTagCollectionQuery();
 	const { isFilterOpen, openSheet, closeSheet, handleSheetChange, setIsFilterOpen } =
-        useFilterSheet(sheetRef);
+		useFilterSheet(sheetRef);
 
 	const updateFilter = useCallback((props: FilterActions) => dispatch(props), []);
 
@@ -189,9 +189,9 @@ const SearchPage = () => {
 				page: 1,
 				isBirthday: query?.length < 1 || !query ? true : undefined,
 				sort:
-                    query?.length < 1 || !query
-                    	? [CharacterSort.FavouritesDesc]
-                    	: [CharacterSort.SearchMatch],
+					query?.length < 1 || !query
+						? [CharacterSort.FavouritesDesc]
+						: [CharacterSort.SearchMatch],
 			},
 			false,
 		).unwrap();
@@ -214,9 +214,9 @@ const SearchPage = () => {
 				page: 1,
 				isBirthday: query?.length < 1 || !query ? true : undefined,
 				sort:
-                    query?.length < 1 || !query
-                    	? [StaffSort.FavouritesDesc]
-                    	: [StaffSort.SearchMatch],
+					query?.length < 1 || !query
+						? [StaffSort.FavouritesDesc]
+						: [StaffSort.SearchMatch],
 			},
 			false,
 		).unwrap();
@@ -238,9 +238,9 @@ const SearchPage = () => {
 				name: query?.length < 1 || !query ? undefined : query,
 				page: 1,
 				sort:
-                    query?.length < 1 || !query
-                    	? [StudioSort.FavouritesDesc]
-                    	: [StudioSort.SearchMatch],
+					query?.length < 1 || !query
+						? [StudioSort.FavouritesDesc]
+						: [StudioSort.SearchMatch],
 			},
 			false,
 		).unwrap();
@@ -259,11 +259,11 @@ const SearchPage = () => {
 			updateFilterHistory({
 				filter: { ...filter.filter, type: filter.filter.type },
 				searchType:
-                    filter.searchType === 'imageSearch'
-                    	? MediaType.Anime
-                    	: filter.searchType === 'waifuSearch'
-                    		? 'characters'
-                    		: filter.searchType,
+					filter.searchType === 'imageSearch'
+						? MediaType.Anime
+						: filter.searchType === 'waifuSearch'
+							? 'characters'
+							: filter.searchType,
 			}),
 		);
 		setFilterSearch(query);
@@ -347,9 +347,9 @@ const SearchPage = () => {
 									dispatch({
 										type: 'CHANGE_SEARCHTYPE',
 										payload:
-                                            filter.searchType === 'imageSearch'
-                                            	? MediaType.Anime
-                                            	: filter.searchType,
+											filter.searchType === 'imageSearch'
+												? MediaType.Anime
+												: filter.searchType,
 									});
 									appDispatch(updateSearchType(MediaType.Anime));
 									openSheet();
@@ -395,7 +395,7 @@ const SearchPage = () => {
 			/>
 			<View style={{ flex: 1 }}>
 				{(filter.searchType === MediaType.Anime ||
-                    filter.searchType === MediaType.Manga) && (
+					filter.searchType === MediaType.Manga) && (
 					<AniMangList
 						filter={filter}
 						isLoading={loading}

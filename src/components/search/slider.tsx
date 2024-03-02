@@ -5,11 +5,11 @@ import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { Text, useTheme } from 'react-native-paper';
 
 type ScoreSliderProps = {
-    updateScore: (score: number) => void;
-    title: string;
-    initialScore?: number;
-    minValue?: number;
-    maxValue?: number;
+	updateScore: (score: number) => void;
+	title: string;
+	initialScore?: number;
+	minValue?: number;
+	maxValue?: number;
 };
 export const ScoreSlider = ({
 	updateScore,

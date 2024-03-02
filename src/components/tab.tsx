@@ -12,10 +12,11 @@ const TAB_MARGIN = 24;
 
 export const RenderTabBar = (
 	props: SceneRendererProps & {
-        navigationState: NavigationState<any>;
-        disableAutoWidth?: boolean;
-        bgColor?: string;
-    },
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		navigationState: NavigationState<any>;
+		disableAutoWidth?: boolean;
+		bgColor?: string;
+	},
 ) => {
 	const { colors } = useTheme();
 	// const [titleWidth, setTitleWidth] = useState<number>(20);
@@ -25,9 +26,9 @@ export const RenderTabBar = (
 			tabStyle={{
 				paddingTop: 10,
 				width:
-                    props.disableAutoWidth || props.navigationState?.routes.length < 3
-                    	? undefined
-                    	: 'auto',
+					props.disableAutoWidth || props.navigationState?.routes.length < 3
+						? undefined
+						: 'auto',
 				marginHorizontal: 20,
 			}}
 			// indicatorStyle={{
@@ -91,10 +92,11 @@ export const RenderTabBar = (
 
 export const TabBarWithChip = (
 	props: SceneRendererProps & {
-        navigationState: NavigationState<any>;
-        disableAutoWidth?: boolean;
-        bgColor?: string;
-    },
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		navigationState: NavigationState<any>;
+		disableAutoWidth?: boolean;
+		bgColor?: string;
+	},
 ) => {
 	const { colors } = useTheme();
 	// const [titleWidth, setTitleWidth] = useState<number>(20);
@@ -104,9 +106,9 @@ export const TabBarWithChip = (
 			tabStyle={{
 				paddingTop: 10,
 				width:
-                    props.disableAutoWidth || props.navigationState?.routes.length < 3
-                    	? undefined
-                    	: 'auto',
+					props.disableAutoWidth || props.navigationState?.routes.length < 3
+						? undefined
+						: 'auto',
 				marginHorizontal: 20,
 			}}
 			style={{

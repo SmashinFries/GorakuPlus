@@ -3,17 +3,17 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { ExploreMediaQueryVariables, MediaTag } from '@/store/services/anilist/generated-anilist';
 
 type Preset = {
-    title: string;
-    genres_in: string[];
-    genres_not_in: string[];
-    tags_in: MediaTag['name'][];
-    tags_not_in: MediaTag['name'][];
+	title: string;
+	genres_in: string[];
+	genres_not_in: string[];
+	tags_in: MediaTag['name'][];
+	tags_not_in: MediaTag['name'][];
 };
 
 // Define a type for the slice state
 export interface PresetState {
-    // presets: Preset[];
-    tagPresets: Preset[];
+	// presets: Preset[];
+	tagPresets: Preset[];
 }
 
 // Define the initial state using that type

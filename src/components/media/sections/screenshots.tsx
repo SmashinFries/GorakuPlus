@@ -11,8 +11,8 @@ import { FlatList, Pressable, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 type ScreenshotItemProps = {
-    item: Media['streamingEpisodes'][0];
-    index: number;
+	item: Media['streamingEpisodes'][0];
+	index: number;
 };
 const ScreenshotItem = ({
 	item,
@@ -20,13 +20,17 @@ const ScreenshotItem = ({
 	onDownload,
 }: ScreenshotItemProps & { onDownload: (img: string) => void }) => {
 	const { blurAmount, isBlur, toggleBlur } = useBlur();
-    
+
 	const { colors } = useAppTheme();
 	return (
 		<Pressable
-			onPress={!isBlur ? () => {
-				onDownload(item.thumbnail);
-			} : null}
+			onPress={
+				!isBlur
+					? () => {
+							onDownload(item.thumbnail);
+						}
+					: null
+			}
 			onLongPress={toggleBlur}
 			style={{ marginHorizontal: 5, height: 180, aspectRatio: 16 / 9 }}
 		>
@@ -45,7 +49,7 @@ const ScreenshotItem = ({
 };
 
 type ScreenshotsProps = {
-    data: Media['streamingEpisodes'];
+	data: Media['streamingEpisodes'];
 };
 const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 	const { colors } = useAppTheme();

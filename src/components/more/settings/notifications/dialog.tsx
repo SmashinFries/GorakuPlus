@@ -3,12 +3,12 @@ import { NumberPicker } from '../../../picker';
 import { useCallback, useEffect, useState } from 'react';
 
 type FetchIntervalDialogProps = {
-    visible: boolean;
-    initialInterval: number;
-    options?: string[];
-    title?: string;
-    onDismiss: () => void;
-    updateInterval: (value: number) => void;
+	visible: boolean;
+	initialInterval: number;
+	options?: string[];
+	title?: string;
+	onDismiss: () => void;
+	updateInterval: (value: number) => void;
 };
 export const FetchIntervalDialog = ({
 	visible,

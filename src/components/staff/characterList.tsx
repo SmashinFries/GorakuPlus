@@ -7,9 +7,9 @@ import { StaffDetailsQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
 
 type CharacterPrevItemProps = {
-    onPress: () => void;
-    item: StaffDetailsQuery['Staff']['characters']['edges'][0];
-    index: number;
+	onPress: () => void;
+	item: StaffDetailsQuery['Staff']['characters']['edges'][0];
+	index: number;
 };
 const CharacterPrevItem = ({ onPress, item, index }: CharacterPrevItemProps) => {
 	return (
@@ -32,7 +32,7 @@ const CharacterPrevItem = ({ onPress, item, index }: CharacterPrevItemProps) => 
 };
 
 type CharacterPrevListProps = {
-    data: StaffDetailsQuery['Staff']['characters'];
+	data: StaffDetailsQuery['Staff']['characters'];
 };
 export const CharacterPrevList = ({ data }: CharacterPrevListProps) => {
 	if (data?.edges?.length < 1) {
@@ -42,7 +42,7 @@ export const CharacterPrevList = ({ data }: CharacterPrevListProps) => {
 	return (
 		<View>
 			<Text variant="titleLarge" style={{ padding: 15, paddingBottom: 8 }}>
-                Characters
+				Characters
 			</Text>
 			<AnimatePresence>
 				<FlashList
@@ -50,7 +50,7 @@ export const CharacterPrevList = ({ data }: CharacterPrevListProps) => {
 					renderItem={(props) => (
 						<CharacterPrevItem
 							{...props}
-							onPress={() => router.push(`/characters/info/${props.item.node.id}`)}
+							onPress={() => router.push(`/characters/info/${props?.item?.node?.id}`)}
 						/>
 					)}
 					keyExtractor={(item, index) => index.toString()}

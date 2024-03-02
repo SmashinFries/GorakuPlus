@@ -4,8 +4,8 @@ import { StackAnimationTypes } from 'react-native-screens';
 import { MD3Theme } from 'react-native-paper';
 
 type SkeletonProps = {
-    theme: MD3Theme;
-    active: boolean;
+	theme: MD3Theme;
+	active: boolean;
 };
 
 export const ThemeSkeleton = ({ theme, active }: SkeletonProps) => {
@@ -48,8 +48,8 @@ export const ThemeSkeleton = ({ theme, active }: SkeletonProps) => {
 };
 
 type NavSkeletonProps = SkeletonProps & {
-    onPress: () => void;
-    animation: StackAnimationTypes;
+	onPress: () => void;
+	animation: StackAnimationTypes;
 };
 
 const styles = StyleSheet.create({

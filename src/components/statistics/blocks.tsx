@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
 
 type GeneralStatBlockProps = {
-    icon: string;
-    title: string;
-    value: number | string;
+	icon: string;
+	title: string;
+	value: number | string;
 };
 export const GeneralStatBlock = ({ icon, title, value }: GeneralStatBlockProps) => {
 	const { colors } = useTheme();

@@ -9,10 +9,10 @@ import { Image } from 'expo-image';
 import useImageRotation from '@/hooks/useImageRotation';
 
 type FavoriteItemProps = {
-    images: string[]; // URLS
-    title: string;
-    onPress: () => void;
-    size?: number;
+	images: string[]; // URLS
+	title: string;
+	onPress: () => void;
+	size?: number;
 };
 const FavoriteItem = ({ images, title, size, onPress }: FavoriteItemProps) => {
 	const img_src = useImageRotation(images?.length > 0 ? images[0] : null, images);
@@ -70,7 +70,7 @@ const FavoriteItem = ({ images, title, size, onPress }: FavoriteItemProps) => {
 };
 
 type FavoritesOverviewProps = {
-    data: UserFavoritesOverviewQuery['User']['favourites'];
+	data: UserFavoritesOverviewQuery['User']['favourites'];
 };
 const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 	const { width } = useWindowDimensions();

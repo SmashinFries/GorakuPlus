@@ -47,7 +47,14 @@ const CharacterListPage = () => {
 
 	if (charData.isUninitialized) {
 		return (
-			<View style={{ height:'100%', width:'100%', alignItems: 'center', justifyContent: 'center' }}>
+			<View
+				style={{
+					height: '100%',
+					width: '100%',
+					alignItems: 'center',
+					justifyContent: 'center',
+				}}
+			>
 				<GorakuActivityIndicator />
 			</View>
 		);

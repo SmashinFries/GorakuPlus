@@ -23,14 +23,14 @@ import { arrayRange } from '@/utils/numbers';
 import { SortCategories } from '@/constants/anilist';
 
 type DropdownProps = {
-    visible: boolean;
-    onOpen: () => void;
-    onClose: () => void;
-    label: string;
-    value: string;
-    children: React.ReactNode;
-    left?: React.ReactNode;
-    anchorPosition?: 'top' | 'bottom';
+	visible: boolean;
+	onOpen: () => void;
+	onClose: () => void;
+	label: string;
+	value: string;
+	children: React.ReactNode;
+	left?: React.ReactNode;
+	anchorPosition?: 'top' | 'bottom';
 };
 export const Dropdown = ({
 	visible,
@@ -90,9 +90,9 @@ export const Dropdown = ({
 const DropdownMem = React.memo(Dropdown);
 
 type SortDropdownProps = {
-    current: MediaType;
-    updateSort: (sort: MediaSort) => void;
-    sort: MediaSort[];
+	current: MediaType;
+	updateSort: (sort: MediaSort) => void;
+	sort: MediaSort[];
 };
 export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) => {
 	// const categories = current === 'anime' ? animeSort : mangaNovelSort;
@@ -159,9 +159,9 @@ export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) =
 export const SortDropdownMem = React.memo(SortDropdown);
 
 type StatusDropdownProps = {
-    updateStatus: (status: MediaStatus | null) => void;
-    removeStatus: () => void;
-    status: MediaStatus;
+	updateStatus: (status: MediaStatus | null) => void;
+	removeStatus: () => void;
+	status: MediaStatus;
 };
 export const StatusDropdown = ({ status, updateStatus, removeStatus }: StatusDropdownProps) => {
 	const categories = ['ANY', ...mediaStatusOptions];
@@ -205,10 +205,10 @@ export const StatusDropdown = ({ status, updateStatus, removeStatus }: StatusDro
 export const StatusDropdownMem = React.memo(StatusDropdown);
 
 type FormatDropdownProps = {
-    current: MediaType;
-    updateFormat: (format: MediaFormat | undefined) => void;
-    removeFormat: () => void;
-    formatValue: MediaFormat;
+	current: MediaType;
+	updateFormat: (format: MediaFormat | undefined) => void;
+	removeFormat: () => void;
+	formatValue: MediaFormat;
 };
 export const FormatDropdown = ({
 	current,
@@ -246,7 +246,7 @@ export const FormatDropdown = ({
 					key={idx}
 					disabled={
 						(category === 'ANY' && formatValue === undefined) ||
-                        category === formatValue
+						category === formatValue
 					}
 					onPress={() => {
 						closeMenu();
@@ -267,8 +267,8 @@ export const FormatDropdown = ({
 export const FormatDropdownMem = React.memo(FormatDropdown);
 
 type SeasonDropdownProps = {
-    updateSeason: (season: MediaSeason | undefined) => void;
-    seasonValue: string;
+	updateSeason: (season: MediaSeason | undefined) => void;
+	seasonValue: string;
 };
 export const SeasonDropdown = ({ seasonValue, updateSeason }: SeasonDropdownProps) => {
 	const seasons = ['ANY', ...Object.values(MediaSeason)];
@@ -308,8 +308,8 @@ export const SeasonDropdown = ({ seasonValue, updateSeason }: SeasonDropdownProp
 export const SeasonDropdownMem = React.memo(SeasonDropdown);
 
 type YearDropdownProps = {
-    updateSeasonYear: (year: number | undefined) => void;
-    yearValue: ExploreMediaQueryVariables['seasonYear'];
+	updateSeasonYear: (year: number | undefined) => void;
+	yearValue: ExploreMediaQueryVariables['seasonYear'];
 };
 export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps) => {
 	const range = arrayRange(1970, new Date().getFullYear() + 1, 1).reverse();
@@ -349,9 +349,9 @@ export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps)
 export const YearDropdownMem = React.memo(YearDropdown);
 
 type CountryDropdownProps = {
-    updateCountry: (c_code: string) => void;
-    removeCountry: () => void;
-    countryValue: string;
+	updateCountry: (c_code: string) => void;
+	removeCountry: () => void;
+	countryValue: string;
 };
 export const CountryDropdown = ({
 	countryValue,

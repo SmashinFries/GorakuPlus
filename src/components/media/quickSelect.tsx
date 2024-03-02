@@ -3,9 +3,9 @@ import { CrunchyRollIcon } from '@/components/svgs';
 import { View } from 'react-native';
 
 type QuickSelectorProps = {
-    icon: string;
-    disabled?: boolean;
-    onPress?: () => void;
+	icon: string;
+	disabled?: boolean;
+	onPress?: () => void;
 };
 export const QuickSelector = ({ icon, disabled = false, onPress }: QuickSelectorProps) => {
 	const { colors } = useTheme();

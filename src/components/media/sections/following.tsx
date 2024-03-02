@@ -8,7 +8,7 @@ import { UserCard } from '../../cards';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type FollowingPrevListProps = {
-    data: AniMediaQuery['Page']['mediaList'];
+	data: AniMediaQuery['Page']['mediaList'];
 };
 export const FollowingPrevList = ({ data }: FollowingPrevListProps) => {
 	const keyExtractor = useCallback((item, index) => index.toString(), []);

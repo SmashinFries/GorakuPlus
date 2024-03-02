@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 
 type SongMetaProps = {
-    data: Animetheme;
+	data: Animetheme;
 };
 export const SongMeta = ({ data }: SongMetaProps) => {
 	return (

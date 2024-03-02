@@ -24,25 +24,25 @@ import { useEffect } from 'react';
 const BORDER_RADIUS = 12;
 
 type MediaCardProps = {
-    coverImg: string;
-    titles: MediaTitle;
-    mediaListEntry?: any;
-    navigate?: () => void;
-    meanScore?: number;
-    averageScore?: number;
-    imgBgColor?: string;
-    scoreColors?: any;
-    showBanner?: boolean;
-    bannerText?: string;
-    editMode?: boolean;
-    disablePress?: boolean;
-    scoreVisualType?: ScoreVisualType;
-    scoreDistributions?: ScoreDistribution[];
-    titleLang?: 'english' | 'romaji' | 'native';
-    height?: number;
-    width?: number;
-    fitToParent?: boolean;
-    isFavorite?: boolean;
+	coverImg: string;
+	titles: MediaTitle;
+	mediaListEntry?: any;
+	navigate?: () => void;
+	meanScore?: number;
+	averageScore?: number;
+	imgBgColor?: string;
+	scoreColors?: any;
+	showBanner?: boolean;
+	bannerText?: string;
+	editMode?: boolean;
+	disablePress?: boolean;
+	scoreVisualType?: ScoreVisualType;
+	scoreDistributions?: ScoreDistribution[];
+	titleLang?: 'english' | 'romaji' | 'native';
+	height?: number;
+	width?: number;
+	fitToParent?: boolean;
+	isFavorite?: boolean;
 };
 export const MediaCard = (props: MediaCardProps) => {
 	const card_height = props.height ?? 210;
@@ -75,7 +75,7 @@ export const MediaCard = (props: MediaCardProps) => {
 				transition={1200}
 				source={{ uri: props.coverImg }}
 				placeholder={colors.blurhash}
-				placeholderContentFit='cover'
+				placeholderContentFit="cover"
 				style={{
 					height: '100%',
 					width: '100%',
@@ -126,8 +126,8 @@ export const MediaCard = (props: MediaCardProps) => {
 					numberOfLines={2}
 				>
 					{props.titles[props.titleLang] ??
-                        props.titles[mediaLanguage] ??
-                        props.titles.romaji}
+						props.titles[mediaLanguage] ??
+						props.titles.romaji}
 				</Text>
 				{props.showBanner ? (
 					<AiringBanner
@@ -142,24 +142,24 @@ export const MediaCard = (props: MediaCardProps) => {
 };
 
 type MediaCardRowProps = {
-    coverImg: string;
-    bannerImg: string;
-    titles: MediaTitle;
-    mediaListEntry?: any;
-    navigate?: () => void;
-    meanScore?: number;
-    averageScore?: number;
-    imgBgColor?: string;
-    scoreColors?: any;
-    showBanner?: boolean;
-    bannerText?: string;
-    editMode?: boolean;
-    disablePress?: boolean;
-    scoreVisualType?: ScoreVisualType;
-    scoreDistributions?: ScoreDistribution[];
-    titleLang?: 'english' | 'romaji' | 'native';
-    height?: number;
-    scoreWidth?: DimensionValue;
+	coverImg: string;
+	bannerImg: string;
+	titles: MediaTitle;
+	mediaListEntry?: any;
+	navigate?: () => void;
+	meanScore?: number;
+	averageScore?: number;
+	imgBgColor?: string;
+	scoreColors?: any;
+	showBanner?: boolean;
+	bannerText?: string;
+	editMode?: boolean;
+	disablePress?: boolean;
+	scoreVisualType?: ScoreVisualType;
+	scoreDistributions?: ScoreDistribution[];
+	titleLang?: 'english' | 'romaji' | 'native';
+	height?: number;
+	scoreWidth?: DimensionValue;
 };
 export const MediaCardRow = (props: MediaCardRowProps) => {
 	const card_height = props.height ?? 110;
@@ -225,8 +225,8 @@ export const MediaCardRow = (props: MediaCardRowProps) => {
 					numberOfLines={1}
 				>
 					{props.titles[props.titleLang] ??
-                        props.titles[mediaLanguage] ??
-                        props.titles.romaji}
+						props.titles[mediaLanguage] ??
+						props.titles.romaji}
 				</Text>
 			</LinearGradient>
 		</Pressable>
@@ -234,11 +234,11 @@ export const MediaCardRow = (props: MediaCardRowProps) => {
 };
 
 type MediaProgressBarProps = {
-    mediaListEntry?: MediaList;
-    progress: number;
-    showListStatus?: boolean;
-    mediaStatus?: MediaStatus;
-    total?: number;
+	mediaListEntry?: MediaList;
+	progress: number;
+	showListStatus?: boolean;
+	mediaStatus?: MediaStatus;
+	total?: number;
 };
 export const MediaProgressBar = ({
 	mediaListEntry,
@@ -261,7 +261,13 @@ export const MediaProgressBar = ({
 			]}
 		>
 			<ProgressBar
-				progress={total && progress ? progress / total : progress === 0 && mediaListEntry?.status !== MediaListStatus.Planning ? 0 : 1}
+				progress={
+					total && progress
+						? progress / total
+						: progress === 0 && mediaListEntry?.status !== MediaListStatus.Planning
+							? 0
+							: 1
+				}
 				style={{
 					alignSelf: 'center',
 					height: 8,
@@ -281,12 +287,14 @@ export const MediaProgressBar = ({
 				variant="labelMedium"
 			>
 				{showListStatus ?? showItemListStatus ? mediaListEntry?.status : null}
-				{mediaListEntry?.progress > 0 
+				{mediaListEntry?.progress > 0
 					? `${showListStatus ?? showItemListStatus ? ' · ' : ''}` +
-                        mediaListEntry?.progress +
-                        (![MediaListStatus.Repeating, MediaListStatus.Planning].includes(mediaListEntry?.status) && total
-                        	? '/' + `${total}`
-                        	: '')
+						mediaListEntry?.progress +
+						(![MediaListStatus.Repeating, MediaListStatus.Planning].includes(
+							mediaListEntry?.status,
+						) && total
+							? '/' + `${total}`
+							: '')
 					: null}
 			</Text>
 		</View>
@@ -294,14 +302,14 @@ export const MediaProgressBar = ({
 };
 
 type UserCardProps = {
-    avatarImg: string;
-    username: string;
-    isFollowing?: boolean;
-    isFollower?: boolean;
-    status?: string;
-    progress?: string;
-    size?: number;
-    onPress?: () => void;
+	avatarImg: string;
+	username: string;
+	isFollowing?: boolean;
+	isFollower?: boolean;
+	status?: string;
+	progress?: string;
+	size?: number;
+	onPress?: () => void;
 };
 export const UserCard = (props: UserCardProps) => {
 	const { colors } = useTheme();
@@ -361,12 +369,12 @@ export const UserCard = (props: UserCardProps) => {
 };
 
 type CharacterCardProps = {
-    onPress: () => void;
-    imgUrl: string;
-    name: string;
-    nativeName: string;
-    role?: string;
-    isFavourite?: boolean;
+	onPress: () => void;
+	imgUrl: string;
+	name: string;
+	nativeName: string;
+	role?: string;
+	isFavourite?: boolean;
 };
 export const CharacterCard = (props: CharacterCardProps) => {
 	const { colors } = useTheme();
@@ -414,10 +422,10 @@ export const CharacterCard = (props: CharacterCardProps) => {
 export const StaffCard = CharacterCard;
 
 type StudioCardProps = {
-    onPress: () => void;
-    name: string;
-    isFavourite?: boolean;
-    banners?: string[];
+	onPress: () => void;
+	name: string;
+	isFavourite?: boolean;
+	banners?: string[];
 };
 export const StudioCard = (props: StudioCardProps) => {
 	const img_src = useImageRotation(props.banners[0], props.banners);
@@ -456,9 +464,9 @@ export const StudioCard = (props: StudioCardProps) => {
 };
 
 type DanbooruImageCardProps = {
-    item: DanPost;
-    disableAR?: boolean;
-    onNavigate: (id: number) => void;
+	item: DanPost;
+	disableAR?: boolean;
+	onNavigate: (id: number) => void;
 };
 export const DanbooruImageCard = ({
 	item,
@@ -489,13 +497,13 @@ export const DanbooruImageCard = ({
 				source={{ uri: preview.url }}
 				contentFit="cover"
 				placeholder={colors.blurhash}
-				placeholderContentFit='cover'
+				placeholderContentFit="cover"
 				recyclingKey={preview.url}
 				style={{
 					aspectRatio: !disableAR ? undefined : preview?.width / preview?.height,
 					borderRadius: 6,
 					width: disableAR ? width / 2 - 8 : '100%',
-					height:disableAR ? 200 : '100%',
+					height: disableAR ? 200 : '100%',
 					maxHeight: disableAR ? 200 : undefined,
 				}}
 			/>

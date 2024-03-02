@@ -4,8 +4,8 @@ import { useGetTagWikiQuery } from '@/store/services/danbooru/danbooruApi';
 import RenderHTML from 'react-native-render-html';
 
 type DanTagDescDialogProps = {
-    tag: string;
-    onDimiss: () => void;
+	tag: string;
+	onDimiss: () => void;
 };
 export const DanTagDescDialog = ({ tag, onDimiss }: DanTagDescDialogProps) => {
 	const { width } = useWindowDimensions();

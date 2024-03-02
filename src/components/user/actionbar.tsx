@@ -4,10 +4,10 @@ import { IconButton, Tooltip, useTheme } from 'react-native-paper';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type InteractionBarProps = {
-    profile_url: string;
-    submissions_url: string;
-    settings_url: string;
-    onStatPress: () => void;
+	profile_url: string;
+	submissions_url: string;
+	settings_url: string;
+	onStatPress: () => void;
 };
 export const ProfileActionBar = ({
 	profile_url,

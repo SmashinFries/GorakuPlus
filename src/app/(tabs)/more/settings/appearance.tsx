@@ -169,7 +169,7 @@ const AppearancePage = () => {
 											style={{
 												borderWidth: 1,
 												borderColor:
-                                                    mode === theme ? colors.primary : 'transparent',
+													mode === theme ? colors.primary : 'transparent',
 												borderRadius: 12,
 												alignItems: 'center',
 												paddingHorizontal: 15,

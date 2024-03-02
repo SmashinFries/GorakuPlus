@@ -1,54 +1,54 @@
 query Reviews($mediaId: Int, $page: Int, $perPage: Int) {
-    Page(page: $page, perPage: $perPage) {
-        pageInfo {
-            lastPage
-            total
-            hasNextPage
-        }
-        reviews(mediaId: $mediaId, sort: [RATING_DESC, ID]) {
-            id
-            summary
-            rating
-            ratingAmount
-            score
-            createdAt
-            updatedAt
-            user {
-                id
-                name
-                avatar {
-                    large
-                }
-                bannerImage
-                siteUrl
-            }
-        }
-    }
+	Page(page: $page, perPage: $perPage) {
+		pageInfo {
+			lastPage
+			total
+			hasNextPage
+		}
+		reviews(mediaId: $mediaId, sort: [RATING_DESC, ID]) {
+			id
+			summary
+			rating
+			ratingAmount
+			score
+			createdAt
+			updatedAt
+			user {
+				id
+				name
+				avatar {
+					large
+				}
+				bannerImage
+				siteUrl
+			}
+		}
+	}
 }
 
 query ReviewsById($reviewId: Int) {
-    Review(id: $reviewId) {
-        id
-        summary
-        body(asHtml: false)
-        htmlBody: body(asHtml: true)
-        mediaType
-        rating
-        ratingAmount
-        score
-        siteUrl
-        createdAt
-        updatedAt
-        userRating
-        user {
-            id
-            name
-            avatar {
-                large
-            }
-            bannerImage
-            isFollowing
-            siteUrl
-        }
-    }
+	Review(id: $reviewId) {
+		id
+		summary
+		body(asHtml: false)
+		htmlBody: body(asHtml: true)
+		mediaType
+		rating
+		ratingAmount
+		score
+		siteUrl
+		createdAt
+		updatedAt
+		userRating
+		user {
+			id
+			name
+			avatar {
+				large
+			}
+			bannerImage
+			isFollowing
+			siteUrl
+		}
+	}
 }

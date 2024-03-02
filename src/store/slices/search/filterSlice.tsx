@@ -33,39 +33,39 @@ const novelParams: ExploreMediaQueryVariables = {
 
 export const getTypeParams = (mediaType: SearchType): ExploreMediaQueryVariables => {
 	switch (mediaType) {
-	case MediaType.Anime:
-		return animeParams;
-	case MediaType.Manga:
-		return mangaParams;
+		case MediaType.Anime:
+			return animeParams;
+		case MediaType.Manga:
+			return mangaParams;
 	}
 };
 
 const getSortParam = (mode: 'asc' | 'desc', sort: SortCategories) => {
 	switch (sort) {
-	case 'Trending':
-		return mode === 'asc' ? MediaSort.Trending : MediaSort.TrendingDesc;
-	case 'Popularity':
-		return mode === 'asc' ? MediaSort.Popularity : MediaSort.PopularityDesc;
-	case 'Score':
-		return mode === 'asc' ? MediaSort.Score : MediaSort.ScoreDesc;
-	case 'Updated At':
-		return mode === 'asc' ? MediaSort.UpdatedAt : MediaSort.UpdatedAtDesc;
-	case 'Episodes':
-		return mode === 'asc' ? MediaSort.Episodes : MediaSort.EpisodesDesc;
-	case 'Duration':
-		return mode === 'asc' ? MediaSort.Duration : MediaSort.DurationDesc;
-	case 'Chapters':
-		return mode === 'asc' ? MediaSort.Chapters : MediaSort.ChaptersDesc;
-	case 'Volumes':
-		return mode === 'asc' ? MediaSort.Volumes : MediaSort.VolumesDesc;
+		case 'Trending':
+			return mode === 'asc' ? MediaSort.Trending : MediaSort.TrendingDesc;
+		case 'Popularity':
+			return mode === 'asc' ? MediaSort.Popularity : MediaSort.PopularityDesc;
+		case 'Score':
+			return mode === 'asc' ? MediaSort.Score : MediaSort.ScoreDesc;
+		case 'Updated At':
+			return mode === 'asc' ? MediaSort.UpdatedAt : MediaSort.UpdatedAtDesc;
+		case 'Episodes':
+			return mode === 'asc' ? MediaSort.Episodes : MediaSort.EpisodesDesc;
+		case 'Duration':
+			return mode === 'asc' ? MediaSort.Duration : MediaSort.DurationDesc;
+		case 'Chapters':
+			return mode === 'asc' ? MediaSort.Chapters : MediaSort.ChaptersDesc;
+		case 'Volumes':
+			return mode === 'asc' ? MediaSort.Volumes : MediaSort.VolumesDesc;
 	}
 };
 
 export type FilterState = {
-    current: SearchType;
-    filter: ExploreMediaQueryVariables;
-    sort: {
-        mode: 'asc' | 'desc';
-        category: SortCategories;
-    };
+	current: SearchType;
+	filter: ExploreMediaQueryVariables;
+	sort: {
+		mode: 'asc' | 'desc';
+		category: SortCategories;
+	};
 };

@@ -6,11 +6,11 @@ import { FlatList } from 'react-native';
 import { useLazySearchTagsQuery } from '@/store/services/danbooru/danbooruApi';
 
 type TagSearchDialogProps = BasicDialogProps & {
-    initialQuery: string;
-    initialTags: DanTags[];
-    tagsLoading: boolean;
-    onTagChange: (tag: string) => void;
-    saveTag: (tag: string) => void;
+	initialQuery: string;
+	initialTags: DanTags[];
+	tagsLoading: boolean;
+	onTagChange: (tag: string) => void;
+	saveTag: (tag: string) => void;
 };
 export const TagSearchDialog = ({
 	visible,
@@ -72,7 +72,7 @@ export const TagSearchDialog = ({
 					onSubmitEditing={({ nativeEvent }) => onSearch(nativeEvent.text)}
 				/>
 				<Button mode="outlined" onPress={() => onSearch(query)}>
-                    Search
+					Search
 				</Button>
 			</Dialog.Content>
 			<Dialog.ScrollArea>

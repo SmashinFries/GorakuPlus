@@ -18,15 +18,15 @@ import { AnimeFull } from '@/store/services/mal/malApi';
 import { StreamSites } from '@/types/mal';
 
 type LinkIconButtonProps = {
-    index: number;
-    textColor: string;
-    siteName?: string;
-    customIcon?: ({ size, color }: { size: number; color: string }) => JSX.Element;
-    iconLink?: string;
-    iconColor?: string;
-    siteUrl?: string;
-    language?: string;
-    notes?: string;
+	index: number;
+	textColor: string;
+	siteName?: string;
+	customIcon?: ({ size, color }: { size: number; color: string }) => JSX.Element;
+	iconLink?: string;
+	iconColor?: string;
+	siteUrl?: string;
+	language?: string;
+	notes?: string;
 };
 const ExtLinkIconButton = ({
 	siteName,
@@ -89,10 +89,10 @@ const LANGUAGE_ABRV = {
 };
 
 type MediaLinksProps = {
-    links: MediaExternalLink[];
-    malLink?: string;
-    muLink?: string;
-    aniLink: string;
+	links: MediaExternalLink[];
+	malLink?: string;
+	muLink?: string;
+	aniLink: string;
 };
 const MediaLinks = ({ links, aniLink, malLink, muLink }: MediaLinksProps) => {
 	const { colors } = useTheme();
@@ -162,12 +162,12 @@ export const StreamingLinks = ({ streamLinks }: { streamLinks: AnimeFull['stream
 
 	const CustomIcon = ({ name, size }: { name: string; size: number }) => {
 		switch (name as StreamSites) {
-		case 'Netflix':
-			return <NetflixIcon width={size} height={size} />;
-		case 'Funimation':
-			return <FunimationIcon width={size} height={size} />;
-		default:
-			return null;
+			case 'Netflix':
+				return <NetflixIcon width={size} height={size} />;
+			case 'Funimation':
+				return <FunimationIcon width={size} height={size} />;
+			default:
+				return null;
 		}
 	};
 

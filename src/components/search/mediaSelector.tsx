@@ -7,13 +7,13 @@ import { FilterState } from '@/store/slices/search/filterSlice';
 import { SearchType } from '@/types/search';
 
 type SegButtons = {
-    value: SearchTypes;
-    label: string;
+	value: SearchTypes;
+	label: string;
 };
 
 type MediaSelectorProps = {
-    selection: SearchType;
-    onSelect: (type: FilterState['current']) => void;
+	selection: SearchType;
+	onSelect: (type: FilterState['current']) => void;
 };
 
 export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {

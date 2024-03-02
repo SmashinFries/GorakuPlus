@@ -7,10 +7,10 @@ import { Platform } from 'react-native';
 import useBackground from '@/hooks/explore/background';
 
 type BackgroundArtProps = {
-    data: ExploreMediaQuery;
-    currentBG: string;
-    width: number;
-    height: number;
+	data: ExploreMediaQuery;
+	currentBG: string;
+	width: number;
+	height: number;
 };
 export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
 	// const [bg, setBg] = useState({ id: 0, bg: getBG(data.Page.media[0]) });
@@ -30,9 +30,9 @@ export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
 				top: '45%',
 				left: '50%',
 				transform:
-                    Platform.OS === 'web'
-                    	? [{ translateX: '-50%' }, { translateY: '-50%' }]
-                    	: undefined,
+					Platform.OS === 'web'
+						? [{ translateX: '-50%' }, { translateY: '-50%' }]
+						: undefined,
 			}}
 		>
 			<AnimatePresence

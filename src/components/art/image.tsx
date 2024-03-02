@@ -4,14 +4,14 @@ import { Pressable, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 const blurhash =
-    '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+	'|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 type PostImageProps = {
-    aspectRatio?: number;
-    img_url?: string;
-    blurAmount?: number;
-    style?: any;
-    setImageHeight: (height: number) => void;
+	aspectRatio?: number;
+	img_url?: string;
+	blurAmount?: number;
+	style?: any;
+	setImageHeight: (height: number) => void;
 };
 export const PostImage = ({
 	style,
@@ -42,7 +42,7 @@ export const PostImage = ({
 			<Image
 				blurRadius={blurAmount}
 				placeholder={colors.blurhash}
-				placeholderContentFit='contain'
+				placeholderContentFit="contain"
 				source={{ uri: img_url }}
 				contentFit="contain"
 				onLayout={(e) => setImageHeight(e.nativeEvent.layout.height)}

@@ -6,9 +6,9 @@ import { TOAST } from '@/constants/toast';
 import * as Burnt from 'burnt';
 
 type InteractionBarProps = {
-    url: string;
-    share_url: string;
-    name: string;
+	url: string;
+	share_url: string;
+	name: string;
 };
 export const InteractionBar = ({ url, name, share_url }: InteractionBarProps) => {
 	const { colors } = useTheme();

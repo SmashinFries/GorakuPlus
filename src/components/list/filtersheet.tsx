@@ -142,10 +142,10 @@ const ListFilterTabs = ({
 	genres,
 	tags,
 }: {
-    mediaType: MediaType;
-    setHeight: (height: number) => void;
-    genres: string[];
-    tags: MediaTag[];
+	mediaType: MediaType;
+	setHeight: (height: number) => void;
+	genres: string[];
+	tags: MediaTag[];
 }) => {
 	const { colors } = useAppTheme();
 	const layout = useWindowDimensions();
@@ -163,12 +163,12 @@ const ListFilterTabs = ({
 
 	const renderScene = ({ route }) => {
 		switch (route.key) {
-		case 'sort':
-			return <ListFilterSort setHeight={(height) => setHeight(height)} />;
+			case 'sort':
+				return <ListFilterSort setHeight={(height) => setHeight(height)} />;
 			// case 'filter':
 			//     return <ListFilterFilter genres={genres} tags={tags} />;
-		default:
-			return null;
+			default:
+				return null;
 		}
 	};
 
@@ -185,9 +185,9 @@ const ListFilterTabs = ({
 };
 
 type ListFilterSheetProps = {
-    mediaType: MediaType;
-    genres: string[];
-    tags: MediaTag[];
+	mediaType: MediaType;
+	genres: string[];
+	tags: MediaTag[];
 };
 
 export const ListFilterSheet = React.forwardRef<BottomSheetModalMethods, ListFilterSheetProps>(

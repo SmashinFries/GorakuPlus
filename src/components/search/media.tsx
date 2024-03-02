@@ -11,7 +11,7 @@ import { router } from 'expo-router';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 
 type ImageSearchItemProps = {
-    item: Result;
+	item: Result;
 };
 export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 	const { roundness } = useTheme();
@@ -75,15 +75,15 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 							<Chip
 								style={{
 									borderColor:
-                                        similarity >= 95
-                                        	? 'green'
-                                        	: similarity < 95 && similarity >= 90
-                                        		? 'yellow'
-                                        		: 'red',
+										similarity >= 95
+											? 'green'
+											: similarity < 95 && similarity >= 90
+												? 'yellow'
+												: 'red',
 									borderWidth: 1,
 								}}
 							>
-                                ~{similarity.toFixed(2)} %
+								~{similarity.toFixed(2)} %
 							</Chip>
 						</View>
 					</View>

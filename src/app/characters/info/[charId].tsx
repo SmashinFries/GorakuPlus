@@ -36,14 +36,14 @@ import { GorakuActivityIndicator } from '@/components/loading';
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
 	const { charData, art, tagOptions, onTagChange, currentArtTag, toggleFav, isLoading } =
-        useCharDetail(Number(charId));
+		useCharDetail(Number(charId));
 	const dispatch = useAppDispatch();
 	const { width } = useWindowDimensions();
 
 	const [selectedImg, setSelectedImg] = useState('');
 	const [uniqueVAs, setUniqueVAs] = useState<
-        CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles']
-    >([]);
+		CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles']
+	>([]);
 	const [showTagSearch, toggleShowTagSearch] = useReducer((open) => !open, false);
 	const [expanded, setExpanded] = useState(false);
 	const [fav, setFav] = useState(charData.data?.Character?.isFavourite);
@@ -52,13 +52,13 @@ const CharacterScreen = () => {
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 
 	const primaryName =
-        mediaLanguage === 'native'
-        	? charData.data?.Character?.name?.native
-        	: charData.data?.Character?.name?.full;
+		mediaLanguage === 'native'
+			? charData.data?.Character?.name?.native
+			: charData.data?.Character?.name?.full;
 	const secondaryName =
-        mediaLanguage === 'english' || mediaLanguage === 'romaji'
-        	? charData.data?.Character?.name?.native
-        	: charData.data?.Character?.name?.full;
+		mediaLanguage === 'english' || mediaLanguage === 'romaji'
+			? charData.data?.Character?.name?.native
+			: charData.data?.Character?.name?.full;
 
 	const { colors } = useTheme();
 
@@ -116,8 +116,8 @@ const CharacterScreen = () => {
 		({
 			item,
 		}: {
-            item: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'][0];
-        }) => {
+			item: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'][0];
+		}) => {
 			return (
 				<StaffCard
 					imgUrl={item.voiceActor?.image?.large}
@@ -138,11 +138,11 @@ const CharacterScreen = () => {
 				<DanbooruImageCard
 					item={item}
 					onNavigate={() =>
-					// @ts-ignore
-					// navigation.navigate('danbooruStack', {
-					//     screen: 'danbooruDetail',
-					//     params: { id: item.id },
-					// })
+						// @ts-ignore
+						// navigation.navigate('danbooruStack', {
+						//     screen: 'danbooruDetail',
+						//     params: { id: item.id },
+						// })
 						router.push(`/art/post/${item.id}`)
 					}
 					disableAR
@@ -170,8 +170,8 @@ const CharacterScreen = () => {
 	useEffect(() => {
 		if (charData.data?.Character?.media?.edges && uniqueVAs.length === 0) {
 			const va: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'] =
-                [];
-			for (const media of charData.data?.Character?.media?.edges) {
+				[];
+			for (const media of charData.data.Character.media.edges) {
 				if (media.voiceActorRoles.length > 0) {
 					for (const role of media.voiceActorRoles) {
 						va.push(role);
@@ -218,14 +218,14 @@ const CharacterScreen = () => {
 									url={
 										charData?.data?.Character?.media?.edges[0]?.node
 											?.bannerImage ??
-                                        charData?.data?.Character?.media?.edges[0]?.node?.coverImage
-                                        	?.extraLarge
+										charData?.data?.Character?.media?.edges[0]?.node?.coverImage
+											?.extraLarge
 									}
 									additionalUrls={
 										charData?.data?.Character?.media?.edges?.length > 0
 											? charData?.data?.Character?.media?.edges?.map(
-												(edge) => edge.node.bannerImage,
-											)
+													(edge) => edge.node.bannerImage,
+												)
 											: undefined
 									}
 									style={style}
@@ -268,10 +268,10 @@ const CharacterScreen = () => {
 													{...props}
 													icon={
 														charData?.data?.Character?.gender ===
-                                                        'Female'
+														'Female'
 															? 'gender-female'
 															: charData?.data?.Character?.gender ===
-                                                              'Male'
+																  'Male'
 																? 'gender-male'
 																: 'gender-transgender'
 													}
@@ -365,7 +365,7 @@ const CharacterScreen = () => {
 										subtitlePress={toggleShowTagSearch}
 										icon="chevron-right"
 										onIconPress={() =>
-										// @ts-ignore
+											// @ts-ignore
 											router.push(`/art/${currentArtTag}`)
 										}
 									/>

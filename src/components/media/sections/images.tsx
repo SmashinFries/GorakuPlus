@@ -10,8 +10,8 @@ import { SaveImageDialog } from '@/utils/images';
 import { useCallback, useState } from 'react';
 
 type MalImageItemProps = {
-    item: GetAnimePicturesApiResponse['data'][0];
-    index: number;
+	item: GetAnimePicturesApiResponse['data'][0];
+	index: number;
 };
 const MalImageItem = ({
 	item,
@@ -36,7 +36,7 @@ const MalImageItem = ({
 };
 
 type MalImagesProps = {
-    data: GetAnimePicturesApiResponse;
+	data: GetAnimePicturesApiResponse;
 };
 const MalImages = ({ data }: MalImagesProps) => {
 	const [selectedImg, setSelectedImg] = useState('');

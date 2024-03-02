@@ -125,17 +125,17 @@ export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderP
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
-    searchContent: (query: string) => void;
-    openFilter: () => void;
-    currentType: SearchType;
-    searchbarRef: React.RefObject<TextInput>;
-    historySelected: string | null;
-    onHistorySelected: () => void;
-    toggleIsFocused: (value: boolean) => void;
-    setFilterSearch: (query: string) => void;
-    openImageSearch: () => void;
-    openWaifuSearch: () => void;
-    onFocus: () => void;
+	searchContent: (query: string) => void;
+	openFilter: () => void;
+	currentType: SearchType;
+	searchbarRef: React.RefObject<TextInput>;
+	historySelected: string | null;
+	onHistorySelected: () => void;
+	toggleIsFocused: (value: boolean) => void;
+	setFilterSearch: (query: string) => void;
+	openImageSearch: () => void;
+	openWaifuSearch: () => void;
+	onFocus: () => void;
 };
 export const SearchHeader = ({
 	navigation,
@@ -312,15 +312,15 @@ export const BanTagHeader = ({
 };
 
 type MediaHeaderProps = {
-    navigation: NativeStackNavigationProp<any>;
-    title: string;
-    headerTitleStyle?: any;
-    headerActionStyle?: any;
-    headerStyle?: any;
-    shareLink: string;
-    streamingLinks?: AniMediaQuery['Media']['externalLinks'];
-    onBack: () => void;
-    onEdit: () => void;
+	navigation: NativeStackNavigationProp<any>;
+	title: string;
+	headerTitleStyle?: any;
+	headerActionStyle?: any;
+	headerStyle?: any;
+	shareLink: string;
+	streamingLinks?: AniMediaQuery['Media']['externalLinks'];
+	onBack: () => void;
+	onEdit: () => void;
 };
 export const MediaHeader = ({
 	navigation,
@@ -407,21 +407,21 @@ export const MediaHeader = ({
 									leadingIcon={
 										link.language
 											? (props) => (
-												<Text {...props}>
-													{getStreamingSiteEmoji(link.language)}
-												</Text>
-											)
+													<Text {...props}>
+														{getStreamingSiteEmoji(link.language)}
+													</Text>
+												)
 											: undefined
 									}
 									trailingIcon={
 										link.icon
 											? (props) => (
-												<Icon
-													{...props}
-													source={{ uri: link.icon }}
-													color={link?.color ?? props.color}
-												/>
-											)
+													<Icon
+														{...props}
+														source={{ uri: link.icon }}
+														color={link?.color ?? props.color}
+													/>
+												)
 											: undefined
 									}
 									onPress={() => openWebBrowser(link.url)}
@@ -488,29 +488,29 @@ const TIME = 100;
 const EASING = Easing.elastic(1.5);
 
 type FadeHeaderProps = {
-    children: React.ReactNode;
-    title: string;
-    shareLink?: string;
-    favorite?: boolean;
-    streamingLinks?: AniMediaQuery['Media']['externalLinks'];
-    onFavorite?: () => void;
-    onEdit?: () => void;
-    loading?: boolean;
-    disableBack?: boolean;
-    addFriendIcon?: boolean;
-    onAddFriend?: () => void;
-    notificationIcon?: boolean;
-    newNotifs?: number;
-    onNotificationIcon?: () => void;
-    keepTitle?: boolean;
-    RefreshControl?: React.ReactElement<
-        RefreshControlProps,
-        string | React.JSXElementConstructor<any>
-    >;
-    animationRange?: number[];
-    isMediaScreen?: boolean;
-    BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
-    onBack?: () => void;
+	children: React.ReactNode;
+	title: string;
+	shareLink?: string;
+	favorite?: boolean;
+	streamingLinks?: AniMediaQuery['Media']['externalLinks'];
+	onFavorite?: () => void;
+	onEdit?: () => void;
+	loading?: boolean;
+	disableBack?: boolean;
+	addFriendIcon?: boolean;
+	onAddFriend?: () => void;
+	notificationIcon?: boolean;
+	newNotifs?: number;
+	onNotificationIcon?: () => void;
+	keepTitle?: boolean;
+	RefreshControl?: React.ReactElement<
+		RefreshControlProps,
+		string | React.JSXElementConstructor<any>
+	>;
+	animationRange?: number[];
+	isMediaScreen?: boolean;
+	BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
+	onBack?: () => void;
 };
 export const FadeHeaderProvider = ({
 	children,
@@ -536,7 +536,7 @@ export const FadeHeaderProvider = ({
 	const navigation = useNavigation<NativeStackNavigationProp<any>>();
 	const { colors } = useTheme();
 	const { headerStyle, headerTitleStyle, bgImageStyle, headerActionStyle, scrollHandler } =
-        useHeaderAnim(animationRange[0], animationRange[1]);
+		useHeaderAnim(animationRange[0], animationRange[1]);
 	const { width, height } = useWindowDimensions();
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { navAnimation } = useAppSelector((state) => state.persistedSettings);
@@ -741,9 +741,9 @@ export const CharStaffHeader = ({ navigation, options, route, back }: NativeStac
 };
 
 type ReviewHeaderProps = NativeStackHeaderProps & {
-    onRenderSwitch: () => void;
-    shareLink?: string;
-    render_switch_icon?: string;
+	onRenderSwitch: () => void;
+	shareLink?: string;
+	render_switch_icon?: string;
 };
 export const ReviewHeader = ({
 	navigation,
@@ -792,8 +792,8 @@ export const ListHeader = ({
 	openFilter,
 	onRefresh,
 }: {
-    openFilter: () => void;
-    onRefresh: () => void;
+	openFilter: () => void;
+	onRefresh: () => void;
 }) => {
 	const { query } = useAppSelector((state) => state.listFilter);
 	const { colors } = useAppTheme();
@@ -913,8 +913,8 @@ export const FavoritesHeader = ({ navigation, options, route, back }: NativeStac
 };
 
 type StudioHeaderProps = NativeStackHeaderProps & {
-    isFav: boolean;
-    id: number;
+	isFav: boolean;
+	id: number;
 };
 export const StudioHeader = ({
 	navigation,
@@ -934,7 +934,7 @@ export const StudioHeader = ({
 		const res = await toggleFav({ studioId: id }).unwrap();
 		setFav(
 			res.ToggleFavourite.studios?.edges.find((s) => s?.node?.id === id)?.node?.isFavourite ??
-                false,
+				false,
 		);
 	};
 

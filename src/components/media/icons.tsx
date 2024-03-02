@@ -19,11 +19,11 @@ const statusIconConfig = {
 };
 
 type StatusIconProps = {
-    status: MediaStatus;
-    release_date?: FuzzyDate;
-    nextEP?: ExploreMediaQuery['Page']['media'][0]['nextAiringEpisode'];
-    top?: number;
-    right?: number;
+	status: MediaStatus;
+	release_date?: FuzzyDate;
+	nextEP?: ExploreMediaQuery['Page']['media'][0]['nextAiringEpisode'];
+	top?: number;
+	right?: number;
 };
 export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) => {
 	const { colors } = useTheme();
@@ -35,9 +35,9 @@ export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) =>
 		() =>
 			nextEP && nextEP?.episode
 				? (nextEP.episode < 1000 ? 'EP ' : '') +
-                  nextEP.episode +
-                  ': ' +
-                  getTimeUntil(nextEP.airingAt)
+					nextEP.episode +
+					': ' +
+					getTimeUntil(nextEP.airingAt)
 				: statusState === MediaStatus.NotYetReleased && releaseData
 					? releaseData
 					: statusState?.replaceAll('_', ' '),

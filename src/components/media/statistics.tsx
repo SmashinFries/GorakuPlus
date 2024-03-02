@@ -5,7 +5,7 @@ import { View, useWindowDimensions } from 'react-native';
 import { Button, Chip, MD3DarkTheme, Text } from 'react-native-paper';
 
 type StatusItemProps = {
-    status: AniMediaQuery['Media']['stats']['statusDistribution'][0];
+	status: AniMediaQuery['Media']['stats']['statusDistribution'][0];
 };
 export const StatusItem = ({ status }: StatusItemProps) => {
 	return (
@@ -22,15 +22,15 @@ export const StatusItem = ({ status }: StatusItemProps) => {
 				<Text style={{ color: StatusColors[status.status] }}>
 					{status?.amount.toLocaleString()}
 				</Text>{' '}
-                Users
+				Users
 			</Text>
 		</View>
 	);
 };
 
 type ScoreItemProps = {
-    score: AniMediaQuery['Media']['stats']['scoreDistribution'][0];
-    highestScore: number;
+	score: AniMediaQuery['Media']['stats']['scoreDistribution'][0];
+	highestScore: number;
 };
 export const ScoreItem = ({ score, highestScore }: ScoreItemProps) => {
 	return (
@@ -49,16 +49,16 @@ export const ScoreItem = ({ score, highestScore }: ScoreItemProps) => {
 						? '🔥' + score?.amount.toLocaleString()
 						: score?.amount.toLocaleString()}
 				</Text>{' '}
-                Users
+				Users
 			</Text>
 		</View>
 	);
 };
 
 type StatusBarProps = {
-    data:
-        | AniMediaQuery['Media']['stats']['statusDistribution']
-        | AniMediaQuery['Media']['stats']['scoreDistribution'];
+	data:
+		| AniMediaQuery['Media']['stats']['statusDistribution']
+		| AniMediaQuery['Media']['stats']['scoreDistribution'];
 };
 export const StatBar = ({ data }: StatusBarProps) => {
 	const { width } = useWindowDimensions();

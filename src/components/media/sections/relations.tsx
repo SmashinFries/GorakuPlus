@@ -9,16 +9,16 @@ import { Link, router, useNavigation } from 'expo-router';
 import { ListHeading } from '@/components/text';
 
 type RelationItemProps = {
-    textColor: string;
-    colors?: MD3Colors;
-    onPress?: () => void;
-    navigate: (aniId: number, type: MediaType) => void;
-    item: AniMediaQuery['Media']['relations']['edges'][0];
-    index: number;
+	textColor: string;
+	colors?: MD3Colors;
+	onPress?: () => void;
+	navigate: (aniId: number, type: MediaType) => void;
+	item: AniMediaQuery['Media']['relations']['edges'][0];
+	index: number;
 };
 
 type RelationsProps = {
-    data: AniMediaQuery['Media']['relations'];
+	data: AniMediaQuery['Media']['relations'];
 };
 const Relations = ({ data }: RelationsProps) => {
 	const { colors } = useTheme();
@@ -58,7 +58,7 @@ const Relations = ({ data }: RelationsProps) => {
 						: item.node?.isLicensed
 							? item.node?.format
 							: 'Doujin'}{' '}
-                    · {item.node?.status?.replaceAll('_', ' ') ?? '??'}
+					· {item.node?.status?.replaceAll('_', ' ') ?? '??'}
 				</Text>
 			</View>
 		),

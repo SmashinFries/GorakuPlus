@@ -43,11 +43,11 @@ import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
 
 type TextInputContainerProps = {
-    label: string;
-    fact?: FactResponse;
-    quote?: QuoteResponse;
-    isFetching: boolean;
-    onGenerate: () => void;
+	label: string;
+	fact?: FactResponse;
+	quote?: QuoteResponse;
+	isFetching: boolean;
+	onGenerate: () => void;
 };
 const TextInputContainer = ({
 	label,
@@ -110,41 +110,41 @@ const WeebLabPage = () => {
 
 	const onTextGen = async (genType: TextGenOptions) => {
 		switch (genType) {
-		case TextGenOptions.owoify:
-			try {
-				const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
-				setGeneratedText(owoifyResult.text);
-			} catch (e) {
-				Burnt.toast({
-					title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-					duration: TOAST.SHORT,
-				});
-			}
-			break;
-		case TextGenOptions.uvuify:
-			try {
-				const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
-				setGeneratedText(uvuifyResult.text);
-			} catch (e) {
-				Burnt.toast({
-					title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-					duration: TOAST.SHORT,
-				});
-			}
+			case TextGenOptions.owoify:
+				try {
+					const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
+					setGeneratedText(owoifyResult.text);
+				} catch (e) {
+					Burnt.toast({
+						title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+						duration: TOAST.SHORT,
+					});
+				}
+				break;
+			case TextGenOptions.uvuify:
+				try {
+					const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
+					setGeneratedText(uvuifyResult.text);
+				} catch (e) {
+					Burnt.toast({
+						title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+						duration: TOAST.SHORT,
+					});
+				}
 
-			break;
-		case TextGenOptions.uwuify:
-			try {
-				const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
-				setGeneratedText(uwuifyResult.text);
-			} catch (e) {
-				Burnt.toast({
-					title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-					duration: TOAST.SHORT,
-				});
-			}
+				break;
+			case TextGenOptions.uwuify:
+				try {
+					const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
+					setGeneratedText(uwuifyResult.text);
+				} catch (e) {
+					Burnt.toast({
+						title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
+						duration: TOAST.SHORT,
+					});
+				}
 
-			break;
+				break;
 		}
 	};
 
@@ -167,12 +167,12 @@ const WeebLabPage = () => {
 							color: colors.primary,
 						}}
 					>
-                        Waifu.It
+						Waifu.It
 					</Text>
 					<View>
 						<Paragraph>
-                            Waifu.It is a service that offers random anime waifus, quotes, facts,
-                            and more!
+							Waifu.It is a service that offers random anime waifus, quotes, facts,
+							and more!
 							{'\n'}
 						</Paragraph>
 					</View>
@@ -188,15 +188,15 @@ const WeebLabPage = () => {
 						}}
 					>
 						<Text style={{ textAlign: 'center' }}>
-                            Currently testing Waifu.It! {'\n\n'} For this lab, you will need a
-                            token.
+							Currently testing Waifu.It! {'\n\n'} For this lab, you will need a
+							token.
 						</Text>
 						<Button
 							mode="elevated"
 							style={{ marginVertical: 20 }}
 							onPress={() => router.replace('/more/accounts')}
 						>
-                            Setup Waifu.It Token
+							Setup Waifu.It Token
 						</Button>
 					</View>
 				) : (
@@ -225,7 +225,7 @@ const WeebLabPage = () => {
 										labelStyle={{ textTransform: 'capitalize' }}
 										onPress={onGenEmotion}
 									>
-                                        Get {selectedEmotion} gif
+										Get {selectedEmotion} gif
 									</Button>
 									<IconButton
 										icon={'share-variant-outline'}
@@ -324,21 +324,21 @@ const WeebLabPage = () => {
 										style={{ flex: 1, justifyContent: 'center' }}
 										onPress={() => onTextGen(TextGenOptions.owoify)}
 									>
-                                        owoify
+										owoify
 									</Button>
 									<Button
 										mode="outlined"
 										style={{ flex: 1, justifyContent: 'center' }}
 										onPress={() => onTextGen(TextGenOptions.uvuify)}
 									>
-                                        uvuify
+										uvuify
 									</Button>
 									<Button
 										mode="outlined"
 										style={{ flex: 1, justifyContent: 'center' }}
 										onPress={() => onTextGen(TextGenOptions.uwuify)}
 									>
-                                        uwuify
+										uwuify
 									</Button>
 								</View>
 								<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
@@ -346,13 +346,13 @@ const WeebLabPage = () => {
 									<IconButton
 										icon={
 											owoDetails.isFetching ||
-                                            uvuDetails.isFetching ||
-                                            uwuDetails.isFetching
+											uvuDetails.isFetching ||
+											uwuDetails.isFetching
 												? () => (
-													<ActivityIndicator
-														style={{ alignSelf: 'center' }}
-													/>
-												)
+														<ActivityIndicator
+															style={{ alignSelf: 'center' }}
+														/>
+													)
 												: 'arrow-down'
 										}
 									/>

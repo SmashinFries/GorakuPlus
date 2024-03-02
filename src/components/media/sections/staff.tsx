@@ -7,8 +7,8 @@ import { ListHeading } from '@/components/text';
 import { StaffCard } from '@/components/cards';
 
 type StaffPrevListProps = {
-    data: AniMediaQuery['Media']['staff'];
-    openMore: () => void;
+	data: AniMediaQuery['Media']['staff'];
+	openMore: () => void;
 };
 export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
 	const keyExtractor = useCallback((item, index) => index.toString(), []);

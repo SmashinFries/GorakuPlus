@@ -6,7 +6,7 @@ import { Selectable } from '../moti';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type FollowUserItemProps = {
-    user: User;
+	user: User;
 };
 const FollowUserItem = ({ user }: FollowUserItemProps) => {
 	return (
@@ -27,8 +27,8 @@ const FollowUserItem = ({ user }: FollowUserItemProps) => {
 };
 
 type FollowRowProps = {
-    data: User[];
-    isLoading: boolean;
+	data: User[];
+	isLoading: boolean;
 };
 export const FollowRow = ({ data, isLoading }: FollowRowProps) => {
 	if (!data) {

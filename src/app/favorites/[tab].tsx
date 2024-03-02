@@ -29,7 +29,7 @@ type FavoritesTabTypes = 'characters' | 'anime' | 'manga' | 'staff' | 'studios';
 const AnimeTab = ({
 	updateTabTitle,
 }: {
-    updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
+	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
 }) => {
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { query } = useAppSelector((state) => state.favSearch);
@@ -89,8 +89,8 @@ const AnimeTab = ({
 
 	const RenderItem = useCallback(
 		(itemProps: {
-            item: UserAnimeFavoritesQuery['User']['favourites']['anime']['nodes'][0];
-        }) => (
+			item: UserAnimeFavoritesQuery['User']['favourites']['anime']['nodes'][0];
+		}) => (
 			<View style={{ alignItems: 'center', alignSelf: 'center', marginVertical: 10 }}>
 				<MediaCard
 					coverImg={itemProps.item.coverImage.extraLarge}
@@ -116,18 +116,18 @@ const AnimeTab = ({
 					data?.User?.favourites?.anime?.nodes?.filter(
 						(item) =>
 							item.title.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                            item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                            item.title.native?.includes(query) ||
-                            item.synonyms?.some((value, index) =>
-                            	value.toLowerCase()?.includes(query?.toLowerCase()),
-                            ) ||
-                            item.characters?.nodes?.some(
-                            	(value, index) =>
-                            		value.name.full
-                            			?.toLowerCase()
-                            			?.includes(query?.toLowerCase()) ||
-                                    value.name.native?.includes(query),
-                            ),
+							item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item.title.native?.includes(query) ||
+							item.synonyms?.some((value, index) =>
+								value.toLowerCase()?.includes(query?.toLowerCase()),
+							) ||
+							item.characters?.nodes?.some(
+								(value, index) =>
+									value.name.full
+										?.toLowerCase()
+										?.includes(query?.toLowerCase()) ||
+									value.name.native?.includes(query),
+							),
 					).length
 				})`,
 			);
@@ -149,16 +149,16 @@ const AnimeTab = ({
 				data={data?.User?.favourites?.anime?.nodes.filter(
 					(item) =>
 						item.title.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                        item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                        item.title.native?.includes(query) ||
-                        item.synonyms?.some((value, index) =>
-                        	value.toLowerCase()?.includes(query?.toLowerCase()),
-                        ) ||
-                        item.characters?.nodes?.some(
-                        	(value, index) =>
-                        		value.name.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                                value.name.native?.includes(query),
-                        ),
+						item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
+						item.title.native?.includes(query) ||
+						item.synonyms?.some((value, index) =>
+							value.toLowerCase()?.includes(query?.toLowerCase()),
+						) ||
+						item.characters?.nodes?.some(
+							(value, index) =>
+								value.name.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
+								value.name.native?.includes(query),
+						),
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -185,7 +185,7 @@ const AnimeTab = ({
 const MangaTab = ({
 	updateTabTitle,
 }: {
-    updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
+	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
 }) => {
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { query } = useAppSelector((state) => state.favSearch);
@@ -245,8 +245,8 @@ const MangaTab = ({
 
 	const RenderItem = useCallback(
 		(itemProps: {
-            item: UserMangaFavoritesQuery['User']['favourites']['manga']['nodes'][0];
-        }) => (
+			item: UserMangaFavoritesQuery['User']['favourites']['manga']['nodes'][0];
+		}) => (
 			<View style={{ alignItems: 'center', alignSelf: 'center', marginVertical: 10 }}>
 				<MediaCard
 					coverImg={itemProps.item.coverImage.extraLarge}
@@ -271,18 +271,18 @@ const MangaTab = ({
 					data?.User?.favourites?.manga?.nodes?.filter(
 						(item) =>
 							item.title.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                            item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                            item.title.native?.includes(query) ||
-                            item.synonyms?.some((value, index) =>
-                            	value?.toLowerCase()?.includes(query?.toLowerCase()),
-                            ) ||
-                            item.characters?.nodes?.some(
-                            	(value, index) =>
-                            		value.name.full
-                            			?.toLowerCase()
-                            			?.includes(query?.toLowerCase()) ||
-                                    value.name.native?.includes(query),
-                            ),
+							item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item.title.native?.includes(query) ||
+							item.synonyms?.some((value, index) =>
+								value?.toLowerCase()?.includes(query?.toLowerCase()),
+							) ||
+							item.characters?.nodes?.some(
+								(value, index) =>
+									value.name.full
+										?.toLowerCase()
+										?.includes(query?.toLowerCase()) ||
+									value.name.native?.includes(query),
+							),
 					).length
 				})`,
 			);
@@ -304,16 +304,16 @@ const MangaTab = ({
 				data={data?.User?.favourites?.manga?.nodes.filter(
 					(item) =>
 						item.title.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                        item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                        item.title.native?.includes(query) ||
-                        item.synonyms?.some((value, index) =>
-                        	value?.toLowerCase()?.includes(query?.toLowerCase()),
-                        ) ||
-                        item.characters?.nodes?.some(
-                        	(value, index) =>
-                        		value.name.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                                value.name.native?.includes(query),
-                        ),
+						item.title.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
+						item.title.native?.includes(query) ||
+						item.synonyms?.some((value, index) =>
+							value?.toLowerCase()?.includes(query?.toLowerCase()),
+						) ||
+						item.characters?.nodes?.some(
+							(value, index) =>
+								value.name.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
+								value.name.native?.includes(query),
+						),
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -340,7 +340,7 @@ const MangaTab = ({
 const WaifuTab = ({
 	updateTabTitle,
 }: {
-    updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
+	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
 }) => {
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { query } = useAppSelector((state) => state.favSearch);
@@ -361,8 +361,8 @@ const WaifuTab = ({
 		({
 			item,
 		}: {
-            item: UserWaifuFavoritesQuery['User']['favourites']['characters']['nodes'][0];
-        }) => {
+			item: UserWaifuFavoritesQuery['User']['favourites']['characters']['nodes'][0];
+		}) => {
 			return (
 				<View style={{ alignItems: 'center', marginVertical: 15 }}>
 					<CharacterCard
@@ -428,7 +428,7 @@ const WaifuTab = ({
 					data?.User?.favourites?.characters?.nodes?.filter(
 						(item) =>
 							item.name.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                            item.name.native?.includes(query),
+							item.name.native?.includes(query),
 					).length
 				})`,
 			);
@@ -450,7 +450,7 @@ const WaifuTab = ({
 				data={data?.User?.favourites?.characters?.nodes.filter(
 					(item) =>
 						item.name.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-                        item.name.native?.includes(query),
+						item.name.native?.includes(query),
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -477,7 +477,7 @@ const WaifuTab = ({
 const StaffTab = ({
 	updateTabTitle,
 }: {
-    updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
+	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
 }) => {
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { query } = useAppSelector((state) => state.favSearch);
@@ -498,8 +498,8 @@ const StaffTab = ({
 		({
 			item,
 		}: {
-            item: UserWaifuFavoritesQuery['User']['favourites']['characters']['nodes'][0];
-        }) => {
+			item: UserWaifuFavoritesQuery['User']['favourites']['characters']['nodes'][0];
+		}) => {
 			return (
 				<View style={{ alignItems: 'center', marginVertical: 15 }}>
 					<StaffCard
@@ -565,7 +565,7 @@ const StaffTab = ({
 					data?.User?.favourites?.staff?.nodes?.filter(
 						(item) =>
 							item.name.full?.toLowerCase().includes(query?.toLowerCase()) ||
-                            item.name.native?.includes(query),
+							item.name.native?.includes(query),
 					).length
 				})`,
 			);
@@ -587,7 +587,7 @@ const StaffTab = ({
 				data={data?.User?.favourites?.staff?.nodes.filter(
 					(item) =>
 						item.name.full?.toLowerCase().includes(query?.toLowerCase()) ||
-                        item.name.native?.includes(query),
+						item.name.native?.includes(query),
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -653,17 +653,17 @@ const FavoritesPage = () => {
 	const renderScene = ({
 		route,
 	}: {
-        route: { key: FavoritesTabTypes; title: FavoritesTabTypes };
-    } & SceneRendererProps) => {
+		route: { key: FavoritesTabTypes; title: FavoritesTabTypes };
+	} & SceneRendererProps) => {
 		switch (route.key) {
-		case 'anime':
-			return <AnimeTabMem updateTabTitle={updateRouteTitle} />;
-		case 'manga':
-			return <MangaTabMem updateTabTitle={updateRouteTitle} />;
-		case 'characters':
-			return <WaifuTabMem updateTabTitle={updateRouteTitle} />;
-		case 'staff':
-			return <StaffTabMem updateTabTitle={updateRouteTitle} />;
+			case 'anime':
+				return <AnimeTabMem updateTabTitle={updateRouteTitle} />;
+			case 'manga':
+				return <MangaTabMem updateTabTitle={updateRouteTitle} />;
+			case 'characters':
+				return <WaifuTabMem updateTabTitle={updateRouteTitle} />;
+			case 'staff':
+				return <StaffTabMem updateTabTitle={updateRouteTitle} />;
 		}
 	};
 

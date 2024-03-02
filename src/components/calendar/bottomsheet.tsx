@@ -10,10 +10,13 @@ import { updateCalendarDisplay } from '@/store/slices/displaySlice';
 import Slider from '@react-native-community/slider';
 
 interface CalendarFilterSheetProps {
-    updateAllTitles: (onList:boolean) => void;
+	updateAllTitles: (onList: boolean) => void;
 }
 
-export const CalendarFilterSheet = React.forwardRef<BottomSheetModalMethods, CalendarFilterSheetProps>((props, ref) => {
+export const CalendarFilterSheet = React.forwardRef<
+	BottomSheetModalMethods,
+	CalendarFilterSheetProps
+>((props, ref) => {
 	const { height } = useWindowDimensions();
 	const { colors } = useTheme();
 	const [mainEntryHeight, setMainEntryHeight] = useState(0);

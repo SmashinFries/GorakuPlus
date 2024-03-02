@@ -27,18 +27,18 @@ const MediaTabs = () => {
 
 	const renderScene = ({ route }) => {
 		switch (route.key) {
-		case 'overview':
-			return null;
-		case 'characters':
-			return null;
-		case 'staff':
-			return null;
-		case 'reviews':
-			return null;
-		case 'stats':
-			return null;
-		default:
-			return null;
+			case 'overview':
+				return null;
+			case 'characters':
+				return null;
+			case 'staff':
+				return null;
+			case 'reviews':
+				return null;
+			case 'stats':
+				return null;
+			default:
+				return null;
 		}
 	};
 

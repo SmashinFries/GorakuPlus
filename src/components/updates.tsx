@@ -3,7 +3,7 @@ import { openWebBrowser } from '@/utils/webBrowser';
 import { Button, Dialog, Text } from 'react-native-paper';
 
 type UpdateDialogProps = BasicDialogProps & {
-    updateLink: string | null;
+	updateLink: string | null;
 };
 export const UpdateDialog = ({ visible, updateLink, onDismiss }: UpdateDialogProps) => {
 	const onUpdate = () => {

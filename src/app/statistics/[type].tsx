@@ -55,7 +55,7 @@ const AnimeStatTab = () => {
 					title="Days Watched"
 					value={
 						(data.User?.statistics?.anime?.minutesWatched / 60 / 24)?.toFixed(2) ??
-                        '???'
+						'???'
 					}
 				/>
 				<GeneralStatBlock
@@ -87,7 +87,7 @@ const AnimeStatTab = () => {
 			</View>
 			<View style={{ flex: 1 }}>
 				<Text style={{ marginHorizontal: 10 }} numberOfLines={2} variant="titleMedium">
-                    More graphs and charts coming soon!
+					More graphs and charts coming soon!
 				</Text>
 			</View>
 		</ScrollView>
@@ -156,7 +156,7 @@ const MangaStatTab = () => {
 			</View>
 			<View style={{ flex: 1 }}>
 				<Text style={{ marginHorizontal: 10 }} numberOfLines={2} variant="titleMedium">
-                    More graphs and charts coming soon!
+					More graphs and charts coming soon!
 				</Text>
 			</View>
 		</ScrollView>

@@ -36,19 +36,19 @@ import { AnimeFull } from '@/store/services/mal/malApi';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 type TagDialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
-    tag: MediaTag;
+	visible: boolean;
+	onDismiss: () => void;
+	tag: MediaTag;
 };
 export const TagDialog = ({ visible, onDismiss, tag }: TagDialogProps) => {
 	const Section = ({
 		icon,
 		children,
 	}: {
-        icon: IconSource;
-        children: ReactNode;
-        isUser?: boolean;
-    }) => {
+		icon: IconSource;
+		children: ReactNode;
+		isUser?: boolean;
+	}) => {
 		return (
 			<View style={{ flexDirection: 'row' }}>
 				<IconButton icon={icon} />
@@ -77,9 +77,9 @@ export const TagDialog = ({ visible, onDismiss, tag }: TagDialogProps) => {
 };
 
 type EpisodeDialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
-    episodes: AniMediaQuery['Media']['streamingEpisodes'];
+	visible: boolean;
+	onDismiss: () => void;
+	episodes: AniMediaQuery['Media']['streamingEpisodes'];
 };
 export const EpisodeDialog = ({ episodes, visible, onDismiss }: EpisodeDialogProps) => {
 	// const reversedEpisodes = episodes.reverse();
@@ -101,9 +101,9 @@ export const EpisodeDialog = ({ episodes, visible, onDismiss }: EpisodeDialogPro
 };
 
 type RemoveListItemDialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
-    onConfirm: () => void;
+	visible: boolean;
+	onDismiss: () => void;
+	onConfirm: () => void;
 };
 export const RemoveListItemDialog = ({
 	visible,
@@ -121,7 +121,7 @@ export const RemoveListItemDialog = ({
 						onDismiss();
 					}}
 				>
-                    Confirm
+					Confirm
 				</Button>
 			</Dialog.Actions>
 		</Dialog>
@@ -129,10 +129,10 @@ export const RemoveListItemDialog = ({
 };
 
 type MuSearchProps = {
-    title: string;
-    altTitles?: string[];
-    currentMuID: number;
-    onConfirm: (id: number) => void;
+	title: string;
+	altTitles?: string[];
+	currentMuID: number;
+	onConfirm: (id: number) => void;
 } & BasicDialogProps;
 
 export const MuSearchDialog = ({
@@ -174,12 +174,16 @@ export const MuSearchDialog = ({
 					onChangeText={(txt) => setQuery(txt)}
 					onSubmitEditing={({ nativeEvent }) => searchManga(nativeEvent.text)}
 				/>
-				<ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingVertical:10}}>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{ paddingVertical: 10 }}
+				>
 					{altTitles?.map((title, idx) => (
 						<Chip
 							key={idx}
 							mode="flat"
-							style={{ marginHorizontal: 5}}
+							style={{ marginHorizontal: 5 }}
 							onPress={() => {
 								setQuery(title);
 								searchManga(title);
@@ -190,7 +194,7 @@ export const MuSearchDialog = ({
 					))}
 				</ScrollView>
 				<Button mode="outlined" onPress={() => searchManga(query)}>
-                    Search
+					Search
 				</Button>
 			</Dialog.Content>
 			<Dialog.ScrollArea>
@@ -212,9 +216,9 @@ export const MuSearchDialog = ({
 								marginVertical: 8,
 								borderRadius: 8,
 								backgroundColor:
-                                    selected === item.record?.series_id
-                                    	? colors.secondaryContainer
-                                    	: 'transparent',
+									selected === item.record?.series_id
+										? colors.secondaryContainer
+										: 'transparent',
 								alignItems: 'center',
 							}}
 						>
@@ -261,10 +265,10 @@ export const MuSearchDialog = ({
 };
 
 type ReleasesDialogProps = {
-    releases: SearchReleasesPostApiResponse['results'] | undefined;
-    animeReleases: AniMediaQuery['Media']['airingSchedule']['nodes'] | undefined;
-    streamingSites: AnimeFull['streaming'];
-    status: MediaStatus;
+	releases: SearchReleasesPostApiResponse['results'] | undefined;
+	animeReleases: AniMediaQuery['Media']['airingSchedule']['nodes'] | undefined;
+	streamingSites: AnimeFull['streaming'];
+	status: MediaStatus;
 } & BasicDialogProps;
 
 export const ReleasesDialog = ({
@@ -318,32 +322,32 @@ export const ReleasesDialog = ({
 					<ScrollView showsVerticalScrollIndicator={false}>
 						{releases
 							? releases?.map((release, idx) => (
-								<List.Item
-									key={idx}
-									title={
-										release.record.chapter?.length > 0
-											? release.record.chapter
-											: `v${release.record.volume}`
-									}
-									description={release.record?.groups[0]?.name}
-									right={(props) => (
-										<Text style={[props.style]}>
-											{release.record?.release_date}
-										</Text>
-									)}
-								/>
-							))
+									<List.Item
+										key={idx}
+										title={
+											release.record.chapter?.length > 0
+												? release.record.chapter
+												: `v${release.record.volume}`
+										}
+										description={release.record?.groups[0]?.name}
+										right={(props) => (
+											<Text style={[props.style]}>
+												{release.record?.release_date}
+											</Text>
+										)}
+									/>
+								))
 							: animeReleases?.map((episode, idx) => (
-								<List.Item
-									key={idx}
-									title={`EP ${episode.episode}`}
-									right={(props) => (
-										<Text style={[props.style]}>
-											{new Date(episode.airingAt * 1000).toLocaleString()}
-										</Text>
-									)}
-								/>
-							))}
+									<List.Item
+										key={idx}
+										title={`EP ${episode.episode}`}
+										right={(props) => (
+											<Text style={[props.style]}>
+												{new Date(episode.airingAt * 1000).toLocaleString()}
+											</Text>
+										)}
+									/>
+								))}
 					</ScrollView>
 				</Dialog.ScrollArea>
 			)}

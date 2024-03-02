@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { DanTagDescDialog } from './tagDescription';
 
 type DanbooruTag = {
-    tag: string;
-    color: string;
-    onPress?: (tag: string) => void;
+	tag: string;
+	color: string;
+	onPress?: (tag: string) => void;
 };
 
 export const TagItem = ({ tag, color, onPress }: DanbooruTag) => {
@@ -26,10 +26,10 @@ export const TagItem = ({ tag, color, onPress }: DanbooruTag) => {
 };
 
 type TagSectionProps = {
-    tags: string;
-    title: string;
-    color: string;
-    disableWiki?: boolean;
+	tags: string;
+	title: string;
+	color: string;
+	disableWiki?: boolean;
 };
 
 export const TagSection = ({ title, tags, color, disableWiki = false }: TagSectionProps) => {

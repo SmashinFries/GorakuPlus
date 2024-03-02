@@ -7,8 +7,8 @@ import { ListHeading } from '@/components/text';
 import { ReviewItem } from '@/components/reviews/reviewItem';
 
 type ReviewProps = {
-    data: AniMediaQuery['Media']['reviews'];
-    openMore: () => void;
+	data: AniMediaQuery['Media']['reviews'];
+	openMore: () => void;
 };
 const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 	const { colors } = useTheme();

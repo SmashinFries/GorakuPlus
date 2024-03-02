@@ -12,9 +12,9 @@ import {
 import { getPieChartColor } from '@/utils';
 
 type FormatPieProps = {
-    data:
-        | UserMangaStatsQuery['User']['statistics']['manga']['formats']
-        | UserAnimeStatsQuery['User']['statistics']['anime']['formats'];
+	data:
+		| UserMangaStatsQuery['User']['statistics']['manga']['formats']
+		| UserAnimeStatsQuery['User']['statistics']['anime']['formats'];
 };
 export const FormatPie = ({ data }: FormatPieProps) => {
 	const { width } = useWindowDimensions();
@@ -60,9 +60,9 @@ export const FormatPie = ({ data }: FormatPieProps) => {
 };
 
 type StatusPieProps = {
-    data:
-        | UserMangaStatsQuery['User']['statistics']['manga']['statuses']
-        | UserAnimeStatsQuery['User']['statistics']['anime']['statuses'];
+	data:
+		| UserMangaStatsQuery['User']['statistics']['manga']['statuses']
+		| UserAnimeStatsQuery['User']['statistics']['anime']['statuses'];
 };
 export const StatusPie = ({ data }: StatusPieProps) => {
 	const { width } = useWindowDimensions();
@@ -105,9 +105,9 @@ export const StatusPie = ({ data }: StatusPieProps) => {
 };
 
 type CountryPieProps = {
-    data:
-        | UserMangaStatsQuery['User']['statistics']['manga']['countries']
-        | UserAnimeStatsQuery['User']['statistics']['anime']['countries'];
+	data:
+		| UserMangaStatsQuery['User']['statistics']['manga']['countries']
+		| UserAnimeStatsQuery['User']['statistics']['anime']['countries'];
 };
 export const CountryPie = ({ data }: CountryPieProps) => {
 	const { width } = useWindowDimensions();

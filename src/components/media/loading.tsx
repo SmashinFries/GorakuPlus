@@ -18,8 +18,8 @@ export const LoadingIcon = ({
 	icon,
 	dark,
 }: {
-    icon: 'ANI' | 'MAL' | 'MU' | 'AT';
-    dark: boolean;
+	icon: 'ANI' | 'MAL' | 'MU' | 'AT';
+	dark: boolean;
 }) => {
 	const iconAnimValue = useSharedValue({ transY: 0, rotateZ: '0deg' });
 
@@ -41,17 +41,17 @@ export const LoadingIcon = ({
 
 	return (
 		<Animated.View
-			// style={[animatedStyle]}
-			// animate={{
-			//     translateY: -15,
-			//     rotateZ: '360deg',
-			// }}
-			// transition={{
-			//     loop: true,
-			//     type: 'timing',
-			//     duration: 1500,
-			//     delay: icon === 'ANI' ? 100 : icon === 'MAL' ? 400 : 700,
-			// }}
+		// style={[animatedStyle]}
+		// animate={{
+		//     translateY: -15,
+		//     rotateZ: '360deg',
+		// }}
+		// transition={{
+		//     loop: true,
+		//     type: 'timing',
+		//     duration: 1500,
+		//     delay: icon === 'ANI' ? 100 : icon === 'MAL' ? 400 : 700,
+		// }}
 		>
 			{icon === 'ANI' ? (
 				<AnilistIcon isDark={dark} />
@@ -69,10 +69,10 @@ export const LoadingIcon = ({
 const LoadingIconMem = memo(LoadingIcon);
 
 type LoadingItemProps = {
-    loading: boolean;
-    dark?: boolean;
-    error?: FetchBaseQueryError | SerializedError;
-    icon: 'ANI' | 'MAL' | 'MU' | 'AT';
+	loading: boolean;
+	dark?: boolean;
+	error?: FetchBaseQueryError | SerializedError;
+	icon: 'ANI' | 'MAL' | 'MU' | 'AT';
 };
 export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
 	const [loadIcon, setLoadIcon] = useState('check');
@@ -102,13 +102,13 @@ export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) =>
 const LoadingItemMem = memo(LoadingItem);
 
 type LoadingProps = {
-    aniLoading: boolean;
-    aniError?: ErrorResponse | SerializedError;
-    malLoading?: boolean;
-    malError?: ErrorResponse | SerializedError;
-    malUnitialized?: boolean;
-    mangaUpdatesLoading?: boolean;
-    mangaUpdatesError?: ErrorResponse | SerializedError;
+	aniLoading: boolean;
+	aniError?: ErrorResponse | SerializedError;
+	malLoading?: boolean;
+	malError?: ErrorResponse | SerializedError;
+	malUnitialized?: boolean;
+	mangaUpdatesLoading?: boolean;
+	mangaUpdatesError?: ErrorResponse | SerializedError;
 };
 
 export const MediaLoading = ({

@@ -4,7 +4,7 @@ import { View, useWindowDimensions } from 'react-native';
 import { MusicItem, MusicVideo, MusicVideoYT } from './video';
 
 type MusicVideoListProps = {
-    music: MainMusic;
+	music: MainMusic;
 };
 export const MusicVideoList = ({ music }: MusicVideoListProps) => {
 	const { width, height } = useWindowDimensions();

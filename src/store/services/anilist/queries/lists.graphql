@@ -1,107 +1,98 @@
 fragment mediaListEntry on MediaList {
-    id
-    mediaId
-    status
-    score
-    progress
-    progressVolumes
-    repeat
-    priority
-    private
-    hiddenFromStatusLists
-    customLists
-    advancedScores
-    createdAt
-    notes
-    updatedAt
-    startedAt {
-        year
-        month
-        day
-    }
-    completedAt {
-        year
-        month
-        day
-    }
-    media {
-        id
-        title {
-            userPreferred
-            romaji
-            english
-            native
-        }
-        coverImage {
-            extraLarge
-            large
-            color
-        }
-        type
-        format
-        status(version: 2)
-        episodes
-        volumes
-        chapters
-        averageScore
-        meanScore
-        popularity
-        isAdult
-        countryOfOrigin
-        genres
-        synonyms
-        isFavourite
-        tags {
-            id
-            name
-            description
-            isAdult
-            isMediaSpoiler
-            isGeneralSpoiler
-            category
-        }
-        bannerImage
-        startDate {
-            year
-            month
-            day
-        }
-        nextAiringEpisode {
-            id
-            airingAt
-            timeUntilAiring
-            episode
-            mediaId
-        }
-        stats {
-            scoreDistribution {
-                score
-                amount
-            }
-        }
-    }
+	id
+	mediaId
+	status
+	score
+	progress
+	progressVolumes
+	repeat
+	priority
+	private
+	hiddenFromStatusLists
+	customLists
+	advancedScores
+	createdAt
+	notes
+	updatedAt
+	startedAt {
+		year
+		month
+		day
+	}
+	completedAt {
+		year
+		month
+		day
+	}
+	media {
+		id
+		title {
+			userPreferred
+			romaji
+			english
+			native
+		}
+		coverImage {
+			extraLarge
+			large
+			color
+		}
+		type
+		format
+		status(version: 2)
+		episodes
+		volumes
+		chapters
+		averageScore
+		meanScore
+		popularity
+		isAdult
+		countryOfOrigin
+		genres
+		synonyms
+		isFavourite
+		tags {
+			id
+			name
+			description
+			isAdult
+			isMediaSpoiler
+			isGeneralSpoiler
+			category
+		}
+		bannerImage
+		startDate {
+			year
+			month
+			day
+		}
+		nextAiringEpisode {
+			id
+			airingAt
+			timeUntilAiring
+			episode
+			mediaId
+		}
+		stats {
+			scoreDistribution {
+				score
+				amount
+			}
+		}
+	}
 }
 
-query UserAnimeListCollection(
-    $userId: Int
-    $userName: String
-    $sort: [MediaListSort]
-) {
-    MediaListCollection(
-        userId: $userId
-        userName: $userName
-        type: ANIME
-        sort: $sort
-    ) {
-        lists {
-            name
-            isCustomList
-            isCompletedList: isSplitCompletedList
-            entries {
-                ...mediaListEntry
-            }
-        }
-        user {
+query UserAnimeListCollection($userId: Int, $userName: String, $sort: [MediaListSort]) {
+	MediaListCollection(userId: $userId, userName: $userName, type: ANIME, sort: $sort) {
+		lists {
+			name
+			isCustomList
+			isCompletedList: isSplitCompletedList
+			entries {
+				...mediaListEntry
+			}
+		}
+		user {
 			statistics {
 				anime {
 					count
@@ -111,29 +102,20 @@ query UserAnimeListCollection(
 				}
 			}
 		}
-    }
+	}
 }
 
-query UserMangaListCollection(
-    $userId: Int
-    $userName: String
-    $sort: [MediaListSort]
-) {
-    MediaListCollection(
-        userId: $userId
-        userName: $userName
-        type: MANGA
-        sort: $sort
-    ) {
-        lists {
-            name
-            isCustomList
-            isCompletedList: isSplitCompletedList
-            entries {
-                ...mediaListEntry
-            }
-        }
-        user {
+query UserMangaListCollection($userId: Int, $userName: String, $sort: [MediaListSort]) {
+	MediaListCollection(userId: $userId, userName: $userName, type: MANGA, sort: $sort) {
+		lists {
+			name
+			isCustomList
+			isCompletedList: isSplitCompletedList
+			entries {
+				...mediaListEntry
+			}
+		}
+		user {
 			statistics {
 				anime {
 					count
@@ -143,20 +125,20 @@ query UserMangaListCollection(
 				}
 			}
 		}
-    }
+	}
 }
 
 query UserCustomLists($userId: Int, $userName: String, $type: MediaType) {
-    MediaListCollection(userId: $userId, userName: $userName, type: $type) {
-        user {
-            mediaListOptions {
-                animeList {
-                    customLists
-                }
-                mangaList {
-                    customLists
-                }
-            }
-        }
-    }
+	MediaListCollection(userId: $userId, userName: $userName, type: $type) {
+		user {
+			mediaListOptions {
+				animeList {
+					customLists
+				}
+				mangaList {
+					customLists
+				}
+			}
+		}
+	}
 }

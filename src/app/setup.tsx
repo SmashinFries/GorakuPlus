@@ -341,7 +341,7 @@ const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 
 	return (
 		<Body pageAnim={pageAnim}>
-			<TitleText title={'Choose a Theme'} description={'Let\'s start by choosing a theme!'} />
+			<TitleText title={'Choose a Theme'} description={"Let's start by choosing a theme!"} />
 			<View style={{ flex: 1, justifyContent: 'center' }}>
 				<View
 					style={{
@@ -845,22 +845,22 @@ const OutroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 
 const RenderPage = ({ page, pageAnim }: Page) => {
 	switch (page) {
-	case 0:
-		return <IntroPage pageAnim={pageAnim} />;
-	case 1:
-		return <ThemeSetup pageAnim={pageAnim} />;
-	case 2:
-		return <AnilistSetup pageAnim={pageAnim} />;
-	case 3:
-		return <CardSetup pageAnim={pageAnim} />;
-	case 4:
-		return <TagBLSetup pageAnim={pageAnim} />;
-	case 5:
-		return <TabSetup pageAnim={pageAnim} />;
-	case 6:
-		return <OutroPage pageAnim={pageAnim} />;
-	default:
-		return <View />;
+		case 0:
+			return <IntroPage pageAnim={pageAnim} />;
+		case 1:
+			return <ThemeSetup pageAnim={pageAnim} />;
+		case 2:
+			return <AnilistSetup pageAnim={pageAnim} />;
+		case 3:
+			return <CardSetup pageAnim={pageAnim} />;
+		case 4:
+			return <TagBLSetup pageAnim={pageAnim} />;
+		case 5:
+			return <TabSetup pageAnim={pageAnim} />;
+		case 6:
+			return <OutroPage pageAnim={pageAnim} />;
+		default:
+			return <View />;
 	}
 };
 

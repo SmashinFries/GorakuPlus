@@ -10,11 +10,11 @@ import { SearchType } from '@/types/search';
 
 // Define a type for the slice state
 export interface HistoryState {
-    filter?: ExploreMediaQueryVariables;
-    search?: string[];
-    searchType?: SearchType;
-    searchLimit?: number;
-    enableTagBlacklist?: boolean;
+	filter?: ExploreMediaQueryVariables;
+	search?: string[];
+	searchType?: SearchType;
+	searchLimit?: number;
+	enableTagBlacklist?: boolean;
 }
 
 // Define the initial state using that type

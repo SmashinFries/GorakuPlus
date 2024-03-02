@@ -10,10 +10,10 @@ import { Selectable } from '../moti';
 import { memo } from 'react';
 
 type CharacterItemProps = {
-    item: CharacterListQuery['Media']['characters']['edges'][0];
-    index: number;
-    subTextColor: string;
-    onNavigation: (id: number) => void;
+	item: CharacterListQuery['Media']['characters']['edges'][0];
+	index: number;
+	subTextColor: string;
+	onNavigation: (id: number) => void;
 };
 
 const BORDER_RADIUS = 12;
@@ -57,9 +57,9 @@ export const CharacterLabel = ({
 	favourites,
 	fontColor,
 }: {
-    role: string;
-    favourites: number;
-    fontColor?: string;
+	role: string;
+	favourites: number;
+	fontColor?: string;
 }) => {
 	return (
 		<View>
@@ -74,7 +74,7 @@ export const CharacterLabel = ({
 					color: fontColor ?? 'white',
 				}}
 			>
-                ❤️ {favourites}
+				❤️ {favourites}
 			</Text>
 		</View>
 	);

@@ -31,12 +31,12 @@ import {
 import dummyData from '@/constants/dummyData';
 
 type SliderViewProps = {
-    title: string;
-    score: number;
-    setScore: (value: number) => void;
-    trackColor: string;
-    lowerLimit?: number;
-    upperLimit?: number;
+	title: string;
+	score: number;
+	setScore: (value: number) => void;
+	trackColor: string;
+	lowerLimit?: number;
+	upperLimit?: number;
 };
 const SliderView = ({
 	score,
@@ -66,11 +66,11 @@ const SliderView = ({
 };
 
 type DialogProps = {
-    visible: boolean;
-    onDismiss: () => void;
-    red: number;
-    yellow: number;
-    updateScoreColor: (red: number, yellow: number) => any;
+	visible: boolean;
+	onDismiss: () => void;
+	red: number;
+	yellow: number;
+	updateScoreColor: (red: number, yellow: number) => any;
 };
 export const ScoreColorDialog = ({
 	onDismiss,
@@ -126,7 +126,7 @@ export const ScoreColorDialog = ({
 							setYellow(yellow ?? 74);
 						}}
 					>
-                        Reset
+						Reset
 					</Button>
 					<ScoreContainer
 						score={newYellow}
@@ -186,10 +186,10 @@ export const ScoreColorDialog = ({
 // }
 
 type ScoreDialogProps = {
-    visible: boolean;
-    defaultScore: 'average' | 'mean';
-    updateDefaultScore: (defaultScore: 'average' | 'mean') => void;
-    onDismiss: () => void;
+	visible: boolean;
+	defaultScore: 'average' | 'mean';
+	updateDefaultScore: (defaultScore: 'average' | 'mean') => void;
+	onDismiss: () => void;
 };
 export const DefaultScoreDialog = ({
 	visible,
@@ -237,14 +237,14 @@ export const DefaultScoreDialog = ({
 };
 
 type MediaTileCustomizerProps = {
-    visible: boolean;
-    scoreVisualType: ScoreVisualType;
-    scoreColors: { red: number; yellow: number };
-    themeMode: ThemeOptions;
-    showItemListStatus: boolean;
-    mediaLanguage: 'english' | 'romaji' | 'native';
-    onSettingChange: (props: mediaCardAppearanceActions) => void;
-    onDismiss: () => void;
+	visible: boolean;
+	scoreVisualType: ScoreVisualType;
+	scoreColors: { red: number; yellow: number };
+	themeMode: ThemeOptions;
+	showItemListStatus: boolean;
+	mediaLanguage: 'english' | 'romaji' | 'native';
+	onSettingChange: (props: mediaCardAppearanceActions) => void;
+	onDismiss: () => void;
 };
 export const MediaTileCustomizer = ({
 	visible,
@@ -303,7 +303,7 @@ export const MediaTileCustomizer = ({
 					<MediaProgressBar
 						progress={
 							(dummyData[themeMode].episodes ??
-                                dummyData[themeMode].mediaListEntry.progress) / 2
+								dummyData[themeMode].mediaListEntry.progress) / 2
 						}
 						total={dummyData[themeMode].episodes ?? dummyData[themeMode].chapters}
 						mediaStatus={dummyData[themeMode].status}

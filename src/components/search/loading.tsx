@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 
 type EmptyLoadViewProps = {
-    isLoading: boolean;
-    message?: string;
-    isUninitialized?: boolean;
+	isLoading: boolean;
+	message?: string;
+	isUninitialized?: boolean;
 };
 export const EmptyLoadView = ({
 	isLoading,

@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 import RenderHTML from 'react-native-render-html';
 
 type CommentaryProps = {
-    data: DanArtistCommentary;
+	data: DanArtistCommentary;
 };
 export const Commentary = ({ data }: CommentaryProps) => {
 	if (!data[0]?.original_description) {
