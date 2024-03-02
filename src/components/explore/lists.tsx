@@ -9,6 +9,7 @@ import { MediaCard, MediaProgressBar } from '../cards';
 import { router } from 'expo-router';
 import { BackgroundArt } from './bg';
 import { FlatList } from 'react-native-gesture-handler';
+import { GorakuActivityIndicator } from '../loading';
 
 type RefreshableScrollProps = {
     children: React.ReactNode;
@@ -155,7 +156,8 @@ export const SectionScroll = ({
                             style={{ alignSelf: 'center', height: 240, width: 230 }}
                             contentFit="contain"
                         /> */}
-                        <ActivityIndicator size={'large'} />
+                        {/* <ActivityIndicator size={'large'} /> */}
+                        <GorakuActivityIndicator />
                     </View>
                 )}
             </View>
