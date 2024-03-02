@@ -6,8 +6,8 @@ import { useAppTheme } from '@/store/theme/theme';
 import { SaveImageDialog } from '@/utils/images';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
-import { useCallback, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { FlatList, Pressable, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 type ScreenshotItemProps = {
@@ -19,15 +19,16 @@ const ScreenshotItem = ({
     index,
     onDownload,
 }: ScreenshotItemProps & { onDownload: (img: string) => void }) => {
-    const { blurAmount, toggleBlur } = useBlur();
+    const { blurAmount, isBlur, toggleBlur } = useBlur();
+    
     const { colors } = useAppTheme();
     return (
         <Pressable
-            onPress={() => {
+            onPress={!isBlur ? () => {
                 onDownload(item.thumbnail);
-            }}
+            } : null}
             onLongPress={toggleBlur}
-            style={{ marginHorizontal: 5, height: 160, aspectRatio: 16 / 9 }}
+            style={{ marginHorizontal: 5, height: 180, aspectRatio: 16 / 9 }}
         >
             <Image
                 source={{ uri: item.thumbnail }}
@@ -71,12 +72,12 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
                 subtitle="Contains spoilers!"
                 subtitleStyle={{ color: colors.onSurfaceVariant }}
             />
-            <View style={{ width: '100%', height: 160 }}>
-                <FlashList
+            <View style={{ width: '100%', height: 180 }}>
+                <FlatList
                     data={data}
                     renderItem={RenderItem}
                     keyExtractor={(item, index) => index.toString()}
-                    estimatedItemSize={250}
+                    // estimatedItemSize={250}
                     horizontal
                     contentContainerStyle={{ padding: 15 }}
                     showsHorizontalScrollIndicator={false}
