@@ -4,66 +4,66 @@ import { memo, useEffect, useState } from 'react';
 import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
 import { SerializedError } from '@reduxjs/toolkit';
 import Animated, {
-    Easing,
-    FadeIn,
-    FadeOut,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming,
+	Easing,
+	FadeIn,
+	FadeOut,
+	useAnimatedStyle,
+	useSharedValue,
+	withRepeat,
+	withTiming,
 } from 'react-native-reanimated';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 
 export const LoadingIcon = ({
-    icon,
-    dark,
+	icon,
+	dark,
 }: {
     icon: 'ANI' | 'MAL' | 'MU' | 'AT';
     dark: boolean;
 }) => {
-    const iconAnimValue = useSharedValue({ transY: 0, rotateZ: '0deg' });
+	const iconAnimValue = useSharedValue({ transY: 0, rotateZ: '0deg' });
 
-    // const animatedStyle = useAnimatedStyle(() => {
-    //     return {
-    //         transform: [
-    //             { translateY: iconAnimValue.value.transY },
-    //             { rotateZ: iconAnimValue.value.rotateZ },
-    //         ],
-    //     };
-    // });
+	// const animatedStyle = useAnimatedStyle(() => {
+	//     return {
+	//         transform: [
+	//             { translateY: iconAnimValue.value.transY },
+	//             { rotateZ: iconAnimValue.value.rotateZ },
+	//         ],
+	//     };
+	// });
 
-    useEffect(() => {
-        iconAnimValue.value = {
-            transY: withRepeat(withTiming(-15, { duration: 1500 })),
-            rotateZ: withRepeat(withTiming('360deg', { duration: 1500 }), -1),
-        };
-    }, []);
+	useEffect(() => {
+		iconAnimValue.value = {
+			transY: withRepeat(withTiming(-15, { duration: 1500 })),
+			rotateZ: withRepeat(withTiming('360deg', { duration: 1500 }), -1),
+		};
+	}, []);
 
-    return (
-        <Animated.View
-        // style={[animatedStyle]}
-        // animate={{
-        //     translateY: -15,
-        //     rotateZ: '360deg',
-        // }}
-        // transition={{
-        //     loop: true,
-        //     type: 'timing',
-        //     duration: 1500,
-        //     delay: icon === 'ANI' ? 100 : icon === 'MAL' ? 400 : 700,
-        // }}
-        >
-            {icon === 'ANI' ? (
-                <AnilistIcon isDark={dark} />
-            ) : icon === 'MAL' ? (
-                <MalIcon />
-            ) : icon === 'MU' ? (
-                <MangaUpdatesIcon />
-            ) : (
-                <AnimeThemesIcon isDark={dark} />
-            )}
-        </Animated.View>
-    );
+	return (
+		<Animated.View
+			// style={[animatedStyle]}
+			// animate={{
+			//     translateY: -15,
+			//     rotateZ: '360deg',
+			// }}
+			// transition={{
+			//     loop: true,
+			//     type: 'timing',
+			//     duration: 1500,
+			//     delay: icon === 'ANI' ? 100 : icon === 'MAL' ? 400 : 700,
+			// }}
+		>
+			{icon === 'ANI' ? (
+				<AnilistIcon isDark={dark} />
+			) : icon === 'MAL' ? (
+				<MalIcon />
+			) : icon === 'MU' ? (
+				<MangaUpdatesIcon />
+			) : (
+				<AnimeThemesIcon isDark={dark} />
+			)}
+		</Animated.View>
+	);
 };
 
 const LoadingIconMem = memo(LoadingIcon);
@@ -75,28 +75,28 @@ type LoadingItemProps = {
     icon: 'ANI' | 'MAL' | 'MU' | 'AT';
 };
 export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
-    const [loadIcon, setLoadIcon] = useState('check');
-    const { colors } = useTheme();
-    useEffect(() => {
-        if (loading === null) {
-            setLoadIcon('cancel');
-        } else if (loading === false && !error) {
-            setLoadIcon('check');
-        }
-    }, []);
-    return (
-        <Animated.View style={{ padding: 20 }}>
-            <LoadingIconMem icon={icon} dark={dark} />
-            {loading ? (
-                <ActivityIndicator style={{ paddingTop: 10 }} />
-            ) : (
-                <IconButton
-                    icon={loadIcon}
-                    iconColor={loadIcon === 'check' ? colors.primary : colors.error}
-                />
-            )}
-        </Animated.View>
-    );
+	const [loadIcon, setLoadIcon] = useState('check');
+	const { colors } = useTheme();
+	useEffect(() => {
+		if (loading === null) {
+			setLoadIcon('cancel');
+		} else if (loading === false && !error) {
+			setLoadIcon('check');
+		}
+	}, []);
+	return (
+		<Animated.View style={{ padding: 20 }}>
+			<LoadingIconMem icon={icon} dark={dark} />
+			{loading ? (
+				<ActivityIndicator style={{ paddingTop: 10 }} />
+			) : (
+				<IconButton
+					icon={loadIcon}
+					iconColor={loadIcon === 'check' ? colors.primary : colors.error}
+				/>
+			)}
+		</Animated.View>
+	);
 };
 
 const LoadingItemMem = memo(LoadingItem);
@@ -112,41 +112,41 @@ type LoadingProps = {
 };
 
 export const MediaLoading = ({
-    aniLoading,
-    malLoading,
-    mangaUpdatesLoading,
-    aniError,
-    malError,
-    mangaUpdatesError,
+	aniLoading,
+	malLoading,
+	mangaUpdatesLoading,
+	aniError,
+	malError,
+	mangaUpdatesError,
 }: LoadingProps) => {
-    const { dark } = useTheme();
+	const { dark } = useTheme();
 
-    return (
-        <Animated.View
-            style={[
-                {
-                    width: '100%',
-                    height: '100%',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                },
-            ]}
-            entering={FadeIn.duration(500).easing(Easing.ease)}
-            exiting={FadeOut.duration(500).easing(Easing.ease)}
-        >
-            <LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
-            <LoadingItemMem loading={malLoading} dark={dark} error={malError} icon="MAL" />
-            {mangaUpdatesLoading !== null && (
-                <LoadingItemMem
-                    loading={mangaUpdatesLoading}
-                    dark={dark}
-                    error={mangaUpdatesError}
-                    icon="MU"
-                />
-            )}
-        </Animated.View>
-    );
+	return (
+		<Animated.View
+			style={[
+				{
+					width: '100%',
+					height: '100%',
+					justifyContent: 'center',
+					flexDirection: 'row',
+					alignItems: 'center',
+				},
+			]}
+			entering={FadeIn.duration(500).easing(Easing.ease)}
+			exiting={FadeOut.duration(500).easing(Easing.ease)}
+		>
+			<LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
+			<LoadingItemMem loading={malLoading} dark={dark} error={malError} icon="MAL" />
+			{mangaUpdatesLoading !== null && (
+				<LoadingItemMem
+					loading={mangaUpdatesLoading}
+					dark={dark}
+					error={mangaUpdatesError}
+					icon="MU"
+				/>
+			)}
+		</Animated.View>
+	);
 };
 
 export const MediaLoadingMem = memo(MediaLoading);

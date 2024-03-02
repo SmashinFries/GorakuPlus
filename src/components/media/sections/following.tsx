@@ -11,38 +11,38 @@ type FollowingPrevListProps = {
     data: AniMediaQuery['Page']['mediaList'];
 };
 export const FollowingPrevList = ({ data }: FollowingPrevListProps) => {
-    const keyExtractor = useCallback((item, index) => index.toString(), []);
-    const renderItem = useCallback(
-        ({ item }: { item: AniMediaQuery['Page']['mediaList'][0] }) => (
-            <UserCard
-                avatarImg={item.user?.avatar?.large}
-                username={item.user?.name}
-                status={item.status}
-                onPress={() => openWebBrowser(`https://anilist.co/user/${item.user?.name}`)}
-            />
-        ),
-        [],
-    );
+	const keyExtractor = useCallback((item, index) => index.toString(), []);
+	const renderItem = useCallback(
+		({ item }: { item: AniMediaQuery['Page']['mediaList'][0] }) => (
+			<UserCard
+				avatarImg={item.user?.avatar?.large}
+				username={item.user?.name}
+				status={item.status}
+				onPress={() => openWebBrowser(`https://anilist.co/user/${item.user?.name}`)}
+			/>
+		),
+		[],
+	);
 
-    if (data?.length < 1) {
-        return null;
-    }
+	if (data?.length < 1) {
+		return null;
+	}
 
-    return (
-        <View>
-            <ListHeading title="Following" />
-            <FlashList
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-                horizontal
-                removeClippedSubviews
-                estimatedItemSize={120}
-                contentContainerStyle={{ padding: 15 }}
-                showsHorizontalScrollIndicator={false}
-            />
-        </View>
-    );
+	return (
+		<View>
+			<ListHeading title="Following" />
+			<FlashList
+				data={data}
+				renderItem={renderItem}
+				keyExtractor={keyExtractor}
+				horizontal
+				removeClippedSubviews
+				estimatedItemSize={120}
+				contentContainerStyle={{ padding: 15 }}
+				showsHorizontalScrollIndicator={false}
+			/>
+		</View>
+	);
 };
 
 export const FollowingPrevListMem = memo(FollowingPrevList);

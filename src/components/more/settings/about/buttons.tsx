@@ -14,29 +14,29 @@ type LinkButtonProps = {
     size?: number;
 };
 export const LinkButton = ({
-    url,
-    icon,
-    label,
-    iconColor,
-    transparentBg,
-    bgColor,
-    size,
+	url,
+	icon,
+	label,
+	iconColor,
+	transparentBg,
+	bgColor,
+	size,
 }: LinkButtonProps) => {
-    return (
-        <View style={{ alignItems: 'center', marginHorizontal: 10, marginBottom: 20 }}>
-            <IconButton
-                mode="contained"
-                size={size ?? 36}
-                iconColor={iconColor ?? undefined}
-                icon={icon}
-                onPress={() => openWebBrowser(url)}
-                onLongPress={() => copyToClipboard(url)}
-                style={[
-                    transparentBg && { backgroundColor: 'transparent', borderRadius: 0 },
-                    bgColor && { backgroundColor: bgColor },
-                ]}
-            />
-            {label ? <Text numberOfLines={2}>{label}</Text> : null}
-        </View>
-    );
+	return (
+		<View style={{ alignItems: 'center', marginHorizontal: 10, marginBottom: 20 }}>
+			<IconButton
+				mode="contained"
+				size={size ?? 36}
+				iconColor={iconColor ?? undefined}
+				icon={icon}
+				onPress={() => openWebBrowser(url)}
+				onLongPress={() => copyToClipboard(url)}
+				style={[
+					transparentBg && { backgroundColor: 'transparent', borderRadius: 0 },
+					bgColor && { backgroundColor: bgColor },
+				]}
+			/>
+			{label ? <Text numberOfLines={2}>{label}</Text> : null}
+		</View>
+	);
 };

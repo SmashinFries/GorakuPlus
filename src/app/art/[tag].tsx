@@ -10,62 +10,62 @@ import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
 
 const ArtListPage = () => {
-    const { tag } = useLocalSearchParams();
-    const { width, height } = useWindowDimensions();
-    const { showNSFW } = useAppSelector((state) => state.persistedSettings);
-    const [searchPosts] = useLazySearchPostsQuery();
-    const [results, setResults] = useState<DanPost[]>([]);
-    const [page, setPage] = useState<number>(1);
-    const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+	const { tag } = useLocalSearchParams();
+	const { width, height } = useWindowDimensions();
+	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+	const [searchPosts] = useLazySearchPostsQuery();
+	const [results, setResults] = useState<DanPost[]>([]);
+	const [page, setPage] = useState<number>(1);
+	const [hasNextPage, setHasNextPage] = useState<boolean>(true);
 
-    const onSearch = async (page_num = 1) => {
-        setPage(page_num);
-        const response = await searchPosts({
-            tags: showNSFW ? tag + ' solo' : tag + ' solo rating:g',
-            limit: 24,
-            page: page_num,
-        }).unwrap();
-        if (response.length < 23) {
-            setHasNextPage(false);
-        }
-        if (page_num > 1) {
-            setResults((prev) => [...prev, ...response]);
-        } else {
-            setResults(response);
-        }
-    };
+	const onSearch = async (page_num = 1) => {
+		setPage(page_num);
+		const response = await searchPosts({
+			tags: showNSFW ? tag + ' solo' : tag + ' solo rating:g',
+			limit: 24,
+			page: page_num,
+		}).unwrap();
+		if (response.length < 23) {
+			setHasNextPage(false);
+		}
+		if (page_num > 1) {
+			setResults((prev) => [...prev, ...response]);
+		} else {
+			setResults(response);
+		}
+	};
 
-    const RenderItem = useCallback(({ item }: { item: DanPost }) => {
-        return (
-            <View style={{ flex:1, margin: 5,  }}>
-                <DanbooruImageCard item={item} onNavigate={(id) => router.push(`art/post/${id}`)} />
-            </View>
-        );
-    }, []);
+	const RenderItem = useCallback(({ item }: { item: DanPost }) => {
+		return (
+			<View style={{ flex:1, margin: 5,  }}>
+				<DanbooruImageCard item={item} onNavigate={(id) => router.push(`art/post/${id}`)} />
+			</View>
+		);
+	}, []);
 
-    useEffect(() => {
-        if (results.length === 0) {
-            onSearch();
-        }
-    }, []);
+	useEffect(() => {
+		if (results.length === 0) {
+			onSearch();
+		}
+	}, []);
 
-    return (
-        <View style={{ width: '100%', flex: 1 }}>
-            {results.length > 0 ? (
-                <MasonryFlashList
-                    data={results}
-                    numColumns={2}
-                    renderItem={RenderItem}
-                    estimatedItemSize={200}
-                    onEndReachedThreshold={0.7}
-                    onEndReached={() => hasNextPage && onSearch(page + 1)}
-                />
-            ) : (
-                <GorakuActivityIndicator />
-            )}
-            <Stack.Screen options={{ title: tag as string }} />
-        </View>
-    );
+	return (
+		<View style={{ width: '100%', flex: 1 }}>
+			{results.length > 0 ? (
+				<MasonryFlashList
+					data={results}
+					numColumns={2}
+					renderItem={RenderItem}
+					estimatedItemSize={200}
+					onEndReachedThreshold={0.7}
+					onEndReached={() => hasNextPage && onSearch(page + 1)}
+				/>
+			) : (
+				<GorakuActivityIndicator />
+			)}
+			<Stack.Screen options={{ title: tag as string }} />
+		</View>
+	);
 };
 
 export default ArtListPage;

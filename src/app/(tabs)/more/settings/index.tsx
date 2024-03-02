@@ -9,65 +9,65 @@ import { restartSetup } from '@/store/slices/setupSlice';
 WebBrowser.maybeCompleteAuthSession();
 
 const SettingsHomePage = () => {
-    const { colors } = useTheme();
-    const dispatch = useAppDispatch();
-    return (
-        <ScrollView>
-            <List.Item
-                title={'Appearance'}
-                description={'Themes, media cards, and more'}
-                onPress={() => {
-                    router.push('/more/settings/appearance');
-                }}
-                left={(props) => (
-                    <List.Icon {...props} color={colors.primary} icon="palette-outline" />
-                )}
-            />
-            <List.Item
-                title={'Content'}
-                description={'Tab Order, NSFW, Tag Blacklist, and more'}
-                onPress={() => {
-                    router.push('/more/settings/media');
-                }}
-                left={(props) => <List.Icon {...props} color={colors.primary} icon="television" />}
-            />
-            <List.Item
-                title={'Language'}
-                description={'App and media title langauge'}
-                onPress={() => {
-                    router.push('/more/settings/language');
-                }}
-                left={(props) => <List.Icon {...props} color={colors.primary} icon="translate" />}
-            />
-            <List.Item
-                title={'Notifications'}
-                description={'Episode updates and more'}
-                onPress={() => {
-                    router.push('/more/settings/notifications');
-                }}
-                left={(props) => (
-                    <List.Icon {...props} color={colors.primary} icon="bell-outline" />
-                )}
-            />
-            <List.Item
-                title={'Storage'}
-                description={'Clear caches'}
-                onPress={() => {
-                    router.push('/more/settings/storage');
-                }}
-                left={(props) => (
-                    <List.Icon {...props} color={colors.primary} icon="database-cog-outline" />
-                )}
-            />
-            <List.Item
-                title={'Setup Guide'}
-                description={'Guide for a minimal and easy setup'}
-                onPress={() => dispatch(restartSetup())}
-                left={(props) => (
-                    <List.Icon {...props} color={colors.primary} icon="map-marker-path" />
-                )}
-            />
-            {/* <List.Item
+	const { colors } = useTheme();
+	const dispatch = useAppDispatch();
+	return (
+		<ScrollView>
+			<List.Item
+				title={'Appearance'}
+				description={'Themes, media cards, and more'}
+				onPress={() => {
+					router.push('/more/settings/appearance');
+				}}
+				left={(props) => (
+					<List.Icon {...props} color={colors.primary} icon="palette-outline" />
+				)}
+			/>
+			<List.Item
+				title={'Content'}
+				description={'Tab Order, NSFW, Tag Blacklist, and more'}
+				onPress={() => {
+					router.push('/more/settings/media');
+				}}
+				left={(props) => <List.Icon {...props} color={colors.primary} icon="television" />}
+			/>
+			<List.Item
+				title={'Language'}
+				description={'App and media title langauge'}
+				onPress={() => {
+					router.push('/more/settings/language');
+				}}
+				left={(props) => <List.Icon {...props} color={colors.primary} icon="translate" />}
+			/>
+			<List.Item
+				title={'Notifications'}
+				description={'Episode updates and more'}
+				onPress={() => {
+					router.push('/more/settings/notifications');
+				}}
+				left={(props) => (
+					<List.Icon {...props} color={colors.primary} icon="bell-outline" />
+				)}
+			/>
+			<List.Item
+				title={'Storage'}
+				description={'Clear caches'}
+				onPress={() => {
+					router.push('/more/settings/storage');
+				}}
+				left={(props) => (
+					<List.Icon {...props} color={colors.primary} icon="database-cog-outline" />
+				)}
+			/>
+			<List.Item
+				title={'Setup Guide'}
+				description={'Guide for a minimal and easy setup'}
+				onPress={() => dispatch(restartSetup())}
+				left={(props) => (
+					<List.Icon {...props} color={colors.primary} icon="map-marker-path" />
+				)}
+			/>
+			{/* <List.Item
                 title={'Animations'}
                 description={'Adjust navigation animations'}
                 onPress={() => {
@@ -75,8 +75,8 @@ const SettingsHomePage = () => {
                 }}
                 left={(props) => <List.Icon {...props} icon="animation-outline" />}
             /> */}
-        </ScrollView>
-    );
+		</ScrollView>
+	);
 };
 
 export default SettingsHomePage;

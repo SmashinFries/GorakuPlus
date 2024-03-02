@@ -18,44 +18,44 @@ export interface PresetState {
 
 // Define the initial state using that type
 const initialState: PresetState = {
-    tagPresets: [
-        {
-            title: '⚔💖Romance Isekai',
-            genres_in: ['fantasy', 'romance'],
-            genres_not_in: [],
-            tags_in: ['isekai'],
-            tags_not_in: [],
-        },
-        {
-            title: 'Psychological Tragedy',
-            genres_in: ['psychological'],
-            genres_not_in: [],
-            tags_in: ['philosophy', 'tragedy'],
-            tags_not_in: [],
-        },
-    ],
+	tagPresets: [
+		{
+			title: '⚔💖Romance Isekai',
+			genres_in: ['fantasy', 'romance'],
+			genres_not_in: [],
+			tags_in: ['isekai'],
+			tags_not_in: [],
+		},
+		{
+			title: 'Psychological Tragedy',
+			genres_in: ['psychological'],
+			genres_not_in: [],
+			tags_in: ['philosophy', 'tragedy'],
+			tags_not_in: [],
+		},
+	],
 };
 
 export const presetSlice = createSlice({
-    name: 'preset',
-    // `createSlice` will infer the state type from the `initialState` argument
-    initialState,
-    reducers: {
-        addPreset: (state, action: PayloadAction<Preset>) => {
-            state.tagPresets = [...state.tagPresets, { ...action.payload }];
-        },
-        removePreset: (state, action: PayloadAction<string>) => {
-            state.tagPresets = state.tagPresets.filter((_, index) => _.title !== action.payload);
-        },
-        editPreset: (state, action: PayloadAction<Preset>) => {
-            state.tagPresets = state.tagPresets.map((_, index) => {
-                if (_.title === action.payload.title) {
-                    return action.payload;
-                }
-                return _;
-            });
-        },
-    },
+	name: 'preset',
+	// `createSlice` will infer the state type from the `initialState` argument
+	initialState,
+	reducers: {
+		addPreset: (state, action: PayloadAction<Preset>) => {
+			state.tagPresets = [...state.tagPresets, { ...action.payload }];
+		},
+		removePreset: (state, action: PayloadAction<string>) => {
+			state.tagPresets = state.tagPresets.filter((_, index) => _.title !== action.payload);
+		},
+		editPreset: (state, action: PayloadAction<Preset>) => {
+			state.tagPresets = state.tagPresets.map((_, index) => {
+				if (_.title === action.payload.title) {
+					return action.payload;
+				}
+				return _;
+			});
+		},
+	},
 });
 
 export const { addPreset, editPreset, removePreset } = presetSlice.actions;

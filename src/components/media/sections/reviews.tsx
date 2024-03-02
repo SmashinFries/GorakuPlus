@@ -11,39 +11,39 @@ type ReviewProps = {
     openMore: () => void;
 };
 const ReviewsSection = ({ data, openMore }: ReviewProps) => {
-    const { colors } = useTheme();
+	const { colors } = useTheme();
 
-    const keyExtractor = useCallback((item, index) => index.toString(), []);
+	const keyExtractor = useCallback((item, index) => index.toString(), []);
 
-    if (data?.edges?.length < 1) {
-        return null;
-    }
+	if (data?.edges?.length < 1) {
+		return null;
+	}
 
-    return (
-        <View style={{ overflow: 'visible' }}>
-            <ListHeading
-                title="Reviews (beta)"
-                icon={data.pageInfo.hasNextPage ? 'arrow-right' : undefined}
-                onIconPress={openMore}
-            />
-            <FlashList
-                data={data?.edges}
-                renderItem={(info) => (
-                    <ReviewItem
-                        {...info}
-                        backgroundColor={colors.elevation.level5}
-                        iconColor={colors.onBackground}
-                    />
-                )}
-                keyExtractor={keyExtractor}
-                estimatedItemSize={250}
-                horizontal
-                removeClippedSubviews
-                contentContainerStyle={{ padding: 15 }}
-                showsHorizontalScrollIndicator={false}
-            />
-        </View>
-    );
+	return (
+		<View style={{ overflow: 'visible' }}>
+			<ListHeading
+				title="Reviews (beta)"
+				icon={data.pageInfo.hasNextPage ? 'arrow-right' : undefined}
+				onIconPress={openMore}
+			/>
+			<FlashList
+				data={data?.edges}
+				renderItem={(info) => (
+					<ReviewItem
+						{...info}
+						backgroundColor={colors.elevation.level5}
+						iconColor={colors.onBackground}
+					/>
+				)}
+				keyExtractor={keyExtractor}
+				estimatedItemSize={250}
+				horizontal
+				removeClippedSubviews
+				contentContainerStyle={{ padding: 15 }}
+				showsHorizontalScrollIndicator={false}
+			/>
+		</View>
+	);
 };
 
 export const ReviewsSectionMem = memo(ReviewsSection);

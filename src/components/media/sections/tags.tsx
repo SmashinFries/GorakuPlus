@@ -12,33 +12,33 @@ type TagViewProps = {
     tags?: MediaTag[];
 };
 const TagView = ({ genres, tags }: TagViewProps) => {
-    const [currentTag, setCurrentTag] = React.useState<MediaTag | null>(tags[0] ?? null);
-    const [visible, setVisible] = React.useState(false);
-    const openTag = (tag: MediaTag) => {
-        if (tag.isAdult && !showNSFW) return;
-        setCurrentTag(tag);
-        setVisible(true);
-    };
+	const [currentTag, setCurrentTag] = React.useState<MediaTag | null>(tags[0] ?? null);
+	const [visible, setVisible] = React.useState(false);
+	const openTag = (tag: MediaTag) => {
+		if (tag.isAdult && !showNSFW) return;
+		setCurrentTag(tag);
+		setVisible(true);
+	};
 
-    const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
 
-    const closeTag = () => setVisible(false);
+	const closeTag = () => setVisible(false);
 
-    return (
-        <View style={{ marginVertical: 15, paddingHorizontal: 10 }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {genres?.map((genres, index) => (
-                    <Chip key={index} style={{ paddingHorizontal: 5, marginHorizontal: 8 }}>
-                        {genres}
-                    </Chip>
-                ))}
-                {tags?.map((tag, index) => (
-                    <Tag key={index} allowAdult={showNSFW} tag={tag} openTag={openTag} />
-                ))}
-            </ScrollView>
-            {tags && <TagDialog visible={visible} onDismiss={closeTag} tag={currentTag} />}
-        </View>
-    );
+	return (
+		<View style={{ marginVertical: 15, paddingHorizontal: 10 }}>
+			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				{genres?.map((genres, index) => (
+					<Chip key={index} style={{ paddingHorizontal: 5, marginHorizontal: 8 }}>
+						{genres}
+					</Chip>
+				))}
+				{tags?.map((tag, index) => (
+					<Tag key={index} allowAdult={showNSFW} tag={tag} openTag={openTag} />
+				))}
+			</ScrollView>
+			{tags && <TagDialog visible={visible} onDismiss={closeTag} tag={currentTag} />}
+		</View>
+	);
 };
 
 export default TagView;

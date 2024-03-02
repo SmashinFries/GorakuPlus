@@ -4,20 +4,20 @@ import { useAppSelector } from '@/store/hooks';
 import { Stack } from 'expo-router';
 
 const UserLayout = () => {
-    const { username } = useAppSelector((state) => state.persistedAniLogin);
+	const { username } = useAppSelector((state) => state.persistedAniLogin);
 
-    return (
-        <AnimatedStack
-            screenOptions={{
-                header: (props) => <PaperHeader {...props} />,
-            }}
-        >
-            <Stack.Screen
-                name="index"
-                options={{ title: username ?? 'User', headerShown: false }}
-            />
-        </AnimatedStack>
-    );
+	return (
+		<AnimatedStack
+			screenOptions={{
+				header: (props) => <PaperHeader {...props} />,
+			}}
+		>
+			<Stack.Screen
+				name="index"
+				options={{ title: username ?? 'User', headerShown: false }}
+			/>
+		</AnimatedStack>
+	);
 };
 
 export default UserLayout;

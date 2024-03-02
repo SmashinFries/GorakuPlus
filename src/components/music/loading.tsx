@@ -13,22 +13,22 @@ type LoadingProps = {
 };
 
 export const MusicLoading = ({ isLoading, error }: LoadingProps) => {
-    const { dark } = useTheme();
-    return (
-        <Animated.View
-            style={[
-                {
-                    width: '100%',
-                    height: '100%',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                },
-            ]}
-            entering={FadeIn.duration(500).easing(Easing.ease)}
-            exiting={FadeOut.duration(500).easing(Easing.ease)}
-        >
-            <LoadingItem loading={isLoading} dark={dark} error={error} icon="AT" />
-        </Animated.View>
-    );
+	const { dark } = useTheme();
+	return (
+		<Animated.View
+			style={[
+				{
+					width: '100%',
+					height: '100%',
+					justifyContent: 'center',
+					flexDirection: 'row',
+					alignItems: 'center',
+				},
+			]}
+			entering={FadeIn.duration(500).easing(Easing.ease)}
+			exiting={FadeOut.duration(500).easing(Easing.ease)}
+		>
+			<LoadingItem loading={isLoading} dark={dark} error={error} icon="AT" />
+		</Animated.View>
+	);
 };

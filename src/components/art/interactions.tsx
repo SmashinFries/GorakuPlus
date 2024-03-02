@@ -11,34 +11,34 @@ type InteractionBarProps = {
     name: string;
 };
 export const InteractionBar = ({ url, name, share_url }: InteractionBarProps) => {
-    const { colors } = useTheme();
-    return (
-        <View style={[styles.container]}>
-            <Divider />
-            <View style={[styles.iconsContainer]}>
-                <IconButton icon="download-outline" onPress={() => saveImage(url, name)} />
-                {/* <IconButton
+	const { colors } = useTheme();
+	return (
+		<View style={[styles.container]}>
+			<Divider />
+			<View style={[styles.iconsContainer]}>
+				<IconButton icon="download-outline" onPress={() => saveImage(url, name)} />
+				{/* <IconButton
                     icon="heart-outline"
                     iconColor={colors.onSurfaceVariant}
                     onPress={() => Burnt.toast({ title: 'Coming Soon!', duration: TOAST.SHORT })}
                 /> */}
-                <IconButton
-                    icon="share-variant"
-                    onPress={() => Share.share({ url: share_url, message: share_url })}
-                />
-            </View>
-            <Divider />
-        </View>
-    );
+				<IconButton
+					icon="share-variant"
+					onPress={() => Share.share({ url: share_url, message: share_url })}
+				/>
+			</View>
+			<Divider />
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-    container: {
-        marginTop: 20,
-    },
-    iconsContainer: {
-        flexDirection: 'row',
-        marginTop: 5,
-        justifyContent: 'space-evenly',
-    },
+	container: {
+		marginTop: 20,
+	},
+	iconsContainer: {
+		flexDirection: 'row',
+		marginTop: 5,
+		justifyContent: 'space-evenly',
+	},
 });

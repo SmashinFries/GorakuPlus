@@ -14,44 +14,44 @@ type PostImageProps = {
     setImageHeight: (height: number) => void;
 };
 export const PostImage = ({
-    style,
-    blurAmount,
-    img_url,
-    aspectRatio,
-    setImageHeight,
+	style,
+	blurAmount,
+	img_url,
+	aspectRatio,
+	setImageHeight,
 }: PostImageProps) => {
-    const { width, height } = useWindowDimensions();
-    const { colors } = useAppTheme();
+	const { width, height } = useWindowDimensions();
+	const { colors } = useAppTheme();
 
-    if (!img_url) return null;
+	if (!img_url) return null;
 
-    return (
-        <Animated.View
-            sharedTransitionTag="danImage"
-            style={[
-                style,
-                {
-                    position: 'absolute',
-                    top: 0,
-                    // height: aspectRatio ? width / aspectRatio : 0,
-                    width: width,
-                    aspectRatio: aspectRatio,
-                },
-            ]}
-        >
-            <Image
-                blurRadius={blurAmount}
-                placeholder={colors.blurhash}
-                placeholderContentFit='contain'
-                source={{ uri: img_url }}
-                contentFit="contain"
-                onLayout={(e) => setImageHeight(e.nativeEvent.layout.height)}
-                style={{
-                    // height: aspectRatio ? width / aspectRatio : 0,
-                    height: '100%',
-                    width: '100%',
-                }}
-            />
-        </Animated.View>
-    );
+	return (
+		<Animated.View
+			sharedTransitionTag="danImage"
+			style={[
+				style,
+				{
+					position: 'absolute',
+					top: 0,
+					// height: aspectRatio ? width / aspectRatio : 0,
+					width: width,
+					aspectRatio: aspectRatio,
+				},
+			]}
+		>
+			<Image
+				blurRadius={blurAmount}
+				placeholder={colors.blurhash}
+				placeholderContentFit='contain'
+				source={{ uri: img_url }}
+				contentFit="contain"
+				onLayout={(e) => setImageHeight(e.nativeEvent.layout.height)}
+				style={{
+					// height: aspectRatio ? width / aspectRatio : 0,
+					height: '100%',
+					width: '100%',
+				}}
+			/>
+		</Animated.View>
+	);
 };

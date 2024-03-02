@@ -12,17 +12,17 @@ type DanbooruTag = {
 };
 
 export const TagItem = ({ tag, color, onPress }: DanbooruTag) => {
-    return (
-        <Chip
-            compact
-            onPress={() => onPress(tag)}
-            onLongPress={() => copyToClipboard(tag)}
-            textStyle={{ color: MD3DarkTheme.colors.onBackground }}
-            style={{ margin: 8, backgroundColor: color }}
-        >
-            {tag}
-        </Chip>
-    );
+	return (
+		<Chip
+			compact
+			onPress={() => onPress(tag)}
+			onLongPress={() => copyToClipboard(tag)}
+			textStyle={{ color: MD3DarkTheme.colors.onBackground }}
+			style={{ margin: 8, backgroundColor: color }}
+		>
+			{tag}
+		</Chip>
+	);
 };
 
 type TagSectionProps = {
@@ -33,27 +33,27 @@ type TagSectionProps = {
 };
 
 export const TagSection = ({ title, tags, color, disableWiki = false }: TagSectionProps) => {
-    const [selectedTag, setSelectedTag] = useState<string>('');
+	const [selectedTag, setSelectedTag] = useState<string>('');
 
-    if (!tags) {
-        return null;
-    }
-    return (
-        <View>
-            <ListHeading title={title} />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {tags.split(' ').map((tag, index) => (
-                    <TagItem
-                        color={color}
-                        tag={tag}
-                        key={index}
-                        onPress={(newTag) => (disableWiki ? null : setSelectedTag(newTag))}
-                    />
-                ))}
-            </ScrollView>
-            <Portal>
-                <DanTagDescDialog tag={selectedTag} onDimiss={() => setSelectedTag('')} />
-            </Portal>
-        </View>
-    );
+	if (!tags) {
+		return null;
+	}
+	return (
+		<View>
+			<ListHeading title={title} />
+			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				{tags.split(' ').map((tag, index) => (
+					<TagItem
+						color={color}
+						tag={tag}
+						key={index}
+						onPress={(newTag) => (disableWiki ? null : setSelectedTag(newTag))}
+					/>
+				))}
+			</ScrollView>
+			<Portal>
+				<DanTagDescDialog tag={selectedTag} onDimiss={() => setSelectedTag('')} />
+			</Portal>
+		</View>
+	);
 };

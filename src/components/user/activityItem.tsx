@@ -1,16 +1,16 @@
 import {
-    ActivityIndicator,
-    Avatar,
-    Button,
-    IconButton,
-    Portal,
-    Text,
-    useTheme,
+	ActivityIndicator,
+	Avatar,
+	Button,
+	IconButton,
+	Portal,
+	Text,
+	useTheme,
 } from 'react-native-paper';
 import {
-    ListActivity,
-    MediaFormat,
-    UserActivityQuery,
+	ListActivity,
+	MediaFormat,
+	UserActivityQuery,
 } from '@/store/services/anilist/generated-anilist';
 import { useCallback, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
@@ -28,125 +28,125 @@ type ActivityItemProps = {
 };
 
 export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
-    const { colors } = useTheme();
-    const { userID } = useAppSelector((state) => state.persistedAniLogin);
-    return (
-        <View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
-            <MediaCard
-                titles={item.media?.title}
-                coverImg={item.media?.coverImage?.extraLarge}
-                imgBgColor={item.media?.coverImage?.color}
-                navigate={
-                    () => router.push(`/${item.media?.type}/${item.media?.id}`)
-                    // nav.navigate('media', {
-                    //     aniID: item.media?.id,
-                    //     malID: item.media?.idMal,
-                    //     type: item.media.type,
-                    // })
-                }
-                scoreDistributions={item.media?.stats?.scoreDistribution}
-            />
-            <Text
-                variant="labelLarge"
-                numberOfLines={2}
-                style={{ textTransform: 'capitalize', maxWidth: 200, textAlign: 'center' }}
-            >
-                {`${item.status}${item.progress ? ` ${item.progress}` : ''}`}
-            </Text>
-            <Text
-                variant="labelMedium"
-                style={{
-                    textTransform: 'capitalize',
-                    textAlign: 'center',
-                    color: colors.onSurfaceVariant,
-                }}
-            >
-                {item.media?.format === MediaFormat.Tv
-                    ? 'Anime'
-                    : item.media?.isLicensed
-                    ? item.media?.format
-                    : 'Doujin'}{' '}
+	const { colors } = useTheme();
+	const { userID } = useAppSelector((state) => state.persistedAniLogin);
+	return (
+		<View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
+			<MediaCard
+				titles={item.media?.title}
+				coverImg={item.media?.coverImage?.extraLarge}
+				imgBgColor={item.media?.coverImage?.color}
+				navigate={
+					() => router.push(`/${item.media?.type}/${item.media?.id}`)
+					// nav.navigate('media', {
+					//     aniID: item.media?.id,
+					//     malID: item.media?.idMal,
+					//     type: item.media.type,
+					// })
+				}
+				scoreDistributions={item.media?.stats?.scoreDistribution}
+			/>
+			<Text
+				variant="labelLarge"
+				numberOfLines={2}
+				style={{ textTransform: 'capitalize', maxWidth: 200, textAlign: 'center' }}
+			>
+				{`${item.status}${item.progress ? ` ${item.progress}` : ''}`}
+			</Text>
+			<Text
+				variant="labelMedium"
+				style={{
+					textTransform: 'capitalize',
+					textAlign: 'center',
+					color: colors.onSurfaceVariant,
+				}}
+			>
+				{item.media?.format === MediaFormat.Tv
+					? 'Anime'
+					: item.media?.isLicensed
+						? item.media?.format
+						: 'Doujin'}{' '}
                 · {item.media?.status?.replaceAll('_', ' ') ?? '??'}
-            </Text>
-            <Text
-                variant="labelMedium"
-                style={{
-                    textTransform: 'capitalize',
-                    textAlign: 'center',
-                    color: colors.onSurfaceVariant,
-                }}
-            >
-                {getTimeUntil(item.createdAt, 'createdAt')}
-            </Text>
-            {item.user?.id === userID && (
-                <IconButton
-                    icon={'trash-can'}
-                    iconColor={colors.onPrimaryContainer}
-                    style={{
-                        position: 'absolute',
-                        top: -5,
-                        right: -15,
-                        backgroundColor: colors.primaryContainer,
-                    }}
-                    onPress={() => onTrash(item.id)}
-                />
-            )}
-            {item.user?.id !== userID && (
-                <Avatar.Image
-                    style={{ position: 'absolute', top: 0, right: 0 }}
-                    source={{ uri: item.user?.avatar?.large }}
-                    size={32}
-                />
-            )}
-        </View>
-    );
+			</Text>
+			<Text
+				variant="labelMedium"
+				style={{
+					textTransform: 'capitalize',
+					textAlign: 'center',
+					color: colors.onSurfaceVariant,
+				}}
+			>
+				{getTimeUntil(item.createdAt, 'createdAt')}
+			</Text>
+			{item.user?.id === userID && (
+				<IconButton
+					icon={'trash-can'}
+					iconColor={colors.onPrimaryContainer}
+					style={{
+						position: 'absolute',
+						top: -5,
+						right: -15,
+						backgroundColor: colors.primaryContainer,
+					}}
+					onPress={() => onTrash(item.id)}
+				/>
+			)}
+			{item.user?.id !== userID && (
+				<Avatar.Image
+					style={{ position: 'absolute', top: 0, right: 0 }}
+					source={{ uri: item.user?.avatar?.large }}
+					size={32}
+				/>
+			)}
+		</View>
+	);
 };
 
 export const ActivityOverview = ({
-    data,
-    onDelete,
+	data,
+	onDelete,
 }: {
     data: UserActivityQuery['Page']['activities'];
     onDelete?: (id: number) => void;
 }) => {
-    const { width } = useWindowDimensions();
+	const { width } = useWindowDimensions();
 
-    const [showActDelConfirm, setShowActDelConfirm] = useState(false);
-    const [actDelID, setActDelID] = useState<number | null>(null);
+	const [showActDelConfirm, setShowActDelConfirm] = useState(false);
+	const [actDelID, setActDelID] = useState<number | null>(null);
 
-    const onTrash = (id: number) => {
-        setActDelID(id);
-        setShowActDelConfirm(true);
-    };
+	const onTrash = (id: number) => {
+		setActDelID(id);
+		setShowActDelConfirm(true);
+	};
 
-    return (
-        <View style={{ width: width, overflow: 'visible' }}>
-            <ListHeading
-                title="Activity"
-                icon="chevron-right"
-                onIconPress={() => router.push('/activity/user')}
-            />
-            <View style={{ width: width }}>
-                <FlashList
-                    // @ts-ignore - not sure how to handle this type :/
-                    data={data}
-                    renderItem={({ item }) => <ActivityItem item={item} onTrash={onTrash} />}
-                    keyExtractor={(item) => item.id.toString()}
-                    horizontal
-                    estimatedItemSize={185}
-                    showsHorizontalScrollIndicator={false}
-                />
-            </View>
-            <Portal>
-                <ConfirmActDelDialog
-                    visible={showActDelConfirm}
-                    id={actDelID}
-                    onDismiss={() => {
-                        setActDelID(null);
-                        setShowActDelConfirm(false);
-                    }}
-                />
-            </Portal>
-        </View>
-    );
+	return (
+		<View style={{ width: width, overflow: 'visible' }}>
+			<ListHeading
+				title="Activity"
+				icon="chevron-right"
+				onIconPress={() => router.push('/activity/user')}
+			/>
+			<View style={{ width: width }}>
+				<FlashList
+					// @ts-ignore - not sure how to handle this type :/
+					data={data}
+					renderItem={({ item }) => <ActivityItem item={item} onTrash={onTrash} />}
+					keyExtractor={(item) => item.id.toString()}
+					horizontal
+					estimatedItemSize={185}
+					showsHorizontalScrollIndicator={false}
+				/>
+			</View>
+			<Portal>
+				<ConfirmActDelDialog
+					visible={showActDelConfirm}
+					id={actDelID}
+					onDismiss={() => {
+						setActDelID(null);
+						setShowActDelConfirm(false);
+					}}
+				/>
+			</Portal>
+		</View>
+	);
 };

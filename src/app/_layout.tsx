@@ -24,218 +24,218 @@ import { Toaster } from 'burnt/web';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 if (typeof window !== 'undefined') {
-    // @ts-ignore
-    window._frameTimestamp = null;
+	// @ts-ignore
+	window._frameTimestamp = null;
 }
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-    const { notification, pressAction } = detail;
-    if (type === EventType.PRESS) {
-        const link = Linking.createURL(detail.notification?.data?.url as string);
-        Linking.openURL(link ?? 'gorakuplus://user');
-        await notifee.cancelNotification(notification.id);
-    }
+	const { notification, pressAction } = detail;
+	if (type === EventType.PRESS) {
+		const link = Linking.createURL(detail.notification?.data?.url as string);
+		Linking.openURL(link ?? 'gorakuplus://user');
+		await notifee.cancelNotification(notification.id);
+	}
 });
 
 TaskManager.defineTask('Notifs', async () => {
-    const { enabled } = store.getState().persistedNotifs;
-    const { mediaLanguage } = store.getState().persistedSettings;
-    const fetchNotifs = store.dispatch(
-        api.endpoints.GetNotifications.initiate({ amount: 50, page: 1, reset: true }),
-    );
-    try {
-        const response = await fetchNotifs.unwrap();
-        const newNotifs = response.Page?.notifications
-            ?.slice(0, response.Viewer?.unreadNotificationCount ?? 0)
-            ?.filter((notif) => enabled?.includes(notif.__typename));
+	const { enabled } = store.getState().persistedNotifs;
+	const { mediaLanguage } = store.getState().persistedSettings;
+	const fetchNotifs = store.dispatch(
+		api.endpoints.GetNotifications.initiate({ amount: 50, page: 1, reset: true }),
+	);
+	try {
+		const response = await fetchNotifs.unwrap();
+		const newNotifs = response.Page?.notifications
+			?.slice(0, response.Viewer?.unreadNotificationCount ?? 0)
+			?.filter((notif) => enabled?.includes(notif.__typename));
 
-        if (newNotifs.length === 1) {
-            const parsedData = parseNotif(mediaLanguage, newNotifs[0]);
-            displayNotification(parsedData);
-        } else if (newNotifs.length > 1) {
-            await notifee.displayNotification({
-                title: 'AniList Notifications',
-                subtitle: `${newNotifs.length} new notifications`,
-                android: {
-                    channelId: 'anilist-notifs',
-                    groupSummary: true,
-                    groupId: 'anilist-notifs-group',
-                },
-            });
-            newNotifs.forEach((notif) => {
-                const parsedData = parseNotif(mediaLanguage, notif);
-                displayNotification({ ...parsedData, group: true });
-            });
-        } else {
-            return BackgroundFetch.BackgroundFetchResult.NoData;
-        }
-    } catch (err) {
-        return BackgroundFetch.BackgroundFetchResult.NoData;
-    }
+		if (newNotifs.length === 1) {
+			const parsedData = parseNotif(mediaLanguage, newNotifs[0]);
+			displayNotification(parsedData);
+		} else if (newNotifs.length > 1) {
+			await notifee.displayNotification({
+				title: 'AniList Notifications',
+				subtitle: `${newNotifs.length} new notifications`,
+				android: {
+					channelId: 'anilist-notifs',
+					groupSummary: true,
+					groupId: 'anilist-notifs-group',
+				},
+			});
+			newNotifs.forEach((notif) => {
+				const parsedData = parseNotif(mediaLanguage, notif);
+				displayNotification({ ...parsedData, group: true });
+			});
+		} else {
+			return BackgroundFetch.BackgroundFetchResult.NoData;
+		}
+	} catch (err) {
+		return BackgroundFetch.BackgroundFetchResult.NoData;
+	}
 
-    // Be sure to return the successful result type!
-    return BackgroundFetch.BackgroundFetchResult.NewData;
+	// Be sure to return the successful result type!
+	return BackgroundFetch.BackgroundFetchResult.NewData;
 });
 
 const AppProvider = () => {
-    const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
-    const { isFirstLaunch } = useAppSelector((state) => state.persistedSetup);
-    const [updateLink, setUpdateLink] = useState<string | null>(null);
-    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+	const { isDark, mode } = useAppSelector((state) => state.persistedTheme);
+	const { isFirstLaunch } = useAppSelector((state) => state.persistedSetup);
+	const [updateLink, setUpdateLink] = useState<string | null>(null);
+	const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
-    // const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-    // const updatesListener = (e: Updates.UpdateEvent) => {
-    //     if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
-    //         setShowUpdateDialog(true);
-    //     }
-    // };
+	// const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+	// const updatesListener = (e: Updates.UpdateEvent) => {
+	//     if (e.type === Updates.UpdateEventType.UPDATE_AVAILABLE) {
+	//         setShowUpdateDialog(true);
+	//     }
+	// };
 
-    // Updates.useUpdateEvents(updatesListener);
+	// Updates.useUpdateEvents(updatesListener);
 
-    const checkForUpdates = async () => {
-        const results = await fetch('https://api.github.com/repos/KuzuLabz/GorakuSite/releases');
-        const jsonResult = await results?.json();
-        const newestVersion = jsonResult[0]?.tag_name ?? null;
+	const checkForUpdates = async () => {
+		const results = await fetch('https://api.github.com/repos/KuzuLabz/GorakuSite/releases');
+		const jsonResult = await results?.json();
+		const newestVersion = jsonResult[0]?.tag_name ?? null;
 
-        if (newestVersion && newestVersion !== Constants?.expoConfig?.version) {
-            setUpdateLink(jsonResult[0]?.assets[0]?.browser_download_url);
-            setShowUpdateDialog(true);
-        }
-    };
+		if (newestVersion && newestVersion !== Constants?.expoConfig?.version) {
+			setUpdateLink(jsonResult[0]?.assets[0]?.browser_download_url);
+			setShowUpdateDialog(true);
+		}
+	};
 
-    useEffect(() => {
-        if (isDark) {
-            setStatusBarStyle('light');
-        } else {
-            setStatusBarStyle('dark');
-        }
-    }, [isDark]);
+	useEffect(() => {
+		if (isDark) {
+			setStatusBarStyle('light');
+		} else {
+			setStatusBarStyle('dark');
+		}
+	}, [isDark]);
 
-    useEffect(() => {
-        if (isFirstLaunch) {
-            router.replace('/setup');
-        } else {
-            router.replace('/(tabs)/explore');
-        }
-    }, [isFirstLaunch]);
+	useEffect(() => {
+		if (isFirstLaunch) {
+			router.replace('/setup');
+		} else {
+			router.replace('/(tabs)/explore');
+		}
+	}, [isFirstLaunch]);
 
-    useEffect(() => {
-        if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
-            checkForUpdates();
-        }
-    }, []);
+	useEffect(() => {
+		if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
+			checkForUpdates();
+		}
+	}, []);
 
-    return (
-        <PaperProvider
-            theme={
-                isDark
-                    ? availableThemes['dark'][mode]
-                        ? availableThemes['dark'][mode]
-                        : availableThemes['dark']['default']
-                    : availableThemes['light'][mode]
-                    ? availableThemes['light'][mode]
-                    : availableThemes['light']['default']
-            }
-        >
-            <ThemeProvider
-                value={
-                    isDark
-                        ? availableThemes['dark'][mode]
-                            ? availableThemes['dark'][mode]
-                            : availableThemes['dark']['default']
-                        : availableThemes['light'][mode]
-                        ? availableThemes['light'][mode]
-                        : availableThemes['light']['default']
-                }
-            >
-                <GestureHandlerRootView style={{ flex: 1, backgroundColor: availableThemes[isDark ? 'dark' : 'light'][mode].colors.background }}>
-                    <BottomSheetModalProvider>
-                        <AnimatedStack
-                            initialRouteName="(tabs)"
-                            screenOptions={{ headerShown: false }}
-                        >
-                            <Stack.Screen name="(tabs)" options={{animation: 'fade'}} />
-                            <Stack.Screen
-                                name="(media)/[...media]"
-                                // getId={(params) => params?.params?.params}
-                            />
-                            <Stack.Screen name="music" />
-                            <Stack.Screen name="characters" />
-                            <Stack.Screen name="staff" />
-                            <Stack.Screen name="news" />
-                            <Stack.Screen name="art" />
-                            <Stack.Screen
-                                name="statistics"
-                                options={{
-                                    title: 'Statistics',
-                                    header: (props) => <PaperHeader {...props} />,
-                                    headerShown: true,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="notifications"
-                                options={{
-                                    title: 'Notifications',
-                                    header: (props) => <PaperHeader {...props} />,
-                                    headerShown: true,
-                                }}
-                            />
-                            <Stack.Screen
-                                name="setup"
-                                options={{
-                                    headerShown: false,
-                                    presentation: 'modal',
-                                }}
-                            />
-                        </AnimatedStack>
-                        <Portal>
-                            <UpdateDialog
-                                visible={showUpdateDialog}
-                                onDismiss={() => setShowUpdateDialog(false)}
-                                updateLink={updateLink}
-                            />
-                        </Portal>
-                        <Toaster position="bottom-right" />
-                    </BottomSheetModalProvider>
-                </GestureHandlerRootView>
-                <StatusBar style={isDark ? 'light' : 'dark'} />
-            </ThemeProvider>
-            {/* <Portal>
+	return (
+		<PaperProvider
+			theme={
+				isDark
+					? availableThemes['dark'][mode]
+						? availableThemes['dark'][mode]
+						: availableThemes['dark']['default']
+					: availableThemes['light'][mode]
+						? availableThemes['light'][mode]
+						: availableThemes['light']['default']
+			}
+		>
+			<ThemeProvider
+				value={
+					isDark
+						? availableThemes['dark'][mode]
+							? availableThemes['dark'][mode]
+							: availableThemes['dark']['default']
+						: availableThemes['light'][mode]
+							? availableThemes['light'][mode]
+							: availableThemes['light']['default']
+				}
+			>
+				<GestureHandlerRootView style={{ flex: 1, backgroundColor: availableThemes[isDark ? 'dark' : 'light'][mode].colors.background }}>
+					<BottomSheetModalProvider>
+						<AnimatedStack
+							initialRouteName="(tabs)"
+							screenOptions={{ headerShown: false }}
+						>
+							<Stack.Screen name="(tabs)" options={{animation: 'fade'}} />
+							<Stack.Screen
+								name="(media)/[...media]"
+								// getId={(params) => params?.params?.params}
+							/>
+							<Stack.Screen name="music" />
+							<Stack.Screen name="characters" />
+							<Stack.Screen name="staff" />
+							<Stack.Screen name="news" />
+							<Stack.Screen name="art" />
+							<Stack.Screen
+								name="statistics"
+								options={{
+									title: 'Statistics',
+									header: (props) => <PaperHeader {...props} />,
+									headerShown: true,
+								}}
+							/>
+							<Stack.Screen
+								name="notifications"
+								options={{
+									title: 'Notifications',
+									header: (props) => <PaperHeader {...props} />,
+									headerShown: true,
+								}}
+							/>
+							<Stack.Screen
+								name="setup"
+								options={{
+									headerShown: false,
+									presentation: 'modal',
+								}}
+							/>
+						</AnimatedStack>
+						<Portal>
+							<UpdateDialog
+								visible={showUpdateDialog}
+								onDismiss={() => setShowUpdateDialog(false)}
+								updateLink={updateLink}
+							/>
+						</Portal>
+						<Toaster position="bottom-right" />
+					</BottomSheetModalProvider>
+				</GestureHandlerRootView>
+				<StatusBar style={isDark ? 'light' : 'dark'} />
+			</ThemeProvider>
+			{/* <Portal>
                 <UpdateDialog
                     visible={showUpdateDialog}
                     onDismiss={() => setShowUpdateDialog(false)}
                 />
             </Portal> */}
-        </PaperProvider>
-    );
+		</PaperProvider>
+	);
 };
 
 const RootLayout = () => {
-    useEffect(() => {
-        return notifee.onForegroundEvent(({ type, detail }) => {
-            switch (type) {
-                case EventType.PRESS:
-                    const link = Linking.createURL(detail.notification?.data?.url as string);
-                    Linking.openURL(link ?? 'gorakuplus://user');
-                    break;
-            }
-        });
-    }, []);
+	useEffect(() => {
+		return notifee.onForegroundEvent(({ type, detail }) => {
+			switch (type) {
+			case EventType.PRESS:
+				const link = Linking.createURL(detail.notification?.data?.url as string);
+				Linking.openURL(link ?? 'gorakuplus://user');
+				break;
+			}
+		});
+	}, []);
 
-    // This broke the app \_0-0_/
-    // useEffect(() => {
-    // 	if (!__DEV__) {
-    // 		checkForUpdates().then(isAvailable => setShowUpdateDialog(isAvailable));
-    // 	}
-    // },[]);
+	// This broke the app \_0-0_/
+	// useEffect(() => {
+	// 	if (!__DEV__) {
+	// 		checkForUpdates().then(isAvailable => setShowUpdateDialog(isAvailable));
+	// 	}
+	// },[]);
 
-    return (
-        <Provider store={store}>
-            <PersistGate loading={<Text>loading...</Text>} persistor={persistor}>
-                <AppProvider />
-            </PersistGate>
-        </Provider>
-    );
+	return (
+		<Provider store={store}>
+			<PersistGate loading={<Text>loading...</Text>} persistor={persistor}>
+				<AppProvider />
+			</PersistGate>
+		</Provider>
+	);
 };
 
 export default RootLayout;

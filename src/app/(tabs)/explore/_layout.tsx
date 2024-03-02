@@ -4,15 +4,15 @@ import { useAppSelector } from '@/store/hooks';
 import { Slot, Stack } from 'expo-router';
 
 const ExploreLayout = () => {
-    return (
-        <AnimatedStack>
-            <Stack.Screen
-                name="index"
-                options={{ title: 'Explore', header: (props) => <ExploreHeader {...props} /> }}
-            />
-            <Stack.Screen name="search" options={{ title: 'Search' }} />
-        </AnimatedStack>
-    );
+	return (
+		<AnimatedStack>
+			<Stack.Screen
+				name="index"
+				options={{ title: 'Explore', header: (props) => <ExploreHeader {...props} /> }}
+			/>
+			<Stack.Screen name="search" options={{ title: 'Search' }} />
+		</AnimatedStack>
+	);
 };
 
 export default ExploreLayout;

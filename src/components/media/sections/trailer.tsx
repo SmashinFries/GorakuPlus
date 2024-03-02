@@ -8,21 +8,21 @@ type AnimeTrailerProps = {
     video: string;
 };
 export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
-    const [playing, setPlaying] = useState(false);
+	const [playing, setPlaying] = useState(false);
 
-    if (AppState.currentState !== 'active') {
-        return null;
-    }
+	if (AppState.currentState !== 'active') {
+		return null;
+	}
 
-    return (
-        <TransYUpViewMem style={{ marginVertical: 10 }}>
-            <ListHeading title="Trailer" />
-            <YoutubePlayer
-                height={270}
-                webViewStyle={{ opacity: 0.99 }}
-                play={playing}
-                videoId={video}
-            />
-        </TransYUpViewMem>
-    );
+	return (
+		<TransYUpViewMem style={{ marginVertical: 10 }}>
+			<ListHeading title="Trailer" />
+			<YoutubePlayer
+				height={270}
+				webViewStyle={{ opacity: 0.99 }}
+				play={playing}
+				videoId={video}
+			/>
+		</TransYUpViewMem>
+	);
 };

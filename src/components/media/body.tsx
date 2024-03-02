@@ -8,26 +8,26 @@ type Props = {
     children: React.ReactNode;
 };
 const BodyContainer = ({ children }: Props) => {
-    const { dark } = useTheme();
+	const { dark } = useTheme();
 
-    return (
-        <View
-            style={[
-                styles.container,
-                { backgroundColor: dark ? 'transparent' : 'rgba(255,255,255,0)' },
-            ]}
-        >
-            {children}
-        </View>
-    );
+	return (
+		<View
+			style={[
+				styles.container,
+				{ backgroundColor: dark ? 'transparent' : 'rgba(255,255,255,0)' },
+			]}
+		>
+			{children}
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-    container: {
-        // flex: 1,
-        overflow: 'visible',
-        paddingTop: 100,
-    },
+	container: {
+		// flex: 1,
+		overflow: 'visible',
+		paddingTop: 100,
+	},
 });
 
 export default BodyContainer;

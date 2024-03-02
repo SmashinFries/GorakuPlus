@@ -3,41 +3,41 @@ import { DanbooruRating } from '@/store/services/danbooru/types';
 import { useAppSelector } from '@/store/hooks';
 
 const nsfwLevelOrder = [
-    DanbooruRating.General,
-    DanbooruRating.Sensitive,
-    DanbooruRating.Questionable,
-    DanbooruRating.Explicit,
+	DanbooruRating.General,
+	DanbooruRating.Sensitive,
+	DanbooruRating.Questionable,
+	DanbooruRating.Explicit,
 ];
 
 export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
-    const { blurNSFW, blurNSFWLevel } = useAppSelector((state) => state.persistedSettings);
-    const [isBlur, setIsBlur] = useState<boolean>(blurNSFW);
+	const { blurNSFW, blurNSFWLevel } = useAppSelector((state) => state.persistedSettings);
+	const [isBlur, setIsBlur] = useState<boolean>(blurNSFW);
 
-    const userNsfwLevel = useMemo(
-        () => nsfwLevelOrder.findIndex((value) => value === blurNSFWLevel),
-        [blurNSFWLevel],
-    );
-    const imageNsfwLevel = useMemo(
-        () => nsfwLevelOrder.findIndex((value) => value === nsfwLevel),
-        [nsfwLevel],
-    );
+	const userNsfwLevel = useMemo(
+		() => nsfwLevelOrder.findIndex((value) => value === blurNSFWLevel),
+		[blurNSFWLevel],
+	);
+	const imageNsfwLevel = useMemo(
+		() => nsfwLevelOrder.findIndex((value) => value === nsfwLevel),
+		[nsfwLevel],
+	);
 
-    const blurAmount = useMemo(
-        () => (userNsfwLevel < imageNsfwLevel && isBlur && blurNSFW ? 200 : 0),
-        [userNsfwLevel, imageNsfwLevel, isBlur],
-    );
+	const blurAmount = useMemo(
+		() => (userNsfwLevel < imageNsfwLevel && isBlur && blurNSFW ? 200 : 0),
+		[userNsfwLevel, imageNsfwLevel, isBlur],
+	);
 
-    const toggleBlur = () => setIsBlur((prev) => !prev);
+	const toggleBlur = () => setIsBlur((prev) => !prev);
 
-    return { blurAmount, toggleBlur };
+	return { blurAmount, toggleBlur };
 };
 
 export const useBlur = (blurStrength = 200) => {
-    const [isBlur, setIsBlur] = useState<boolean>(true);
+	const [isBlur, setIsBlur] = useState<boolean>(true);
 
-    const toggleBlur = () => setIsBlur((prev) => !prev);
+	const toggleBlur = () => setIsBlur((prev) => !prev);
 
-    const blurAmount = useMemo(() => (isBlur ? blurStrength : 0), [isBlur]);
+	const blurAmount = useMemo(() => (isBlur ? blurStrength : 0), [isBlur]);
 
-    return { blurAmount, isBlur, toggleBlur, setIsBlur };
+	return { blurAmount, isBlur, toggleBlur, setIsBlur };
 };

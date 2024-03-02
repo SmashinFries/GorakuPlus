@@ -9,35 +9,35 @@ type LoadMoreButtonProps = {
     onPress?: () => void;
 };
 export const LoadMoreButton = ({ title, vertical, onPress }: LoadMoreButtonProps) => {
-    return (
-        <MotiPressable
-            containerStyle={{
-                // backgroundColor: 'red',
-                marginRight: 10,
-                alignSelf: 'center',
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-            onPress={onPress}
-            animate={useMemo(
-                () =>
-                    ({ hovered, pressed }) => {
-                        'worklet';
-                        return {
-                            scale: hovered || pressed ? 0.8 : 1,
-                        };
-                    },
-                [],
-            )}
-        >
-            {!vertical ? (
-                <IconButton style={{ alignSelf: 'center' }} icon="arrow-expand-right" size={44} />
-            ) : (
-                <Button>Load More</Button>
-            )}
-            {!vertical ? <Text style={{ textAlign: 'center' }}>{title}</Text> : null}
-        </MotiPressable>
-    );
+	return (
+		<MotiPressable
+			containerStyle={{
+				// backgroundColor: 'red',
+				marginRight: 10,
+				alignSelf: 'center',
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}
+			onPress={onPress}
+			animate={useMemo(
+				() =>
+					({ hovered, pressed }) => {
+						'worklet';
+						return {
+							scale: hovered || pressed ? 0.8 : 1,
+						};
+					},
+				[],
+			)}
+		>
+			{!vertical ? (
+				<IconButton style={{ alignSelf: 'center' }} icon="arrow-expand-right" size={44} />
+			) : (
+				<Button>Load More</Button>
+			)}
+			{!vertical ? <Text style={{ textAlign: 'center' }}>{title}</Text> : null}
+		</MotiPressable>
+	);
 };
 
 type FavoriteButtonProps = {
@@ -46,23 +46,23 @@ type FavoriteButtonProps = {
     favorites?: number;
 };
 export const FavoriteButton = ({ isFavorite = false, favorites = 200 }: FavoriteButtonProps) => {
-    const { colors } = useTheme();
-    return (
-        <Button
-            icon={'heart-outline'}
-            textColor="red"
-            style={{
-                borderColor: 'red',
-                borderWidth: 1,
-                flex: 1,
-                maxWidth: '80%',
-                marginTop: 20,
-            }}
-        >
-            <RNText style={{ color: colors.onBackground, fontWeight: 'bold', fontSize: 15 }}>
-                {' '}
-                {favorites}
-            </RNText>
-        </Button>
-    );
+	const { colors } = useTheme();
+	return (
+		<Button
+			icon={'heart-outline'}
+			textColor="red"
+			style={{
+				borderColor: 'red',
+				borderWidth: 1,
+				flex: 1,
+				maxWidth: '80%',
+				marginTop: 20,
+			}}
+		>
+			<RNText style={{ color: colors.onBackground, fontWeight: 'bold', fontSize: 15 }}>
+				{' '}
+				{favorites}
+			</RNText>
+		</Button>
+	);
 };

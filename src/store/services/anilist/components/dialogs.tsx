@@ -9,50 +9,50 @@ type AniListLoginDialogProps = {
     onRelogin: () => void;
 };
 const AniListLogoutDialog = ({
-    visible,
-    onDismiss,
-    onLogout,
-    onRelogin,
+	visible,
+	onDismiss,
+	onLogout,
+	onRelogin,
 }: AniListLoginDialogProps) => {
-    const isWeb = Platform.OS === 'web';
+	const isWeb = Platform.OS === 'web';
 
-    const LogoutButton = () => (
-        <Button
-            onPress={() => {
-                onLogout();
-                onDismiss();
-            }}
-            textColor={MD3Colors.error50}
-        >
-            {'Logout'}
-        </Button>
-    );
+	const LogoutButton = () => (
+		<Button
+			onPress={() => {
+				onLogout();
+				onDismiss();
+			}}
+			textColor={MD3Colors.error50}
+		>
+			{'Logout'}
+		</Button>
+	);
 
-    const RefetchButton = () => (
-        <Button
-            onPress={() => {
-                onRelogin();
-                onDismiss();
-            }}
-        >
+	const RefetchButton = () => (
+		<Button
+			onPress={() => {
+				onRelogin();
+				onDismiss();
+			}}
+		>
             Re-login
-        </Button>
-    );
+		</Button>
+	);
 
-    return (
-        <Dialog
-            visible={visible}
-            onDismiss={onDismiss}
-            style={{ maxWidth: isWeb ? '50%' : undefined, alignSelf: isWeb ? 'center' : undefined }}
-        >
-            <Dialog.Title>{'Logout of Anilist?'}</Dialog.Title>
-            <Dialog.Actions>
-                <Button onPress={onDismiss}>Cancel</Button>
-                <RefetchButton />
-                <LogoutButton />
-            </Dialog.Actions>
-        </Dialog>
-    );
+	return (
+		<Dialog
+			visible={visible}
+			onDismiss={onDismiss}
+			style={{ maxWidth: isWeb ? '50%' : undefined, alignSelf: isWeb ? 'center' : undefined }}
+		>
+			<Dialog.Title>{'Logout of Anilist?'}</Dialog.Title>
+			<Dialog.Actions>
+				<Button onPress={onDismiss}>Cancel</Button>
+				<RefetchButton />
+				<LogoutButton />
+			</Dialog.Actions>
+		</Dialog>
+	);
 };
 
 export default AniListLogoutDialog;

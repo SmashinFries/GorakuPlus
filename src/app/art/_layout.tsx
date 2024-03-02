@@ -4,16 +4,16 @@ import { useAppSelector } from '@/store/hooks';
 import { Stack } from 'expo-router';
 
 const ArtLayout = () => {
-    return (
-        <AnimatedStack
-            screenOptions={{
-                header: (props) => <PaperHeader {...props} />,
-            }}
-        >
-            <Stack.Screen name="[tag]" options={{ title: 'Fan Art' }} />
-            <Stack.Screen name="post" options={{ title: 'Art Post' }} />
-        </AnimatedStack>
-    );
+	return (
+		<AnimatedStack
+			screenOptions={{
+				header: (props) => <PaperHeader {...props} />,
+			}}
+		>
+			<Stack.Screen name="[tag]" options={{ title: 'Fan Art' }} />
+			<Stack.Screen name="post" options={{ title: 'Art Post' }} />
+		</AnimatedStack>
+	);
 };
 
 export default ArtLayout;

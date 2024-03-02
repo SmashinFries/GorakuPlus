@@ -17,59 +17,59 @@ type MediaSelectorProps = {
 };
 
 export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
-    const { colors } = useTheme();
-    const { width } = useWindowDimensions();
-    const buttons: SegButtons[] = useMemo(
-        () => [
-            {
-                value: MediaType.Anime,
-                label: 'Anime',
-            },
-            {
-                value: MediaType.Manga,
-                label: 'Manga',
-            },
-            {
-                value: 'characters',
-                label: 'Characters',
-            },
-            {
-                value: 'staff',
-                label: 'Staff',
-            },
-            {
-                value: 'studios',
-                label: 'Studios',
-            },
-        ],
-        [],
-    );
+	const { colors } = useTheme();
+	const { width } = useWindowDimensions();
+	const buttons: SegButtons[] = useMemo(
+		() => [
+			{
+				value: MediaType.Anime,
+				label: 'Anime',
+			},
+			{
+				value: MediaType.Manga,
+				label: 'Manga',
+			},
+			{
+				value: 'characters',
+				label: 'Characters',
+			},
+			{
+				value: 'staff',
+				label: 'Staff',
+			},
+			{
+				value: 'studios',
+				label: 'Studios',
+			},
+		],
+		[],
+	);
 
-    return (
-        <SafeAreaView style={[styles.container, { width, backgroundColor: colors.background }]}>
-            <SegmentedButtons
-                value={selection === 'imageSearch' ? MediaType.Anime : selection}
-                onValueChange={onSelect}
-                density="small"
-                buttons={[buttons[0], buttons[1]]}
-            />
-            <SegmentedButtons
-                value={selection === 'waifuSearch' ? 'characters' : selection}
-                onValueChange={onSelect}
-                density="small"
-                buttons={[buttons[2], buttons[3], buttons[4]]}
-                style={{ marginTop: 5 }}
-            />
-        </SafeAreaView>
-    );
+	return (
+		<SafeAreaView style={[styles.container, { width, backgroundColor: colors.background }]}>
+			<SegmentedButtons
+				value={selection === 'imageSearch' ? MediaType.Anime : selection}
+				onValueChange={onSelect}
+				density="small"
+				buttons={[buttons[0], buttons[1]]}
+			/>
+			<SegmentedButtons
+				value={selection === 'waifuSearch' ? 'characters' : selection}
+				onValueChange={onSelect}
+				density="small"
+				buttons={[buttons[2], buttons[3], buttons[4]]}
+				style={{ marginTop: 5 }}
+			/>
+		</SafeAreaView>
+	);
 };
 
 export const MediaSelectorMem = memo(MediaSelector);
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        padding: 10,
-        alignSelf: 'center',
-    },
+	container: {
+		alignItems: 'center',
+		padding: 10,
+		alignSelf: 'center',
+	},
 });

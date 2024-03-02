@@ -15,80 +15,80 @@ type ScreenshotItemProps = {
     index: number;
 };
 const ScreenshotItem = ({
-    item,
-    index,
-    onDownload,
+	item,
+	index,
+	onDownload,
 }: ScreenshotItemProps & { onDownload: (img: string) => void }) => {
-    const { blurAmount, isBlur, toggleBlur } = useBlur();
+	const { blurAmount, isBlur, toggleBlur } = useBlur();
     
-    const { colors } = useAppTheme();
-    return (
-        <Pressable
-            onPress={!isBlur ? () => {
-                onDownload(item.thumbnail);
-            } : null}
-            onLongPress={toggleBlur}
-            style={{ marginHorizontal: 5, height: 180, aspectRatio: 16 / 9 }}
-        >
-            <Image
-                source={{ uri: item.thumbnail }}
-                style={{ width: '100%', height: '100%' }}
-                contentFit="contain"
-                placeholder={colors.blurhash}
-                placeholderContentFit="cover"
-                transition={800}
-                blurRadius={blurAmount}
-                recyclingKey={item.thumbnail}
-            />
-        </Pressable>
-    );
+	const { colors } = useAppTheme();
+	return (
+		<Pressable
+			onPress={!isBlur ? () => {
+				onDownload(item.thumbnail);
+			} : null}
+			onLongPress={toggleBlur}
+			style={{ marginHorizontal: 5, height: 180, aspectRatio: 16 / 9 }}
+		>
+			<Image
+				source={{ uri: item.thumbnail }}
+				style={{ width: '100%', height: '100%' }}
+				contentFit="contain"
+				placeholder={colors.blurhash}
+				placeholderContentFit="cover"
+				transition={800}
+				blurRadius={blurAmount}
+				recyclingKey={item.thumbnail}
+			/>
+		</Pressable>
+	);
 };
 
 type ScreenshotsProps = {
     data: Media['streamingEpisodes'];
 };
 const ScreenshotImages = ({ data }: ScreenshotsProps) => {
-    const { colors } = useAppTheme();
-    const [selectedImg, setSelectedImg] = useState('');
+	const { colors } = useAppTheme();
+	const [selectedImg, setSelectedImg] = useState('');
 
-    const onDismiss = useCallback(() => setSelectedImg(''), []);
+	const onDismiss = useCallback(() => setSelectedImg(''), []);
 
-    const onDownload = useCallback((img_url: string) => {
-        setSelectedImg(img_url);
-    }, []);
+	const onDownload = useCallback((img_url: string) => {
+		setSelectedImg(img_url);
+	}, []);
 
-    const RenderItem = useCallback((props) => {
-        return <ScreenshotItem {...props} onDownload={onDownload} />;
-    }, []);
+	const RenderItem = useCallback((props) => {
+		return <ScreenshotItem {...props} onDownload={onDownload} />;
+	}, []);
 
-    if (!data || data?.length === 0) {
-        return null;
-    }
+	if (!data || data?.length === 0) {
+		return null;
+	}
 
-    return (
-        <TransYUpViewMem style={{ overflow: 'visible' }}>
-            <ListHeading
-                title="Screenshots"
-                subtitle="Contains spoilers!"
-                subtitleStyle={{ color: colors.onSurfaceVariant }}
-            />
-            <View style={{ width: '100%', height: 180 }}>
-                <FlatList
-                    data={data}
-                    renderItem={RenderItem}
-                    keyExtractor={(item, index) => index.toString()}
-                    // estimatedItemSize={250}
-                    horizontal
-                    contentContainerStyle={{ padding: 15 }}
-                    showsHorizontalScrollIndicator={false}
-                    // drawDistance={225 * data?.data?.length}
-                />
-            </View>
-            <Portal>
-                <SaveImageDialog img_url={selectedImg} onDismiss={onDismiss} />
-            </Portal>
-        </TransYUpViewMem>
-    );
+	return (
+		<TransYUpViewMem style={{ overflow: 'visible' }}>
+			<ListHeading
+				title="Screenshots"
+				subtitle="Contains spoilers!"
+				subtitleStyle={{ color: colors.onSurfaceVariant }}
+			/>
+			<View style={{ width: '100%', height: 180 }}>
+				<FlatList
+					data={data}
+					renderItem={RenderItem}
+					keyExtractor={(item, index) => index.toString()}
+					// estimatedItemSize={250}
+					horizontal
+					contentContainerStyle={{ padding: 15 }}
+					showsHorizontalScrollIndicator={false}
+					// drawDistance={225 * data?.data?.length}
+				/>
+			</View>
+			<Portal>
+				<SaveImageDialog img_url={selectedImg} onDismiss={onDismiss} />
+			</Portal>
+		</TransYUpViewMem>
+	);
 };
 
 export default ScreenshotImages;

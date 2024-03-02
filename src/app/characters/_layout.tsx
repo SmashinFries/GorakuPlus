@@ -3,20 +3,20 @@ import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 
 const CharacterLayout = () => {
-    return (
-        <AnimatedStack
-            screenOptions={{
-                header: (props) => <PaperHeader {...props} />,
-            }}
-        >
-            <Stack.Screen
-                name="[...characters]"
-                options={{ title: 'Characters' }}
-                getId={(params) => params.params?.params}
-            />
-            <Stack.Screen name="info" options={{ title: '', headerShown: false }} />
-        </AnimatedStack>
-    );
+	return (
+		<AnimatedStack
+			screenOptions={{
+				header: (props) => <PaperHeader {...props} />,
+			}}
+		>
+			<Stack.Screen
+				name="[...characters]"
+				options={{ title: 'Characters' }}
+				getId={(params) => params.params?.params}
+			/>
+			<Stack.Screen name="info" options={{ title: '', headerShown: false }} />
+		</AnimatedStack>
+	);
 };
 
 export default CharacterLayout;

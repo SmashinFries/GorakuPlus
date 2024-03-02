@@ -11,63 +11,63 @@ type DescriptionProps = {
     malDescription: string;
 };
 export const Description = ({ aniDescription, malDescription }: DescriptionProps) => {
-    const { width } = useWindowDimensions();
-    const { colors } = useTheme();
-    const { defaultDescription } = useAppSelector((state) => state.persistedSettings);
-    const [isUwuified, setIsUwuified] = useState(false);
+	const { width } = useWindowDimensions();
+	const { colors } = useTheme();
+	const { defaultDescription } = useAppSelector((state) => state.persistedSettings);
+	const [isUwuified, setIsUwuified] = useState(false);
 
-    const uwuifier = new Uwuifier({
-        spaces: {
-            faces: 0,
-            actions: 0,
-            stutters: 0.03,
-        },
-        words: 1,
-        exclamations: 1,
-    });
+	const uwuifier = new Uwuifier({
+		spaces: {
+			faces: 0,
+			actions: 0,
+			stutters: 0.03,
+		},
+		words: 1,
+		exclamations: 1,
+	});
 
-    const AniDesc = () => (
-        <RenderHTML
-            contentWidth={width}
-            baseStyle={{ color: colors.onBackground }}
-            source={{ html: aniDescription }}
-            defaultTextProps={{selectable: true, selectionColor: colors.inversePrimary}}
-        />
-    );
-    const MalDesc = () => (
-        <Text selectable selectionColor={colors.inversePrimary}>
-            {isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
-        </Text>
-    );
+	const AniDesc = () => (
+		<RenderHTML
+			contentWidth={width}
+			baseStyle={{ color: colors.onBackground }}
+			source={{ html: aniDescription }}
+			defaultTextProps={{selectable: true, selectionColor: colors.inversePrimary}}
+		/>
+	);
+	const MalDesc = () => (
+		<Text selectable selectionColor={colors.inversePrimary}>
+			{isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
+		</Text>
+	);
 
-    const DescView = () => {
-        if (!aniDescription && !malDescription) {
-            return null;
-        } else if (defaultDescription === 'mal' && malDescription) {
-            return <MalDesc />;
-        } else if (defaultDescription === 'ani' && aniDescription) {
-            return <AniDesc />;
-        } else if (defaultDescription === 'ani' && !aniDescription && malDescription) {
-            return <MalDesc />;
-        } else if (defaultDescription === 'mal' && !malDescription && aniDescription) {
-            return <AniDesc />;
-        } else {
-            return null;
-        }
-    };
+	const DescView = () => {
+		if (!aniDescription && !malDescription) {
+			return null;
+		} else if (defaultDescription === 'mal' && malDescription) {
+			return <MalDesc />;
+		} else if (defaultDescription === 'ani' && aniDescription) {
+			return <AniDesc />;
+		} else if (defaultDescription === 'ani' && !aniDescription && malDescription) {
+			return <MalDesc />;
+		} else if (defaultDescription === 'mal' && !malDescription && aniDescription) {
+			return <AniDesc />;
+		} else {
+			return null;
+		}
+	};
 
-    if (!aniDescription && !malDescription) {
-        return null;
-    }
+	if (!aniDescription && !malDescription) {
+		return null;
+	}
 
-    return (
-        <ExpandableDescription
-            initialHeight={90}
-            toggleUwuifier={() => setIsUwuified((prev) => !prev)}
-        >
-            <DescView />
-        </ExpandableDescription>
-    );
+	return (
+		<ExpandableDescription
+			initialHeight={90}
+			toggleUwuifier={() => setIsUwuified((prev) => !prev)}
+		>
+			<DescView />
+		</ExpandableDescription>
+	);
 };
 
 export const DescriptionMem = React.memo(Description);

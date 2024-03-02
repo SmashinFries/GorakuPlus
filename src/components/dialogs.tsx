@@ -7,9 +7,9 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useCallback, useEffect, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
 import {
-    ExploreMediaQuery,
-    MediaType,
-    ScoreFormat,
+	ExploreMediaQuery,
+	MediaType,
+	ScoreFormat,
 } from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from './cards';
 import { copyToClipboard } from '@/utils';
@@ -21,136 +21,136 @@ type BarcodeScanDialogProps = BasicDialogProps & {
     onNav: (aniId: number, malId: number, type: MediaType) => void;
 };
 export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDialogProps) => {
-    const { colors } = useTheme();
-    const [permission, requestPermission] = useCameraPermissions();
-    const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
+	const { colors } = useTheme();
+	const [permission, requestPermission] = useCameraPermissions();
+	const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
         useBarcode();
 
-    const [dialog_width, setDialogWidth] = useState(0);
+	const [dialog_width, setDialogWidth] = useState(0);
 
-    const closeDialog = () => {
-        resetScan();
-        onDismiss();
-    };
+	const closeDialog = () => {
+		resetScan();
+		onDismiss();
+	};
 
-    const RenderItem = useCallback(
-        ({ item }: { item: ExploreMediaQuery['Page']['media'][0] }) => {
-            return (
-                <View
-                    style={{
-                        flex: 1,
-                        width: '100%',
-                        alignItems: 'center',
-                        marginVertical: 10,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    <MediaCard
-                        titles={item.title}
-                        coverImg={item.coverImage.extraLarge}
-                        navigate={() => {
-                            closeDialog();
-                            onNav(item.id, item.idMal, item.type);
-                        }}
-                        scoreDistributions={item.stats?.scoreDistribution}
-                        meanScore={item.meanScore}
-                        averageScore={item.averageScore}
-                        // height={dialog_width / 2 - 5}
-                        fitToParent
-                        isFavorite={item.isFavourite}
-                    />
-                    <Text
-                        variant="labelMedium"
-                        style={{
-                            textTransform: 'capitalize',
-                            textAlign: 'center',
-                            color: colors.onSurfaceVariant,
-                        }}
-                    >
-                        {item?.format}
-                    </Text>
-                </View>
-            );
-        },
-        [dialog_width],
-    );
+	const RenderItem = useCallback(
+		({ item }: { item: ExploreMediaQuery['Page']['media'][0] }) => {
+			return (
+				<View
+					style={{
+						flex: 1,
+						width: '100%',
+						alignItems: 'center',
+						marginVertical: 10,
+						marginHorizontal: 10,
+					}}
+				>
+					<MediaCard
+						titles={item.title}
+						coverImg={item.coverImage.extraLarge}
+						navigate={() => {
+							closeDialog();
+							onNav(item.id, item.idMal, item.type);
+						}}
+						scoreDistributions={item.stats?.scoreDistribution}
+						meanScore={item.meanScore}
+						averageScore={item.averageScore}
+						// height={dialog_width / 2 - 5}
+						fitToParent
+						isFavorite={item.isFavourite}
+					/>
+					<Text
+						variant="labelMedium"
+						style={{
+							textTransform: 'capitalize',
+							textAlign: 'center',
+							color: colors.onSurfaceVariant,
+						}}
+					>
+						{item?.format}
+					</Text>
+				</View>
+			);
+		},
+		[dialog_width],
+	);
 
-    useEffect(() => {
-        if (visible) {
-            if (!permission?.granted) {
-                requestPermission();
-            }
-        }
-    }, [visible, permission]);
+	useEffect(() => {
+		if (visible) {
+			if (!permission?.granted) {
+				requestPermission();
+			}
+		}
+	}, [visible, permission]);
 
-    return (
-        <Dialog visible={visible} onDismiss={onDismiss}>
-            <Dialog.Title>Book Scanner</Dialog.Title>
-            <Dialog.Content>
-                {!scanned && permission?.granted ? (
-                    <Animated.View entering={FadeIn} exiting={FadeOut} style={{ height: 400 }}>
-                        <CameraView
-                            style={[{ height: 400 }]}
-                            barcodeScannerSettings={{ barCodeTypes: ['ean13'] }}
-                            onBarcodeScanned={(scanningResult) =>
-                                handleBarCodeScanned(scanningResult)
-                            }
-                        />
-                    </Animated.View>
-                ) : (
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        <Text>
+	return (
+		<Dialog visible={visible} onDismiss={onDismiss}>
+			<Dialog.Title>Book Scanner</Dialog.Title>
+			<Dialog.Content>
+				{!scanned && permission?.granted ? (
+					<Animated.View entering={FadeIn} exiting={FadeOut} style={{ height: 400 }}>
+						<CameraView
+							style={[{ height: 400 }]}
+							barcodeScannerSettings={{ barCodeTypes: ['ean13'] }}
+							onBarcodeScanned={(scanningResult) =>
+								handleBarCodeScanned(scanningResult)
+							}
+						/>
+					</Animated.View>
+				) : (
+					<Animated.View entering={FadeIn} exiting={FadeOut}>
+						<Text>
                             ISBN:{' '}
-                            <Text
-                                onPress={() => copyToClipboard(isbn)}
-                                style={{ color: colors.primary }}
-                            >
-                                {isbn} {/* @ts-ignore | Icon still appears.? */}
-                                <MaterialCommunityIcon name="content-copy" color={colors.primary} />
-                            </Text>{' '}
-                        </Text>
-                    </Animated.View>
-                )}
-            </Dialog.Content>
-            {scanned && (
-                <Dialog.ScrollArea onLayout={(e) => setDialogWidth(e.nativeEvent.layout.width)}>
-                    <View
-                        style={{
-                            height: 450,
-                        }}
-                    >
-                        {!isLoading ? (
-                            <FlashList
-                                key={1}
-                                data={aniData?.Page?.media}
-                                keyExtractor={(item) => item?.id.toString()}
-                                renderItem={RenderItem}
-                                estimatedItemSize={100}
-                                numColumns={2}
-                                showsVerticalScrollIndicator={false}
-                                centerContent
-                            />
-                        ) : (
-                            <View
-                                style={{
-                                    height: 450,
-                                    width: '100%',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <ActivityIndicator size={'large'} />
-                            </View>
-                        )}
-                    </View>
-                </Dialog.ScrollArea>
-            )}
-            <Dialog.Actions>
-                <Button onPress={closeDialog}>Close</Button>
-                {scanned && <Button onPress={triggerScan}>Rescan</Button>}
-            </Dialog.Actions>
-        </Dialog>
-    );
+							<Text
+								onPress={() => copyToClipboard(isbn)}
+								style={{ color: colors.primary }}
+							>
+								{isbn} {/* @ts-ignore | Icon still appears.? */}
+								<MaterialCommunityIcon name="content-copy" color={colors.primary} />
+							</Text>{' '}
+						</Text>
+					</Animated.View>
+				)}
+			</Dialog.Content>
+			{scanned && (
+				<Dialog.ScrollArea onLayout={(e) => setDialogWidth(e.nativeEvent.layout.width)}>
+					<View
+						style={{
+							height: 450,
+						}}
+					>
+						{!isLoading ? (
+							<FlashList
+								key={1}
+								data={aniData?.Page?.media}
+								keyExtractor={(item) => item?.id.toString()}
+								renderItem={RenderItem}
+								estimatedItemSize={100}
+								numColumns={2}
+								showsVerticalScrollIndicator={false}
+								centerContent
+							/>
+						) : (
+							<View
+								style={{
+									height: 450,
+									width: '100%',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<ActivityIndicator size={'large'} />
+							</View>
+						)}
+					</View>
+				</Dialog.ScrollArea>
+			)}
+			<Dialog.Actions>
+				<Button onPress={closeDialog}>Close</Button>
+				{scanned && <Button onPress={triggerScan}>Rescan</Button>}
+			</Dialog.Actions>
+		</Dialog>
+	);
 };
 
 type NumberPickDialogProps = BasicDialogProps &
@@ -158,38 +158,38 @@ type NumberPickDialogProps = BasicDialogProps &
         title: string;
     };
 export const NumberPickDialog = ({
-    title,
-    defaultValue,
-    mode,
-    onChange,
-    options,
-    visible,
-    onDismiss,
+	title,
+	defaultValue,
+	mode,
+	onChange,
+	options,
+	visible,
+	onDismiss,
 }: NumberPickDialogProps) => {
-    const [tempVal, setTempVal] = useState(defaultValue ?? 0);
+	const [tempVal, setTempVal] = useState(defaultValue ?? 0);
 
-    return (
-        <Dialog visible={visible} onDismiss={onDismiss}>
-            <Dialog.Title>{title}</Dialog.Title>
-            <Dialog.Content>
-                <NumberPicker
-                    defaultValue={tempVal}
-                    mode={mode}
-                    onChange={(value) => setTempVal(value)}
-                    options={options}
-                />
-            </Dialog.Content>
-            <Dialog.Actions>
-                <Button onPress={onDismiss}>Cancel</Button>
-                <Button
-                    onPress={() => {
-                        onChange(tempVal);
-                        onDismiss();
-                    }}
-                >
+	return (
+		<Dialog visible={visible} onDismiss={onDismiss}>
+			<Dialog.Title>{title}</Dialog.Title>
+			<Dialog.Content>
+				<NumberPicker
+					defaultValue={tempVal}
+					mode={mode}
+					onChange={(value) => setTempVal(value)}
+					options={options}
+				/>
+			</Dialog.Content>
+			<Dialog.Actions>
+				<Button onPress={onDismiss}>Cancel</Button>
+				<Button
+					onPress={() => {
+						onChange(tempVal);
+						onDismiss();
+					}}
+				>
                     Confirm
-                </Button>
-            </Dialog.Actions>
-        </Dialog>
-    );
+				</Button>
+			</Dialog.Actions>
+		</Dialog>
+	);
 };

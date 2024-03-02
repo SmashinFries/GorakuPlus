@@ -21,69 +21,69 @@ type RelationsProps = {
     data: AniMediaQuery['Media']['relations'];
 };
 const Relations = ({ data }: RelationsProps) => {
-    const { colors } = useTheme();
+	const { colors } = useTheme();
 
-    const keyExtractor = useCallback((item, index) => index.toString(), []);
-    const renderItem = useCallback(
-        ({ item }: { item: AniMediaQuery['Media']['relations']['edges'][0] }) => (
-            <View style={{ marginHorizontal: 10, maxHeight: 260 }}>
-                <MediaCard
-                    coverImg={item.node.coverImage.extraLarge}
-                    titles={item.node.title}
-                    averageScore={item.node.averageScore}
-                    meanScore={item.node.meanScore}
-                    imgBgColor={item.node.coverImage.color}
-                    scoreDistributions={item.node?.stats?.scoreDistribution}
-                    navigate={() =>
-                        router.push(`/${item.node?.type?.toLowerCase()}/${item.node?.id}`)
-                    }
-                    isFavorite={item.node?.isFavourite}
-                />
-                <Text
-                    variant="labelLarge"
-                    style={{ textTransform: 'capitalize', textAlign: 'center' }}
-                >
-                    {item.relationType?.replaceAll('_', ' ') ?? '??'}
-                </Text>
-                <Text
-                    variant="labelMedium"
-                    style={{
-                        textTransform: 'capitalize',
-                        textAlign: 'center',
-                        color: colors.onSurfaceVariant,
-                    }}
-                >
-                    {item.node?.format === MediaFormat.Tv
-                        ? 'Anime'
-                        : item.node?.isLicensed
-                        ? item.node?.format
-                        : 'Doujin'}{' '}
+	const keyExtractor = useCallback((item, index) => index.toString(), []);
+	const renderItem = useCallback(
+		({ item }: { item: AniMediaQuery['Media']['relations']['edges'][0] }) => (
+			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
+				<MediaCard
+					coverImg={item.node.coverImage.extraLarge}
+					titles={item.node.title}
+					averageScore={item.node.averageScore}
+					meanScore={item.node.meanScore}
+					imgBgColor={item.node.coverImage.color}
+					scoreDistributions={item.node?.stats?.scoreDistribution}
+					navigate={() =>
+						router.push(`/${item.node?.type?.toLowerCase()}/${item.node?.id}`)
+					}
+					isFavorite={item.node?.isFavourite}
+				/>
+				<Text
+					variant="labelLarge"
+					style={{ textTransform: 'capitalize', textAlign: 'center' }}
+				>
+					{item.relationType?.replaceAll('_', ' ') ?? '??'}
+				</Text>
+				<Text
+					variant="labelMedium"
+					style={{
+						textTransform: 'capitalize',
+						textAlign: 'center',
+						color: colors.onSurfaceVariant,
+					}}
+				>
+					{item.node?.format === MediaFormat.Tv
+						? 'Anime'
+						: item.node?.isLicensed
+							? item.node?.format
+							: 'Doujin'}{' '}
                     · {item.node?.status?.replaceAll('_', ' ') ?? '??'}
-                </Text>
-            </View>
-        ),
-        [],
-    );
+				</Text>
+			</View>
+		),
+		[],
+	);
 
-    if (data?.edges?.length < 1) {
-        return null;
-    }
+	if (data?.edges?.length < 1) {
+		return null;
+	}
 
-    return (
-        <View style={{ overflow: 'visible' }}>
-            <ListHeading title="Relations" />
-            <FlashList
-                data={data?.edges}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-                estimatedItemSize={250}
-                horizontal
-                removeClippedSubviews
-                contentContainerStyle={{ padding: 15 }}
-                showsHorizontalScrollIndicator={false}
-            />
-        </View>
-    );
+	return (
+		<View style={{ overflow: 'visible' }}>
+			<ListHeading title="Relations" />
+			<FlashList
+				data={data?.edges}
+				renderItem={renderItem}
+				keyExtractor={keyExtractor}
+				estimatedItemSize={250}
+				horizontal
+				removeClippedSubviews
+				contentContainerStyle={{ padding: 15 }}
+				showsHorizontalScrollIndicator={false}
+			/>
+		</View>
+	);
 };
 
 export const RelationsMem = memo(Relations);

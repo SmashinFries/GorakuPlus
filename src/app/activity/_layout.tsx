@@ -4,15 +4,15 @@ import { useAppSelector } from '@/store/hooks';
 import { Stack } from 'expo-router';
 
 const ActivityListLayout = () => {
-    // const { navAnimation } = useAppSelector((state) => state.persistedSettings);
-    return (
-        <AnimatedStack
-            screenOptions={{
-                header: (props) => <PaperHeader {...props} />,
-                title: 'Activity',
-            }}
-        />
-    );
+	// const { navAnimation } = useAppSelector((state) => state.persistedSettings);
+	return (
+		<AnimatedStack
+			screenOptions={{
+				header: (props) => <PaperHeader {...props} />,
+				title: 'Activity',
+			}}
+		/>
+	);
 };
 
 export default ActivityListLayout;

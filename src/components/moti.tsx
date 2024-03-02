@@ -5,11 +5,11 @@ import { Button, ButtonProps } from 'react-native-paper';
 
 type MotiViewProps = typeof MotiView & AnimateProp;
 const MotiButton = ({ ...buttonProps }: ButtonProps, { ...motiViewProps }: MotiViewProps) => {
-    return (
-        <MotiView {...motiViewProps}>
-            <Button {...buttonProps} />
-        </MotiView>
-    );
+	return (
+		<MotiView {...motiViewProps}>
+			<Button {...buttonProps} />
+		</MotiView>
+	);
 };
 
 interface SelectableProps extends MotiPressableProps {
@@ -17,30 +17,30 @@ interface SelectableProps extends MotiPressableProps {
 }
 
 const Selectable = (props: SelectableProps = { animation: 'bounce' }) => {
-    return (
-        <MotiPressable
-            {...props}
-            animate={useMemo(
-                () =>
-                    ({ hovered, pressed }) => {
-                        'worklet';
-                        return {
-                            scale:
+	return (
+		<MotiPressable
+			{...props}
+			animate={useMemo(
+				() =>
+					({ hovered, pressed }) => {
+						'worklet';
+						return {
+							scale:
                                 props.animation === 'bounce' ? (hovered || pressed ? 0.8 : 1) : 1,
-                            opacity:
+							opacity:
                                 props.animation === 'opacity'
-                                    ? pressed
-                                        ? 0.5
-                                        : hovered
-                                        ? 0.75
-                                        : 1
-                                    : 1,
-                        };
-                    },
-                [],
-            )}
-        />
-    );
+                                	? pressed
+                                		? 0.5
+                                		: hovered
+                                			? 0.75
+                                			: 1
+                                	: 1,
+						};
+					},
+				[],
+			)}
+		/>
+	);
 };
 
 export { MotiButton, Selectable };

@@ -10,54 +10,54 @@ import { ActivityIndicator, Appbar, useTheme } from 'react-native-paper';
 import { TabBar, TabView } from 'react-native-tab-view';
 
 const Tabs = [
-    { key: 'overview', title: 'Overview' },
-    { key: 'characters', title: 'Characters' },
-    { key: 'staff', title: 'Staff' },
-    { key: 'reviews', title: 'Reviews' },
-    { key: 'stats', title: 'Stats' },
+	{ key: 'overview', title: 'Overview' },
+	{ key: 'characters', title: 'Characters' },
+	{ key: 'staff', title: 'Staff' },
+	{ key: 'reviews', title: 'Reviews' },
+	{ key: 'stats', title: 'Stats' },
 ];
 
 const MediaTabs = () => {
-    const layout = useWindowDimensions();
-    const { colors } = useTheme();
+	const layout = useWindowDimensions();
+	const { colors } = useTheme();
 
-    const [index, setIndex] = useState(0);
+	const [index, setIndex] = useState(0);
 
-    const [routes] = useState<{ key: string; title: string }[]>(Tabs);
+	const [routes] = useState<{ key: string; title: string }[]>(Tabs);
 
-    const renderScene = ({ route }) => {
-        switch (route.key) {
-            case 'overview':
-                return null;
-            case 'characters':
-                return null;
-            case 'staff':
-                return null;
-            case 'reviews':
-                return null;
-            case 'stats':
-                return null;
-            default:
-                return null;
-        }
-    };
+	const renderScene = ({ route }) => {
+		switch (route.key) {
+		case 'overview':
+			return null;
+		case 'characters':
+			return null;
+		case 'staff':
+			return null;
+		case 'reviews':
+			return null;
+		case 'stats':
+			return null;
+		default:
+			return null;
+		}
+	};
 
-    // const Tabs = useCallback(() => {
-    //     return (
-    //         <TabView
-    //             navigationState={{ index, routes }}
-    //             renderScene={renderScene}
-    //             onIndexChange={setIndex}
-    //             initialLayout={{ width: layout.width }}
-    //             renderTabBar={RenderTabBar}
-    //             swipeEnabled={true}
-    //         />
-    //     );
-    // }, [colors, data]);
+	// const Tabs = useCallback(() => {
+	//     return (
+	//         <TabView
+	//             navigationState={{ index, routes }}
+	//             renderScene={renderScene}
+	//             onIndexChange={setIndex}
+	//             initialLayout={{ width: layout.width }}
+	//             renderTabBar={RenderTabBar}
+	//             swipeEnabled={true}
+	//         />
+	//     );
+	// }, [colors, data]);
 
-    return (
-        <>
-            {/* <Appbar.Header>
+	return (
+		<>
+			{/* <Appbar.Header>
                 <Appbar.Content title="Calendar" />
                 <Appbar.Action
                     icon="filter-outline"
@@ -79,8 +79,8 @@ const MediaTabs = () => {
                 </View>
             )}
             <CalendarFilterSheet ref={filterSheetRef} /> */}
-        </>
-    );
+		</>
+	);
 };
 
 export default MediaTabs;

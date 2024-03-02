@@ -10,37 +10,37 @@ type ScoreViewProps = {
     userScore: number;
 };
 export const ScoreCircles = ({
-    avgScore,
-    malScore,
-    meanScore,
-    userScore,
-    scoreColors,
+	avgScore,
+	malScore,
+	meanScore,
+	userScore,
+	scoreColors,
 }: ScoreViewProps & { scoreColors: { red: number; yellow: number } }) => {
-    return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 15 }}>
-            <ScoreContainer
-                title={'Mean'}
-                score={meanScore}
-                opacity={0.35}
-                color={getScoreColor(meanScore, scoreColors)}
-                delay={870}
-            />
-            <ScoreContainer
-                title={'Average'}
-                score={avgScore}
-                opacity={0.35}
-                color={getScoreColor(avgScore, scoreColors)}
-                delay={835}
-            />
-            <ScoreContainer
-                title={'MAL'}
-                score={malScore}
-                opacity={0.35}
-                color={getScoreColor(malScore, scoreColors, true)}
-                delay={800}
-                isMal
-            />
-            {/* {userScore ? (
+	return (
+		<View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 15 }}>
+			<ScoreContainer
+				title={'Mean'}
+				score={meanScore}
+				opacity={0.35}
+				color={getScoreColor(meanScore, scoreColors)}
+				delay={870}
+			/>
+			<ScoreContainer
+				title={'Average'}
+				score={avgScore}
+				opacity={0.35}
+				color={getScoreColor(avgScore, scoreColors)}
+				delay={835}
+			/>
+			<ScoreContainer
+				title={'MAL'}
+				score={malScore}
+				opacity={0.35}
+				color={getScoreColor(malScore, scoreColors, true)}
+				delay={800}
+				isMal
+			/>
+			{/* {userScore ? (
                 <ScoreContainer
                     title={'Yours'}
                     score={userScore}
@@ -51,8 +51,8 @@ export const ScoreCircles = ({
                     isMal
                 />
             ) : null} */}
-        </View>
-    );
+		</View>
+	);
 };
 
 export default ScoreCircles;

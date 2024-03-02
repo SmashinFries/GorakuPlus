@@ -13,56 +13,56 @@ type ScoreGraphProps = {
     scores: UserAnimeStatsQuery['User']['statistics']['anime']['scores'];
 };
 export const ScoreGraph = ({ scores }: ScoreGraphProps) => {
-    const { width } = useWindowDimensions();
-    const { colors } = useTheme();
-    const scoreData = useMemo(() => [...scores]?.sort((a, b) => a.score - b.score), [scores]);
+	const { width } = useWindowDimensions();
+	const { colors } = useTheme();
+	const scoreData = useMemo(() => [...scores]?.sort((a, b) => a.score - b.score), [scores]);
 
-    const labels = useMemo(() => scoreData?.map((item) => item.score.toString()), []);
-    const barData = useMemo(() => scoreData?.map((item) => item.count), []);
+	const labels = useMemo(() => scoreData?.map((item) => item.score.toString()), []);
+	const barData = useMemo(() => scoreData?.map((item) => item.count), []);
 
-    const chartConfig: AbstractChartConfig = {
-        backgroundColor: colors.onSecondaryContainer,
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientToOpacity: 0,
-        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-        strokeWidth: 3, // optional, default 3
-        barPercentage: 0.8,
-        useShadowColorFromDataset: false, // optional
-        barRadius: 5,
-    };
+	const chartConfig: AbstractChartConfig = {
+		backgroundColor: colors.onSecondaryContainer,
+		backgroundGradientFromOpacity: 0,
+		backgroundGradientToOpacity: 0,
+		color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+		strokeWidth: 3, // optional, default 3
+		barPercentage: 0.8,
+		useShadowColorFromDataset: false, // optional
+		barRadius: 5,
+	};
 
-    const data: ChartData = {
-        labels: labels ?? [],
-        datasets: [
-            {
-                data: barData ?? [],
-            },
-        ],
-    };
+	const data: ChartData = {
+		labels: labels ?? [],
+		datasets: [
+			{
+				data: barData ?? [],
+			},
+		],
+	};
 
-    return (
-        <ScrollView horizontal>
-            <View>
-                <ListHeading title="Scores" />
-                <BarChart
-                    data={data}
-                    width={width}
-                    height={200}
-                    yAxisLabel="T"
-                    yAxisSuffix=""
-                    chartConfig={{
-                        ...chartConfig,
-                        color: (opacity) => rgbToRgba(colors.primary, opacity),
-                    }}
-                    // verticalLabelRotation={30}
-                    withHorizontalLabels={false}
-                    withInnerLines={false}
-                    showValuesOnTopOfBars
-                    showBarTops
-                />
-            </View>
-        </ScrollView>
-    );
+	return (
+		<ScrollView horizontal>
+			<View>
+				<ListHeading title="Scores" />
+				<BarChart
+					data={data}
+					width={width}
+					height={200}
+					yAxisLabel="T"
+					yAxisSuffix=""
+					chartConfig={{
+						...chartConfig,
+						color: (opacity) => rgbToRgba(colors.primary, opacity),
+					}}
+					// verticalLabelRotation={30}
+					withHorizontalLabels={false}
+					withInnerLines={false}
+					showValuesOnTopOfBars
+					showBarTops
+				/>
+			</View>
+		</ScrollView>
+	);
 };
 
 // type EpisodesGraphProps = {
