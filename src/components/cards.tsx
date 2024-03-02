@@ -19,6 +19,7 @@ import { AiringBanner } from './explore/episodeBanner';
 import { ScoreVisualType } from '@/store/slices/settingsSlice';
 import useImageRotation from '@/hooks/useImageRotation';
 import { useAppTheme } from '@/store/theme/theme';
+import { useEffect } from 'react';
 
 const BORDER_RADIUS = 12;
 
@@ -248,6 +249,7 @@ export const MediaProgressBar = ({
 }: MediaProgressBarProps) => {
     const { colors } = useTheme();
     const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
+
     return (
         <View
             style={[
@@ -259,7 +261,7 @@ export const MediaProgressBar = ({
             ]}
         >
             <ProgressBar
-                progress={total && progress ? progress / total : progress === 0 ? 0 : 1}
+                progress={total && progress ? progress / total : progress === 0 && mediaListEntry?.status !== MediaListStatus.Planning ? 0 : 1}
                 style={{
                     alignSelf: 'center',
                     height: 8,
@@ -279,11 +281,11 @@ export const MediaProgressBar = ({
                 variant="labelMedium"
             >
                 {showListStatus ?? showItemListStatus ? mediaListEntry?.status : null}
-                {mediaListEntry?.progress >= 0 
+                {mediaListEntry?.progress > 0 
                     ? `${showListStatus ?? showItemListStatus ? ' · ' : ''}` +
                         mediaListEntry?.progress +
-                        (mediaListEntry?.status !== MediaListStatus.Repeating
-                            ? '/' + (total && total !== 0 ? total : '∞')
+                        (![MediaListStatus.Repeating, MediaListStatus.Planning].includes(mediaListEntry?.status) && total
+                            ? '/' + `${total}`
                             : '')
                     : null}
             </Text>
