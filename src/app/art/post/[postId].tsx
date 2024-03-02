@@ -17,6 +17,7 @@ import { PostImage } from '@/components/art/image';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const DanbooruPostPage = () => {
     const { postId } = useLocalSearchParams<{ postId: string }>();
@@ -54,7 +55,7 @@ const DanbooruPostPage = () => {
     if (isLoading) {
         return (
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size={'large'} />
+                <GorakuActivityIndicator />
             </View>
         );
     }

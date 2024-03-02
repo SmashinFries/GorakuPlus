@@ -7,6 +7,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useReviewsList } from '@/hooks/reviews/useReviews';
 import { ReviewItem } from '@/components/reviews/reviewItem';
 import { ReviewsQuery } from '@/store/services/anilist/generated-anilist';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const ReviewsListScreen = () => {
     const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
@@ -31,7 +32,7 @@ const ReviewsListScreen = () => {
     if (reviewData.isUninitialized) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" />
+                <GorakuActivityIndicator />
             </View>
         );
     }

@@ -1,5 +1,6 @@
 import { Accordion } from '@/components/animations';
 import { FadeHeaderProvider } from '@/components/headers';
+import { GorakuActivityIndicator } from '@/components/loading';
 import { MediaBanner } from '@/components/media/banner';
 import { ProfileActionBar } from '@/components/user/actionbar';
 import { ActivityOverview } from '@/components/user/activityItem';
@@ -57,7 +58,7 @@ const UserPage = () => {
 
     return userID && isLoading ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <ActivityIndicator size={'large'} />
+            <GorakuActivityIndicator />
         </View>
     ) : (
         <FadeHeaderProvider

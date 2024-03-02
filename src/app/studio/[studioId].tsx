@@ -5,10 +5,11 @@ import { useCallback } from 'react';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import useStudioList from '@/hooks/studio/useStudio';
 import { MediaCard, MediaProgressBar } from '@/components/cards';
-import { StudioListQuery } from '@/store/services/anilist/generated-anilist';
+import { MediaList, StudioListQuery } from '@/store/services/anilist/generated-anilist';
 import { useAppSelector } from '@/store/hooks';
 import { useColumns } from '@/utils';
 import { StudioHeader } from '@/components/headers';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const StudioMediaListScreen = () => {
     const { studioId } = useLocalSearchParams<{ studioId: string }>();
@@ -45,7 +46,7 @@ const StudioMediaListScreen = () => {
                 />
                 <MediaProgressBar
                     progress={props.item.mediaListEntry?.progress}
-                    mediaListEntry={props.item.mediaListEntry}
+                    mediaListEntry={props.item.mediaListEntry as MediaList}
                     mediaStatus={props.item?.status}
                     total={props.item.episodes ?? 0}
                 />
@@ -57,7 +58,7 @@ const StudioMediaListScreen = () => {
     if (studioData.isUninitialized) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" />
+                <GorakuActivityIndicator />
             </View>
         );
     }

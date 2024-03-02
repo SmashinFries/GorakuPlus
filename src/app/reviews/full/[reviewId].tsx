@@ -20,6 +20,7 @@ import Markdown, { RenderRules, MarkdownIt, ASTNode } from 'react-native-markdow
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Burnt from 'burnt';
 import { ReviewRating, useReviewRatingMutation } from '@/store/services/anilist/generated-anilist';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const Spoiler = (props: {
     node: ASTNode;
@@ -420,7 +421,7 @@ const ReviewPage = () => {
     if (isLoading) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" />
+                <GorakuActivityIndicator />
             </View>
         );
     }

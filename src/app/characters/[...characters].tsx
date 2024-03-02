@@ -7,6 +7,7 @@ import { useCallback } from 'react';
 import { useCharactersList } from '@/hooks/characters/useCharacters';
 import { router, useLocalSearchParams } from 'expo-router';
 import { CharacterListQuery, MediaType } from '@/store/services/anilist/generated-anilist';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const CharacterListPage = () => {
     const { characters } = useLocalSearchParams<{ characters: [string, string] }>();
@@ -46,8 +47,8 @@ const CharacterListPage = () => {
 
     if (charData.isUninitialized) {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" />
+            <View style={{ height:'100%', width:'100%', alignItems: 'center', justifyContent: 'center' }}>
+                <GorakuActivityIndicator />
             </View>
         );
     }
@@ -65,7 +66,7 @@ const CharacterListPage = () => {
                 ListFooterComponent={() =>
                     charData.isFetching && (
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                            <ActivityIndicator size="large" />
+                            <GorakuActivityIndicator />
                         </View>
                     )
                 }

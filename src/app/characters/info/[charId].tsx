@@ -31,6 +31,7 @@ import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { MediaBanner } from '@/components/media/banner';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const CharacterScreen = () => {
     const { charId } = useLocalSearchParams<{ charId: string }>();
@@ -389,7 +390,7 @@ const CharacterScreen = () => {
                                                 alignItems: 'center',
                                             }}
                                         >
-                                            <ActivityIndicator size={'large'} />
+                                            <GorakuActivityIndicator />
                                         </View>
                                     )}
                                 </View>

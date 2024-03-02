@@ -7,6 +7,7 @@ import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { DanbooruImageCard } from '../../components/cards';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const ArtListPage = () => {
     const { tag } = useLocalSearchParams();
@@ -60,7 +61,7 @@ const ArtListPage = () => {
                     onEndReached={() => hasNextPage && onSearch(page + 1)}
                 />
             ) : (
-                <ActivityIndicator size="large" />
+                <GorakuActivityIndicator />
             )}
             <Stack.Screen options={{ title: tag as string }} />
         </View>

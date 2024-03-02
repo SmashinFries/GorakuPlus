@@ -1,3 +1,4 @@
+import { GorakuActivityIndicator } from '@/components/loading';
 import { NewsItem } from '@/components/news/newsItem';
 import { useNews } from '@/hooks/news/useNews';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
@@ -47,7 +48,7 @@ const NewsPage = () => {
     if (news.isLoading) {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size={'large'} />
+                <GorakuActivityIndicator />
             </View>
         );
     }

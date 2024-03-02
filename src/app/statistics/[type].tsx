@@ -1,3 +1,4 @@
+import { GorakuActivityIndicator } from '@/components/loading';
 import { GeneralStatBlock } from '@/components/statistics/blocks';
 import { CountryPie, FormatPie, StatusPie } from '@/components/statistics/pies';
 import { RenderTabBar } from '@/components/tab';
@@ -25,7 +26,7 @@ const AnimeStatTab = () => {
     if (isFetching || isLoading)
         return (
             <View>
-                <ActivityIndicator size={'large'} />
+                <GorakuActivityIndicator />
             </View>
         );
 
@@ -100,7 +101,7 @@ const MangaStatTab = () => {
     if (isFetching)
         return (
             <View>
-                <ActivityIndicator size={'large'} />
+                <GorakuActivityIndicator />
             </View>
         );
 

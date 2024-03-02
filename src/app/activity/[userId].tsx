@@ -1,3 +1,4 @@
+import { GorakuActivityIndicator } from '@/components/loading';
 import { ActivityItem } from '@/components/user/activityItem';
 import { ConfirmActDelDialog } from '@/components/user/dialogs';
 import { ListActivity, useUserActivityQuery } from '@/store/services/anilist/generated-anilist';
@@ -45,7 +46,7 @@ const ActivityListPage = () => {
     if (isFetching && !data)
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator />
+                <GorakuActivityIndicator />
             </View>
         );
 

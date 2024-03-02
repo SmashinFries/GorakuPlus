@@ -1,6 +1,7 @@
 import { MediaCard, MediaProgressBar } from '@/components/cards';
 import { ListHeader } from '@/components/headers';
 import { ListFilterSheet } from '@/components/list/filtersheet';
+import { GorakuActivityIndicator } from '@/components/loading';
 import { RenderTabBar, TabBarWithChip } from '@/components/tab';
 import { useList } from '@/hooks/list/useList';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -351,7 +352,8 @@ const ListPage = () => {
                 />
             ) : (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <ActivityIndicator animating={true} size={'large'} color={colors.primary} />
+                    {/* <ActivityIndicator animating={true} size={'large'} color={colors.primary} /> */}
+                    <GorakuActivityIndicator />
                     <Text variant="labelMedium">Fetching lists</Text>
                 </View>
             )}

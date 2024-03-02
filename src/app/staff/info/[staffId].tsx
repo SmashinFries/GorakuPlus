@@ -29,6 +29,7 @@ import { MediaBanner } from '@/components/media/banner';
 import Animated from 'react-native-reanimated';
 import use3dPan from '@/hooks/animations/use3dPan';
 import { GestureDetector } from 'react-native-gesture-handler';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const StafPage = () => {
     const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -81,7 +82,7 @@ const StafPage = () => {
     if (isLoading) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" />
+                <GorakuActivityIndicator />
             </View>
         );
     }

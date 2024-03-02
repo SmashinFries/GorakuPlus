@@ -7,6 +7,7 @@ import { StaffItem } from '@/components/staff/card';
 import { useStaffList } from '@/hooks/staff/useStaff';
 import { router, useLocalSearchParams } from 'expo-router';
 import { CharacterItem, CharacterLabel } from '@/components/characters/card';
+import { GorakuActivityIndicator } from '@/components/loading';
 
 const StaffListScreen = () => {
     const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
@@ -44,7 +45,7 @@ const StaffListScreen = () => {
     if (staffData.isUninitialized) {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" />
+                <GorakuActivityIndicator />
             </View>
         );
     }
