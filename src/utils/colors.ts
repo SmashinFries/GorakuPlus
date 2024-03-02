@@ -52,15 +52,15 @@ export const getScoreColor = (
 
 export const listColor = (status: MediaListStatus) => {
     switch (status) {
-        case 'COMPLETED':
+        case MediaListStatus.Completed:
             return '#00FF00';
-        case 'PLANNING':
+        case MediaListStatus.Planning:
             return '#FFA500';
-        case 'DROPPED':
-        case 'PAUSED':
+        case MediaListStatus.Dropped:
+        case MediaListStatus.Paused:
             return '#FF0000';
-        case 'CURRENT':
-        case 'REPEATING':
+        case MediaListStatus.Current:
+        case MediaListStatus.Repeating:
             return '#3AADE9';
     }
 };
