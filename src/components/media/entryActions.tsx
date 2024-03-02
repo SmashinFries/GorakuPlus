@@ -103,7 +103,7 @@ export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopup
             >
                 <List.Subheader style={{ textAlign: 'center' }}>{title}</List.Subheader>
                 <Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>
-                    {convertDate(value) ?? '???'}
+                    {convertDate(value) ?? 'N/A'}
                 </Text>
             </Pressable>
             <Portal>
