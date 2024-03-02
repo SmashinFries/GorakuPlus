@@ -117,7 +117,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 <List.Item
                     title="HashTags"
                     description={
-                        data?.hashtag?.split('#')?.length > 2
+                        data?.hashtag?.includes('#') && data?.hashtag?.split('#')?.length > 2
                             ? () => (
                                   <View
                                       style={{
@@ -139,7 +139,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                               )
                             : null
                     }
-                    right={data?.hashtag?.split('#')?.length < 3 && data?.hashtag?.split('#')?.length > 0 ? (props) => (
+                    right={data?.hashtag?.split('#')?.length < 3 && data?.hashtag?.split('#')?.length > 0 && data?.hashtag?.includes('#') ? (props) => (
                         <Button
                                               mode="elevated"
                                               onPress={() => copyToClipboard(data?.hashtag)}
@@ -152,7 +152,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 <List.Item
                     title="Synonyms"
                     description={
-                        data?.synonyms?.length > 1
+                        data?.synonyms?.length > 0
                             ? () => (
                                   <View
                                       style={{
@@ -179,16 +179,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                               )
                             : null
                     }
-                    right={
-                        data?.synonyms?.length === 1
-                            ? 
-                            () => <Button
-                                mode="elevated"
-                                onPress={() => copyToClipboard(data?.synonyms[0])}
-                            >
-                                {data?.synonyms[0]}
-                            </Button>
-                            : data?.synonyms?.length < 1 ? (props) => (
+                    right={data?.synonyms?.length < 1 ? (props) => (
                                   <Text {...props} style={{ width: '50%', textAlign: 'right' }}>
                                       {'N/A'}
                                   </Text>
