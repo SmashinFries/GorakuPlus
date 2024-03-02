@@ -271,6 +271,7 @@ const MediaScreen = () => {
                                     aniData?.data?.Media?.title?.english ??
                                     aniData?.data?.Media?.title?.romaji
                                 }
+                                altTitles={[...new Set([...Object.values(aniData?.data?.Media?.title), ...aniData?.data?.Media?.synonyms])]}
                                 currentMuID={muDB['data'][aniID]}
                                 visible={showMuDialog}
                                 onDismiss={toggleMuDialog}
