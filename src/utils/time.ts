@@ -194,7 +194,7 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days
             return `${diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`} ago`;
     }
     if (format === 'days') {
-        return `${diffDays > 1 ? `${diffDays} days` : `${diffDays} day`}`;
+        return `${diffDays > 1 ? `${diffDays} days` : `${diffDays === 0 ? '< 1' : '1'} day`}`;
     }
 };
 
