@@ -1,5 +1,6 @@
 import {
     Button,
+    Chip,
     Dialog,
     IconButton,
     List,
@@ -129,12 +130,14 @@ export const RemoveListItemDialog = ({
 
 type MuSearchProps = {
     title: string;
+    altTitles?: string[];
     currentMuID: number;
     onConfirm: (id: number) => void;
 } & BasicDialogProps;
 
 export const MuSearchDialog = ({
     title,
+    altTitles,
     currentMuID,
     visible,
     onDismiss,
@@ -171,6 +174,21 @@ export const MuSearchDialog = ({
                     onChangeText={(txt) => setQuery(txt)}
                     onSubmitEditing={({ nativeEvent }) => searchManga(nativeEvent.text)}
                 />
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingVertical:10}}>
+                    {altTitles?.map((title, idx) => (
+                        <Chip
+                            key={idx}
+                            mode="flat"
+                            style={{ marginHorizontal: 5}}
+                            onPress={() => {
+                                setQuery(title);
+                                searchManga(title);
+                            }}
+                        >
+                            {title}
+                        </Chip>
+                    ))}
+                </ScrollView>
                 <Button mode="outlined" onPress={() => searchManga(query)}>
                     Search
                 </Button>
