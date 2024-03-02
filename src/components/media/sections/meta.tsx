@@ -1,19 +1,21 @@
-import { Button, List, Text, useTheme } from 'react-native-paper';
+import { Button, List, Surface, Text, TouchableRipple, useTheme } from 'react-native-paper';
 import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
-import { convertDate, copyToClipboard } from '@/utils';
-import { View } from 'react-native';
+import { convertDate, copyToClipboard, rgbToRgba } from '@/utils';
+import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { useEffect, useMemo } from 'react';
 import { Accordion, TransYUpViewMem } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
 import { AnimeFull, MangaFull } from '@/store/services/mal/malApi';
 import { router } from 'expo-router';
+import { useAppTheme } from '@/store/theme/theme';
 
 type MetaDataProps = {
     data: AniMediaQuery['Media'];
     malData?: AnimeFull | MangaFull;
 };
 export const MetaData = ({ data, malData }: MetaDataProps) => {
+    const { colors, roundness } = useAppTheme();
     const startDate = data?.startDate ? convertDate(data?.startDate, true) : null;
     const endDate = data?.endDate ? convertDate(data?.endDate, true) : null;
 
@@ -113,15 +115,44 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                     )}
                 />
                 <List.Item
-                    title="HashTag"
-                    right={(props) => (
-                        <Text selectable>{data?.hashtag?.length > 0 ? data?.hashtag : 'N/A'}</Text>
-                    )}
+                    title="HashTags"
+                    description={
+                        data?.hashtag?.split('#')?.length > 2
+                            ? () => (
+                                  <View
+                                      style={{
+                                          flexDirection: 'row',
+                                          flexWrap: 'wrap',
+                                      }}
+                                  >
+                                      {data?.hashtag?.split('#')?.map((name, idx) => name.length > 1 && (
+                                          <Button
+                                              key={idx}
+                                              mode="elevated"
+                                              style={{ margin: 5 }}
+                                              onPress={() => copyToClipboard(`#${name}`)}
+                                          >
+                                              {`#${name}`}
+                                          </Button>
+                                      ))}
+                                  </View>
+                              )
+                            : null
+                    }
+                    right={data?.hashtag?.split('#')?.length < 3 && data?.hashtag?.split('#')?.length > 0 ? (props) => (
+                        <Button
+                                              mode="elevated"
+                                              onPress={() => copyToClipboard(data?.hashtag)}
+                                          >
+                                              {data?.hashtag}
+                                          </Button>
+                        
+                    ) : !data?.hashtag?.includes('#') ? (props) => <Text {...props}>{'N/A'}</Text> : null}
                 />
                 <List.Item
                     title="Synonyms"
                     description={
-                        data?.synonyms?.length > 0
+                        data?.synonyms?.length > 1
                             ? () => (
                                   <View
                                       style={{
@@ -130,28 +161,34 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                       }}
                                   >
                                       {data?.synonyms?.map((name, idx) => (
-                                          <Button
-                                              key={idx}
-                                              mode="elevated"
-                                              style={{ margin: 5 }}
-                                              onPress={() => copyToClipboard(name)}
-                                          >
-                                              {name}
-                                          </Button>
+                                        //   <Button
+                                        //       key={idx}
+                                        //       mode="elevated"
+                                        //       style={{ margin: 5 }}
+                                        //       onPress={() => copyToClipboard(name)}
+                                        //   >
+                                        //       {name}
+                                        //   </Button>
+                                        <Surface key={idx} mode='elevated' style={{margin:5, borderRadius:roundness * 5}}>
+                                            <TouchableRipple borderless style={{borderRadius: roundness * 5}} rippleColor={rgbToRgba(colors.primary, 0.12)} onPress={() => copyToClipboard(name)}>
+                                                <Text style={{color:colors.primary, marginVertical: 10, marginHorizontal: 24,}}>{name}</Text>
+                                            </TouchableRipple>
+                                        </Surface>
                                       ))}
                                   </View>
                               )
                             : null
                     }
-                    // description={
-                    //     data.synonyms.length > 0
-                    //         ? data.synonyms.map((name, idx) => name).join(', ')
-                    //         : 'N/A'
-                    // }
-                    // descriptionNumberOfLines={10}
                     right={
-                        data?.synonyms?.length < 1
-                            ? (props) => (
+                        data?.synonyms?.length === 1
+                            ? 
+                            () => <Button
+                                mode="elevated"
+                                onPress={() => copyToClipboard(data?.synonyms[0])}
+                            >
+                                {data?.synonyms[0]}
+                            </Button>
+                            : data?.synonyms?.length < 1 ? (props) => (
                                   <Text {...props} style={{ width: '50%', textAlign: 'right' }}>
                                       {'N/A'}
                                   </Text>
@@ -162,7 +199,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                 {data?.type !== MediaType.Manga && (
                     <List.Item
                         title="Studios"
-                        description={() => (
+                        description={ data?.studios?.edges.filter((val) => val.isMain === true).length > 1 ? () => (
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -180,13 +217,26 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                                 onPress={() =>
                                                     router.push(`/studio/${studio.node.id}`)
                                                 }
+                                                onLongPress={() => copyToClipboard(studio.node.name)}
                                             >
                                                 {studio?.node?.name}
                                             </Button>
                                         ),
                                 )}
                             </View>
-                        )}
+                        ) : null}
+                        right={data?.studios?.edges.filter((val) => val.isMain === true).length === 1 ? () => <Button
+                            mode="elevated"
+                            icon={'star'}
+                            onPress={() =>
+                                router.push(`/studio/${data?.studios?.edges[0].node.id}`)
+                            }
+                            onLongPress={() => copyToClipboard(data?.studios?.edges[0].node.name)}
+                        >
+                            {data?.studios?.edges.filter((val) => val.isMain === true)[0].node?.name}
+                        </Button> : data?.studios?.edges.length < 1 ? (props) => (<Text {...props} style={{ width: '50%', textAlign: 'right' }}>
+                                      {'N/A'}
+                                  </Text>) : null}
                     />
                 )}
                 {data?.type !== MediaType.Manga && (
@@ -210,6 +260,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                                 onPress={() =>
                                                     router.push(`/studio/${studio.node.id}`)
                                                 }
+                                                onLongPress={() => copyToClipboard(studio.node.name)}
                                             >
                                                 {studio.node?.name}
                                             </Button>
@@ -217,6 +268,12 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
                                 )}
                             </View>
                         )}
+                        right={data?.studios?.edges?.filter((val) => val.isMain === false)?.length < 1 ? 
+                        (props) => (
+                        <Text {...props} style={{ width: '50%', textAlign: 'right' }}>
+                            {'N/A'}
+                        </Text>
+                        ) : null}
                     />
                 )}
             </Accordion>
