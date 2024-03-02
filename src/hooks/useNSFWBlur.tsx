@@ -39,5 +39,5 @@ export const useBlur = (blurStrength = 200) => {
 
     const blurAmount = useMemo(() => (isBlur ? blurStrength : 0), [isBlur]);
 
-    return { blurAmount, toggleBlur };
+    return { blurAmount, isBlur, toggleBlur, setIsBlur };
 };
