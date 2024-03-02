@@ -104,7 +104,7 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
                             // disabled={isActive}
                             status={validTabs.includes(item) ? 'checked' : 'unchecked'}
                         />
-                        <IconButton icon="drag-vertical" onLongPress={drag} />
+                        <IconButton icon="drag-vertical" onPressIn={drag} />
                     </View>
                     {/* <Text>{item}</Text> */}
                 </TouchableOpacity>
@@ -204,7 +204,7 @@ export const ListTabsDialog = ({
                             // disabled={isActive}
                             status={validTabs.includes(item) ? 'checked' : 'unchecked'}
                         /> */}
-                        <IconButton icon="drag-vertical" onLongPress={drag} />
+                        <IconButton icon="drag-vertical" onPressIn={drag} />
                     </View>
                     {/* <Text>{item}</Text> */}
                 </TouchableOpacity>
