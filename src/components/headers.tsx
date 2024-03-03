@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 import { RootState } from '@/store/store';
 import { MotiImage, MotiScrollView, MotiView } from 'moti';
-import { Image } from 'expo-image';
+import { Image, ImageProps } from 'expo-image';
 import Animated, {
 	Easing,
 	FadeIn,
@@ -260,24 +260,21 @@ export const SearchHeader = ({
 	);
 };
 
+const AnimatedImage = Animated.createAnimatedComponent<ImageProps>(Image);
+
 export const MoreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
 	const { mode } = useAppSelector((state: RootState) => state.persistedTheme);
-	const title = getHeaderTitle(options, route.name);
 	const { width } = useWindowDimensions();
 	const { top } = useSafeAreaInsets();
 	return (
-		<Appbar.Header style={{ height: 200 + top }}>
+		<Appbar.Header style={{ height: 240 + top }}>
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
 			{/* <Appbar.Content title={title} /> */}
-			<Image
-				source={
-					mode === 'punpun'
-						? require('../../assets/punpunRotate.gif')
-						: require('../../assets/iconsv2/icon-trans.png')
-				}
+			<AnimatedImage
+				source={require('../../assets/iconsv2/icon-trans.png')}
 				style={{
 					width: width,
-					height: 225,
+					height: 240,
 					overflow: 'visible',
 					alignSelf: 'center',
 					position: 'absolute',
