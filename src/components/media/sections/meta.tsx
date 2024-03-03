@@ -117,12 +117,13 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 				<List.Item
 					title="HashTags"
 					description={
-						data?.hashtag?.includes('#') && data?.hashtag?.split('#')?.length > 2
+						data?.hashtag?.includes('#')
 							? () => (
 									<View
 										style={{
 											flexDirection: 'row',
 											flexWrap: 'wrap',
+											marginTop: 10,
 										}}
 									>
 										{data?.hashtag?.split('#')?.map(
@@ -143,20 +144,9 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 							: null
 					}
 					right={
-						data?.hashtag?.split('#')?.length < 3 &&
-						data?.hashtag?.split('#')?.length > 0 &&
-						data?.hashtag?.includes('#')
-							? (props) => (
-									<Button
-										mode="elevated"
-										onPress={() => copyToClipboard(data?.hashtag)}
-									>
-										{data?.hashtag}
-									</Button>
-								)
-							: !data?.hashtag?.includes('#')
-								? (props) => <Text {...props}>{'N/A'}</Text>
-								: null
+						!data?.hashtag?.includes('#')
+							? (props) => <Text {...props}>{'N/A'}</Text>
+							: null
 					}
 				/>
 				<List.Item
@@ -166,6 +156,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 							? () => (
 									<View
 										style={{
+											marginTop: 10,
 											flexDirection: 'row',
 											flexWrap: 'wrap',
 										}}
@@ -182,7 +173,10 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 											<Surface
 												key={idx}
 												mode="elevated"
-												style={{ margin: 5, borderRadius: roundness * 5 }}
+												style={{
+													margin: 5,
+													borderRadius: roundness * 5,
+												}}
 											>
 												<TouchableRipple
 													borderless
@@ -220,12 +214,13 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					<List.Item
 						title="Studios"
 						description={
-							data?.studios?.edges.filter((val) => val.isMain === true).length > 1
+							data?.studios?.edges.filter((val) => val.isMain === true).length > 0
 								? () => (
 										<View
 											style={{
 												flexDirection: 'row',
 												flexWrap: 'wrap',
+												marginTop: 10,
 											}}
 										>
 											{data?.studios?.edges?.map(
@@ -254,37 +249,16 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 								: null
 						}
 						right={
-							data?.studios?.edges.filter((val) => val.isMain === true).length === 1
-								? () => (
-										<Button
-											mode="elevated"
-											icon={'star'}
-											onPress={() =>
-												router.push(
-													`/studio/${data?.studios?.edges[0].node.id}`,
-												)
-											}
-											onLongPress={() =>
-												copyToClipboard(data?.studios?.edges[0].node.name)
-											}
+							data?.studios?.edges.length < 1
+								? (props) => (
+										<Text
+											{...props}
+											style={{ width: '50%', textAlign: 'right' }}
 										>
-											{
-												data?.studios?.edges.filter(
-													(val) => val.isMain === true,
-												)[0].node?.name
-											}
-										</Button>
+											{'N/A'}
+										</Text>
 									)
-								: data?.studios?.edges.length < 1
-									? (props) => (
-											<Text
-												{...props}
-												style={{ width: '50%', textAlign: 'right' }}
-											>
-												{'N/A'}
-											</Text>
-										)
-									: null
+								: null
 						}
 					/>
 				)}
@@ -296,6 +270,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 								style={{
 									flexDirection: 'row',
 									flexWrap: 'wrap',
+									marginTop: 10,
 									// justifyContent: 'flex-end',
 								}}
 							>
