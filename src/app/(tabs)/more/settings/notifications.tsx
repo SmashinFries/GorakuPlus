@@ -1,4 +1,5 @@
 import { FetchIntervalDialog } from '@/components/more/settings/notifications/dialog';
+import { GorakuSwitch } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { GetNotificationsQuery } from '@/store/services/anilist/generated-anilist';
@@ -116,7 +117,7 @@ const NotificationsPage = () => {
 					key={idx}
 					title={type.title}
 					right={() => (
-						<Switch
+						<GorakuSwitch
 							value={enabled?.includes(type.type)}
 							onValueChange={(value) => updateEnabled(type.type, value)}
 							disabled={!isRegistered}
@@ -132,7 +133,9 @@ const NotificationsPage = () => {
 		<ScrollView>
 			<List.Item
 				title="Allow Notifications"
-				right={() => <Switch value={isRegistered} onValueChange={toggleNotifications} />}
+				right={() => (
+					<GorakuSwitch value={isRegistered} onValueChange={toggleNotifications} />
+				)}
 				// descriptionStyle={{ textTransform: 'capitalize' }}
 			/>
 			<List.Item

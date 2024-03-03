@@ -27,6 +27,7 @@ import { useCallback, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { List, Portal, Switch, Text, useTheme } from 'react-native-paper';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { GorakuSwitch } from '@/components/switch';
 
 const MediaSettingsPage = () => {
 	const {
@@ -120,7 +121,7 @@ const MediaSettingsPage = () => {
 							: ''
 					}
 					right={() => (
-						<Switch
+						<GorakuSwitch
 							value={showNSFW}
 							// thumbColor={colors.primary}
 							color={colors.primary}
@@ -142,7 +143,7 @@ const MediaSettingsPage = () => {
 				<List.Item
 					title="NSFW Blur"
 					right={() => (
-						<Switch
+						<GorakuSwitch
 							value={blurNSFW}
 							// thumbColor={colors.primary}
 							color={colors.primary}

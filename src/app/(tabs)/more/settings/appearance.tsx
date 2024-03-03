@@ -2,6 +2,7 @@ import { Accordion } from '@/components/animations';
 import { MediaTileCustomizer } from '@/components/more/settings/appearance/dialogs';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { MotiButton } from '@/components/moti';
+import { GorakuSwitch } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -133,12 +134,7 @@ const AppearancePage = () => {
 						title={'Dark Mode'}
 						onPress={onDarkChange}
 						right={(props) => (
-							<Switch
-								value={isDark}
-								{...props}
-								thumbColor={isDark ? colors.primary : undefined}
-								onValueChange={onDarkChange}
-							/>
+							<GorakuSwitch value={isDark} {...props} onValueChange={onDarkChange} />
 						)}
 					/>
 					<Accordion
@@ -219,10 +215,9 @@ const AppearancePage = () => {
 						//     dispatch(setTheme({ isDark: !isDark, mode: mode }));
 						// }}
 						right={(props) => (
-							<Switch
+							<GorakuSwitch
 								value={btmTabLabels}
 								{...props}
-								thumbColor={btmTabLabels ? colors.primary : undefined}
 								onValueChange={onBtmTabLabelChange}
 							/>
 						)}
@@ -237,10 +232,9 @@ const AppearancePage = () => {
 						// }}
 						description={'Enable labels to see the effect'}
 						right={(props) => (
-							<Switch
+							<GorakuSwitch
 								value={btmTabShifting}
 								{...props}
-								thumbColor={btmTabShifting ? colors.primary : undefined}
 								onValueChange={onBtmTabShiftingChange}
 							/>
 						)}
@@ -282,10 +276,9 @@ const AppearancePage = () => {
 							'Allows 3D interaction for certain things. Pointless but cool.'
 						}
 						right={(props) => (
-							<Switch
+							<GorakuSwitch
 								value={interaction3D}
 								{...props}
-								thumbColor={interaction3D ? colors.primary : undefined}
 								onValueChange={onEnableInteraction3DChange}
 							/>
 						)}
@@ -294,10 +287,9 @@ const AppearancePage = () => {
 						title={'Auto Rotation'}
 						description={'3D Interactions must be enabled for this to take effect.'}
 						right={(props) => (
-							<Switch
+							<GorakuSwitch
 								value={autoRotation}
 								{...props}
-								thumbColor={autoRotation ? colors.primary : undefined}
 								onValueChange={onAutoRotationChange}
 								disabled={!interaction3D}
 							/>
@@ -310,10 +302,9 @@ const AppearancePage = () => {
 						}
 						descriptionNumberOfLines={3}
 						right={(props) => (
-							<Switch
+							<GorakuSwitch
 								value={allowSensorMotion}
 								{...props}
-								thumbColor={allowSensorMotion ? colors.primary : undefined}
 								onValueChange={onAllowSensorMotionChange}
 							/>
 						)}
