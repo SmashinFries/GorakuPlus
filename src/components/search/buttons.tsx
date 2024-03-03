@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, IconButton, Checkbox, Text, useTheme, Switch } from 'react-native-paper';
+import { GorakuSwitch } from '../switch';
 
 type ListOptions = {
 	label: string;
@@ -170,7 +171,7 @@ export const TagBanSwitch = ({ onPress, totalBanned, initialState }: TagBanSwitc
 	}, []);
 	return (
 		<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-			<Switch value={state} onValueChange={onSwitch} />
+			<GorakuSwitch value={state} onValueChange={onSwitch} />
 			<Text>Blacklist{totalBanned && totalBanned > 0 ? ` (${totalBanned})` : ''}</Text>
 		</View>
 	);
