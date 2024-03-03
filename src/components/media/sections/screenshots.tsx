@@ -1,7 +1,8 @@
 import { TransYUpViewMem } from '@/components/animations';
+import { ImageViewer } from '@/components/imageViewer';
 import { ListHeading } from '@/components/text';
 import { useBlur } from '@/hooks/useNSFWBlur';
-import { Media } from '@/store/services/anilist/generated-anilist';
+import { Media, MediaStreamingEpisode } from '@/store/services/anilist/generated-anilist';
 import { useAppTheme } from '@/store/theme/theme';
 import { SaveImageDialog } from '@/utils/images';
 import { FlashList } from '@shopify/flash-list';
@@ -17,20 +18,14 @@ type ScreenshotItemProps = {
 const ScreenshotItem = ({
 	item,
 	index,
-	onDownload,
-}: ScreenshotItemProps & { onDownload: (img: string) => void }) => {
+	onSelect,
+}: ScreenshotItemProps & { onSelect: () => void }) => {
 	const { blurAmount, isBlur, toggleBlur } = useBlur();
 
 	const { colors } = useAppTheme();
 	return (
 		<Pressable
-			onPress={
-				!isBlur
-					? () => {
-							onDownload(item.thumbnail);
-						}
-					: null
-			}
+			onPress={onSelect}
 			onLongPress={toggleBlur}
 			style={{ marginHorizontal: 5, height: 180, aspectRatio: 16 / 9 }}
 		>
@@ -53,16 +48,20 @@ type ScreenshotsProps = {
 };
 const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 	const { colors } = useAppTheme();
-	const [selectedImg, setSelectedImg] = useState('');
+	const currentImageIndex = useRef(0);
 
-	const onDismiss = useCallback(() => setSelectedImg(''), []);
+	const [isImageViewerVisible, setImageViewerVisible] = useState(false);
 
-	const onDownload = useCallback((img_url: string) => {
-		setSelectedImg(img_url);
-	}, []);
-
-	const RenderItem = useCallback((props) => {
-		return <ScreenshotItem {...props} onDownload={onDownload} />;
+	const RenderItem = useCallback((props: { item: MediaStreamingEpisode; index: number }) => {
+		return (
+			<ScreenshotItem
+				{...props}
+				onSelect={() => {
+					currentImageIndex.current = props.index;
+					setImageViewerVisible(true);
+				}}
+			/>
+		);
 	}, []);
 
 	if (!data || data?.length === 0) {
@@ -89,7 +88,13 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 				/>
 			</View>
 			<Portal>
-				<SaveImageDialog img_url={selectedImg} onDismiss={onDismiss} />
+				<ImageViewer
+					urls={data.map((stream) => stream.thumbnail)}
+					visible={isImageViewerVisible}
+					onDismiss={() => setImageViewerVisible(false)}
+					isSpoiler
+					initialIndex={currentImageIndex.current}
+				/>
 			</Portal>
 		</TransYUpViewMem>
 	);
