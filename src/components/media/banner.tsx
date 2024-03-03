@@ -23,12 +23,13 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
 
 	const { sensor } = useAnimatedSensor(SensorType.ROTATION, { interval: 20 });
 
+	// @ts-ignore - ???
 	const animatedStyle = useAnimatedStyle(() => {
 		const { pitch, roll } = sensor?.value ?? { pitch: 0, roll: 0 };
 		return {
 			transform: [
-				{ translateX: allowMotion ? withSpring(-roll * 25, { damping: 200 }) : 0 },
-				{ translateY: allowMotion ? withSpring(-pitch * 25, { damping: 200 }) : 0 },
+				{ translateX: withSpring(-roll * 25, { damping: 200 }) },
+				{ translateY: withSpring(-pitch * 25, { damping: 200 }) },
 				{ matrix: [] },
 			],
 		};
@@ -36,7 +37,7 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
 
 	return (
 		<Animated.View style={[style, styles.container]}>
-			<Animated.View style={[animatedStyle, { paddingBottom: 10 }]}>
+			<Animated.View style={[allowMotion ? animatedStyle : {}, { paddingBottom: 10 }]}>
 				<Image
 					source={{ uri: img_src }}
 					style={[styles.img]}
