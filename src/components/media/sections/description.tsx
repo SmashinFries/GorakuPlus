@@ -1,10 +1,11 @@
-import { useTheme, Text } from 'react-native-paper';
+import { useTheme, Text, Button, IconButton } from 'react-native-paper';
 import React, { useState } from 'react';
 import { ExpandableDescription } from '../../animations';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import RenderHTML from 'react-native-render-html';
 import { useAppSelector } from '@/store/hooks';
 import Uwuifier from 'uwuifier';
+import useTTS from '@/hooks/useTTS';
 
 type DescriptionProps = {
 	aniDescription: string;
@@ -13,6 +14,10 @@ type DescriptionProps = {
 export const Description = ({ aniDescription, malDescription }: DescriptionProps) => {
 	const { width } = useWindowDimensions();
 	const { colors } = useTheme();
+
+	const { enabled, english } = useAppSelector((state) => state.ttsSettings);
+	const { speak } = useTTS();
+
 	const { defaultDescription } = useAppSelector((state) => state.persistedSettings);
 	const [isUwuified, setIsUwuified] = useState(false);
 
@@ -35,9 +40,27 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 		/>
 	);
 	const MalDesc = () => (
-		<Text selectable selectionColor={colors.inversePrimary}>
-			{isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
-		</Text>
+		<>
+			<Text selectable selectionColor={colors.inversePrimary}>
+				{isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
+			</Text>
+			{enabled && (
+				<IconButton
+					icon="text-to-speech"
+					onPress={() =>
+						speak(
+							isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription,
+							{
+								voice: english?.voice?.identifier,
+								pitch: english?.pitch,
+								rate: english?.rate,
+							},
+						)
+					}
+					style={{ alignSelf: 'flex-end' }}
+				/>
+			)}
+		</>
 	);
 
 	const DescView = () => {
@@ -66,6 +89,9 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 			toggleUwuifier={() => setIsUwuified((prev) => !prev)}
 		>
 			<DescView />
+			{/* {enabled && english && defaultDescription === 'mal' && malDescription && (
+				<IconButton icon="text-to-speech" style={{ alignSelf: 'flex-end' }} />
+			)} */}
 		</ExpandableDescription>
 	);
 };
