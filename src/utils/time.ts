@@ -84,13 +84,12 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 		(futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
 	);
 	const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
-	return `${
-		pos_estimated_days > 1
-			? pos_estimated_days?.toString() + ' days'
-			: pos_estimated_days === 1
-				? pos_estimated_days.toString() + ' day'
-				: 'Today'
-	}`;
+	return `${pos_estimated_days > 1
+		? pos_estimated_days?.toString() + ' days'
+		: pos_estimated_days === 1
+			? pos_estimated_days.toString() + ' day'
+			: 'Today'
+		}`;
 };
 
 const getDateDifferences = (dates: Date[]) => {
@@ -181,9 +180,8 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days
 	const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
 
 	if (format === 'until')
-		return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${
-			diffMinutes > 0 ? `${diffMinutes}m` : ''
-		}`;
+		return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${diffMinutes > 0 ? `${diffMinutes}m` : ''
+			}`;
 	if (format === 'createdAt') {
 		if (diffMonths > 0)
 			return `${diffMonths > 1 ? `${diffMonths} months` : `${diffMonths} month`} ago`;
@@ -196,7 +194,7 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days
 			return `${diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`} ago`;
 	}
 	if (format === 'days') {
-		return `${diffDays > 1 ? `${diffDays} days` : `${diffDays === 0 ? '< 1' : '1'} day`}`;
+		return `${diffDays > 1 ? `${diffDays} days` : diffDays === 1 ? '1 day' : 'Soon'}`;
 	}
 };
 
