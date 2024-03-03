@@ -37,6 +37,7 @@ import wdTaggerAPI from './services/huggingface/wdTagger';
 import setupSlice, { SetupState } from './slices/setupSlice';
 import displaySettingSlice, { DisplaySettingState } from './slices/displaySlice';
 import { rtkQueryErrorLogger } from './middleware';
+import ttsSlice, { TTSState } from './slices/ttsSlice';
 
 const secureStorage = createSecureStorage();
 
@@ -52,6 +53,11 @@ const persistSettingsConfig: PersistConfig<any, any, any, any> = {
 
 const persistSetupConfig: PersistConfig<any, any, any, any> = {
 	key: 'setup',
+	storage: AsyncStorage,
+};
+
+const ttsConfig: PersistConfig<any, any, any, any> = {
+	key: 'tts',
 	storage: AsyncStorage,
 };
 
@@ -112,6 +118,8 @@ const persistedDisplaySettings = persistReducer<DisplaySettingState, AnyAction>(
 );
 const persistedSetup = persistReducer<SetupState, AnyAction>(persistSetupConfig, setupSlice);
 
+const ttsSettings = persistReducer<TTSState, AnyAction>(ttsConfig, ttsSlice);
+
 const persistedAniLogin = persistReducer<AuthState, AnyAction>(anilistAuthPersistConfig, authSlice);
 const persistedWaifuItToken = persistReducer<WaifuItAuthState, AnyAction>(
 	waifuItAuthPersistConfig,
@@ -158,6 +166,7 @@ export const store = configureStore({
 		persistedCharArtDB,
 		persistedNotifs,
 		persistedDisplaySettings,
+		ttsSettings,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
