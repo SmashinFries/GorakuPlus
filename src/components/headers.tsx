@@ -393,11 +393,7 @@ export const MediaHeader = ({
 											? 'play-box-multiple-outline'
 											: 'book-open-page-variant-outline'
 									}
-									onPress={() =>
-										streamingLinks?.length > 1
-											? openStreamMenu()
-											: openWebBrowser(streamingLinks[0]?.url)
-									}
+									onPress={() => openStreamMenu()}
 								/>
 							}
 						>
