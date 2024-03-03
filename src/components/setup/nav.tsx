@@ -84,14 +84,14 @@ const PageIndicator = ({ page, numPages, onPress }: PageIndicatorProps) => {
 type SetupNavBarProps = {
 	page: number;
 	numPages: number;
-	onPageChange: (navType: 'next' | 'prev' | number) => void;
+	onPageChange: (page: number) => void;
 };
 export const SetupNavBar = ({ page, numPages, onPageChange }: SetupNavBarProps) => {
 	return (
 		<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 			<SetupNavButton
 				icon="arrow-left"
-				onPress={() => onPageChange('prev')}
+				onPress={() => onPageChange(page - 1)}
 				disabled={page === 0}
 			/>
 			<PageIndicator
@@ -102,7 +102,7 @@ export const SetupNavBar = ({ page, numPages, onPageChange }: SetupNavBarProps) 
 			<SetupNavButton
 				icon="arrow-right"
 				onPress={() => {
-					onPageChange('next');
+					onPageChange(page + 1);
 				}}
 				disabled={page + 1 === numPages} // page is index (from 0) while numPages is actual number of pages (from 1)
 			/>
