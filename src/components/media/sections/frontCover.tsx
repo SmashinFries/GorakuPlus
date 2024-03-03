@@ -1,18 +1,19 @@
 import { MotiView } from 'moti';
 import { AniMediaQuery, MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
 import { Image } from 'expo-image';
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { QuickSelector } from '@/components/media/quickSelect';
 import { TransXInView, TransYUpViewMem } from '@/components/animations';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { StatusIconMem } from '@/components/media/icons';
 import { MediaTitleView } from '@/components/media/text';
-import { useTheme } from 'react-native-paper';
+import { Portal, useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
 import use3dPan from '@/hooks/animations/use3dPan';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useAppSelector } from '@/store/hooks';
+import { ImageViewer } from '@/components/imageViewer';
 
 type FrontCoverProps = {
 	data: AniMediaQuery['Media'];
@@ -23,6 +24,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 	const { width } = useWindowDimensions();
 	const { colors } = useTheme();
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
+	const [imageViewerVisible, setImageViewerVisible] = useState(false);
 
 	return (
 		<MotiView style={[styles.container, { width: width }]}>
@@ -66,18 +68,20 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 
 				{/* Cover Image */}
 				<TransYUpViewMem>
-					<GestureDetector gesture={panGesture}>
-						<Animated.Image
-							style={[
-								animatedStyle,
-								styles.coverImg,
-								{ backgroundColor: colors.onSurfaceVariant },
-							]}
-							// contentFit="cover"
-							resizeMode={'cover'}
-							source={{ uri: data?.coverImage?.extraLarge }}
-						/>
-					</GestureDetector>
+					<Pressable onPress={() => setImageViewerVisible(true)}>
+						<GestureDetector gesture={panGesture}>
+							<Animated.Image
+								style={[
+									animatedStyle,
+									styles.coverImg,
+									{ backgroundColor: colors.onSurfaceVariant },
+								]}
+								// contentFit="cover"
+								resizeMode={'cover'}
+								source={{ uri: data?.coverImage?.extraLarge }}
+							/>
+						</GestureDetector>
+					</Pressable>
 					{/* {data?.status && <StatusAnim />} */}
 				</TransYUpViewMem>
 
@@ -111,6 +115,15 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 				</TransXInView>
 			</MotiView>
 			<MediaTitleView data={data} defaultTitle={defaultTitle} />
+			<Portal>
+				<ImageViewer
+					visible={imageViewerVisible}
+					onDismiss={() => setImageViewerVisible(false)}
+					urls={[data?.coverImage?.extraLarge ?? null, data?.bannerImage ?? null].filter(
+						(val) => val !== null,
+					)}
+				/>
+			</Portal>
 		</MotiView>
 	);
 };
