@@ -40,6 +40,14 @@ const SettingsHomePage = () => {
 				left={(props) => <List.Icon {...props} color={colors.primary} icon="translate" />}
 			/>
 			<List.Item
+				title={'Audio'}
+				description={'Text-to-speech'}
+				onPress={() => {
+					router.push('/more/settings/audio');
+				}}
+				left={(props) => <List.Icon {...props} color={colors.primary} icon="volume-high" />}
+			/>
+			<List.Item
 				title={'Notifications'}
 				description={'Episode updates and more'}
 				onPress={() => {
