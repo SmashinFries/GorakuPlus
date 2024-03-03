@@ -16,14 +16,11 @@ import { setTheme } from '@/store/theme/themeSlice';
 import { ExploreTabsProps } from '@/types/navigation';
 import { rgbToRgba, useColumns } from '@/utils';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { makeRedirectUri } from 'expo-auth-session';
 import { BlurView } from 'expo-blur';
 import { Image, ImageStyle } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiPressable } from 'moti/interactions';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-	ScrollView,
 	useWindowDimensions,
 	Pressable,
 	StyleProp,
@@ -36,7 +33,8 @@ import DraggableFlatList, {
 	RenderItemParams,
 	ScaleDecorator,
 } from 'react-native-draggable-flatlist';
-import { GestureHandlerRootView, TouchableOpacity } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import PagerView from 'react-native-pager-view';
 import {
 	Avatar,
 	Button,
@@ -53,25 +51,16 @@ import {
 import Animated, {
 	AnimatedStyle,
 	Easing,
-	Extrapolation,
-	SlideInLeft,
-	SlideInRight,
-	SlideOutLeft,
-	SlideOutRight,
-	clamp,
 	interpolate,
 	runOnJS,
 	useAnimatedStyle,
 	useSharedValue,
-	withClamp,
 	withDelay,
 	withRepeat,
-	withSequence,
 	withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import switchTheme from 'react-native-theme-switch-animation';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const SETUP_PAGES = 7;
 
@@ -85,15 +74,9 @@ type BodyProps = {
 	pageAnim?: Page['pageAnim'];
 	style?: StyleProp<AnimatedStyle<StyleProp<ViewStyle>>>;
 };
-const Body = ({ children, pageAnim, style }: BodyProps) => {
-	const nextAnimation = [SlideInRight, SlideOutLeft];
-	const prevAnimation = [SlideInLeft, SlideOutRight];
+const Body = ({ children, style }: BodyProps) => {
 	return (
-		<Animated.View
-			entering={pageAnim === 'next' ? nextAnimation[0] : prevAnimation[0]}
-			exiting={pageAnim === 'next' ? nextAnimation[1] : prevAnimation[1]}
-			style={[{ flex: 1, alignItems: 'center' }, style]}
-		>
+		<Animated.View style={[{ flex: 1, alignItems: 'center' }, style]} collapsable={false}>
 			{children}
 		</Animated.View>
 	);
@@ -123,7 +106,7 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
 			{showLogo && (
 				<Image
 					source={require('../../assets/iconsv2/icon-trans.png')}
-					style={{ width: '70%', aspectRatio: 1 / 1 }}
+					style={{ width: '60%', aspectRatio: 1 / 1 }}
 				/>
 			)}
 			<BlurView
@@ -294,9 +277,9 @@ const BackgroundAnimation = () => {
 	);
 };
 
-const IntroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const IntroPage = () => {
 	return (
-		<Body pageAnim={pageAnim} style={{ flex: 1, justifyContent: 'center' }}>
+		<Body style={{ flex: 1, justifyContent: 'center' }}>
 			{/* <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} /> */}
 			<TitleText
 				title={'Welcome to Goraku'}
@@ -308,7 +291,7 @@ const IntroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	);
 };
 
-const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const ThemeSetup = () => {
 	const { dark, colors } = useTheme();
 	const dispatch = useAppDispatch();
 	const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
@@ -340,7 +323,7 @@ const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	};
 
 	return (
-		<Body pageAnim={pageAnim}>
+		<Body>
 			<TitleText title={'Choose a Theme'} description={"Let's start by choosing a theme!"} />
 			<View style={{ flex: 1, justifyContent: 'center' }}>
 				<View
@@ -438,13 +421,13 @@ const ThemeSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	);
 };
 
-const AnilistSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const AnilistSetup = () => {
 	const { token, username, avatar } = useAppSelector((state) => state.persistedAniLogin);
 	const { request, result, promptAsync } = useAnilistAuth(true);
 	const { dark } = useTheme();
 
 	return (
-		<Body style={{ justifyContent: 'center' }} pageAnim={pageAnim}>
+		<Body style={{ justifyContent: 'center' }}>
 			<AnilistIcon isDark={dark} height={100} width={100} />
 			<TitleText
 				title={'Connect to Anilist'}
@@ -486,7 +469,7 @@ const AnilistSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	);
 };
 
-const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const CardSetup = () => {
 	const dispatch = useAppDispatch();
 	const { scoreColors, defaultScore, scoreVisualType, mediaLanguage } = useAppSelector(
 		(state) => state.persistedSettings,
@@ -505,7 +488,7 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	};
 
 	return (
-		<Body pageAnim={pageAnim}>
+		<Body>
 			<TitleText
 				title={'Card Customization'}
 				description={'Customize the look of media cards that are shown throughout the app.'}
@@ -607,7 +590,7 @@ const CardSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	);
 };
 
-const TagBLSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const TagBLSetup = () => {
 	const { colors } = useTheme();
 	const { width } = useWindowDimensions();
 	const { tagBlacklist } = useAppSelector((state) => state.persistedSettings);
@@ -674,7 +657,7 @@ const TagBLSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	}, [search, data]);
 
 	return (
-		<Body pageAnim={pageAnim}>
+		<Body>
 			<TitleText
 				title={'Blacklist Tags'}
 				description="Select tags that you want hidden. This will globally exclude content containing any of these tags."
@@ -742,7 +725,7 @@ const TagBLSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	);
 };
 
-const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const TabSetup = () => {
 	const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
 	const dispatch = useAppDispatch();
 
@@ -809,7 +792,7 @@ const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	};
 
 	return (
-		<Body pageAnim={pageAnim} style={{ flex: 1, justifyContent: 'center' }}>
+		<Body style={{ flex: 1, justifyContent: 'center' }}>
 			<TitleText
 				title={'Explore Tabs'}
 				description="Select what type of content you want quick access to."
@@ -829,9 +812,9 @@ const TabSetup = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 	);
 };
 
-const OutroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
+const OutroPage = () => {
 	return (
-		<Body pageAnim={pageAnim}>
+		<Body>
 			<TitleText
 				title="Setup Complete!"
 				description={
@@ -839,6 +822,15 @@ const OutroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 				}
 				showLogo
 			/>
+			<Text style={{ alignSelf: 'flex-start', paddingLeft: 20 }}>
+				{'\n'}Additional Settings:
+			</Text>
+			<Text style={{ alignSelf: 'flex-start', paddingLeft: 20 }}>
+				{'\n'}- 3D effects
+				{'\n'}- Text-to-speech
+				{'\n'}- Score color customization
+				{'\n'}- and much more
+			</Text>
 		</Body>
 	);
 };
@@ -846,45 +838,36 @@ const OutroPage = ({ pageAnim }: { pageAnim: Page['pageAnim'] }) => {
 const RenderPage = ({ page, pageAnim }: Page) => {
 	switch (page) {
 		case 0:
-			return <IntroPage pageAnim={pageAnim} />;
+			return <IntroPage />;
 		case 1:
-			return <ThemeSetup pageAnim={pageAnim} />;
+			return <ThemeSetup />;
 		case 2:
-			return <AnilistSetup pageAnim={pageAnim} />;
+			return <AnilistSetup />;
 		case 3:
-			return <CardSetup pageAnim={pageAnim} />;
+			return <CardSetup />;
 		case 4:
-			return <TagBLSetup pageAnim={pageAnim} />;
+			return <TagBLSetup />;
 		case 5:
-			return <TabSetup pageAnim={pageAnim} />;
+			return <TabSetup />;
 		case 6:
-			return <OutroPage pageAnim={pageAnim} />;
+			return <OutroPage />;
 		default:
 			return <View />;
 	}
 };
 
 const SetupModal = () => {
-	const [page, setPage] = useState<Page>({ page: 0, pageAnim: 'next' });
+	const pagerRef = useRef<PagerView>(null);
+	const [page, setPage] = useState<number>(0);
 	const { colors } = useTheme();
 
 	const dispatch = useAppDispatch();
 
 	const { top } = useSafeAreaInsets();
 
-	const onPageChange = (navType: 'next' | 'prev' | number) => {
-		if (typeof navType === 'number' && navType !== page.page) {
-			setPage((prevPage) => ({
-				page: navType,
-				pageAnim: prevPage.page < navType ? 'next' : 'prev',
-			}));
-		} else {
-			if (navType === 'next') {
-				setPage((prevPage) => ({ page: prevPage.page + 1, pageAnim: 'next' }));
-			} else if (navType === 'prev' && page.page > 0) {
-				setPage((prevPage) => ({ page: prevPage.page - 1, pageAnim: 'prev' }));
-			}
-		}
+	const onPageChange = (pg: number) => {
+		pagerRef.current?.setPage(pg);
+		// setPage(pg);
 	};
 
 	return (
@@ -913,10 +896,24 @@ const SetupModal = () => {
 				{/* <IconButton icon='animation-outline' /> */}
 				<Button onPress={() => dispatch(finishSetup())}>Skip Setup</Button>
 			</View>
-			<RenderPage page={page.page} pageAnim={page.pageAnim} />
-			{page.page + 1 < SETUP_PAGES ? (
+			{/* <RenderPage page={page.page} pageAnim={page.pageAnim} /> */}
+			<PagerView
+				initialPage={0}
+				onPageSelected={(e) => setPage(e.nativeEvent.position)}
+				ref={pagerRef}
+				style={{ flex: 1 }}
+			>
+				<IntroPage key={0} />
+				<ThemeSetup key={1} />
+				<AnilistSetup key={2} />
+				<CardSetup key={3} />
+				<TagBLSetup key={4} />
+				<TabSetup key={5} />
+				<OutroPage key={6} />
+			</PagerView>
+			{page + 1 < SETUP_PAGES ? (
 				<Button
-					onPress={() => onPageChange('next')}
+					onPress={() => onPageChange(page + 1)}
 					mode="contained"
 					style={{ marginBottom: 30, marginHorizontal: 20 }}
 				>
@@ -938,7 +935,11 @@ const SetupModal = () => {
 					backgroundColor: 'transparent',
 				}}
 			>
-				<SetupNavBar page={page.page} numPages={SETUP_PAGES} onPageChange={onPageChange} />
+				<SetupNavBar
+					page={page}
+					numPages={SETUP_PAGES}
+					onPageChange={(pg) => onPageChange(pg)}
+				/>
 			</View>
 		</View>
 	);
