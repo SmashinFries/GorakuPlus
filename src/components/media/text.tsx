@@ -25,35 +25,19 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
 	const { colors } = useTheme();
 
 	const onSpeak = (langType: MediaTitleView['defaultTitle'], text: string) => {
+		if (!enabled) return;
 		switch (langType) {
 			case 'english':
-				speak(text, {
-					voice: english?.voice?.identifier,
-					pitch: english?.pitch,
-					rate: english?.rate,
-				});
+				speak(text, english);
 				return;
 			case 'romaji':
 			case 'native':
 				if (data?.countryOfOrigin === 'JP') {
-					console.log(data?.title?.romaji, japanese?.voice?.identifier);
-					speak(data?.title?.romaji, {
-						voice: japanese?.voice?.identifier,
-						pitch: japanese?.pitch,
-						rate: japanese?.rate,
-					});
+					speak(data?.title?.romaji, japanese);
 				} else if (data?.countryOfOrigin === 'KR') {
-					speak(data?.title?.romaji, {
-						voice: korean?.voice?.identifier,
-						pitch: korean?.pitch,
-						rate: korean?.rate,
-					});
+					speak(data?.title?.romaji, korean);
 				} else if (data?.countryOfOrigin === 'CN') {
-					speak(data?.title?.romaji, {
-						voice: chinese?.voice?.identifier,
-						pitch: chinese?.pitch,
-						rate: chinese?.rate,
-					});
+					speak(data?.title?.romaji, chinese);
 				}
 				return;
 			default:
