@@ -43,9 +43,9 @@ const initialState: TTSState = {
 };
 
 type TTSVoiceKeys = keyof TTSVoice;
-
+export type TTSLanguages = 'english' | 'japanese' | 'korean' | 'chinese';
 export type TTSActions = {
-	entryType: 'english' | 'japanese' | 'korean' | 'chinese';
+	entryType: TTSLanguages;
 	value: { [key in TTSVoiceKeys]?: TTSVoice[key] };
 };
 
