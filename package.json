@@ -16,7 +16,8 @@
     "codegen": "graphql-codegen",
     "openapigen": "npx @rtk-query/codegen-openapi",
     "eas-update": "eas update --branch preview --message",
-    "build-apk": "eas build --profile preview --platform android"
+    "build-preview": "eas build --profile preview --platform android --local",
+    "build-dev": "eas build --profile development --platform android --local"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
