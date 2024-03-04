@@ -40,7 +40,6 @@ export const NameViewer = ({ nativeLang, names, defaultTitle }: NameViewerProps)
 				return;
 			case 'native':
 				if (nativeLang === 'JP') {
-					console.log('speak japanese', text);
 					speak(text, japanese);
 				} else if (nativeLang === 'KR') {
 					speak(text, korean);
