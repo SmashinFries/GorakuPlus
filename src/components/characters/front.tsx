@@ -1,13 +1,18 @@
 import { Image } from 'expo-image';
 import { MotiView } from 'moti';
 import { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { View, Text as RNText } from 'react-native';
-import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
+import { Chip, IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
 import { copyToClipboard } from '../../utils';
 import use3dPan from '@/hooks/animations/use3dPan';
 import Animated from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
+import { NameViewer } from '../nameSwitch';
+import { CharacterName, MediaEdge } from '@/store/services/anilist/generated-anilist';
+import { useAppSelector } from '@/store/hooks';
+import useTTS from '@/hooks/useTTS';
+import { CharStaffInteractionBar } from './interaction';
 
 type CharacterFrontProps = {
 	id: number;
@@ -15,9 +20,8 @@ type CharacterFrontProps = {
 	isFavorite: boolean;
 	image_url: string;
 	userID?: number;
-	primaryName: string;
-	secondaryName: string;
-	alternativeNames: string[];
+	names: CharacterName;
+	mediaEdges?: MediaEdge[];
 	onToggleFavorite: (id: number) => void;
 };
 export const CharacterFront = ({
@@ -26,14 +30,16 @@ export const CharacterFront = ({
 	isFavorite,
 	image_url,
 	userID,
-	primaryName,
-	secondaryName,
-	alternativeNames,
+	names,
+	mediaEdges,
 	onToggleFavorite,
 }: CharacterFrontProps) => {
 	const { colors } = useTheme();
 	const [fav, setFav] = useState(isFavorite);
+	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
+	const { enabled, english } = useAppSelector((state) => state.ttsSettings);
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
+	const { speak } = useTTS();
 
 	return (
 		<View>
@@ -57,20 +63,49 @@ export const CharacterFront = ({
 						</View>
 					</Animated.View>
 				</GestureDetector>
-				{userID && (
-					<IconButton
-						icon={fav ? 'heart' : 'heart-outline'}
-						iconColor={colors.primary}
-						style={{ width: '50%', marginTop: 30 }}
-						mode={'outlined'}
-						onPress={() => {
-							setFav((prev) => !prev);
-							onToggleFavorite(id);
-						}}
-					/>
-				)}
 			</View>
-			<Text
+			<NameViewer
+				names={names}
+				nativeLang={mediaEdges?.[0]?.node?.countryOfOrigin} // kinda hacky ngl
+				defaultTitle={['english', 'romaji'].includes(mediaLanguage) ? 'full' : 'native'}
+			/>
+			{names.alternative && (
+				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+					{names.alternative?.map((name, idx) => (
+						<Chip
+							key={idx}
+							style={{ margin: 5 }}
+							onPress={() => copyToClipboard(name)}
+							onLongPress={enabled ? () => speak(name, english) : null}
+						>
+							{name}
+						</Chip>
+					))}
+				</ScrollView>
+			)}
+			<CharStaffInteractionBar
+				isFav={fav}
+				share_url={`https://anilist.co/character/${id}`}
+				edit_url={`https://anilist.co/edit/character/${id}`}
+				favLoading={false}
+				toggleFav={() => {
+					setFav((prev) => !prev);
+					onToggleFavorite(id);
+				}}
+			/>
+			{/* {userID && (
+				<IconButton
+					icon={fav ? 'heart' : 'heart-outline'}
+					iconColor={colors.primary}
+					style={{ width: '50%', marginTop: 30 }}
+					mode={'outlined'}
+					onPress={() => {
+						setFav((prev) => !prev);
+						onToggleFavorite(id);
+					}}
+				/>
+			)} */}
+			{/* <Text
 				onLongPress={() => copyToClipboard(primaryName)}
 				style={[styles.staffName]}
 				variant="titleLarge"
@@ -93,7 +128,7 @@ export const CharacterFront = ({
 				]}
 			>
 				{alternativeNames?.join(', ')}
-			</Text>
+			</Text> */}
 		</View>
 	);
 };
