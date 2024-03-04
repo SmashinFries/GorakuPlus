@@ -40,8 +40,8 @@ export const DefaultDescDialog = ({ defaultValue, visible, onDismiss }: DefaultD
 					value={value}
 					onValueChange={(val: 'ani' | 'mal') => setValue(val)}
 				>
-					<RadioButton.Item label="AniList" value="ani" />
-					<RadioButton.Item label="MyAnimeList" value="mal" />
+					<RadioButton.Item label={'MyAnimeList'} value="mal" />
+					<RadioButton.Item label={'AniList'} value="ani" />
 				</RadioButton.Group>
 			</Dialog.Content>
 			<Dialog.Actions>
