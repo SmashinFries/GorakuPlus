@@ -562,6 +562,8 @@ query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) 
 					isAdult
 					isFavourite
 					bannerImage
+					source
+					countryOfOrigin
 					coverImage {
 						extraLarge
 						color
