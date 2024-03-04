@@ -66,7 +66,7 @@ type ActionIconProps = {
 	onPress: () => void;
 	onLongPress?: () => void;
 };
-const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconProps) => {
+export const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconProps) => {
 	const { colors } = useTheme();
 	return (
 		<Pressable
