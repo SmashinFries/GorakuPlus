@@ -50,11 +50,7 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 					onPress={() =>
 						speak(
 							isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription,
-							{
-								voice: english?.voice?.identifier,
-								pitch: english?.pitch,
-								rate: english?.rate,
-							},
+							english,
 						)
 					}
 					style={{ alignSelf: 'flex-end' }}
