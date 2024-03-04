@@ -27,7 +27,7 @@ const NotificationPage = () => {
 	};
 
 	return (
-		<View style={{ width: width, height: height }}>
+		<View style={{ width: width, height: '100%' }}>
 			{data?.Page && (
 				<FlashList
 					data={data.Page.notifications}
