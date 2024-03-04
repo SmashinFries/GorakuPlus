@@ -1,6 +1,7 @@
-import { Text as RNText, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Text as RNText, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import {
 	ActivityIndicator,
+	Chip,
 	IconButton,
 	List,
 	MD3DarkTheme,
@@ -18,7 +19,7 @@ import { Accordion, ExpandableDescription, TransYUpView } from '@/components/ani
 import { useAppSelector } from '@/store/hooks';
 import RenderHTML from 'react-native-render-html';
 import { FadeHeaderProvider } from '@/components/headers';
-import { convertDate } from '@/utils';
+import { convertDate, copyToClipboard } from '@/utils';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useToggleFavMutation } from '@/store/services/anilist/enhanced';
 import { FlashList } from '@shopify/flash-list';
@@ -30,6 +31,10 @@ import Animated from 'react-native-reanimated';
 import use3dPan from '@/hooks/animations/use3dPan';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { NameViewer } from '@/components/nameSwitch';
+import useTTS from '@/hooks/useTTS';
+import { CharStaffInteractionBar } from '@/components/characters/interaction';
+import { MarkdownViewer } from '@/components/markdown';
 
 const StafPage = () => {
 	const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -40,6 +45,8 @@ const StafPage = () => {
 
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
+	const { enabled, english } = useAppSelector((state) => state.ttsSettings);
+	const { speak } = useTTS();
 
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 
@@ -95,8 +102,8 @@ const StafPage = () => {
 					: data?.Staff?.name?.native
 			}
 			loading={isLoading}
-			shareLink={data?.Staff?.siteUrl}
-			onEdit={() => openWebBrowser(`https://anilist.co/edit/staff/${id}`)}
+			// shareLink={data?.Staff?.siteUrl}
+			// onEdit={() => openWebBrowser(`https://anilist.co/edit/staff/${id}`)}
 			BgImage={({ style }) =>
 				data?.Staff?.staffMedia?.edges?.length > 0 && (
 					<MediaBanner
@@ -139,7 +146,7 @@ const StafPage = () => {
 							</View>
 						</Animated.View>
 					</GestureDetector>
-					{userID && (
+					{/* {userID && (
 						<IconButton
 							icon={fav ? 'heart' : 'heart-outline'}
 							iconColor={colors.primary}
@@ -147,26 +154,49 @@ const StafPage = () => {
 							mode={'outlined'}
 							onPress={onToggleFavorite}
 						/>
-					)}
+					)} */}
 				</View>
-				<Text style={[styles.staffName]} variant="titleLarge">
-					{mediaLanguage === 'native'
-						? data?.Staff?.name?.native
-						: data?.Staff?.name?.full}
-				</Text>
-				<Text
-					variant="titleMedium"
-					style={[styles.staffAltName, { color: colors.onSurfaceVariant }]}
-				>
-					{mediaLanguage === 'english' || mediaLanguage === 'romaji'
-						? data?.Staff?.name?.native
-						: data?.Staff?.name?.full}
-				</Text>
+				<NameViewer
+					names={data?.Staff?.name}
+					nativeLang={
+						data?.Staff?.languageV2 === 'Japanese'
+							? 'JP'
+							: data?.Staff?.languageV2 === 'Korean'
+								? 'KR'
+								: data?.Staff?.languageV2 === 'Chinese'
+									? 'CN'
+									: null
+					}
+					defaultTitle={['english', 'romaji'].includes(mediaLanguage) ? 'full' : 'native'}
+				/>
+				{data?.Staff?.name.alternative && (
+					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+						{data?.Staff?.name.alternative?.map((name, idx) => (
+							<Chip
+								key={idx}
+								style={{ margin: 5 }}
+								onPress={() => copyToClipboard(name)}
+								onLongPress={enabled ? () => speak(name, english) : null}
+							>
+								{name}
+							</Chip>
+						))}
+					</ScrollView>
+				)}
+				<CharStaffInteractionBar
+					isFav={fav}
+					share_url={`https://anilist.co/staff/${id}`}
+					edit_url={`https://anilist.co/edit/staff/${id}`}
+					favLoading={false}
+					toggleFav={onToggleFavorite}
+				/>
 				{data?.Staff?.description ? (
 					<ExpandableDescription initialHeight={90}>
 						<HTMLText html={data?.Staff?.description} />
+						{/* <MarkdownViewer markdown={data?.Staff?.description} /> */}
 					</ExpandableDescription>
 				) : null}
+
 				<MotiView style={{ marginVertical: 20, marginTop: 30 }}>
 					<Accordion title="Information" initialExpand>
 						<List.Item
