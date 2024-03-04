@@ -17,7 +17,11 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useWindowDimensions } from 'react-native';
 import { convertDate } from '@/utils';
-import { CharacterDetailsQuery, MediaFormat } from '@/store/services/anilist/generated-anilist';
+import {
+	CharacterDetailsQuery,
+	MediaEdge,
+	MediaFormat,
+} from '@/store/services/anilist/generated-anilist';
 import { HTMLText, ListHeading } from '@/components/text';
 import { DanbooruImageCard, MediaCard, StaffCard } from '@/components/cards';
 import { FlashList } from '@shopify/flash-list';
@@ -32,6 +36,8 @@ import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { MediaBanner } from '@/components/media/banner';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { MarkdownViewer } from '@/components/markdown';
+import WebView from 'react-native-webview';
 
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
@@ -210,8 +216,8 @@ const CharacterScreen = () => {
 					<FadeHeaderProvider
 						title={primaryName}
 						loading={charData.isLoading}
-						shareLink={charData.data?.Character?.siteUrl}
-						onEdit={() => openWebBrowser(`https://anilist.co/edit/character/${charId}`)}
+						// shareLink={charData.data?.Character?.siteUrl}
+						// onEdit={() => openWebBrowser(`https://anilist.co/edit/character/${charId}`)}
 						BgImage={({ style }) =>
 							charData?.data?.Character?.media?.edges?.length > 0 && (
 								<MediaBanner
@@ -239,9 +245,10 @@ const CharacterScreen = () => {
 									id={Number(charId)}
 									favorites={charData?.data?.Character?.favourites}
 									image_url={charData?.data?.Character?.image?.large}
-									primaryName={primaryName}
-									secondaryName={secondaryName}
-									alternativeNames={charData?.data?.Character?.name?.alternative}
+									names={charData?.data?.Character?.name}
+									mediaEdges={
+										charData?.data?.Character?.media?.edges as MediaEdge[]
+									}
 									isFavorite={charData?.data?.Character?.isFavourite}
 									onToggleFavorite={onToggleFavorite}
 									userID={userID}
@@ -250,6 +257,9 @@ const CharacterScreen = () => {
 								{charData?.data?.Character?.description ? (
 									<ExpandableDescription initialHeight={90}>
 										<HTMLText html={charData?.data?.Character?.description} />
+										{/* <MarkdownViewer
+											markdown={charData?.data?.Character?.description}
+										/> */}
 									</ExpandableDescription>
 								) : null}
 								{/* Info */}
