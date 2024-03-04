@@ -18,3 +18,5 @@ export const ListSortOptions = {
 	MeanScore: 'MeanScore',
 };
 export type ListSortOptionsType = (typeof ListSortOptions)[keyof typeof ListSortOptions];
+
+export type AnilistLanguages = 'JP' | 'KR' | 'CN';
