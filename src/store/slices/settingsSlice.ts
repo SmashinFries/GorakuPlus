@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { StackAnimationTypes } from 'react-native-screens';
-import Constants, { ExecutionEnvironment } from 'expo-constants';
-import { MediaListStatus } from '@/store/services/anilist/generated-anilist';
 import { DanbooruRating } from '@/store/services/danbooru/types';
 import { ExploreTabsProps } from '@/types/navigation';
 
@@ -69,7 +67,7 @@ const initialState: SettingsState = {
 	mangaCustomLists: [],
 	mediaLanguage: 'english',
 	defaultDescription: 'mal',
-	showNSFW: Constants.executionEnvironment === ExecutionEnvironment.StoreClient ? false : false,
+	showNSFW: false,
 	blurNSFW: true,
 	blurNSFWLevel: DanbooruRating.General,
 	scoreColors: {

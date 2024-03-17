@@ -1,6 +1,7 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 import dotenv from 'dotenv';
 const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_STORE = process.env.APP_VARIANT === 'store';
 dotenv.config();
 
 const appName = IS_DEV ? 'Goraku Dev' : 'Goraku';
@@ -136,6 +137,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         ANI_WEB_ID: process.env.ANI_WEB_ID,
         ANI_EXPO_GO: process.env.ANI_EXPO_GO,
         ANI_EXPO_GO_IOS: process.env.ANI_EXPO_GO_IOS,
+        isStore: IS_STORE,
     },
     scheme: IS_DEV ? 'gorakuplusDev' : 'gorakuplus',
 });

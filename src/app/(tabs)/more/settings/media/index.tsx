@@ -21,11 +21,11 @@ import {
 	setSettings,
 } from '@/store/slices/settingsSlice';
 import { ExploreTabsProps } from '@/types/navigation';
-import Constants, { ExecutionEnvironment } from 'expo-constants';
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, View } from 'react-native';
-import { List, Portal, Switch, Text, useTheme } from 'react-native-paper';
+import { ScrollView } from 'react-native';
+import { List, Portal, Text, useTheme } from 'react-native-paper';
 import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { GorakuSwitch } from '@/components/switch';
 
@@ -116,7 +116,7 @@ const MediaSettingsPage = () => {
 				<List.Item
 					title="NSFW"
 					description={
-						Constants.executionEnvironment === ExecutionEnvironment.StoreClient
+						Constants.expoConfig.extra.isStore
 							? 'Permenantly disabled. \nApp store does not allow NSFW content.'
 							: ''
 					}
@@ -134,9 +134,7 @@ const MediaSettingsPage = () => {
 									]),
 								);
 							}}
-							disabled={
-								Constants.executionEnvironment === ExecutionEnvironment.StoreClient
-							}
+							disabled={Constants.expoConfig.extra.isStore as boolean}
 						/>
 					)}
 				/>
@@ -156,10 +154,7 @@ const MediaSettingsPage = () => {
 									]),
 								);
 							}}
-							disabled={
-								Constants.executionEnvironment ===
-									ExecutionEnvironment.StoreClient || !showNSFW
-							}
+							disabled={Constants.expoConfig.extra.isStore || !showNSFW}
 						/>
 					)}
 				/>
