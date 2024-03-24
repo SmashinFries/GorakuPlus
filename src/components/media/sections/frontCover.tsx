@@ -26,6 +26,12 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 	const [imageViewerVisible, setImageViewerVisible] = useState(false);
 
+	const allBanners = data?.relations?.edges
+		? [data.bannerImage ?? null].concat(
+				data?.relations?.edges?.map((relation) => relation.node?.bannerImage ?? null),
+			)
+		: [data.bannerImage ?? null];
+
 	return (
 		<MotiView style={[styles.container, { width: width }]}>
 			<MotiView
@@ -119,7 +125,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 				<ImageViewer
 					visible={imageViewerVisible}
 					onDismiss={() => setImageViewerVisible(false)}
-					urls={[data?.coverImage?.extraLarge ?? null, data?.bannerImage ?? null].filter(
+					urls={[data?.coverImage?.extraLarge ?? null, ...allBanners].filter(
 						(val) => val !== null,
 					)}
 				/>
