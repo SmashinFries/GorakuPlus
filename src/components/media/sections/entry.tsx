@@ -378,9 +378,10 @@ type ProgressInputProps = {
 	value: number | null | undefined;
 	maxValue?: number;
 	onChange: (value: number) => void;
+	onCancel: () => void;
 	disabled?: boolean;
 };
-const ProgressInput = ({ value, maxValue, onChange, disabled }: ProgressInputProps) => {
+const ProgressInput = ({ value, maxValue, onChange, onCancel, disabled }: ProgressInputProps) => {
 	const [showNumPick, setShowNumPick] = useState(false);
 	const [containerHeight, setContainerHeight] = useState(0);
 	const { colors } = useAppTheme();
@@ -412,8 +413,9 @@ const ProgressInput = ({ value, maxValue, onChange, disabled }: ProgressInputPro
 					defaultValue={value}
 					mode={!maxValue ? 'unknown_chapters' : null}
 					options={
-						maxValue ? Array.from(Array(maxValue).keys()).map((i) => `${i}`) : null
+						maxValue ? Array.from(Array(maxValue + 1).keys()).map((i) => `${i}`) : null
 					}
+					onCancel={onCancel}
 				/>
 			</Portal>
 		</>
@@ -723,6 +725,9 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 										<ProgressInput
 											value={tempParams.progress ?? 0}
 											onChange={(val) => updateParams('progress', val)}
+											onCancel={() =>
+												updateParams('progress', props.entryData?.progress)
+											}
 											maxValue={
 												props.entryData?.media?.nextAiringEpisode
 													?.episode ??

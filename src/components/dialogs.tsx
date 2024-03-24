@@ -156,6 +156,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 type NumberPickDialogProps = BasicDialogProps &
 	NumberPickerProps & {
 		title: string;
+		onCancel?: () => void;
 	};
 export const NumberPickDialog = ({
 	title,
@@ -165,6 +166,7 @@ export const NumberPickDialog = ({
 	options,
 	visible,
 	onDismiss,
+	onCancel,
 }: NumberPickDialogProps) => {
 	const [tempVal, setTempVal] = useState(defaultValue ?? 0);
 
@@ -180,7 +182,15 @@ export const NumberPickDialog = ({
 				/>
 			</Dialog.Content>
 			<Dialog.Actions>
-				<Button onPress={onDismiss}>Cancel</Button>
+				<Button
+					onPress={() => {
+						onCancel && onCancel();
+						setTempVal(defaultValue ?? 0);
+						onDismiss();
+					}}
+				>
+					Cancel
+				</Button>
 				<Button
 					onPress={() => {
 						onChange(tempVal);
