@@ -1,17 +1,15 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView, useDynamicAnimation } from 'moti';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { ReactNode, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MotiView } from 'moti';
+import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	View,
 	StyleSheet,
-	Platform,
 	StyleProp,
 	ViewStyle,
 	useWindowDimensions,
 	TextStyle,
 } from 'react-native';
-import { Button, IconButton, List, Text, TouchableRipple, useTheme } from 'react-native-paper';
+import { Icon, IconButton, Text, TouchableRipple, useTheme } from 'react-native-paper';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler,
@@ -19,10 +17,8 @@ import Animated, {
 	interpolate,
 	Extrapolation,
 	interpolateColor,
-	useDerivedValue,
 	withSpring,
 	useAnimatedReaction,
-	Extrapolate,
 } from 'react-native-reanimated';
 import { rgbToRgba } from '@/utils';
 import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
@@ -160,7 +156,7 @@ const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
 
 	return (
 		<Animated.View style={[animatedIconStyle, { alignSelf: 'center' }]}>
-			<MaterialCommunityIcons size={24} color={colors.onSurfaceVariant} name={'chevron-up'} />
+			<Icon size={24} color={colors.onSurfaceVariant} source={'chevron-up'} />
 		</Animated.View>
 	);
 };
@@ -413,7 +409,7 @@ export const CustomBackdrop = ({
 	const { colors } = useTheme();
 	// animated variables
 	const containerAnimatedStyle = useAnimatedStyle(() => ({
-		opacity: interpolate(animatedIndex.value, [0.2, 0.5], [0.2, 0.5], Extrapolate.CLAMP),
+		opacity: interpolate(animatedIndex.value, [0.2, 0.5], [0.2, 0.5], Extrapolation.CLAMP),
 	}));
 
 	// styles
