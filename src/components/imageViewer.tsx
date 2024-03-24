@@ -6,12 +6,15 @@ import { rgbToRgba } from '@/utils';
 import { saveImage } from '@/utils/images';
 import { Image, ImageProps } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Pressable, Image as ImageRN, Share, View } from 'react-native';
+import { Pressable, Image as ImageRN, View } from 'react-native';
 import { GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import PagerView from 'react-native-pager-view';
 import { IconButton, Modal, Surface } from 'react-native-paper';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Sharing from 'expo-sharing';
+import { Asset } from 'expo-asset';
+import * as FileSystem from 'expo-file-system';
 
 const AnimatedImage = Animated.createAnimatedComponent<ImageProps>(Image);
 
@@ -87,6 +90,12 @@ export const ImageViewer = ({
 
 	const { top, right } = useSafeAreaInsets();
 
+	const shareImage = async (url: string) => {
+		const [{ localUri }] = await Asset.loadAsync(url);
+		await Sharing.shareAsync(localUri, { mimeType: 'image/*', dialogTitle: 'Image share' });
+		await FileSystem.deleteAsync(localUri);
+	};
+
 	return (
 		visible && (
 			<Animated.View
@@ -155,13 +164,7 @@ export const ImageViewer = ({
 					<IconButton icon={'download'} onPress={() => saveImage(urls[index])} />
 					<IconButton
 						icon={'share-variant-outline'}
-						onPress={() =>
-							Share.share({
-								url: urls[index],
-								title: 'Image',
-								message: urls[index],
-							})
-						}
+						onPress={async () => await shareImage(urls[index])}
 					/>
 				</Surface>
 				<View style={{ alignSelf: 'flex-end', paddingTop: top }}>
