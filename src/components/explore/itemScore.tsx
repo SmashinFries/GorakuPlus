@@ -6,8 +6,7 @@ import { rgbToRgba } from '@/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useState } from 'react';
 import { DimensionValue, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
-import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Text, useTheme, Icon } from 'react-native-paper';
 
 const BORDER_RADIUS = 12;
 
@@ -77,9 +76,9 @@ export const ScoreHealthBar = ({
 				flexDirection: 'row',
 			}}
 		>
-			<MCIcons size={12} color={heartColor} name={leftHeart} />
-			<MCIcons size={12} color={heartColor} name={middleHeart} />
-			<MCIcons size={12} color={heartColor} name={rightHeart} />
+			<Icon size={12} color={heartColor} source={leftHeart} />
+			<Icon size={12} color={heartColor} source={middleHeart} />
+			<Icon size={12} color={heartColor} source={rightHeart} />
 			{showScore ? (
 				<Text variant="labelMedium" style={{ color: textColor }}>
 					{' '}
