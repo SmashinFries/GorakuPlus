@@ -55,6 +55,8 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
 			perPage_c: 25,
 			perPage_rec: 25,
 			sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
+			skipUser: !userID,
+			userId: userID,
 		}).unwrap();
 		setIsAniLoading(false);
 		return aniRes;
@@ -135,6 +137,8 @@ export const useMedia = (id: number, type: MediaType | 'MANHWA' | 'NOVEL', muID?
 			perPage_c: 25,
 			perPage_rec: 25,
 			sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
+			skipUser: !userID,
+			userId: userID,
 		}).unwrap();
 	};
 
