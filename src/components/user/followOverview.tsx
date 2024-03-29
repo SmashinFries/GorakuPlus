@@ -27,12 +27,17 @@ const FollowUserItem = ({ user }: FollowUserItemProps) => {
 };
 
 type FollowRowProps = {
+	followType: 'followers' | 'following';
 	data: User[];
 	isLoading: boolean;
 };
-export const FollowRow = ({ data, isLoading }: FollowRowProps) => {
-	if (!data) {
-		return null;
+export const FollowRow = ({ followType, data, isLoading }: FollowRowProps) => {
+	if (!data || data.length < 1) {
+		return (
+			<Text style={{ textAlign: 'center' }}>
+				{followType === 'following' ? 'Not following anyone yet!' : 'No followers yet!'}
+			</Text>
+		);
 	}
 	return (
 		<ScrollView horizontal showsHorizontalScrollIndicator={false}>

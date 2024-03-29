@@ -106,14 +106,22 @@ const UserPage = () => {
 					<ActivityOverview data={activity.data?.Page?.activities} />
 					{/* </Accordion> */}
 					{/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
-					<Accordion title={'Following'}>
+					<Accordion
+						title={'Following'}
+						initialExpand={following.currentData?.Page?.following?.length < 1}
+					>
 						<FollowRow
+							followType={'following'}
 							data={following.currentData?.Page?.following}
 							isLoading={following.isLoading}
 						/>
 					</Accordion>
-					<Accordion title={'Followers'}>
+					<Accordion
+						title={'Followers'}
+						initialExpand={followers.currentData?.Page?.followers?.length < 1}
+					>
 						<FollowRow
+							followType={'followers'}
 							data={followers.currentData?.Page?.followers}
 							isLoading={followers.isLoading}
 						/>

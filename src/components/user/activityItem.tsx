@@ -119,12 +119,16 @@ export const ActivityOverview = ({
 		setShowActDelConfirm(true);
 	};
 
+	if (!data || data?.length < 1) {
+		return;
+	}
+
 	return (
 		<View style={{ width: width, overflow: 'visible' }}>
 			<ListHeading
 				title="Activity"
-				icon="chevron-right"
-				onIconPress={() => router.push('/activity/user')}
+				icon={data?.length > 0 ? 'chevron-right' : undefined}
+				onIconPress={data?.length > 0 ? () => router.push('/activity/user') : undefined}
 			/>
 			<View style={{ width: width }}>
 				<FlashList
@@ -135,6 +139,9 @@ export const ActivityOverview = ({
 					horizontal
 					estimatedItemSize={185}
 					showsHorizontalScrollIndicator={false}
+					ListEmptyComponent={
+						<Text style={{ textAlign: 'center', width: width }}>No activity yet!</Text>
+					}
 				/>
 			</View>
 			<Portal>

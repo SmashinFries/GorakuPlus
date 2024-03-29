@@ -47,6 +47,7 @@ type StatOverview = {
 	};
 };
 export const StatOverview = ({ anime, manga }: StatOverview) => {
+	if (!anime && !manga) return null;
 	return (
 		<View>
 			<View

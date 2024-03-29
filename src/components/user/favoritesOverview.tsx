@@ -75,45 +75,60 @@ type FavoritesOverviewProps = {
 const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 	const { width } = useWindowDimensions();
 	const anime_images = data?.anime?.nodes
-		?.map((anime) => anime?.coverImage?.extraLarge)
-		?.slice(0, 10);
+		? data?.anime?.nodes?.map((anime) => anime?.coverImage?.extraLarge)?.slice(0, 10)
+		: null;
 	const manga_images = data?.manga?.nodes
-		?.map((manga) => manga?.coverImage?.extraLarge)
-		?.slice(0, 10);
+		? data?.manga?.nodes?.map((manga) => manga?.coverImage?.extraLarge)?.slice(0, 10)
+		: null;
 	const character_images = data?.characters?.nodes
-		?.map((character) => character?.image?.large)
-		?.slice(0, 10);
-	const staff_images = data?.staff?.nodes?.map((staff) => staff?.image?.large)?.slice(0, 10);
+		? data?.characters?.nodes?.map((character) => character?.image?.large)?.slice(0, 10)
+		: null;
+	const staff_images = data?.staff?.nodes
+		? data?.staff?.nodes?.map((staff) => staff?.image?.large)?.slice(0, 10)
+		: null;
+
 	return (
 		<View style={{ width: width, overflow: 'visible' }}>
 			<ListHeading title="Favorites" />
-			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-				<FavoriteItem
-					images={character_images}
-					title="Waifus"
-					onPress={() => router.push('/favorites/characters')}
-					size={160}
-				/>
-				<FavoriteItem
-					images={anime_images}
-					title="Anime"
-					onPress={() => router.push('/favorites/anime')}
-					size={160}
-				/>
-				<FavoriteItem
-					images={manga_images}
-					title="Manga"
-					onPress={() => router.push('/favorites/manga')}
-					size={160}
-				/>
-				<FavoriteItem
-					images={staff_images}
-					title="Staff"
-					onPress={() => router.push('/favorites/staff')}
-					size={160}
-				/>
-				{/* <FavoriteItem items={data.characters} /> */}
-				{/* <FlashList
+			{anime_images?.length > 0 ||
+			manga_images?.length > 0 ||
+			character_images?.length > 0 ||
+			staff_images?.length > 0 ? (
+				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+					{character_images?.length > 0 && (
+						<FavoriteItem
+							images={character_images ?? []}
+							title="Waifus"
+							onPress={() => router.push('/favorites/characters')}
+							size={160}
+						/>
+					)}
+					{anime_images?.length > 0 && (
+						<FavoriteItem
+							images={anime_images ?? []}
+							title="Anime"
+							onPress={() => router.push('/favorites/anime')}
+							size={160}
+						/>
+					)}
+					{manga_images?.length > 0 && (
+						<FavoriteItem
+							images={manga_images ?? []}
+							title="Manga"
+							onPress={() => router.push('/favorites/manga')}
+							size={160}
+						/>
+					)}
+					{staff_images?.length > 0 && (
+						<FavoriteItem
+							images={staff_images ?? []}
+							title="Staff"
+							onPress={() => router.push('/favorites/staff')}
+							size={160}
+						/>
+					)}
+					{/* <FavoriteItem items={data.characters} /> */}
+					{/* <FlashList
                     // @ts-ignore - not sure how to handle this type :/
                     data={data}
                     renderItem={({ item }) => <ActivityItem item={item} onTrash={onTrash} />}
@@ -122,7 +137,10 @@ const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
                     estimatedItemSize={185}
                     showsHorizontalScrollIndicator={false}
                 /> */}
-			</ScrollView>
+				</ScrollView>
+			) : (
+				<Text style={{ textAlign: 'center' }}>{'No favorites yet :('}</Text>
+			)}
 			{/* <Portal>
             </Portal> */}
 		</View>
