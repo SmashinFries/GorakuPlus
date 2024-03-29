@@ -41,6 +41,7 @@ import { NumberPickerMode } from '@/components/picker';
 import { useAppTheme } from '@/store/theme/theme';
 import { ScrollView } from 'react-native-gesture-handler';
 import { compareArrays } from '@/utils/compare';
+import { scoreValues } from '@/utils/scores';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -340,6 +341,23 @@ const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInputProps)
 		[ScoreFormat.Point_3]: '❌',
 	};
 
+	const formattedScore = useMemo(() => {
+		switch (scoreFormat) {
+			case ScoreFormat.Point_10:
+				return value;
+			case ScoreFormat.Point_10Decimal:
+				return value;
+			case ScoreFormat.Point_5:
+				return scoreValues.POINT_5[value];
+			case ScoreFormat.Point_3:
+				return scoreValues.POINT_3[value];
+			case ScoreFormat.Point_100:
+				return value;
+			default:
+				break;
+		}
+	}, [value, scoreFormat]);
+
 	return (
 		<>
 			<Pressable
@@ -357,7 +375,7 @@ const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInputProps)
 			>
 				<List.Subheader style={{ textAlign: 'center' }}>{'Score'}</List.Subheader>
 				<Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>
-					{value && value > 0 ? value : blankScore[scoreFormat]}
+					{formattedScore && value > 0 ? formattedScore : blankScore[scoreFormat]}
 				</Text>
 			</Pressable>
 			<Portal>
@@ -524,17 +542,21 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 		) => {
 			switch (key) {
 				case 'score':
+					// switch (ScoreFormat) {
+					// 	case ScoreFormat.Point_3:
+					// 		console.log('3 score:', value);
+					// 		setTempParams((prev) => ({ ...prev, [key]: value }));
+					// 		return;
+					// 	case ScoreFormat.Point_5:
+					// 		console.log('5 score:', value);
+					// 		return;
+					// 	default:
+					// 		setTempParams((prev) => ({ ...prev, ['score']: value as number }));
+					// }
+					// break;
 					setTempParams((prev) => ({ ...prev, ['score']: value as number }));
 					return;
-				// switch (scoreformats) {
-				//     case ScoreFormat.Point_3:
-				//         console.log('3 score:', value);
-				//     // setTempParams((prev) => ({ ...prev, [key]: value }));
-				//     case ScoreFormat.Point_5:
-				//         console.log('5 score:', value);
-				//     default:
-				//         setTempParams((prev) => ({ ...prev, ['score']: value as number }));
-				// }
+
 				case 'customLists':
 					setTempParams((prev) => ({
 						...prev,
