@@ -168,13 +168,13 @@ const MediaScreen = () => {
 										data={aniData?.data?.Media?.mediaListEntry}
 										customLists={
 											type === MediaType.Anime
-												? aniData?.data?.Viewer?.mediaListOptions?.animeList
+												? aniData?.data?.User?.mediaListOptions?.animeList
 														?.customLists ?? []
-												: aniData?.data?.Viewer?.mediaListOptions?.mangaList
+												: aniData?.data?.User?.mediaListOptions?.mangaList
 														?.customLists ?? []
 										}
 										scoreFormat={
-											aniData?.data?.Viewer?.mediaListOptions?.scoreFormat
+											aniData?.data?.User?.mediaListOptions?.scoreFormat
 										}
 										isFav={aniData?.data?.Media?.isFavourite}
 										refreshData={refetchAniData}
