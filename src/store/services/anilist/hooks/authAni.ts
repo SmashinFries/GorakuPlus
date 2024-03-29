@@ -5,6 +5,7 @@ import {
 	AuthSessionResult,
 	AuthRequestPromptOptions,
 } from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 import { useDispatch } from 'react-redux';
 import { setAniAuth } from '../authSlice';
 import Constants from 'expo-constants';
@@ -27,9 +28,8 @@ const redirectSetupUri = makeRedirectUri({
 });
 
 export const useAnilistAuth = (isSetup = false) => {
-	const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
-		Platform.OS === 'web' ? ANI_WEB_ID : isSetup ? ANI_ID_SETUP : ANI_ID
-	}&response_type=token`;
+	const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${Platform.OS === 'web' ? ANI_WEB_ID : isSetup ? ANI_ID_SETUP : ANI_ID
+		}&response_type=token`;
 	const [request, setRequest] = useState<AuthRequest | null>(null);
 	const [result, setResult] = useState<AuthSessionResult | null>(null);
 	const dispatch = useDispatch();
@@ -37,6 +37,7 @@ export const useAnilistAuth = (isSetup = false) => {
 
 	const promptAsync = useCallback(
 		async (options: AuthRequestPromptOptions = {}) => {
+			const browserPackages = await WebBrowser.getCustomTabsSupportingBrowsersAsync();
 			if (!request) {
 				throw new Error(
 					'Cannot prompt to authenticate until the request has finished loading.',
@@ -44,7 +45,7 @@ export const useAnilistAuth = (isSetup = false) => {
 			}
 			const result = await request?.promptAsync(
 				{ authorizationEndpoint: AniListURL },
-				options,
+				{ ...options, browserPackage: browserPackages.servicePackages[0] },
 			);
 
 			// Using Expo Go gives error: "Cross-Site request verification failed. Cached state and returned state do not match."
