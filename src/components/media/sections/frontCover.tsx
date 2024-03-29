@@ -27,10 +27,10 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 	const [imageViewerVisible, setImageViewerVisible] = useState(false);
 
 	const allBanners = data?.relations?.edges
-		? [data.bannerImage ?? null].concat(
+		? [data?.bannerImage ?? null].concat(
 				data?.relations?.edges?.map((relation) => relation.node?.bannerImage ?? null),
 			)
-		: [data.bannerImage ?? null];
+		: [data?.bannerImage ?? null];
 
 	return (
 		<MotiView style={[styles.container, { width: width }]}>
