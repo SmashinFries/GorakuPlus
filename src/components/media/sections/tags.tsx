@@ -12,10 +12,10 @@ type TagViewProps = {
 	tags?: MediaTag[];
 };
 const TagView = ({ genres, tags }: TagViewProps) => {
-	const [currentTag, setCurrentTag] = React.useState<MediaTag | null>(tags[0] ?? null);
+	const [currentTag, setCurrentTag] = React.useState<MediaTag | null>(tags ? tags[0] : null);
 	const [visible, setVisible] = React.useState(false);
 	const openTag = (tag: MediaTag) => {
-		if (tag.isAdult && !showNSFW) return;
+		if (tag?.isAdult && !showNSFW) return;
 		setCurrentTag(tag);
 		setVisible(true);
 	};
