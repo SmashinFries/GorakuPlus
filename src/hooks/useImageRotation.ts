@@ -7,7 +7,7 @@ const useImageRotation = (url: string, extraUrls: string[], duration = 8000) => 
 		extraUrls && url ? [url, ...new Set(extraUrls)].filter((n) => n) : url ? [url] : null;
 
 	const updateImageSrc = () => {
-		setImageSrcIdx((prev) => (prev + 1) % all_urls.length);
+		setImageSrcIdx((prev) => (prev + 1) % all_urls?.length);
 	};
 
 	useEffect(() => {
