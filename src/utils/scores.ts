@@ -16,8 +16,8 @@ export const scoreValues = {
 	)
 		.sort((a, b) => b - a)
 		.map((i) => `${i.toFixed(1)}`),
-	[ScoreFormat.Point_5]: ['❌', '⭐⭐⭐⭐⭐', '⭐⭐⭐⭐', '⭐⭐⭐', '⭐⭐', '⭐'],
-	[ScoreFormat.Point_3]: ['❌', '😊', '😐', '☹️'],
+	[ScoreFormat.Point_5]: ['❌', '⭐', '⭐⭐', '⭐⭐⭐', '⭐⭐⭐⭐', '⭐⭐⭐⭐⭐'],
+	[ScoreFormat.Point_3]: ['❌', '☹️', '😐', '😊'],
 };
 
 export const scoreToIndex = (score: number, format: ScoreFormat) => {
