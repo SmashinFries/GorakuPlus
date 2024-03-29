@@ -1,4 +1,4 @@
-import { MotiView } from 'moti';
+import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 
 type UserHeaderProps = {
@@ -7,13 +7,13 @@ type UserHeaderProps = {
 };
 export const UserHeader = ({ avatar, name }: UserHeaderProps) => {
 	return (
-		<MotiView style={{ flexDirection: 'row', marginTop: 140 / 2, alignItems: 'center' }}>
-			<MotiView style={{ marginLeft: 20 }}>
+		<View style={{ flexDirection: 'row', marginTop: 140 / 2, alignItems: 'center' }}>
+			<View style={{ marginLeft: 20 }}>
 				<Avatar.Image source={avatar ? { uri: avatar } : undefined} size={100} />
-			</MotiView>
+			</View>
 			<Text variant="titleLarge" style={{ paddingLeft: 20 }}>
 				{name ?? ''}
 			</Text>
-		</MotiView>
+		</View>
 	);
 };
