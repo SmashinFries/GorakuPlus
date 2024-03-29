@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Linking, ScrollView, View } from 'react-native';
+import { Linking, Pressable, ScrollView, View } from 'react-native';
 
 import * as Updates from 'expo-updates';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
-import { ActivityIndicator, Button, List, Portal, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, List, Portal, Surface, Text } from 'react-native-paper';
 import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
 import {
@@ -19,6 +19,51 @@ import { Image } from 'expo-image';
 import { UpdateDialog } from '@/components/updates';
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
+import { openWebBrowser } from '@/utils/webBrowser';
+
+const OtherAppItem = ({
+	title,
+	imgUrl,
+	link,
+	status = 'Coming Soon!',
+}: {
+	title: string;
+	imgUrl?: string;
+	link?: string;
+	status?: string;
+}) => {
+	return (
+		<Pressable
+			onPress={() => openWebBrowser(link, true)}
+			style={{ maxWidth: 100, marginHorizontal: 10 }}
+		>
+			<Surface
+				elevation={2}
+				style={{
+					borderRadius: 12,
+					justifyContent: 'center',
+					alignItems: 'center',
+					height: 90,
+					width: 90,
+				}}
+			>
+				{imgUrl ? (
+					<Image
+						source={{
+							uri: imgUrl,
+						}}
+						style={{ height: '100%', width: '100%' }}
+					/>
+				) : (
+					<Text style={{ textAlign: 'center' }}>{status}</Text>
+				)}
+			</Surface>
+			<Text numberOfLines={2} style={{ paddingTop: 5, textAlign: 'center' }}>
+				{title}
+			</Text>
+		</Pressable>
+	);
+};
 
 const AboutPage = () => {
 	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
@@ -60,8 +105,17 @@ const AboutPage = () => {
 					right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
 				/>
 			)}
-			<Accordion title="Other Apps" titleFontSize={16}>
-				<Text style={{ marginLeft: 20 }}>Visual novel browser coming soon!</Text>
+			<Accordion title="More Apps" titleFontSize={16}>
+				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+					<OtherAppItem
+						title={'WaifuTagger'}
+						imgUrl="https://github.com/KuzuLabz/WaifuTagger/blob/master/assets/adaptive-icon.png?raw=true"
+						link="https://github.com/KuzuLabz/WaifuTagger"
+					/>
+					<OtherAppItem title={'BooruPromptCreator'} status={'75% complete!'} />
+					<OtherAppItem title={'VN Browser'} />
+					<OtherAppItem title={'KuzuChat'} />
+				</ScrollView>
 			</Accordion>
 			<Accordion title="Data Sources" titleFontSize={16} initialExpand>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
