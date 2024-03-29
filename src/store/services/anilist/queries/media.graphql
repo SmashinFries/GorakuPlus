@@ -46,8 +46,10 @@ query AniMedia(
 	$perPage_c: Int
 	$page_rec: Int
 	$perPage_rec: Int
+	$userId: Int
+	$skipUser: Boolean!
 ) {
-	Viewer {
+	User(id: $userId) @skip(if: $skipUser) {
 		mediaListOptions {
 			animeList {
 				customLists
