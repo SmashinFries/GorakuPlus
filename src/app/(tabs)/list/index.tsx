@@ -148,9 +148,9 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 
 	useEffect(() => {
 		if (query.length > 0) {
-			updateTitle(filterList(query).length);
+			updateTitle(filterList(query).length ?? 0);
 		} else {
-			updateTitle(filteredItems.length);
+			updateTitle(filteredItems.length ?? 0);
 		}
 	}, [query]);
 
@@ -208,7 +208,7 @@ const ListTabs = ({
 	const updateTitleCount = (key: string, total: number) => {
 		setTabRoutes((prevRoutes) =>
 			prevRoutes.map((route) =>
-				route.key === key ? { ...route, title: `${route.title} (${total})` } : route,
+				route.key === key ? { ...route, title: `${route.title} (${total ?? 0})` } : route,
 			),
 		);
 	};
@@ -223,7 +223,7 @@ const ListTabs = ({
 		return (
 			<ListScreen
 				data={data?.lists.find((list) => list.name === route.key)}
-				updateTitle={(dataLength: number) => updateTitleCount(route.key, dataLength)}
+				updateTitle={(dataLength: number) => updateTitleCount(route.key, dataLength ?? 0)}
 				isRefreshing={isRefreshing}
 				onRefresh={onRefresh}
 			/>

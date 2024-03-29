@@ -160,11 +160,11 @@ export const sortListTabs = (
 	const orderedRouteNames = tabOrder.map((routeName) => routeName);
 	const newRoutes = tabOrder.map((routeName) => ({
 		key: routeName,
-		title: `${routeName} (${listCounts[routeName]})`,
+		title: `${routeName} (${listCounts[routeName] ?? 0})`,
 	}));
 	for (const name of listNames) {
 		if (!orderedRouteNames.includes(name)) {
-			newRoutes.push({ key: name, title: `${name}  (${listCounts[name]})` });
+			newRoutes.push({ key: name, title: `${name}  (${listCounts[name] ?? 0})` });
 		}
 	}
 	return newRoutes;
