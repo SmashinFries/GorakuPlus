@@ -23,7 +23,7 @@ const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 		<View style={{ overflow: 'visible' }}>
 			<ListHeading
 				title="Reviews (beta)"
-				icon={data.pageInfo.hasNextPage ? 'arrow-right' : undefined}
+				icon={data?.pageInfo?.hasNextPage ? 'arrow-right' : undefined}
 				onIconPress={openMore}
 			/>
 			<FlashList
