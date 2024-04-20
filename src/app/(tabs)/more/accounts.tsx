@@ -11,6 +11,7 @@ import { setAniAuth } from '@/store/services/anilist/authSlice';
 import AniListLoginDialog from '@/store/services/anilist/components/dialogs';
 import { ListSubheader } from '@/components/titles';
 import WaifuItTokenDialog from '@/store/services/waifu.it/components/dialogs';
+import { updateListFilter } from '@/store/slices/listSLice';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -81,6 +82,33 @@ const AccountsPage = () => {
 								deathDate: '',
 								username: '',
 								userID: undefined,
+							}),
+						);
+
+						dispatch(
+							updateListFilter({
+								entryType: 'animeTabOrder',
+								value: [
+									'Watching',
+									'Planning',
+									'Completed',
+									'Rewatching',
+									'Paused',
+									'Dropped',
+								],
+							}),
+						);
+						dispatch(
+							updateListFilter({
+								entryType: 'mangaTabOrder',
+								value: [
+									'Reading',
+									'Planning',
+									'Completed',
+									'Rereading',
+									'Paused',
+									'Dropped',
+								],
 							}),
 						);
 						resetCache();
