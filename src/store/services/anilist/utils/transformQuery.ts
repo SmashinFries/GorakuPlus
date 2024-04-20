@@ -2,15 +2,18 @@ import { postProcessReviewBody } from '@/utils/reviews/postProcess';
 import {
 	AniMediaQuery,
 	AnimeTrendingQuery,
+	GenreTagCollectionQuery,
 	MediaFormat,
 	MediaRelation,
 	MediaStatus,
+	MediaTag,
 	ReviewsByIdQuery,
 	StudioListQuery,
-	UserListCollectionQuery,
+	UserAnimeListCollectionQuery,
 	WeeklyAnimeQuery,
 } from '../generated-anilist';
 import { getTimeUntil } from '@/utils';
+import { GenreTagCollectionQueryAlt } from '../types';
 
 export const transformMediaDates = (media: AnimeTrendingQuery) => {
 	const newResponse = media;
@@ -18,16 +21,19 @@ export const transformMediaDates = (media: AnimeTrendingQuery) => {
 	//                 {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
 	//                 {timeTill}
 	if (!newResponse?.Page) return newResponse;
-	for (const anime of newResponse?.Page?.media) {
-		if (anime.nextAiringEpisode) {
-			const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
-			const prefix =
-				anime.format === MediaFormat.Movie
-					? 'Movie: '
-					: `EP ${anime.nextAiringEpisode.episode}: `;
-			anime.nextAiringEpisode.timeUntilAiring = prefix + timeTill;
+	if (newResponse?.Page?.media) {
+		for (const anime of newResponse.Page.media) {
+			if (anime.nextAiringEpisode) {
+				const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
+				const prefix =
+					anime.format === MediaFormat.Movie
+						? 'Movie: '
+						: `EP ${anime.nextAiringEpisode.episode}: `;
+				anime.nextAiringEpisode.timeUntilAiring = prefix + timeTill;
+			}
 		}
 	}
+
 	return newResponse;
 };
 
@@ -37,16 +43,19 @@ export const transformStudioMediaDates = (media: StudioListQuery) => {
 	newResponse.Studio.media.nodes = newResponse.Studio.media.nodes.filter(
 		(anime, index, self) => index === self.findIndex((t) => t.id === anime.id),
 	);
-	for (const anime of newResponse?.Studio?.media.nodes) {
-		if (anime.nextAiringEpisode) {
-			const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
-			const prefix =
-				anime.format === MediaFormat.Movie
-					? 'Movie: '
-					: `EP ${anime.nextAiringEpisode.episode}: `;
-			anime.nextAiringEpisode.timeUntilAiring = prefix + timeTill;
+	if (newResponse?.Studio?.media.nodes) {
+		for (const anime of newResponse.Studio.media.nodes) {
+			if (anime.nextAiringEpisode) {
+				const timeTill = getTimeUntil(anime.nextAiringEpisode.airingAt);
+				const prefix =
+					anime.format === MediaFormat.Movie
+						? 'Movie: '
+						: `EP ${anime.nextAiringEpisode.episode}: `;
+				anime.nextAiringEpisode.timeUntilAiring = prefix + timeTill;
+			}
 		}
 	}
+
 	return newResponse;
 };
 
@@ -57,14 +66,17 @@ export const transformWeeklyDates = (media: WeeklyAnimeQuery) => {
 	//                 {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
 	//                 {timeTill}
 	if (!newResponse?.Page) return newResponse;
-	for (const anime of newResponse?.Page?.airingSchedules) {
-		if (anime.airingAt) {
-			const timeTill = getTimeUntil(anime.airingAt);
-			const prefix =
-				anime.media.format === MediaFormat.Movie ? 'Movie: ' : `EP ${anime.episode}: `;
-			anime.timeUntilAiring = anime.airingAt < today ? 'Aired' : prefix + timeTill;
+	if (newResponse?.Page?.airingSchedules) {
+		for (const anime of newResponse.Page.airingSchedules) {
+			if (anime.airingAt) {
+				const timeTill = getTimeUntil(anime.airingAt);
+				const prefix =
+					anime.media.format === MediaFormat.Movie ? 'Movie: ' : `EP ${anime.episode}: `;
+				anime.timeUntilAiring = anime.airingAt < today ? 'Aired' : prefix + timeTill;
+			}
 		}
 	}
+
 	return newResponse;
 };
 
@@ -76,7 +88,7 @@ export const transformReviewBody = (review: ReviewsByIdQuery) => {
 	return newResponse;
 };
 
-export const transformListDates = (types: UserListCollectionQuery) => {
+export const transformListDates = (types: UserAnimeListCollectionQuery) => {
 	const newResponse = types;
 	for (const parent of newResponse.MediaListCollection.lists) {
 		for (const entry of parent.entries) {
@@ -153,4 +165,28 @@ export const transformMediaSorts = (media: AniMediaQuery) => {
 		newResponse.Media.relations.edges = newRelations;
 	}
 	return newResponse;
+};
+
+export const transformTags = (
+	genreTagCollection: GenreTagCollectionQuery,
+): GenreTagCollectionQueryAlt | GenreTagCollectionQuery => {
+	const combinedData: { [category: string]: MediaTag[] } = {};
+
+	if (genreTagCollection?.MediaTagCollection) {
+		genreTagCollection.MediaTagCollection.forEach((tag) => {
+			if (!combinedData[tag.category]) {
+				combinedData[tag.category] = [];
+			}
+			combinedData[tag.category].push(tag);
+		});
+		const result: GenreTagCollectionQueryAlt['MediaTagCollection'] = Object.entries(
+			combinedData,
+		).map(([category, tagData]) => ({
+			title: category,
+			data: tagData,
+		}));
+		return { ...genreTagCollection, MediaTagCollection: result };
+	} else {
+		return genreTagCollection;
+	}
 };
