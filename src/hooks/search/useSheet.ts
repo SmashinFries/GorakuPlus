@@ -21,11 +21,11 @@ const useFilterSheet = (sheetRef: React.MutableRefObject<BottomSheetModalMethods
 	}, []);
 
 	// useEffect(() => {
-	//     if (!isFilterOpen) {
-	//         sheetRef.current?.present();
-	//     } else {
-	//         sheetRef.current?.dismiss();
-	//     }
+	// 	if (!isFilterOpen) {
+	// 		sheetRef.current?.present();
+	// 	} else {
+	// 		sheetRef.current?.dismiss();
+	// 	}
 	// }, [isFilterOpen]);
 
 	return {
