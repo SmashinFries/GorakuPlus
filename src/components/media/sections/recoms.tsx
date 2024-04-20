@@ -18,14 +18,15 @@ const RecList = ({ data }: RecProps) => {
 	}: {
 		item: AniMediaQuery['Media']['recommendations']['edges'][0];
 	}) => {
+		if (item.node.mediaRecommendation === null) return null;
 		return (
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
 				<MediaCard
-					coverImg={item.node.mediaRecommendation.coverImage.extraLarge}
-					titles={item.node.mediaRecommendation.title}
-					averageScore={item.node.mediaRecommendation.averageScore}
-					meanScore={item.node.mediaRecommendation.meanScore}
-					imgBgColor={item.node.mediaRecommendation.coverImage.color}
+					coverImg={item.node.mediaRecommendation?.coverImage?.extraLarge}
+					titles={item.node.mediaRecommendation?.title}
+					averageScore={item.node.mediaRecommendation?.averageScore}
+					meanScore={item.node.mediaRecommendation?.meanScore}
+					imgBgColor={item.node.mediaRecommendation?.coverImage.color}
 					navigate={() =>
 						router.push(
 							`/${item.node?.mediaRecommendation?.type?.toLowerCase()}/${
@@ -34,7 +35,7 @@ const RecList = ({ data }: RecProps) => {
 						)
 					}
 					scoreDistributions={item.node.mediaRecommendation?.stats?.scoreDistribution}
-					isFavorite={item.node.mediaRecommendation.isFavourite}
+					isFavorite={item.node.mediaRecommendation?.isFavourite}
 				/>
 				<Text
 					variant="labelLarge"
