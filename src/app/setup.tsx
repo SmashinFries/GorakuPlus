@@ -699,13 +699,14 @@ const TagBLSetup = () => {
                 )}
             </ScrollView> */}
 			<FlatList
+				key={searchResults?.length ?? 2}
+				numColumns={searchResults?.length > 0 ? searchResults.length : 2}
 				data={searchResults}
 				contentContainerStyle={{
-					flexDirection: 'row',
-					flexWrap: 'wrap',
 					paddingBottom: 50,
 				}}
-				keyExtractor={(item) => item.id.toString()}
+				columnWrapperStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
+				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={({ item }) =>
 					!item.isAdult && (
 						<Chip
