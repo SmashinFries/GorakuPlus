@@ -1,6 +1,6 @@
 import { SearchHeader } from '@/components/headers';
 import { KeyboardSpacerView } from '@/components/keyboard';
-import { ImageSearchDialog } from '@/components/search/dialogs';
+import { ImageSearchDialog, FilterTagDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';
 import {
 	AniMangList,
@@ -11,10 +11,9 @@ import {
 	WaifuSearchList,
 } from '@/components/search/lists';
 import { MediaSelectorMem } from '@/components/search/mediaSelector';
-import { FilterContext } from '@/hooks/search/useFilter';
+import { useFilter } from '@/hooks/search/useFilter';
 import { useSearch } from '@/hooks/search/useSearch';
 import useFilterSheet from '@/hooks/search/useSheet';
-import { FilterActions, filterReducer } from '@/reducers/search/reducers';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
 	CharacterSort,
@@ -23,31 +22,25 @@ import {
 	StudioSort,
 	useGenreTagCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
-import {
-	addSearch,
-	removeSearchTerm,
-	updateFilterHistory,
-	updateSearchType,
-} from '@/store/slices/search/historySlice';
-import { cleanFilter } from '@/utils/search/cleanFilter';
+import { GenreTagCollectionQueryAlt } from '@/store/services/anilist/types';
+import { setFilterType } from '@/store/slices/search/filterSlice';
+import { addSearch, removeSearchTerm } from '@/store/slices/search/historySlice';
+import { useAppTheme } from '@/store/theme/theme';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { Stack, router } from 'expo-router';
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { Keyboard, Pressable, ScrollView, TextInput, useWindowDimensions } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { Keyboard, ScrollView, TextInput, useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
-import { IconButton, List, Portal, Text, useTheme } from 'react-native-paper';
+import { IconButton, List, Portal } from 'react-native-paper';
 import Animated, {
 	SlideInDown,
 	SlideInUp,
 	SlideOutDown,
-	runOnJS,
-	useAnimatedReaction,
 	useAnimatedScrollHandler,
 	useAnimatedStyle,
 	useSharedValue,
 	interpolate,
 	Extrapolation,
-	interpolateColor,
 	withTiming,
 } from 'react-native-reanimated';
 
@@ -61,18 +54,16 @@ const clamp = (value: number, lowerBound: number, upperBound: number) => {
 };
 
 const SearchPage = () => {
-	const { dark, colors } = useTheme();
+	const { dark, colors } = useAppTheme();
 	const { height } = useWindowDimensions();
 	const searchbarRef = useRef<TextInput>();
-	const [filterSearch, setFilterSearch] = useState('');
 	const [isFocused, setIsFocused] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [currentHistorySearch, setCurrentHistorySearch] = useState<string | null>(null);
 
 	const [showImageSearchDialog, setShowImageSearchDialog] = useState(false);
 	const [showWaifuSearchDialog, setShowWaifuSearchDialog] = useState(false);
+	const [showTagDialog, setShowTagDialog] = useState(false);
 
-	const [headerHeight, setHeaderHeight] = useState(0);
 	const [categoryHeight, setCategoryHeight] = useState(0);
 	const scrollClamp = useSharedValue(0);
 	const scrollHandler = useAnimatedScrollHandler(
@@ -98,25 +89,26 @@ const SearchPage = () => {
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
 	const history = useAppSelector((state) => state.persistedHistory);
-	const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+	const { filterType, filter } = useAppSelector((state) => state.filter);
 	const appDispatch = useAppDispatch();
 
-	const [filter, dispatch] = useReducer(filterReducer, {
-		filter: history.filter,
-		search: null,
-		searchType: history.searchType,
-		enableTagBlacklist: history.enableTagBlacklist,
-	});
-
 	const {
-		searchContent,
 		searchStatus,
-		searchResults,
 		imageSearchResults,
 		imageUrlStatus,
 		localImageStatus,
 		waifuImageResults,
 		waifuImageStatus,
+		mediaResults,
+		charResults,
+		staffResults,
+		studioResults,
+		query,
+		setQuery,
+		searchMedia,
+		searchCharacters,
+		searchStaff,
+		searchStudios,
 		searchWaifu,
 		searchImage,
 		updateNewResults,
@@ -124,49 +116,32 @@ const SearchPage = () => {
 		nextMediaPage,
 		nextStaffPage,
 		nextStudioPage,
-	} = useSearch(filter.searchType);
+	} = useSearch();
+	const { updateTag } = useFilter();
 
 	// Filter Sheet
 	const sheetRef = useRef<BottomSheetModalMethods>(null);
+	// const sheetRef = useRef<TrueSheet>(null);
 	const genreTagResult = useGenreTagCollectionQuery();
-	const { isFilterOpen, openSheet, closeSheet, handleSheetChange, setIsFilterOpen } =
+	const { isFilterOpen, openSheet, closeSheet, setIsFilterOpen, handleSheetChange } =
 		useFilterSheet(sheetRef);
 
-	const updateFilter = useCallback((props: FilterActions) => dispatch(props), []);
-
-	const onMediaSearch = async (query: string) => {
+	const onMediaSearch = async () => {
 		Keyboard.dismiss();
 		setLoading(true);
-		const tag_not_in = filter.enableTagBlacklist
-			? filter.filter.tag_not_in
-				? [...filter.filter.tag_not_in, ...tagBlacklist]
-				: tagBlacklist
-					? tagBlacklist
-					: []
-			: [];
-		const cleansedFilter = cleanFilter({
-			...filter.filter,
-			search: query,
-			page: 1,
-			perPage: 24,
-			isAdult: showNSFW ? filter.filter.isAdult : false,
-			tag_not_in: tag_not_in,
-		});
-		const response = await searchContent(cleansedFilter, false).unwrap();
+		const response = await searchMedia({
+			...filter,
+			search: query?.length > 0 ? query : undefined,
+		}).unwrap();
 		updateNewResults(response);
-		appDispatch(
-			updateFilterHistory({
-				filter: { ...filter.filter, type: filter.filter.type },
-				searchType: filter.searchType,
-			}),
-		);
-		sheetRef.current?.close();
-
+		// sheetRef.current?.close();
+		closeSheet();
 		setLoading(false);
 	};
 
 	const onMediaPress = useCallback((aniID: number, type: MediaType) => {
-		sheetRef.current?.close();
+		// sheetRef.current?.close();
+		closeSheet();
 		router.push(`/${type}/${aniID}`);
 	}, []);
 
@@ -180,10 +155,10 @@ const SearchPage = () => {
 
 	const onStudioPress = useCallback((studioId: number) => router.push(`/studio/${studioId}`), []);
 
-	const onCharSearch = async (query: string) => {
+	const onCharSearch = async () => {
 		Keyboard.dismiss();
 		setLoading(true);
-		const response = await searchContent(
+		const response = await searchCharacters(
 			{
 				name: query?.length < 1 || !query ? undefined : query,
 				page: 1,
@@ -196,19 +171,13 @@ const SearchPage = () => {
 			false,
 		).unwrap();
 		updateNewResults(response);
-
-		appDispatch(
-			updateFilterHistory({
-				filter: filter.filter,
-			}),
-		);
 		setLoading(false);
 	};
 
-	const onStaffSearch = async (query: string) => {
+	const onStaffSearch = async () => {
 		Keyboard.dismiss();
 		setLoading(true);
-		const response = await searchContent(
+		const response = await searchStaff(
 			{
 				name: query?.length < 1 || !query ? undefined : query,
 				page: 1,
@@ -221,19 +190,13 @@ const SearchPage = () => {
 			false,
 		).unwrap();
 		updateNewResults(response);
-
-		appDispatch(
-			updateFilterHistory({
-				filter: filter.filter,
-			}),
-		);
 		setLoading(false);
 	};
 
-	const onStudioSearch = async (query: string) => {
+	const onStudioSearch = async () => {
 		Keyboard.dismiss();
 		setLoading(true);
-		const response = await searchContent(
+		const response = await searchStudios(
 			{
 				name: query?.length < 1 || !query ? undefined : query,
 				page: 1,
@@ -246,42 +209,25 @@ const SearchPage = () => {
 		).unwrap();
 		updateNewResults(response);
 
-		appDispatch(
-			updateFilterHistory({
-				filter: filter.filter,
-			}),
-		);
+		// appDispatch(
+		// 	updateFilterHistory({
+		// 		filter: filter.filter,
+		// 	}),
+		// );
 		setLoading(false);
 	};
 
-	const onSearch = async (query: string) => {
-		appDispatch(
-			updateFilterHistory({
-				filter: { ...filter.filter, type: filter.filter.type },
-				searchType:
-					filter.searchType === 'imageSearch'
-						? MediaType.Anime
-						: filter.searchType === 'waifuSearch'
-							? 'characters'
-							: filter.searchType,
-			}),
-		);
-		setFilterSearch(query);
+	const onSearch = async () => {
 		appDispatch(addSearch(query));
-		if (filter.searchType === MediaType.Anime || filter.searchType === MediaType.Manga) {
-			await onMediaSearch(query);
-		} else if (filter.searchType === 'characters') {
-			await onCharSearch(query);
-		} else if (filter.searchType === 'staff') {
-			await onStaffSearch(query);
-		} else if (filter.searchType === 'studios') {
-			await onStudioSearch(query);
+		if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
+			await onMediaSearch();
+		} else if (filterType === 'characters') {
+			await onCharSearch();
+		} else if (filterType === 'staff') {
+			await onStaffSearch();
+		} else if (filterType === 'studios') {
+			await onStudioSearch();
 		}
-	};
-
-	const filterState = {
-		filter,
-		dispatch,
 	};
 
 	const stickyHeaderStyle = useAnimatedStyle(() => {
@@ -299,21 +245,18 @@ const SearchPage = () => {
 		};
 	}, [categoryHeight]);
 
-	useEffect(() => {
-		if (history.searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
-			dispatch({ type: 'SET_TYPE', payload: history.searchType });
-		}
-	}, [history.searchType]);
+	// useEffect(() => {
+	// 	if (searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
+	// 		dispatch({ type: 'SET_TYPE', payload: history.searchType });
+	// 	}
+	// }, [history.searchType]);
 
 	return (
-		<FilterContext.Provider value={filterState}>
+		<>
 			<Stack.Screen
 				options={{
 					header: (props) => (
-						<Animated.View
-							// style={[{ position: 'absolute' }]}
-							onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
-						>
+						<Animated.View>
 							<Animated.View
 								onLayout={(e) => setCategoryHeight(e.nativeEvent.layout.height)}
 								entering={SlideInUp.duration(500)}
@@ -329,12 +272,12 @@ const SearchPage = () => {
 								]}
 							>
 								<MediaSelectorMem
-									selection={filter.searchType}
+									selection={filterType}
 									onSelect={(type) => {
-										dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
-										appDispatch(updateSearchType(type));
+										appDispatch(setFilterType(type));
 										if (type !== MediaType.Anime && type !== MediaType.Manga) {
-											sheetRef?.current?.close();
+											// sheetRef?.current?.close();
+											closeSheet();
 										}
 									}}
 								/>
@@ -344,48 +287,40 @@ const SearchPage = () => {
 								searchContent={onSearch}
 								openFilter={() => {
 									Keyboard.dismiss();
-									dispatch({
-										type: 'CHANGE_SEARCHTYPE',
-										payload:
-											filter.searchType === 'imageSearch'
-												? MediaType.Anime
-												: filter.searchType,
-									});
-									appDispatch(updateSearchType(MediaType.Anime));
+									// onSearchTypeChange
 									openSheet();
+									// router.push('/filter');
 								}}
-								historySelected={currentHistorySearch}
-								onHistorySelected={() => setCurrentHistorySearch(null)}
-								currentType={filter.searchType}
+								currentType={filterType}
 								toggleIsFocused={toggleIsFocused}
 								searchbarRef={searchbarRef}
-								setFilterSearch={(query) => setFilterSearch(query)}
+								searchTerm={query}
+								setSearchTerm={(search) => setQuery(search)}
 								openImageSearch={() => {
 									Keyboard.dismiss();
-									dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'imageSearch' });
-									appDispatch(updateSearchType('imageSearch'));
+									// onSearchTypeChange('imageSearch');
 									setShowImageSearchDialog(true);
 								}}
 								openWaifuSearch={() => {
 									Keyboard.dismiss();
-									dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'waifuSearch' });
-									appDispatch(updateSearchType('waifuSearch'));
+									// dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'waifuSearch' });
+									// appDispatch(updateSearchType('waifuSearch'));
 									setShowWaifuSearchDialog(true);
 								}}
 								onFocus={() => {
-									if (filter.searchType === 'imageSearch') {
-										dispatch({
-											type: 'CHANGE_SEARCHTYPE',
-											payload: MediaType.Anime,
-										});
-										appDispatch(updateSearchType(MediaType.Anime));
-									} else if (filter.searchType === 'waifuSearch') {
-										dispatch({
-											type: 'CHANGE_SEARCHTYPE',
-											payload: 'characters',
-										});
-										appDispatch(updateSearchType('characters'));
-									}
+									// if (searchType === 'imageSearch') {
+									// 	dispatch({
+									// 		type: 'CHANGE_SEARCHTYPE',
+									// 		payload: MediaType.Anime,
+									// 	});
+									// 	appDispatch(updateSearchType(MediaType.Anime));
+									// } else if (searchType === 'waifuSearch') {
+									// 	dispatch({
+									// 		type: 'CHANGE_SEARCHTYPE',
+									// 		payload: 'characters',
+									// 	});
+									// 	appDispatch(updateSearchType('characters'));
+									// }
 									scrollClamp.value = withTiming(-categoryHeight);
 								}}
 							/>
@@ -394,13 +329,12 @@ const SearchPage = () => {
 				}}
 			/>
 			<View style={{ flex: 1 }}>
-				{(filter.searchType === MediaType.Anime ||
-					filter.searchType === MediaType.Manga) && (
+				{(filterType === MediaType.Anime || filterType === MediaType.Manga) && (
 					<AniMangList
 						filter={filter}
 						isLoading={loading}
 						nextPage={nextMediaPage}
-						results={searchResults}
+						results={mediaResults}
 						searchStatus={searchStatus}
 						sheetRef={sheetRef}
 						onItemPress={onMediaPress}
@@ -408,40 +342,40 @@ const SearchPage = () => {
 						headerHeight={categoryHeight}
 					/>
 				)}
-				{filter.searchType === 'characters' && (
+				{filterType === 'characters' && (
 					<CharacterList
 						isLoading={loading}
 						onNavigate={onCharPress}
-						results={searchResults}
+						results={charResults}
 						searchStatus={searchStatus}
-						nextPage={() => nextCharPage(filterSearch)}
+						nextPage={() => nextCharPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
 					/>
 				)}
-				{filter.searchType === 'staff' && (
+				{filterType === 'staff' && (
 					<StaffList
 						isLoading={loading}
 						onNavigate={onStaffPress}
-						results={searchResults}
+						results={staffResults}
 						searchStatus={searchStatus}
-						nextPage={() => nextStaffPage(filterSearch)}
+						nextPage={() => nextStaffPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
 					/>
 				)}
-				{filter.searchType === 'studios' && (
+				{filterType === 'studios' && (
 					<StudioList
 						onNavigate={onStudioPress}
 						isLoading={loading}
-						results={searchResults}
+						results={studioResults}
 						searchStatus={searchStatus}
-						nextPage={() => nextStudioPage(filterSearch)}
+						nextPage={() => nextStudioPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
 					/>
 				)}
-				{filter.searchType === 'imageSearch' && (
+				{filterType === 'imageSearch' && (
 					<ImageSearchList
 						results={imageSearchResults}
 						headerHeight={categoryHeight}
@@ -449,7 +383,7 @@ const SearchPage = () => {
 						isLoading={imageUrlStatus.isFetching || localImageStatus.isLoading}
 					/>
 				)}
-				{filter.searchType === 'waifuSearch' && (
+				{filterType === 'waifuSearch' && (
 					<WaifuSearchList
 						results={waifuImageResults}
 						headerHeight={categoryHeight}
@@ -483,7 +417,7 @@ const SearchPage = () => {
 										/>
 									)}
 									onPress={() => {
-										setCurrentHistorySearch(term);
+										setQuery(term);
 									}}
 								/>
 							))}
@@ -502,7 +436,7 @@ const SearchPage = () => {
                         ]}
                     >
                         <MediaSelectorMem
-                            selection={filter.searchType}
+                            selection={searchType}
                             onSelect={(type) => {
                                 dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
                                 appDispatch(updateSearchType(type));
@@ -517,14 +451,28 @@ const SearchPage = () => {
 			<FilterSheet
 				sheetRef={sheetRef}
 				handleSheetChange={handleSheetChange}
-				onSearch={(query: string) => onSearch(query)}
-				filterSearch={filterSearch}
-				filterData={filter}
-				filterType={filter.searchType}
-				updateFilter={updateFilter}
+				onSearch={onSearch}
+				// onSearch={() => console.log(filter)}
 				toggleSheet={closeSheet}
-				genreTagData={genreTagResult.data}
+				openTagDialog={() => setShowTagDialog(true)}
+				genreTagData={genreTagResult.data as unknown as GenreTagCollectionQueryAlt}
 			/>
+			{/* <TrueSheet
+				ref={sheetRef}
+				sizes={['auto', 'large']}
+				cornerRadius={24}
+				grabberProps={{ color: colors.onSurfaceVariant }}
+				style={{ backgroundColor: colors.elevation.level1 }}
+			>
+				<GestureHandlerRootView>
+					<FilterSheetContent
+						onSearch={onSearch}
+						// onSearch={() => console.log(filter)}
+
+						genreTagData={genreTagResult.data as unknown as GenreTagCollectionQueryAlt}
+					/>
+				</GestureHandlerRootView>
+			</TrueSheet> */}
 			<Portal>
 				<ImageSearchDialog
 					visible={showImageSearchDialog}
@@ -538,8 +486,14 @@ const SearchPage = () => {
 					searchImage={(imgType) => searchWaifu(undefined, imgType === 'camera')}
 					searchUrl={(url) => searchWaifu(url, false)}
 				/>
+				<FilterTagDialog
+					data={genreTagResult?.data?.MediaTagCollection}
+					visible={showTagDialog}
+					onDismiss={() => setShowTagDialog(false)}
+					toggleTag={(name) => updateTag(name)}
+				/>
 			</Portal>
-		</FilterContext.Provider>
+		</>
 	);
 };
 

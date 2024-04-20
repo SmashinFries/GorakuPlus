@@ -1,48 +1,55 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { BottomSheetScrollView, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import React, { useMemo } from 'react';
+import { BottomSheetModal, BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { StyleSheet } from 'react-native';
-import { Button, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
 import {
-	CountryDropdownMem,
-	FormatDropdownMem,
+	CountryDropdown,
+	DialogSelectDate,
+	FormatDropdown,
 	SeasonDropdownMem,
-	SortDropdownMem,
-	StatusDropdownMem,
+	SortDropdown,
+	StatusDropdown,
 	YearDropdownMem,
 } from './dropdown';
-import { GenreTagCollectionQuery, MediaType } from '@/store/services/anilist/generated-anilist';
-import { GenreSelectionMem, TagSelectionMem } from './tags';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { LicensedSelector, NSFWSelector, OnListSelector, TagBanSwitch } from './buttons';
+import { MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
+import { GenreSelection, TagSelection } from './tags';
+import { useAppSelector } from '@/store/hooks';
+import { LicensedSelector, NSFWSelector, OnListSelector } from './buttons';
 import { ScoreSlider } from './slider';
-import { FilterActions, FilterReducerState } from '@/reducers/search/reducers';
-import { SearchType } from '@/types/search';
+import { GenreTagCollectionQueryAlt } from '@/store/services/anilist/types';
+import { useFilter } from '@/hooks/search/useFilter';
+import { View } from 'react-native';
 
 type FilterSheetProps = {
 	sheetRef: React.Ref<BottomSheetModalMethods>;
-	filterData: FilterReducerState;
-	genreTagData: GenreTagCollectionQuery;
-	filterSearch: string;
-	filterType: SearchType;
-	onSearch: (query: string) => void;
+	genreTagData: GenreTagCollectionQueryAlt;
+	openTagDialog: () => void;
+	onSearch: () => void;
 	handleSheetChange: (index: number) => void;
-	updateFilter: (props: FilterActions) => void;
 	toggleSheet: () => void;
 };
 export const FilterSheet = ({
 	sheetRef,
-	filterData,
 	genreTagData,
-	filterSearch,
-	filterType,
+	openTagDialog,
 	onSearch,
 	handleSheetChange,
-	updateFilter,
 	toggleSheet,
 }: FilterSheetProps) => {
-	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
-	const history = useAppSelector((state) => state.persistedHistory);
+	const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+	const {
+		filter,
+		sort,
+		isTagBlacklist,
+		onFilterUpdate,
+		onSortChange,
+		onTagBlacklistChange,
+		resetTagsGenre,
+		updateGenre,
+		updateTag,
+		updateFuzzyInt,
+	} = useFilter();
 	const { userID } = useAppSelector((state) => state.persistedAniLogin);
 	const { colors } = useTheme();
 	const snapPoints = useMemo(() => ['70%', '95%'], []);
@@ -55,20 +62,20 @@ export const FilterSheet = ({
 			onChange={handleSheetChange}
 			handleIndicatorStyle={{ backgroundColor: colors.onSurfaceVariant }}
 		>
-			<BottomSheetScrollView style={{ flex: 1 }} nestedScrollEnabled>
+			<BottomSheetScrollView>
 				{/* <PresetButton onPress={() => setPresetDialogVisible(true)} /> */}
 				<Button
 					mode="contained"
 					icon={'magnify'}
 					onPress={() => {
 						toggleSheet();
-						onSearch(filterSearch);
+						onSearch();
 					}}
 					style={{ marginHorizontal: 8, marginTop: 20, marginBottom: 10 }}
 				>
 					Search
 				</Button>
-				<BottomSheetView
+				<View
 					style={[
 						styles.dropdownRow,
 						{ justifyContent: 'space-evenly', alignItems: 'center' },
@@ -76,171 +83,257 @@ export const FilterSheet = ({
 				>
 					{userID && (
 						<OnListSelector
-							onList={filterData.filter.onList}
-							updateOnList={(onList) =>
-								updateFilter({ type: 'SET_FILTER', key: 'onList', payload: onList })
-							}
+							onList={filter.onList}
+							updateOnList={(onList) => onFilterUpdate('onList', onList)}
 						/>
 					)}
-					{filterType !== MediaType.Anime && (
+					{filter.type !== MediaType.Anime && (
 						<LicensedSelector
-							isLicensed={filterData.filter.isLicensed}
-							updateOnList={(isLicensed) =>
-								updateFilter({
-									type: 'SET_FILTER',
-									key: 'isLicensed',
-									payload: isLicensed,
-								})
-							}
+							isLicensed={filter.isLicensed}
+							updateOnList={(isLicensed) => onFilterUpdate('isLicensed', isLicensed)}
 						/>
 					)}
 					{showNSFW && (
 						<NSFWSelector
-							isAdult={filterData.filter.isAdult}
-							updateIsAdult={(allowNSFW) =>
-								updateFilter({
-									type: 'SET_FILTER',
-									key: 'isAdult',
-									payload: allowNSFW,
-								})
-							}
+							isAdult={filter.isAdult}
+							updateIsAdult={(allowNSFW) => onFilterUpdate('isAdult', allowNSFW)}
 						/>
 					)}
-				</BottomSheetView>
-				<BottomSheetView style={{ flex: 1 }}>
-					<ScoreSlider
-						title="Minimum Score"
-						initialScore={filterData.filter.averageScore_greater}
-						maxValue={filterData.filter.averageScore_lesser}
-						minValue={0}
-						updateScore={(score) =>
-							updateFilter({
-								type: 'SET_FILTER',
-								key: 'averageScore_greater',
-								payload: score,
-							})
-						}
-					/>
-					<ScoreSlider
-						title="Maximum Score"
-						maxValue={100}
-						minValue={filterData.filter.averageScore_greater}
-						initialScore={filterData.filter.averageScore_lesser ?? 100}
-						updateScore={(score) =>
-							updateFilter({
-								type: 'SET_FILTER',
-								key: 'averageScore_lesser',
-								payload: score,
-							})
-						}
-					/>
-				</BottomSheetView>
-				<BottomSheetView style={{ flex: 1 }}>
-					{/* <ScoreSlider
-                        updateScore={(score) =>
-                            updateFilter({
-                                type: 'SET_FILTER',
-                                key: 'averageScore_greater',
-                                payload: score,
-                            })
-                        }
-                        initialScore={filterData.filter?.averageScore_greater}
-                        minValue={filterData.filter?.averageScore_greater}
-                    /> */}
-					<SortDropdownMem
-						current={filterData.filter.type}
-						updateSort={(sort) =>
-							updateFilter({ type: 'SET_FILTER', key: 'sort', payload: sort })
-						}
-						// @ts-ignore
-						sort={filterData.filter.sort}
-					/>
-					<StatusDropdownMem
-						status={filterData.filter.status}
+				</View>
+				<SortDropdown
+					current={filter.type}
+					updateSort={(sort, asc) => onSortChange(sort, asc)}
+					sort={sort}
+				/>
+				<View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+					<StatusDropdown
+						status={filter.status}
 						updateStatus={(status) =>
-							updateFilter({ type: 'SET_FILTER', key: 'status', payload: status })
-						}
-						removeStatus={() => updateFilter({ type: 'REMOVE_FILTER', key: 'status' })}
-					/>
-					<FormatDropdownMem
-						current={filterData.filter.type}
-						formatValue={filterData.filter.format}
-						updateFormat={(format) =>
-							updateFilter({ type: 'SET_FORMAT', payload: format })
-						}
-						removeFormat={() =>
-							updateFilter({ type: 'REMOVE_FILTER', key: 'format_in' })
+							onFilterUpdate('status', status === 'ANY' ? undefined : status)
 						}
 					/>
-					<CountryDropdownMem
-						countryValue={filterData.filter.countryOfOrigin}
-						updateCountry={(c_code) => {
-							updateFilter({
-								type: 'SET_FILTER',
-								key: 'countryOfOrigin',
-								payload: c_code,
-							});
-						}}
-						removeCountry={() =>
-							updateFilter({ type: 'REMOVE_FILTER', key: 'countryOfOrigin' })
-						}
+					<FormatDropdown
+						current={filter.type}
+						formatValue={filter.format_in as MediaFormat}
+						updateFormat={(format) => onFilterUpdate('format_in', format)}
+						removeFormat={() => onFilterUpdate('format_in', undefined)}
 					/>
-				</BottomSheetView>
-				{filterType === MediaType.Anime && (
+				</View>
+				<CountryDropdown
+					countryValue={filter.countryOfOrigin}
+					updateCountry={(c_code) => {
+						onFilterUpdate('countryOfOrigin', c_code);
+					}}
+					removeCountry={() => onFilterUpdate('countryOfOrigin', undefined)}
+				/>
+				<Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
+					Dates
+				</Text>
+				<DialogSelectDate
+					label="Start Date ↓"
+					value={filter.startDate_greater ?? 'ANY'}
+					onSelect={(date) => updateFuzzyInt('startDate_greater', date)}
+				/>
+				<DialogSelectDate
+					label="End Date ↑"
+					value={filter.startDate_lesser ?? 'ANY'}
+					onSelect={(date) => updateFuzzyInt('endDate_lesser', date)}
+				/>
+				{filter.type === MediaType.Anime && (
 					<BottomSheetView>
 						<Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
 							Season
 						</Text>
 						<BottomSheetView style={[styles.dropdownRow, { paddingTop: 8 }]}>
 							<SeasonDropdownMem
-								seasonValue={filterData.filter.season}
-								updateSeason={(season) =>
-									updateFilter({
-										type: 'SET_FILTER',
-										key: 'season',
-										payload: season,
-									})
-								}
+								seasonValue={filter.season}
+								updateSeason={(season) => onFilterUpdate('season', season)}
 							/>
 							<YearDropdownMem
-								yearValue={filterData.filter.seasonYear}
-								updateSeasonYear={(year) =>
-									updateFilter({
-										type: 'SET_FILTER',
-										key: 'seasonYear',
-										payload: year,
-									})
-								}
+								yearValue={filter.seasonYear}
+								updateSeasonYear={(year) => onFilterUpdate('seasonYear', year)}
 							/>
 						</BottomSheetView>
 					</BottomSheetView>
 				)}
-				<GenreSelectionMem
-					isAdult={filterData.filter.isAdult}
+				<View>
+					<ScoreSlider
+						title="Minimum Score"
+						initialScore={filter.averageScore_greater}
+						maxValue={filter.averageScore_lesser}
+						minValue={0}
+						updateScore={(score) => onFilterUpdate('averageScore_greater', score)}
+					/>
+					<ScoreSlider
+						title="Maximum Score"
+						maxValue={100}
+						minValue={filter.averageScore_greater}
+						initialScore={filter.averageScore_lesser ?? 100}
+						updateScore={(score) => onFilterUpdate('averageScore_lesser', score)}
+					/>
+				</View>
+				<GenreSelection
+					isAdult={filter.isAdult}
 					data={genreTagData?.GenreCollection}
-					genre_in={filterData.filter.genre_in}
-					genre_not_in={filterData.filter.genre_not_in}
-					toggleGenreTag={updateFilter}
+					genre_in={filter.genre_in}
+					genre_not_in={filter.genre_not_in}
+					toggleGenre={updateGenre}
+					resetTagsGenre={() => resetTagsGenre('genre')}
 				/>
-				<TagSelectionMem
-					data={genreTagData?.MediaTagCollection}
-					tags_in={filterData.filter.tag_in}
-					tags_not_in={filterData.filter.tag_not_in}
-					isAdult={filterData.filter.isAdult}
-					tagBanEnabled={filterData.enableTagBlacklist}
-					toggleGenreTag={updateFilter}
+				<TagSelection
+					tags_in={filter.tag_in as string[]}
+					tags_not_in={filter.tag_not_in as string[]}
+					isAdult={filter.isAdult}
+					tagBanEnabled={isTagBlacklist}
+					toggleTag={updateTag}
+					resetTagsGenre={() => resetTagsGenre('tag')}
+					onTagBlacklistChange={onTagBlacklistChange}
+					openTagDialog={openTagDialog}
 				/>
 			</BottomSheetScrollView>
-			{/* <Portal>
-                <PresetDialog visible={presetDialogVisible} hideDialog={hidePresetDialog} />
-            </Portal> */}
 		</BottomSheetModal>
 	);
 };
 
 const styles = StyleSheet.create({
 	dropdownRow: {
-		flex: 1,
+		// flex: 1,
 		flexDirection: 'row',
 	},
 });
+
+// <BottomSheetFlatList
+// 	key={'test'}
+// 	data={genreTagData?.MediaTagCollection?.filter((tag) =>
+// 		tagQuery !== '' ? tag.name.includes(tagQuery) : true,
+// 	)}
+// 	// contentContainerStyle={{ flexWrap: 'wrap', flexDirection: 'row' }}
+// 	// columnWrapperStyle={{ flexWrap: 'wrap', flexDirection: 'row' }}
+// 	renderItem={TagItem}
+// 	keyExtractor={(item, idx) => idx.toString()}
+// 	ListHeaderComponent={
+// 		<BottomSheetView>
+// 			{/* <PresetButton onPress={() => setPresetDialogVisible(true)} /> */}
+// 			<Button
+// 				mode="contained"
+// 				icon={'magnify'}
+// 				onPress={() => {
+// 					toggleSheet();
+// 					onSearch();
+// 				}}
+// 				style={{ marginHorizontal: 8, marginTop: 20, marginBottom: 10 }}
+// 			>
+// 				Search
+// 			</Button>
+// 			<BottomSheetView
+// 				style={[
+// 					styles.dropdownRow,
+// 					{ justifyContent: 'space-evenly', alignItems: 'center' },
+// 				]}
+// 			>
+// 				{userID && (
+// 					<OnListSelector
+// 						onList={filter.onList}
+// 						updateOnList={(onList) => updateFilter('onList', onList)}
+// 					/>
+// 				)}
+// 				{filter.type !== MediaType.Anime && (
+// 					<LicensedSelector
+// 						isLicensed={filter.isLicensed}
+// 						updateOnList={(isLicensed) => updateFilter('isLicensed', isLicensed)}
+// 					/>
+// 				)}
+// 				{showNSFW && (
+// 					<NSFWSelector
+// 						isAdult={filter.isAdult}
+// 						updateIsAdult={(allowNSFW) => updateFilter('isAdult', allowNSFW)}
+// 					/>
+// 				)}
+// 			</BottomSheetView>
+// 			<BottomSheetView style={{ flex: 1 }}>
+// 				<ScoreSlider
+// 					title="Minimum Score"
+// 					initialScore={filter.averageScore_greater}
+// 					maxValue={filter.averageScore_lesser}
+// 					minValue={0}
+// 					updateScore={(score) => updateFilter('averageScore_greater', score)}
+// 				/>
+// 				<ScoreSlider
+// 					title="Maximum Score"
+// 					maxValue={100}
+// 					minValue={filter.averageScore_greater}
+// 					initialScore={filter.averageScore_lesser ?? 100}
+// 					updateScore={(score) => updateFilter('averageScore_lesser', score)}
+// 				/>
+// 			</BottomSheetView>
+// 			<BottomSheetView style={{ flex: 1 }}>
+// 				<SortDropdown
+// 					current={filter.type}
+// 					updateSort={(sort, asc) => onSortChange(sort, asc)}
+// 					sort={sort}
+// 				/>
+// 				<BottomSheetView style={{ flexDirection: 'row' }}>
+// 					<StatusDropdown
+// 						status={filter.status}
+// 						updateStatus={(status) =>
+// 							updateFilter('status', status === 'ANY' ? undefined : status)
+// 						}
+// 					/>
+// 					<FormatDropdown
+// 						current={filter.type}
+// 						formatValue={filter.format_in as MediaFormat}
+// 						updateFormat={(format) => updateFilter('format_in', format)}
+// 						removeFormat={() => updateFilter('format_in', undefined)}
+// 					/>
+// 				</BottomSheetView>
+// 				<CountryDropdown
+// 					countryValue={filter.countryOfOrigin}
+// 					updateCountry={(c_code) => {
+// 						updateFilter('countryOfOrigin', c_code);
+// 					}}
+// 					removeCountry={() => updateFilter('countryOfOrigin', undefined)}
+// 				/>
+// 			</BottomSheetView>
+// 			{filter.type === MediaType.Anime && (
+// 				<BottomSheetView>
+// 					<Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
+// 						Season
+// 					</Text>
+// 					<BottomSheetView style={[styles.dropdownRow, { paddingTop: 8 }]}>
+// 						<SeasonDropdownMem
+// 							seasonValue={filter.season}
+// 							updateSeason={(season) => updateFilter('season', season)}
+// 						/>
+// 						<YearDropdownMem
+// 							yearValue={filter.seasonYear}
+// 							updateSeasonYear={(year) => updateFilter('seasonYear', year)}
+// 						/>
+// 					</BottomSheetView>
+// 				</BottomSheetView>
+// 			)}
+// 			<GenreSelection
+// 				isAdult={filter.isAdult}
+// 				data={genreTagData?.GenreCollection}
+// 				genre_in={filter.genre_in}
+// 				genre_not_in={filter.genre_not_in}
+// 				toggleGenre={updateGenre}
+// 				resetTagsGenre={() => resetTagsGenre('genre')}
+// 			/>
+// 			<TagSelection
+// 				tags_in={filter.tag_in as string[]}
+// 				tags_not_in={filter.tag_not_in as string[]}
+// 				isAdult={filter.isAdult}
+// 				tagBanEnabled={isTagBlacklist}
+// 				tagQuery={tagQuery}
+// 				toggleTag={updateTag}
+// 				resetTagsGenre={() => resetTagsGenre('tag')}
+// 				onTagBlacklistChange={onTagBlacklistChange}
+// 				onTagQueryChange={setTagQuery}
+// 			/>
+// 		</BottomSheetView>
+// 	}
+// 	// numColumns={genreTagData?.MediaTagCollection?.length ?? 1}
+// 	numColumns={1}
+// 	keyboardDismissMode={'on-drag'}
+// />;
+//

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
 	useLazyCharacterSearchQuery,
 	useLazyExploreMediaQuery,
@@ -9,6 +9,7 @@ import {
 	CharacterSearchQuery,
 	CharacterSort,
 	ExploreMediaQuery,
+	ExploreMediaQueryVariables,
 	MediaType,
 	StaffSearchQuery,
 	StaffSort,
@@ -29,7 +30,16 @@ import { useLazyPredictWaifuQuery } from '@/store/services/huggingface/wdTagger'
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
 
-export const useSearch = (searchType: SearchType) => {
+type SearchCategoriesType<Media, Char, Staff, Studio> = {
+	media: Media;
+	characters: Char;
+	staff: Staff;
+	studios: Studio;
+};
+
+export const useSearch = () => {
+	const { filterType } = useAppSelector((state) => state.filter);
+	const [query, setQuery] = useState<string>('');
 	const [searchTrigger, searchStatus] = useLazyExploreMediaQuery();
 	const [searchCharTrig, searchCharStatus] = useLazyCharacterSearchQuery();
 	const [searchStaffTrig, searchStaffStatus] = useLazyStaffSearchQuery();
@@ -40,8 +50,6 @@ export const useSearch = (searchType: SearchType) => {
 	const [searchWaifuImage, waifuImageStatus] = useLazyPredictWaifuQuery();
 	const [searchWaifuData, searchWaifuDataStatus] = useLazyCharacterSearchQuery();
 
-	const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
-
 	const [mediaResults, setMediaResults] = useState<ExploreMediaQuery>();
 	const [charResults, setCharResults] = useState<CharacterSearchQuery>();
 	const [staffResults, setStaffResults] = useState<StaffSearchQuery>();
@@ -51,25 +59,11 @@ export const useSearch = (searchType: SearchType) => {
 		CharacterSearchQuery['Page']['characters'] & { confidence: number }[]
 	>([]);
 
-	const SearchTypes = {
-		media: searchTrigger,
-		characters: searchCharTrig,
-		staff: searchStaffTrig,
-		studios: searchStudioTrig,
-	};
-
 	const SearchStatus = {
 		media: searchStatus,
 		characters: searchCharStatus,
 		staff: searchStaffStatus,
 		studios: searchStudioStatus,
-	};
-
-	const SearchResults = {
-		media: mediaResults,
-		characters: charResults,
-		staff: staffResults,
-		studios: studioResults,
 	};
 
 	const searchImage = async (url?: string, camera?: boolean) => {
@@ -113,8 +107,8 @@ export const useSearch = (searchType: SearchType) => {
 				const response = await searchWaifuImage({
 					data: [imageBase64, 'MOAT', 0.35, 0.35],
 				}).unwrap();
-				if (response?.data) {
-					for (const predictResult of response?.data?.[3].confidences) {
+				if (response?.data?.[3].confidences) {
+					for (const predictResult of response.data[3].confidences) {
 						if (predictResult.label) {
 							const searchresult = await searchWaifuData({
 								name: predictResult.label.replaceAll('_', ' ').split('(')[0],
@@ -139,22 +133,22 @@ export const useSearch = (searchType: SearchType) => {
 
 	const updateNewResults = useCallback(
 		(results) => {
-			if (searchType === MediaType.Anime || searchType === MediaType.Manga) {
+			if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
 				setMediaResults(results);
-			} else if (searchType === 'characters') {
+			} else if (filterType === 'characters') {
 				setCharResults(results);
-			} else if (searchType === 'staff') {
+			} else if (filterType === 'staff') {
 				setStaffResults(results);
-			} else if (searchType === 'studios') {
+			} else if (filterType === 'studios') {
 				setStudioResults(results);
 			}
 		},
-		[searchType],
+		[filterType],
 	);
 
 	const addMoreResults = useCallback(
 		(results) => {
-			if (searchType === MediaType.Anime || searchType === MediaType.Manga) {
+			if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
 				setMediaResults((prev) => ({
 					...prev,
 					Page: {
@@ -163,7 +157,7 @@ export const useSearch = (searchType: SearchType) => {
 						pageInfo: results.Page.pageInfo,
 					},
 				}));
-			} else if (searchType === 'characters') {
+			} else if (filterType === 'characters') {
 				setCharResults((prev) => ({
 					...prev,
 					Page: {
@@ -172,7 +166,7 @@ export const useSearch = (searchType: SearchType) => {
 						pageInfo: results.Page.pageInfo,
 					},
 				}));
-			} else if (searchType === 'staff') {
+			} else if (filterType === 'staff') {
 				setStaffResults((prev) => ({
 					...prev,
 					Page: {
@@ -181,7 +175,7 @@ export const useSearch = (searchType: SearchType) => {
 						pageInfo: { ...results.Page.pageInfo },
 					},
 				}));
-			} else if (searchType === 'studios') {
+			} else if (filterType === 'studios') {
 				setStudioResults((prev) => ({
 					...prev,
 					Page: {
@@ -192,39 +186,30 @@ export const useSearch = (searchType: SearchType) => {
 				}));
 			}
 		},
-		[searchType],
+		[filterType],
 	);
 
-	const nextMediaPage = async (currentPage: number, filter) => {
+	const nextMediaPage = async (currentPage: number, filter: ExploreMediaQueryVariables) => {
 		if (!searchStatus?.isFetching) {
-			const tag_not_in = filter.filter.tag_not_in
-				? [...filter.filter.tag_not_in, ...tagBlacklist]
-				: tagBlacklist
-					? tagBlacklist
-					: [];
-			const cleansedFilter = cleanFilter({
-				...filter.filter,
-				search: filter.search,
+			const cleansedFilter = {
+				...filter,
 				page: currentPage + 1,
-				perPage: 24,
-				isAdult: showNSFW ? filter.filter.isAdult : false,
-				tag_not_in: tag_not_in,
-			});
+			};
 			const response = await searchTrigger(cleansedFilter, false).unwrap();
 
 			addMoreResults(response);
 		}
 	};
 
-	const nextCharPage = async (search: string) => {
+	const nextCharPage = async () => {
 		if (!searchStatus?.isFetching) {
 			if (charResults?.Page?.pageInfo?.hasNextPage) {
 				const response = await searchCharTrig({
-					name: search ?? undefined,
+					name: query ?? undefined,
 					page: charResults?.Page?.pageInfo?.currentPage + 1,
-					isBirthday: !search || search?.length < 1 ? true : false,
+					isBirthday: !query || query?.length < 1 ? true : false,
 					sort:
-						!search || search?.length < 1
+						!query || query?.length < 1
 							? [CharacterSort.FavouritesDesc]
 							: [CharacterSort.SearchMatch],
 				}).unwrap();
@@ -234,15 +219,15 @@ export const useSearch = (searchType: SearchType) => {
 		}
 	};
 
-	const nextStaffPage = async (search: string) => {
+	const nextStaffPage = async () => {
 		if (!searchStatus?.isFetching) {
 			if (staffResults?.Page?.pageInfo?.hasNextPage) {
 				const response = await searchStaffTrig({
-					name: search ?? undefined,
+					name: query ?? undefined,
 					page: staffResults?.Page?.pageInfo?.currentPage + 1,
-					isBirthday: !search || search?.length < 1 ? true : undefined,
+					isBirthday: !query || query?.length < 1 ? true : undefined,
 					sort:
-						!search || search?.length < 1
+						!query || query?.length < 1
 							? [StaffSort.FavouritesDesc]
 							: [StaffSort.SearchMatch],
 				}).unwrap();
@@ -252,14 +237,14 @@ export const useSearch = (searchType: SearchType) => {
 		}
 	};
 
-	const nextStudioPage = async (search: string) => {
+	const nextStudioPage = async () => {
 		if (!searchStatus?.isFetching) {
 			if (studioResults?.Page?.pageInfo?.hasNextPage) {
 				const response = await searchStudioTrig({
-					name: search ?? undefined,
+					name: query ?? undefined,
 					page: studioResults.Page?.pageInfo?.currentPage + 1,
 					sort:
-						!search || search?.length < 1
+						!query || query?.length < 1
 							? [StudioSort.FavouritesDesc]
 							: [StudioSort.SearchMatch],
 				}).unwrap();
@@ -270,31 +255,29 @@ export const useSearch = (searchType: SearchType) => {
 	};
 
 	return {
-		searchContent:
-			SearchTypes[
-				searchType === MediaType.Anime || searchType === MediaType.Manga
-					? 'media'
-					: searchType
-			],
+		searchMedia: searchTrigger,
+		searchCharacters: searchCharTrig,
+		searchStaff: searchStaffTrig,
+		searchStudios: searchStudioTrig,
+		searchWaifu,
+		searchImage,
 		searchStatus:
 			SearchStatus[
-				searchType === MediaType.Anime || searchType === MediaType.Manga
+				filterType === MediaType.Anime || filterType === MediaType.Manga
 					? 'media'
-					: searchType
+					: filterType
 			],
-		searchResults:
-			SearchResults[
-				searchType === MediaType.Anime || searchType === MediaType.Manga
-					? 'media'
-					: searchType
-			],
+		mediaResults,
+		charResults,
+		staffResults,
+		studioResults,
 		imageSearchResults,
 		localImageStatus,
 		imageUrlStatus,
 		waifuImageResults,
 		waifuImageStatus,
-		searchWaifu,
-		searchImage,
+		query,
+		setQuery,
 		updateNewResults,
 		addMoreResults,
 		nextMediaPage,

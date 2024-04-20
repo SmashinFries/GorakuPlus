@@ -84,12 +84,13 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 		(futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
 	);
 	const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
-	return `${pos_estimated_days > 1
+	return `${
+		pos_estimated_days > 1
 			? pos_estimated_days?.toString() + ' days'
 			: pos_estimated_days === 1
 				? pos_estimated_days.toString() + ' day'
 				: 'Today'
-		}`;
+	}`;
 };
 
 const getDateDifferences = (dates: Date[]) => {
@@ -180,8 +181,9 @@ export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days
 	const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
 
 	if (format === 'until')
-		return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${diffMinutes > 0 ? `${diffMinutes}m` : ''
-			}`;
+		return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${
+			diffMinutes > 0 ? `${diffMinutes}m` : ''
+		}`;
 	if (format === 'createdAt') {
 		if (diffMonths > 0)
 			return `${diffMonths > 1 ? `${diffMonths} months` : `${diffMonths} month`} ago`;
@@ -228,6 +230,25 @@ export const getDatetoFuzzy = (value: Date): FuzzyDate => {
 		year: value.getFullYear(),
 	};
 	return newDate;
+};
+
+export const getDatetoFuzzyInt = (value: Date): string => {
+	return value.toISOString().split('T')[0].replaceAll('-', '');
+};
+
+export const getFuzzyInttoDate = (value: string): Date => {
+	const year = value.slice(0, 4);
+	const month = value.slice(4, 6);
+	const day = value.slice(6, 8);
+	const newDate = new Date(`${year}-${month}-${day}`);
+	return newDate;
+};
+
+export const getFuzzyInttoString = (value: string): string => {
+	const year = value.slice(0, 4);
+	const month = value.slice(4, 6);
+	const day = value.slice(6, 8);
+	return `${month}-${day}-${year}`;
 };
 
 export const getWeekStartEnd = () => {

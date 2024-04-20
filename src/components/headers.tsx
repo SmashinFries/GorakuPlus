@@ -125,36 +125,30 @@ export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderP
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
-	searchContent: (query: string) => void;
+	searchContent: () => void;
 	openFilter: () => void;
 	currentType: SearchType;
 	searchbarRef: React.RefObject<TextInput>;
-	historySelected: string | null;
-	onHistorySelected: () => void;
+	searchTerm: string;
+	setSearchTerm: (value: string) => void;
 	toggleIsFocused: (value: boolean) => void;
-	setFilterSearch: (query: string) => void;
 	openImageSearch: () => void;
 	openWaifuSearch: () => void;
 	onFocus: () => void;
 };
 export const SearchHeader = ({
 	navigation,
-	options,
-	route,
-	back,
 	openFilter,
 	searchContent,
-	historySelected,
-	onHistorySelected,
 	currentType,
+	searchTerm,
+	setSearchTerm,
 	searchbarRef,
 	toggleIsFocused,
-	setFilterSearch,
 	openImageSearch,
 	openWaifuSearch,
 	onFocus,
 }: SearchHeaderProps) => {
-	const [query, setQuery] = useState('');
 	const { colors } = useTheme();
 
 	const { right, left } = useSafeAreaInsets();
@@ -177,13 +171,6 @@ export const SearchHeader = ({
 		};
 	}, []);
 
-	useEffect(() => {
-		if (historySelected) {
-			setQuery(historySelected);
-			onHistorySelected();
-		}
-	}, [historySelected]);
-
 	return (
 		<Appbar.Header>
 			<Animated.View
@@ -198,14 +185,9 @@ export const SearchHeader = ({
 			>
 				<Searchbar
 					ref={searchbarRef}
-					value={query}
-					onChangeText={(txt) => {
-						setQuery(txt);
-						setFilterSearch(txt);
-					}}
-					onSubmitEditing={(e) => {
-						searchContent(e.nativeEvent.text);
-					}}
+					value={searchTerm}
+					onChangeText={setSearchTerm}
+					onSubmitEditing={searchContent}
 					returnKeyType="search"
 					autoFocus
 					onFocus={() => {
@@ -236,7 +218,7 @@ export const SearchHeader = ({
 					style={{ flex: 1, backgroundColor: 'transparent' }}
 					inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
 					onClearIconPress={() => {
-						setQuery('');
+						setSearchTerm('');
 					}}
 				/>
 				{/* <IconButton

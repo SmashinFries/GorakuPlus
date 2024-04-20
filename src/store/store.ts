@@ -38,6 +38,7 @@ import setupSlice, { SetupState } from './slices/setupSlice';
 import displaySettingSlice, { DisplaySettingState } from './slices/displaySlice';
 import { rtkQueryErrorLogger } from './middleware';
 import ttsSlice, { TTSState } from './slices/ttsSlice';
+import filterSlice from './slices/search/filterSlice';
 
 const secureStorage = createSecureStorage();
 
@@ -155,6 +156,7 @@ export const store = configureStore({
 		[wdTaggerAPI.reducerPath]: wdTaggerAPI.reducer,
 		listFilter: persistedListFilter,
 		favSearch: favSearchSlice.reducer,
+		filter: filterSlice,
 		persistedTheme,
 		persistedSettings,
 		persistedSetup,

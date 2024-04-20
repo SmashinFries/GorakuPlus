@@ -1,40 +1,56 @@
-import { Badge, Chip, IconButton, Text } from 'react-native-paper';
+import {
+	Badge,
+	Button,
+	Chip,
+	IconButton,
+	Searchbar,
+	SearchbarProps,
+	Text,
+} from 'react-native-paper';
 import { MotiView } from 'moti';
 import {
 	ExploreMediaQueryVariables,
 	GenreTagCollectionQuery,
 } from '@/store/services/anilist/generated-anilist';
-import { View } from 'react-native';
-import { memo, useCallback, useState } from 'react';
-import { FlatList } from 'react-native-gesture-handler';
+import { SectionList, View } from 'react-native';
+import { Ref, forwardRef, memo, useCallback, useEffect, useState } from 'react';
+import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+	BottomSheetView,
+	useBottomSheetInternal,
+	useBottomSheetModalInternal,
+} from '@gorhom/bottom-sheet';
 import { TagBanSwitch } from './buttons';
-import { FilterActions } from '@/reducers/search/reducers';
 import { setSettings } from '@/store/slices/settingsSlice';
+import { router } from 'expo-router';
+import { BottomSheetTextInputProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetTextInput';
+import { sendToast } from '@/utils/toast';
 
 type TagProps = {
 	name: string;
 	state?: 'in' | 'not_in' | undefined;
+	description?: string;
 	disabled?: boolean;
 	onToggle: (mode: 'in' | 'not_in' | 'remove') => void;
 };
-const Tag = ({ name, state, onToggle, disabled }: TagProps) => {
+export const FilterTag = ({ name, description, state, onToggle, disabled }: TagProps) => {
 	return (
 		<Chip
 			style={{
 				margin: 5,
-				shadowColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
+				// shadowColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
 				borderColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
-				shadowOpacity: 1,
-				elevation: 12,
 			}}
-			selected={state === 'in' || state === 'not_in'}
+			selected={state === 'in' ? true : state === 'not_in'}
+			icon={state === 'in' ? 'check' : state === 'not_in' ? 'close' : undefined}
 			onPress={() => {
 				onToggle(state === 'in' ? 'not_in' : state === 'not_in' ? 'remove' : 'in');
 			}}
+			onLongPress={() => description && sendToast(name, description)}
+			// onPress={() => console.log(name)}
 			selectedColor={state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined}
-			elevated
+			// elevated
 			disabled={disabled}
 			mode={'outlined'}
 		>
@@ -43,15 +59,15 @@ const Tag = ({ name, state, onToggle, disabled }: TagProps) => {
 	);
 };
 
-const TagMem = memo(Tag);
-
 type TagSelectionProps = {
-	data: GenreTagCollectionQuery['MediaTagCollection'];
-	tags_in: ExploreMediaQueryVariables['tag_in'];
-	tags_not_in: ExploreMediaQueryVariables['tag_not_in'];
+	tags_in: string[];
+	tags_not_in: string[];
 	isAdult: boolean;
 	tagBanEnabled: boolean;
-	toggleGenreTag: (props: FilterActions) => void;
+	toggleTag: (tag: string) => void;
+	resetTagsGenre: () => void;
+	onTagBlacklistChange: (value: boolean) => void;
+	openTagDialog: () => void;
 };
 
 type GenreSelectionProps = {
@@ -59,30 +75,33 @@ type GenreSelectionProps = {
 	genre_in: ExploreMediaQueryVariables['genre_in'];
 	genre_not_in: ExploreMediaQueryVariables['genre_not_in'];
 	isAdult: boolean;
-	toggleGenreTag: (props: FilterActions) => void;
+	toggleGenre: (genre: string) => void;
+	resetTagsGenre: () => void;
 };
 
-const TagSelection = ({
-	data,
+export const TagSelection = ({
 	tags_in,
 	tags_not_in,
 	isAdult,
 	tagBanEnabled,
-	toggleGenreTag,
+	toggleTag,
+	resetTagsGenre,
+	onTagBlacklistChange,
+	openTagDialog,
 }: TagSelectionProps) => {
 	const { defaultTagLayout, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
-	const [tagMode, setTagMode] = useState(defaultTagLayout);
-	const settingsDispatch = useAppDispatch();
+	// const [tagMode, setTagMode] = useState(defaultTagLayout);
+	// const settingsDispatch = useAppDispatch();
 
-	const changeLayout = useCallback(() => {
-		setTagMode((prev) => (prev === 'list' ? 'row' : 'list'));
-		settingsDispatch(
-			setSettings({
-				entryType: 'defaultTagLayout',
-				value: tagMode === 'list' ? 'row' : 'list',
-			}),
-		);
-	}, []);
+	// const changeLayout = useCallback(() => {
+	// 	setTagMode((prev) => (prev === 'list' ? 'row' : 'list'));
+	// 	settingsDispatch(
+	// 		setSettings({
+	// 			entryType: 'defaultTagLayout',
+	// 			value: tagMode === 'list' ? 'row' : 'list',
+	// 		}),
+	// 	);
+	// }, []);
 
 	const getTagState = useCallback(
 		(name: string) => {
@@ -97,23 +116,13 @@ const TagSelection = ({
 		[tags_in, tags_not_in],
 	);
 
-	const resetTag = useCallback(() => {
-		toggleGenreTag({ type: 'RESET_TAGS_GENRES', payload: 'tag' });
-	}, []);
-
 	const TagItem = useCallback(
 		({ item }) => {
 			return !isAdult && item.isAdult ? null : (
-				<Tag
+				<FilterTag
 					name={item.name}
 					state={getTagState(item.name)}
-					onToggle={(mode: 'in' | 'not_in' | 'remove') =>
-						toggleGenreTag({
-							type: mode === 'remove' ? 'REMOVE_TAG' : 'TOGGLE_TAG',
-							key: mode === 'in' ? 'tag_in' : 'tag_not_in',
-							payload: item.name,
-						})
-					}
+					onToggle={() => toggleTag(item.name)}
 					disabled={tagBanEnabled ? tagBlacklist?.includes(item.name) : false}
 				/>
 			);
@@ -121,18 +130,14 @@ const TagSelection = ({
 		[isAdult, tags_in, tags_not_in, tagBanEnabled],
 	);
 
-	if (!data) {
-		return null;
-	}
-
 	return (
-		<BottomSheetView style={{ flex: 1, marginTop: 20 }}>
-			<BottomSheetView style={{ flexDirection: 'row', alignItems: 'center' }}>
+		<View style={{ paddingBottom: 20 }}>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<Text style={{ paddingHorizontal: 10 }} variant="titleLarge">
 					Tags
 				</Text>
 				<View>
-					<IconButton icon={'filter-off-outline'} onPress={() => resetTag()} />
+					<IconButton icon={'filter-off-outline'} onPress={() => resetTagsGenre()} />
 					{tags_in?.length > 0 || tags_not_in?.length > 0 ? (
 						<Badge style={{ position: 'absolute', right: -8, top: 0 }}>
 							{(tags_in?.length ?? 0) + (tags_not_in?.length ?? 0)}
@@ -142,48 +147,39 @@ const TagSelection = ({
 				<TagBanSwitch
 					initialState={tagBanEnabled}
 					totalBanned={tagBlacklist?.length}
-					onPress={(value) => toggleGenreTag({ type: 'ENABLE_TAGBAN', payload: value })}
+					onPress={(value) => onTagBlacklistChange(value)}
 				/>
-			</BottomSheetView>
-
-			<FlatList
-				key={tagMode + '1'}
-				style={{ flex: 1 }}
-				scrollEnabled={tagMode === 'row'}
-				data={data}
-				renderItem={TagItem}
-				numColumns={tagMode === 'list' ? 3 : null}
-				keyExtractor={(item, index) => item.id.toString() + index.toString()}
-				horizontal={tagMode === 'row'}
-				nestedScrollEnabled
-				columnWrapperStyle={tagMode === 'list' && [{ flexWrap: 'wrap' }]}
-				showsHorizontalScrollIndicator={false}
-				showsVerticalScrollIndicator={false}
-				contentContainerStyle={{
-					padding: 10,
-					paddingTop: 0,
-					paddingVertical: 20,
-				}}
-			/>
-			{/* {tagMode === 'row' ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {data.map((item, idx) => (
-                        <TagItem key={idx} item={item} />
-                    ))}
-                </ScrollView>
-            ) : (
-                data.map((item, idx) => <TagItem key={idx} item={item} />)
-            )} */}
-		</BottomSheetView>
+			</View>
+			<ScrollView horizontal contentContainerStyle={{ paddingVertical: 10 }}>
+				{tags_in?.map((tag, idx) => (
+					<TagItem key={idx} item={{ name: tag, isAdult: false }} />
+				))}
+				{tags_not_in?.map(
+					(tag, idx) =>
+						tagBanEnabled &&
+						!tagBlacklist?.includes(tag) && (
+							<TagItem key={idx} item={{ name: tag, isAdult: false }} />
+						),
+				)}
+				{/* {tagBanEnabled &&
+					tagBlacklist?.map((tag, idx) => (
+						<TagItem key={idx} item={{ name: tag, isAdult: false }} />
+					))} */}
+			</ScrollView>
+			<Button mode="outlined" onPress={openTagDialog}>
+				Add Tags
+			</Button>
+		</View>
 	);
 };
 
-const GenreSelection = ({
+export const GenreSelection = ({
 	data,
 	genre_in,
 	genre_not_in,
 	isAdult,
-	toggleGenreTag,
+	toggleGenre,
+	resetTagsGenre,
 }: GenreSelectionProps) => {
 	const { defaultGenreLayout } = useAppSelector((state) => state.persistedSettings);
 	const [genreMode, setGenreMode] = useState(defaultGenreLayout);
@@ -212,17 +208,13 @@ const GenreSelection = ({
 		[genre_in, genre_not_in],
 	);
 
-	const resetGenre = useCallback(() => {
-		toggleGenreTag({ type: 'RESET_TAGS_GENRES', payload: 'genre' });
-	}, []);
-
 	if (!data) {
 		return null;
 	}
 
 	return (
-		<BottomSheetView>
-			<MotiView style={{ flexDirection: 'row', alignItems: 'center' }}>
+		<View>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<Text style={{ paddingHorizontal: 10 }} variant="titleLarge">
 					Genres
 				</Text>
@@ -234,43 +226,34 @@ const GenreSelection = ({
 					onPress={() => changeLayout()}
 				/>
 				<View>
-					<IconButton icon={'filter-off-outline'} onPress={() => resetGenre()} />
+					<IconButton icon={'filter-off-outline'} onPress={resetTagsGenre} />
 					{genre_in?.length > 0 || genre_not_in?.length > 0 ? (
 						<Badge style={{ position: 'absolute', right: -8, top: 0 }}>
 							{(genre_in?.length ?? 0) + (genre_not_in?.length ?? 0)}
 						</Badge>
 					) : null}
 				</View>
-			</MotiView>
+			</View>
 			<FlatList
 				key={genreMode}
 				scrollEnabled={genreMode === 'row'}
 				data={data}
 				renderItem={({ item }) =>
 					!isAdult && item === 'Hentai' ? null : (
-						<TagMem
+						<FilterTag
 							name={item}
 							state={getGenreState(item)}
-							onToggle={(mode: 'in' | 'not_in' | 'remove') =>
-								toggleGenreTag({
-									type: mode === 'remove' ? 'REMOVE_GENRE' : 'TOGGLE_TAG',
-									key: mode === 'in' ? 'genre_in' : 'genre_not_in',
-									payload: item,
-								})
-							}
+							onToggle={() => toggleGenre(item)}
 						/>
 					)
 				}
 				numColumns={genreMode === 'list' ? 3 : null}
-				keyExtractor={(item, index) => item}
+				keyExtractor={(item, index) => item + index.toString()}
 				horizontal={genreMode === 'row'}
 				nestedScrollEnabled
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={{ padding: 10, paddingTop: 0, paddingVertical: 20 }}
 			/>
-		</BottomSheetView>
+		</View>
 	);
 };
-
-export const TagSelectionMem = memo(TagSelection);
-export const GenreSelectionMem = memo(GenreSelection);
