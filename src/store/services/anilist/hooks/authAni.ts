@@ -12,6 +12,7 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { api } from '../enhanced';
 import { useLazyUserDataQuery } from '../generated-anilist';
+import { updateListFilter } from '@/store/slices/listSLice';
 
 const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
 const ANI_ID_SETUP = Constants.expoConfig?.extra?.ANI_ID_SETUP;
@@ -28,8 +29,9 @@ const redirectSetupUri = makeRedirectUri({
 });
 
 export const useAnilistAuth = (isSetup = false) => {
-	const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${Platform.OS === 'web' ? ANI_WEB_ID : isSetup ? ANI_ID_SETUP : ANI_ID
-		}&response_type=token`;
+	const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${
+		Platform.OS === 'web' ? ANI_WEB_ID : isSetup ? ANI_ID_SETUP : ANI_ID
+	}&response_type=token`;
 	const [request, setRequest] = useState<AuthRequest | null>(null);
 	const [result, setResult] = useState<AuthSessionResult | null>(null);
 	const dispatch = useDispatch();
@@ -76,6 +78,34 @@ export const useAnilistAuth = (isSetup = false) => {
 							avatar: userAvatar,
 							userID: userID,
 							username: username,
+						}),
+					);
+					dispatch(
+						updateListFilter({
+							entryType: 'animeTabOrder',
+							value: [
+								'Watching',
+								'Planning',
+								'Completed',
+								'Rewatching',
+								'Paused',
+								'Dropped',
+								...(user.Viewer.mediaListOptions?.animeList?.customLists ?? []),
+							],
+						}),
+					);
+					dispatch(
+						updateListFilter({
+							entryType: 'mangaTabOrder',
+							value: [
+								'Reading',
+								'Planning',
+								'Completed',
+								'Rereading',
+								'Paused',
+								'Dropped',
+								...(user.Viewer.mediaListOptions?.mangaList?.customLists ?? []),
+							],
 						}),
 					);
 					dispatch(
