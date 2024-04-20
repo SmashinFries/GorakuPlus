@@ -85,10 +85,12 @@ export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopup
 		if (event.type === 'set') {
 			const newFuzzy = getDatetoFuzzy(currentDate);
 			onSelect(newFuzzy);
+			setVis(false);
+		}
+		if (event.type === 'dismissed') {
+			setVis(false);
 		}
 	};
-
-	const onDismiss = () => setVis(false);
 
 	return (
 		<>
