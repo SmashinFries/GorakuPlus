@@ -5339,7 +5339,7 @@ export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'P
 export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UserDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', medium?: string | null, large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null };
+export type UserDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', medium?: string | null, large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null };
 
 export type ExtUserDataQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']>;
@@ -8099,6 +8099,12 @@ export const UserDataDocument = `
     bannerImage
     mediaListOptions {
       scoreFormat
+      animeList {
+        customLists
+      }
+      mangaList {
+        customLists
+      }
     }
   }
 }

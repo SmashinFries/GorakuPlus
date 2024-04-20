@@ -331,6 +331,12 @@ query UserData {
 		bannerImage
 		mediaListOptions {
 			scoreFormat
+			animeList {
+				customLists
+			}
+			mangaList {
+				customLists
+			}
 		}
 	}
 }
