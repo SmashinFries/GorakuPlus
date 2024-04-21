@@ -12,12 +12,20 @@ import {
 	VideoFullscreenUpdate,
 	VideoFullscreenUpdateEvent,
 } from 'expo-av';
-import { ActivityIndicator, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
+import {
+	ActivityIndicator,
+	IconButton,
+	Menu,
+	ProgressBar,
+	Text,
+	useTheme,
+} from 'react-native-paper';
 import { SongMeta } from './meta';
 import { VideoControls } from './controls';
 import { Accordion } from '../animations';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { AnimeThemesIcon } from '../svgs';
 
 type MusicVideoProps = {
 	theme: Animetheme;
@@ -130,6 +138,8 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 	const [progress, setProgress] = useState<number>(0);
 
 	const [playIconHeight, setPlayIconHeight] = useState<number>(0);
+
+	const [showMore, setShowMore] = useState<boolean>(false);
 
 	// Video
 	const vidRef = useRef<Video>(null);
@@ -301,14 +311,39 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 							disabled={!sound?._loaded}
 						/>
 					</View>
-					<IconButton
-						onPress={() => {
-							openWebBrowser(
-								`https://animethemes.moe/anime/${anime_slug}/${theme.slug}`,
-							);
-						}}
-						icon={'web'}
-					/>
+					<Menu
+						visible={showMore}
+						onDismiss={() => setShowMore(false)}
+						anchor={
+							<IconButton onPress={() => setShowMore(true)} icon={'dots-vertical'} />
+						}
+					>
+						<Menu.Item
+							onPress={() =>
+								openWebBrowser(
+									`https://animethemes.moe/anime/${anime_slug}/${theme.slug}`,
+								)
+							}
+							title="AnimeThemes"
+							leadingIcon={(props) => (
+								<AnimeThemesIcon
+									fill={props.color}
+									height={props.size}
+									width={props.size}
+								/>
+							)}
+						/>
+						<Menu.Item
+							onPress={() =>
+								openWebBrowser(
+									`https://open.spotify.com/search/${theme.song.title} ${theme.song.artists[0]?.name}`,
+									true,
+								)
+							}
+							leadingIcon={'spotify'}
+							title="Spotify"
+						/>
+					</Menu>
 				</View>
 			</Accordion>
 		</>
