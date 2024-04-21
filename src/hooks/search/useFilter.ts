@@ -22,12 +22,17 @@ import {
 	DescSorts,
 	MangaFormats,
 } from '@/constants/mediaConsts';
-import { setFilter, setIsTagBlacklist, setSort } from '@/store/slices/search/filterSlice';
+import {
+	setFilter,
+	setFilterType,
+	setIsTagBlacklist,
+	setSort,
+} from '@/store/slices/search/filterSlice';
 import { getDatetoFuzzyInt } from '@/utils';
 
 export const useFilter = () => {
 	const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
-	const { filter, isTagBlacklist, sort, filterType } = useAppSelector((state) => state.filter);
+	const { filter, filterType, isTagBlacklist, sort } = useAppSelector((state) => state.filter);
 	const dispatch = useAppDispatch();
 	// const [sort, setSort] = useState<{ value: AvailableSorts; asc: boolean }>({
 	// 	value: 'TRENDING',
@@ -108,6 +113,8 @@ export const useFilter = () => {
 	};
 
 	const onMediaTypeChange = (newMediaType: SearchType) => {
+		dispatch(setFilterType(newMediaType));
+
 		// Update values if previous type isnt compatible
 		if (newMediaType === MediaType.Anime) {
 			dispatch(
@@ -126,7 +133,7 @@ export const useFilter = () => {
 					asc: sort.asc,
 				}),
 			);
-		} else {
+		} else if (newMediaType === MediaType.Manga) {
 			dispatch(
 				setFilter({
 					type: MediaType.Manga,
@@ -284,6 +291,7 @@ export const useFilter = () => {
 
 	const updateFuzzyInt = (dateType: keyof ExploreMediaQueryVariables, date: Date | undefined) => {
 		if (date) {
+			console.log(date);
 			const fuzzyInt = getDatetoFuzzyInt(date);
 			dispatch(setFilter({ [dateType]: fuzzyInt }));
 		} else {
@@ -323,6 +331,7 @@ export const useFilter = () => {
 		filter,
 		isTagBlacklist,
 		sort,
+		filterType,
 		onTagBlacklistChange,
 		onSortChange,
 		onFilterUpdate,

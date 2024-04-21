@@ -17,7 +17,6 @@ import {
 	StudioSort,
 } from '@/store/services/anilist/generated-anilist';
 import { cleanFilter } from '@/utils/search/cleanFilter';
-import { useAppSelector } from '@/store/hooks';
 import {
 	SearchBody,
 	SearchResult,
@@ -37,8 +36,7 @@ type SearchCategoriesType<Media, Char, Staff, Studio> = {
 	studios: Studio;
 };
 
-export const useSearch = () => {
-	const { filterType } = useAppSelector((state) => state.filter);
+export const useSearch = (filterType: SearchType) => {
 	const [query, setQuery] = useState<string>('');
 	const [searchTrigger, searchStatus] = useLazyExploreMediaQuery();
 	const [searchCharTrig, searchCharStatus] = useLazyCharacterSearchQuery();

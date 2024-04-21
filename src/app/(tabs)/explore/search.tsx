@@ -89,9 +89,9 @@ const SearchPage = () => {
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
 	const history = useAppSelector((state) => state.persistedHistory);
-	const { filterType, filter } = useAppSelector((state) => state.filter);
 	const appDispatch = useAppDispatch();
 
+	const { filter, filterType, updateTag, onMediaTypeChange } = useFilter();
 	const {
 		searchStatus,
 		imageSearchResults,
@@ -116,8 +116,7 @@ const SearchPage = () => {
 		nextMediaPage,
 		nextStaffPage,
 		nextStudioPage,
-	} = useSearch();
-	const { updateTag } = useFilter();
+	} = useSearch(filterType);
 
 	// Filter Sheet
 	const sheetRef = useRef<BottomSheetModalMethods>(null);
@@ -129,10 +128,25 @@ const SearchPage = () => {
 	const onMediaSearch = async () => {
 		Keyboard.dismiss();
 		setLoading(true);
-		const response = await searchMedia({
-			...filter,
-			search: query?.length > 0 ? query : undefined,
-		}).unwrap();
+		const response = await searchMedia(
+			Object.fromEntries(
+				Object.entries({
+					...filter,
+					search: query?.length > 0 ? query : undefined,
+				}).filter(([_, value]) => value !== undefined),
+			),
+		).unwrap();
+		console.log(response?.Page?.pageInfo?.total);
+		console.log(
+			'filter:',
+			Object.fromEntries(
+				Object.entries({
+					...filter,
+					sort: undefined,
+					search: query?.length > 0 ? query : undefined,
+				}).filter(([_, value]) => value !== undefined),
+			),
+		);
 		updateNewResults(response);
 		// sheetRef.current?.close();
 		closeSheet();
@@ -220,6 +234,7 @@ const SearchPage = () => {
 	const onSearch = async () => {
 		appDispatch(addSearch(query));
 		if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
+			console.log('searching', filter.type);
 			await onMediaSearch();
 		} else if (filterType === 'characters') {
 			await onCharSearch();
@@ -227,6 +242,12 @@ const SearchPage = () => {
 			await onStaffSearch();
 		} else if (filterType === 'studios') {
 			await onStudioSearch();
+		} else if (filterType === 'imageSearch') {
+			onMediaTypeChange(MediaType.Anime);
+			await onMediaSearch();
+		} else if (filterType === 'waifuSearch') {
+			onMediaTypeChange('characters');
+			await onCharSearch();
 		}
 	};
 
@@ -275,6 +296,7 @@ const SearchPage = () => {
 									selection={filterType}
 									onSelect={(type) => {
 										appDispatch(setFilterType(type));
+										onMediaTypeChange(type);
 										if (type !== MediaType.Anime && type !== MediaType.Manga) {
 											// sheetRef?.current?.close();
 											closeSheet();
@@ -299,28 +321,17 @@ const SearchPage = () => {
 								openImageSearch={() => {
 									Keyboard.dismiss();
 									// onSearchTypeChange('imageSearch');
+									onMediaTypeChange('imageSearch');
 									setShowImageSearchDialog(true);
 								}}
 								openWaifuSearch={() => {
 									Keyboard.dismiss();
+									onMediaTypeChange('waifuSearch');
 									// dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'waifuSearch' });
 									// appDispatch(updateSearchType('waifuSearch'));
 									setShowWaifuSearchDialog(true);
 								}}
 								onFocus={() => {
-									// if (searchType === 'imageSearch') {
-									// 	dispatch({
-									// 		type: 'CHANGE_SEARCHTYPE',
-									// 		payload: MediaType.Anime,
-									// 	});
-									// 	appDispatch(updateSearchType(MediaType.Anime));
-									// } else if (searchType === 'waifuSearch') {
-									// 	dispatch({
-									// 		type: 'CHANGE_SEARCHTYPE',
-									// 		payload: 'characters',
-									// 	});
-									// 	appDispatch(updateSearchType('characters'));
-									// }
 									scrollClamp.value = withTiming(-categoryHeight);
 								}}
 							/>
