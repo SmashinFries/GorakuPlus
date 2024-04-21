@@ -1,6 +1,4 @@
 import { Dialog, Button, Chip, Text, useTheme, IconButton, Searchbar } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 import { Pressable, View, ScrollView } from 'react-native';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { NativeViewGestureHandler } from 'react-native-gesture-handler';
