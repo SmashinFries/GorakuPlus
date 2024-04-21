@@ -1,3 +1,4 @@
+import { ScrollToTopButton } from '@/components/buttons';
 import { CharacterCard, MediaCard, MediaProgressBar, StaffCard } from '@/components/cards';
 import { FavoritesHeader } from '@/components/headers';
 import { EmptyLoadView } from '@/components/search/loading';
@@ -18,7 +19,7 @@ import {
 import { useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { SceneRendererProps, TabBar, TabView } from 'react-native-tab-view';
@@ -40,6 +41,9 @@ const AnimeTab = ({
 	const [getAnime, animeInfo] = useLazyUserAnimeFavoritesQuery();
 
 	const [isRefreshing, setIsRefreshing] = useState(false);
+	const [scrollOffset, setScrollOffset] = useState<number>(0);
+
+	const listRef = useRef<FlashList<any>>(null);
 
 	const keyExtract = useCallback(
 		(item, index: number) => item.id.toString() + index.toString(),
@@ -145,6 +149,7 @@ const AnimeTab = ({
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
 			<FlashList
+				ref={listRef}
 				key={listKey}
 				data={data?.User?.favourites?.anime?.nodes.filter(
 					(item) =>
@@ -175,9 +180,11 @@ const AnimeTab = ({
 				onEndReached={() => {
 					data?.User?.favourites?.anime?.pageInfo?.hasNextPage && fetchData(true);
 				}}
+				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				onRefresh={onRefresh}
 				refreshing={isRefreshing}
 			/>
+			{scrollOffset > 500 && <ScrollToTopButton listRef={listRef} />}
 		</View>
 	);
 };
