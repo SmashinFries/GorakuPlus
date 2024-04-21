@@ -1,7 +1,10 @@
+import { useAppTheme } from '@/store/theme/theme';
+import { FlashList } from '@shopify/flash-list';
 import { MotiPressable } from 'moti/interactions';
-import { useMemo } from 'react';
-import { Text as RNText } from 'react-native';
+import { MutableRefObject, useMemo } from 'react';
+import { Text as RNText, ScrollView } from 'react-native';
 import { Button, IconButton, Text, useTheme } from 'react-native-paper';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 type LoadMoreButtonProps = {
 	title: string;
@@ -64,5 +67,32 @@ export const FavoriteButton = ({ isFavorite = false, favorites = 200 }: Favorite
 				{favorites}
 			</RNText>
 		</Button>
+	);
+};
+
+export const ScrollToTopButton = ({
+	listRef,
+	top,
+}: {
+	listRef: MutableRefObject<FlashList<any>>;
+	top?: number;
+}) => {
+	const { colors } = useAppTheme();
+	return (
+		<Animated.View
+			entering={FadeIn}
+			exiting={FadeOut}
+			style={{ position: 'absolute', top: top ?? 0, alignSelf: 'center' }}
+		>
+			<IconButton
+				icon={'chevron-up'}
+				onPress={() => {
+					listRef.current?.scrollToOffset({ offset: 0, animated: true });
+				}}
+				style={{
+					backgroundColor: colors.surfaceVariant,
+				}}
+			/>
+		</Animated.View>
 	);
 };

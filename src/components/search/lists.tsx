@@ -2,19 +2,19 @@ import { FlashList, FlashListProps, ListRenderItem } from '@shopify/flash-list';
 import { NativeSyntheticEvent, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Button, Card, Chip, Text, useTheme } from 'react-native-paper';
 import { rgbToRgba, useColumns } from '@/utils';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CharacterCard, MediaCard, MediaProgressBar, StaffCard, StudioCard } from '../cards';
 import { SearchFooter } from './footers';
 import { useAppSelector } from '@/store/hooks';
 import {
 	CharacterSearchQuery,
 	ExploreMediaQuery,
+	ExploreMediaQueryVariables,
 	MediaType,
 	StaffSearchQuery,
 	StudioSearchQuery,
 } from '@/store/services/anilist/generated-anilist';
 import { EmptyLoadView } from './loading';
-import { FilterReducerState } from '@/reducers/search/reducers';
 import { openWebBrowser } from '@/utils/webBrowser';
 import Animated, {
 	SharedValue,
@@ -31,32 +31,28 @@ import { WdTaggerOutput } from '@/store/services/huggingface/types';
 import { useLazyCharacterSearchQuery } from '@/store/services/anilist/enhanced';
 import { router } from 'expo-router';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+import { ScrollToTopButton } from '../buttons';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 type AniMangListProps = {
-	filter: FilterReducerState;
+	filter: ExploreMediaQueryVariables;
 	results: ExploreMediaQuery;
 	searchStatus: any;
 	sheetRef: any;
 	isLoading: boolean;
-	nextPage: (currentPage: number, filter: FilterReducerState) => Promise<void>;
+	nextPage: (currentPage: number, filter: ExploreMediaQueryVariables) => Promise<void>;
 	onItemPress: (aniID: number, type: MediaType) => void;
 	onScrollHandler:
 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
+	listRef: MutableRefObject<FlashList<any>>;
 };
 export const AniMangList = (props: AniMangListProps) => {
-	const { width, height } = useWindowDimensions();
-	const { dark, colors } = useTheme();
+	const { width } = useWindowDimensions();
 	const { columns, listKey } = useColumns(150);
 	const { dismissAll } = useBottomSheetModal();
-
-	const scorebgColor = useMemo(
-		() => rgbToRgba(colors.primaryContainer, 0.75),
-		[colors.primaryContainer],
-	);
 
 	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
 
@@ -106,6 +102,7 @@ export const AniMangList = (props: AniMangListProps) => {
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={listKey}
+				ref={props.listRef}
 				data={props.results?.Page?.media}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -125,6 +122,7 @@ export const AniMangList = (props: AniMangListProps) => {
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					props.results?.Page &&
+						props.results?.Page?.pageInfo?.hasNextPage &&
 						props.results?.Page?.media?.length > 0 &&
 						props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
 				}}
@@ -141,6 +139,7 @@ type CharacterListProps = {
 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
+	listRef: MutableRefObject<FlashList<any>>;
 	onNavigate: (id: number) => void;
 	nextPage?: () => Promise<void>;
 };
@@ -181,6 +180,7 @@ export const CharacterList = (props: CharacterListProps) => {
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={listKey}
+				ref={props.listRef}
 				data={props.results?.Page?.characters}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -214,6 +214,7 @@ type StaffListProps = {
 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
+	listRef: MutableRefObject<FlashList<any>>;
 	onNavigate: (id: number) => void;
 	nextPage?: () => Promise<void>;
 };
@@ -253,6 +254,7 @@ export const StaffList = (props: StaffListProps) => {
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={listKey}
+				ref={props.listRef}
 				data={props.results?.Page?.staff}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -284,6 +286,7 @@ type StudioListProps = {
 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
+	listRef: MutableRefObject<FlashList<any>>;
 	onNavigate: (studioId: number) => void;
 	nextPage?: () => Promise<void>;
 };
@@ -335,6 +338,7 @@ export const StudioList = (props: StudioListProps) => {
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={1}
+				ref={props.listRef}
 				data={props.results?.Page?.studios}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -365,6 +369,7 @@ type ImageSearchListProps = {
 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
 	isLoading: boolean;
+	listRef: MutableRefObject<FlashList<any>>;
 };
 export const ImageSearchList = (props: ImageSearchListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -381,6 +386,7 @@ export const ImageSearchList = (props: ImageSearchListProps) => {
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={1}
+				ref={props.listRef}
 				data={props.results?.result}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -406,6 +412,7 @@ type WaifuSearchListProps = {
 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
+	listRef: MutableRefObject<FlashList<any>>;
 };
 export const WaifuSearchList = (props: WaifuSearchListProps) => {
 	const { width, height } = useWindowDimensions();
@@ -444,6 +451,7 @@ export const WaifuSearchList = (props: WaifuSearchListProps) => {
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={listKey}
+				ref={props.listRef}
 				data={props.results}
 				nestedScrollEnabled
 				renderItem={RenderItem}

@@ -1,3 +1,4 @@
+import { ScrollToTopButton } from '@/components/buttons';
 import { SearchHeader } from '@/components/headers';
 import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog, FilterTagDialog } from '@/components/search/dialogs';
@@ -27,6 +28,7 @@ import { setFilterType } from '@/store/slices/search/filterSlice';
 import { addSearch, removeSearchTerm } from '@/store/slices/search/historySlice';
 import { useAppTheme } from '@/store/theme/theme';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { FlashList } from '@shopify/flash-list';
 import { Stack, router } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { Keyboard, ScrollView, TextInput, useWindowDimensions } from 'react-native';
@@ -42,6 +44,8 @@ import Animated, {
 	interpolate,
 	Extrapolation,
 	withTiming,
+	runOnJS,
+	useAnimatedReaction,
 } from 'react-native-reanimated';
 
 type ScrollCtx = {
@@ -65,7 +69,10 @@ const SearchPage = () => {
 	const [showTagDialog, setShowTagDialog] = useState(false);
 
 	const [categoryHeight, setCategoryHeight] = useState(0);
+	const listRef = useRef<FlashList<any>>(null);
 	const scrollClamp = useSharedValue(0);
+	const scrollOffset = useSharedValue(0);
+	const [showScrollToTop, setShowScrollToTop] = useState(false);
 	const scrollHandler = useAnimatedScrollHandler(
 		{
 			onBeginDrag: (e, ctx: ScrollCtx) => {
@@ -78,6 +85,7 @@ const SearchPage = () => {
 				const diff = e.contentOffset.y - ctx.prevY;
 				scrollClamp.value = clamp(scrollClamp.value + diff, 0, categoryHeight);
 				ctx.prevY = e.contentOffset.y;
+				scrollOffset.value = e.contentOffset.y;
 			},
 			onMomentumEnd: () => {
 				'worklet';
@@ -266,6 +274,16 @@ const SearchPage = () => {
 		};
 	}, [categoryHeight]);
 
+	useAnimatedReaction(
+		() => {
+			return scrollOffset.value > 500;
+		},
+		(shouldShow) => {
+			if (shouldShow) runOnJS(setShowScrollToTop)(true);
+			if (!shouldShow) runOnJS(setShowScrollToTop)(false);
+		},
+	);
+
 	// useEffect(() => {
 	// 	if (searchType === MediaType.Anime || history.searchType === MediaType.Manga) {
 	// 		dispatch({ type: 'SET_TYPE', payload: history.searchType });
@@ -297,12 +315,16 @@ const SearchPage = () => {
 									onSelect={(type) => {
 										appDispatch(setFilterType(type));
 										onMediaTypeChange(type);
+										scrollOffset.value = 0;
 										if (type !== MediaType.Anime && type !== MediaType.Manga) {
 											// sheetRef?.current?.close();
 											closeSheet();
 										}
 									}}
 								/>
+								{showScrollToTop && (
+									<ScrollToTopButton listRef={listRef} top={110} />
+								)}
 							</Animated.View>
 							<SearchHeader
 								{...props}
@@ -351,6 +373,7 @@ const SearchPage = () => {
 						onItemPress={onMediaPress}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
+						listRef={listRef}
 					/>
 				)}
 				{filterType === 'characters' && (
@@ -362,6 +385,7 @@ const SearchPage = () => {
 						nextPage={() => nextCharPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
+						listRef={listRef}
 					/>
 				)}
 				{filterType === 'staff' && (
@@ -373,6 +397,7 @@ const SearchPage = () => {
 						nextPage={() => nextStaffPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
+						listRef={listRef}
 					/>
 				)}
 				{filterType === 'studios' && (
@@ -384,6 +409,7 @@ const SearchPage = () => {
 						nextPage={() => nextStudioPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
+						listRef={listRef}
 					/>
 				)}
 				{filterType === 'imageSearch' && (
@@ -392,6 +418,7 @@ const SearchPage = () => {
 						headerHeight={categoryHeight}
 						onScrollHandler={scrollHandler}
 						isLoading={imageUrlStatus.isFetching || localImageStatus.isLoading}
+						listRef={listRef}
 					/>
 				)}
 				{filterType === 'waifuSearch' && (
@@ -400,6 +427,7 @@ const SearchPage = () => {
 						headerHeight={categoryHeight}
 						onScrollHandler={scrollHandler}
 						isLoading={waifuImageStatus.isFetching || waifuImageStatus.isLoading}
+						listRef={listRef}
 					/>
 				)}
 				{isFocused && (

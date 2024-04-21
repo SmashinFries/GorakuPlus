@@ -1,3 +1,4 @@
+import { ScrollToTopButton } from '@/components/buttons';
 import { MediaCard, MediaProgressBar } from '@/components/cards';
 import { ListHeader } from '@/components/headers';
 import { ListFilterSheet } from '@/components/list/filtersheet';
@@ -42,6 +43,10 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 	const { query } = useAppSelector((state) => state.listFilter);
 	const { sort } = useAppSelector((state) => state.listFilter);
 
+	const [scrollOffset, setScrollOffset] = useState(0);
+
+	const listRef = useRef<FlashList<any>>(null);
+
 	const scorebgColor = useMemo(
 		() => rgbToRgba(colors.primaryContainer, 0.75),
 		[colors.primaryContainer],
@@ -80,18 +85,6 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 				| UserMangaListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0];
 		}) => {
 			return (
-				// <View style={{ width: '100%', alignItems: 'center', marginVertical: 12 }}>
-				//     <MediaItemMem item={item.media} navigate={navigate} />
-				// </View>
-				// <TouchableOpacity
-				//     onPress={() => navigate(item.media.id, item.media.idMal, item.media.type)}
-				//     style={{
-				//         flex: 1,
-				//         alignItems: 'center',
-				//         marginVertical: 12,
-				//         marginHorizontal: width / 150 / 3,
-				//     }}
-				// >
 				<View
 					style={{
 						flex: 1,
@@ -142,10 +135,6 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 		[],
 	);
 
-	// useEffect(() => {
-	//     setEntries((prev) => sortLists(prev, sort));
-	// }, [sort]);
-
 	useEffect(() => {
 		if (query.length > 0) {
 			updateTitle(filterList(query).length ?? 0);
@@ -158,25 +147,22 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 		<View style={{ flex: 1, height: '100%', width: '100%' }}>
 			<FlashList
 				key={3}
-				// data={query.length > 0 ? filterList(query) : entries}
+				ref={listRef}
 				data={filteredItems}
-				// extraData={sort}
-				// drawDistance={height * 2}
 				renderItem={RenderItem}
 				keyExtractor={(item, idx) => item?.media?.id.toString()}
 				estimatedItemSize={238}
 				numColumns={3}
-				// onRefresh={onRefresh}
-				// refreshing={isRefreshing}
+				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				// terrible performance without
 				drawDistance={0}
 				contentContainerStyle={{
 					padding: 10,
 				}}
-				// onViewableItemsChanged={(test) => test.}
 				centerContent
 				removeClippedSubviews
 			/>
+			{scrollOffset > 500 && <ScrollToTopButton listRef={listRef} />}
 		</View>
 	);
 };
