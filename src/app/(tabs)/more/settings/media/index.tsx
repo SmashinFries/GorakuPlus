@@ -128,7 +128,7 @@ const MediaSettingsPage = () => {
 							// thumbColor={colors.primary}
 							color={colors.primary}
 							onValueChange={(value) => {
-								updateUserSettings({ displayNSFW: value });
+								userID && updateUserSettings({ displayNSFW: value });
 								dispatch(setSettings({ entryType: 'showNSFW', value: value }));
 								dispatch(
 									danbooruApi.util.invalidateTags([
