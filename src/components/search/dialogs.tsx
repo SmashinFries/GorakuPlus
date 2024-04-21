@@ -183,7 +183,7 @@ export const FilterTagDialog = ({
 
 	const TagItem = useCallback(
 		({ item }: { item: MediaTag }) => {
-			return !filter.isAdult && item.isAdult ? null : (
+			return filter.isAdult === false && item.isAdult ? null : (
 				<FilterTag
 					name={item.name}
 					description={item.description}
