@@ -8,6 +8,7 @@ export const GorakuSwitch = (props: SwitchProps) => {
 		<Switch
 			{...props}
 			thumbColor={props.value ? (dark ? colors.primary : colors.primaryContainer) : undefined}
+			color={colors.primary}
 		/>
 	);
 };
