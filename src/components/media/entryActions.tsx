@@ -8,6 +8,7 @@ import DateTimePicker, {
 	DateTimePickerAndroid,
 	DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
+import { openDatePicker } from '@/utils/datepicker';
 
 type DropdownMenuProps = {
 	value: string;
@@ -62,40 +63,21 @@ export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopup
 	const [date, setDate] = useState<Date>(
 		value?.day && value?.month && value?.year ? getFuzzytoDate(value) : new Date(),
 	);
-	const [vis, setVis] = useState<boolean>(false);
-	const platform = Platform.OS;
 	const { colors } = useTheme();
 
-	const showTimePicker = () => {
-		if (platform === 'android') {
-			setVis(false);
-			DateTimePickerAndroid.open({
-				value: date,
-				onChange,
-				mode: 'date',
-			});
-		} else {
-			setVis(true);
-		}
-	};
-
 	const onChange = (event: DateTimePickerEvent, selectedDate: Date) => {
-		const currentDate = selectedDate;
-		setDate(currentDate);
 		if (event.type === 'set') {
+			const currentDate = selectedDate;
+			setDate(currentDate);
 			const newFuzzy = getDatetoFuzzy(currentDate);
 			onSelect(newFuzzy);
-			setVis(false);
-		}
-		if (event.type === 'dismissed') {
-			setVis(false);
 		}
 	};
 
 	return (
 		<>
 			<Pressable
-				onPress={showTimePicker}
+				onPress={() => openDatePicker('date', date, onChange)}
 				android_ripple={{
 					color: colors.primary,
 					borderless: true,
@@ -108,9 +90,6 @@ export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopup
 					{convertDate(value) ?? 'N/A'}
 				</Text>
 			</Pressable>
-			<Portal>
-				{vis && <DateTimePicker value={date} mode="date" onChange={onChange} />}
-			</Portal>
 		</>
 	);
 };

@@ -24,6 +24,7 @@ import DateTimePicker, {
 	DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { getDatetoFuzzyInt, getFuzzyInttoDate, getFuzzyInttoString } from '@/utils';
+import { openDatePicker } from '@/utils/datepicker';
 
 type DropdownItemProps = {
 	disabled: boolean;
@@ -149,21 +150,13 @@ export const DialogSelectDate = ({
 	containerStyle,
 	onSelect,
 }: DialogSelectDateProps) => {
-	const [vis, setVis] = useState(false);
 	const [date, setDate] = useState(value !== 'ANY' ? getFuzzyInttoDate(value) : new Date());
 
-	const openDialog = useCallback(() => setVis(true), []);
-	const closeDialog = useCallback(() => setVis(false), []);
-
 	const onChange = (event: DateTimePickerEvent, selectedDate: Date) => {
-		const currentDate = selectedDate;
-		setDate(currentDate);
-		if (event.type === 'dismissed') {
-			closeDialog();
-		}
 		if (event.type === 'set') {
+			const currentDate = selectedDate;
+			setDate(currentDate);
 			onSelect(currentDate);
-			closeDialog();
 		}
 	};
 
@@ -171,7 +164,7 @@ export const DialogSelectDate = ({
 		<View style={[{ flex: 1, marginVertical: 5 }, containerStyle]}>
 			<DropdownButton
 				label={label}
-				openDialog={openDialog}
+				openDialog={() => openDatePicker('date', date, onChange)}
 				value={value !== 'ANY' ? getFuzzyInttoString(value) : 'Any'}
 				left={
 					<TextInput.Icon
@@ -180,7 +173,15 @@ export const DialogSelectDate = ({
 					/>
 				}
 			/>
-			<Portal>{vis && <DateTimePicker value={date} onChange={onChange} />}</Portal>
+			{/* <Portal>
+				{vis && (
+					<DateTimePicker
+						value={date}
+						onChange={onChange}
+						themeVariant={dark ? 'dark' : 'dark'}
+					/>
+				)}
+			</Portal> */}
 		</View>
 	);
 };
