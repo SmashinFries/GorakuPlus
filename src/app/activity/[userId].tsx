@@ -1,3 +1,4 @@
+import { ScrollToTopButton } from '@/components/buttons';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ActivityItem } from '@/components/user/activityItem';
 import { ConfirmActDelDialog } from '@/components/user/dialogs';
@@ -5,7 +6,7 @@ import { ListActivity, useUserActivityQuery } from '@/store/services/anilist/gen
 import { useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator, Button, Portal, Text } from 'react-native-paper';
 
@@ -21,6 +22,9 @@ const ActivityListPage = () => {
 		},
 		{ skip: !userId, refetchOnMountOrArgChange: true },
 	);
+
+	const listRef = useRef<FlashList<ListActivity>>(null);
+	const [scrollOffset, setScrollOffset] = useState<number>(0);
 	const [isRefreshing, setIsRefreshing] = useState(false);
 
 	const [showActDelConfirm, setShowActDelConfirm] = useState(false);
@@ -52,9 +56,9 @@ const ActivityListPage = () => {
 
 	return (
 		<>
-			{/* <Stack.Screen options={{ title: ''}} */}
 			<View style={{ flex: 1 }}>
 				<FlashList
+					ref={listRef}
 					key={listKey}
 					data={currentData?.Page?.activities}
 					renderItem={RenderItem}
@@ -66,7 +70,9 @@ const ActivityListPage = () => {
 					onEndReached={() => {
 						setPage((prev) => prev + 1);
 					}}
+					onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				/>
+				{scrollOffset > 500 && <ScrollToTopButton listRef={listRef} />}
 			</View>
 			<Portal>
 				<ConfirmActDelDialog
