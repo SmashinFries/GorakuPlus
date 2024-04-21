@@ -52,9 +52,8 @@ export const FilterTag = ({ name, description, state, isAdult, onToggle, disable
 				onToggle(state === 'in' ? 'not_in' : state === 'not_in' ? 'remove' : 'in');
 			}}
 			onLongPress={() => description && sendToast(name, description)}
-			// onPress={() => console.log(name)}
 			selectedColor={state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined}
-			// elevated
+			textStyle={[isAdult && { color: 'black' }]}
 			disabled={disabled}
 			mode={'outlined'}
 		>
