@@ -32,16 +32,20 @@ type TagProps = {
 	state?: 'in' | 'not_in' | undefined;
 	description?: string;
 	disabled?: boolean;
+	isAdult?: boolean;
 	onToggle: (mode: 'in' | 'not_in' | 'remove') => void;
 };
-export const FilterTag = ({ name, description, state, onToggle, disabled }: TagProps) => {
+export const FilterTag = ({ name, description, state, isAdult, onToggle, disabled }: TagProps) => {
 	return (
 		<Chip
-			style={{
-				margin: 5,
-				// shadowColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
-				borderColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
-			}}
+			style={[
+				{
+					margin: 5,
+					// shadowColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
+					borderColor: state === 'in' ? 'green' : state === 'not_in' ? 'red' : undefined,
+				},
+				isAdult && { backgroundColor: '#ffb6c1' },
+			]}
 			selected={state === 'in' ? true : state === 'not_in'}
 			icon={state === 'in' ? 'check' : state === 'not_in' ? 'close' : undefined}
 			onPress={() => {
@@ -123,6 +127,7 @@ export const TagSelection = ({
 					name={item.name}
 					state={getTagState(item.name)}
 					onToggle={() => toggleTag(item.name)}
+					isAdult={item.isAdult}
 					disabled={tagBanEnabled ? tagBlacklist?.includes(item.name) : false}
 				/>
 			);
