@@ -103,10 +103,16 @@ export const SafebooruIcon = (props: SvgProps) => (
 );
 
 export const AnimeThemesIcon = (props: SvgProps & { isDark?: boolean }) => (
-	<Svg {...props} width={46} height={46} preserveAspectRatio="xMidYMid" viewBox="0 0 1000 1000">
+	<Svg
+		{...props}
+		width={props.width ?? 46}
+		height={props.height ?? 46}
+		preserveAspectRatio="xMidYMid"
+		viewBox="0 0 1000 1000"
+	>
 		<Path
 			stroke={'#000'}
-			fill={props.isDark ? '#fefefe' : '#000'}
+			fill={props.fill ? props.fill : props.isDark ? '#fefefe' : '#000'}
 			d="M295.3 391.3C192.3 450.8 108 499.7 108 500c0 .3 21 12.6 46.7 27.4l46.7 26.9 3-1.7c1.7-.9 43.8-25.2 93.6-53.9l90.5-52.3.3 108.1.2 108.1 45.4 26.2c24.9 14.4 46 26.4 47 26.8 1.5.6 1.6-15.2 1.6-216 0-119.1-.1-216.6-.2-216.5-.2 0-84.6 48.7-187.5 108.2zM533 500.1c0 135.3.4 215.9.9 215.7.6-.2 21.7-12.2 47-26.8l46.1-26.5V554.7c0-59.2.2-107.7.5-107.7s42.1 23.9 92.7 53.2c50.7 29.3 92.9 53.2 93.8 53.2 1.8 0 93-52.3 93-53.4 0-.7-372.3-216-373.4-216-.3 0-.6 97.2-.6 216.1z"
 		/>
 	</Svg>
