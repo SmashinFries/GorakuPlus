@@ -60,7 +60,7 @@ const ActivityListPage = () => {
 				<FlashList
 					ref={listRef}
 					key={listKey}
-					data={currentData?.Page?.activities}
+					data={currentData?.Page?.activities as ListActivity[]}
 					renderItem={RenderItem}
 					keyExtractor={(item, idx) => idx.toString()}
 					numColumns={columns}
