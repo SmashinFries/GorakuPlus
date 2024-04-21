@@ -8,11 +8,12 @@ import {
 	IconButton,
 	Searchbar,
 	Tooltip,
+	Divider,
 } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Pressable, View, ScrollView } from 'react-native';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { BasicDialogProps } from '@/types';
 import { NumberPicker } from '../picker';
@@ -22,6 +23,8 @@ import { useAppSelector } from '@/store/hooks';
 import { FlashList } from '@shopify/flash-list';
 import { FilterTag } from './tags';
 import { useFilter } from '@/hooks/search/useFilter';
+import Animated, { FadeIn, FadeOut, SlideInDown, SlideInUp } from 'react-native-reanimated';
+import { ScrollToTopButton } from '../buttons';
 
 export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 	const { tagPresets } = useSelector((state: RootState) => state.persistedPresets);
@@ -167,11 +170,17 @@ export const FilterTagDialog = ({
 	const listRef = useRef<FlashList<any>>(null);
 	const { colors } = useAppTheme();
 	const [query, setQuery] = useState('');
+	const [showAdultTags, setShowAdultTags] = useState(false);
+
 	const { isTagBlacklist } = useAppSelector((state) => state.filter);
-	const { tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+	const { tagBlacklist, showNSFW } = useAppSelector((state) => state.persistedSettings);
 	const { filter, updateTag } = useFilter();
 
 	const [scrollVertOffset, setScrollVertOffset] = useState(0);
+
+	const nsfwTags = useMemo(() => data?.filter((tag) => tag.isAdult), [data]);
+	const tagmap = useMemo(() => [...new Set(data?.map((tag) => tag.name[0]))], [data]);
+	const tagmapNSFW = useMemo(() => [...new Set(nsfwTags?.map((tag) => tag.name[0]))], [data]);
 
 	const getTagState = useCallback(
 		(name: string) => {
@@ -195,6 +204,7 @@ export const FilterTagDialog = ({
 					state={getTagState(item.name)}
 					onToggle={() => updateTag(item.name)}
 					disabled={isTagBlacklist ? tagBlacklist?.includes(item.name) : false}
+					isAdult={item.isAdult}
 				/>
 			);
 		},
@@ -212,28 +222,63 @@ export const FilterTagDialog = ({
 						mode="view"
 						placeholder="Search tags"
 					/>
-					<View style={{ justifyContent: 'center' }}>
+					<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+						{showNSFW && filter.isAdult && (
+							<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+								<View style={{ justifyContent: 'center' }}>
+									<IconButton
+										icon={showAdultTags ? 'emoticon-devil' : 'cross'}
+										iconColor={showAdultTags ? '#FF69B4' : undefined}
+										onPress={() => setShowAdultTags((prev) => !prev)}
+									/>
+								</View>
+								<View
+									style={{
+										borderRightWidth: 0.8,
+										borderRightColor: 'black',
+										marginVertical: 20,
+									}}
+								/>
+							</View>
+						)}
 						<ScrollView
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							contentContainerStyle={{ paddingVertical: 10 }}
 						>
-							{[...new Set(data?.map((tag) => tag.name[0]))].map((letter, idx) => (
-								<Button
-									key={idx}
-									onPress={() =>
-										listRef.current?.scrollToIndex({
-											animated: true,
-											index: data?.findIndex((tag) =>
-												tag.name[0].includes(letter),
-											),
-										})
-									}
-									labelStyle={{ fontWeight: '900' }}
-								>
-									{letter}
-								</Button>
-							))}
+							{showAdultTags
+								? tagmapNSFW.map((letter, idx) => (
+										<Button
+											key={idx}
+											onPress={() =>
+												listRef.current?.scrollToIndex({
+													animated: true,
+													index: nsfwTags?.findIndex((tag) =>
+														tag.name[0].includes(letter),
+													),
+												})
+											}
+											labelStyle={{ fontWeight: '900' }}
+										>
+											{letter}
+										</Button>
+									))
+								: tagmap.map((letter, idx) => (
+										<Button
+											key={idx}
+											onPress={() =>
+												listRef.current?.scrollToIndex({
+													animated: true,
+													index: data?.findIndex((tag) =>
+														tag.name[0].includes(letter),
+													),
+												})
+											}
+											labelStyle={{ fontWeight: '900' }}
+										>
+											{letter}
+										</Button>
+									))}
 						</ScrollView>
 					</View>
 				</View>
@@ -242,11 +287,13 @@ export const FilterTagDialog = ({
 				<FlashList
 					ref={listRef}
 					key={'test'}
-					data={data?.filter((tag) =>
-						query.length > 0
-							? tag.name.toLowerCase().includes(query.toLowerCase())
-							: true,
-					)}
+					data={data
+						?.filter((tag) =>
+							query.length > 0
+								? tag.name.toLowerCase().includes(query.toLowerCase())
+								: true,
+						)
+						.filter((tag) => (showAdultTags ? tag.isAdult : true))}
 					renderItem={TagItem}
 					keyExtractor={(item, idx) => idx.toString()}
 					numColumns={1}
@@ -255,20 +302,7 @@ export const FilterTagDialog = ({
 					onScroll={(e) => setScrollVertOffset(e.nativeEvent.contentOffset.y)}
 					// columnWrapperStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
 				/>
-				{scrollVertOffset > 200 && (
-					<IconButton
-						icon={'chevron-up'}
-						onPress={() => {
-							listRef.current?.scrollToOffset({ offset: 0, animated: true });
-						}}
-						style={{
-							position: 'absolute',
-							top: 0,
-							alignSelf: 'center',
-							backgroundColor: colors.surfaceVariant,
-						}}
-					/>
-				)}
+				{scrollVertOffset > 200 && <ScrollToTopButton listRef={listRef} />}
 			</Dialog.ScrollArea>
 			<Dialog.Actions style={{ flexGrow: 0 }}>
 				<Button onPress={onDismiss}>Done</Button>
