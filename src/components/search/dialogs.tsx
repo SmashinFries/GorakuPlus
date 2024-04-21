@@ -1,15 +1,4 @@
-import {
-	Dialog,
-	Button,
-	Chip,
-	Text,
-	useTheme,
-	TextInput,
-	IconButton,
-	Searchbar,
-	Tooltip,
-	Divider,
-} from 'react-native-paper';
+import { Dialog, Button, Chip, Text, useTheme, IconButton, Searchbar } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { Pressable, View, ScrollView } from 'react-native';
@@ -23,11 +12,10 @@ import { useAppSelector } from '@/store/hooks';
 import { FlashList } from '@shopify/flash-list';
 import { FilterTag } from './tags';
 import { useFilter } from '@/hooks/search/useFilter';
-import Animated, { FadeIn, FadeOut, SlideInDown, SlideInUp } from 'react-native-reanimated';
 import { ScrollToTopButton } from '../buttons';
 
 export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
-	const { tagPresets } = useSelector((state: RootState) => state.persistedPresets);
+	const { tagPresets } = useAppSelector((state) => state.persistedPresets);
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss}>
 			<Dialog.Title>Tag Presets</Dialog.Title>
