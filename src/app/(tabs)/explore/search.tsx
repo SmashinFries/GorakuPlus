@@ -144,17 +144,6 @@ const SearchPage = () => {
 				}).filter(([_, value]) => value !== undefined),
 			),
 		).unwrap();
-		console.log(response?.Page?.pageInfo?.total);
-		console.log(
-			'filter:',
-			Object.fromEntries(
-				Object.entries({
-					...filter,
-					sort: undefined,
-					search: query?.length > 0 ? query : undefined,
-				}).filter(([_, value]) => value !== undefined),
-			),
-		);
 		updateNewResults(response);
 		// sheetRef.current?.close();
 		closeSheet();
@@ -242,7 +231,6 @@ const SearchPage = () => {
 	const onSearch = async () => {
 		appDispatch(addSearch(query));
 		if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
-			console.log('searching', filter.type);
 			await onMediaSearch();
 		} else if (filterType === 'characters') {
 			await onCharSearch();
