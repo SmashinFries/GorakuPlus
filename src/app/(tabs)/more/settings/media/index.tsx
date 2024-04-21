@@ -26,7 +26,7 @@ import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { List, Portal, Text, useTheme } from 'react-native-paper';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
+import { MediaType, useUpdateViewerMutation } from '@/store/services/anilist/generated-anilist';
 import { GorakuSwitch } from '@/components/switch';
 
 const MediaSettingsPage = () => {
@@ -65,6 +65,8 @@ const MediaSettingsPage = () => {
 	const toggleExploreTabOptions = (isVis: boolean) => setExpTbsVis(isVis);
 	const toggleAnimeListTabOptions = (isVis: boolean) => setAnimeListTabVis(isVis);
 	const toggleMangaListTabOptions = (isVis: boolean) => setMangaListTabVis(isVis);
+
+	const [updateUserSettings] = useUpdateViewerMutation();
 
 	const editExploreTabs = useCallback((tabs: (keyof ExploreTabsProps)[]) => {
 		dispatch(setSettings({ entryType: 'exploreTabs', value: tabs }));
@@ -126,6 +128,7 @@ const MediaSettingsPage = () => {
 							// thumbColor={colors.primary}
 							color={colors.primary}
 							onValueChange={(value) => {
+								updateUserSettings({ displayNSFW: value });
 								dispatch(setSettings({ entryType: 'showNSFW', value: value }));
 								dispatch(
 									danbooruApi.util.invalidateTags([
