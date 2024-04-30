@@ -22,6 +22,7 @@ import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
 import { Toaster } from 'burnt/web';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import '../i18n';
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore
