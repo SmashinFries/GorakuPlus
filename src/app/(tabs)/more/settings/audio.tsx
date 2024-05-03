@@ -52,22 +52,9 @@ const VoiceDialog = ({
 	};
 
 	return (
-		<Dialog visible={visible} onDismiss={onDismiss}>
+		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>{title}</Dialog.Title>
 			<Dialog.Content>
-				<ListSubheader title="Voices" />
-				{voices.map((voice, index) => (
-					<RadioButton.Item
-						key={index}
-						label={
-							voice.name +
-							`${voice.quality === Speech.VoiceQuality.Enhanced ? ' (Enhanced) ' : ''}`
-						}
-						value={voice.identifier}
-						onPress={() => setNewVoice(voice)}
-						status={newVoice?.identifier === voice.identifier ? 'checked' : 'unchecked'}
-					/>
-				))}
 				<View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
 					<ListSubheader title="Pitch" />
 				</View>
@@ -132,6 +119,25 @@ const VoiceDialog = ({
 					</Button>
 				</View>
 			</Dialog.Content>
+			<Dialog.ScrollArea>
+				<ListSubheader title="Voices" />
+				<ScrollView>
+					{voices.map((voice, index) => (
+						<RadioButton.Item
+							key={index}
+							label={
+								voice.name +
+								`${voice.quality === Speech.VoiceQuality.Enhanced ? ' (Enhanced) ' : ''}`
+							}
+							value={voice.identifier}
+							onPress={() => setNewVoice(voice)}
+							status={
+								newVoice?.identifier === voice.identifier ? 'checked' : 'unchecked'
+							}
+						/>
+					))}
+				</ScrollView>
+			</Dialog.ScrollArea>
 			<Dialog.Actions>
 				<Button onPress={onDismiss}>Cancel</Button>
 				<Button onPress={() => onConfirm(newVoice, newRate, newPitch)}>Update</Button>
@@ -155,10 +161,10 @@ const AudioPage = () => {
 
 	const getSpeakers = async () => {
 		const speakers = await Speech.getAvailableVoicesAsync();
-		const english_voices = speakers.filter((s) => s.language === 'en-US');
-		const japanese_voices = speakers.filter((s) => s.language === 'ja-JP');
-		const korean_voices = speakers.filter((s) => s.language === 'ko-KR');
-		const chinese_voices = speakers.filter((s) => s.language === 'zh-CN');
+		const english_voices = speakers.filter((s) => s.language.includes('en'));
+		const japanese_voices = speakers.filter((s) => s.language.includes('ja'));
+		const korean_voices = speakers.filter((s) => s.language.includes('ko'));
+		const chinese_voices = speakers.filter((s) => s.language.includes('zh'));
 		if (!english.voice && english_voices?.length > 0) {
 			dispatch(updateTTS({ entryType: 'english', value: { voice: english_voices[0] } }));
 		}
@@ -220,6 +226,7 @@ const AudioPage = () => {
 				title="TTS Configuration"
 				description="You can download more voices by finding text-to-speech in system settings (if available)"
 				titleStyle={{ fontSize: 16 }}
+				initialExpand
 			>
 				<List.Item
 					title="English"
