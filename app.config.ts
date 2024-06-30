@@ -34,6 +34,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		'expo-localization',
 		'expo-router',
 		'expo-font',
+		'expo-secure-store',
 		[
 			'expo-build-properties',
 			{
