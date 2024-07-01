@@ -15,6 +15,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	orientation: 'portrait',
 	icon: './assets/iconsv3/icon.png',
 	userInterfaceStyle: 'automatic',
+	jsEngine: 'hermes',
 	experiments: {
 		tsconfigPaths: true,
 	},
@@ -69,6 +70,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			: './GoogleService-Info.plist',
 		supportsTablet: false,
 		bundleIdentifier: IS_DEV ? 'com.kuzulabz.gorakuplus.dev' : 'com.kuzulabz.gorakuplus',
+		jsEngine: 'jsc',
 	},
 	android: {
 		package: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
