@@ -154,6 +154,12 @@ export const SearchHeader = ({
 	const { right, left } = useSafeAreaInsets();
 
 	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+	const [query, setQuery] = useState(searchTerm);
+
+	// temp solution to input lag
+	useEffect(() => {
+		setSearchTerm(query);
+	}, [query]);
 
 	useEffect(() => {
 		const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -185,8 +191,9 @@ export const SearchHeader = ({
 			>
 				<Searchbar
 					ref={searchbarRef}
-					value={searchTerm}
-					onChangeText={setSearchTerm}
+					value={query}
+					// onChangeText={setSearchTerm}
+					onChangeText={(txt) => setQuery(txt)}
 					onSubmitEditing={searchContent}
 					returnKeyType="search"
 					autoFocus
@@ -249,14 +256,12 @@ export const MoreHeader = ({ navigation, options, route, back }: NativeStackHead
 	const { width } = useWindowDimensions();
 	const { top } = useSafeAreaInsets();
 	return (
-		<Appbar.Header style={{ height: 240 + top }}>
-			{back && <Appbar.BackAction onPress={navigation.goBack} />}
-			{/* <Appbar.Content title={title} /> */}
+		<Appbar.Header style={{ height: 150 + top, justifyContent: 'center' }}>
 			<AnimatedImage
-				source={require('../../assets/iconsv2/icon-trans.png')}
+				source={require('../../assets/iconsv3/banner.png')}
 				style={{
-					width: width,
-					height: 240,
+					width: width - 100,
+					height: 150,
 					overflow: 'visible',
 					alignSelf: 'center',
 					position: 'absolute',
