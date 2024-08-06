@@ -1,3 +1,10 @@
+import {
+	MediaList,
+	MediaListStatus,
+	MediaType,
+	UserAnimeListCollectionQuery,
+	UserMangaListCollectionQuery,
+} from '@/api/anilist/__genereated__/gql';
 import { ScrollToTopButton } from '@/components/buttons';
 import { MediaCard, MediaProgressBar } from '@/components/cards';
 import { ListHeader } from '@/components/headers';
@@ -5,16 +12,8 @@ import { ListFilterSheet } from '@/components/list/filtersheet';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { RenderTabBar, TabBarWithChip } from '@/components/tab';
 import { useList } from '@/hooks/list/useList';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	MediaList,
-	MediaListSort,
-	MediaListStatus,
-	MediaType,
-	UserAnimeListCollectionQuery,
-	UserMangaListCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
-import { updateListFilter } from '@/store/slices/listSLice';
+import { useAuthStore } from '@/store/authStore';
+import { useListFilterStore } from '@/store/listStore';
 import { rgbToRgba, useColumns } from '@/utils';
 import { compareArrays } from '@/utils/compare';
 import { sortListTabs, sortLists } from '@/utils/sort';
@@ -40,8 +39,7 @@ type ListParams = {
 const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
 	const [entries, setEntries] = useState(data?.entries);
 	const { colors } = useTheme();
-	const { query } = useAppSelector((state) => state.listFilter);
-	const { sort } = useAppSelector((state) => state.listFilter);
+	const { query, sort, updateListFilter } = useListFilterStore();
 
 	const [scrollOffset, setScrollOffset] = useState(0);
 
@@ -100,7 +98,7 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 						navigate={() =>
 							router.push(`/${item.media.type.toLowerCase()}/${item.media.id}`)
 						}
-						scorebgColor={scorebgColor}
+						// scorebgColor={scorebgColor}
 						averageScore={item.media.averageScore}
 						meanScore={item.media.meanScore}
 						// @ts-ignore timeUntilAiring is transformed to string via RTK Query
@@ -184,12 +182,10 @@ const ListTabs = ({
 	isRefreshing: boolean;
 	onRefresh: () => void;
 }) => {
-	const { animeTabOrder, mangaTabOrder } = useAppSelector((state) => state.listFilter);
-	const { colors } = useTheme();
+	const { animeTabOrder, mangaTabOrder } = useListFilterStore();
 	const layout = useWindowDimensions();
 	const [index, setIndex] = useState(0);
 	const [tabRoutes, setTabRoutes] = useState<{ key: string; title: string }[]>(routes);
-	const [listData, setListData] = useState(data);
 
 	const updateTitleCount = (key: string, total: number) => {
 		setTabRoutes((prevRoutes) =>
@@ -217,9 +213,9 @@ const ListTabs = ({
 	};
 
 	useEffect(() => {
-		if (tabRoutes && listData?.lists) {
+		if (tabRoutes && data?.lists) {
 			const listCounts = {};
-			for (const list of listData.lists) {
+			for (const list of data.lists) {
 				listCounts[list.name] = list.entries.length;
 			}
 			const newRoutes = sortListTabs(
@@ -236,7 +232,7 @@ const ListTabs = ({
 				setTabRoutes(newRoutes);
 			}
 		}
-	}, [listData, animeTabOrder, mangaTabOrder]);
+	}, [data, animeTabOrder, mangaTabOrder]);
 
 	return tabRoutes.length > 0 ? (
 		<TabView
@@ -252,8 +248,7 @@ const ListTabs = ({
 
 const ListPage = () => {
 	const layout = useWindowDimensions();
-	const { colors } = useTheme();
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
+	const { userID } = useAuthStore().anilist;
 	const [index, setIndex] = useState(0);
 
 	const {

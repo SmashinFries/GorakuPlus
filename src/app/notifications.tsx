@@ -1,8 +1,5 @@
+import { GetNotificationsQuery, useGetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
 import { NotifItem } from '@/components/notifications/item';
-import {
-	GetNotificationsQuery,
-	useGetNotificationsQuery,
-} from '@/store/services/anilist/generated-anilist';
 import { FlashList } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -11,7 +8,7 @@ import { View, useWindowDimensions } from 'react-native';
 const NotificationPage = () => {
 	const [page, setPage] = useState(1);
 	const { width, height } = useWindowDimensions();
-	const { data, isFetching, isLoading, isUninitialized } = useGetNotificationsQuery({
+	const { data, isFetching, isLoading } = useGetNotificationsQuery({
 		amount: 50,
 		page: page,
 		reset: true,

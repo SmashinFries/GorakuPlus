@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
-import { MotiView } from 'moti';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 type ScoreContainerProps = {
 	title?: string;
@@ -21,9 +22,21 @@ export const ScoreContainer = ({
 	isMal = false,
 }: ScoreContainerProps) => {
 	const height = 85;
+	const heightAnim = useSharedValue(0);
 	const fillHeight = score ? ((isMal ? score * 10 : score) / 100) * height : 0;
 	const width = 85;
 	const { colors } = useTheme();
+
+	const animatedStyle = useAnimatedStyle(() => {
+		return {
+			height: heightAnim.value,
+		};
+	});
+
+	useEffect(() => {
+		heightAnim.value = withSpring(fillHeight);
+	}, []);
+
 	return (
 		<View>
 			<View
@@ -37,15 +50,18 @@ export const ScoreContainer = ({
 					overflow: 'hidden',
 				}}
 			>
-				<MotiView
-					from={{ height: 0 }}
-					animate={{ height: fillHeight }}
-					style={{
-						position: 'absolute',
-						// height: fillHeight,
-						width: width,
-						backgroundColor: color,
-					}}
+				<Animated.View
+					// from={{ height: 0 }}
+					// animate={{ height: fillHeight }}
+					style={[
+						{
+							position: 'absolute',
+							// height: fillHeight,
+							width: width,
+							backgroundColor: color,
+						},
+						animatedStyle,
+					]}
 				/>
 			</View>
 			<View

@@ -1,19 +1,18 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, useTheme } from 'react-native-paper';
-import { useColumns } from '@/utils';
-import { CharacterItem, CharacterItemMemo, CharacterLabel } from '@/components/characters/card';
+import { useTheme } from 'react-native-paper';
+import { CharacterItem, CharacterLabel } from '@/components/characters/card';
 import { useCallback } from 'react';
 import { useCharactersList } from '@/hooks/characters/useCharacters';
 import { router, useLocalSearchParams } from 'expo-router';
-import { CharacterListQuery, MediaType } from '@/store/services/anilist/generated-anilist';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { CharacterListQuery, MediaType } from '@/api/anilist/__genereated__/gql';
 
 const CharacterListPage = () => {
 	const { characters } = useLocalSearchParams<{ characters: [string, string] }>();
 	const type = characters[0] as MediaType;
 	const id = parseInt(characters[1]);
-	const { charData, loadMore } = useCharactersList(id, type);
+	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } = useCharactersList(id, type);
 	const { colors } = useTheme();
 	const { height } = useWindowDimensions();
 
@@ -45,7 +44,7 @@ const CharacterListPage = () => {
 		[],
 	);
 
-	if (charData.isUninitialized) {
+	if (isLoading) {
 		return (
 			<View
 				style={{
@@ -66,12 +65,12 @@ const CharacterListPage = () => {
 			<FlashList
 				numColumns={3}
 				key={3}
-				data={charData.data?.Media?.characters?.edges}
+				data={data}
 				keyExtractor={(item) => item?.node?.id.toString()}
 				renderItem={RenderItem}
 				contentContainerStyle={{ padding: 10 }}
 				ListFooterComponent={() =>
-					charData.isFetching && (
+					isFetching && (
 						<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 							<GorakuActivityIndicator />
 						</View>
@@ -79,7 +78,7 @@ const CharacterListPage = () => {
 				}
 				drawDistance={height / 2}
 				estimatedItemSize={241}
-				onEndReached={() => loadMore()}
+				onEndReached={() => hasNextPage && fetchNextPage()}
 			/>
 		</View>
 	);

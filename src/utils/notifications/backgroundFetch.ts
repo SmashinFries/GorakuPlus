@@ -1,4 +1,3 @@
-import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 import notifee, {
 	AndroidImportance,
@@ -6,9 +5,11 @@ import notifee, {
 	AndroidVisibility,
 	NotificationAndroid,
 } from '@notifee/react-native';
-import { GetNotificationsQuery } from '@/store/services/anilist/generated-anilist';
-import { store } from '@/store/store';
-import { api } from '@/store/services/anilist/enhanced';
+import { useNotificationStore } from '@/store/notifications/notificationStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAuthStore } from '@/store/authStore';
+import axios from 'axios';
+import { GetNotificationsDocument, GetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
 
 export type TaskNames = 'Bg-Notifs';
 
@@ -186,16 +187,25 @@ export const displayNotification = async (
 	}
 };
 
-export const testAnilistFetchNotif = async () => {
-	const { enabled } = store.getState().persistedNotifs;
-	const { mediaLanguage } = store.getState().persistedSettings;
-	const fetchNotifs = store.dispatch(
-		api.endpoints.GetNotifications.initiate({ amount: 50, page: 1, reset: true }),
-	);
+export const fetchAnilistNotifications = async () => {
+	const { enabled } = useNotificationStore.getState();
+	const mediaLanguage = useSettingsStore.getState().mediaLanguage;
+	// const fetchNotifs = store.dispatch(
+	// 	api.endpoints.GetNotifications.initiate({ amount: 50, page: 1, reset: true }),
+	// );
 	try {
-		const response = await fetchNotifs.unwrap();
-		const newNotifs = response.Page?.notifications
-			?.slice(0, response.Viewer?.unreadNotificationCount ?? 0)
+		// const response = await fetchNotifs.unwrap();
+		const token = useAuthStore.getState().anilist.token;
+		const { data } = await axios.post<GetNotificationsQuery>(
+			'https://graphql.anilist.co',
+			JSON.stringify({
+				query: GetNotificationsDocument,
+				variables: { amount: 50, page: 1, reset: true },
+			}),
+			{ headers: { Authorization: `Bearer ${token}` } },
+		);
+		const newNotifs = data.Page?.notifications
+			?.slice(0, data.Viewer?.unreadNotificationCount ?? 0)
 			?.filter((notif) => enabled?.includes(notif.__typename));
 
 		if (newNotifs.length === 1) {
@@ -215,8 +225,10 @@ export const testAnilistFetchNotif = async () => {
 				const parsedData = parseNotif(mediaLanguage, notif);
 				displayNotification({ ...parsedData, group: true });
 			});
+		} else {
+			return BackgroundFetch.BackgroundFetchResult.NoData;
 		}
 	} catch (err) {
-		console.log(err);
+		return BackgroundFetch.BackgroundFetchResult.NoData;
 	}
 };

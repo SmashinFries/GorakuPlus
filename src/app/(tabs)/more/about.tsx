@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Linking, Pressable, ScrollView, View } from 'react-native';
-
 import * as Updates from 'expo-updates';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { ActivityIndicator, Button, List, Portal, Surface, Text } from 'react-native-paper';
@@ -14,12 +13,12 @@ import {
 	MalIcon,
 	MangaUpdatesIcon,
 } from '@/components/svgs';
-import { useAppSelector } from '@/store/hooks';
 import { Image } from 'expo-image';
-import { UpdateDialog } from '@/components/updates';
-import * as Burnt from 'burnt';
-import { TOAST } from '@/constants/toast';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import useAppUpdates from '@/hooks/useAppUpdates';
+import { UpdaterBottomSheet } from '@/components/updates';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 
 const OtherAppItem = ({
 	title,
@@ -66,24 +65,18 @@ const OtherAppItem = ({
 };
 
 const AboutPage = () => {
-	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
-	const [isCheckingUpdates, setIsCheckingUpdates] = useState(false);
-	const [updateLink, setUpdateLink] = useState<string | null>(null);
-	const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+	const { showNSFW } = useSettingsStore();
+	const updaterBtmSheetRef = useRef<BottomSheetModal>(null);
+	const { updateDetails, checkForUpdates } = useAppUpdates();
+	const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
 
-	const checkForUpdates = async () => {
-		setIsCheckingUpdates(true);
-		const results = await fetch('https://api.github.com/repos/KuzuLabz/GorakuSite/releases');
-		const jsonResult = await results?.json();
-		const newestVersion = jsonResult[0]?.tag_name ?? null;
-
-		if (newestVersion && newestVersion !== Constants?.expoConfig?.version) {
-			setUpdateLink(jsonResult[0]?.assets[0]?.browser_download_url);
-			setShowUpdateDialog(true);
-		} else {
-			Burnt.toast({ title: 'No updates available', duration: TOAST.SHORT });
+	const runUpdateChecker = async () => {
+		setIsCheckingUpdate(true);
+		const hasUpdate = await checkForUpdates();
+		if (hasUpdate) {
+			updaterBtmSheetRef.current?.present();
 		}
-		setIsCheckingUpdates(false);
+		setIsCheckingUpdate(false);
 	};
 
 	return (
@@ -101,8 +94,8 @@ const AboutPage = () => {
 			{Constants.executionEnvironment !== ExecutionEnvironment.StoreClient && (
 				<List.Item
 					title={'Check for Updates'}
-					onPress={checkForUpdates}
-					right={(props) => (isCheckingUpdates ? <ActivityIndicator {...props} /> : null)}
+					onPress={runUpdateChecker}
+					right={(props) => (isCheckingUpdate ? <ActivityIndicator {...props} /> : null)}
 				/>
 			)}
 			<Accordion title="More Apps" titleFontSize={16}>
@@ -112,9 +105,10 @@ const AboutPage = () => {
 						imgUrl="https://github.com/KuzuLabz/WaifuTagger/blob/master/assets/adaptive-icon.png?raw=true"
 						link="https://github.com/KuzuLabz/WaifuTagger"
 					/>
-					<OtherAppItem title={'BooruPromptCreator'} status={'75% complete!'} />
+					<OtherAppItem title={'AniThemes'} />
 					<OtherAppItem title={'VN Browser'} />
 					<OtherAppItem title={'KuzuChat'} />
+					<OtherAppItem title={'BooruPromptCreator'} status={'Hiatus'} />
 				</ScrollView>
 			</Accordion>
 			<Accordion title="Data Sources" titleFontSize={16} initialExpand>
@@ -239,13 +233,7 @@ const AboutPage = () => {
 					/>
 				</View>
 			</View>
-			<Portal>
-				<UpdateDialog
-					visible={showUpdateDialog}
-					onDismiss={() => setShowUpdateDialog(false)}
-					updateLink={updateLink}
-				/>
-			</Portal>
+			<UpdaterBottomSheet ref={updaterBtmSheetRef} updateDetails={updateDetails} />
 		</View>
 	);
 };

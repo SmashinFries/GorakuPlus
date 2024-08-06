@@ -1,4 +1,3 @@
-import { MotiView } from 'moti';
 import { GetAnimePicturesApiResponse } from '@/store/services/mal/malApi';
 import { Portal } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
@@ -8,6 +7,8 @@ import { TransYUpViewMem } from '@/components/animations';
 import { ListHeading } from '@/components/text';
 import { SaveImageDialog } from '@/utils/images';
 import { useCallback, useState } from 'react';
+import Animated from 'react-native-reanimated';
+import { View } from 'react-native';
 
 type MalImageItemProps = {
 	item: GetAnimePicturesApiResponse['data'][0];
@@ -56,9 +57,9 @@ const MalImages = ({ data }: MalImagesProps) => {
 	}
 
 	return (
-		<TransYUpViewMem style={{ overflow: 'visible' }}>
+		<Animated.View style={{ overflow: 'visible' }}>
 			<ListHeading title="Images" />
-			<MotiView style={{ width: '100%', height: 260 }}>
+			<View style={{ width: '100%', height: 260 }}>
 				<FlashList
 					data={data?.data}
 					renderItem={RenderItem}
@@ -69,11 +70,11 @@ const MalImages = ({ data }: MalImagesProps) => {
 					showsHorizontalScrollIndicator={false}
 					drawDistance={225 * data?.data?.length}
 				/>
-			</MotiView>
+			</View>
 			<Portal>
 				<SaveImageDialog img_url={selectedImg} onDismiss={onDismiss} />
 			</Portal>
-		</TransYUpViewMem>
+		</Animated.View>
 	);
 };
 

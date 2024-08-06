@@ -4,11 +4,12 @@ import { convertDate, copyToClipboard, rgbToRgba } from '@/utils';
 import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { useEffect, useMemo } from 'react';
-import { Accordion, TransYUpViewMem } from '@/components/animations';
+import { Accordion } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
 import { AnimeFull, MangaFull } from '@/store/services/mal/malApi';
 import { router } from 'expo-router';
 import { useAppTheme } from '@/store/theme/theme';
+import Animated from 'react-native-reanimated';
 
 type MetaDataProps = {
 	data: AniMediaQuery['Media'];
@@ -22,7 +23,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 	// delay={960}
 
 	return (
-		<TransYUpViewMem style={{ marginVertical: 15 }} delay={945}>
+		<Animated.View style={{ marginVertical: 15 }}>
 			<Accordion title="Details">
 				<List.Item
 					title={'Source'}
@@ -309,7 +310,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					/>
 				)}
 			</Accordion>
-		</TransYUpViewMem>
+		</Animated.View>
 	);
 };
 

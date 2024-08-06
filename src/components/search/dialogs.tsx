@@ -4,36 +4,37 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { BasicDialogProps } from '@/types';
 import { NumberPicker } from '../picker';
-import { GenreTagCollectionQuery, MediaTag } from '@/store/services/anilist/generated-anilist';
-import { useAppTheme } from '@/store/theme/theme';
-import { useAppSelector } from '@/store/hooks';
 import { FlashList } from '@shopify/flash-list';
 import { FilterTag } from './tags';
 import { useFilter } from '@/hooks/search/useFilter';
 import { ScrollToTopButton } from '../buttons';
+import { GenreTagCollectionQuery, MediaTag } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
+import { useSearchStore } from '@/store/search/searchStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 
-export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
-	const { tagPresets } = useAppSelector((state) => state.persistedPresets);
-	return (
-		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>Tag Presets</Dialog.Title>
-			<Dialog.Content>
-				<Dialog.ScrollArea>
-					<View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-						{tagPresets.map((preset, idx) => (
-							<Chip key={idx} style={{ margin: 8 }}>
-								{preset.title}
-							</Chip>
-						))}
-					</View>
-				</Dialog.ScrollArea>
-			</Dialog.Content>
-			<Dialog.Actions>
-				<Button onPress={onDismiss}>Done</Button>
-			</Dialog.Actions>
-		</Dialog>
-	);
-};
+// export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
+// 	const { tagPresets } = useAppSelector((state) => state.persistedPresets);
+// 	return (
+// 		<Dialog visible={visible} onDismiss={onDismiss}>
+// 			<Dialog.Title>Tag Presets</Dialog.Title>
+// 			<Dialog.Content>
+// 				<Dialog.ScrollArea>
+// 					<View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+// 						{tagPresets.map((preset, idx) => (
+// 							<Chip key={idx} style={{ margin: 8 }}>
+// 								{preset.title}
+// 							</Chip>
+// 						))}
+// 					</View>
+// 				</Dialog.ScrollArea>
+// 			</Dialog.Content>
+// 			<Dialog.Actions>
+// 				<Button onPress={onDismiss}>Done</Button>
+// 			</Dialog.Actions>
+// 		</Dialog>
+// 	);
+// };
 
 type ScoreDialogProps = BasicDialogProps & {
 	updateScore: (score: number) => void;
@@ -158,8 +159,8 @@ export const FilterTagDialog = ({
 	const [query, setQuery] = useState('');
 	const [showAdultTags, setShowAdultTags] = useState(false);
 
-	const { isTagBlacklist } = useAppSelector((state) => state.filter);
-	const { tagBlacklist, showNSFW } = useAppSelector((state) => state.persistedSettings);
+	const { isTagBlacklistEnabled } = useSearchStore();
+	const { tagBlacklist, showNSFW } = useSettingsStore();
 	const { filter, updateTag } = useFilter();
 
 	const [scrollVertOffset, setScrollVertOffset] = useState(0);
@@ -189,12 +190,12 @@ export const FilterTagDialog = ({
 					description={item.description}
 					state={getTagState(item.name)}
 					onToggle={() => updateTag(item.name)}
-					disabled={isTagBlacklist ? tagBlacklist?.includes(item.name) : false}
+					disabled={isTagBlacklistEnabled ? tagBlacklist?.includes(item.name) : false}
 					isAdult={item.isAdult}
 				/>
 			);
 		},
-		[filter.isAdult, filter.tag_in, filter.tag_not_in, isTagBlacklist],
+		[filter.isAdult, filter.tag_in, filter.tag_not_in, isTagBlacklistEnabled],
 	);
 
 	return (

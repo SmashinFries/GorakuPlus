@@ -83,6 +83,7 @@ export const selectImage = async (camera?: boolean): Promise<FormData | null> =>
 
 	if (!result.canceled) {
 		const imageType = result.assets[0].uri.split('.').at(-1);
+		// @ts-ignore | how to type this???
 		data.append('image', {
 			name: 'image',
 			type: `image/${imageType === 'jpg' ? 'jpeg' : imageType}`,

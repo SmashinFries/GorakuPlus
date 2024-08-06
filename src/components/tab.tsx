@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { View } from 'react-native';
-import { Chip, Text, useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import {
 	NavigationState,
 	SceneRendererProps,

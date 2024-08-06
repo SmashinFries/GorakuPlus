@@ -1,9 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useLazySearchISBNQuery } from '@/store/services/google-books/googleApi';
-import { useLazyExploreMediaQuery } from '@/store/services/anilist/enhanced';
-import { ExploreMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
-import { useAppSelector } from '@/store/hooks';
-import { BarcodeScanningResult } from 'expo-camera/next';
 
 // https://www.googleapis.com/books/v1/volumes?q=isbn:1974736474
 

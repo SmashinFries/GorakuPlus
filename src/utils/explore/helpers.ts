@@ -1,4 +1,4 @@
-import { MediaSeason } from '@/store/services/anilist/generated-anilist';
+import { MediaSeason } from '@/api/anilist/__genereated__/gql';
 
 export const getSeason = (next = false) => {
 	const date = new Date();

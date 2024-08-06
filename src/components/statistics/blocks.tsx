@@ -1,4 +1,3 @@
-import { MotiView } from 'moti';
 import { View } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
 
@@ -10,7 +9,7 @@ type GeneralStatBlockProps = {
 export const GeneralStatBlock = ({ icon, title, value }: GeneralStatBlockProps) => {
 	const { colors } = useTheme();
 	return (
-		<MotiView style={{ alignItems: 'flex-start', width: '50%', padding: 15 }}>
+		<View style={{ alignItems: 'flex-start', width: '50%', padding: 15 }}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<IconButton
 					style={
@@ -27,6 +26,6 @@ export const GeneralStatBlock = ({ icon, title, value }: GeneralStatBlockProps) 
 					<Text>{title}</Text>
 				</View>
 			</View>
-		</MotiView>
+		</View>
 	);
 };

@@ -1,8 +1,4 @@
-import {
-	MediaTag,
-	MediaType,
-	UserAnimeListCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
+import { MediaTag, UserAnimeListCollectionQuery } from '@/api/anilist/__genereated__/gql';
 import { ListSortOptions, ListSortOptionsType } from '@/types/anilist';
 
 export const sortTagsRank = (tags: MediaTag[]) => {

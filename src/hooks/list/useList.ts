@@ -1,20 +1,4 @@
-import {
-	useLazyUserAnimeListCollectionQuery,
-	useLazyUserMangaListCollectionQuery,
-} from '@/store/services/anilist/enhanced';
 import { useEffect, useMemo, useState } from 'react';
-import Burnt from 'burnt';
-import {
-	MediaList,
-	MediaListSort,
-	MediaTag,
-	UserAnimeListCollectionQuery,
-	UserMangaListCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
-import { sendErrorMessage } from '@/utils/toast';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { updateListFilter } from '@/store/slices/listSLice';
-import { AnimatedFlashList } from '@shopify/flash-list';
 import { sortListTabs } from '@/utils/sort';
 
 const getAllGenres = (
@@ -33,12 +17,12 @@ const getAllGenres = (
 		}
 	}
 
-	let occurrences: { [key: string]: number } = genres.reduce(function (obj, val) {
+	const occurrences: { [key: string]: number } = genres.reduce(function (obj, val) {
 		obj[val] = (obj[val] || 0) + 1;
 		return obj;
 	}, {});
 
-	let sortedGenres = Object.keys(occurrences).sort((a, b) =>
+	const sortedGenres = Object.keys(occurrences).sort((a, b) =>
 		a.toUpperCase() < b.toUpperCase() ? -1 : 1,
 	);
 
@@ -61,7 +45,7 @@ const getAllTags = (
 		}
 	}
 
-	let occurrences: { [key: MediaTag['name']]: number } = tags.reduce(function (obj, val) {
+	const occurrences: { [key: MediaTag['name']]: number } = tags.reduce(function (obj, val) {
 		obj[val.name] = (obj[val.name] || 0) + 1;
 		return obj;
 	}, {});
@@ -116,8 +100,8 @@ export const useList = (userId: number) => {
 			?.map((list) => (!mangaTabOrder.includes(list.name) ? list.name : null))
 			.filter((x) => x !== null);
 
-		let animeListCounts = {};
-		let mangaListCounts = {};
+		const animeListCounts = {};
+		const mangaListCounts = {};
 
 		for (const list of animeData?.data?.MediaListCollection?.lists) {
 			animeListCounts[list.name] = list.entries.length;

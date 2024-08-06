@@ -1,28 +1,11 @@
 import { Accordion } from '@/components/animations';
-import { ListHeading } from '@/components/text';
-import { useAppSelector } from '@/store/hooks';
-import {
-	FactResponse,
-	QuoteResponse,
-	TextGenOptions,
-	WaifuItEmotions,
-} from '@/store/services/waifu.it/types';
-import {
-	useLazyGetFactQuery,
-	useLazyGetInteractionQuery,
-	useLazyGetQuoteQuery,
-	useLazyOwoifyQuery,
-	useLazyUvuifyQuery,
-	useLazyUwuifyQuery,
-} from '@/store/services/waifu.it/waifuit';
 import { copyToClipboard } from '@/utils';
 import { saveImage } from '@/utils/images';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { SerializedError } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { Stack, router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, Share, View } from 'react-native';
 import {
 	ActivityIndicator,
@@ -41,6 +24,17 @@ import {
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
+import { FactResponse, QuoteResponse, TextGenOptions, WaifuItEmotions } from '@/api/waifuit/types';
+import { useAppTheme } from '@/store/theme/themes';
+import {
+	useEmotionQuery,
+	useFactQuery,
+	useOwOQuery,
+	useQuoteQuery,
+	useUvUQuery,
+	useUwUQuery,
+} from '@/api/waifuit/waifuit';
+import { useAuthStore } from '@/store/authStore';
 
 type TextInputContainerProps = {
 	label: string;
@@ -88,65 +82,40 @@ const TextInputContainer = ({
 };
 
 const WeebLabPage = () => {
-	const { token } = useAppSelector((state) => state.persistedWaifuItToken);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
+	const { token } = useAuthStore().waifuit;
 
-	const [getEmotion, emotion] = useLazyGetInteractionQuery();
 	const [selectedEmotion, setSelectedEmotion] = useState<WaifuItEmotions>(WaifuItEmotions.Angry);
+	const emotionQuery = useEmotionQuery();
 
-	const [getQuote, quoteQuery] = useLazyGetQuoteQuery();
+	const quoteQuery = useQuoteQuery();
+	const factQuery = useFactQuery();
 
-	const [getFact, factQuery] = useLazyGetFactQuery();
-
-	const [owoify, owoDetails] = useLazyOwoifyQuery();
-	const [uvuify, uvuDetails] = useLazyUvuifyQuery();
-	const [uwuify, uwuDetails] = useLazyUwuifyQuery();
 	const [generatedText, setGeneratedText] = useState<string>('');
-	const [textGenQuery, setTextGenQuery] = useState<string>('');
+	const [uwuTextQuery, setUwuTextQuery] = useState<string>('');
+	const [uvuTextQuery, setUvuTextQuery] = useState<string>('');
+	const [owoTextQuery, setOwoTextQuery] = useState<string>('');
+	const [text, setText] = useState('');
+	const owoQuery = useOwOQuery(owoTextQuery);
+	const uvuQuery = useUvUQuery(uvuTextQuery);
+	const uwuQuery = useUwUQuery(uwuTextQuery);
 
-	const onGenEmotion = () => {
-		getEmotion({ emotion: selectedEmotion });
-	};
-
-	const onTextGen = async (genType: TextGenOptions) => {
-		switch (genType) {
-			case TextGenOptions.owoify:
-				try {
-					const owoifyResult = await owoify({ text: textGenQuery }).unwrap();
-					setGeneratedText(owoifyResult.text);
-				} catch (e) {
-					Burnt.toast({
-						title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-						duration: TOAST.SHORT,
-					});
-				}
-				break;
-			case TextGenOptions.uvuify:
-				try {
-					const uvuifyResult = await uvuify({ text: textGenQuery }).unwrap();
-					setGeneratedText(uvuifyResult.text);
-				} catch (e) {
-					Burnt.toast({
-						title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-						duration: TOAST.SHORT,
-					});
-				}
-
-				break;
-			case TextGenOptions.uwuify:
-				try {
-					const uwuifyResult = await uwuify({ text: textGenQuery }).unwrap();
-					setGeneratedText(uwuifyResult.text);
-				} catch (e) {
-					Burnt.toast({
-						title: `Error code: ${e?.status} -> ${e?.data?.statusMessage}`,
-						duration: TOAST.SHORT,
-					});
-				}
-
-				break;
-		}
-	};
+	const onTextGen = useCallback(
+		(genType: TextGenOptions) => {
+			switch (genType) {
+				case TextGenOptions.owoify:
+					setOwoTextQuery(text);
+					break;
+				case TextGenOptions.uvuify:
+					setUvuTextQuery(text);
+					break;
+				case TextGenOptions.uwuify:
+					setUwuTextQuery(text);
+					break;
+			}
+		},
+		[text],
+	);
 
 	return (
 		<>
@@ -219,38 +188,38 @@ const WeebLabPage = () => {
 							/>
 							<View style={{ marginVertical: 20, paddingHorizontal: 10 }}>
 								<View style={{ flexDirection: 'row' }}>
-									<Button
+									{/* <Button
 										mode="outlined"
 										style={{ flexGrow: 2, justifyContent: 'center' }}
 										labelStyle={{ textTransform: 'capitalize' }}
 										onPress={onGenEmotion}
 									>
 										Get {selectedEmotion} gif
-									</Button>
+									</Button> */}
 									<IconButton
 										icon={'share-variant-outline'}
-										disabled={!emotion.data?.url}
+										disabled={!emotionQuery.data.data?.url}
 										onPress={() =>
 											Share.share({
-												title: emotion.data?.url,
-												message: emotion.data?.url,
-												url: emotion.data?.url,
+												title: emotionQuery.data.data?.url,
+												message: emotionQuery.data.data?.url,
+												url: emotionQuery.data.data?.url,
 											})
 										}
 									/>
 									<IconButton
 										icon={'download-outline'}
-										disabled={!emotion.data?.url}
-										onPress={() => saveImage(emotion.data?.url)}
+										disabled={!emotionQuery.data.data?.url}
+										onPress={() => saveImage(emotionQuery.data.data?.url)}
 									/>
 								</View>
-								{emotion && (
+								{emotionQuery && (
 									<Animated.View
 										entering={FadeIn}
 										exiting={FadeOut}
 										style={{ alignItems: 'center', paddingVertical: 10 }}
 									>
-										{emotion.isFetching ? (
+										{emotionQuery.isFetching ? (
 											<View
 												style={{
 													height: 200,
@@ -264,9 +233,11 @@ const WeebLabPage = () => {
 											<Image
 												cachePolicy="none"
 												source={{
-													uri: emotion.data?.url?.includes('gif')
-														? emotion.data?.url
-														: `${emotion.data?.url}.gif`,
+													uri: emotionQuery.data.data?.url?.includes(
+														'gif',
+													)
+														? emotionQuery.data.data?.url
+														: `${emotionQuery.data.data?.url}.gif`,
 												}}
 												style={{
 													maxHeight: 250,
@@ -285,14 +256,14 @@ const WeebLabPage = () => {
 							<View style={{ marginVertical: 10, paddingHorizontal: 10 }}>
 								<TextInputContainer
 									label="Fact"
-									fact={factQuery.data}
-									onGenerate={() => getFact()}
+									fact={factQuery.data.data}
+									onGenerate={() => factQuery.refetch()}
 									isFetching={factQuery.isFetching}
 								/>
 								<TextInputContainer
 									label="Quote"
-									quote={quoteQuery.data}
-									onGenerate={() => getQuote()}
+									quote={quoteQuery.data.data}
+									onGenerate={() => quoteQuery.refetch()}
 									isFetching={quoteQuery.isFetching}
 								/>
 							</View>
@@ -309,12 +280,12 @@ const WeebLabPage = () => {
 									<TextInput
 										mode="flat"
 										multiline
-										value={textGenQuery}
-										onChangeText={(text) => setTextGenQuery(text)}
+										value={text}
+										onChangeText={(text) => setText(text)}
 										placeholder="Enter some text"
 										style={{ flexGrow: 2, maxWidth: '85%' }}
 									/>
-									<IconButton icon="close" onPress={() => setTextGenQuery('')} />
+									<IconButton icon="close" onPress={() => setText('')} />
 								</View>
 								<View
 									style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
@@ -345,9 +316,9 @@ const WeebLabPage = () => {
 									<IconButton icon="arrow-down" />
 									<IconButton
 										icon={
-											owoDetails.isFetching ||
-											uvuDetails.isFetching ||
-											uwuDetails.isFetching
+											owoQuery.isFetching ||
+											uvuQuery.isFetching ||
+											uwuQuery.isFetching
 												? () => (
 														<ActivityIndicator
 															style={{ alignSelf: 'center' }}

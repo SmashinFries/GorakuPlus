@@ -1,25 +1,24 @@
 import { Image, ImageBackground } from 'expo-image';
 import { DimensionValue, Pressable, View, useWindowDimensions } from 'react-native';
-import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
+import { Avatar, Button, ProgressBar, Text, useTheme } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ListColors } from '@/utils';
+import { useNsfwBlur } from '@/hooks/useNSFWBlur';
+import { NSFWLabel } from './labels';
+import { ScoreVisual } from './explore/itemScore';
+import { AiringBanner } from './explore/episodeBanner';
+import useImageRotation from '@/hooks/useImageRotation';
 import {
 	MediaList,
 	MediaListStatus,
 	MediaStatus,
 	MediaTitle,
 	ScoreDistribution,
-} from '@/store/services/anilist/generated-anilist';
-import { LinearGradient } from 'expo-linear-gradient';
-import { listColor } from '@/utils';
-import { useAppSelector } from '@/store/hooks';
-import { DanPost } from '@/store/services/danbooru/types';
-import { useNsfwBlur } from '@/hooks/useNSFWBlur';
-import { NSFWLabel } from './labels';
-import { ScoreVisual } from './explore/itemScore';
-import { AiringBanner } from './explore/episodeBanner';
-import { ScoreVisualType } from '@/store/slices/settingsSlice';
-import useImageRotation from '@/hooks/useImageRotation';
-import { useAppTheme } from '@/store/theme/theme';
-import { useEffect } from 'react';
+} from '@/api/anilist/__genereated__/gql';
+import { ScoreVisualType } from '@/store/settings/types';
+import { useAppTheme } from '@/store/theme/themes';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { DanPost } from '@/api/danbooru/types';
 
 const BORDER_RADIUS = 12;
 
@@ -33,7 +32,7 @@ type MediaCardProps = {
 	imgBgColor?: string;
 	scoreColors?: any;
 	showBanner?: boolean;
-	bannerText?: string;
+	bannerText?: string | number;
 	editMode?: boolean;
 	disablePress?: boolean;
 	scoreVisualType?: ScoreVisualType;
@@ -47,23 +46,18 @@ type MediaCardProps = {
 export const MediaCard = (props: MediaCardProps) => {
 	const card_height = props.height ?? 210;
 	const { colors } = useAppTheme();
-	const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
-		(state) => state.persistedSettings,
-	);
+	const { scoreColors, mediaLanguage, defaultScore } = useSettingsStore();
 	return (
 		<Pressable
 			onPress={props.navigate && props.navigate}
 			android_ripple={
 				props.navigate ? { color: colors.primary, foreground: true } : undefined
 			}
-			// disabled={props.disablePress}
 			style={{
 				marginHorizontal: 10,
 				overflow: 'hidden',
 				height: !props.width && !props.fitToParent ? card_height : undefined,
 				width: props.fitToParent ? '100%' : props.width ?? undefined,
-				// aspectRatio: 115 / 163, // anilist cover image AR
-				// aspectRatio: 1 / 1.55,
 				aspectRatio: 2 / 3,
 				borderRadius: BORDER_RADIUS,
 				backgroundColor: 'transparent',
@@ -72,7 +66,7 @@ export const MediaCard = (props: MediaCardProps) => {
 			<Image
 				contentFit="cover"
 				recyclingKey={props.coverImg}
-				transition={1200}
+				transition={1000}
 				source={{ uri: props.coverImg }}
 				placeholder={colors.blurhash}
 				placeholderContentFit="cover"
@@ -86,7 +80,6 @@ export const MediaCard = (props: MediaCardProps) => {
 			/>
 			<LinearGradient
 				style={{
-					// position: 'absolute',
 					width: '100%',
 					height: '100%',
 					borderRadius: BORDER_RADIUS,
@@ -115,10 +108,7 @@ export const MediaCard = (props: MediaCardProps) => {
 				<Text
 					variant="labelMedium"
 					style={{
-						// position: 'absolute',
 						alignSelf: 'center',
-						// bottom: props.showBanner ? '15%' : 10,
-						// fontWeight: 'bold',
 						paddingHorizontal: 6,
 						paddingVertical: 10,
 						color: 'white',
@@ -163,10 +153,7 @@ type MediaCardRowProps = {
 };
 export const MediaCardRow = (props: MediaCardRowProps) => {
 	const card_height = props.height ?? 110;
-	const { colors } = useTheme();
-	const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
-		(state) => state.persistedSettings,
-	);
+	const { scoreColors, mediaLanguage, defaultScore } = useSettingsStore();
 	return (
 		<Pressable
 			onPress={props.navigate && props.navigate}
@@ -248,7 +235,7 @@ export const MediaProgressBar = ({
 	showListStatus,
 }: MediaProgressBarProps) => {
 	const { colors } = useTheme();
-	const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
+	const { showItemListStatus } = useSettingsStore();
 
 	return (
 		<View
@@ -274,9 +261,8 @@ export const MediaProgressBar = ({
 					borderRadius: 4,
 					display: mediaListEntry ? undefined : 'none',
 				}}
-				// color={getScoreColor(item.averageScore)}
 				indeterminate={mediaListEntry?.status === MediaListStatus.Current && !total}
-				color={mediaListEntry?.status ? listColor(mediaListEntry?.status) : undefined}
+				color={mediaListEntry?.status ? ListColors[mediaListEntry?.status] : undefined}
 			/>
 			<Text
 				style={{
@@ -378,7 +364,7 @@ type CharacterCardProps = {
 };
 export const CharacterCard = (props: CharacterCardProps) => {
 	const { colors } = useTheme();
-	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
+	const { mediaLanguage } = useSettingsStore();
 	return (
 		<Pressable
 			onPress={props.onPress}

@@ -1,7 +1,7 @@
+import { ScoreDistribution } from '@/api/anilist/__genereated__/gql';
 import { ScoreColors, StatusColors } from '@/constants/colors';
-import { useAppSelector } from '@/store/hooks';
-import { ScoreDistribution } from '@/store/services/anilist/generated-anilist';
-import { ScoreVisualType } from '@/store/slices/settingsSlice';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { ScoreVisualType } from '@/store/settings/types';
 import { rgbToRgba } from '@/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useState } from 'react';
@@ -186,7 +186,7 @@ type ScoreVisualProps = {
 	scoreVisualType: ScoreVisualType;
 	scoreColors: { red: number; yellow: number };
 	scoreDistributions: ScoreDistribution[];
-	height: number;
+	height?: number;
 	width?: DimensionValue;
 	horizontal?: boolean;
 };
@@ -200,7 +200,7 @@ export const ScoreVisual = ({
 	horizontal = false,
 }: ScoreVisualProps) => {
 	const { colors } = useTheme();
-	const settings = useAppSelector((state) => state.persistedSettings);
+	const settings = useSettingsStore();
 	switch (scoreVisualType ?? settings.scoreVisualType) {
 		case 'healthbar-full':
 			return (

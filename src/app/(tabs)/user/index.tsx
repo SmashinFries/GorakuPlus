@@ -1,3 +1,4 @@
+import { useUserOverviewQuery } from '@/api/anilist/__genereated__/gql';
 import { Accordion } from '@/components/animations';
 import { FadeHeaderProvider } from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
@@ -9,18 +10,13 @@ import FavoritesOverview from '@/components/user/favoritesOverview';
 import { FollowRow } from '@/components/user/followOverview';
 import { UserHeader } from '@/components/user/header';
 import { StatOverview } from '@/components/user/quickStats';
-import { useUser } from '@/hooks/user/useUser';
-import { useAppSelector } from '@/store/hooks';
-import {
-	useUserActivityQuery,
-	useUserFollowersQuery,
-	useUserFollowingQuery,
-	useUserOverviewQuery,
-} from '@/store/services/anilist/generated-anilist';
+import { useAuthStore } from '@/store/authStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { Stack, router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { RefreshControl, View } from 'react-native';
-import { ActivityIndicator, Button, Portal } from 'react-native-paper';
+import { Button, Portal } from 'react-native-paper';
+import Animated, { FadeOut } from 'react-native-reanimated';
 
 const UnauthedPage = () => {
 	return (
@@ -38,12 +34,23 @@ const UnauthedPage = () => {
 	);
 };
 
-const UserPage = () => {
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
-	const { allowSensorMotion } = useAppSelector((state) => state.persistedSettings);
+const perPage = 24;
 
-	const { user, favorites, activity, followers, following, isLoading, isRefreshing, onRefresh } =
-		useUser();
+const UserPage = () => {
+	const { userID } = useAuthStore().anilist;
+	const { allowSensorMotion } = useSettingsStore();
+
+	const userOverviewQuery = useUserOverviewQuery(
+		{
+			userId: userID,
+			activityPerPage: perPage,
+			favoritesPerPage: perPage,
+			followersPerPage: perPage,
+			followingPerPage: perPage,
+			isFollowing: true,
+		},
+		{ enabled: !!userID },
+	);
 
 	const [showAddFriend, setShowAddFriend] = useState(false);
 
@@ -54,84 +61,103 @@ const UserPage = () => {
 		// navigation.navigate('statistics', { userId: userID });
 	};
 
+	const onRefresh = async () => {
+		await userOverviewQuery.refetch();
+	};
+
 	if (!userID) return <UnauthedPage />;
 
-	return userID && isLoading ? (
-		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-			<GorakuActivityIndicator />
-		</View>
-	) : (
-		<FadeHeaderProvider
-			title={user?.currentData?.Viewer?.name}
-			BgImage={({ style }) => (
-				<MediaBanner
-					style={style}
-					allowMotion={allowSensorMotion}
-					url={user?.currentData?.Viewer?.bannerImage}
-				/>
+	return (
+		<>
+			{userOverviewQuery.isLoading && (
+				<Animated.View
+					exiting={FadeOut}
+					style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+				>
+					<GorakuActivityIndicator />
+				</Animated.View>
 			)}
-			disableBack
-			notificationIcon
-			newNotifs={user?.currentData?.Viewer?.unreadNotificationCount}
-			onNotificationIcon={
-				() => router.push('/notifications')
-				// navigation.navigate('notifications', {
-				//     unreadNotifs: user?.data?.Viewer?.unreadNotificationCount ?? 0,
-				// })
-			}
-			addFriendIcon
-			onAddFriend={() => setShowAddFriend(true)}
-			RefreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
-			// shareLink={shareLink}
-			loading={user?.isLoading}
-		>
-			<View style={{ flex: 1, width: '100%' }}>
-				<UserHeader
-					avatar={user.currentData?.Viewer?.avatar?.large}
-					name={user.currentData?.Viewer?.name}
-				/>
-				<StatOverview
-					anime={user.currentData?.Viewer?.statistics?.anime}
-					manga={user.currentData?.Viewer?.statistics?.manga}
-				/>
-				<ProfileActionBar
-					profile_url={user.currentData?.Viewer?.siteUrl ?? ''}
-					submissions_url={user.currentData?.Viewer?.siteUrl + '/submissions'}
-					settings_url="https://anilist.co/settings"
-					onStatPress={navToStats}
-				/>
-				<View style={{ marginTop: 10 }}>
-					{/* <Accordion title="Activity" initialExpand> */}
-					<FavoritesOverview data={favorites.currentData?.User?.favourites} />
-					<ActivityOverview data={activity.data?.Page?.activities} />
-					{/* </Accordion> */}
-					{/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
-					<Accordion
-						title={'Following'}
-						initialExpand={following.currentData?.Page?.following?.length < 1}
-					>
-						<FollowRow
-							followType={'following'}
-							data={following.currentData?.Page?.following}
-							isLoading={following.isLoading}
+			{!userOverviewQuery.isLoading && userOverviewQuery.data.user && (
+				<FadeHeaderProvider
+					title={userOverviewQuery.data.user?.name}
+					BgImage={({ style }) => (
+						<MediaBanner
+							style={style}
+							allowMotion={allowSensorMotion}
+							url={userOverviewQuery.data.user?.bannerImage}
 						/>
-					</Accordion>
-					<Accordion
-						title={'Followers'}
-						initialExpand={followers.currentData?.Page?.followers?.length < 1}
-					>
-						<FollowRow
-							followType={'followers'}
-							data={followers.currentData?.Page?.followers}
-							isLoading={followers.isLoading}
+					)}
+					disableBack
+					notificationIcon
+					newNotifs={userOverviewQuery.data.user?.unreadNotificationCount}
+					onNotificationIcon={
+						() => router.push('/notifications')
+						// navigation.navigate('notifications', {
+						//     unreadNotifs: user?.data?.Viewer?.unreadNotificationCount ?? 0,
+						// })
+					}
+					addFriendIcon
+					onAddFriend={() => setShowAddFriend(true)}
+					RefreshControl={
+						<RefreshControl
+							refreshing={userOverviewQuery.isRefetching}
+							onRefresh={onRefresh}
 						/>
-					</Accordion>
-				</View>
-			</View>
-			<Portal>
-				<AddFriendDialog visible={showAddFriend} onDismiss={dismissAddFriend} />
-			</Portal>
-		</FadeHeaderProvider>
+					}
+					// shareLink={shareLink}
+					loading={userOverviewQuery?.isLoading}
+				>
+					<View style={{ flex: 1, width: '100%' }}>
+						<UserHeader
+							avatar={userOverviewQuery.data?.user?.avatar?.large}
+							name={userOverviewQuery.data?.user?.name}
+						/>
+						<StatOverview
+							anime={userOverviewQuery.data?.user?.statistics?.anime}
+							manga={userOverviewQuery.data?.user?.statistics?.manga}
+						/>
+						<ProfileActionBar
+							profile_url={userOverviewQuery.data?.user?.siteUrl ?? ''}
+							submissions_url={userOverviewQuery.data?.user?.siteUrl + '/submissions'}
+							settings_url="https://anilist.co/settings"
+							onStatPress={navToStats}
+						/>
+						<View style={{ marginTop: 10 }}>
+							{/* <Accordion title="Activity" initialExpand> */}
+							<FavoritesOverview data={userOverviewQuery.data?.user.favourites} />
+							<ActivityOverview data={userOverviewQuery.data?.activity} />
+							{/* </Accordion> */}
+							{/* <FavOverview favorites={user.data?.Viewer?.favourites} /> */}
+							<Accordion
+								title={'Following'}
+								initialExpand={
+									userOverviewQuery.data?.following?.following?.length < 1
+								}
+							>
+								<FollowRow
+									followType={'following'}
+									data={userOverviewQuery.data?.following?.following}
+								/>
+							</Accordion>
+							<Accordion
+								title={'Followers'}
+								initialExpand={
+									userOverviewQuery.data?.followers?.followers?.length < 1
+								}
+							>
+								<FollowRow
+									followType={'followers'}
+									data={userOverviewQuery.data?.followers?.followers}
+								/>
+							</Accordion>
+						</View>
+					</View>
+					<Portal>
+						<AddFriendDialog visible={showAddFriend} onDismiss={dismissAddFriend} />
+					</Portal>
+				</FadeHeaderProvider>
+			)}
+		</>
 	);
 };
 

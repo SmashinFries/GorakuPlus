@@ -1,8 +1,8 @@
+import { useCharacterDetailsQuery, useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
+import { usePostsSearch, useTagsSearchQuery } from '@/api/danbooru/danbooru';
+import { useMatchStore } from '@/store/matchStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useEffect, useState } from 'react';
-import { useCharacterDetailsQuery, useToggleFavMutation } from '@/store/services/anilist/enhanced';
-import { useSearchPostsQuery, useSearchTagsQuery } from '@/store/services/danbooru/danbooruApi';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { updateCharArtDB } from '@/store/slices/charArtSlice';
 
 const cleanName = (query: string) => {
 	if (!query) return null;
@@ -18,15 +18,14 @@ const cleanName = (query: string) => {
 };
 
 export const useCharDetail = (id: number) => {
-	const charArtDB = useAppSelector((state) => state.persistedCharArtDB);
-	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+	const { booru } = useMatchStore();
+	const { showNSFW } = useSettingsStore();
 	const [isLoading, setIsLoading] = useState(true);
-	const dispatch = useAppDispatch();
-	const [currentArtTag, setCurrentArtTag] = useState<string>(charArtDB.data[id] ?? '');
+	const [currentArtTag, setCurrentArtTag] = useState<string>(booru[id] ?? '');
 
-	const [toggleFav, toggleFavResults] = useToggleFavMutation();
-	const charData = useCharacterDetailsQuery({ id: id }, { skip: id === undefined });
-	const tagOptions = useSearchTagsQuery(
+	const { mutateAsync } = useToggleFavMutation();
+	const charData = useCharacterDetailsQuery({ id: id }, { enabled: !!id });
+	const tagOptions = useTagsSearchQuery(
 		{
 			'search[query]': charData.data?.Character?.name?.full
 				? cleanName(charData.data?.Character?.name?.full)
@@ -34,9 +33,9 @@ export const useCharDetail = (id: number) => {
 			'search[type]': 'tag',
 			limit: 1,
 		},
-		{ skip: !charData.data?.Character?.name?.full },
+		!!charData.data?.Character?.name?.full,
 	);
-	const art = useSearchPostsQuery(
+	const art = usePostsSearch(
 		{
 			limit: 24,
 			tags: currentArtTag

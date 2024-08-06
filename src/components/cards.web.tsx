@@ -1,21 +1,21 @@
 import { Image } from 'expo-image';
-import { Pressable, View, useWindowDimensions } from 'react-native';
+import { Platform, Pressable, View, useWindowDimensions } from 'react-native';
 import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import { listColor, rgbToRgba } from '@/utils';
+import { useNsfwBlur } from '@/hooks/useNSFWBlur';
+import { NSFWLabel } from './labels';
+import { AiringBanner } from './explore/episodeBanner';
 import {
 	MediaListStatus,
 	MediaStatus,
 	MediaTitle,
 	ScoreDistribution,
-} from '@/store/services/anilist/generated-anilist';
-import { LinearGradient } from 'expo-linear-gradient';
-import { listColor, rgbToRgba } from '@/utils';
-import { useAppSelector } from '@/store/hooks';
-import { DanPost } from '@/store/services/danbooru/types';
-import { useNsfwBlur } from '@/hooks/useNSFWBlur';
-import { NSFWLabel } from './labels';
-import { ScoreHealthBar, ScoreIconText, ScoreVisual } from './explore/itemScore';
-import { AiringBanner } from './explore/episodeBanner';
-import { ScoreVisualType } from '@/store/slices/settingsSlice';
+} from '@/api/anilist/__genereated__/gql';
+import { ScoreVisualType } from '@/store/settings/types';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { ScoreVisual } from './explore/itemScore';
+import { DanPost } from '@/api/danbooru/types';
 
 const BORDER_RADIUS = 12;
 
@@ -38,25 +38,25 @@ type MediaCardProps = {
 };
 export const MediaCard = (props: MediaCardProps) => {
 	const { colors } = useTheme();
-	const { scoreColors, mediaLanguage, defaultScore } = useAppSelector(
-		(state) => state.persistedSettings,
-	);
+	const { scoreColors, mediaLanguage, defaultScore } = useSettingsStore();
 	return (
 		<Pressable
 			onPress={props.navigate && props.navigate}
 			android_ripple={{ color: colors.primary, foreground: true }}
 			// disabled={props.disablePress}
-			style={{
-				marginHorizontal: 10,
-				overflow: 'hidden',
-				height: 230,
-				width: 150,
-				aspectRatio: 115 / 163,
-				borderRadius: BORDER_RADIUS,
-				backgroundColor: 'transparent',
-				transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
-				transition: 'all 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99) 0s',
-			}}
+			style={[
+				{
+					marginHorizontal: 10,
+					overflow: 'hidden',
+					height: 230,
+					width: 150,
+					aspectRatio: 115 / 163,
+					borderRadius: BORDER_RADIUS,
+					backgroundColor: 'transparent',
+					transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+					transition: 'all 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99) 0s',
+				},
+			]}
 		>
 			<Image
 				contentFit="cover"
@@ -137,7 +137,7 @@ export const MediaProgressBar = ({
 	showListStatus,
 }: MediaProgressBarProps) => {
 	const { colors } = useTheme();
-	const { showItemListStatus } = useAppSelector((state) => state.persistedSettings);
+	const { showItemListStatus } = useSettingsStore();
 	return (
 		<View
 			style={[
@@ -261,7 +261,7 @@ type CharacterCardProps = {
 };
 export const CharacterCard = (props: CharacterCardProps) => {
 	const { colors } = useTheme();
-	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
+	const { mediaLanguage } = useSettingsStore();
 	return (
 		<Pressable
 			onPress={props.onPress}

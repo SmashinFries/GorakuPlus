@@ -1,10 +1,18 @@
+import {
+	CharacterSort,
+	MediaType,
+	StaffSort,
+	StudioSort,
+	useGenreTagCollectionQuery,
+} from '@/api/anilist/__genereated__/gql';
 import { ScrollToTopButton } from '@/components/buttons';
 import { SearchHeader } from '@/components/headers';
 import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog, FilterTagDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';
 import {
-	AniMangList,
+	AnimeSearchList,
+	MangaSearchList,
 	CharacterList,
 	ImageSearchList,
 	StaffList,
@@ -13,20 +21,10 @@ import {
 } from '@/components/search/lists';
 import { MediaSelectorMem } from '@/components/search/mediaSelector';
 import { useFilter } from '@/hooks/search/useFilter';
-import { useSearch } from '@/hooks/search/useSearch';
 import useFilterSheet from '@/hooks/search/useSheet';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	CharacterSort,
-	MediaType,
-	StaffSort,
-	StudioSort,
-	useGenreTagCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
-import { GenreTagCollectionQueryAlt } from '@/store/services/anilist/types';
-import { setFilterType } from '@/store/slices/search/filterSlice';
-import { addSearch, removeSearchTerm } from '@/store/slices/search/historySlice';
-import { useAppTheme } from '@/store/theme/theme';
+import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
+import { useSearchStore } from '@/store/search/searchStore';
+import { useAppTheme } from '@/store/theme/themes';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, router } from 'expo-router';
@@ -96,35 +94,11 @@ const SearchPage = () => {
 
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
-	const history = useAppSelector((state) => state.persistedHistory);
-	const appDispatch = useAppDispatch();
+	const { query, searchType, updateQuery, updateSearchType } = useSearchStore();
+	const { searchTerms, searchTermLimit, addSearchTerm, removeSearchTerm, updateSearchLimit } =
+		useSearchHistoryStore();
 
-	const { filter, filterType, updateTag, onMediaTypeChange } = useFilter();
-	const {
-		searchStatus,
-		imageSearchResults,
-		imageUrlStatus,
-		localImageStatus,
-		waifuImageResults,
-		waifuImageStatus,
-		mediaResults,
-		charResults,
-		staffResults,
-		studioResults,
-		query,
-		setQuery,
-		searchMedia,
-		searchCharacters,
-		searchStaff,
-		searchStudios,
-		searchWaifu,
-		searchImage,
-		updateNewResults,
-		nextCharPage,
-		nextMediaPage,
-		nextStaffPage,
-		nextStudioPage,
-	} = useSearch(filterType);
+	// const { filter, filterType, updateTag, onMediaTypeChange } = useFilter();
 
 	// Filter Sheet
 	const sheetRef = useRef<BottomSheetModalMethods>(null);
@@ -133,119 +107,119 @@ const SearchPage = () => {
 	const { isFilterOpen, openSheet, closeSheet, setIsFilterOpen, handleSheetChange } =
 		useFilterSheet(sheetRef);
 
-	const onMediaSearch = async () => {
-		Keyboard.dismiss();
-		setLoading(true);
-		const response = await searchMedia(
-			Object.fromEntries(
-				Object.entries({
-					...filter,
-					search: query?.length > 0 ? query : undefined,
-				}).filter(([_, value]) => value !== undefined),
-			),
-		).unwrap();
-		updateNewResults(response);
-		// sheetRef.current?.close();
-		closeSheet();
-		setLoading(false);
-	};
+	// const onMediaSearch = async () => {
+	// 	Keyboard.dismiss();
+	// 	setLoading(true);
+	// 	const response = await searchMedia(
+	// 		Object.fromEntries(
+	// 			Object.entries({
+	// 				...filter,
+	// 				search: query?.length > 0 ? query : undefined,
+	// 			}).filter(([_, value]) => value !== undefined),
+	// 		),
+	// 	).unwrap();
+	// 	updateNewResults(response);
+	// 	// sheetRef.current?.close();
+	// 	closeSheet();
+	// 	setLoading(false);
+	// };
 
-	const onMediaPress = useCallback((aniID: number, type: MediaType) => {
-		// sheetRef.current?.close();
-		closeSheet();
-		router.push(`/${type}/${aniID}`);
-	}, []);
+	// const onMediaPress = useCallback((aniID: number, type: MediaType) => {
+	// 	// sheetRef.current?.close();
+	// 	closeSheet();
+	// 	router.push(`/${type}/${aniID}`);
+	// }, []);
 
-	const onCharPress = useCallback((charID: number) => {
-		router.push(`/characters/info/${charID}`);
-	}, []);
+	// const onCharPress = useCallback((charID: number) => {
+	// 	router.push(`/characters/info/${charID}`);
+	// }, []);
 
-	const onStaffPress = useCallback((staffID: number) => {
-		router.push(`/staff/info/${staffID}`);
-	}, []);
+	// const onStaffPress = useCallback((staffID: number) => {
+	// 	router.push(`/staff/info/${staffID}`);
+	// }, []);
 
-	const onStudioPress = useCallback((studioId: number) => router.push(`/studio/${studioId}`), []);
+	// const onStudioPress = useCallback((studioId: number) => router.push(`/studio/${studioId}`), []);
 
-	const onCharSearch = async () => {
-		Keyboard.dismiss();
-		setLoading(true);
-		const response = await searchCharacters(
-			{
-				name: query?.length < 1 || !query ? undefined : query,
-				page: 1,
-				isBirthday: query?.length < 1 || !query ? true : undefined,
-				sort:
-					query?.length < 1 || !query
-						? [CharacterSort.FavouritesDesc]
-						: [CharacterSort.SearchMatch],
-			},
-			false,
-		).unwrap();
-		updateNewResults(response);
-		setLoading(false);
-	};
+	// const onCharSearch = async () => {
+	// 	Keyboard.dismiss();
+	// 	setLoading(true);
+	// 	const response = await searchCharacters(
+	// 		{
+	// 			name: query?.length < 1 || !query ? undefined : query,
+	// 			page: 1,
+	// 			isBirthday: query?.length < 1 || !query ? true : undefined,
+	// 			sort:
+	// 				query?.length < 1 || !query
+	// 					? [CharacterSort.FavouritesDesc]
+	// 					: [CharacterSort.SearchMatch],
+	// 		},
+	// 		false,
+	// 	).unwrap();
+	// 	updateNewResults(response);
+	// 	setLoading(false);
+	// };
 
-	const onStaffSearch = async () => {
-		Keyboard.dismiss();
-		setLoading(true);
-		const response = await searchStaff(
-			{
-				name: query?.length < 1 || !query ? undefined : query,
-				page: 1,
-				isBirthday: query?.length < 1 || !query ? true : undefined,
-				sort:
-					query?.length < 1 || !query
-						? [StaffSort.FavouritesDesc]
-						: [StaffSort.SearchMatch],
-			},
-			false,
-		).unwrap();
-		updateNewResults(response);
-		setLoading(false);
-	};
+	// const onStaffSearch = async () => {
+	// 	Keyboard.dismiss();
+	// 	setLoading(true);
+	// 	const response = await searchStaff(
+	// 		{
+	// 			name: query?.length < 1 || !query ? undefined : query,
+	// 			page: 1,
+	// 			isBirthday: query?.length < 1 || !query ? true : undefined,
+	// 			sort:
+	// 				query?.length < 1 || !query
+	// 					? [StaffSort.FavouritesDesc]
+	// 					: [StaffSort.SearchMatch],
+	// 		},
+	// 		false,
+	// 	).unwrap();
+	// 	updateNewResults(response);
+	// 	setLoading(false);
+	// };
 
-	const onStudioSearch = async () => {
-		Keyboard.dismiss();
-		setLoading(true);
-		const response = await searchStudios(
-			{
-				name: query?.length < 1 || !query ? undefined : query,
-				page: 1,
-				sort:
-					query?.length < 1 || !query
-						? [StudioSort.FavouritesDesc]
-						: [StudioSort.SearchMatch],
-			},
-			false,
-		).unwrap();
-		updateNewResults(response);
+	// const onStudioSearch = async () => {
+	// 	Keyboard.dismiss();
+	// 	setLoading(true);
+	// 	const response = await searchStudios(
+	// 		{
+	// 			name: query?.length < 1 || !query ? undefined : query,
+	// 			page: 1,
+	// 			sort:
+	// 				query?.length < 1 || !query
+	// 					? [StudioSort.FavouritesDesc]
+	// 					: [StudioSort.SearchMatch],
+	// 		},
+	// 		false,
+	// 	).unwrap();
+	// 	updateNewResults(response);
 
-		// appDispatch(
-		// 	updateFilterHistory({
-		// 		filter: filter.filter,
-		// 	}),
-		// );
-		setLoading(false);
-	};
+	// 	// appDispatch(
+	// 	// 	updateFilterHistory({
+	// 	// 		filter: filter.filter,
+	// 	// 	}),
+	// 	// );
+	// 	setLoading(false);
+	// };
 
-	const onSearch = async () => {
-		appDispatch(addSearch(query));
-		if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
-			await onMediaSearch();
-		} else if (filterType === 'characters') {
-			await onCharSearch();
-		} else if (filterType === 'staff') {
-			await onStaffSearch();
-		} else if (filterType === 'studios') {
-			await onStudioSearch();
-		} else if (filterType === 'imageSearch') {
-			onMediaTypeChange(MediaType.Anime);
-			await onMediaSearch();
-		} else if (filterType === 'waifuSearch') {
-			onMediaTypeChange('characters');
-			await onCharSearch();
-		}
-	};
+	// const onSearch = async () => {
+	// 	addSearchTerm(query);
+	// 	if (filterType === MediaType.Anime || filterType === MediaType.Manga) {
+	// 		await onMediaSearch();
+	// 	} else if (filterType === 'characters') {
+	// 		await onCharSearch();
+	// 	} else if (filterType === 'staff') {
+	// 		await onStaffSearch();
+	// 	} else if (filterType === 'studios') {
+	// 		await onStudioSearch();
+	// 	} else if (filterType === 'imageSearch') {
+	// 		onMediaTypeChange(MediaType.Anime);
+	// 		await onMediaSearch();
+	// 	} else if (filterType === 'waifuSearch') {
+	// 		onMediaTypeChange('characters');
+	// 		await onCharSearch();
+	// 	}
+	// };
 
 	const stickyHeaderStyle = useAnimatedStyle(() => {
 		return {
@@ -298,45 +272,34 @@ const SearchPage = () => {
 									},
 								]}
 							>
-								<MediaSelectorMem
-									selection={filterType}
-									onSelect={(type) => {
-										appDispatch(setFilterType(type));
-										onMediaTypeChange(type);
-										scrollOffset.value = 0;
-										if (type !== MediaType.Anime && type !== MediaType.Manga) {
-											// sheetRef?.current?.close();
-											closeSheet();
-										}
-									}}
-								/>
+								<MediaSelectorMem />
 								{showScrollToTop && (
 									<ScrollToTopButton listRef={listRef} top={110} />
 								)}
 							</Animated.View>
 							<SearchHeader
 								{...props}
-								searchContent={onSearch}
+								// searchContent={onSearch}
 								openFilter={() => {
 									Keyboard.dismiss();
 									// onSearchTypeChange
 									openSheet();
 									// router.push('/filter');
 								}}
-								currentType={filterType}
+								currentType={searchType}
 								toggleIsFocused={toggleIsFocused}
 								searchbarRef={searchbarRef}
 								searchTerm={query}
-								setSearchTerm={(search) => setQuery(search)}
+								setSearchTerm={(search) => updateQuery(search)}
 								openImageSearch={() => {
 									Keyboard.dismiss();
 									// onSearchTypeChange('imageSearch');
-									onMediaTypeChange('imageSearch');
+									// onMediaTypeChange('imageSearch');
 									setShowImageSearchDialog(true);
 								}}
 								openWaifuSearch={() => {
 									Keyboard.dismiss();
-									onMediaTypeChange('waifuSearch');
+									// onMediaTypeChange('waifuSearch');
 									// dispatch({ type: 'CHANGE_SEARCHTYPE', payload: 'waifuSearch' });
 									// appDispatch(updateSearchType('waifuSearch'));
 									setShowWaifuSearchDialog(true);
@@ -350,27 +313,23 @@ const SearchPage = () => {
 				}}
 			/>
 			<View style={{ flex: 1 }}>
-				{(filterType === MediaType.Anime || filterType === MediaType.Manga) && (
-					<AniMangList
-						filter={filter}
-						isLoading={loading}
-						nextPage={nextMediaPage}
-						results={mediaResults}
-						searchStatus={searchStatus}
-						sheetRef={sheetRef}
-						onItemPress={onMediaPress}
-						onScrollHandler={scrollHandler}
+				{searchType === MediaType.Anime && (
+					<AnimeSearchList
 						headerHeight={categoryHeight}
 						listRef={listRef}
+						onScrollHandler={scrollHandler}
 					/>
 				)}
-				{filterType === 'characters' && (
+				{searchType === MediaType.Manga && (
+					<MangaSearchList
+						headerHeight={categoryHeight}
+						listRef={listRef}
+						onScrollHandler={scrollHandler}
+					/>
+				)}
+				{/* {searchType === 'CHARACTER' && (
 					<CharacterList
 						isLoading={loading}
-						onNavigate={onCharPress}
-						results={charResults}
-						searchStatus={searchStatus}
-						nextPage={() => nextCharPage()}
 						onScrollHandler={scrollHandler}
 						headerHeight={categoryHeight}
 						listRef={listRef}
@@ -399,25 +358,7 @@ const SearchPage = () => {
 						headerHeight={categoryHeight}
 						listRef={listRef}
 					/>
-				)}
-				{filterType === 'imageSearch' && (
-					<ImageSearchList
-						results={imageSearchResults}
-						headerHeight={categoryHeight}
-						onScrollHandler={scrollHandler}
-						isLoading={imageUrlStatus.isFetching || localImageStatus.isLoading}
-						listRef={listRef}
-					/>
-				)}
-				{filterType === 'waifuSearch' && (
-					<WaifuSearchList
-						results={waifuImageResults}
-						headerHeight={categoryHeight}
-						onScrollHandler={scrollHandler}
-						isLoading={waifuImageStatus.isFetching || waifuImageStatus.isLoading}
-						listRef={listRef}
-					/>
-				)}
+				)} */}
 				{isFocused && (
 					<Animated.View
 						style={{
@@ -432,7 +373,7 @@ const SearchPage = () => {
 						entering={SlideInDown}
 					>
 						<ScrollView keyboardShouldPersistTaps={'always'}>
-							{history.search.map((term, idx) => (
+							{searchTerms.map((term, idx) => (
 								<List.Item
 									key={idx}
 									title={term}
@@ -440,11 +381,11 @@ const SearchPage = () => {
 										<IconButton
 											{...props}
 											icon={'delete-outline'}
-											onPress={() => appDispatch(removeSearchTerm(term))}
+											onPress={() => removeSearchTerm(term)}
 										/>
 									)}
 									onPress={() => {
-										setQuery(term);
+										updateQuery(term);
 									}}
 								/>
 							))}
@@ -478,29 +419,11 @@ const SearchPage = () => {
 			<FilterSheet
 				sheetRef={sheetRef}
 				handleSheetChange={handleSheetChange}
-				onSearch={onSearch}
-				// onSearch={() => console.log(filter)}
 				toggleSheet={closeSheet}
 				openTagDialog={() => setShowTagDialog(true)}
-				genreTagData={genreTagResult.data as unknown as GenreTagCollectionQueryAlt}
+				genreTagData={genreTagResult.data}
 			/>
-			{/* <TrueSheet
-				ref={sheetRef}
-				sizes={['auto', 'large']}
-				cornerRadius={24}
-				grabberProps={{ color: colors.onSurfaceVariant }}
-				style={{ backgroundColor: colors.elevation.level1 }}
-			>
-				<GestureHandlerRootView>
-					<FilterSheetContent
-						onSearch={onSearch}
-						// onSearch={() => console.log(filter)}
-
-						genreTagData={genreTagResult.data as unknown as GenreTagCollectionQueryAlt}
-					/>
-				</GestureHandlerRootView>
-			</TrueSheet> */}
-			<Portal>
+			{/* <Portal>
 				<ImageSearchDialog
 					visible={showImageSearchDialog}
 					onDismiss={() => setShowImageSearchDialog(false)}
@@ -519,7 +442,7 @@ const SearchPage = () => {
 					onDismiss={() => setShowTagDialog(false)}
 					toggleTag={(name) => updateTag(name)}
 				/>
-			</Portal>
+			</Portal> */}
 		</>
 	);
 };

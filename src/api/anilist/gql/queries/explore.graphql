@@ -1,0 +1,640 @@
+fragment MainMeta on Media {
+	id
+	idMal
+	bannerImage
+	type
+	format
+	isFavourite
+	description
+	genres
+	status
+	siteUrl
+	meanScore
+	averageScore
+	startDate {
+		year
+		month
+		day
+	}
+	title {
+		english
+		native
+		romaji
+		userPreferred
+	}
+	coverImage {
+		medium
+		large
+		extraLarge
+		color
+	}
+	mediaListEntry {
+		id
+		mediaId
+		status
+		score
+		progress
+		progressVolumes
+		repeat
+	}
+	stats {
+		scoreDistribution {
+			score
+			amount
+		}
+	}
+}
+
+fragment AnimeMeta on Media {
+	...MainMeta
+	episodes
+	nextAiringEpisode {
+		id
+		airingAt
+		timeUntilAiring
+		episode
+		mediaId
+	}
+}
+
+fragment MangaMeta on Media {
+	...MainMeta
+	chapters
+}
+
+fragment NovelMeta on Media {
+	...MainMeta
+	volumes
+}
+
+query AnimeExplore(
+	$perPage: Int
+	$season: MediaSeason
+	$seasonYear: Int
+	$nextSeason: MediaSeason
+	$nextSeasonYear: Int
+	$onList: Boolean
+	$isAdult: Boolean
+	$tag_not_in: [String]
+) {
+	trending: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: ANIME
+			isAdult: $isAdult
+			onList: $onList
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+			tag_not_in: $tag_not_in
+		) {
+			...AnimeMeta
+		}
+	}
+	popular: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: ANIME
+			isAdult: $isAdult
+			onList: $onList
+			sort: POPULARITY_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...AnimeMeta
+		}
+	}
+	top: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: ANIME
+			isAdult: $isAdult
+			onList: $onList
+			sort: SCORE_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...AnimeMeta
+		}
+	}
+	thisSeason: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: ANIME
+			season: $season
+			seasonYear: $seasonYear
+			isAdult: $isAdult
+			onList: $onList
+			sort: SCORE_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...AnimeMeta
+		}
+	}
+	nextSeason: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: ANIME
+			season: $nextSeason
+			seasonYear: $nextSeasonYear
+			isAdult: $isAdult
+			onList: $onList
+			sort: TRENDING_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...AnimeMeta
+		}
+	}
+}
+
+query MangaExplore(
+	$perPage: Int
+	$startDate_greater: FuzzyDateInt
+	$onList: Boolean
+	$isAdult: Boolean
+	$tag_not_in: [String]
+) {
+	newReleases: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: JP
+			status: RELEASING
+			isAdult: $isAdult
+			onList: $onList
+			tag_not_in: $tag_not_in
+			startDate_greater: $startDate_greater
+			format_not_in: [NOVEL, ONE_SHOT]
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+		) {
+			...MangaMeta
+		}
+	}
+	trending: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: JP
+			isAdult: $isAdult
+			onList: $onList
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+			tag_not_in: $tag_not_in
+			format_not_in: NOVEL
+		) {
+			...MangaMeta
+		}
+	}
+	popular: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: JP
+			isAdult: $isAdult
+			onList: $onList
+			sort: POPULARITY_DESC
+			tag_not_in: $tag_not_in
+			format_not_in: NOVEL
+		) {
+			...MangaMeta
+		}
+	}
+	top: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: JP
+			isAdult: $isAdult
+			onList: $onList
+			sort: SCORE_DESC
+			tag_not_in: $tag_not_in
+			format_not_in: NOVEL
+		) {
+			...MangaMeta
+		}
+	}
+}
+
+query ManhwaExplore(
+	$perPage: Int
+	$startDate_greater: FuzzyDateInt
+	$onList: Boolean
+	$isAdult: Boolean
+	$tag_not_in: [String]
+) {
+	newReleases: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: KR
+			status: RELEASING
+			isAdult: $isAdult
+			onList: $onList
+			tag_not_in: $tag_not_in
+			startDate_greater: $startDate_greater
+			format_not_in: [NOVEL, ONE_SHOT]
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+		) {
+			...MangaMeta
+		}
+	}
+	trending: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: KR
+			isAdult: $isAdult
+			onList: $onList
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+			tag_not_in: $tag_not_in
+		) {
+			...MangaMeta
+		}
+	}
+	popular: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: KR
+			isAdult: $isAdult
+			onList: $onList
+			sort: POPULARITY_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...MangaMeta
+		}
+	}
+	top: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: KR
+			isAdult: $isAdult
+			onList: $onList
+			sort: SCORE_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...MangaMeta
+		}
+	}
+}
+
+query ManhuaExplore(
+	$perPage: Int
+	$startDate_greater: FuzzyDateInt
+	$onList: Boolean
+	$isAdult: Boolean
+	$tag_not_in: [String]
+) {
+	newReleases: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: CN
+			status: RELEASING
+			isAdult: $isAdult
+			onList: $onList
+			tag_not_in: $tag_not_in
+			startDate_greater: $startDate_greater
+			format_not_in: [NOVEL, ONE_SHOT]
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+		) {
+			...MangaMeta
+		}
+	}
+	trending: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: CN
+			isAdult: $isAdult
+			onList: $onList
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+			tag_not_in: $tag_not_in
+		) {
+			...MangaMeta
+		}
+	}
+	popular: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: CN
+			isAdult: $isAdult
+			onList: $onList
+			sort: POPULARITY_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...MangaMeta
+		}
+	}
+	top: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			countryOfOrigin: CN
+			isAdult: $isAdult
+			onList: $onList
+			sort: SCORE_DESC
+			tag_not_in: $tag_not_in
+		) {
+			...MangaMeta
+		}
+	}
+}
+
+query NovelExplore(
+	$perPage: Int
+	$startDate_greater: FuzzyDateInt
+	$onList: Boolean
+	$isAdult: Boolean
+	$tag_not_in: [String]
+) {
+	newReleases: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			status: RELEASING
+			isAdult: $isAdult
+			onList: $onList
+			tag_not_in: $tag_not_in
+			startDate_greater: $startDate_greater
+			format: NOVEL
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+		) {
+			...NovelMeta
+		}
+	}
+	trending: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			isAdult: $isAdult
+			onList: $onList
+			sort: [TRENDING_DESC, POPULARITY_DESC]
+			format: NOVEL
+			tag_not_in: $tag_not_in
+		) {
+			...NovelMeta
+		}
+	}
+	popular: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			isAdult: $isAdult
+			onList: $onList
+			sort: POPULARITY_DESC
+			format: NOVEL
+			tag_not_in: $tag_not_in
+		) {
+			...NovelMeta
+		}
+	}
+	top: Page(page: 1, perPage: $perPage) {
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		media(
+			type: MANGA
+			isAdult: $isAdult
+			onList: $onList
+			sort: SCORE_DESC
+			format: NOVEL
+			tag_not_in: $tag_not_in
+		) {
+			...NovelMeta
+		}
+	}
+}
+
+query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $onList: Boolean) {
+	Page(page: $page, perPage: $perPage) {
+		pageInfo {
+			currentPage
+			hasNextPage
+		}
+		recommendations(sort: $sort, onList: $onList) {
+			id
+			rating
+			userRating
+			media {
+				id
+				idMal
+				type
+				bannerImage
+				isAdult
+				title {
+					userPreferred
+					romaji
+					native
+					english
+				}
+				coverImage {
+					color
+					extraLarge
+				}
+				meanScore
+				averageScore
+				stats {
+					scoreDistribution {
+						score
+						amount
+					}
+				}
+			}
+			mediaRecommendation {
+				id
+				idMal
+				type
+				bannerImage
+				title {
+					userPreferred
+					romaji
+					native
+					english
+				}
+				coverImage {
+					color
+					extraLarge
+				}
+				stats {
+					scoreDistribution {
+						score
+						amount
+					}
+				}
+				meanScore
+				averageScore
+			}
+			user {
+				id
+				name
+				bannerImage
+				about
+				createdAt
+				options {
+					profileColor
+				}
+				avatar {
+					large
+				}
+				favourites {
+					anime(perPage: 1) {
+						nodes {
+							id
+							title {
+								userPreferred
+							}
+							coverImage {
+								color
+								extraLarge
+							}
+							siteUrl
+						}
+					}
+					manga(perPage: 1) {
+						nodes {
+							id
+							title {
+								userPreferred
+							}
+							coverImage {
+								color
+								extraLarge
+							}
+							siteUrl
+						}
+					}
+					characters(perPage: 1) {
+						nodes {
+							id
+							name {
+								userPreferred
+							}
+							image {
+								large
+							}
+							gender
+							siteUrl
+						}
+					}
+				}
+				siteUrl
+			}
+		}
+	}
+}
+
+query GenreTagCollection {
+	GenreCollection
+	MediaTagCollection {
+		id
+		name
+		description
+		category
+		rank
+		isGeneralSpoiler
+		isMediaSpoiler
+		isAdult
+	}
+}
+
+query StudioList($studioId: Int, $page: Int, $perPage: Int) {
+	Studio(id: $studioId) {
+		id
+		name
+		isAnimationStudio
+		siteUrl
+		isFavourite
+		media(page: $page, perPage: $perPage, sort: [TRENDING_DESC, POPULARITY_DESC]) {
+			pageInfo {
+				total
+				perPage
+				currentPage
+				lastPage
+				hasNextPage
+			}
+			nodes {
+				...AnimeMeta
+			}
+		}
+	}
+}

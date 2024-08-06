@@ -1,21 +1,14 @@
 import { View } from 'react-native';
 import { SegmentedButtons, SegmentedButtonsProps, Text, useTheme } from 'react-native-paper';
-import {
-	CharacterDetailsQuery,
-	CharacterName,
-	MediaEdge,
-	MediaSource,
-	StaffDetailsQuery,
-	StaffName,
-} from '@/store/services/anilist/generated-anilist';
 import { copyToClipboard } from '@/utils';
 import { TransYUpViewMem } from '@/components/animations';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import useTTS from '@/hooks/useTTS';
-import { useAppSelector } from '@/store/hooks';
 import {} from 'react-i18next';
 import { AnilistLanguages } from '@/types/anilist';
+import { CharacterName, StaffName } from '@/api/anilist/__genereated__/gql';
+import { useTTSStore } from '@/store/tts/ttsStore';
 
 type NameViewerProps = {
 	nativeLang?: AnilistLanguages | null;
@@ -23,11 +16,7 @@ type NameViewerProps = {
 	defaultTitle: 'full' | 'native';
 };
 export const NameViewer = ({ nativeLang, names, defaultTitle }: NameViewerProps) => {
-	const { colors } = useTheme();
-	const { enabled, english, japanese, korean, chinese } = useAppSelector(
-		(state) => state.ttsSettings,
-	);
-
+	const { enabled, english, japanese, korean, chinese } = useTTSStore();
 	const { speak } = useTTS();
 
 	const [title, setTitle] = useState<NameViewerProps['defaultTitle']>(defaultTitle);

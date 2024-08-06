@@ -1,8 +1,4 @@
-import {
-	useSaveMediaListItemMutation,
-	useToggleFavMutation,
-	useDeleteMediaListItemMutation,
-} from '@/store/services/anilist/enhanced';
+import { useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
 
 export const useListEntry = () => {
 	const [toggleFav, favResults] = useToggleFavMutation();

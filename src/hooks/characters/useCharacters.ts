@@ -1,29 +1,42 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useCharacterListQuery } from '@/store/services/anilist/enhanced';
 import {
-	CharacterDetailsQuery,
 	CharacterSort,
 	MediaType,
-} from '@/store/services/anilist/generated-anilist';
+	useInfiniteCharacterListQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { useMemo } from 'react';
 
 export const useCharactersList = (id: number, type: MediaType) => {
-	const [page, setPage] = useState(1);
-	const charData = useCharacterListQuery({
-		id: id,
-		type: type,
-		page: page,
-		perPage: 25,
-		sort: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
-	});
+	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } =
+		useInfiniteCharacterListQuery(
+			{
+				id: id,
+				type: type,
+				page: 1,
+				perPage: 25,
+				sort: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
+			},
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Media.characters.pageInfo.hasNextPage) {
+						return {
+							page: lastPage.Media.characters.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 
-	const loadMore = useCallback(() => {
-		if (charData.data?.Media?.characters?.pageInfo?.hasNextPage && !charData.isFetching) {
-			setPage((prev) => prev + 1);
-		}
-	}, [charData.data?.Media?.characters?.pageInfo?.hasNextPage, charData.isFetching]);
+	const allItems = useMemo(
+		() => data.pages.flatMap((page) => page.Media.characters.edges),
+		[data],
+	);
 
 	return {
-		charData,
-		loadMore,
+		data: allItems,
+		isLoading,
+		isFetching,
+		hasNextPage,
+		fetchNextPage,
 	};
 };

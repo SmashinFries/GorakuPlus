@@ -1,5 +1,4 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView } from 'moti';
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	View,
@@ -97,15 +96,15 @@ export const TransYUpView = ({ children, style, delay, animation = true }: AnimV
 	}
 
 	return (
-		<MotiView
+		<Animated.View
 			style={style}
-			from={{ translateY: height }}
-			animate={{ translateY: 0 }}
-			delay={delay}
-			transition={{ type: 'spring', mass: 0.5, damping: 10 }}
+			// from={{ translateY: height }}
+			// animate={{ translateY: 0 }}
+			// delay={delay}
+			// transition={{ type: 'spring', mass: 0.5, damping: 10 }}
 		>
 			{children}
-		</MotiView>
+		</Animated.View>
 	);
 };
 
@@ -115,18 +114,18 @@ export const TransXInView = ({
 	direction,
 	delay,
 }: AnimViewProps & { direction: 'left' | 'right' }) => {
-	const { width } = useWindowDimensions();
+	// const { width } = useWindowDimensions();
 	return (
-		<MotiView
-			renderToHardwareTextureAndroid
+		<Animated.View
+			// renderToHardwareTextureAndroid
 			style={style}
-			from={{ translateX: direction === 'left' ? -width : width }}
-			animate={{ translateX: direction === 'right' ? 0 : 0 }}
-			delay={delay}
-			transition={{ type: 'spring', mass: 0.5, damping: 10 }}
+			// from={{ translateX: direction === 'left' ? -width : width }}
+			// animate={{ translateX: direction === 'right' ? 0 : 0 }}
+			// delay={delay}
+			// transition={{ type: 'spring', mass: 0.5, damping: 10 }}
 		>
 			{children}
-		</MotiView>
+		</Animated.View>
 	);
 };
 

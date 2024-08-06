@@ -1,4 +1,3 @@
-import { TransYUpViewMem } from '@/components/animations';
 import { ImageViewer } from '@/components/imageViewer';
 import { ListHeading } from '@/components/text';
 import { useBlur } from '@/hooks/useNSFWBlur';
@@ -10,6 +9,7 @@ import { Image } from 'expo-image';
 import { useCallback, useRef, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
 import { Portal } from 'react-native-paper';
+import Animated from 'react-native-reanimated';
 
 type ScreenshotItemProps = {
 	item: Media['streamingEpisodes'][0];
@@ -69,7 +69,7 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 	}
 
 	return (
-		<TransYUpViewMem style={{ overflow: 'visible' }}>
+		<Animated.View style={{ overflow: 'visible' }}>
 			<ListHeading
 				title="Screenshots"
 				subtitle="Contains spoilers!"
@@ -96,7 +96,7 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 					initialIndex={currentImageIndex.current}
 				/>
 			</Portal>
-		</TransYUpViewMem>
+		</Animated.View>
 	);
 };
 

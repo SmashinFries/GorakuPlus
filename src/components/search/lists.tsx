@@ -1,19 +1,9 @@
-import { FlashList, FlashListProps, ListRenderItem } from '@shopify/flash-list';
+import { FlashList, FlashListProps, ListRenderItem, ListRenderItemInfo } from '@shopify/flash-list';
 import { NativeSyntheticEvent, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { Button, Card, Chip, Text, useTheme } from 'react-native-paper';
 import { rgbToRgba, useColumns } from '@/utils';
 import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CharacterCard, MediaCard, MediaProgressBar, StaffCard, StudioCard } from '../cards';
-import { SearchFooter } from './footers';
-import { useAppSelector } from '@/store/hooks';
-import {
-	CharacterSearchQuery,
-	ExploreMediaQuery,
-	ExploreMediaQueryVariables,
-	MediaType,
-	StaffSearchQuery,
-	StudioSearchQuery,
-} from '@/store/services/anilist/generated-anilist';
 import { EmptyLoadView } from './loading';
 import { openWebBrowser } from '@/utils/webBrowser';
 import Animated, {
@@ -23,89 +13,96 @@ import Animated, {
 	useSharedValue,
 } from 'react-native-reanimated';
 import { NativeScrollEvent } from 'react-native';
-import { Anilist, Result, SearchResult } from '@/store/services/tracemoe/traceMoeApi';
 import { Image } from 'expo-image';
 import { ResizeMode, Video } from 'expo-av';
 import { ImageSearchItem } from './media';
-import { WdTaggerOutput } from '@/store/services/huggingface/types';
-import { useLazyCharacterSearchQuery } from '@/store/services/anilist/enhanced';
 import { router } from 'expo-router';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import { ScrollToTopButton } from '../buttons';
+import { useAnimeSearch, useMangaSearch } from '@/hooks/search/useSearch';
+import { useSearchStore } from '@/store/search/searchStore';
+import useDebounce from '@/hooks/useDebounce';
+import {
+	MediaList,
+	SearchAnimeQuery,
+	SearchMangaQuery,
+	useInfiniteSearchMangaQuery,
+} from '@/api/anilist/__genereated__/gql';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
-type AniMangListProps = {
-	filter: ExploreMediaQueryVariables;
-	results: ExploreMediaQuery;
-	searchStatus: any;
-	sheetRef: any;
-	isLoading: boolean;
-	nextPage: (currentPage: number, filter: ExploreMediaQueryVariables) => Promise<void>;
-	onItemPress: (aniID: number, type: MediaType) => void;
+const MediaRenderItem = (
+	props: ListRenderItemInfo<
+		SearchAnimeQuery['Page']['media'][0] | SearchMangaQuery['Page']['media'][0]
+	>,
+) => {
+	return (
+		<View
+			style={{
+				flex: 1,
+				alignItems: 'center',
+				justifyContent: 'flex-start',
+				marginVertical: 10,
+				marginHorizontal: 5,
+			}}
+		>
+			<MediaCard
+				coverImg={props.item.coverImage.extraLarge}
+				titles={props.item.title}
+				navigate={() => {
+					router.push(`/(media)/${props.item.type}/${props.item.id}`);
+				}}
+				imgBgColor={props.item.coverImage.color}
+				scoreDistributions={props.item.stats?.scoreDistribution}
+				bannerText={props.item.nextAiringEpisode?.timeUntilAiring}
+				showBanner={props.item.nextAiringEpisode ? true : false}
+				averageScore={props.item.averageScore}
+				meanScore={props.item.meanScore}
+				fitToParent
+			/>
+			<MediaProgressBar
+				progress={props.item.mediaListEntry?.progress}
+				mediaListEntry={props.item.mediaListEntry as MediaList}
+				mediaStatus={props.item.status}
+				total={props.item.episodes ?? props.item.chapters ?? props.item.volumes ?? 0}
+			/>
+		</View>
+	);
+};
+
+type MediaSearchListProps = {
+	listRef: MutableRefObject<FlashList<any>>;
 	onScrollHandler:
 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+		| SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
-	listRef: MutableRefObject<FlashList<any>>;
 };
-export const AniMangList = (props: AniMangListProps) => {
+export const AnimeSearchList = ({
+	listRef,
+	onScrollHandler,
+	headerHeight,
+}: MediaSearchListProps) => {
+	const { query, filter } = useSearchStore();
+	const debouncedSearch = useDebounce(query, 600);
+	const { data, hasNextPage, fetchNextPage, isFetching } = useAnimeSearch({
+		...filter,
+		search: debouncedSearch,
+	});
 	const { width } = useWindowDimensions();
 	const { columns, listKey } = useColumns(150);
-	const { dismissAll } = useBottomSheetModal();
 
 	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
 
-	const RenderItem = useCallback(
-		(itemProps) => (
-			<View
-				style={{
-					flex: 1,
-					alignItems: 'center',
-					justifyContent: 'flex-start',
-					marginVertical: 10,
-					marginHorizontal: 5,
-				}}
-			>
-				<MediaCard
-					coverImg={itemProps.item.coverImage.extraLarge}
-					titles={itemProps.item.title}
-					navigate={() => {
-						dismissAll();
-						props.onItemPress(itemProps.item.id, itemProps.item.type);
-					}}
-					imgBgColor={itemProps.item.coverImage.color}
-					scoreDistributions={itemProps.item.stats?.scoreDistribution}
-					bannerText={itemProps.item.nextAiringEpisode?.timeUntilAiring}
-					showBanner={itemProps.item.nextAiringEpisode ? true : false}
-					averageScore={itemProps.item.averageScore}
-					meanScore={itemProps.item.meanScore}
-					fitToParent
-				/>
-				<MediaProgressBar
-					progress={itemProps.item.mediaListEntry?.progress}
-					mediaListEntry={itemProps.item.mediaListEntry}
-					mediaStatus={itemProps.item.status}
-					total={
-						itemProps.item.episodes ??
-						itemProps.item.chapters ??
-						itemProps.item.volumes ??
-						0
-					}
-				/>
-			</View>
-		),
-		[],
-	);
+	const allResults = useMemo(() => data.pages.flatMap((val) => val.Page.media), [data]);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
 			<AnimatedFlashList
 				key={listKey}
-				ref={props.listRef}
-				data={props.results?.Page?.media}
+				ref={listRef}
+				data={allResults}
 				nestedScrollEnabled
-				renderItem={RenderItem}
+				renderItem={MediaRenderItem}
 				keyExtractor={keyExtract}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
@@ -113,23 +110,166 @@ export const AniMangList = (props: AniMangListProps) => {
 				estimatedItemSize={240}
 				removeClippedSubviews
 				centerContent
-				onScroll={props.onScrollHandler}
+				onScroll={onScrollHandler}
 				contentContainerStyle={{
 					// padding: 10,
-					paddingTop: props.headerHeight,
+					paddingTop: headerHeight,
 					// paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
 				}}
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
-					props.results?.Page &&
-						props.results?.Page?.pageInfo?.hasNextPage &&
-						props.results?.Page?.media?.length > 0 &&
-						props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
+					hasNextPage && fetchNextPage();
 				}}
 			/>
 		</View>
 	);
 };
+
+export const MangaSearchList = ({
+	listRef,
+	onScrollHandler,
+	headerHeight,
+}: MediaSearchListProps) => {
+	const { query, filter } = useSearchStore();
+	const debouncedSearch = useDebounce(query, 600);
+	const { data, hasNextPage, fetchNextPage, isFetching } = useMangaSearch({
+		...filter,
+		search: debouncedSearch,
+	});
+	const { width } = useWindowDimensions();
+	const { columns, listKey } = useColumns(150);
+
+	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
+
+	const allResults = useMemo(() => data.pages.flatMap((val) => val.Page.media), [data]);
+
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			<AnimatedFlashList
+				key={listKey}
+				ref={listRef}
+				data={allResults}
+				nestedScrollEnabled
+				renderItem={MediaRenderItem}
+				keyExtractor={keyExtract}
+				keyboardShouldPersistTaps="never"
+				keyboardDismissMode="interactive"
+				numColumns={3}
+				estimatedItemSize={240}
+				removeClippedSubviews
+				centerContent
+				onScroll={onScrollHandler}
+				contentContainerStyle={{
+					// padding: 10,
+					paddingTop: headerHeight,
+					// paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
+				}}
+				onEndReachedThreshold={0.4}
+				onEndReached={() => {
+					hasNextPage && fetchNextPage();
+				}}
+			/>
+		</View>
+	);
+};
+
+// type AniMangListProps = {
+// 	filter: ExploreMediaQueryVariables;
+// 	results: ExploreMediaQuery;
+// 	searchStatus: any;
+// 	sheetRef: any;
+// 	isLoading: boolean;
+// 	nextPage: (currentPage: number, filter: ExploreMediaQueryVariables) => Promise<void>;
+// 	onItemPress: (aniID: number, type: MediaType) => void;
+// 	onScrollHandler:
+// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
+// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
+// 	headerHeight: number;
+// 	listRef: MutableRefObject<FlashList<any>>;
+// };
+// export const AniMangList = (props: AniMangListProps) => {
+// 	const { width } = useWindowDimensions();
+// 	const { columns, listKey } = useColumns(150);
+// 	const { dismissAll } = useBottomSheetModal();
+
+// 	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
+
+// 	const RenderItem = useCallback(
+// 		(itemProps) => (
+// 			<View
+// 				style={{
+// 					flex: 1,
+// 					alignItems: 'center',
+// 					justifyContent: 'flex-start',
+// 					marginVertical: 10,
+// 					marginHorizontal: 5,
+// 				}}
+// 			>
+// 				<MediaCard
+// 					coverImg={itemProps.item.coverImage.extraLarge}
+// 					titles={itemProps.item.title}
+// 					navigate={() => {
+// 						dismissAll();
+// 						props.onItemPress(itemProps.item.id, itemProps.item.type);
+// 					}}
+// 					imgBgColor={itemProps.item.coverImage.color}
+// 					scoreDistributions={itemProps.item.stats?.scoreDistribution}
+// 					bannerText={itemProps.item.nextAiringEpisode?.timeUntilAiring}
+// 					showBanner={itemProps.item.nextAiringEpisode ? true : false}
+// 					averageScore={itemProps.item.averageScore}
+// 					meanScore={itemProps.item.meanScore}
+// 					fitToParent
+// 				/>
+// 				<MediaProgressBar
+// 					progress={itemProps.item.mediaListEntry?.progress}
+// 					mediaListEntry={itemProps.item.mediaListEntry}
+// 					mediaStatus={itemProps.item.status}
+// 					total={
+// 						itemProps.item.episodes ??
+// 						itemProps.item.chapters ??
+// 						itemProps.item.volumes ??
+// 						0
+// 					}
+// 				/>
+// 			</View>
+// 		),
+// 		[],
+// 	);
+
+// 	return (
+// 		<View style={{ flex: 1, height: '100%', width }}>
+// 			<AnimatedFlashList
+// 				key={listKey}
+// 				ref={props.listRef}
+// 				data={props.results?.Page?.media}
+// 				nestedScrollEnabled
+// 				renderItem={RenderItem}
+// 				keyExtractor={keyExtract}
+// 				keyboardShouldPersistTaps="never"
+// 				keyboardDismissMode="interactive"
+// 				numColumns={3}
+// 				estimatedItemSize={240}
+// 				removeClippedSubviews
+// 				centerContent
+// 				onScroll={props.onScrollHandler}
+// 				contentContainerStyle={{
+// 					// padding: 10,
+// 					paddingTop: props.headerHeight,
+// 					// paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
+// 				}}
+// 				onEndReachedThreshold={0.4}
+// 				onEndReached={() => {
+// 					props.results?.Page &&
+// 						props.results?.Page?.pageInfo?.hasNextPage &&
+// 						props.results?.Page?.media?.length > 0 &&
+// 						props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
+// 				}}
+// 			/>
+// 		</View>
+// 	);
+// };
+
+// export const CharacterSearchList = () => {};
 
 type CharacterListProps = {
 	results: CharacterSearchQuery;

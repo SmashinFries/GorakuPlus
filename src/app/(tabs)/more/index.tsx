@@ -1,9 +1,10 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { router } from 'expo-router';
 import { View } from 'react-native';
-import { Divider, List, useTheme } from 'react-native-paper';
+import { Divider, List } from 'react-native-paper';
 
 const MorePage = () => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	return (
 		<View>

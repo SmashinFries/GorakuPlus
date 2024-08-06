@@ -1,47 +1,9 @@
-import { useAppTheme } from '@/store/theme/theme';
+import { useAppTheme } from '@/store/theme/themes';
 import { FlashList } from '@shopify/flash-list';
-import { MotiPressable } from 'moti/interactions';
-import { MutableRefObject, useMemo } from 'react';
-import { Text as RNText, ScrollView } from 'react-native';
-import { Button, IconButton, Text, useTheme } from 'react-native-paper';
+import { MutableRefObject } from 'react';
+import { Text as RNText } from 'react-native';
+import { Button, IconButton, useTheme } from 'react-native-paper';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-
-type LoadMoreButtonProps = {
-	title: string;
-	vertical?: boolean;
-	onPress?: () => void;
-};
-export const LoadMoreButton = ({ title, vertical, onPress }: LoadMoreButtonProps) => {
-	return (
-		<MotiPressable
-			containerStyle={{
-				// backgroundColor: 'red',
-				marginRight: 10,
-				alignSelf: 'center',
-				alignItems: 'center',
-				justifyContent: 'center',
-			}}
-			onPress={onPress}
-			animate={useMemo(
-				() =>
-					({ hovered, pressed }) => {
-						'worklet';
-						return {
-							scale: hovered || pressed ? 0.8 : 1,
-						};
-					},
-				[],
-			)}
-		>
-			{!vertical ? (
-				<IconButton style={{ alignSelf: 'center' }} icon="arrow-expand-right" size={44} />
-			) : (
-				<Button>Load More</Button>
-			)}
-			{!vertical ? <Text style={{ textAlign: 'center' }}>{title}</Text> : null}
-		</MotiPressable>
-	);
-};
 
 type FavoriteButtonProps = {
 	isFavorite?: boolean;

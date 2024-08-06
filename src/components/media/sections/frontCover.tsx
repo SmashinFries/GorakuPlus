@@ -1,11 +1,7 @@
-import { MotiView } from 'moti';
 import { AniMediaQuery, MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
-import { Image } from 'expo-image';
 import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { QuickSelector } from '@/components/media/quickSelect';
-import { TransXInView, TransYUpViewMem } from '@/components/animations';
 import { memo, useCallback, useEffect, useState } from 'react';
-import { StatusIconMem } from '@/components/media/icons';
 import { MediaTitleView } from '@/components/media/text';
 import { Portal, useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
@@ -33,8 +29,8 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 		: [data?.bannerImage ?? null];
 
 	return (
-		<MotiView style={[styles.container, { width: width }]}>
-			<MotiView
+		<Animated.View style={[styles.container, { width: width }]}>
+			<Animated.View
 				style={{
 					flex: 1,
 					width: '100%',
@@ -43,9 +39,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 				}}
 			>
 				{/* Left Icons */}
-				<TransXInView
-					direction="left"
-					delay={350}
+				<Animated.View
 					style={{
 						justifyContent: 'space-evenly',
 						width: '100%',
@@ -70,10 +64,10 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 						}}
 						disabled={!data?.idMal}
 					/>
-				</TransXInView>
+				</Animated.View>
 
 				{/* Cover Image */}
-				<TransYUpViewMem>
+				<Animated.View>
 					<Pressable onPress={() => setImageViewerVisible(true)}>
 						<GestureDetector gesture={panGesture}>
 							<Animated.Image
@@ -89,12 +83,10 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 						</GestureDetector>
 					</Pressable>
 					{/* {data?.status && <StatusAnim />} */}
-				</TransYUpViewMem>
+				</Animated.View>
 
 				{/* Right Icons */}
-				<TransXInView
-					direction="right"
-					delay={350}
+				<Animated.View
 					style={{
 						flex: 1,
 						justifyContent: 'space-evenly',
@@ -118,8 +110,8 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 						//     })
 						// }
 					/>
-				</TransXInView>
-			</MotiView>
+				</Animated.View>
+			</Animated.View>
 			<MediaTitleView data={data} defaultTitle={defaultTitle} />
 			<Portal>
 				<ImageViewer
@@ -130,7 +122,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 					)}
 				/>
 			</Portal>
-		</MotiView>
+		</Animated.View>
 	);
 };
 

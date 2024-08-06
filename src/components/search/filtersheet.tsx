@@ -7,25 +7,27 @@ import {
 	CountryDropdown,
 	DialogSelectDate,
 	FormatDropdown,
-	SeasonDropdownMem,
+	SeasonDropdown,
 	SortDropdown,
 	StatusDropdown,
-	YearDropdownMem,
+	YearDropdown,
 } from './dropdown';
-import { MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
 import { GenreSelection, TagSelection } from './tags';
-import { useAppSelector } from '@/store/hooks';
 import { LicensedSelector, NSFWSelector, OnListSelector } from './buttons';
 import { ScoreSlider } from './slider';
-import { GenreTagCollectionQueryAlt } from '@/store/services/anilist/types';
 import { useFilter } from '@/hooks/search/useFilter';
 import { View } from 'react-native';
+import { GenreTagCollectionQuery, MediaType } from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAuthStore } from '@/store/authStore';
+import { useAppTheme } from '@/store/theme/themes';
+import { useSearchStore } from '@/store/search/searchStore';
+import { getDatetoFuzzyInt } from '@/utils';
 
 type FilterSheetProps = {
 	sheetRef: React.Ref<BottomSheetModalMethods>;
-	genreTagData: GenreTagCollectionQueryAlt;
+	genreTagData: GenreTagCollectionQuery;
 	openTagDialog: () => void;
-	onSearch: () => void;
 	handleSheetChange: (index: number) => void;
 	toggleSheet: () => void;
 };
@@ -33,25 +35,14 @@ export const FilterSheet = ({
 	sheetRef,
 	genreTagData,
 	openTagDialog,
-	onSearch,
 	handleSheetChange,
 	toggleSheet,
 }: FilterSheetProps) => {
-	const { showNSFW, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
-	const {
-		filter,
-		sort,
-		isTagBlacklist,
-		onFilterUpdate,
-		onSortChange,
-		onTagBlacklistChange,
-		resetTagsGenre,
-		updateGenre,
-		updateTag,
-		updateFuzzyInt,
-	} = useFilter();
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
-	const { colors } = useTheme();
+	const { showNSFW, tagBlacklist } = useSettingsStore();
+	const { searchType, filter, isTagBlacklistEnabled, sort, updateFilter, updateSort } =
+		useSearchStore();
+	const { userID } = useAuthStore().anilist;
+	const { colors } = useAppTheme();
 	const snapPoints = useMemo(() => ['70%', '95%'], []);
 
 	return (
@@ -63,8 +54,7 @@ export const FilterSheet = ({
 			handleIndicatorStyle={{ backgroundColor: colors.onSurfaceVariant }}
 		>
 			<BottomSheetScrollView>
-				{/* <PresetButton onPress={() => setPresetDialogVisible(true)} /> */}
-				<Button
+				{/* <Button
 					mode="contained"
 					icon={'magnify'}
 					onPress={() => {
@@ -74,7 +64,7 @@ export const FilterSheet = ({
 					style={{ marginHorizontal: 8, marginTop: 20, marginBottom: 10 }}
 				>
 					Search
-				</Button>
+				</Button> */}
 				<View
 					style={[
 						styles.dropdownRow,
@@ -84,75 +74,51 @@ export const FilterSheet = ({
 					{userID && (
 						<OnListSelector
 							onList={filter.onList}
-							updateOnList={(onList) => onFilterUpdate('onList', onList)}
+							updateOnList={(onList) => updateFilter({ onList })}
 						/>
 					)}
-					{filter.type !== MediaType.Anime && (
+					{searchType !== MediaType.Anime && (
 						<LicensedSelector
 							isLicensed={filter.isLicensed}
-							updateOnList={(isLicensed) => onFilterUpdate('isLicensed', isLicensed)}
+							updateOnList={(isLicensed) => updateFilter({ isLicensed })}
 						/>
 					)}
 					{showNSFW && (
 						<NSFWSelector
 							isAdult={filter.isAdult}
-							updateIsAdult={(allowNSFW) => onFilterUpdate('isAdult', allowNSFW)}
+							updateIsAdult={(allowNSFW) => updateFilter({ isAdult: allowNSFW })}
 						/>
 					)}
 				</View>
-				<SortDropdown
-					current={filter.type}
-					updateSort={(sort, asc) => onSortChange(sort, asc)}
-					sort={sort}
-				/>
+				<SortDropdown />
 				<View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-					<StatusDropdown
-						status={filter.status}
-						updateStatus={(status) =>
-							onFilterUpdate('status', status === 'ANY' ? undefined : status)
-						}
-					/>
-					<FormatDropdown
-						current={filter.type}
-						formatValue={filter.format_in as MediaFormat}
-						updateFormat={(format) => onFilterUpdate('format_in', format)}
-						removeFormat={() => onFilterUpdate('format_in', undefined)}
-					/>
+					<StatusDropdown />
+					<FormatDropdown />
 				</View>
-				<CountryDropdown
-					countryValue={filter.countryOfOrigin}
-					updateCountry={(c_code) => {
-						onFilterUpdate('countryOfOrigin', c_code);
-					}}
-					removeCountry={() => onFilterUpdate('countryOfOrigin', undefined)}
-				/>
+				<CountryDropdown />
 				<Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
 					Dates
 				</Text>
 				<DialogSelectDate
 					label="Start Date ↓"
 					value={filter.startDate_greater ?? 'ANY'}
-					onSelect={(date) => updateFuzzyInt('startDate_greater', date)}
+					onSelect={(date) =>
+						updateFilter({ startDate_greater: getDatetoFuzzyInt(date) })
+					}
 				/>
 				<DialogSelectDate
 					label="End Date ↑"
 					value={filter.startDate_lesser ?? 'ANY'}
-					onSelect={(date) => updateFuzzyInt('endDate_lesser', date)}
+					onSelect={(date) => updateFilter({ endDate_lesser: getDatetoFuzzyInt(date) })}
 				/>
-				{filter.type === MediaType.Anime && (
+				{searchType === MediaType.Anime && (
 					<BottomSheetView>
 						<Text variant="titleLarge" style={{ paddingLeft: 10, paddingTop: 20 }}>
 							Season
 						</Text>
 						<BottomSheetView style={[styles.dropdownRow, { paddingTop: 8 }]}>
-							<SeasonDropdownMem
-								seasonValue={filter.season}
-								updateSeason={(season) => onFilterUpdate('season', season)}
-							/>
-							<YearDropdownMem
-								yearValue={filter.seasonYear}
-								updateSeasonYear={(year) => onFilterUpdate('seasonYear', year)}
-							/>
+							<SeasonDropdown />
+							<YearDropdown />
 						</BottomSheetView>
 					</BottomSheetView>
 				)}
@@ -162,34 +128,18 @@ export const FilterSheet = ({
 						initialScore={filter.averageScore_greater}
 						maxValue={filter.averageScore_lesser}
 						minValue={0}
-						updateScore={(score) => onFilterUpdate('averageScore_greater', score)}
+						updateScore={(score) => updateFilter({ averageScore_greater: score })}
 					/>
 					<ScoreSlider
 						title="Maximum Score"
 						maxValue={100}
 						minValue={filter.averageScore_greater}
 						initialScore={filter.averageScore_lesser ?? 100}
-						updateScore={(score) => onFilterUpdate('averageScore_lesser', score)}
+						updateScore={(score) => updateFilter({ averageScore_lesser: score })}
 					/>
 				</View>
-				<GenreSelection
-					isAdult={filter.isAdult}
-					data={genreTagData?.GenreCollection}
-					genre_in={filter.genre_in}
-					genre_not_in={filter.genre_not_in}
-					toggleGenre={updateGenre}
-					resetTagsGenre={() => resetTagsGenre('genre')}
-				/>
-				<TagSelection
-					tags_in={filter.tag_in as string[]}
-					tags_not_in={filter.tag_not_in as string[]}
-					isAdult={filter.isAdult}
-					tagBanEnabled={isTagBlacklist}
-					toggleTag={updateTag}
-					resetTagsGenre={() => resetTagsGenre('tag')}
-					onTagBlacklistChange={onTagBlacklistChange}
-					openTagDialog={openTagDialog}
-				/>
+				<GenreSelection data={genreTagData?.GenreCollection} />
+				<TagSelection openTagDialog={openTagDialog} />
 			</BottomSheetScrollView>
 		</BottomSheetModal>
 	);

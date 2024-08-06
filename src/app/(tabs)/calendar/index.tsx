@@ -1,14 +1,16 @@
 import { CalendarFilterSheet } from '@/components/calendar/bottomsheet';
 import { DayTabMemo as DayTab } from '@/components/calendar/tabs';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { RenderTabBar, TabBarWithChip } from '@/components/tab';
+import { TabBarWithChip } from '@/components/tab';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
-import { useAppSelector } from '@/store/hooks';
+import { useAuthStore } from '@/store/authStore';
+import { useDisplayStore } from '@/store/displayStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, Appbar, useTheme } from 'react-native-paper';
-import { TabBar, TabView, SceneRendererProps } from 'react-native-tab-view';
+import { Appbar } from 'react-native-paper';
+import { TabView, SceneRendererProps } from 'react-native-tab-view';
 
 type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 const Days: WeekDay[] = [
@@ -28,12 +30,11 @@ type CalendarRenderSceneProps = SceneRendererProps & {
 const CalendarPage = () => {
 	const dayOfWeek = new Date().getDay();
 	const layout = useWindowDimensions();
-	const { colors } = useTheme();
 	const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
-	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
-	const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
+	const { showNSFW } = useSettingsStore();
+	const { userID } = useAuthStore().anilist;
+	const { calendar } = useDisplayStore();
 
 	const { data, loading, refetch, week } = useCalendar();
 

@@ -7,13 +7,6 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import {
-	ExploreMediaQueryVariables,
-	MediaFormat,
-	MediaSort,
-	MediaType,
-} from '@/store/services/anilist/generated-anilist';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { SearchType } from '@/types/search';
 import {
 	AnimeFormats,
@@ -22,12 +15,6 @@ import {
 	DescSorts,
 	MangaFormats,
 } from '@/constants/mediaConsts';
-import {
-	setFilter,
-	setFilterType,
-	setIsTagBlacklist,
-	setSort,
-} from '@/store/slices/search/filterSlice';
 import { getDatetoFuzzyInt } from '@/utils';
 
 export const useFilter = () => {

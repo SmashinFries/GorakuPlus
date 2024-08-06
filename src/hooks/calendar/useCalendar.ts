@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import {
-	WeeklyAnimeQuery,
-	useLazyWeeklyAnimeQuery,
-} from '@/store/services/anilist/generated-anilist';
 import { getWeekStartEnd } from '@/utils';
+import { useQueryClient } from '@tanstack/react-query';
+import { useWeeklyAnimeQuery, WeeklyAnimeQuery } from '@/api/anilist/__genereated__/gql';
 
 type WeekData = {
 	sunday: WeeklyAnimeQuery['Page']['airingSchedules'];
@@ -17,7 +15,7 @@ type WeekData = {
 
 export const useCalendar = () => {
 	const { start, end } = getWeekStartEnd();
-	const [getWeeklyAnime, weeklyAnimeData] = useLazyWeeklyAnimeQuery();
+	const queryClient = useQueryClient();
 	const [data, setData] = useState<WeekData>();
 	const [loading, setLoading] = useState(true);
 
@@ -27,11 +25,15 @@ export const useCalendar = () => {
 		let fetchMore = true;
 		while (fetchMore === true) {
 			try {
-				const resp = await getWeeklyAnime({
+				const params = {
 					page: page,
 					weekStart: start,
 					weekEnd: end,
-				}).unwrap();
+				};
+				const resp = await queryClient.fetchQuery<WeeklyAnimeQuery>({
+					queryKey: useWeeklyAnimeQuery.getKey(),
+					queryFn: useWeeklyAnimeQuery.fetcher(params),
+				});
 				if (resp.Page?.airingSchedules) tempData.push(...resp.Page?.airingSchedules);
 				// setData((prev) => [...prev, ...resp.Page?.airingSchedules]);
 
@@ -66,12 +68,6 @@ export const useCalendar = () => {
 		setData(week_days);
 		setLoading(false);
 	};
-
-	// useEffect(() => {
-	//     if (weeklyAnimeData.isError) {
-	//         sendErrorMessage(`${ + ' - '}${weeklyAnimeData.error?.message}`);
-	//     }
-	// },[weeklyAnimeData])
 
 	useEffect(() => {
 		getAllResults();

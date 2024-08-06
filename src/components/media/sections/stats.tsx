@@ -1,8 +1,9 @@
-import { Accordion, TransYUpViewMem } from '@/components/animations';
+import { Accordion } from '@/components/animations';
 import { AniMediaQuery, MediaRankType } from '@/store/services/anilist/generated-anilist';
 import { ScrollView, View, useWindowDimensions } from 'react-native';
 import { Chip, Text } from 'react-native-paper';
 import { ScoreItem, StatBar, StatusItem } from '../statistics';
+import Animated from 'react-native-reanimated';
 
 type StatSectionProps = {
 	statData: AniMediaQuery['Media']['stats'];
@@ -37,7 +38,7 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
 	}
 
 	return (
-		<TransYUpViewMem style={{ marginVertical: 15 }} delay={1000}>
+		<Animated.View style={{ marginVertical: 15 }}>
 			<Accordion title="Statistics">
 				<ScrollView
 					horizontal
@@ -80,7 +81,7 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
 							Score Distribution
 						</Text>
 						<StatBar data={statData?.scoreDistribution} />
-						<View
+						{/* <View
 							style={{
 								flexDirection: 'row',
 								flexWrap: 'wrap',
@@ -90,10 +91,10 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
 							{sortedScores.map((scoreDis, idx) => (
 								<ScoreItem key={idx} score={scoreDis} highestScore={highestScore} />
 							))}
-						</View>
+						</View> */}
 					</View>
 				)}
 			</Accordion>
-		</TransYUpViewMem>
+		</Animated.View>
 	);
 };

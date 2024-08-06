@@ -4,14 +4,14 @@ import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { useTheme } from 'react-native-paper';
 import { ListHeading } from '../text';
 import { View } from 'react-native';
+import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
+import { useMemo } from 'react';
+import { rgbToRgba } from '@/utils';
 import {
 	UserAnimeStatsQuery,
 	UserMangaStatsQuery,
 	UserReleaseYearStatistic,
-} from '@/store/services/anilist/generated-anilist';
-import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
-import { useMemo } from 'react';
-import { rgbToRgba } from '@/utils';
+} from '@/api/anilist/__genereated__/gql';
 
 const data1 = {
 	labels: ['January', 'February', 'March', 'April', 'May', 'June'],

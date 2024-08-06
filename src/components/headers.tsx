@@ -22,8 +22,6 @@ import {
 	View,
 	useWindowDimensions,
 } from 'react-native';
-import { RootState } from '@/store/store';
-import { MotiImage, MotiScrollView, MotiView } from 'moti';
 import { Image, ImageProps } from 'expo-image';
 import Animated, {
 	Easing,
@@ -44,18 +42,19 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
-import { AniMediaQuery, MediaType } from '@/store/services/anilist/generated-anilist';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { BarcodeScanDialog } from './dialogs';
 import { router, useFocusEffect } from 'expo-router';
-import { updateListFilter } from '@/store/slices/listSLice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { updateFavSearch } from '@/store/slices/favoritesSlice';
-import { SearchType } from '@/types/search';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { useToggleFavMutation } from '@/store/services/anilist/enhanced';
 import { getStreamingSiteEmoji } from '@/utils/emoji';
-import { useAppTheme } from '@/store/theme/theme';
+import { useThemeStore } from '@/store/theme/themeStore';
+import { AniMediaQuery, MediaType, useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
+import { useAuthStore } from '@/store/authStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useListFilterStore } from '@/store/listStore';
+import { useAppTheme } from '@/store/theme/themes';
+import { useFavoritesFilterStore } from '@/store/favoritesStore';
+import { SearchType } from '@/store/search/searchStore';
 
 const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
 	const title = getHeaderTitle(options, route.name);
@@ -71,13 +70,13 @@ export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderP
 	const title = getHeaderTitle(options, route.name);
 	const { colors } = useTheme();
 	const { width } = useWindowDimensions();
-	const { mode } = useAppSelector((state) => state.persistedTheme);
+	const { mode } = useThemeStore();
 
 	const [showBCDialog, setShowBCDialog] = useState(false);
 
 	return (
 		<Appbar.Header mode="small">
-			{mode === 'punpun' && (
+			{/* {mode === 'punpun' && (
 				<MotiView
 					from={{ translateX: width }}
 					animate={{ translateX: -width }}
@@ -107,7 +106,7 @@ export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderP
 						resizeMode="contain"
 					/>
 				</MotiView>
-			)}
+			)} */}
 			<Appbar.Content title={title} />
 			<Appbar.Action icon="barcode-scan" onPress={() => setShowBCDialog(true)} />
 			<Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
@@ -125,7 +124,6 @@ export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderP
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
-	searchContent: () => void;
 	openFilter: () => void;
 	currentType: SearchType;
 	searchbarRef: React.RefObject<TextInput>;
@@ -139,7 +137,6 @@ type SearchHeaderProps = NativeStackHeaderProps & {
 export const SearchHeader = ({
 	navigation,
 	openFilter,
-	searchContent,
 	currentType,
 	searchTerm,
 	setSearchTerm,
@@ -150,10 +147,7 @@ export const SearchHeader = ({
 	onFocus,
 }: SearchHeaderProps) => {
 	const { colors } = useTheme();
-
 	const { right, left } = useSafeAreaInsets();
-
-	const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 	const [query, setQuery] = useState(searchTerm);
 
 	// temp solution to input lag
@@ -163,11 +157,9 @@ export const SearchHeader = ({
 
 	useEffect(() => {
 		const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-			setKeyboardVisible(true);
 			toggleIsFocused(true);
 		});
 		const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-			setKeyboardVisible(false);
 			toggleIsFocused(false);
 		});
 
@@ -194,7 +186,7 @@ export const SearchHeader = ({
 					value={query}
 					// onChangeText={setSearchTerm}
 					onChangeText={(txt) => setQuery(txt)}
-					onSubmitEditing={searchContent}
+					// onSubmitEditing={searchContent}
 					returnKeyType="search"
 					autoFocus
 					onFocus={() => {
@@ -210,18 +202,18 @@ export const SearchHeader = ({
 					onIconPress={() => navigation.goBack()}
 					selectionColor={colors.primaryContainer}
 					icon={'arrow-left'}
-					traileringIcon={
-						currentType === MediaType.Anime || currentType === 'imageSearch'
-							? 'image-search-outline'
-							: currentType === 'characters' || currentType === 'waifuSearch'
-								? 'account-search-outline'
-								: undefined
-					}
-					onTraileringIconPress={
-						currentType === 'characters' || currentType === 'waifuSearch'
-							? openWaifuSearch
-							: openImageSearch
-					}
+					// traileringIcon={
+					// 	currentType === MediaType.Anime || currentType === 'imageSearch'
+					// 		? 'image-search-outline'
+					// 		: currentType === 'characters' || currentType === 'waifuSearch'
+					// 			? 'account-search-outline'
+					// 			: undefined
+					// }
+					// onTraileringIconPress={
+					// 	currentType === 'characters' || currentType === 'waifuSearch'
+					// 		? openWaifuSearch
+					// 		: openImageSearch
+					// }
 					style={{ flex: 1, backgroundColor: 'transparent' }}
 					inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
 					onClearIconPress={() => {
@@ -252,7 +244,6 @@ export const SearchHeader = ({
 const AnimatedImage = Animated.createAnimatedComponent<ImageProps>(Image);
 
 export const MoreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
-	const { mode } = useAppSelector((state: RootState) => state.persistedTheme);
 	const { width } = useWindowDimensions();
 	const { top } = useSafeAreaInsets();
 	return (
@@ -518,8 +509,8 @@ export const FadeHeaderProvider = ({
 	const { headerStyle, headerTitleStyle, bgImageStyle, headerActionStyle, scrollHandler } =
 		useHeaderAnim(animationRange[0], animationRange[1]);
 	const { width, height } = useWindowDimensions();
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
-	const { navAnimation } = useAppSelector((state) => state.persistedSettings);
+	const { userID } = useAuthStore().anilist;
+	const { navAnimation } = useSettingsStore();
 
 	const notifRotation = useSharedValue(0);
 
@@ -775,10 +766,8 @@ export const ListHeader = ({
 	openFilter: () => void;
 	onRefresh: () => void;
 }) => {
-	const { query } = useAppSelector((state) => state.listFilter);
+	const { query, updateListFilter } = useListFilterStore();
 	const { colors } = useAppTheme();
-	const dispatch = useAppDispatch();
-	// const [query, setQuery] = useState('');
 	const [isOpen, setIsOpen] = useState(false);
 
 	useFocusEffect(() => {
@@ -813,7 +802,7 @@ export const ListHeader = ({
 					<Searchbar
 						value={query}
 						onChangeText={(txt) => {
-							dispatch(updateListFilter({ entryType: 'query', value: txt }));
+							updateListFilter({ query: txt });
 						}}
 						icon={'arrow-left'}
 						onIconPress={() => setIsOpen(false)}
@@ -838,9 +827,7 @@ export const ListHeader = ({
 };
 
 export const FavoritesHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
-	const { query } = useAppSelector((state) => state.favSearch);
-	const dispatch = useAppDispatch();
-	// const [query, setQuery] = useState('');
+	const { query, updateFilter } = useFavoritesFilterStore();
 	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
@@ -878,7 +865,7 @@ export const FavoritesHeader = ({ navigation, options, route, back }: NativeStac
 					<Searchbar
 						value={query}
 						onChangeText={(txt) => {
-							dispatch(updateFavSearch(txt));
+							updateFilter({ query: txt });
 						}}
 						placeholder={'Search favorites...'}
 						mode="bar"
@@ -906,16 +893,15 @@ export const StudioHeader = ({
 }: StudioHeaderProps) => {
 	const shareLink = 'https://anilist.co/studio/' + id;
 	const title = getHeaderTitle(options, route.name);
-	const { colors } = useTheme();
-	const [toggleFav] = useToggleFavMutation();
-	const [fav, setFav] = useState(isFav);
+	const { mutateAsync } = useToggleFavMutation();
+	// const [fav, setFav] = useState(isFav);
 
 	const onFavToggle = async () => {
-		const res = await toggleFav({ studioId: id }).unwrap();
-		setFav(
-			res.ToggleFavourite.studios?.edges.find((s) => s?.node?.id === id)?.node?.isFavourite ??
-				false,
-		);
+		const res = await mutateAsync({ studioId: id });
+		// setFav(
+		// 	res.ToggleFavourite.studios?.edges.find((s) => s?.node?.id === id)?.node?.isFavourite ??
+		// 		false,
+		// );
 	};
 
 	return (

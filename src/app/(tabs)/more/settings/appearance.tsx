@@ -2,23 +2,17 @@ import { Accordion } from '@/components/animations';
 import { MediaTileCustomizer } from '@/components/more/settings/appearance/dialogs';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { MotiButton } from '@/components/moti';
-import { GorakuSwitch } from '@/components/switch';
+import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	mediaCardAppearanceActions,
-	setMediaCardAppearance,
-	setSettings,
-} from '@/store/slices/settingsSlice';
-import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
-import { setTheme } from '@/store/theme/themeSlice';
-import { MotiPressable } from 'moti/interactions';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { ScoreVisualType } from '@/store/settings/types';
+import { availableThemes, themeOptions, ThemeOptions, useAppTheme } from '@/store/theme/themes';
+import { useThemeStore } from '@/store/theme/themeStore';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
 import { List, Portal, Switch, Text, useTheme } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
-import switchTheme from 'react-native-theme-switch-animation';
 
 const STACK_ANIMS_ANDROID: StackAnimationTypes[] = [
 	'none',
@@ -41,7 +35,7 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 ];
 
 const AppearancePage = () => {
-	const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
+	const { mode, isDark, setTheme } = useThemeStore();
 	const {
 		btmTabLabels,
 		btmTabShifting,
@@ -53,76 +47,45 @@ const AppearancePage = () => {
 		showItemListStatus,
 		mediaLanguage,
 		scoreColors,
-	} = useAppSelector((state) => state.persistedSettings);
+		setSettings,
+	} = useSettingsStore();
 
-	const dispatch = useAppDispatch();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const [showMTCustomizer, setShowMTCustomizer] = useState(false);
 
 	const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
 
 	const onDarkChange = () => {
-		switchTheme({
-			switchThemeFunction: () => {
-				dispatch(setTheme({ isDark: !isDark, mode: mode }));
-			},
-			animationConfig: {
-				type: 'fade',
-				duration: 900,
-			},
-			// animationConfig: {
-			//     type: 'circular',
-			//     duration: 900,
-			//     startingPoint: {
-			//         cx: 0,
-			//         cy: 0,
-			//     },
-			// },
-		});
-		// dispatch(setTheme({ isDark: !isDark, mode: mode }));
+		setTheme({ isDark: !isDark });
 	};
 
-	const onThemeChange = (theme: ThemeOptions, py: number, px: number) => {
-		switchTheme({
-			switchThemeFunction: () => {
-				dispatch(setTheme({ mode: theme, isDark: isDark }));
-			},
-			animationConfig: {
-				// type: 'fade',
-				// duration: 900,
-				type: 'circular',
-				duration: 900,
-				startingPoint: {
-					cy: py,
-					cx: px,
-				},
-			},
-		});
+	const onThemeChange = (theme: ThemeOptions) => {
+		setTheme({ mode: theme });
 	};
 
 	const onBtmTabLabelChange = () => {
-		dispatch(setSettings({ entryType: 'btmTabLabels', value: !btmTabLabels }));
+		setSettings({ btmTabLabels: !btmTabLabels });
 	};
 
 	const onBtmTabShiftingChange = () => {
-		dispatch(setSettings({ entryType: 'btmTabShifting', value: !btmTabShifting }));
+		setSettings({ btmTabShifting: !btmTabShifting });
 	};
 
 	const onEnableInteraction3DChange = () => {
-		dispatch(setSettings({ entryType: 'interaction3D', value: !interaction3D }));
+		setSettings({ interaction3D: !interaction3D });
 	};
 
 	const onAutoRotationChange = () => {
-		dispatch(setSettings({ entryType: 'autoRotation', value: !autoRotation }));
+		setSettings({ autoRotation: !autoRotation });
 	};
 
 	const onAllowSensorMotionChange = () => {
-		dispatch(setSettings({ entryType: 'allowSensorMotion', value: !allowSensorMotion }));
+		setSettings({ allowSensorMotion: !allowSensorMotion });
 	};
 
-	const onMediaCardChange = (props: mediaCardAppearanceActions) => {
-		dispatch(setMediaCardAppearance(props));
+	const onMediaCardChange = (scoreVisualType: ScoreVisualType, showItemListStatus: boolean) => {
+		setSettings({ scoreVisualType, showItemListStatus });
 	};
 
 	return (
@@ -130,12 +93,11 @@ const AppearancePage = () => {
 			<ScrollView>
 				<List.Section>
 					<ListSubheader title="Theme" />
-					<List.Item
+					<MaterialSwitchListItem
 						title={'Dark Mode'}
+						selected={isDark}
 						onPress={onDarkChange}
-						right={(props) => (
-							<GorakuSwitch value={isDark} {...props} onValueChange={onDarkChange} />
-						)}
+						fluid
 					/>
 					<Accordion
 						title="Themes"
@@ -153,13 +115,7 @@ const AppearancePage = () => {
 											marginHorizontal: 10,
 											borderRadius: 12,
 										}}
-										onPress={(e) =>
-											onThemeChange(
-												theme,
-												e.nativeEvent.pageY,
-												e.nativeEvent.pageX,
-											)
-										}
+										onPress={() => onThemeChange(theme)}
 									>
 										<View
 											style={{
@@ -208,36 +164,22 @@ const AppearancePage = () => {
 				</List.Section>
 				<List.Section>
 					<ListSubheader title="Navigation" />
-					<List.Item
+					<MaterialSwitchListItem
 						title={'Bottom Tab Labels'}
 						description={'Show labels on bottom tab bar'}
-						// onPress={() => {
-						//     dispatch(setTheme({ isDark: !isDark, mode: mode }));
-						// }}
-						right={(props) => (
-							<GorakuSwitch
-								value={btmTabLabels}
-								{...props}
-								onValueChange={onBtmTabLabelChange}
-							/>
-						)}
+						onPress={onBtmTabLabelChange}
+						selected={btmTabLabels}
+						fluid
 					/>
 				</List.Section>
 				<List.Section>
 					<ListSubheader title="Animations" />
-					<List.Item
+					<MaterialSwitchListItem
 						title={'Bottom Tab Shifting'}
-						// onPress={() => {
-						//     dispatch(setTheme({ isDark: !isDark, mode: mode }));
-						// }}
 						description={'Enable labels to see the effect'}
-						right={(props) => (
-							<GorakuSwitch
-								value={btmTabShifting}
-								{...props}
-								onValueChange={onBtmTabShiftingChange}
-							/>
-						)}
+						onPress={onBtmTabShiftingChange}
+						selected={btmTabShifting}
+						fluid
 					/>
 
 					<Accordion
@@ -254,11 +196,7 @@ const AppearancePage = () => {
 									compact
 									labelStyle={{ textTransform: 'capitalize' }}
 									style={{ paddingHorizontal: 5, marginHorizontal: 5 }}
-									onPress={() =>
-										dispatch(
-											setSettings({ entryType: 'navAnimation', value: anim }),
-										)
-									}
+									onPress={() => setSettings({ navAnimation: anim })}
 									buttonColor={anim === navAnimation ? colors.primary : undefined}
 									textColor={anim === navAnimation ? colors.onPrimary : undefined}
 								>
@@ -270,44 +208,30 @@ const AppearancePage = () => {
 				</List.Section>
 				<List.Section>
 					<ListSubheader title="3D Effects (experimental)" />
-					<List.Item
+					<MaterialSwitchListItem
 						title={'3D Interactions'}
 						description={
 							'Allows 3D interaction for certain things. Pointless but cool.'
 						}
-						right={(props) => (
-							<GorakuSwitch
-								value={interaction3D}
-								{...props}
-								onValueChange={onEnableInteraction3DChange}
-							/>
-						)}
+						onPress={onEnableInteraction3DChange}
+						selected={interaction3D}
+						fluid
 					/>
-					<List.Item
+					<MaterialSwitchListItem
 						title={'Auto Rotation'}
 						description={'3D Interactions must be enabled for this to take effect.'}
-						right={(props) => (
-							<GorakuSwitch
-								value={autoRotation}
-								{...props}
-								onValueChange={onAutoRotationChange}
-								disabled={!interaction3D}
-							/>
-						)}
+						onPress={onAutoRotationChange}
+						selected={autoRotation}
+						fluid
 					/>
-					<List.Item
+					<MaterialSwitchListItem
 						title={'Sensor Motion'}
 						description={
 							'Enables a parallax motion effect for the media banner image using the device rotation'
 						}
-						descriptionNumberOfLines={3}
-						right={(props) => (
-							<GorakuSwitch
-								value={allowSensorMotion}
-								{...props}
-								onValueChange={onAllowSensorMotionChange}
-							/>
-						)}
+						onPress={onAllowSensorMotionChange}
+						selected={allowSensorMotion}
+						fluid
 					/>
 				</List.Section>
 			</ScrollView>

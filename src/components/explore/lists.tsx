@@ -1,6 +1,7 @@
 import { Platform, RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
 import {
+	AnimeExploreQuery,
 	ExploreMediaQuery,
 	Media,
 	MediaList,
@@ -15,6 +16,7 @@ import { router } from 'expo-router';
 import { BackgroundArt } from './bg';
 import { FlatList } from 'react-native-gesture-handler';
 import { GorakuActivityIndicator } from '../loading';
+import { useAppTheme } from '@/store/theme/theme';
 
 type RefreshableScrollProps = {
 	children: React.ReactNode;
@@ -40,7 +42,7 @@ export const RefreshableScroll = ({ children, refreshing, onRefresh }: Refreshab
 
 type SectionScrollProps = {
 	category_title: string;
-	data: ExploreMediaQuery;
+	data: AnimeExploreQuery['trending']['media'];
 	isLoading: boolean;
 	fetchMore?: () => void;
 };
@@ -52,15 +54,9 @@ export const SectionScroll = ({
 	isLoading,
 }: SectionScrollProps) => {
 	// const playSelectSound = useSound('selection');
-	const initialBG =
-		data?.Page?.media[0]?.bannerImage ?? data?.Page?.media[0]?.coverImage?.extraLarge ?? '';
-
-	const { width, height } = useWindowDimensions();
-	const { colors } = useTheme();
-
+	const initialBG = data[0]?.bannerImage ?? data[0]?.coverImage?.extraLarge ?? '';
+	const { width } = useWindowDimensions();
 	const { scoreColors } = useAppSelector((state) => state.persistedSettings);
-	// const { } = useAppSelector(() => state.);
-
 	const navigate = (aniID: number, type: MediaType) => {
 		router.push(`/${type.toLowerCase()}/${aniID}`);
 	};
@@ -97,7 +93,7 @@ export const SectionScroll = ({
 				/>
 			</View>
 		),
-		[],
+		[scoreColors],
 	);
 
 	return (
@@ -130,7 +126,7 @@ export const SectionScroll = ({
 			>
 				{!isLoading && data ? (
 					<FlashList
-						data={data?.Page?.media ?? []}
+						data={data ?? []}
 						keyExtractor={(item) => item.id.toString() + category_title}
 						renderItem={RenderItem}
 						horizontal={true}
@@ -145,7 +141,7 @@ export const SectionScroll = ({
 						// onEndReached={() => {
 						//     fetchMore();
 						// }}
-						// drawDistance={width * 2}
+						drawDistance={width * 2}
 					/>
 				) : (
 					<View
@@ -156,20 +152,10 @@ export const SectionScroll = ({
 							alignItems: 'center',
 						}}
 					>
-						{/* <Image
-                            source={require('../../../assets/load.gif')}
-                            style={{ alignSelf: 'center', height: 240, width: 230 }}
-                            contentFit="contain"
-                        /> */}
-						{/* <ActivityIndicator size={'large'} /> */}
 						<GorakuActivityIndicator />
 					</View>
 				)}
 			</View>
-			{data && Platform.OS === 'web' ? (
-				// setting height to minHeight of parent causes artifacts at top of each section (LinearGradient)
-				<BackgroundArt data={data} currentBG={initialBG} width={width} height={440} />
-			) : null}
 		</View>
 	);
 };

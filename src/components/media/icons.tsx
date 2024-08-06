@@ -4,11 +4,12 @@ import {
 	FuzzyDate,
 	MediaStatus,
 } from '@/store/services/anilist/generated-anilist';
-import { MotiView, useDynamicAnimation } from 'moti';
+import { useDynamicAnimation } from 'moti';
 import { TapGestureHandler, TapGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { useAnimatedGestureHandler } from 'react-native-reanimated';
 import { convertDate, getTimeUntil } from '@/utils';
 import { memo, useMemo, useState } from 'react';
+import { View } from 'react-native';
 
 const statusIconConfig = {
 	[MediaStatus.Finished]: { icon: 'check-bold', color: 'green' },
@@ -58,7 +59,7 @@ export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) =>
 
 	return (
 		<TapGestureHandler onGestureEvent={onGestureEvent}>
-			<MotiView
+			<View
 				style={{
 					position: 'absolute',
 					bottom: -10,
@@ -72,8 +73,7 @@ export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) =>
 					flexDirection: 'row',
 				}}
 			>
-				<MotiView
-					from={{ width: size }}
+				<View
 					// animate={{
 					//     width: [
 					//         size,
@@ -81,8 +81,6 @@ export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) =>
 					//         { value: size, delay: 3000, type: 'timing' },
 					//     ],
 					// }}
-					transition={{ type: 'spring', damping: 30 }}
-					state={pressAnimState}
 					style={{
 						position: 'absolute',
 						backgroundColor: colors.primaryContainer,
@@ -105,14 +103,14 @@ export const StatusIcon = ({ status, release_date, nextEP }: StatusIconProps) =>
 					>
 						{title}
 					</Text>
-				</MotiView>
+				</View>
 				<IconButton
 					icon={statusIconConfig[statusState]?.icon ?? ''}
 					iconColor={colors.onPrimaryContainer}
 					size={14}
 					containerColor={colors.primaryContainer}
 				/>
-			</MotiView>
+			</View>
 		</TapGestureHandler>
 	);
 };

@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/store/hooks';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ImageStyle } from 'expo-image';
 import { useEffect } from 'react';
 import { Gesture } from 'react-native-gesture-handler';
@@ -23,7 +23,7 @@ const animConfig: Use3dPanConfig = {
 };
 
 const use3dPan = (config = animConfig) => {
-	const { interaction3D, autoRotation } = useAppSelector((state) => state.persistedSettings);
+	const { interaction3D, autoRotation } = useSettingsStore();
 	const xRotation = useSharedValue(0);
 	const yRotation = useSharedValue(0);
 

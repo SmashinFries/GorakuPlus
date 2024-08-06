@@ -1,6 +1,5 @@
 import useZoom from '@/hooks/animations/useZoom';
 import { useBlur } from '@/hooks/useNSFWBlur';
-import { useAppTheme } from '@/store/theme/theme';
 import { BasicDialogProps } from '@/types';
 import { rgbToRgba } from '@/utils';
 import { saveImage } from '@/utils/images';
@@ -15,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Sharing from 'expo-sharing';
 import { Asset } from 'expo-asset';
 import * as FileSystem from 'expo-file-system';
+import { useAppTheme } from '@/store/theme/themes';
 
 const AnimatedImage = Animated.createAnimatedComponent<ImageProps>(Image);
 

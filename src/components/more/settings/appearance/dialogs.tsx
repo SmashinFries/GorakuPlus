@@ -1,34 +1,14 @@
-import {
-	Dialog,
-	Text,
-	Button,
-	useTheme,
-	RadioButton,
-	Divider,
-	Checkbox,
-	List,
-} from 'react-native-paper';
+import { Dialog, Text, Button, useTheme, RadioButton, Checkbox, List } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { ScoreContainer } from '../../../score';
-import {
-	Media,
-	MediaFormat,
-	MediaListStatus,
-	MediaStatus,
-	MediaType,
-	ScoreDistribution,
-} from '@/store/services/anilist/generated-anilist';
 import { MediaCard, MediaProgressBar } from '../../../cards';
 import { rgbToRgba } from '@/utils';
-import { ThemeOptions } from '@/store/theme/theme';
-import {
-	ScoreVisualType,
-	ScoreVisualTypeEnum,
-	mediaCardAppearanceActions,
-} from '@/store/slices/settingsSlice';
 import dummyData from '@/constants/dummyData';
+import { useTranslation } from 'react-i18next';
+import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
+import { ThemeOptions } from '@/store/theme/themes';
 
 type SliderViewProps = {
 	title: string;
@@ -82,6 +62,7 @@ export const ScoreColorDialog = ({
 	const [newRed, setRed] = useState(red);
 	const [newYellow, setYellow] = useState(yellow ?? 74);
 	const { colors } = useTheme();
+	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
 		setRed(red);
@@ -96,7 +77,7 @@ export const ScoreColorDialog = ({
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>Score Defaults</Dialog.Title>
+			<Dialog.Title>{t('Score Colors')}</Dialog.Title>
 			<Dialog.Content>
 				<SliderView
 					score={newRed}
@@ -198,6 +179,7 @@ export const DefaultScoreDialog = ({
 	onDismiss,
 }: ScoreDialogProps) => {
 	const [scoreType, setScoreType] = useState<ScoreDialogProps['defaultScore']>(defaultScore);
+	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
 		setScoreType(defaultScore);
@@ -211,7 +193,7 @@ export const DefaultScoreDialog = ({
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>Score Defaults</Dialog.Title>
+			<Dialog.Title>{t('Score Defaults')}</Dialog.Title>
 			<Dialog.Content>
 				<RadioButton.Group
 					onValueChange={(value: ScoreDialogProps['defaultScore']) => setScoreType(value)}
@@ -243,7 +225,7 @@ type MediaTileCustomizerProps = {
 	themeMode: ThemeOptions;
 	showItemListStatus: boolean;
 	mediaLanguage: 'english' | 'romaji' | 'native';
-	onSettingChange: (props: mediaCardAppearanceActions) => void;
+	onSettingChange: (scoreVisualType: ScoreVisualType, showItemListStatus: boolean) => void;
 	onDismiss: () => void;
 };
 export const MediaTileCustomizer = ({
@@ -259,16 +241,14 @@ export const MediaTileCustomizer = ({
 	const { colors } = useTheme();
 	const [visualPreset, setVisualPreset] = useState<ScoreVisualType>(scoreVisualType);
 	const [showStatus, setShowStatus] = useState(showItemListStatus);
+	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
 		onDismiss();
 	};
 
 	const onDone = () => {
-		onSettingChange({
-			scoreVisualType: visualPreset,
-			showItemListStatus: showStatus,
-		});
+		onSettingChange(visualPreset, showStatus);
 		onDismiss();
 	};
 
@@ -281,7 +261,7 @@ export const MediaTileCustomizer = ({
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
-			<Dialog.Title>Tile Customization</Dialog.Title>
+			<Dialog.Title>{t('Tile Customization')}</Dialog.Title>
 			<Dialog.Content>
 				<View
 					style={{
@@ -295,7 +275,7 @@ export const MediaTileCustomizer = ({
 						meanScore={dummyData[themeMode].meanScore}
 						averageScore={dummyData[themeMode].averageScore}
 						scoreColors={scoreColors}
-						scorebgColor={rgbToRgba(colors.primaryContainer, 0.75)}
+						// scorebgColor={rgbToRgba(colors.primaryContainer, 0.75)}
 						scoreVisualType={visualPreset}
 						navigate={() => null}
 						scoreDistributions={dummyData[themeMode].stats?.scoreDistribution}
@@ -314,7 +294,7 @@ export const MediaTileCustomizer = ({
 			</Dialog.Content>
 			<Dialog.ScrollArea>
 				<ScrollView showsVerticalScrollIndicator={false}>
-					<List.Section title="Score Visual">
+					<List.Section title={t('Score Visual')}>
 						{Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
 							<List.Item
 								key={idx}
@@ -334,7 +314,7 @@ export const MediaTileCustomizer = ({
 							/>
 						))}
 					</List.Section>
-					<List.Section title="List Visual">
+					<List.Section title={t('List Visual')}>
 						<Checkbox.Item
 							label="List status / progress"
 							onPress={() => setShowStatus(!showStatus)}

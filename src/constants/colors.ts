@@ -1,4 +1,4 @@
-import { MediaListStatus } from '@/store/services/anilist/generated-anilist';
+import { MediaListStatus } from '@/api/anilist/__genereated__/gql';
 
 export const StatusColors = {
 	[MediaListStatus.Current]: 'rgba(146, 86, 243, 1)',

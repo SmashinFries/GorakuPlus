@@ -1,37 +1,30 @@
-import { AnimatePresence, MotiView } from 'moti';
 import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
-import { User } from '@/store/services/anilist/generated-anilist';
-import { ScrollView } from 'react-native';
-import { Selectable } from '../moti';
+import { Pressable, ScrollView, View } from 'react-native';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { User } from '@/api/anilist/__genereated__/gql';
 
 type FollowUserItemProps = {
 	user: User;
 };
 const FollowUserItem = ({ user }: FollowUserItemProps) => {
 	return (
-		<AnimatePresence>
-			<Selectable
-				from={{ scale: 0 }}
-				animate={{ scale: 1 }}
-				onPress={() => openWebBrowser(`https://anilist.co/user/${user.name}`)}
-				style={{ margin: 12, alignItems: 'center' }}
-			>
-				<MotiView>
-					<Avatar.Image size={80} source={{ uri: user?.avatar?.large }} />
-				</MotiView>
-				<Text style={{ textAlign: 'center' }}>{user.name}</Text>
-			</Selectable>
-		</AnimatePresence>
+		<Pressable
+			onPress={() => openWebBrowser(`https://anilist.co/user/${user.name}`)}
+			style={{ margin: 12, alignItems: 'center' }}
+		>
+			<View>
+				<Avatar.Image size={80} source={{ uri: user?.avatar?.large }} />
+			</View>
+			<Text style={{ textAlign: 'center' }}>{user.name}</Text>
+		</Pressable>
 	);
 };
 
 type FollowRowProps = {
 	followType: 'followers' | 'following';
 	data: User[];
-	isLoading: boolean;
 };
-export const FollowRow = ({ followType, data, isLoading }: FollowRowProps) => {
+export const FollowRow = ({ followType, data }: FollowRowProps) => {
 	if (!data || data.length < 1) {
 		return (
 			<Text style={{ textAlign: 'center' }}>
@@ -41,11 +34,7 @@ export const FollowRow = ({ followType, data, isLoading }: FollowRowProps) => {
 	}
 	return (
 		<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-			{!isLoading ? (
-				data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)
-			) : (
-				<ActivityIndicator />
-			)}
+			{data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)}
 		</ScrollView>
 	);
 };

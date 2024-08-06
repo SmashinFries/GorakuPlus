@@ -1,7 +1,6 @@
-import PaperHeader, { ExploreHeader } from '@/components/headers';
+import { ExploreHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
-import { useAppSelector } from '@/store/hooks';
-import { Slot, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 
 const ExploreLayout = () => {
 	return (

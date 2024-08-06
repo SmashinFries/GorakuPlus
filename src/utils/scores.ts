@@ -1,4 +1,4 @@
-import { ScoreFormat } from '@/store/services/anilist/generated-anilist';
+import { ScoreFormat } from '@/api/anilist/__genereated__/gql';
 
 export const scoreValues = {
 	[ScoreFormat.Point_100]: [

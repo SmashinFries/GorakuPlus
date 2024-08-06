@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
 import {
 	AiringSchedule,
 	FuzzyDate,
 	MediaStatus,
 	MediaType,
-} from '@/store/services/anilist/generated-anilist';
+} from '@/api/anilist/__genereated__/gql';
+import { useEffect, useState } from 'react';
 
 const monthByNumber = {
 	[1]: 'Jan',

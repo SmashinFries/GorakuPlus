@@ -1,9 +1,5 @@
 import { Pressable, View, useWindowDimensions } from 'react-native';
 import { useTheme, Text, ActivityIndicator } from 'react-native-paper';
-import {
-	useGetArtistCommentaryQuery,
-	useGetPostQuery,
-} from '@/store/services/danbooru/danbooruApi';
 import { useEffect, useState } from 'react';
 import { TagSection } from '@/components/art/danTag';
 import { FadeHeaderProvider } from '@/components/headers';
@@ -14,18 +10,18 @@ import { StatisticsBar } from '@/components/art/stats';
 import { FileDetails } from '@/components/art/fileDetails';
 import { Commentary } from '@/components/art/commentary';
 import { PostImage } from '@/components/art/image';
-import { useNsfwBlur } from '@/hooks/useNSFWBlur';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { useArtistCommentaryQuery, usePostQuery } from '@/api/danbooru/danbooru';
 
 const DanbooruPostPage = () => {
 	const { postId } = useLocalSearchParams<{ postId: string }>();
 	const id = parseInt(postId);
 	const { colors } = useTheme();
 	const { width, height } = useWindowDimensions();
-	const { data, isLoading, isFetching } = useGetPostQuery(id, { skip: !id });
-	const commentary = useGetArtistCommentaryQuery({ 'search[post_id]': id }, { skip: !id });
+	const { data, isLoading, isFetching } = usePostQuery(id);
+	const commentary = useArtistCommentaryQuery({ 'search[post_id]': id });
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
 	const [titleHeight, setTitleHeight] = useState<number>(0);
 	const [imageHeight, setImageHeight] = useState<number>(0);

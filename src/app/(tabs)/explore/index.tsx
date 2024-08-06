@@ -1,82 +1,89 @@
-import { NetworkError } from '@/components/error';
-import { RefreshableScroll, SectionScrollMem } from '@/components/explore/lists';
-import { RenderTabBar } from '@/components/tab';
 import {
-	useAnimeExplorer,
-	useMangaExplorer,
-	useManhuaExplorer,
-	useManhwaExplorer,
-	useNovelExplorer,
-} from '@/hooks/explore/data';
-import { useRefresh } from '@/hooks/refresh';
-import { useAppSelector } from '@/store/hooks';
+	useAnimeExploreQuery,
+	useMangaExploreQuery,
+	useManhuaExploreQuery,
+	useManhwaExploreQuery,
+	useNovelExploreQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { NetworkError } from '@/components/error';
+import { RefreshableScroll, SectionScroll, SectionScrollMem } from '@/components/explore/lists';
+import { RenderTabBar } from '@/components/tab';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ExploreTabsProps } from '@/types/navigation';
+import { subtractMonths } from '@/utils';
+import { getSeason } from '@/utils/explore/helpers';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, useWindowDimensions } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { TabBar, TabView } from 'react-native-tab-view';
+import { ActivityIndicator, Button, useTheme } from 'react-native-paper';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { TabView } from 'react-native-tab-view';
+
+const perPage = 24;
 
 const AnimeTab = () => {
-	const {
-		trendResults,
-		curSeasonResults,
-		nxtSeasonResults,
-		popularResults,
-		topResults,
-		fetchAnime,
-		fetchMore,
-		isLoading,
-		isError,
-	} = useAnimeExplorer();
-	const { isRefreshing, onRefresh } = useRefresh(() => fetchAnime(true));
+	const thisSeasonParams = getSeason();
+	const nextSeasonParams = getSeason(true);
+	const { showNSFW, tagBlacklist } = useSettingsStore();
+	const animeQuery = useAnimeExploreQuery({
+		perPage: perPage,
+		isAdult: showNSFW ? undefined : false,
+		tag_not_in: tagBlacklist ?? undefined,
+		season: thisSeasonParams.current_season,
+		seasonYear: thisSeasonParams.year,
+		nextSeason: nextSeasonParams.current_season,
+		nextSeasonYear: nextSeasonParams.year,
+	});
 	const { width, height } = useWindowDimensions();
-	// const { scoreHealthBar, scoreNumber } = useAppSelector((state) => state.persistedSettings);
+	const [t] = useTranslation();
 
-	// const nextSeasonParams = getSeason(true);
-
-	useEffect(() => {
-		fetchAnime();
-	}, []);
+	const onRefresh = async () => {
+		await animeQuery.refetch();
+	};
 
 	return (
-		<RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
+		<RefreshableScroll onRefresh={onRefresh} refreshing={animeQuery.isRefetching}>
 			<View style={{ flex: 1, width: width, marginVertical: 10 }}>
-				{isError ? (
-					<NetworkError
-						status={trendResults?.status}
-						onRefresh={() => fetchAnime(true)}
-					/>
-				) : (
-					<>
-						<SectionScrollMem
-							category_title={'Trending'}
-							data={trendResults.data}
-							isLoading={trendResults?.isLoading}
+				{animeQuery.isFetching && (
+					<Animated.View
+						exiting={FadeOut}
+						style={{ alignItems: 'center', justifyContent: 'center' }}
+					>
+						<ActivityIndicator size="large" />
+					</Animated.View>
+				)}
+				{animeQuery && <NetworkError status={animeQuery?.status} onRefresh={onRefresh} />}
+				{animeQuery.data && !animeQuery.isError && !animeQuery.isFetching && (
+					<Animated.View entering={FadeIn}>
+						{/* <Button onPress={() => console.log(animeExplore.data?.trending)}>
+							TEST
+						</Button> */}
+						<SectionScroll
+							category_title={t('Trending')}
+							data={animeQuery.data.trending?.media}
+							isLoading={animeQuery?.isLoading}
 						/>
-						<SectionScrollMem
-							category_title={'Current Season'}
-							data={curSeasonResults.data}
-							isLoading={curSeasonResults.isLoading}
+						<SectionScroll
+							category_title={t('Current Season')}
+							data={animeQuery.data.thisSeason.media}
+							isLoading={animeQuery.isLoading}
 						/>
-						<SectionScrollMem
-							// category_title={`${nextSeasonParams.same_year ? 'This' : 'Next'} ${
-							//     nextSeasonParams.current_season
-							// }`}
-							category_title={'Next Season'}
-							data={nxtSeasonResults.data}
-							isLoading={nxtSeasonResults.isLoading}
+						<SectionScroll
+							category_title={t('Next Season')}
+							data={animeQuery.data.nextSeason.media}
+							isLoading={animeQuery.isLoading}
 						/>
-						<SectionScrollMem
-							category_title={'Popular'}
-							data={popularResults.data}
-							isLoading={popularResults.isLoading}
+						<SectionScroll
+							category_title={t('Popular')}
+							data={animeQuery.data.popular.media}
+							isLoading={animeQuery.isLoading}
 						/>
-						<SectionScrollMem
-							category_title={'Top Scored'}
-							data={topResults.data}
-							isLoading={topResults.isLoading}
+						<SectionScroll
+							category_title={t('Top Scored')}
+							data={animeQuery.data.top.media}
+							isLoading={animeQuery.isLoading}
 						/>
-					</>
+					</Animated.View>
 				)}
 			</View>
 		</RefreshableScroll>
@@ -84,110 +91,113 @@ const AnimeTab = () => {
 };
 
 const MangaTab = () => {
-	const {
-		trendResults,
-		popularResults,
-		topResults,
-		releasesResults,
-		isError,
-		fetchManga,
-		fetchMore,
-	} = useMangaExplorer();
-	const { isRefreshing, onRefresh } = useRefresh(() => fetchManga(true));
+	const { showNSFW, tagBlacklist } = useSettingsStore();
+	const mangaQuery = useMangaExploreQuery({
+		perPage: perPage,
+		isAdult: showNSFW ? undefined : false,
+		tag_not_in: tagBlacklist ?? undefined,
+		startDate_greater: subtractMonths(3),
+	});
+	const [t] = useTranslation();
 
-	useEffect(() => {
-		fetchManga();
-	}, []);
-
-	if (isError) {
-		return <NetworkError status={popularResults.status} onRefresh={() => fetchManga(true)} />;
-	}
+	const onRefresh = async () => {
+		await mangaQuery.refetch();
+	};
 
 	return (
-		<RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
+		<RefreshableScroll onRefresh={onRefresh} refreshing={mangaQuery.isRefetching}>
 			<View style={{ marginVertical: 10 }}>
-				<SectionScrollMem
-					category_title={'New Releases'}
-					data={releasesResults.data}
-					isLoading={releasesResults.isLoading}
-				/>
-				<SectionScrollMem
-					category_title={'Trending'}
-					data={trendResults.data}
-					isLoading={trendResults.isLoading}
-					fetchMore={() => fetchMore('trending')}
-				/>
-				<SectionScrollMem
-					category_title={'Popular'}
-					data={popularResults.data}
-					isLoading={popularResults.isLoading}
-					fetchMore={() => fetchMore('popular')}
-				/>
-				<SectionScrollMem
-					category_title={'Top Scored'}
-					data={topResults.data}
-					isLoading={topResults.isLoading}
-					fetchMore={() => fetchMore('score')}
-				/>
+				{mangaQuery.isFetching && (
+					<Animated.View
+						exiting={FadeOut}
+						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+					>
+						<ActivityIndicator size="large" />
+					</Animated.View>
+				)}
+				{mangaQuery.isError && (
+					<NetworkError status={mangaQuery?.status} onRefresh={onRefresh} />
+				)}
+				{mangaQuery.data && !mangaQuery.isError && !mangaQuery.isFetching && (
+					<Animated.View entering={FadeIn}>
+						<SectionScroll
+							category_title={t('New Releases')}
+							data={mangaQuery.data.newReleases?.media}
+							isLoading={mangaQuery?.isLoading}
+						/>
+						<SectionScroll
+							category_title={t('Trending')}
+							data={mangaQuery.data.trending?.media}
+							isLoading={mangaQuery?.isLoading}
+						/>
+						<SectionScroll
+							category_title={t('Popular')}
+							data={mangaQuery.data.popular.media}
+							isLoading={mangaQuery.isLoading}
+						/>
+						<SectionScroll
+							category_title={t('Top Scored')}
+							data={mangaQuery.data.top.media}
+							isLoading={mangaQuery.isLoading}
+						/>
+					</Animated.View>
+				)}
 			</View>
 		</RefreshableScroll>
 	);
 };
 
 const ManhwaTab = () => {
-	const {
-		trendResults,
-		popularResults,
-		topResults,
-		releasesResults,
-		isError,
-		fetchManhwa,
-		fetchMore,
-	} = useManhwaExplorer();
-	const { isRefreshing, onRefresh } = useRefresh(() => fetchManhwa(true));
+	const { showNSFW, tagBlacklist } = useSettingsStore();
+	const manhwaQuery = useManhwaExploreQuery({
+		perPage: perPage,
+		isAdult: showNSFW ? undefined : false,
+		tag_not_in: tagBlacklist ?? undefined,
+		startDate_greater: subtractMonths(3),
+	});
+	const [t] = useTranslation();
 
-	useEffect(() => {
-		fetchManhwa();
-	}, []);
-
-	if (isError) {
-		return <NetworkError status={popularResults.status} onRefresh={() => fetchManhwa(true)} />;
-	}
+	const onRefresh = async () => {
+		await manhwaQuery.refetch();
+	};
 
 	return (
-		<RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
+		<RefreshableScroll onRefresh={onRefresh} refreshing={manhwaQuery.isRefetching}>
 			<View style={{ marginVertical: 10 }}>
-				{isError ? (
-					<NetworkError
-						status={popularResults.status}
-						onRefresh={() => fetchManhwa(true)}
-					/>
-				) : (
-					<>
-						<SectionScrollMem
-							category_title={'New Releases'}
-							data={releasesResults.data}
-							isLoading={releasesResults.isLoading}
+				{manhwaQuery.isFetching && (
+					<Animated.View
+						exiting={FadeOut}
+						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+					>
+						<ActivityIndicator size="large" />
+					</Animated.View>
+				)}
+				{manhwaQuery.isError && (
+					<NetworkError status={manhwaQuery?.status} onRefresh={onRefresh} />
+				)}
+				{manhwaQuery.data && !manhwaQuery.isError && !manhwaQuery.isFetching && (
+					<Animated.View entering={FadeIn}>
+						<SectionScroll
+							category_title={t('New Releases')}
+							data={manhwaQuery.data.newReleases?.media}
+							isLoading={manhwaQuery?.isLoading}
 						/>
-						<SectionScrollMem
-							category_title={'Trending'}
-							data={trendResults.data}
-							isLoading={trendResults.isLoading}
-							fetchMore={() => fetchMore('trending')}
+						<SectionScroll
+							category_title={t('Trending')}
+							data={manhwaQuery.data.trending?.media}
+							isLoading={manhwaQuery?.isLoading}
 						/>
-						<SectionScrollMem
-							category_title={'Popular'}
-							data={popularResults.data}
-							isLoading={popularResults.isLoading}
-							fetchMore={() => fetchMore('popular')}
+						<SectionScroll
+							category_title={t('Popular')}
+							data={manhwaQuery.data.popular.media}
+							isLoading={manhwaQuery.isLoading}
 						/>
-						<SectionScrollMem
-							category_title={'Top Scored'}
-							data={topResults.data}
-							isLoading={topResults.isLoading}
-							fetchMore={() => fetchMore('score')}
+						<SectionScroll
+							category_title={t('Top Scored')}
+							data={manhwaQuery.data.top.media}
+							isLoading={manhwaQuery.isLoading}
 						/>
-					</>
+					</Animated.View>
 				)}
 			</View>
 		</RefreshableScroll>
@@ -195,102 +205,114 @@ const ManhwaTab = () => {
 };
 
 const ManhuaTab = () => {
-	const {
-		trendResults,
-		popularResults,
-		topResults,
-		releasesResults,
-		isError,
-		fetchManhua,
-		fetchMore,
-	} = useManhuaExplorer();
-	const { isRefreshing, onRefresh } = useRefresh(() => fetchManhua(true));
+	const { showNSFW, tagBlacklist } = useSettingsStore();
+	const manhuaQuery = useManhuaExploreQuery({
+		perPage: 20,
+		isAdult: showNSFW ? undefined : false,
+		tag_not_in: tagBlacklist ?? undefined,
+		startDate_greater: subtractMonths(3),
+	});
+	const [t] = useTranslation();
 
-	useEffect(() => {
-		fetchManhua();
-	}, []);
-
-	if (isError) {
-		return <NetworkError status={popularResults.status} onRefresh={() => fetchManhua(true)} />;
-	}
+	const onRefresh = async () => {
+		await manhuaQuery.refetch();
+	};
 
 	return (
-		<RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
+		<RefreshableScroll onRefresh={onRefresh} refreshing={manhuaQuery.isRefetching}>
 			<View style={{ marginVertical: 10 }}>
-				<SectionScrollMem
-					category_title={'New Releases'}
-					data={releasesResults.data}
-					isLoading={releasesResults.isLoading}
-				/>
-				<SectionScrollMem
-					category_title={'Trending'}
-					data={trendResults.data}
-					isLoading={trendResults.isLoading}
-					fetchMore={() => fetchMore('trending')}
-				/>
-				<SectionScrollMem
-					category_title={'Popular'}
-					data={popularResults.data}
-					isLoading={popularResults.isLoading}
-					fetchMore={() => fetchMore('popular')}
-				/>
-				<SectionScrollMem
-					category_title={'Top Scored'}
-					data={topResults.data}
-					isLoading={topResults.isLoading}
-					fetchMore={() => fetchMore('score')}
-				/>
+				{manhuaQuery.isFetching && (
+					<Animated.View
+						exiting={FadeOut}
+						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+					>
+						<ActivityIndicator size="large" />
+					</Animated.View>
+				)}
+				{manhuaQuery.isError && (
+					<NetworkError status={manhuaQuery?.status} onRefresh={onRefresh} />
+				)}
+				{manhuaQuery.data && !manhuaQuery.isError && !manhuaQuery.isFetching && (
+					<Animated.View entering={FadeIn}>
+						<SectionScrollMem
+							category_title={t('New Releases')}
+							data={manhuaQuery.data.newReleases?.media}
+							isLoading={manhuaQuery?.isLoading}
+						/>
+						<SectionScrollMem
+							category_title={t('Trending')}
+							data={manhuaQuery.data.trending?.media}
+							isLoading={manhuaQuery?.isLoading}
+						/>
+						<SectionScrollMem
+							category_title={t('Popular')}
+							data={manhuaQuery.data.popular.media}
+							isLoading={manhuaQuery.isLoading}
+						/>
+						<SectionScrollMem
+							category_title={t('Top Scored')}
+							data={manhuaQuery.data.top.media}
+							isLoading={manhuaQuery.isLoading}
+						/>
+					</Animated.View>
+				)}
 			</View>
 		</RefreshableScroll>
 	);
 };
 
 const NovelsTab = () => {
-	const {
-		trendResults,
-		popularResults,
-		topResults,
-		releasesResults,
-		isError,
-		fetchNovels,
-		fetchMore,
-	} = useNovelExplorer();
-	const { isRefreshing, onRefresh } = useRefresh(() => fetchNovels(true));
+	const { showNSFW, tagBlacklist } = useSettingsStore();
+	const novelQuery = useNovelExploreQuery({
+		perPage: 20,
+		isAdult: showNSFW ? undefined : false,
+		tag_not_in: tagBlacklist ?? undefined,
+		startDate_greater: subtractMonths(3),
+	});
+	const [t] = useTranslation();
 
-	useEffect(() => {
-		fetchNovels();
-	}, []);
-
-	if (isError) {
-		return <NetworkError status={trendResults.status} onRefresh={() => fetchNovels(true)} />;
-	}
+	const onRefresh = async () => {
+		await novelQuery.refetch();
+	};
 
 	return (
-		<RefreshableScroll onRefresh={onRefresh} refreshing={isRefreshing}>
+		<RefreshableScroll onRefresh={onRefresh} refreshing={novelQuery.isRefetching}>
 			<View style={{ marginVertical: 10 }}>
-				<SectionScrollMem
-					category_title={'New Releases'}
-					data={releasesResults.data}
-					isLoading={releasesResults.isLoading}
-				/>
-				<SectionScrollMem
-					category_title={'Trending'}
-					data={trendResults.data}
-					isLoading={trendResults.isLoading}
-					fetchMore={() => fetchMore('trending')}
-				/>
-				<SectionScrollMem
-					category_title={'Popular'}
-					data={popularResults.data}
-					isLoading={popularResults.isLoading}
-					fetchMore={() => fetchMore('popular')}
-				/>
-				<SectionScrollMem
-					category_title={'Top Scored'}
-					data={topResults.data}
-					isLoading={topResults.isLoading}
-					fetchMore={() => fetchMore('score')}
-				/>
+				{novelQuery.isFetching && (
+					<Animated.View
+						exiting={FadeOut}
+						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+					>
+						<ActivityIndicator size="large" />
+					</Animated.View>
+				)}
+				{novelQuery.isError && (
+					<NetworkError status={novelQuery?.status} onRefresh={onRefresh} />
+				)}
+				{novelQuery.data && !novelQuery.isError && !novelQuery.isFetching && (
+					<Animated.View entering={FadeIn}>
+						<SectionScrollMem
+							category_title={t('New Releases')}
+							data={novelQuery.data.newReleases?.media}
+							isLoading={novelQuery?.isLoading}
+						/>
+						<SectionScrollMem
+							category_title={t('Trending')}
+							data={novelQuery.data.trending?.media}
+							isLoading={novelQuery?.isLoading}
+						/>
+						<SectionScrollMem
+							category_title={t('Popular')}
+							data={novelQuery.data.popular.media}
+							isLoading={novelQuery.isLoading}
+						/>
+						<SectionScrollMem
+							category_title={t('Top Scored')}
+							data={novelQuery.data.top.media}
+							isLoading={novelQuery.isLoading}
+						/>
+					</Animated.View>
+				)}
 			</View>
 		</RefreshableScroll>
 	);
@@ -299,7 +321,7 @@ const NovelsTab = () => {
 const ExplorePage = () => {
 	const layout = useWindowDimensions();
 	const { colors } = useTheme();
-	const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
+	const { exploreTabOrder, exploreTabs } = useSettingsStore();
 
 	const [routes, setRoutes] = useState<{ key: string; title: string }[]>(
 		exploreTabOrder

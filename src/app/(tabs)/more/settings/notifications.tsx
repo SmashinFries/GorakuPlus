@@ -1,22 +1,13 @@
+import { GetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
 import { FetchIntervalDialog } from '@/components/more/settings/notifications/dialog';
-import { GorakuSwitch } from '@/components/switch';
+import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { GetNotificationsQuery } from '@/store/services/anilist/generated-anilist';
-import {
-	NotifTypes,
-	addEnabledNotif,
-	disableAllNotifs,
-	enableAllNotifs,
-	removeEnabledNotif,
-	setNotifInterval,
-	setRegisteredState,
-} from '@/store/slices/notifSlice';
+import { useNotificationStore } from '@/store/notifications/notificationStore';
+import { NotifTypes } from '@/store/notifications/types';
 import { registerBGFetch, unregisterBGFetch } from '@/utils/notifications/backgroundFetch';
 import { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
-import { View } from 'react-native';
-import { Divider, List, Portal, Switch, Text } from 'react-native-paper';
+import { Divider, List, Portal, Text } from 'react-native-paper';
 
 type NotifOption = {
 	type: GetNotificationsQuery['Page']['notifications'][0]['__typename'];
@@ -74,36 +65,41 @@ const notifFollow: NotifOption[] = [
 const NotificationsPage = () => {
 	const [intervalVis, setIntervalVis] = useState(false);
 
-	const { enabled, fetchInterval, isRegistered } = useAppSelector(
-		(state) => state.persistedNotifs,
-	);
-	const dispatch = useAppDispatch();
+	const {
+		enabled,
+		fetchInterval,
+		isRegistered,
+		setRegisteredState,
+		setNotifInterval,
+		addEnabledNotif,
+		removeEnabledNotif,
+		disableAllNotifs,
+		enableAllNotifs,
+	} = useNotificationStore();
 
-	const toggleNotifications = useCallback(
-		(value: boolean) => {
-			if (value) {
-				// dispatch(enableAllNotifs());
-				dispatch(setRegisteredState(true));
-				registerBGFetch(fetchInterval);
-			} else {
-				unregisterBGFetch();
-				// dispatch(disableAllNotifs());
-				dispatch(setRegisteredState(false));
-			}
-		},
-		[fetchInterval],
-	);
+	const toggleNotifications = useCallback(() => {
+		const value = !isRegistered;
+		if (value) {
+			setRegisteredState(true);
+			registerBGFetch(fetchInterval);
+		} else {
+			unregisterBGFetch();
+			// dispatch(disableAllNotifs());
+			setRegisteredState(false);
+		}
+	}, [fetchInterval, isRegistered]);
 
 	const updateFetchInterval = useCallback((hour: number) => {
-		dispatch(setNotifInterval(hour));
+		setNotifInterval(hour);
 		registerBGFetch(hour);
 	}, []);
 
 	const updateEnabled = useCallback((type: NotifTypes, add: boolean) => {
+		console.log(add);
 		if (add) {
-			dispatch(addEnabledNotif(type));
+			addEnabledNotif(type);
 		} else {
-			dispatch(removeEnabledNotif(type));
+			removeEnabledNotif(type);
 		}
 	}, []);
 
@@ -113,17 +109,25 @@ const NotificationsPage = () => {
 	const NotifSwitch = useCallback(
 		(type: NotifOption, idx: number) => {
 			return (
-				<List.Item
+				<MaterialSwitchListItem
 					key={idx}
+					fluid
 					title={type.title}
-					right={() => (
-						<GorakuSwitch
-							value={enabled?.includes(type.type)}
-							onValueChange={(value) => updateEnabled(type.type, value)}
-							disabled={!isRegistered}
-						/>
-					)}
+					selected={enabled?.includes(type.type)}
+					onPress={() => updateEnabled(type.type, !enabled?.includes(type.type))}
+					disabled={!isRegistered}
 				/>
+				// <List.Item
+				// 	key={idx}
+				// 	title={type.title}
+				// 	right={() => (
+				// 		<GorakuSwitch
+				// 			value={enabled?.includes(type.type)}
+				// 			onValueChange={(value) => updateEnabled(type.type, value)}
+				// 			disabled={!isRegistered}
+				// 		/>
+				// 	)}
+				// />
 			);
 		},
 		[enabled, isRegistered],
@@ -131,18 +135,15 @@ const NotificationsPage = () => {
 
 	return (
 		<ScrollView>
-			<List.Item
+			<MaterialSwitchListItem
 				title="Allow Notifications"
-				right={() => (
-					<GorakuSwitch value={isRegistered} onValueChange={toggleNotifications} />
-				)}
-				// descriptionStyle={{ textTransform: 'capitalize' }}
+				fluid
+				selected={isRegistered}
+				onPress={toggleNotifications}
 			/>
 			<List.Item
 				title="Toggle All Notifications"
-				onPress={() =>
-					enabled.length > 0 ? dispatch(disableAllNotifs()) : dispatch(enableAllNotifs())
-				}
+				onPress={() => (enabled.length > 0 ? disableAllNotifs() : enableAllNotifs())}
 				// descriptionStyle={{ textTransform: 'capitalize' }}
 			/>
 			<List.Item

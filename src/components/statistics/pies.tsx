@@ -3,13 +3,13 @@ import { PieChart } from 'react-native-chart-kit';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { useTheme } from 'react-native-paper';
 import { ListHeading } from '../text';
+import { getPieChartColor } from '@/utils';
 import {
 	UserAnimeStatsQuery,
 	UserCountryStatistic,
 	UserMangaStatsQuery,
 	UserStatusStatistic,
-} from '@/store/services/anilist/generated-anilist';
-import { getPieChartColor } from '@/utils';
+} from '@/api/anilist/__genereated__/gql';
 
 type FormatPieProps = {
 	data:

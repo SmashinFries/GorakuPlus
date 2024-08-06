@@ -1,16 +1,15 @@
-import { View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import { List, useTheme } from 'react-native-paper';
+import { List } from 'react-native-paper';
 import { ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import { useAppDispatch } from '@/store/hooks';
-import { restartSetup } from '@/store/slices/setupSlice';
+import { useAppTheme } from '@/store/theme/themes';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const SettingsHomePage = () => {
-	const { colors } = useTheme();
-	const dispatch = useAppDispatch();
+	const { colors } = useAppTheme();
+	const { setSettings } = useSettingsStore();
 	return (
 		<ScrollView>
 			<List.Item
@@ -70,7 +69,8 @@ const SettingsHomePage = () => {
 			<List.Item
 				title={'Setup Guide'}
 				description={'Guide for a minimal and easy setup'}
-				onPress={() => dispatch(restartSetup())}
+				// onPress={() => dispatch(restartSetup())}
+				onPress={() => setSettings({ isFirstLaunch: true })}
 				left={(props) => (
 					<List.Icon {...props} color={colors.primary} icon="map-marker-path" />
 				)}

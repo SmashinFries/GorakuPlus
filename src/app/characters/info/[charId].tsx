@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text as RNText, StyleSheet, Pressable } from 'react-native';
 import {
 	ActivityIndicator,
@@ -11,39 +10,30 @@ import {
 } from 'react-native-paper';
 import { FadeHeaderProvider } from '@/components/headers';
 import { Accordion, ExpandableDescription, TransYUpViewMem } from '@/components/animations';
-import { openWebBrowser } from '@/utils/webBrowser';
-import RenderHTML from 'react-native-render-html';
 import { useCallback, useEffect, useReducer, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useWindowDimensions } from 'react-native';
 import { convertDate } from '@/utils';
-import {
-	CharacterDetailsQuery,
-	MediaEdge,
-	MediaFormat,
-} from '@/store/services/anilist/generated-anilist';
 import { HTMLText, ListHeading } from '@/components/text';
 import { DanbooruImageCard, MediaCard, StaffCard } from '@/components/cards';
 import { FlashList } from '@shopify/flash-list';
-import { DanPost } from '@/store/services/danbooru/types';
 import { useCharDetail } from '@/hooks/characters/useCharDetails';
 import { CharacterLoading } from '@/components/characters/loading';
 import { CharacterFront } from '@/components/characters/front';
 import { SaveImageDialog } from '@/utils/images';
-import { updateCharArtDB } from '@/store/slices/charArtSlice';
 import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { MediaBanner } from '@/components/media/banner';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { MarkdownViewer } from '@/components/markdown';
-import WebView from 'react-native-webview';
+import { CharacterDetailsQuery, MediaEdge, MediaFormat } from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAuthStore } from '@/store/authStore';
+import { DanPost } from '@/api/danbooru/types';
 
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
 	const { charData, art, tagOptions, onTagChange, currentArtTag, toggleFav, isLoading } =
 		useCharDetail(Number(charId));
-	const dispatch = useAppDispatch();
 	const { width } = useWindowDimensions();
 
 	const [selectedImg, setSelectedImg] = useState('');
@@ -54,8 +44,8 @@ const CharacterScreen = () => {
 	const [expanded, setExpanded] = useState(false);
 	const [fav, setFav] = useState(charData.data?.Character?.isFavourite);
 
-	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
+	const { mediaLanguage } = useSettingsStore();
+	const { userID } = useAuthStore().anilist;
 
 	const primaryName =
 		mediaLanguage === 'native'
@@ -420,14 +410,15 @@ const CharacterScreen = () => {
 							initialTags={tagOptions?.data}
 							tagsLoading={tagOptions?.isFetching}
 							onTagChange={onTagChange}
-							saveTag={(tag) =>
-								dispatch(
-									updateCharArtDB({
-										aniId: Number(charId),
-										booruTag: tag,
-									}),
-								)
-							}
+							charId={parseInt(charId)}
+							// saveTag={(tag) =>
+							// 	dispatch(
+							// 		updateCharArtDB({
+							// 			aniId: Number(charId),
+							// 			booruTag: tag,
+							// 		}),
+							// 	)
+							// }
 						/>
 					</Portal>
 				</Animated.View>

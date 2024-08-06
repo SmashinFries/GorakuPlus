@@ -1,7 +1,7 @@
-import { TransYUpViewMem } from '@/components/animations';
 import { ListHeading } from '@/components/text';
 import { useState } from 'react';
 import { AppState } from 'react-native';
+import Animated from 'react-native-reanimated';
 import YoutubePlayer from 'react-native-youtube-iframe';
 
 type AnimeTrailerProps = {
@@ -15,7 +15,7 @@ export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
 	}
 
 	return (
-		<TransYUpViewMem style={{ marginVertical: 10 }}>
+		<Animated.View style={{ marginVertical: 10 }}>
 			<ListHeading title="Trailer" />
 			<YoutubePlayer
 				height={270}
@@ -23,6 +23,6 @@ export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
 				play={playing}
 				videoId={video}
 			/>
-		</TransYUpViewMem>
+		</Animated.View>
 	);
 };

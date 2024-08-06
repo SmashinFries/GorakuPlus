@@ -1,9 +1,9 @@
 import {
-	ExploreMediaQueryVariables,
 	MediaFormat,
 	MediaSort,
-	MediaStatus,
-} from '@/store/services/anilist/generated-anilist';
+	SearchAnimeQueryVariables,
+	SearchMangaQueryVariables,
+} from '@/api/anilist/__genereated__/gql';
 
 export const ANIME_FORMATS: MediaFormat[] = [
 	MediaFormat.Tv,
@@ -21,7 +21,7 @@ export const MANGA_FORMATS: MediaFormat[] = [
 ];
 // export const NOVEL_FORMATS: MediaFormat[] = [];
 
-export const ANIME_DANGER: ExploreMediaQueryVariables = {
+export const ANIME_DANGER: SearchAnimeQueryVariables = {
 	chapters: undefined,
 	chapters_greater: undefined,
 	chapters_lesser: undefined,
@@ -30,7 +30,7 @@ export const ANIME_DANGER: ExploreMediaQueryVariables = {
 	volumes_lesser: undefined,
 };
 
-export const MANGA_DANGER: ExploreMediaQueryVariables = {
+export const MANGA_DANGER: SearchMangaQueryVariables = {
 	episodes: undefined,
 	episodes_greater: undefined,
 	episodes_lesser: undefined,

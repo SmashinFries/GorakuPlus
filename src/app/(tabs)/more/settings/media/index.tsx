@@ -11,23 +11,22 @@ import {
 } from '@/components/more/settings/media/dialog';
 import { FetchIntervalDialog } from '@/components/more/settings/notifications/dialog';
 import { ListSubheader } from '@/components/titles';
-import { updateSearchLimit } from '@/store/slices/search/historySlice';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import danbooruApi from '@/store/services/danbooru/danbooruApi';
-import { DanbooruRating } from '@/store/services/danbooru/types';
-import {
-	mediaCardAppearanceActions,
-	setMediaCardAppearance,
-	setSettings,
-} from '@/store/slices/settingsSlice';
 import { ExploreTabsProps } from '@/types/navigation';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { List, Portal, Text, useTheme } from 'react-native-paper';
-import { MediaType, useUpdateViewerMutation } from '@/store/services/anilist/generated-anilist';
-import { GorakuSwitch } from '@/components/switch';
+import { MaterialSwitchListItem } from '@/components/switch';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useSearchStore } from '@/store/search/searchStore';
+import { useThemeStore } from '@/store/theme/themeStore';
+import { useAuthStore } from '@/store/authStore';
+import { useAppTheme } from '@/store/theme/themes';
+import { MediaType, useUpdateViewerMutation } from '@/api/anilist/__genereated__/gql';
+import { ScoreVisualType } from '@/store/settings/types';
+import { useQueryClient } from '@tanstack/react-query';
+import { DanbooruRating } from '@/api/danbooru/types';
 
 const MediaSettingsPage = () => {
 	const {
@@ -43,13 +42,14 @@ const MediaSettingsPage = () => {
 		scoreVisualType,
 		mediaLanguage,
 		showItemListStatus,
-	} = useAppSelector((state) => state.persistedSettings);
-	const { searchLimit } = useAppSelector((state) => state.persistedHistory);
-	const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
+		setSettings,
+	} = useSettingsStore();
+	const { updateSearchLimit, history } = useSearchStore();
+	const { mode, isDark } = useThemeStore();
+	const { userID } = useAuthStore().anilist;
+	const queryClient = useQueryClient();
 
-	const dispatch = useAppDispatch();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [showDefDescDialog, setShowDefDescDialog] = useState(false);
 	const [showSearchHistoryLimit, setShowSearchHistoryLimit] = useState(false);
 
@@ -66,15 +66,18 @@ const MediaSettingsPage = () => {
 	const toggleAnimeListTabOptions = (isVis: boolean) => setAnimeListTabVis(isVis);
 	const toggleMangaListTabOptions = (isVis: boolean) => setMangaListTabVis(isVis);
 
-	const [updateUserSettings] = useUpdateViewerMutation();
+	const viewerMutation = useUpdateViewerMutation();
 
 	const editExploreTabs = useCallback((tabs: (keyof ExploreTabsProps)[]) => {
-		dispatch(setSettings({ entryType: 'exploreTabs', value: tabs }));
+		setSettings({ exploreTabs: tabs });
 	}, []);
 
-	const onSettingChange = useCallback((props: mediaCardAppearanceActions) => {
-		dispatch(setMediaCardAppearance(props));
-	}, []);
+	const onSettingChange = useCallback(
+		(scoreVisualType: ScoreVisualType, showItemListStatus: boolean) => {
+			setSettings({ scoreVisualType, showItemListStatus });
+		},
+		[],
+	);
 
 	return (
 		<>
@@ -111,55 +114,41 @@ const MediaSettingsPage = () => {
 					title="Search History Limit"
 					onPress={() => setShowSearchHistoryLimit(true)}
 					right={(props) => (
-						<Text style={[props.style, { color: props.color }]}>{searchLimit}</Text>
+						<Text style={[props.style, { color: props.color }]}>
+							{history.searchTermLimit}
+						</Text>
 					)}
 				/>
 				<ListSubheader title="NSFW" />
-				<List.Item
+				<MaterialSwitchListItem
 					title="NSFW"
+					fluid
 					description={
 						Constants.expoConfig.extra.isStore
 							? 'Permenantly disabled. \nApp store does not allow NSFW content.'
 							: ''
 					}
-					right={() => (
-						<GorakuSwitch
-							value={showNSFW}
-							// thumbColor={colors.primary}
-							color={colors.primary}
-							onValueChange={(value) => {
-								userID && updateUserSettings({ displayNSFW: value });
-								dispatch(setSettings({ entryType: 'showNSFW', value: value }));
-								dispatch(
-									danbooruApi.util.invalidateTags([
-										'DanbooruSearch',
-										'DanbooruPost',
-									]),
-								);
-							}}
-							disabled={Constants.expoConfig.extra.isStore as boolean}
-						/>
-					)}
+					selected={showNSFW}
+					onPress={() => {
+						userID && viewerMutation.mutate({ displayNSFW: !showNSFW });
+						setSettings({ showNSFW: !showNSFW });
+						queryClient.invalidateQueries({
+							queryKey: ['DanbooruSearch', 'DanbooruPost'],
+						});
+					}}
+					disabled={Constants.expoConfig.extra.isStore as boolean}
 				/>
-				<List.Item
+				<MaterialSwitchListItem
 					title="NSFW Blur"
-					right={() => (
-						<GorakuSwitch
-							value={blurNSFW}
-							// thumbColor={colors.primary}
-							color={colors.primary}
-							onValueChange={(value) => {
-								dispatch(setSettings({ entryType: 'blurNSFW', value: value }));
-								dispatch(
-									danbooruApi.util.invalidateTags([
-										'DanbooruSearch',
-										'DanbooruPost',
-									]),
-								);
-							}}
-							disabled={Constants.expoConfig.extra.isStore || !showNSFW}
-						/>
-					)}
+					selected={blurNSFW}
+					fluid
+					onPress={() => {
+						setSettings({ blurNSFW: !blurNSFW });
+						queryClient.invalidateQueries({
+							queryKey: ['DanbooruSearch', 'DanbooruPost'],
+						});
+					}}
+					disabled={Constants.expoConfig.extra.isStore || !showNSFW}
 				/>
 				<List.Item
 					title="NSFW Blur Level (fanart)"
@@ -229,7 +218,7 @@ const MediaSettingsPage = () => {
 					onDismiss={() => setShowDefaultScoreDialog(false)}
 					defaultScore={defaultScore}
 					updateDefaultScore={(scoreType: 'average' | 'mean') =>
-						dispatch(setSettings({ entryType: 'defaultScore', value: scoreType }))
+						setSettings({ defaultScore: scoreType })
 					}
 				/>
 				<ScoreColorDialog
@@ -238,12 +227,7 @@ const MediaSettingsPage = () => {
 					red={scoreColors.red}
 					yellow={scoreColors.yellow}
 					updateScoreColor={(red: number, yellow: number) =>
-						dispatch(
-							setSettings({
-								entryType: 'scoreColors',
-								value: { red: red, yellow: yellow },
-							}),
-						)
+						setSettings({ scoreColors: { red, yellow } })
 					}
 				/>
 				<NSFWLevelDialog
@@ -261,12 +245,12 @@ const MediaSettingsPage = () => {
 					onDismiss={() => setShowMTCustomizer(false)}
 				/>
 				<FetchIntervalDialog
-					initialInterval={searchLimit}
+					initialInterval={history.searchTermLimit}
 					onDismiss={() => setShowSearchHistoryLimit(false)}
 					title="Search History Limit"
 					visible={showSearchHistoryLimit}
-					updateInterval={(value) => dispatch(updateSearchLimit(value))}
-					options={['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']}
+					updateInterval={(value) => updateSearchLimit(value)}
+					options={['5', '10', '15', '20', '25', '30']}
 				/>
 			</Portal>
 		</>

@@ -26,6 +26,7 @@ import { Accordion } from '../animations';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { AnimeThemesIcon } from '../svgs';
+import Slider from '@react-native-community/slider';
 
 type MusicVideoProps = {
 	theme: Animetheme;
@@ -128,6 +129,11 @@ const FullscreenVideo = ({
 		</View>
 	);
 };
+
+const secToMinString = (seconds: number) =>
+	`${Math.floor(Math.round(seconds) / 60)
+		.toFixed(0)
+		.padStart(2, '0')}:${(Math.round(seconds) % 60).toFixed(0).padStart(2, '0')}`;
 
 export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) => {
 	const { colors } = useTheme();
@@ -260,10 +266,28 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 				}
 				initialExpand={initialOpen}
 			>
-				<ProgressBar
+				{/* <ProgressBar
 					animatedValue={sound?._loaded ? progress / totalDuration : 0}
 					style={{ marginHorizontal: 20 }}
+				/> */}
+				<Slider
+					value={progress}
+					maximumValue={totalDuration}
+					onValueChange={(val) => sound.setPositionAsync(val)}
+					thumbTintColor={colors.primary}
+					maximumTrackTintColor={colors.onSurfaceVariant}
+					minimumTrackTintColor={colors.primaryContainer}
 				/>
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						paddingHorizontal: 20,
+					}}
+				>
+					<Text>{secToMinString(Math.max(progress / 1000))}</Text>
+					<Text>{secToMinString(Math.max(totalDuration / 1000))}</Text>
+				</View>
 				<View
 					style={{
 						flexDirection: 'row',
@@ -343,6 +367,11 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 							leadingIcon={'spotify'}
 							title="Spotify"
 						/>
+						{/* <Menu.Item
+							onPress={() => openWebBrowser(`anithemes://`, true)}
+							leadingIcon={'spotify'}
+							title="AniThemes"
+						/> */}
 					</Menu>
 				</View>
 			</Accordion>

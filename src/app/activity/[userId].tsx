@@ -1,8 +1,8 @@
+import { ListActivity, useUserActivityQuery } from '@/api/anilist/__genereated__/gql';
 import { ScrollToTopButton } from '@/components/buttons';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ActivityItem } from '@/components/user/activityItem';
 import { ConfirmActDelDialog } from '@/components/user/dialogs';
-import { ListActivity, useUserActivityQuery } from '@/store/services/anilist/generated-anilist';
 import { useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
 import { Stack, useLocalSearchParams } from 'expo-router';
@@ -13,14 +13,14 @@ import { ActivityIndicator, Button, Portal, Text } from 'react-native-paper';
 const ActivityListPage = () => {
 	const { userId } = useLocalSearchParams<{ userId: string }>();
 	const [page, setPage] = useState(1);
-	const { data, currentData, isFetching, refetch } = useUserActivityQuery(
+	const { data, isFetching, refetch } = useUserActivityQuery(
 		{
 			userId: userId === 'user' ? undefined : parseInt(userId),
 			page: page,
 			perPage: 24,
 			isFollowing: true,
 		},
-		{ skip: !userId, refetchOnMountOrArgChange: true },
+		{ enabled: !!userId, refetchOnMount: true },
 	);
 
 	const listRef = useRef<FlashList<ListActivity>>(null);
@@ -60,7 +60,7 @@ const ActivityListPage = () => {
 				<FlashList
 					ref={listRef}
 					key={listKey}
-					data={currentData?.Page?.activities as ListActivity[]}
+					data={data?.Page?.activities as ListActivity[]}
 					renderItem={RenderItem}
 					keyExtractor={(item, idx) => idx.toString()}
 					numColumns={columns}

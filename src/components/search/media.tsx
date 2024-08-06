@@ -1,14 +1,13 @@
-import { MotiView, View } from 'moti';
-import { ExploreMediaQuery, Media, MediaType } from '@/store/services/anilist/generated-anilist';
 import { MediaItem, MediaItemMem, RenderMediaItem } from '../explore/media';
 import { memo, useRef } from 'react';
-import { Anilist, Result } from '@/store/services/tracemoe/traceMoeApi';
 import { ResizeMode, Video } from 'expo-av';
 import { Card, Chip, Text, useTheme } from 'react-native-paper';
-import { Pressable, useWindowDimensions } from 'react-native';
-import { useAppSelector } from '@/store/hooks';
+import { Pressable, useWindowDimensions, View } from 'react-native';
 import { router } from 'expo-router';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+import { Anilist, Result } from '@/api/tracemoe/models';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { MediaType } from '@/api/anilist/__genereated__/gql';
 
 type ImageSearchItemProps = {
 	item: Result;
@@ -16,7 +15,7 @@ type ImageSearchItemProps = {
 export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 	const { roundness } = useTheme();
 	const { dismissAll } = useBottomSheetModal();
-	const { mediaLanguage, showNSFW } = useAppSelector((state) => state.persistedSettings);
+	const { mediaLanguage, showNSFW } = useSettingsStore();
 	const { width } = useWindowDimensions();
 	const anilist = item.anilist as Anilist;
 	const similarity = item.similarity * 100;

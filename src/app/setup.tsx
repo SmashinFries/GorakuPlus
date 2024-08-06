@@ -1,24 +1,25 @@
+import {
+	GenreTagCollectionQuery,
+	useGenreTagCollectionQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
 import { MediaCard, MediaProgressBar } from '@/components/cards';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { SetupNavBar } from '@/components/setup/nav';
 import { AnilistIcon } from '@/components/svgs';
 import dummyData from '@/constants/dummyData';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	GenreTagCollectionQuery,
-	useGenreTagCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
-import { useAnilistAuth } from '@/store/services/anilist/hooks/authAni';
-import { ScoreVisualType, ScoreVisualTypeEnum, setSettings } from '@/store/slices/settingsSlice';
-import { finishSetup } from '@/store/slices/setupSlice';
-import { ThemeOptions, availableThemes, themeOptions } from '@/store/theme/theme';
-import { setTheme } from '@/store/theme/themeSlice';
+import { useAuthStore } from '@/store/authStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
+import { availableThemes, themeOptions, useAppTheme } from '@/store/theme/themes';
+import { useThemeStore } from '@/store/theme/themeStore';
 import { ExploreTabsProps } from '@/types/navigation';
 import { rgbToRgba, useColumns } from '@/utils';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { BlurView } from 'expo-blur';
 import { Image, ImageStyle } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	useWindowDimensions,
@@ -48,19 +49,8 @@ import {
 	Text,
 	useTheme,
 } from 'react-native-paper';
-import Animated, {
-	AnimatedStyle,
-	Easing,
-	interpolate,
-	runOnJS,
-	useAnimatedStyle,
-	useSharedValue,
-	withDelay,
-	withRepeat,
-	withTiming,
-} from 'react-native-reanimated';
+import Animated, { AnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import switchTheme from 'react-native-theme-switch-animation';
 
 const SETUP_PAGES = 7;
 
@@ -91,7 +81,7 @@ type TitleTextProps = {
 };
 const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: TitleTextProps) => {
 	const { top } = useSafeAreaInsets();
-	const { colors, dark } = useTheme();
+	const { colors, dark } = useAppTheme();
 	return (
 		<View
 			style={[
@@ -105,8 +95,9 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
 		>
 			{showLogo && (
 				<Image
-					source={require('../../assets/iconsv2/icon-trans.png')}
-					style={{ width: '60%', aspectRatio: 1 / 1 }}
+					source={require('../../assets/iconsv3/banner.png')}
+					style={{ width: '90%', aspectRatio: 1592 / 571 }}
+					contentFit="contain"
 				/>
 			)}
 			<BlurView
@@ -138,152 +129,13 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
 	);
 };
 
-const getRandomInt = (min: number, max: number) => {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-const getAnimConfig = (init_size: number) => {
-	const fallDuration = getRandomInt(6000, 8000);
-	const fallDelay = getRandomInt(500, 10000);
-	const size = getRandomInt(init_size - 20, init_size + 10);
-	const rotationDuration = getRandomInt(2000, 10000);
-	const rotationDirection = getRandomInt(0, 1);
-	const xPosition = `${getRandomInt(0, 100)}%`;
-
-	return {
-		size,
-		fallDelay,
-		fallDuration,
-		rotationDuration,
-		rotationDirection,
-		xPosition,
-	};
-};
-
-const MovingChibi = ({
-	size,
-	width,
-	height,
-	index,
-}: {
-	size: number;
-	width: number;
-	height: number;
-	index: number;
-}) => {
-	const [animState, setAnimState] = useState(() => getAnimConfig(size));
-	const transY = useSharedValue(-size);
-	const rotation = useSharedValue(0);
-
-	const animCallback = () => {
-		const newAnimState = getAnimConfig(size);
-		setAnimState(newAnimState);
-	};
-
-	const runAnim = () => {
-		transY.value = -size;
-		rotation.value = 0;
-		rotation.value = withRepeat(
-			withTiming(1, { duration: animState.rotationDuration, easing: Easing.linear }),
-			-1,
-		);
-
-		transY.value = withDelay(
-			animState.fallDelay,
-			withTiming(
-				height + size,
-				{ duration: animState.fallDuration, easing: Easing.linear },
-				(finished) => {
-					runOnJS(animCallback)();
-				},
-			),
-		);
-	};
-
-	// @ts-ignore
-	const animationStyle = useAnimatedStyle<ImageStyle>(() => {
-		return {
-			transform: [
-				{ translateY: transY.value },
-				{
-					rotate:
-						interpolate(
-							rotation.value,
-							[-1, 1],
-							animState.rotationDirection ? [0, 360] : [360, 0],
-						) + 'deg',
-				},
-			],
-		};
-	});
-
-	useEffect(() => {
-		if (animState) {
-			runAnim();
-		}
-	}, [animState]);
-
-	return (
-		<Animated.Image
-			source={require('../../assets/iconsv2/icon-trans.png')}
-			resizeMode="contain"
-			style={[
-				animationStyle,
-				{
-					width: size,
-					height: size,
-					position: 'absolute',
-					left: animState.xPosition as DimensionValue,
-				},
-			]}
-		/>
-	);
-};
-
-const BackgroundAnimation = () => {
-	const SIZE = 50;
-	const { height, width } = useWindowDimensions();
-	const { columns } = useColumns(SIZE);
-
-	return (
-		<>
-			<View
-				style={{
-					position: 'absolute',
-					top: 0,
-					width: '100%',
-					height: '100%',
-					backgroundColor: 'transparent',
-				}}
-			>
-				{/* {
-                    Array.from({length:columns}).map((_, idx) => <MovingChibi key={idx} size={SIZE} index={idx} start_loc={SIZE *2} />)
-                } */}
-				{height &&
-					Array.from({ length: columns + Math.round(height / SIZE) * 1.5 }).map(
-						(_, idx) => (
-							<MovingChibi
-								key={idx}
-								size={SIZE}
-								index={idx}
-								height={height}
-								width={width}
-							/>
-						),
-					)}
-			</View>
-			{/* <View style={{position:'absolute', width:'100%', height:'100%', backgroundColor:'rgba(0,0,0,.4)'}} /> */}
-		</>
-	);
-};
-
 const IntroPage = () => {
 	return (
 		<Body style={{ flex: 1, justifyContent: 'center' }}>
 			{/* <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} /> */}
 			<TitleText
-				title={'Welcome to Goraku'}
-				description="Take a moment to setup the app for an optimal experience!"
+				title={'Welcome to Goraku!'}
+				description="Take a moment to setup the app for an optimal experience"
 				containerStyle={{ flex: 0, justifyContent: 'center', paddingTop: 0 }}
 				showLogo
 			/>
@@ -292,35 +144,8 @@ const IntroPage = () => {
 };
 
 const ThemeSetup = () => {
-	const { dark, colors } = useTheme();
-	const dispatch = useAppDispatch();
-	const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
-
-	const onDarkChange = (darkMode: boolean) => {
-		switchTheme({
-			switchThemeFunction: () => {
-				dispatch(setTheme({ isDark: darkMode, mode: mode }));
-			},
-			animationConfig: {
-				type: 'fade',
-				duration: 900,
-			},
-		});
-	};
-
-	const onThemeChange = (theme: ThemeOptions, py: number, px: number) => {
-		switchTheme({
-			switchThemeFunction: () => dispatch(setTheme({ mode: theme, isDark: isDark })),
-			animationConfig: {
-				type: 'circular',
-				duration: 900,
-				startingPoint: {
-					cy: py,
-					cx: px,
-				},
-			},
-		});
-	};
+	const { colors } = useAppTheme();
+	const { isDark, mode, setTheme } = useThemeStore();
 
 	return (
 		<Body>
@@ -337,25 +162,25 @@ const ThemeSetup = () => {
 					}}
 				>
 					<Pressable
-						onPress={(e) => onDarkChange(false)}
+						onPress={(e) => setTheme({ isDark: false })}
 						style={{
 							alignItems: 'center',
 							justifyContent: 'center',
 							paddingHorizontal: 20,
 						}}
 					>
-						<IconButton icon={'weather-sunny'} />
+						<IconButton icon={'weather-sunny'} selected={!isDark} />
 						<Text variant="labelLarge">Light Mode</Text>
 					</Pressable>
 					<Pressable
-						onPress={(e) => onDarkChange(true)}
+						onPress={(e) => setTheme({ isDark: true })}
 						style={{
 							alignItems: 'center',
 							justifyContent: 'center',
 							paddingHorizontal: 20,
 						}}
 					>
-						<IconButton icon={'weather-night'} />
+						<IconButton icon={'weather-night'} selected={isDark} />
 						<Text variant="labelLarge">Dark Mode</Text>
 					</Pressable>
 				</View>
@@ -374,13 +199,7 @@ const ThemeSetup = () => {
 										marginHorizontal: 10,
 										borderRadius: 12,
 									}}
-									onPress={(e) =>
-										onThemeChange(
-											theme,
-											e.nativeEvent.pageY,
-											e.nativeEvent.pageX,
-										)
-									}
+									onPress={() => setTheme({ mode: theme })}
 								>
 									<View
 										style={{
@@ -422,8 +241,8 @@ const ThemeSetup = () => {
 };
 
 const AnilistSetup = () => {
-	const { token, username, avatar } = useAppSelector((state) => state.persistedAniLogin);
 	const { request, result, promptAsync } = useAnilistAuth(true);
+	const { token, avatar, username } = useAuthStore().anilist;
 	const { dark } = useTheme();
 
 	return (
@@ -470,21 +289,16 @@ const AnilistSetup = () => {
 };
 
 const CardSetup = () => {
-	const dispatch = useAppDispatch();
-	const { scoreColors, defaultScore, scoreVisualType, mediaLanguage } = useAppSelector(
-		(state) => state.persistedSettings,
-	);
-	const { mode, isDark } = useAppSelector((state) => state.persistedTheme);
+	const { scoreColors, scoreVisualType, mediaLanguage, setSettings } = useSettingsStore();
+	const { mode } = useThemeStore();
 	const { colors } = useTheme();
-	const { width, height } = useWindowDimensions();
-	const [titleLang, setTitleLang] = useState<typeof mediaLanguage>(mediaLanguage);
 
 	const onScoreDesignChange = (preset: ScoreVisualType) => {
-		dispatch(setSettings({ entryType: 'scoreVisualType', value: preset }));
+		setSettings({ scoreVisualType: preset });
 	};
 
 	const onTitleLanguageChange = (lang: typeof mediaLanguage) => {
-		dispatch(setSettings({ entryType: 'mediaLanguage', value: lang }));
+		setSettings({ mediaLanguage: lang });
 	};
 
 	return (
@@ -593,16 +407,14 @@ const CardSetup = () => {
 const TagBLSetup = () => {
 	const { colors } = useTheme();
 	const { width } = useWindowDimensions();
-	const { tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+	const { tagBlacklist, setSettings } = useSettingsStore();
 	const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
 	const [search, setSearch] = useState<string>('');
 	const [searchResults, setSearchResults] = useState<
 		GenreTagCollectionQuery['MediaTagCollection']
 	>([]);
 
-	const dispatch = useAppDispatch();
-
-	const { data, isFetching, isError } = useGenreTagCollectionQuery(undefined);
+	const { data, isFetching, isError } = useGenreTagCollectionQuery();
 
 	const TagChip = useCallback(
 		({ name, onPress, icon }) => (
@@ -620,16 +432,11 @@ const TagBLSetup = () => {
 	);
 
 	const onAdd = (tag: string) => {
-		dispatch(setSettings({ entryType: 'tagBlacklist', value: [...tagBlacklist, tag] }));
+		setSettings({ tagBlacklist: [tag, ...tagBlacklist] });
 	};
 
 	const onRemove = (tag: string) => {
-		dispatch(
-			setSettings({
-				entryType: 'tagBlacklist',
-				value: tagBlacklist.filter((t) => t !== tag),
-			}),
-		);
+		setSettings({ tagBlacklist: tagBlacklist.filter((t) => t !== tag) });
 	};
 
 	useEffect(() => {
@@ -682,22 +489,6 @@ const TagBLSetup = () => {
 				onChangeText={(txt) => setSearch(txt)}
 				mode="bar"
 			/>
-			{/* <ScrollView
-                style={{ marginVertical: 10 }}
-                contentContainerStyle={{
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                }}
-            >
-                {searchResults?.map(
-                    (tag, idx) =>
-                        !tag.isAdult && (
-                            <Chip key={idx} mode="outlined" style={{ margin: 5 }}>
-                                {tag.name}
-                            </Chip>
-                        ),
-                )}
-            </ScrollView> */}
 			<FlatList
 				key={searchResults?.length ?? 2}
 				numColumns={searchResults?.length > 0 ? searchResults.length : 2}
@@ -727,15 +518,14 @@ const TagBLSetup = () => {
 };
 
 const TabSetup = () => {
-	const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
-	const dispatch = useAppDispatch();
+	const { exploreTabs, exploreTabOrder, setSettings } = useSettingsStore();
 
-	const editExploreTabs = (tabs: string[]) => {
-		dispatch(setSettings({ entryType: 'exploreTabs', value: tabs }));
+	const editExploreTabs = (tabs: (keyof ExploreTabsProps)[]) => {
+		setSettings({ exploreTabs: tabs });
 	};
 
-	const updateTabOrder = (tabs: string[]) => {
-		dispatch(setSettings({ entryType: 'exploreTabOrder', value: tabs }));
+	const updateTabOrder = (tabs: (keyof ExploreTabsProps)[]) => {
+		setSettings({ exploreTabOrder: tabs });
 	};
 
 	const renderItem = ({ item, drag, isActive }: RenderItemParams<keyof ExploreTabsProps>) => {
@@ -758,11 +548,6 @@ const TabSetup = () => {
 					activeOpacity={1}
 					disabled={isActive}
 				>
-					{/* <Checkbox.Item
-                        label={item}
-                        disabled={isActive}
-                        status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
-                    /> */}
 					<Text
 						variant="titleMedium"
 						style={{ textTransform: 'capitalize', paddingLeft: 15 }}
@@ -770,25 +555,11 @@ const TabSetup = () => {
 						{item}
 					</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<Checkbox
-							// disabled={isActive}
-							status={exploreTabs.includes(item) ? 'checked' : 'unchecked'}
-						/>
+						<Checkbox status={exploreTabs.includes(item) ? 'checked' : 'unchecked'} />
 						<IconButton icon="drag-vertical" onPressIn={drag} />
 					</View>
-					{/* <Text>{item}</Text> */}
 				</TouchableOpacity>
 			</ScaleDecorator>
-			// <ScaleDecorator>
-			//     <TouchableOpacity
-			//         activeOpacity={1}
-			//         onLongPress={drag}
-			//         disabled={isActive}
-			//         style={[styles.rowItem, { backgroundColor: isActive ? 'red' : 'blue' }]}
-			//     >
-			//         <Text style={styles.text}>{item}</Text>
-			//     </TouchableOpacity>
-			// </ScaleDecorator>
 		);
 	};
 
@@ -836,39 +607,21 @@ const OutroPage = () => {
 	);
 };
 
-const RenderPage = ({ page, pageAnim }: Page) => {
-	switch (page) {
-		case 0:
-			return <IntroPage />;
-		case 1:
-			return <ThemeSetup />;
-		case 2:
-			return <AnilistSetup />;
-		case 3:
-			return <CardSetup />;
-		case 4:
-			return <TagBLSetup />;
-		case 5:
-			return <TabSetup />;
-		case 6:
-			return <OutroPage />;
-		default:
-			return <View />;
-	}
-};
-
 const SetupModal = () => {
 	const pagerRef = useRef<PagerView>(null);
 	const [page, setPage] = useState<number>(0);
-	const { colors } = useTheme();
-
-	const dispatch = useAppDispatch();
+	const { colors } = useAppTheme();
+	const { isFirstLaunch, setSettings } = useSettingsStore();
 
 	const { top } = useSafeAreaInsets();
 
 	const onPageChange = (pg: number) => {
 		pagerRef.current?.setPage(pg);
 		// setPage(pg);
+	};
+
+	const onSetupComplete = () => {
+		setSettings({ isFirstLaunch: false });
 	};
 
 	return (
@@ -895,7 +648,7 @@ const SetupModal = () => {
 				}}
 			>
 				{/* <IconButton icon='animation-outline' /> */}
-				<Button onPress={() => dispatch(finishSetup())}>Skip Setup</Button>
+				<Button onPress={onSetupComplete}>Skip Setup</Button>
 			</View>
 			{/* <RenderPage page={page.page} pageAnim={page.pageAnim} /> */}
 			<PagerView
@@ -923,7 +676,7 @@ const SetupModal = () => {
 			) : (
 				<Button
 					mode="contained"
-					onPress={() => dispatch(finishSetup())}
+					onPress={onSetupComplete}
 					style={{ marginBottom: 30, marginHorizontal: 20 }}
 				>
 					Complete

@@ -1,4 +1,3 @@
-import { MotiView } from 'moti';
 import {
 	ActivityIndicator,
 	Button,
@@ -42,6 +41,7 @@ import { useAppTheme } from '@/store/theme/theme';
 import { ScrollView } from 'react-native-gesture-handler';
 import { compareArrays } from '@/utils/compare';
 import { scoreValues } from '@/utils/scores';
+import Animated from 'react-native-reanimated';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -170,7 +170,7 @@ const ListEntryView = ({
 	return (
 		<>
 			<View>
-				<MotiView
+				<Animated.View
 					style={{
 						flexDirection: 'row',
 						marginTop: 15,
@@ -286,7 +286,7 @@ const ListEntryView = ({
 							</Text>
 						</ActionIcon>
 					</View>
-				</MotiView>
+				</Animated.View>
 			</View>
 			<Portal>
 				<RemoveListItemDialog

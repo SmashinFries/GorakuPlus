@@ -7,29 +7,17 @@ import {
 	Portal,
 	Searchbar,
 	Text,
-	TextInput,
 	useTheme,
 } from 'react-native-paper';
-import {
-	AniMediaQuery,
-	FuzzyDate,
-	MediaList,
-	MediaListStatus,
-	MediaStatus,
-	MediaTag,
-	SaveMediaListItemMutationVariables,
-	ScoreFormat,
-} from '@/store/services/anilist/generated-anilist';
-import { FlatList, ScrollView, View } from 'react-native';
+import { AniMediaQuery, MediaStatus, MediaTag } from '@/store/services/anilist/generated-anilist';
+import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { ReactNode, useEffect, useState } from 'react';
 import { Image } from 'expo-image';
-import { DatePopup, ProgressDropDown, StatusDropDown } from './entryActions';
 import {
 	SearchReleasesPostApiResponse,
 	SeriesSearchResponseV1,
 	useSearchSeriesPostMutation,
 } from '@/store/services/mangaupdates/mangaUpdatesApi';
-import { MotiPressable } from 'moti/interactions';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BasicDialogProps } from '@/types';
 import { AnimeFull } from '@/store/services/mal/malApi';
@@ -201,14 +189,7 @@ export const MuSearchDialog = ({
 				<FlatList
 					data={results?.results ?? []}
 					renderItem={({ item }) => (
-						<MotiPressable
-							animate={({ hovered, pressed }) => {
-								'worklet';
-
-								return {
-									scale: hovered || pressed ? 0.9 : 1,
-								};
-							}}
+						<Pressable
 							onPress={() => setSelected(item?.record?.series_id)}
 							style={{
 								flex: 1,
@@ -251,7 +232,7 @@ export const MuSearchDialog = ({
 									{item?.record?.type}
 								</Text>
 							</View>
-						</MotiPressable>
+						</Pressable>
 					)}
 					keyExtractor={(item, idx) => idx.toString()}
 				/>

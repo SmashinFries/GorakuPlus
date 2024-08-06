@@ -1,13 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, View, ViewStyle } from 'react-native';
-import { TextInput, Menu, Text, useTheme, Button, Dialog, Portal, List } from 'react-native-paper';
-import {
-	ExploreMediaQueryVariables,
-	MediaFormat,
-	MediaSeason,
-	MediaStatus,
-	MediaType,
-} from '@/store/services/anilist/generated-anilist';
+import { TextInput, Text, Button, Dialog, Portal, List } from 'react-native-paper';
 import {
 	ANIME_FORMATS,
 	AnimeSorts,
@@ -18,13 +11,18 @@ import {
 } from '@/constants/mediaConsts';
 import { arrayRange } from '@/utils/numbers';
 import { mediaStatusOptions } from '@/constants/anilist';
-import { useAppTheme } from '@/store/theme/theme';
-import DateTimePicker, {
-	DateTimePickerAndroid,
-	DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
+import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { getDatetoFuzzyInt, getFuzzyInttoDate, getFuzzyInttoString } from '@/utils';
 import { openDatePicker } from '@/utils/datepicker';
+import { useSearchStore } from '@/store/search/searchStore';
+import { useAppTheme } from '@/store/theme/themes';
+import {
+	MediaFormat,
+	MediaSeason,
+	MediaStatus,
+	MediaType,
+	SearchAnimeQueryVariables,
+} from '@/api/anilist/__genereated__/gql';
 
 type DropdownItemProps = {
 	disabled: boolean;
@@ -186,16 +184,9 @@ export const DialogSelectDate = ({
 	);
 };
 
-type SortDropdownProps = {
-	current: MediaType;
-	updateSort: (sort: AvailableSorts, asc?: boolean) => void;
-	sort: {
-		value: AvailableSorts;
-		asc: boolean;
-	};
-};
-export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) => {
+export const SortDropdown = () => {
 	// const categories = current === 'anime' ? animeSort : mangaNovelSort;
+	const { searchType, sort, updateSort } = useSearchStore();
 
 	return (
 		<DialogSelect
@@ -209,7 +200,7 @@ export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) =
 				/>
 			}
 			items={(closeDialog) =>
-				current === MediaType.Anime
+				searchType === MediaType.Anime
 					? AnimeSorts.map((sortType, idx) => (
 							<DropdownItem
 								key={idx}
@@ -282,25 +273,22 @@ export const SortDropdown = ({ current, sort, updateSort }: SortDropdownProps) =
 
 export const SortDropdownMem = React.memo(SortDropdown);
 
-type StatusDropdownProps = {
-	updateStatus: (status: MediaStatus | 'ANY' | undefined) => void;
-	status: MediaStatus;
-};
-export const StatusDropdown = ({ status, updateStatus }: StatusDropdownProps) => {
+export const StatusDropdown = () => {
 	const categories = ['ANY', ...mediaStatusOptions];
+	const { filter, updateFilter } = useSearchStore();
 
 	return (
 		<DialogSelect
 			label="Status"
-			value={status?.toLowerCase() ?? 'ANY'.toLowerCase()}
+			value={filter.status?.toLowerCase() ?? 'ANY'.toLowerCase()}
 			items={(closeDialog) =>
 				categories.map((category: MediaStatus | 'ANY', idx) => (
 					<DropdownItem
 						key={idx}
 						disabled={(category === 'ANY' && status === null) || category === status}
 						onPress={() => {
+							updateFilter({ status: category === 'ANY' ? undefined : category });
 							closeDialog();
-							updateStatus(category);
 						}}
 						title={
 							category === MediaStatus.NotYetReleased
@@ -319,37 +307,27 @@ export const StatusDropdown = ({ status, updateStatus }: StatusDropdownProps) =>
 
 export const StatusDropdownMem = React.memo(StatusDropdown);
 
-type FormatDropdownProps = {
-	current: MediaType;
-	updateFormat: (format: MediaFormat | undefined) => void;
-	removeFormat: () => void;
-	formatValue: MediaFormat;
-};
-export const FormatDropdown = ({
-	current,
-	formatValue,
-	removeFormat,
-	updateFormat,
-}: FormatDropdownProps) => {
+export const FormatDropdown = () => {
+	const { searchType, filter, updateFilter } = useSearchStore();
 	return (
 		<DialogSelect
 			label="Format"
-			value={formatValue ?? 'ANY'.toLowerCase()}
+			value={(filter.format_in as MediaFormat) ?? 'ANY'.toLowerCase()}
 			items={(closeDialog) =>
-				current === MediaType.Anime
+				searchType === MediaType.Anime
 					? ['ANY', ...ANIME_FORMATS].map((format: MediaFormat | 'ANY', idx) => (
 							<DropdownItem
 								key={idx}
 								disabled={
-									(format === 'ANY' && formatValue === undefined) ||
-									format === formatValue
+									(format === 'ANY' && filter.format_in === undefined) ||
+									format === filter.format_in
 								}
 								onPress={() => {
 									closeDialog();
 									if (format === 'ANY') {
-										removeFormat();
+										updateFilter({ format_in: undefined });
 									} else {
-										updateFormat(format);
+										updateFilter({ format_in: format });
 									}
 								}}
 								title={format.replaceAll('_', ' ')}
@@ -359,15 +337,15 @@ export const FormatDropdown = ({
 							<DropdownItem
 								key={idx}
 								disabled={
-									(format === 'ANY' && formatValue === undefined) ||
-									format === formatValue
+									(format === 'ANY' && filter.format_in === undefined) ||
+									format === filter.format_in
 								}
 								onPress={() => {
 									closeDialog();
 									if (format === 'ANY') {
-										removeFormat();
+										updateFilter({ format_in: undefined });
 									} else {
-										updateFormat(format);
+										updateFilter({ format_in: format });
 									}
 								}}
 								title={format.replaceAll('_', ' ')}
@@ -381,64 +359,54 @@ export const FormatDropdown = ({
 
 export const FormatDropdownMem = React.memo(FormatDropdown);
 
-type SeasonDropdownProps = {
-	updateSeason: (season: MediaSeason | undefined) => void;
-	seasonValue: string;
-};
-export const SeasonDropdown = ({ seasonValue, updateSeason }: SeasonDropdownProps) => {
+export const SeasonDropdown = () => {
+	const { filter, updateFilter } = useSearchStore();
 	const seasons = ['ANY', ...Object.values(MediaSeason)];
 
 	return (
 		<DialogSelect
 			label="Season"
-			value={seasonValue ?? 'ANY'.toLowerCase()}
+			value={filter.season ?? 'ANY'.toLowerCase()}
 			items={(closeDialog) =>
 				seasons.map((season: MediaSeason | 'ANY', idx) => (
 					<DropdownItem
 						key={idx}
 						disabled={
-							(season === 'ANY' && seasonValue === undefined) ||
-							season === seasonValue
+							(season === 'ANY' && filter.season === undefined) ||
+							season === filter.season
 						}
 						onPress={() => {
 							closeDialog();
-							updateSeason(season !== 'ANY' ? season : undefined);
+							updateFilter({ season: season !== 'ANY' ? season : undefined });
 						}}
 						title={season.replaceAll('_', ' ')}
 					/>
 				))
 			}
-			// options={Object.values(MediaSeason)}
-			// onMenuPressAction={(opt: MediaSeason) => updateSeason('anime', { season: opt })}
 		/>
 	);
 };
 
-export const SeasonDropdownMem = React.memo(SeasonDropdown);
-
-type YearDropdownProps = {
-	updateSeasonYear: (year: number | undefined) => void;
-	yearValue: ExploreMediaQueryVariables['seasonYear'];
-};
-export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps) => {
+export const YearDropdown = () => {
+	const { filter, updateFilter } = useSearchStore();
 	const range = arrayRange(1970, new Date().getFullYear() + 1, 1).reverse();
 	const years = ['ANY'].concat(range);
 
 	return (
 		<DialogSelect
 			label="Year"
-			value={yearValue?.toString() ?? 'ANY'}
+			value={filter.seasonYear?.toString() ?? 'ANY'}
 			items={(closeDialog) =>
 				years.map((year: string, idx) => (
 					<DropdownItem
 						key={idx}
 						disabled={
-							(year === 'ANY' && yearValue === undefined) ||
-							Number(year) === yearValue
+							(year === 'ANY' && filter.seasonYear === undefined) ||
+							Number(year) === filter.seasonYear
 						}
 						onPress={() => {
 							closeDialog();
-							updateSeasonYear(year !== 'ANY' ? Number(year) : undefined);
+							updateFilter({ seasonYear: year !== 'ANY' ? Number(year) : undefined });
 						}}
 						title={year}
 					/>
@@ -448,24 +416,14 @@ export const YearDropdown = ({ yearValue, updateSeasonYear }: YearDropdownProps)
 	);
 };
 
-export const YearDropdownMem = React.memo(YearDropdown);
-
-type CountryDropdownProps = {
-	updateCountry: (c_code: string) => void;
-	removeCountry: () => void;
-	countryValue: string;
-};
-export const CountryDropdown = ({
-	countryValue,
-	removeCountry,
-	updateCountry,
-}: CountryDropdownProps) => {
+export const CountryDropdown = () => {
+	const { filter, updateFilter } = useSearchStore();
 	const categories = useMemo(() => Object.keys(COUNTRY_OPTIONS), []);
-	const [cValue, setCValue] = useState<string | undefined>(countryValue ?? 'ANY');
+	const [cValue, setCValue] = useState<string | undefined>(filter.countryOfOrigin ?? 'ANY');
 
 	useEffect(() => {
-		if (!categories.includes(countryValue)) {
-			removeCountry();
+		if (!categories.includes(filter.countryOfOrigin)) {
+			updateFilter({ countryOfOrigin: undefined });
 		}
 	}, [categories]);
 
@@ -482,10 +440,10 @@ export const CountryDropdown = ({
 							closeMenu();
 							if (c_code === 'ANY') {
 								setCValue('ANY');
-								removeCountry();
+								updateFilter({ countryOfOrigin: undefined });
 							} else {
 								setCValue(c_code);
-								updateCountry(c_code);
+								updateFilter({ countryOfOrigin: c_code });
 							}
 						}}
 						title={COUNTRY_OPTIONS[c_code]['name']}

@@ -1,10 +1,10 @@
-import { useAppSelector } from '@/store/hooks';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { Stack } from 'expo-router';
 
 type StackProps = (typeof Stack)['defaultProps'];
 
 const AnimatedStack = (props: StackProps) => {
-	const { navAnimation } = useAppSelector((state) => state.persistedSettings);
+	const { navAnimation } = useSettingsStore();
 	return (
 		<Stack
 			{...props}

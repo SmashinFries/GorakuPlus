@@ -1,43 +1,21 @@
 import { FlashList, MasonryFlashList, MasonryFlashListRef } from '@shopify/flash-list';
-import { useLazySearchPostsQuery } from '@/store/services/danbooru/danbooruApi';
-import { useAppSelector } from '@/store/hooks';
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
-import { DanPost } from '@/store/services/danbooru/types';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
 import { DanbooruImageCard } from '../../components/cards';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ScrollToTopButton } from '@/components/buttons';
+import { DanPost } from '@/api/danbooru/types';
+import { usePostsSearch } from '@/api/danbooru/danbooru';
 
 const ArtListPage = () => {
-	const { tag } = useLocalSearchParams();
+	const { tag } = useLocalSearchParams<{ tag: string }>();
 	const { width, height } = useWindowDimensions();
-	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
-	const [searchPosts] = useLazySearchPostsQuery();
-	const [results, setResults] = useState<DanPost[]>([]);
+	const { data, hasNextPage, fetchNextPage } = usePostsSearch({ page: 1, limit: 30, tags: tag });
 	const [page, setPage] = useState<number>(1);
-	const [hasNextPage, setHasNextPage] = useState<boolean>(true);
 	const [scrollOffset, setScrollOffset] = useState<number>(0);
 
 	const listRef = useRef<MasonryFlashListRef<DanPost>>(null);
-
-	const onSearch = async (page_num = 1) => {
-		setPage(page_num);
-		const response = await searchPosts({
-			tags: showNSFW ? tag + ' solo' : tag + ' solo rating:g',
-			limit: 24,
-			page: page_num,
-		}).unwrap();
-		if (response.length < 23) {
-			setHasNextPage(false);
-		}
-		if (page_num > 1) {
-			setResults((prev) => [...prev, ...response]);
-		} else {
-			setResults(response);
-		}
-	};
 
 	const RenderItem = useCallback(({ item }: { item: DanPost }) => {
 		return (
@@ -47,23 +25,19 @@ const ArtListPage = () => {
 		);
 	}, []);
 
-	useEffect(() => {
-		if (results.length === 0) {
-			onSearch();
-		}
-	}, []);
+	const flattenedData = data.pages.flat();
 
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
-			{results.length > 0 ? (
+			{flattenedData.length > 0 ? (
 				<MasonryFlashList
 					ref={listRef}
-					data={results}
+					data={flattenedData}
 					numColumns={2}
 					renderItem={RenderItem}
 					estimatedItemSize={200}
 					onEndReachedThreshold={0.7}
-					onEndReached={() => hasNextPage && onSearch(page + 1)}
+					onEndReached={() => hasNextPage && setPage((prev) => prev + 1)}
 					onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				/>
 			) : (

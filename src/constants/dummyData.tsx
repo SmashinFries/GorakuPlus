@@ -5,8 +5,8 @@ import {
 	MediaStatus,
 	MediaType,
 	ScoreDistribution,
-} from '@/store/services/anilist/generated-anilist';
-import { ThemeOptions } from '@/store/theme/theme';
+} from '@/api/anilist/__genereated__/gql';
+import { ThemeOptions } from '@/store/theme/themes';
 
 const ScoreStats: ScoreDistribution[] = [
 	{

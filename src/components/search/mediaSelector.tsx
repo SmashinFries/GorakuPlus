@@ -1,26 +1,25 @@
 import React, { memo, useMemo, useState } from 'react';
 import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { MD3Colors, SegmentedButtons, useTheme } from 'react-native-paper';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
 import { SearchTypes } from '@/constants/anilist';
-import { FilterState } from '@/store/slices/search/filterSlice';
-import { SearchType } from '@/types/search';
+import { useSearchStore } from '@/store/search/searchStore';
+import { MediaType } from '@/api/anilist/__genereated__/gql';
 
 type SegButtons = {
 	value: SearchTypes;
 	label: string;
 };
 
-type MediaSelectorProps = {
-	selection: SearchType;
-	onSelect: (type: FilterState['current']) => void;
-};
-
-export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
+export const MediaSelector = () => {
 	const { colors } = useTheme();
 	const { width } = useWindowDimensions();
+	const { searchType, updateSearchType } = useSearchStore();
 	const buttons: SegButtons[] = useMemo(
 		() => [
+			{
+				value: 'ALL',
+				label: 'All',
+			},
 			{
 				value: MediaType.Anime,
 				label: 'Anime',
@@ -30,15 +29,15 @@ export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
 				label: 'Manga',
 			},
 			{
-				value: 'characters',
+				value: 'CHARACTER',
 				label: 'Characters',
 			},
 			{
-				value: 'staff',
+				value: 'STAFF',
 				label: 'Staff',
 			},
 			{
-				value: 'studios',
+				value: 'STUDIO',
 				label: 'Studios',
 			},
 		],
@@ -48,16 +47,16 @@ export const MediaSelector = ({ selection, onSelect }: MediaSelectorProps) => {
 	return (
 		<SafeAreaView style={[styles.container, { width, backgroundColor: colors.background }]}>
 			<SegmentedButtons
-				value={selection === 'imageSearch' ? MediaType.Anime : selection}
-				onValueChange={onSelect}
+				value={searchType}
+				onValueChange={updateSearchType}
 				density="small"
-				buttons={[buttons[0], buttons[1]]}
+				buttons={[buttons[0], buttons[1], buttons[2]]}
 			/>
 			<SegmentedButtons
-				value={selection === 'waifuSearch' ? 'characters' : selection}
-				onValueChange={onSelect}
+				value={searchType}
+				onValueChange={updateSearchType}
 				density="small"
-				buttons={[buttons[2], buttons[3], buttons[4]]}
+				buttons={[buttons[3], buttons[4], buttons[5]]}
 				style={{ marginTop: 5 }}
 			/>
 		</SafeAreaView>

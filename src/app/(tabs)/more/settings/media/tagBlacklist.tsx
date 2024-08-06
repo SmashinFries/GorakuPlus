@@ -1,11 +1,10 @@
-import { BanTagHeader } from '@/components/headers';
-import { ListSubheader } from '@/components/titles';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
 	GenreTagCollectionQuery,
 	useGenreTagCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
-import { setSettings } from '@/store/slices/settingsSlice';
+} from '@/api/anilist/__genereated__/gql';
+import { BanTagHeader } from '@/components/headers';
+import { ListSubheader } from '@/components/titles';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { Stack, router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
@@ -22,8 +21,7 @@ type TagChipProps = {
 const TagBlackListPage = () => {
 	const { colors } = useTheme();
 	const { width } = useWindowDimensions();
-	const { tagBlacklist, showNSFW } = useAppSelector((state) => state.persistedSettings);
-	const dispatch = useAppDispatch();
+	const { tagBlacklist, showNSFW, setSettings } = useSettingsStore();
 
 	const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
 	const [search, setSearch] = useState<string>('');
@@ -91,7 +89,7 @@ const TagBlackListPage = () => {
 	}, []);
 
 	const onSave = () => {
-		dispatch(setSettings({ entryType: 'tagBlacklist', value: tags }));
+		setSettings({ tagBlacklist: tags });
 		router.back();
 	};
 

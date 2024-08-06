@@ -1,43 +1,45 @@
 import { Dialog, Button, Text, useTheme, Searchbar, ActivityIndicator } from 'react-native-paper';
 import { BasicDialogProps } from '../../types';
 import { useCallback, useState } from 'react';
-import { DanTags } from '@/store/services/danbooru/types';
 import { FlatList } from 'react-native';
-import { useLazySearchTagsQuery } from '@/store/services/danbooru/danbooruApi';
+import { DanTags } from '@/api/danbooru/types';
+import { useTagsSearchQuery } from '@/api/danbooru/danbooru';
+import useDebounce from '@/hooks/useDebounce';
+import { useMatchStore } from '@/store/matchStore';
 
 type TagSearchDialogProps = BasicDialogProps & {
 	initialQuery: string;
 	initialTags: DanTags[];
 	tagsLoading: boolean;
+	charId: number;
 	onTagChange: (tag: string) => void;
-	saveTag: (tag: string) => void;
+	// saveTag: (tag: string) => void;
 };
 export const TagSearchDialog = ({
 	visible,
 	initialQuery,
 	initialTags,
 	tagsLoading,
+	charId,
 	onDismiss,
 	onTagChange,
-	saveTag,
+	// saveTag,
 }: TagSearchDialogProps) => {
 	const { colors } = useTheme();
+	const { addBooruTag } = useMatchStore();
 	const [query, setQuery] = useState(initialQuery);
+	const debouncedQuery = useDebounce(query, 600);
 	const [selectedTag, setSelectedTag] = useState<string>(initialTags[0]?.value ?? '');
 	const [results, setResults] = useState<DanTags[]>(initialTags ?? []);
-	const [search, searchStatus] = useLazySearchTagsQuery();
-
-	const onSearch = useCallback(async (q: string) => {
-		const response = await search({
-			'search[query]': q.toLowerCase(),
-			'search[type]': 'tag',
-			limit: 20,
-		}).unwrap();
-		setResults(response);
-	}, []);
+	const { isFetching } = useTagsSearchQuery({
+		'search[query]': debouncedQuery,
+		'search[type]': 'tag',
+		limit: 15,
+	});
 
 	const onConfirm = useCallback(() => {
-		saveTag(selectedTag);
+		addBooruTag(charId, selectedTag);
+		// saveTag(selectedTag);
 		onTagChange(selectedTag);
 		onDismiss();
 	}, [selectedTag]);
@@ -66,17 +68,13 @@ export const TagSearchDialog = ({
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>Find Character</Dialog.Title>
 			<Dialog.Content>
-				<Searchbar
-					value={query}
-					onChangeText={(txt) => setQuery(txt)}
-					onSubmitEditing={({ nativeEvent }) => onSearch(nativeEvent.text)}
-				/>
-				<Button mode="outlined" onPress={() => onSearch(query)}>
+				<Searchbar value={query} onChangeText={(txt) => setQuery(txt)} />
+				{/* <Button mode="outlined" onPress={() => onSearch(query)}>
 					Search
-				</Button>
+				</Button> */}
 			</Dialog.Content>
 			<Dialog.ScrollArea>
-				{!searchStatus.isFetching ? (
+				{!isFetching ? (
 					<FlatList
 						data={results ?? []}
 						contentContainerStyle={{ paddingTop: 10 }}

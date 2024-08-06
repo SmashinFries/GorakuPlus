@@ -6,16 +6,12 @@ import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useCallback, useEffect, useState } from 'react';
 import { FlashList } from '@shopify/flash-list';
-import {
-	ExploreMediaQuery,
-	MediaType,
-	ScoreFormat,
-} from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from './cards';
 import { copyToClipboard } from '@/utils';
 import { NumberPicker, NumberPickerProps } from './picker';
-import { useCameraPermissions, CameraView, BarCodeType } from 'expo-camera/next';
+import { useCameraPermissions, CameraView } from 'expo-camera';
 import { scoreToIndex } from '@/utils/scores';
+import { MediaType, SearchMangaQuery } from '@/api/anilist/__genereated__/gql';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
 	onNav: (aniId: number, malId: number, type: MediaType) => void;
@@ -34,7 +30,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 	};
 
 	const RenderItem = useCallback(
-		({ item }: { item: ExploreMediaQuery['Page']['media'][0] }) => {
+		({ item }: { item: SearchMangaQuery['Page']['media'][0] }) => {
 			return (
 				<View
 					style={{
@@ -91,7 +87,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 					<Animated.View entering={FadeIn} exiting={FadeOut} style={{ height: 400 }}>
 						<CameraView
 							style={[{ height: 400 }]}
-							barcodeScannerSettings={{ barCodeTypes: ['ean13'] }}
+							barcodeScannerSettings={{ barcodeTypes: ['ean13'] }}
 							onBarcodeScanned={(scanningResult) =>
 								handleBarCodeScanned(scanningResult)
 							}

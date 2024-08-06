@@ -1,0 +1,888 @@
+query UserAnimeStats($userId: Int) {
+	User(id: $userId) {
+		statistics {
+			anime {
+				count
+				meanScore
+				standardDeviation
+				minutesWatched
+				episodesWatched
+				formats(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					format
+				}
+				statuses(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					status
+				}
+				scores(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					score
+				}
+				lengths(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					length
+				}
+				releaseYears(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					releaseYear
+				}
+				startYears(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					startYear
+				}
+				genres(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					genre
+				}
+				tags(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					tag {
+						id
+						name
+						description
+						category
+					}
+				}
+				countries(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					country
+				}
+				voiceActors(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					voiceActor {
+						id
+						languageV2
+						image {
+							large
+						}
+						isFavourite
+						favourites
+						name {
+							userPreferred
+						}
+					}
+				}
+				staff(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					staff {
+						id
+						languageV2
+						image {
+							large
+						}
+						isFavourite
+						favourites
+						name {
+							userPreferred
+						}
+					}
+				}
+				studios {
+					count
+					meanScore
+					minutesWatched
+					mediaIds
+					studio {
+						id
+						name
+						favourites
+						isFavourite
+					}
+				}
+			}
+		}
+	}
+}
+
+query UserMangaStats($userId: Int) {
+	User(id: $userId) {
+		statistics {
+			manga {
+				count
+				meanScore
+				standardDeviation
+				chaptersRead
+				volumesRead
+				formats(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					format
+				}
+				statuses(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					status
+				}
+				scores(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					score
+				}
+				lengths(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					length
+				}
+				releaseYears(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					releaseYear
+				}
+				startYears(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					startYear
+				}
+				genres(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					genre
+				}
+				tags(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					tag {
+						id
+						name
+						description
+						category
+					}
+				}
+				countries(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					country
+				}
+				staff(sort: [COUNT_DESC]) {
+					count
+					meanScore
+					chaptersRead
+					mediaIds
+					staff {
+						id
+						languageV2
+						image {
+							large
+						}
+						isFavourite
+						favourites
+						name {
+							userPreferred
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+query UserActivity($page: Int, $perPage: Int, $isFollowing: Boolean, $userId: Int) {
+	Page(page: $page, perPage: $perPage) {
+		pageInfo {
+			total
+			currentPage
+			hasNextPage
+		}
+		activities(sort: ID_DESC, isFollowing: $isFollowing, userId: $userId) {
+			__typename
+			... on ListActivity {
+				id
+				progress
+				status
+				createdAt
+				user {
+					id
+					name
+					about
+					createdAt
+					bannerImage
+					options {
+						profileColor
+					}
+					avatar {
+						large
+					}
+					favourites {
+						anime(perPage: 1) {
+							nodes {
+								id
+								title {
+									userPreferred
+								}
+								coverImage {
+									extraLarge
+								}
+								siteUrl
+							}
+						}
+						manga(perPage: 1) {
+							nodes {
+								id
+								title {
+									userPreferred
+								}
+								coverImage {
+									extraLarge
+								}
+								siteUrl
+							}
+						}
+						characters(perPage: 1) {
+							nodes {
+								id
+								name {
+									userPreferred
+								}
+								image {
+									large
+								}
+								gender
+								siteUrl
+							}
+						}
+					}
+					siteUrl
+				}
+				media {
+					id
+					type
+					bannerImage
+					isAdult
+					format
+					isLicensed
+					status
+					title {
+						userPreferred
+						romaji
+						english
+						native
+					}
+					coverImage {
+						color
+						extraLarge
+					}
+				}
+				siteUrl
+			}
+		}
+	}
+}
+
+query UserData {
+	Viewer {
+		id
+		name
+		avatar {
+			medium
+			large
+		}
+		bannerImage
+		mediaListOptions {
+			scoreFormat
+			animeList {
+				customLists
+			}
+			mangaList {
+				customLists
+			}
+		}
+	}
+}
+
+query ExtUserData($id: Int, $name: String) {
+	User(id: $id, name: $name) {
+		id
+		name
+		avatar {
+			large
+		}
+		bannerImage
+		mediaListOptions {
+			scoreFormat
+		}
+	}
+}
+
+# query UserOverview {
+# 	Viewer {
+# 		name
+# 		avatar {
+# 			large
+# 		}
+# 		bannerImage
+# 		about
+# 		stats {
+# 			favouredGenresOverview {
+# 				genre
+# 				amount
+# 				meanScore
+# 				timeWatched
+# 			}
+# 			activityHistory {
+# 				date
+# 				amount
+# 				level
+# 			}
+# 		}
+# 		statistics {
+# 			anime {
+# 				minutesWatched
+# 				episodesWatched
+# 			}
+# 			manga {
+# 				chaptersRead
+# 				volumesRead
+# 			}
+# 		}
+# 		mediaListOptions {
+# 			scoreFormat
+# 		}
+# 		unreadNotificationCount
+# 		siteUrl
+# 	}
+# }
+
+query UserOverview(
+	$userId: Int!
+	$isFollowing: Boolean
+	$activityPerPage: Int
+	$followingPerPage: Int
+	$followersPerPage: Int
+	$favoritesPerPage: Int
+) {
+	user: User(id: $userId) {
+		name
+		avatar {
+			large
+		}
+		bannerImage
+		about
+		stats {
+			favouredGenresOverview {
+				genre
+				amount
+				meanScore
+				timeWatched
+			}
+			activityHistory {
+				date
+				amount
+				level
+			}
+		}
+		statistics {
+			anime {
+				minutesWatched
+				episodesWatched
+			}
+			manga {
+				chaptersRead
+				volumesRead
+			}
+		}
+		mediaListOptions {
+			scoreFormat
+		}
+		favourites {
+			anime(page: 1, perPage: $favoritesPerPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					coverImage {
+						extraLarge
+						color
+					}
+					title {
+						english
+						native
+						romaji
+					}
+					averageScore
+					meanScore
+					bannerImage
+					type
+					format
+					genres
+					episodes
+					status
+					isAdult
+					synonyms
+					isLicensed
+					isFavourite
+					stats {
+						scoreDistribution {
+							score
+							amount
+						}
+					}
+				}
+			}
+			manga(page: 1, perPage: $favoritesPerPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					coverImage {
+						extraLarge
+						color
+					}
+					title {
+						english
+						native
+						romaji
+					}
+					averageScore
+					meanScore
+					bannerImage
+					chapters
+					volumes
+					type
+					format
+					genres
+					status
+					isAdult
+					synonyms
+					isLicensed
+					isFavourite
+					stats {
+						scoreDistribution {
+							score
+							amount
+						}
+					}
+				}
+			}
+			characters(page: 1, perPage: $favoritesPerPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					name {
+						full
+						native
+					}
+					gender
+					isFavourite
+					image {
+						large
+					}
+				}
+			}
+		}
+		unreadNotificationCount
+		siteUrl
+	}
+	activity: Page(page: 1, perPage: $activityPerPage) {
+		activities(sort: ID_DESC, isFollowing: $isFollowing, userId: $userId) {
+			__typename
+			... on ListActivity {
+				id
+				progress
+				status
+				createdAt
+				media {
+					id
+					type
+					bannerImage
+					isAdult
+					format
+					isLicensed
+					status
+					title {
+						userPreferred
+						romaji
+						english
+						native
+					}
+					coverImage {
+						color
+						extraLarge
+					}
+				}
+				siteUrl
+			}
+		}
+	}
+	following: Page(page: 1, perPage: $followingPerPage) {
+		pageInfo {
+			total
+			hasNextPage
+		}
+		following(userId: $userId) {
+			id
+			name
+			avatar {
+				large
+				medium
+			}
+			bannerImage
+			isFollowing
+			isFollower
+			isBlocked
+			siteUrl
+		}
+	}
+	followers: Page(page: 1, perPage: $followersPerPage) {
+		pageInfo {
+			total
+			hasNextPage
+		}
+		followers(userId: $userId) {
+			id
+			name
+			avatar {
+				large
+				medium
+			}
+			bannerImage
+			isFollowing
+			isFollower
+			isBlocked
+			siteUrl
+		}
+	}
+}
+
+query UserFollowing($userId: Int!, $page: Int) {
+	Page(page: $page) {
+		pageInfo {
+			total
+			hasNextPage
+		}
+		following(userId: $userId) {
+			id
+			name
+			avatar {
+				large
+				medium
+			}
+			bannerImage
+			isFollowing
+			isFollower
+			isBlocked
+			siteUrl
+		}
+	}
+}
+
+query UserFollowers($userId: Int!, $page: Int) {
+	Page(page: $page) {
+		pageInfo {
+			total
+			hasNextPage
+		}
+		followers(userId: $userId) {
+			id
+			name
+			avatar {
+				large
+				medium
+			}
+			bannerImage
+			isFollowing
+			isFollower
+			isBlocked
+			siteUrl
+		}
+	}
+}
+
+query UserFavoritesOverview($userID: Int) {
+	User(id: $userID) {
+		favourites {
+			anime(perPage: 16) {
+				nodes {
+					id
+					coverImage {
+						extraLarge
+					}
+				}
+			}
+			manga(perPage: 16) {
+				nodes {
+					id
+					coverImage {
+						extraLarge
+					}
+				}
+			}
+			characters(perPage: 16) {
+				nodes {
+					id
+					image {
+						large
+					}
+				}
+			}
+			staff(perPage: 16) {
+				nodes {
+					id
+					image {
+						large
+					}
+				}
+			}
+			studios(perPage: 16) {
+				nodes {
+					id
+					name
+				}
+			}
+		}
+	}
+}
+
+query UserAnimeFavorites($userID: Int, $page: Int, $perPage: Int) {
+	User(id: $userID) {
+		favourites {
+			anime(page: $page, perPage: $perPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					coverImage {
+						extraLarge
+						color
+					}
+					title {
+						english
+						native
+						romaji
+					}
+					averageScore
+					meanScore
+					bannerImage
+					type
+					format
+					genres
+					episodes
+					status
+					isAdult
+					synonyms
+					isLicensed
+					isFavourite
+					characters(perPage: 50) {
+						nodes {
+							name {
+								full
+								native
+							}
+						}
+					}
+					stats {
+						scoreDistribution {
+							score
+							amount
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+query UserMangaFavorites($userID: Int, $page: Int, $perPage: Int) {
+	User(id: $userID) {
+		favourites {
+			manga(page: $page, perPage: $perPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					coverImage {
+						extraLarge
+						color
+					}
+					title {
+						english
+						native
+						romaji
+					}
+					averageScore
+					meanScore
+					bannerImage
+					chapters
+					volumes
+					type
+					format
+					genres
+					status
+					isAdult
+					synonyms
+					isLicensed
+					isFavourite
+					characters(perPage: 50) {
+						nodes {
+							name {
+								full
+								native
+							}
+						}
+					}
+					stats {
+						scoreDistribution {
+							score
+							amount
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+query UserWaifuFavorites($userID: Int, $page: Int, $perPage: Int) {
+	User(id: $userID) {
+		favourites {
+			characters(page: $page, perPage: $perPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					name {
+						full
+						native
+					}
+					gender
+					isFavourite
+					image {
+						large
+					}
+				}
+			}
+		}
+	}
+}
+
+query UserStaffFavorites($userID: Int, $page: Int, $perPage: Int) {
+	User(id: $userID) {
+		favourites {
+			staff(page: $page, perPage: $perPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					name {
+						full
+						native
+					}
+					gender
+					isFavourite
+					image {
+						large
+					}
+				}
+			}
+		}
+	}
+}
+
+query UserStudiosFavorites($userID: Int, $page: Int, $perPage: Int) {
+	User(id: $userID) {
+		favourites {
+			studios(page: $page, perPage: $perPage) {
+				pageInfo {
+					total
+					perPage
+					currentPage
+					hasNextPage
+					lastPage
+				}
+				nodes {
+					id
+					name
+					isAnimationStudio
+					isFavourite
+				}
+			}
+		}
+	}
+}

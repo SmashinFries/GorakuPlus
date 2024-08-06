@@ -1,34 +1,19 @@
-import { MotiView } from 'moti';
 import { StyleSheet, View } from 'react-native';
 import { memo } from 'react';
 import { Text } from 'react-native-paper';
+import { getTimeUntil } from '@/utils';
 
 type AiringBannerProps = {
 	containerColor: string;
 	textColor: string;
-	text: string;
+	text: string | number;
 };
 export const AiringBanner = ({ containerColor, textColor, text }: AiringBannerProps) => {
-	// const timeTill = useMemo(() => {
-	//     return getTimeUntil(nextEpisode?.airingAt);
-	// }, [nextEpisode?.airingAt]);
-
-	// if (!nextEpisode && !startDate) return null;
-
 	return (
 		<View style={[Styles.container, { backgroundColor: containerColor }]}>
-			{/* {startDate && !nextEpisode ? (
-                <Text numberOfLines={1} style={[Styles.txt, { color: textColor }]}>{`${
-                    startDate.month ?? '??'
-                }/${startDate.day ?? '??'}/${startDate.year ?? '????'}`}</Text>
-            ) : ( */}
 			<Text variant="labelSmall" numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
-				{/* {format === MediaFormat.Movie ? 'Movie:' : 'EP'}{' '}
-                    {format !== MediaFormat.Movie && nextEpisode?.episode + ': '}
-                    {timeTill} */}
-				{text}
+				{getTimeUntil(Number(text), 'until')}
 			</Text>
-			{/* )} */}
 		</View>
 	);
 };

@@ -2,12 +2,12 @@ import { View } from 'react-native';
 import { ScrollView, useWindowDimensions } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
-import { UserAnimeStatsQuery } from '@/store/services/anilist/generated-anilist';
 import { Text, useTheme } from 'react-native-paper';
 import { useMemo } from 'react';
 import { rgbToRgba } from '@/utils';
 import { ListHeading } from '../text';
 import { ChartData } from 'react-native-chart-kit/dist/HelperTypes';
+import { UserAnimeStatsQuery } from '@/api/anilist/__genereated__/gql';
 
 type ScoreGraphProps = {
 	scores: UserAnimeStatsQuery['User']['statistics']['anime']['scores'];

@@ -1,4 +1,4 @@
-import { MediaListStatus, MediaStatus } from '@/store/services/anilist/generated-anilist';
+import { MediaListStatus, MediaStatus } from '@/api/anilist/__genereated__/gql';
 
 const RED = '#FF0000';
 const YELLOW = '#FFA500';
@@ -50,6 +50,14 @@ export const getScoreColor = (
 	}
 };
 
+export const ListColors = {
+	[MediaListStatus.Completed]: '#00FF00',
+	[MediaListStatus.Planning]: '#FFA500',
+	[MediaListStatus.Dropped]: '#FF0000',
+	[MediaListStatus.Paused]: '#FF0000',
+	[MediaListStatus.Current]: '#3AADE9',
+	[MediaListStatus.Repeating]: '#3AADE9',
+};
 export const listColor = (status: MediaListStatus) => {
 	switch (status) {
 		case MediaListStatus.Completed:

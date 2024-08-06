@@ -1,13 +1,13 @@
 import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { useTheme } from 'react-native-paper';
-import { ExploreMediaQuery } from '@/store/services/anilist/generated-anilist';
+import { AnimeExploreQuery, ExploreMediaQuery } from '@/store/services/anilist/generated-anilist';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Platform } from 'react-native';
 import useBackground from '@/hooks/explore/background';
 
 type BackgroundArtProps = {
-	data: ExploreMediaQuery;
+	data: AnimeExploreQuery['trending']['media'];
 	currentBG: string;
 	width: number;
 	height: number;

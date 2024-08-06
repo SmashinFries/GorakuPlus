@@ -1,7 +1,4 @@
-import {
-	GetNotificationsQuery,
-	UserTitleLanguage,
-} from '@/store/services/anilist/generated-anilist';
+import { GetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
 import * as Clipboard from 'expo-clipboard';
 import * as Haptics from 'expo-haptics';
 

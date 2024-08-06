@@ -1,4 +1,4 @@
-import { QueryStatus } from '@reduxjs/toolkit/dist/query';
+import { QueryStatus } from '@tanstack/react-query';
 import { StyleSheet, View } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
 

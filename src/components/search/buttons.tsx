@@ -161,17 +161,17 @@ export const PresetButton = ({ onPress }: PresetButtonProps) => {
 type TagBanSwitchProps = {
 	initialState: boolean;
 	totalBanned: number;
-	onPress: (value: boolean) => void;
+	onPress: () => void;
 };
 export const TagBanSwitch = ({ onPress, totalBanned, initialState }: TagBanSwitchProps) => {
 	const [state, setState] = useState<boolean>(initialState);
 	const onSwitch = useCallback((value: boolean) => {
 		setState(value);
-		onPress(value);
+		onPress();
 	}, []);
 	return (
 		<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-			<GorakuSwitch value={state} onValueChange={onSwitch} />
+			<Switch value={state} onValueChange={onSwitch} />
 			<Text>Blacklist{totalBanned && totalBanned > 0 ? ` (${totalBanned})` : ''}</Text>
 		</View>
 	);

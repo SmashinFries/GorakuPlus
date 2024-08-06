@@ -1,6 +1,5 @@
 import { IconButton, Text, useTheme } from 'react-native-paper';
 import { MediaExternalLink } from '@/store/services/anilist/generated-anilist';
-import { TransXInViewMem, TransYUpViewMem } from '@/components/animations';
 import { ListHeading } from '@/components/text';
 import { ScrollView } from 'react-native';
 import { openWebBrowser } from '@/utils/webBrowser';
@@ -16,6 +15,7 @@ import {
 import { View } from 'react-native';
 import { AnimeFull } from '@/store/services/mal/malApi';
 import { StreamSites } from '@/types/mal';
+import Animated from 'react-native-reanimated';
 
 type LinkIconButtonProps = {
 	index: number;
@@ -40,12 +40,7 @@ const ExtLinkIconButton = ({
 	notes,
 }: LinkIconButtonProps) => {
 	return (
-		<TransXInViewMem
-			animation={false}
-			direction="right"
-			delay={index * 50}
-			style={{ alignItems: 'center', marginHorizontal: 10 }}
-		>
+		<Animated.View style={{ alignItems: 'center', marginHorizontal: 10 }}>
 			<IconButton
 				mode="contained"
 				size={36}
@@ -70,7 +65,7 @@ const ExtLinkIconButton = ({
 					{`(${notes})`}
 				</Text>
 			) : null}
-		</TransXInViewMem>
+		</Animated.View>
 	);
 };
 

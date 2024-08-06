@@ -1,4 +1,4 @@
-import { useAppTheme } from '@/store/theme/theme';
+import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';

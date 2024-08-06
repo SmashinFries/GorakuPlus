@@ -1,27 +1,16 @@
 import { Accordion } from '@/components/animations';
 import { GorakuSlider } from '@/components/slider';
 import { ListSubheader } from '@/components/titles';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { TTSVoice, enableTTS, updateTTS } from '@/store/slices/ttsSlice';
-import { useAppTheme } from '@/store/theme/theme';
 import { BasicDialogProps } from '@/types';
-import Slider from '@react-native-community/slider';
 import * as Speech from 'expo-speech';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
-import {
-	Button,
-	Dialog,
-	Icon,
-	IconButton,
-	List,
-	Portal,
-	RadioButton,
-	Switch,
-	Text,
-} from 'react-native-paper';
+import { Button, Dialog, Icon, List, Portal, RadioButton, Text } from 'react-native-paper';
 import * as Haptics from 'expo-haptics';
-import { GorakuSwitch } from '@/components/switch';
+import { MaterialSwitchListItem } from '@/components/switch';
+import { TTSVoice } from '@/store/tts/types';
+import { useAppTheme } from '@/store/theme/themes';
+import { useTTSStore } from '@/store/tts/ttsStore';
 
 type VoiceDialogProps = BasicDialogProps & {
 	title: string;
@@ -148,10 +137,7 @@ const VoiceDialog = ({
 
 const AudioPage = () => {
 	const { colors, dark } = useAppTheme();
-	const { enabled, english, japanese, korean, chinese } = useAppSelector(
-		(state) => state.ttsSettings,
-	);
-	const dispatch = useAppDispatch();
+	const { enabled, english, japanese, korean, chinese, enableTTS, updateTTS } = useTTSStore();
 
 	const [availableVoices, setAvailableVoices] = useState<Speech.Voice[]>([]);
 	const [voiceEngDialogVis, setVoiceEngDialogVis] = useState(false);
@@ -161,27 +147,28 @@ const AudioPage = () => {
 
 	const getSpeakers = async () => {
 		const speakers = await Speech.getAvailableVoicesAsync();
+		console.log(speakers);
 		const english_voices = speakers.filter((s) => s.language.includes('en'));
 		const japanese_voices = speakers.filter((s) => s.language.includes('ja'));
 		const korean_voices = speakers.filter((s) => s.language.includes('ko'));
 		const chinese_voices = speakers.filter((s) => s.language.includes('zh'));
 		if (!english.voice && english_voices?.length > 0) {
-			dispatch(updateTTS({ entryType: 'english', value: { voice: english_voices[0] } }));
+			updateTTS('english', { voice: english_voices[0] });
 		}
 		if (!japanese.voice && japanese_voices?.length > 0) {
-			dispatch(updateTTS({ entryType: 'japanese', value: { voice: japanese_voices[0] } }));
+			updateTTS('japanese', { voice: japanese_voices[0] });
 		}
 		if (!korean.voice && korean_voices?.length > 0) {
-			dispatch(updateTTS({ entryType: 'korean', value: { voice: korean_voices[0] } }));
+			updateTTS('korean', { voice: korean_voices[0] });
 		}
 		if (!chinese.voice && chinese_voices?.length > 0) {
-			dispatch(updateTTS({ entryType: 'chinese', value: { voice: chinese_voices[0] } }));
+			updateTTS('chinese', { voice: chinese_voices[0] });
 		}
 		setAvailableVoices(speakers);
 	};
 
-	const toggleTTS = (val: boolean) => {
-		dispatch(enableTTS(val));
+	const toggleTTS = () => {
+		enableTTS(!enabled);
 	};
 
 	const onVoiceEdit = (
@@ -190,12 +177,7 @@ const AudioPage = () => {
 		rate: number,
 		pitch: number,
 	) => {
-		dispatch(
-			updateTTS({
-				entryType: lang,
-				value: { voice, rate, pitch },
-			}),
-		);
+		updateTTS(lang, { voice, rate, pitch });
 		lang === 'english'
 			? setVoiceEngDialogVis(false)
 			: lang === 'japanese'
@@ -211,16 +193,11 @@ const AudioPage = () => {
 
 	return (
 		<ScrollView>
-			<List.Item
+			<MaterialSwitchListItem
 				title="Text-to-Speech"
 				description={'Used for media titles and descriptions'}
-				right={(props) => (
-					<GorakuSwitch
-						{...props}
-						value={enabled}
-						onValueChange={(val) => toggleTTS(val)}
-					/>
-				)}
+				selected={enabled}
+				onPress={toggleTTS}
 			/>
 			<Accordion
 				title="TTS Configuration"
@@ -228,6 +205,12 @@ const AudioPage = () => {
 				titleStyle={{ fontSize: 16 }}
 				initialExpand
 			>
+				<List.Item
+					title="Refresh Voices"
+					description={'Use this when no lists show up'}
+					onPress={getSpeakers}
+					right={(props) => <List.Icon {...props} icon={'refresh'} />}
+				/>
 				<List.Item
 					title="English"
 					description={english.voice?.name ?? 'No voice available'}

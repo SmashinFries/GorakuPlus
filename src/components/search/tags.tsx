@@ -1,31 +1,15 @@
-import {
-	Badge,
-	Button,
-	Chip,
-	IconButton,
-	Searchbar,
-	SearchbarProps,
-	Text,
-} from 'react-native-paper';
-import { MotiView } from 'moti';
-import {
-	ExploreMediaQueryVariables,
-	GenreTagCollectionQuery,
-} from '@/store/services/anilist/generated-anilist';
-import { SectionList, View } from 'react-native';
-import { Ref, forwardRef, memo, useCallback, useEffect, useState } from 'react';
-import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	BottomSheetView,
-	useBottomSheetInternal,
-	useBottomSheetModalInternal,
-} from '@gorhom/bottom-sheet';
+import { Badge, Button, Chip, IconButton, Text } from 'react-native-paper';
+import { View } from 'react-native';
+import { useCallback, useState } from 'react';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { TagBanSwitch } from './buttons';
-import { setSettings } from '@/store/slices/settingsSlice';
-import { router } from 'expo-router';
-import { BottomSheetTextInputProps } from '@gorhom/bottom-sheet/lib/typescript/components/bottomSheetTextInput';
 import { sendToast } from '@/utils/toast';
+import {
+	GenreTagCollectionQuery,
+	SearchAnimeQueryVariables,
+} from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useSearchStore } from '@/store/search/searchStore';
 
 type TagProps = {
 	name: string;
@@ -63,36 +47,31 @@ export const FilterTag = ({ name, description, state, isAdult, onToggle, disable
 };
 
 type TagSelectionProps = {
-	tags_in: string[];
-	tags_not_in: string[];
-	isAdult: boolean;
-	tagBanEnabled: boolean;
-	toggleTag: (tag: string) => void;
-	resetTagsGenre: () => void;
-	onTagBlacklistChange: (value: boolean) => void;
 	openTagDialog: () => void;
 };
 
 type GenreSelectionProps = {
 	data: GenreTagCollectionQuery['GenreCollection'];
-	genre_in: ExploreMediaQueryVariables['genre_in'];
-	genre_not_in: ExploreMediaQueryVariables['genre_not_in'];
-	isAdult: boolean;
-	toggleGenre: (genre: string) => void;
-	resetTagsGenre: () => void;
+	// genre_in: string | string[];
+	// genre_not_in: string | string[];
+	// isAdult: boolean;
+	// toggleGenre: (genre: string) => void;
+	// resetTagsGenre: () => void;
 };
 
 export const TagSelection = ({
-	tags_in,
-	tags_not_in,
-	isAdult,
-	tagBanEnabled,
-	toggleTag,
-	resetTagsGenre,
-	onTagBlacklistChange,
+	// tags_in,
+	// tags_not_in,
+	// isAdult,
+	// tagBanEnabled,
+	// toggleTag,
+	// resetTagsGenre,
+	// onTagBlacklistChange,
 	openTagDialog,
 }: TagSelectionProps) => {
-	const { defaultTagLayout, tagBlacklist } = useAppSelector((state) => state.persistedSettings);
+	const { filter, isTagBlacklistEnabled, updateTags, updateFilter, toggleTagBlacklist } =
+		useSearchStore();
+	const { tagBlacklist } = useSettingsStore();
 	// const [tagMode, setTagMode] = useState(defaultTagLayout);
 	// const settingsDispatch = useAppDispatch();
 
@@ -108,30 +87,30 @@ export const TagSelection = ({
 
 	const getTagState = useCallback(
 		(name: string) => {
-			if (tags_in?.includes(name)) {
+			if (filter.tag_in?.includes(name)) {
 				return 'in';
-			} else if (tags_not_in?.includes(name)) {
+			} else if (filter.tag_not_in?.includes(name)) {
 				return 'not_in';
 			} else {
 				return undefined;
 			}
 		},
-		[tags_in, tags_not_in],
+		[filter.tag_in, filter.tag_not_in],
 	);
 
 	const TagItem = useCallback(
 		({ item }) => {
-			return !isAdult && item.isAdult ? null : (
+			return !filter.isAdult && item.isAdult ? null : (
 				<FilterTag
 					name={item.name}
 					state={getTagState(item.name)}
-					onToggle={() => toggleTag(item.name)}
+					onToggle={() => updateTags(item.name)}
 					isAdult={item.isAdult}
-					disabled={tagBanEnabled ? tagBlacklist?.includes(item.name) : false}
+					disabled={isTagBlacklistEnabled ? tagBlacklist?.includes(item.name) : false}
 				/>
 			);
 		},
-		[isAdult, tags_in, tags_not_in, tagBanEnabled],
+		[filter.isAdult, filter.tag_in, filter.tag_not_in, isTagBlacklistEnabled],
 	);
 
 	return (
@@ -141,26 +120,29 @@ export const TagSelection = ({
 					Tags
 				</Text>
 				<View>
-					<IconButton icon={'filter-off-outline'} onPress={() => resetTagsGenre()} />
-					{tags_in?.length > 0 || tags_not_in?.length > 0 ? (
+					<IconButton
+						icon={'filter-off-outline'}
+						onPress={() => updateFilter({ tag_in: undefined, tag_not_in: undefined })}
+					/>
+					{filter.tag_in?.length > 0 || filter.tag_not_in?.length > 0 ? (
 						<Badge style={{ position: 'absolute', right: -8, top: 0 }}>
-							{(tags_in?.length ?? 0) + (tags_not_in?.length ?? 0)}
+							{(filter.tag_in?.length ?? 0) + (filter.tag_not_in?.length ?? 0)}
 						</Badge>
 					) : null}
 				</View>
 				<TagBanSwitch
-					initialState={tagBanEnabled}
+					initialState={isTagBlacklistEnabled}
 					totalBanned={tagBlacklist?.length}
-					onPress={(value) => onTagBlacklistChange(value)}
+					onPress={toggleTagBlacklist}
 				/>
 			</View>
 			<ScrollView horizontal contentContainerStyle={{ paddingVertical: 10 }}>
-				{tags_in?.map((tag, idx) => (
+				{(filter.tag_in as string[])?.map((tag, idx) => (
 					<TagItem key={idx} item={{ name: tag, isAdult: false }} />
 				))}
-				{tags_not_in?.map(
+				{(filter.tag_not_in as string[])?.map(
 					(tag, idx) =>
-						tagBanEnabled &&
+						isTagBlacklistEnabled &&
 						!tagBlacklist?.includes(tag) && (
 							<TagItem key={idx} item={{ name: tag, isAdult: false }} />
 						),
@@ -177,40 +159,30 @@ export const TagSelection = ({
 	);
 };
 
-export const GenreSelection = ({
-	data,
-	genre_in,
-	genre_not_in,
-	isAdult,
-	toggleGenre,
-	resetTagsGenre,
-}: GenreSelectionProps) => {
-	const { defaultGenreLayout } = useAppSelector((state) => state.persistedSettings);
+export const GenreSelection = ({ data }: GenreSelectionProps) => {
+	const { filter, updateGenre, updateFilter } = useSearchStore();
+	const { defaultGenreLayout, setSettings } = useSettingsStore();
 	const [genreMode, setGenreMode] = useState(defaultGenreLayout);
-	const settingsDispatch = useAppDispatch();
 
 	const changeLayout = useCallback(() => {
 		setGenreMode((prev) => (prev === 'list' ? 'row' : 'list'));
-		settingsDispatch(
-			setSettings({
-				entryType: 'defaultGenreLayout',
-				value: genreMode === 'list' ? 'row' : 'list',
-			}),
-		);
+		setSettings({ defaultGenreLayout: genreMode === 'list' ? 'row' : 'list' });
 	}, []);
 
 	const getGenreState = useCallback(
 		(name: string) => {
-			if (genre_in?.includes(name)) {
+			if (filter.genre_in?.includes(name)) {
 				return 'in';
-			} else if (genre_not_in?.includes(name)) {
+			} else if (filter.genre_not_in?.includes(name)) {
 				return 'not_in';
 			} else {
 				return undefined;
 			}
 		},
-		[genre_in, genre_not_in],
+		[filter.genre_in, filter.genre_not_in],
 	);
+
+	const resetGenres = () => updateFilter({ genre_in: undefined, genre_not_in: undefined });
 
 	if (!data) {
 		return null;
@@ -230,10 +202,10 @@ export const GenreSelection = ({
 					onPress={() => changeLayout()}
 				/>
 				<View>
-					<IconButton icon={'filter-off-outline'} onPress={resetTagsGenre} />
-					{genre_in?.length > 0 || genre_not_in?.length > 0 ? (
+					<IconButton icon={'filter-off-outline'} onPress={resetGenres} />
+					{filter.genre_in?.length > 0 || filter.genre_not_in?.length > 0 ? (
 						<Badge style={{ position: 'absolute', right: -8, top: 0 }}>
-							{(genre_in?.length ?? 0) + (genre_not_in?.length ?? 0)}
+							{(filter.genre_in?.length ?? 0) + (filter.genre_not_in?.length ?? 0)}
 						</Badge>
 					) : null}
 				</View>
@@ -243,11 +215,11 @@ export const GenreSelection = ({
 				scrollEnabled={genreMode === 'row'}
 				data={data}
 				renderItem={({ item }) =>
-					!isAdult && item === 'Hentai' ? null : (
+					!filter.isAdult && item === 'Hentai' ? null : (
 						<FilterTag
 							name={item}
 							state={getGenreState(item)}
-							onToggle={() => toggleGenre(item)}
+							onToggle={() => updateGenre(item)}
 						/>
 					)
 				}

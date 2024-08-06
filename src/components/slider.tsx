@@ -1,9 +1,6 @@
 import Slider from '@react-native-community/slider';
-import { useState } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
-import { View } from 'react-native';
-import { NativeViewGestureHandler } from 'react-native-gesture-handler';
-import { Text, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
 type GorakuSliderProps = {
 	updateValue: (val: number) => void;

@@ -1,7 +1,5 @@
-import { useAppSelector } from '@/store/hooks';
 import { ImageStyle } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import { clamp, runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 

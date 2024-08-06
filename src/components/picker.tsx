@@ -1,7 +1,5 @@
-import { ScoreFormat } from '@/store/services/anilist/generated-anilist';
+import { ScoreFormat } from '@/api/anilist/__genereated__/gql';
 import { scoreStringToNumber, scoreToIndex, scoreValues } from '@/utils/scores';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import WheelPicker from 'react-native-wheely';
