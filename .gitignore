@@ -22,3 +22,8 @@ web-build/
 .downloads/
 
 *.apk
+
+GoogleService-Info-dev.plist
+GoogleService-Info.plist
+google-services.json
+google-services-dev.json
