@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { SegmentedButtons, SegmentedButtonsProps, Text, useTheme } from 'react-native-paper';
 import { copyToClipboard } from '@/utils';
-import { TransYUpViewMem } from '@/components/animations';
+import { AnimViewMem } from '@/components/animations';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import useTTS from '@/hooks/useTTS';
@@ -55,7 +55,7 @@ export const NameViewer = ({ nativeLang, names, defaultTitle }: NameViewerProps)
 	];
 
 	return (
-		<TransYUpViewMem
+		<AnimViewMem
 			style={{
 				width: '100%',
 				paddingTop: 15,
@@ -92,7 +92,7 @@ export const NameViewer = ({ nativeLang, names, defaultTitle }: NameViewerProps)
 				value={title}
 				style={{ paddingVertical: 10 }}
 			/>
-		</TransYUpViewMem>
+		</AnimViewMem>
 	);
 };
 

@@ -1,8 +1,10 @@
+import { QuickActionBottomSheet } from '@/components/bottomsheets';
 import { CalendarFilterSheet } from '@/components/calendar/bottomsheet';
 import { DayTabMemo as DayTab } from '@/components/calendar/tabs';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { TabBarWithChip } from '@/components/tab';
+import { GorakuTabBar } from '@/components/tab';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
+import { useQuickActionSheet } from '@/hooks/useQuickAction';
 import { useAuthStore } from '@/store/authStore';
 import { useDisplayStore } from '@/store/displayStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
@@ -31,6 +33,7 @@ const CalendarPage = () => {
 	const dayOfWeek = new Date().getDay();
 	const layout = useWindowDimensions();
 	const filterSheetRef = useRef<BottomSheetModalMethods>(null);
+	const { quickActionRef, selectedMedia, onMediaLongSelect } = useQuickActionSheet();
 
 	const { showNSFW } = useSettingsStore();
 	const { userID } = useAuthStore().anilist;
@@ -72,47 +75,58 @@ const CalendarPage = () => {
 				return (
 					<DayTab
 						data={data.sunday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'monday':
 				return (
 					<DayTab
 						data={data.monday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'tuesday':
 				return (
 					<DayTab
 						data={data.tuesday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'wednesday':
 				return (
 					<DayTab
 						data={data.wednesday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'thursday':
 				return (
 					<DayTab
 						data={data.thursday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'friday':
 				return (
 					<DayTab
 						data={data.friday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'saturday':
 				return (
 					<DayTab
 						data={data.saturday.filter((media) => showNSFW || !media.media.isAdult)}
+						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			default:
 				return null;
 		}
+	};
+
+	const renderTabBar = (props) => {
+		return <GorakuTabBar {...props} enableChip />;
 	};
 
 	// const Tabs = useCallback(() => {
@@ -151,7 +165,7 @@ const CalendarPage = () => {
 					renderScene={renderScene}
 					onIndexChange={setIndex}
 					initialLayout={{ width: layout.width }}
-					renderTabBar={TabBarWithChip}
+					renderTabBar={renderTabBar}
 					swipeEnabled={true}
 				/>
 			) : (
@@ -164,6 +178,7 @@ const CalendarPage = () => {
 				ref={filterSheetRef}
 				updateAllTitles={(onList: boolean) => updateAllTitles(onList)}
 			/>
+			<QuickActionBottomSheet ref={quickActionRef} {...selectedMedia} />
 		</>
 	);
 };

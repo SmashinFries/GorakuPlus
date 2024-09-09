@@ -1,19 +1,25 @@
+import { useInfiniteReviewsQuery, useReviewsQuery } from '@/api/anilist/__genereated__/gql';
 import { useCallback, useState } from 'react';
-import { useReviewsQuery } from '@/store/services/anilist/enhanced';
 
 export const useReviewsList = (id: number) => {
-	const [page, setPage] = useState(1);
-	const reviewData = useReviewsQuery({
-		mediaId: id,
-		page: page,
-		perPage: 25,
-	});
+	const reviewData = useInfiniteReviewsQuery(
+		{
+			mediaId: id,
+			page: 1,
+			perPage: 25,
+		},
+		{
+			enabled: !!id,
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page.pageInfo.hasNextPage) {
+					return {
+						page: lastPage.Page.pageInfo.currentPage + 1,
+					};
+				}
+			},
+		},
+	);
 
-	const loadMore = useCallback(() => {
-		if (reviewData.data?.Page?.pageInfo?.hasNextPage && !reviewData.isFetching) {
-			setPage((prev) => prev + 1);
-		}
-	}, [reviewData.data?.Page.pageInfo?.hasNextPage, reviewData.isFetching]);
-
-	return { reviewData, loadMore };
+	return { reviewData };
 };

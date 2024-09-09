@@ -87,6 +87,7 @@ mutation SaveMediaListItem(
 		score
 		progress
 		repeat
+		mediaId
 		media {
 			type
 			format
@@ -150,6 +151,8 @@ mutation ReviewRating($id: Int, $rating: ReviewRating) {
 	RateReview(reviewId: $id, rating: $rating) {
 		id
 		userRating
+		rating
+		ratingAmount
 	}
 }
 
@@ -243,5 +246,89 @@ mutation ToggleFollow($userId: Int) {
 	ToggleFollow(userId: $userId) {
 		id
 		isFollowing
+	}
+}
+
+mutation ToggleLike($id: Int, $type: LikeableType) {
+	ToggleLikeV2(id: $id, type: $type) {
+		__typename
+		... on ThreadComment {
+			id
+			isLiked
+			likeCount
+		}
+		... on Thread {
+			id
+			isLiked
+			likeCount
+		}
+		... on ListActivity {
+			id
+			isLiked
+			likeCount
+		}
+		... on TextActivity {
+			id
+			isLiked
+			likeCount
+		}
+		... on MessageActivity {
+			id
+			isLiked
+			likeCount
+		}
+		... on ActivityReply {
+			id
+			isLiked
+			likeCount
+		}
+	}
+}
+
+mutation ToggleThreadSubscription($threadId: Int, $subscribe: Boolean) {
+	ToggleThreadSubscription(threadId: $threadId, subscribe: $subscribe) {
+		id
+		isSubscribed
+	}
+}
+
+mutation SaveThreadComment($id: Int, $threadId: Int, $parentCommentId: Int, $comment: String) {
+	SaveThreadComment(
+		id: $id
+		threadId: $threadId
+		comment: $comment
+		parentCommentId: $parentCommentId
+	) {
+		id
+	}
+}
+
+mutation DeleteThreadComment($id: Int) {
+	DeleteThreadComment(id: $id) {
+		deleted
+	}
+}
+
+mutation SaveThread(
+	$id: Int
+	$title: String
+	$body: String
+	$categories: [Int]
+	$mediaCategories: [Int]
+) {
+	SaveThread(
+		id: $id
+		title: $title
+		body: $body
+		categories: $categories
+		mediaCategories: $mediaCategories
+	) {
+		id
+	}
+}
+
+mutation DeleteThread($id: Int) {
+	DeleteThread(id: $id) {
+		deleted
 	}
 }

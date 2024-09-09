@@ -3,6 +3,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import { Avatar, Text, useTheme } from 'react-native-paper';
 import { openWebBrowser } from '../../utils/webBrowser';
+import { useAppTheme } from '@/store/theme/themes';
 
 const PIX_IV_URL = 'https://www.pixiv.net/en/artworks/';
 
@@ -13,7 +14,7 @@ type ArtistBarProps = {
 };
 export const ArtistBar = ({ artist_name, pixiv_id, source }: ArtistBarProps) => {
 	const [totalHeight, setTotalHeight] = useState<number>(0);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const source_link = pixiv_id ? `${PIX_IV_URL}${pixiv_id}` : source;
 	return (
 		<Pressable onPress={() => openWebBrowser(source_link)} style={[styles.container]}>

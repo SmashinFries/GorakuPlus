@@ -1,8 +1,8 @@
+import { Media, MediaStreamingEpisode } from '@/api/anilist/__genereated__/gql';
 import { ImageViewer } from '@/components/imageViewer';
 import { ListHeading } from '@/components/text';
 import { useBlur } from '@/hooks/useNSFWBlur';
-import { Media, MediaStreamingEpisode } from '@/store/services/anilist/generated-anilist';
-import { useAppTheme } from '@/store/theme/theme';
+import { useAppTheme } from '@/store/theme/themes';
 import { SaveImageDialog } from '@/utils/images';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';

@@ -2,11 +2,12 @@ import { MD3DarkTheme, Text } from 'react-native-paper';
 import { ListHeading } from '../text';
 import { Pressable, View, useWindowDimensions } from 'react-native';
 import { router } from 'expo-router';
-import { UserFavoritesOverviewQuery } from '@/store/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import useImageRotation from '@/hooks/useImageRotation';
+import { UserFavoritesOverviewQuery } from '@/api/anilist/__genereated__/gql';
+import { useAuthStore } from '@/store/authStore';
 
 type FavoriteItemProps = {
 	images: string[]; // URLS
@@ -15,7 +16,7 @@ type FavoriteItemProps = {
 	size?: number;
 };
 const FavoriteItem = ({ images, title, size, onPress }: FavoriteItemProps) => {
-	const img_src = useImageRotation(images?.length > 0 ? images[0] : null, images);
+	const img_src = useImageRotation(images);
 
 	if (!images) return null;
 
@@ -71,8 +72,9 @@ const FavoriteItem = ({ images, title, size, onPress }: FavoriteItemProps) => {
 
 type FavoritesOverviewProps = {
 	data: UserFavoritesOverviewQuery['User']['favourites'];
+	userId: number;
 };
-const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
+const FavoritesOverview = ({ data, userId }: FavoritesOverviewProps) => {
 	const { width } = useWindowDimensions();
 	const anime_images = data?.anime?.nodes
 		? data?.anime?.nodes?.map((anime) => anime?.coverImage?.extraLarge)?.slice(0, 10)
@@ -87,6 +89,15 @@ const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 		? data?.staff?.nodes?.map((staff) => staff?.image?.large)?.slice(0, 10)
 		: null;
 
+	const onNav = (type: 'characters' | 'anime' | 'manga' | 'staff') => {
+		router.navigate({
+			pathname: `/favorites/${type}`,
+			params: {
+				userId: userId,
+			},
+		});
+	};
+
 	return (
 		<View style={{ width: width, overflow: 'visible' }}>
 			<ListHeading title="Favorites" />
@@ -99,7 +110,7 @@ const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 						<FavoriteItem
 							images={character_images ?? []}
 							title="Waifus"
-							onPress={() => router.push('/favorites/characters')}
+							onPress={() => onNav('characters')}
 							size={160}
 						/>
 					)}
@@ -107,7 +118,7 @@ const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 						<FavoriteItem
 							images={anime_images ?? []}
 							title="Anime"
-							onPress={() => router.push('/favorites/anime')}
+							onPress={() => onNav('anime')}
 							size={160}
 						/>
 					)}
@@ -115,7 +126,7 @@ const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 						<FavoriteItem
 							images={manga_images ?? []}
 							title="Manga"
-							onPress={() => router.push('/favorites/manga')}
+							onPress={() => onNav('manga')}
 							size={160}
 						/>
 					)}
@@ -123,7 +134,7 @@ const FavoritesOverview = ({ data }: FavoritesOverviewProps) => {
 						<FavoriteItem
 							images={staff_images ?? []}
 							title="Staff"
-							onPress={() => router.push('/favorites/staff')}
+							onPress={() => onNav('staff')}
 							size={160}
 						/>
 					)}

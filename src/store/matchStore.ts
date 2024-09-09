@@ -18,6 +18,9 @@ type MatchState = {
 	mal: {
 		[aniId: number]: number;
 	};
+	isMangaUpdatesEnabled: boolean;
+	isMangaDexEnabled: boolean;
+	isMalEnabled: boolean;
 };
 
 type MatchActions = {
@@ -27,6 +30,17 @@ type MatchActions = {
 	deleteBooruTag: (aniCharId: number) => void;
 	addMalID: (aniId: number, malId: number) => void;
 	deleteMalID: (aniId: number) => void;
+	reset: (type: 'all' | 'booru' | 'mal' | 'mangaUpdates') => void;
+	toggleService: (service: 'mal' | 'mangaUpdates' | 'mangaDex') => void;
+};
+
+const initialData: MatchState = {
+	booru: {},
+	mal: {},
+	mangaUpdates: {},
+	isMalEnabled: true,
+	isMangaDexEnabled: true,
+	isMangaUpdatesEnabled: true,
 };
 
 /**
@@ -35,11 +49,9 @@ type MatchActions = {
 export const useMatchStore = create<MatchState & MatchActions>()(
 	persist(
 		(set, get) => ({
-			mangaUpdates: {},
-			booru: {},
-			mal: {},
+			...initialData,
 			addMangaUpdatesID(aniId, muId) {
-				set({ mangaUpdates: { [aniId]: muId } });
+				set((state) => ({ mangaUpdates: { ...state.mangaUpdates, [aniId]: muId } }));
 			},
 			deleteMangaUpdatesID(aniId) {
 				set((state) => {
@@ -51,7 +63,7 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 				});
 			},
 			addBooruTag(aniCharId, tag) {
-				set({ booru: { [aniCharId]: tag } });
+				set((state) => ({ booru: { ...state.booru, [aniCharId]: tag } }));
 			},
 			deleteBooruTag(aniCharId) {
 				set((state) => {
@@ -63,7 +75,7 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 				});
 			},
 			addMalID(aniId, malId) {
-				set({ mal: { [aniId]: malId } });
+				set((state) => ({ mal: { ...state.mal, [aniId]: malId } }));
 			},
 			deleteMalID(aniId) {
 				set((state) => {
@@ -73,6 +85,31 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 					);
 					return state;
 				});
+			},
+			toggleService(service) {
+				switch (service) {
+					case 'mal':
+						set((state) => ({ isMalEnabled: !state.isMalEnabled }));
+						break;
+					case 'mangaDex':
+						set((state) => ({ isMangaDexEnabled: !state.isMangaDexEnabled }));
+						break;
+					case 'mangaUpdates':
+						set((state) => ({ isMangaUpdatesEnabled: !state.isMangaUpdatesEnabled }));
+						break;
+				}
+			},
+			reset(type) {
+				switch (type) {
+					case 'all':
+						set(initialData);
+					case 'booru':
+						set({ booru: {} });
+					case 'mal':
+						set({ mal: {} });
+					case 'mangaUpdates':
+						set({ mangaUpdates: {} });
+				}
 			},
 		}),
 		{

@@ -8,12 +8,13 @@ import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import { Anilist, Result } from '@/api/tracemoe/models';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { MediaType } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type ImageSearchItemProps = {
 	item: Result;
 };
 export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
-	const { roundness } = useTheme();
+	const { roundness } = useAppTheme();
 	const { dismissAll } = useBottomSheetModal();
 	const { mediaLanguage, showNSFW } = useSettingsStore();
 	const { width } = useWindowDimensions();

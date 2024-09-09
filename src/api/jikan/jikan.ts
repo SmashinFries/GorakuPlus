@@ -254,13 +254,13 @@ export const getAnimeFullById = (
  ): Promise<AxiosResponse<GetAnimeFullById200>> => {
     
     return axios.get(
-      `/anime/${id}/full`,options
+      `https://api.jikan.moe/v4/anime/${id}/full`,options
     );
   }
 
 
 export const getGetAnimeFullByIdQueryKey = (id: number,) => {
-    return [`/anime/${id}/full`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/full`] as const;
     }
 
     
@@ -344,13 +344,13 @@ export const getAnimeById = (
  ): Promise<AxiosResponse<GetAnimeById200>> => {
     
     return axios.get(
-      `/anime/${id}`,options
+      `https://api.jikan.moe/v4/anime/${id}`,options
     );
   }
 
 
 export const getGetAnimeByIdQueryKey = (id: number,) => {
-    return [`/anime/${id}`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}`] as const;
     }
 
     
@@ -434,13 +434,13 @@ export const getAnimeCharacters = (
  ): Promise<AxiosResponse<AnimeCharacters>> => {
     
     return axios.get(
-      `/anime/${id}/characters`,options
+      `https://api.jikan.moe/v4/anime/${id}/characters`,options
     );
   }
 
 
 export const getGetAnimeCharactersQueryKey = (id: number,) => {
-    return [`/anime/${id}/characters`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/characters`] as const;
     }
 
     
@@ -524,13 +524,13 @@ export const getAnimeStaff = (
  ): Promise<AxiosResponse<AnimeStaff>> => {
     
     return axios.get(
-      `/anime/${id}/staff`,options
+      `https://api.jikan.moe/v4/anime/${id}/staff`,options
     );
   }
 
 
 export const getGetAnimeStaffQueryKey = (id: number,) => {
-    return [`/anime/${id}/staff`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/staff`] as const;
     }
 
     
@@ -615,7 +615,7 @@ export const getAnimeEpisodes = (
  ): Promise<AxiosResponse<AnimeEpisodes>> => {
     
     return axios.get(
-      `/anime/${id}/episodes`,{
+      `https://api.jikan.moe/v4/anime/${id}/episodes`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -624,7 +624,7 @@ export const getAnimeEpisodes = (
 
 export const getGetAnimeEpisodesQueryKey = (id: number,
     params?: GetAnimeEpisodesParams,) => {
-    return [`/anime/${id}/episodes`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/episodes`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -713,14 +713,14 @@ export const getAnimeEpisodeById = (
  ): Promise<AxiosResponse<GetAnimeEpisodeById200>> => {
     
     return axios.get(
-      `/anime/${id}/episodes/${episode}`,options
+      `https://api.jikan.moe/v4/anime/${id}/episodes/${episode}`,options
     );
   }
 
 
 export const getGetAnimeEpisodeByIdQueryKey = (id: number,
     episode: number,) => {
-    return [`/anime/${id}/episodes/${episode}`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/episodes/${episode}`] as const;
     }
 
     
@@ -809,7 +809,7 @@ export const getAnimeNews = (
  ): Promise<AxiosResponse<AnimeNews>> => {
     
     return axios.get(
-      `/anime/${id}/news`,{
+      `https://api.jikan.moe/v4/anime/${id}/news`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -818,7 +818,7 @@ export const getAnimeNews = (
 
 export const getGetAnimeNewsQueryKey = (id: number,
     params?: GetAnimeNewsParams,) => {
-    return [`/anime/${id}/news`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/news`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -907,7 +907,7 @@ export const getAnimeForum = (
  ): Promise<AxiosResponse<Forum>> => {
     
     return axios.get(
-      `/anime/${id}/forum`,{
+      `https://api.jikan.moe/v4/anime/${id}/forum`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -920,13 +920,13 @@ export const getAnimeVideos = (
  ): Promise<AxiosResponse<AnimeVideos>> => {
     
     return axios.get(
-      `/anime/${id}/videos`,options
+      `https://api.jikan.moe/v4/anime/${id}/videos`,options
     );
   }
 
 
 export const getGetAnimeVideosQueryKey = (id: number,) => {
-    return [`/anime/${id}/videos`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/videos`] as const;
     }
 
     
@@ -1011,7 +1011,7 @@ export const getAnimeVideosEpisodes = (
  ): Promise<AxiosResponse<AnimeVideosEpisodes>> => {
     
     return axios.get(
-      `/anime/${id}/videos/episodes`,{
+      `https://api.jikan.moe/v4/anime/${id}/videos/episodes`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1020,7 +1020,7 @@ export const getAnimeVideosEpisodes = (
 
 export const getGetAnimeVideosEpisodesQueryKey = (id: number,
     params?: GetAnimeVideosEpisodesParams,) => {
-    return [`/anime/${id}/videos/episodes`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/videos/episodes`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1108,13 +1108,13 @@ export const getAnimePictures = (
  ): Promise<AxiosResponse<PicturesVariants>> => {
     
     return axios.get(
-      `/anime/${id}/pictures`,options
+      `https://api.jikan.moe/v4/anime/${id}/pictures`,options
     );
   }
 
 
 export const getGetAnimePicturesQueryKey = (id: number,) => {
-    return [`/anime/${id}/pictures`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/pictures`] as const;
     }
 
     
@@ -1198,13 +1198,13 @@ export const getAnimeStatistics = (
  ): Promise<AxiosResponse<AnimeStatistics>> => {
     
     return axios.get(
-      `/anime/${id}/statistics`,options
+      `https://api.jikan.moe/v4/anime/${id}/statistics`,options
     );
   }
 
 
 export const getGetAnimeStatisticsQueryKey = (id: number,) => {
-    return [`/anime/${id}/statistics`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/statistics`] as const;
     }
 
     
@@ -1288,13 +1288,13 @@ export const getAnimeMoreInfo = (
  ): Promise<AxiosResponse<Moreinfo>> => {
     
     return axios.get(
-      `/anime/${id}/moreinfo`,options
+      `https://api.jikan.moe/v4/anime/${id}/moreinfo`,options
     );
   }
 
 
 export const getGetAnimeMoreInfoQueryKey = (id: number,) => {
-    return [`/anime/${id}/moreinfo`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/moreinfo`] as const;
     }
 
     
@@ -1378,13 +1378,13 @@ export const getAnimeRecommendations = (
  ): Promise<AxiosResponse<EntryRecommendations>> => {
     
     return axios.get(
-      `/anime/${id}/recommendations`,options
+      `https://api.jikan.moe/v4/anime/${id}/recommendations`,options
     );
   }
 
 
 export const getGetAnimeRecommendationsQueryKey = (id: number,) => {
-    return [`/anime/${id}/recommendations`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/recommendations`] as const;
     }
 
     
@@ -1469,7 +1469,7 @@ export const getAnimeUserUpdates = (
  ): Promise<AxiosResponse<AnimeUserupdates>> => {
     
     return axios.get(
-      `/anime/${id}/userupdates`,{
+      `https://api.jikan.moe/v4/anime/${id}/userupdates`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1478,7 +1478,7 @@ export const getAnimeUserUpdates = (
 
 export const getGetAnimeUserUpdatesQueryKey = (id: number,
     params?: GetAnimeUserUpdatesParams,) => {
-    return [`/anime/${id}/userupdates`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/userupdates`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1567,7 +1567,7 @@ export const getAnimeReviews = (
  ): Promise<AxiosResponse<AnimeReviews>> => {
     
     return axios.get(
-      `/anime/${id}/reviews`,{
+      `https://api.jikan.moe/v4/anime/${id}/reviews`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1576,7 +1576,7 @@ export const getAnimeReviews = (
 
 export const getGetAnimeReviewsQueryKey = (id: number,
     params?: GetAnimeReviewsParams,) => {
-    return [`/anime/${id}/reviews`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/reviews`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1664,13 +1664,13 @@ export const getAnimeRelations = (
  ): Promise<AxiosResponse<GetAnimeRelations200>> => {
     
     return axios.get(
-      `/anime/${id}/relations`,options
+      `https://api.jikan.moe/v4/anime/${id}/relations`,options
     );
   }
 
 
 export const getGetAnimeRelationsQueryKey = (id: number,) => {
-    return [`/anime/${id}/relations`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/relations`] as const;
     }
 
     
@@ -1754,13 +1754,13 @@ export const getAnimeThemes = (
  ): Promise<AxiosResponse<AnimeThemes>> => {
     
     return axios.get(
-      `/anime/${id}/themes`,options
+      `https://api.jikan.moe/v4/anime/${id}/themes`,options
     );
   }
 
 
 export const getGetAnimeThemesQueryKey = (id: number,) => {
-    return [`/anime/${id}/themes`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/themes`] as const;
     }
 
     
@@ -1844,13 +1844,13 @@ export const getAnimeExternal = (
  ): Promise<AxiosResponse<ExternalLinks>> => {
     
     return axios.get(
-      `/anime/${id}/external`,options
+      `https://api.jikan.moe/v4/anime/${id}/external`,options
     );
   }
 
 
 export const getGetAnimeExternalQueryKey = (id: number,) => {
-    return [`/anime/${id}/external`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/external`] as const;
     }
 
     
@@ -1934,13 +1934,13 @@ export const getAnimeStreaming = (
  ): Promise<AxiosResponse<ExternalLinks>> => {
     
     return axios.get(
-      `/anime/${id}/streaming`,options
+      `https://api.jikan.moe/v4/anime/${id}/streaming`,options
     );
   }
 
 
 export const getGetAnimeStreamingQueryKey = (id: number,) => {
-    return [`/anime/${id}/streaming`] as const;
+    return [`https://api.jikan.moe/v4/anime/${id}/streaming`] as const;
     }
 
     
@@ -2024,13 +2024,13 @@ export const getCharacterFullById = (
  ): Promise<AxiosResponse<GetCharacterFullById200>> => {
     
     return axios.get(
-      `/characters/${id}/full`,options
+      `https://api.jikan.moe/v4/characters/${id}/full`,options
     );
   }
 
 
 export const getGetCharacterFullByIdQueryKey = (id: number,) => {
-    return [`/characters/${id}/full`] as const;
+    return [`https://api.jikan.moe/v4/characters/${id}/full`] as const;
     }
 
     
@@ -2114,13 +2114,13 @@ export const getCharacterById = (
  ): Promise<AxiosResponse<GetCharacterById200>> => {
     
     return axios.get(
-      `/characters/${id}`,options
+      `https://api.jikan.moe/v4/characters/${id}`,options
     );
   }
 
 
 export const getGetCharacterByIdQueryKey = (id: number,) => {
-    return [`/characters/${id}`] as const;
+    return [`https://api.jikan.moe/v4/characters/${id}`] as const;
     }
 
     
@@ -2204,13 +2204,13 @@ export const getCharacterAnime = (
  ): Promise<AxiosResponse<CharacterAnime>> => {
     
     return axios.get(
-      `/characters/${id}/anime`,options
+      `https://api.jikan.moe/v4/characters/${id}/anime`,options
     );
   }
 
 
 export const getGetCharacterAnimeQueryKey = (id: number,) => {
-    return [`/characters/${id}/anime`] as const;
+    return [`https://api.jikan.moe/v4/characters/${id}/anime`] as const;
     }
 
     
@@ -2294,13 +2294,13 @@ export const getCharacterManga = (
  ): Promise<AxiosResponse<CharacterManga>> => {
     
     return axios.get(
-      `/characters/${id}/manga`,options
+      `https://api.jikan.moe/v4/characters/${id}/manga`,options
     );
   }
 
 
 export const getGetCharacterMangaQueryKey = (id: number,) => {
-    return [`/characters/${id}/manga`] as const;
+    return [`https://api.jikan.moe/v4/characters/${id}/manga`] as const;
     }
 
     
@@ -2384,13 +2384,13 @@ export const getCharacterVoiceActors = (
  ): Promise<AxiosResponse<CharacterVoiceActors>> => {
     
     return axios.get(
-      `/characters/${id}/voices`,options
+      `https://api.jikan.moe/v4/characters/${id}/voices`,options
     );
   }
 
 
 export const getGetCharacterVoiceActorsQueryKey = (id: number,) => {
-    return [`/characters/${id}/voices`] as const;
+    return [`https://api.jikan.moe/v4/characters/${id}/voices`] as const;
     }
 
     
@@ -2474,13 +2474,13 @@ export const getCharacterPictures = (
  ): Promise<AxiosResponse<CharacterPictures>> => {
     
     return axios.get(
-      `/characters/${id}/pictures`,options
+      `https://api.jikan.moe/v4/characters/${id}/pictures`,options
     );
   }
 
 
 export const getGetCharacterPicturesQueryKey = (id: number,) => {
-    return [`/characters/${id}/pictures`] as const;
+    return [`https://api.jikan.moe/v4/characters/${id}/pictures`] as const;
     }
 
     
@@ -2564,13 +2564,13 @@ export const getClubsById = (
  ): Promise<AxiosResponse<GetClubsById200>> => {
     
     return axios.get(
-      `/clubs/${id}`,options
+      `https://api.jikan.moe/v4/clubs/${id}`,options
     );
   }
 
 
 export const getGetClubsByIdQueryKey = (id: number,) => {
-    return [`/clubs/${id}`] as const;
+    return [`https://api.jikan.moe/v4/clubs/${id}`] as const;
     }
 
     
@@ -2655,7 +2655,7 @@ export const getClubMembers = (
  ): Promise<AxiosResponse<GetClubMembers200>> => {
     
     return axios.get(
-      `/clubs/${id}/members`,{
+      `https://api.jikan.moe/v4/clubs/${id}/members`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2664,7 +2664,7 @@ export const getClubMembers = (
 
 export const getGetClubMembersQueryKey = (id: number,
     params?: GetClubMembersParams,) => {
-    return [`/clubs/${id}/members`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/clubs/${id}/members`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2752,13 +2752,13 @@ export const getClubStaff = (
  ): Promise<AxiosResponse<ClubStaff>> => {
     
     return axios.get(
-      `/clubs/${id}/staff`,options
+      `https://api.jikan.moe/v4/clubs/${id}/staff`,options
     );
   }
 
 
 export const getGetClubStaffQueryKey = (id: number,) => {
-    return [`/clubs/${id}/staff`] as const;
+    return [`https://api.jikan.moe/v4/clubs/${id}/staff`] as const;
     }
 
     
@@ -2842,13 +2842,13 @@ export const getClubRelations = (
  ): Promise<AxiosResponse<ClubRelations>> => {
     
     return axios.get(
-      `/clubs/${id}/relations`,options
+      `https://api.jikan.moe/v4/clubs/${id}/relations`,options
     );
   }
 
 
 export const getGetClubRelationsQueryKey = (id: number,) => {
-    return [`/clubs/${id}/relations`] as const;
+    return [`https://api.jikan.moe/v4/clubs/${id}/relations`] as const;
     }
 
     
@@ -2932,7 +2932,7 @@ export const getAnimeGenres = (
  ): Promise<AxiosResponse<Genres>> => {
     
     return axios.get(
-      `/genres/anime`,{
+      `https://api.jikan.moe/v4/genres/anime`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2945,7 +2945,7 @@ export const getMangaGenres = (
  ): Promise<AxiosResponse<Genres>> => {
     
     return axios.get(
-      `/genres/manga`,{
+      `https://api.jikan.moe/v4/genres/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2958,7 +2958,7 @@ export const getMagazines = (
  ): Promise<AxiosResponse<Magazines>> => {
     
     return axios.get(
-      `/magazines`,{
+      `https://api.jikan.moe/v4/magazines`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2966,7 +2966,7 @@ export const getMagazines = (
 
 
 export const getGetMagazinesQueryKey = (params?: GetMagazinesParams,) => {
-    return [`/magazines`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/magazines`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3050,13 +3050,13 @@ export const getMangaFullById = (
  ): Promise<AxiosResponse<GetMangaFullById200>> => {
     
     return axios.get(
-      `/manga/${id}/full`,options
+      `https://api.jikan.moe/v4/manga/${id}/full`,options
     );
   }
 
 
 export const getGetMangaFullByIdQueryKey = (id: number,) => {
-    return [`/manga/${id}/full`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/full`] as const;
     }
 
     
@@ -3140,13 +3140,13 @@ export const getMangaById = (
  ): Promise<AxiosResponse<GetMangaById200>> => {
     
     return axios.get(
-      `/manga/${id}`,options
+      `https://api.jikan.moe/v4/manga/${id}`,options
     );
   }
 
 
 export const getGetMangaByIdQueryKey = (id: number,) => {
-    return [`/manga/${id}`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}`] as const;
     }
 
     
@@ -3230,13 +3230,13 @@ export const getMangaCharacters = (
  ): Promise<AxiosResponse<MangaCharacters>> => {
     
     return axios.get(
-      `/manga/${id}/characters`,options
+      `https://api.jikan.moe/v4/manga/${id}/characters`,options
     );
   }
 
 
 export const getGetMangaCharactersQueryKey = (id: number,) => {
-    return [`/manga/${id}/characters`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/characters`] as const;
     }
 
     
@@ -3321,7 +3321,7 @@ export const getMangaNews = (
  ): Promise<AxiosResponse<MangaNews>> => {
     
     return axios.get(
-      `/manga/${id}/news`,{
+      `https://api.jikan.moe/v4/manga/${id}/news`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3330,7 +3330,7 @@ export const getMangaNews = (
 
 export const getGetMangaNewsQueryKey = (id: number,
     params?: GetMangaNewsParams,) => {
-    return [`/manga/${id}/news`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/news`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3419,7 +3419,7 @@ export const getMangaTopics = (
  ): Promise<AxiosResponse<Forum>> => {
     
     return axios.get(
-      `/manga/${id}/forum`,{
+      `https://api.jikan.moe/v4/manga/${id}/forum`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3432,13 +3432,13 @@ export const getMangaPictures = (
  ): Promise<AxiosResponse<MangaPictures>> => {
     
     return axios.get(
-      `/manga/${id}/pictures`,options
+      `https://api.jikan.moe/v4/manga/${id}/pictures`,options
     );
   }
 
 
 export const getGetMangaPicturesQueryKey = (id: number,) => {
-    return [`/manga/${id}/pictures`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/pictures`] as const;
     }
 
     
@@ -3522,13 +3522,13 @@ export const getMangaStatistics = (
  ): Promise<AxiosResponse<MangaStatistics>> => {
     
     return axios.get(
-      `/manga/${id}/statistics`,options
+      `https://api.jikan.moe/v4/manga/${id}/statistics`,options
     );
   }
 
 
 export const getGetMangaStatisticsQueryKey = (id: number,) => {
-    return [`/manga/${id}/statistics`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/statistics`] as const;
     }
 
     
@@ -3612,13 +3612,13 @@ export const getMangaMoreInfo = (
  ): Promise<AxiosResponse<Moreinfo>> => {
     
     return axios.get(
-      `/manga/${id}/moreinfo`,options
+      `https://api.jikan.moe/v4/manga/${id}/moreinfo`,options
     );
   }
 
 
 export const getGetMangaMoreInfoQueryKey = (id: number,) => {
-    return [`/manga/${id}/moreinfo`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/moreinfo`] as const;
     }
 
     
@@ -3702,13 +3702,13 @@ export const getMangaRecommendations = (
  ): Promise<AxiosResponse<EntryRecommendations>> => {
     
     return axios.get(
-      `/manga/${id}/recommendations`,options
+      `https://api.jikan.moe/v4/manga/${id}/recommendations`,options
     );
   }
 
 
 export const getGetMangaRecommendationsQueryKey = (id: number,) => {
-    return [`/manga/${id}/recommendations`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/recommendations`] as const;
     }
 
     
@@ -3793,7 +3793,7 @@ export const getMangaUserUpdates = (
  ): Promise<AxiosResponse<MangaUserupdates>> => {
     
     return axios.get(
-      `/manga/${id}/userupdates`,{
+      `https://api.jikan.moe/v4/manga/${id}/userupdates`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3802,7 +3802,7 @@ export const getMangaUserUpdates = (
 
 export const getGetMangaUserUpdatesQueryKey = (id: number,
     params?: GetMangaUserUpdatesParams,) => {
-    return [`/manga/${id}/userupdates`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/userupdates`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3891,7 +3891,7 @@ export const getMangaReviews = (
  ): Promise<AxiosResponse<MangaReviews>> => {
     
     return axios.get(
-      `/manga/${id}/reviews`,{
+      `https://api.jikan.moe/v4/manga/${id}/reviews`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3900,7 +3900,7 @@ export const getMangaReviews = (
 
 export const getGetMangaReviewsQueryKey = (id: number,
     params?: GetMangaReviewsParams,) => {
-    return [`/manga/${id}/reviews`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/reviews`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3988,13 +3988,13 @@ export const getMangaRelations = (
  ): Promise<AxiosResponse<GetMangaRelations200>> => {
     
     return axios.get(
-      `/manga/${id}/relations`,options
+      `https://api.jikan.moe/v4/manga/${id}/relations`,options
     );
   }
 
 
 export const getGetMangaRelationsQueryKey = (id: number,) => {
-    return [`/manga/${id}/relations`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/relations`] as const;
     }
 
     
@@ -4078,13 +4078,13 @@ export const getMangaExternal = (
  ): Promise<AxiosResponse<ExternalLinks>> => {
     
     return axios.get(
-      `/manga/${id}/external`,options
+      `https://api.jikan.moe/v4/manga/${id}/external`,options
     );
   }
 
 
 export const getGetMangaExternalQueryKey = (id: number,) => {
-    return [`/manga/${id}/external`] as const;
+    return [`https://api.jikan.moe/v4/manga/${id}/external`] as const;
     }
 
     
@@ -4168,13 +4168,13 @@ export const getPersonFullById = (
  ): Promise<AxiosResponse<GetPersonFullById200>> => {
     
     return axios.get(
-      `/people/${id}/full`,options
+      `https://api.jikan.moe/v4/people/${id}/full`,options
     );
   }
 
 
 export const getGetPersonFullByIdQueryKey = (id: number,) => {
-    return [`/people/${id}/full`] as const;
+    return [`https://api.jikan.moe/v4/people/${id}/full`] as const;
     }
 
     
@@ -4258,13 +4258,13 @@ export const getPersonById = (
  ): Promise<AxiosResponse<GetPersonById200>> => {
     
     return axios.get(
-      `/people/${id}`,options
+      `https://api.jikan.moe/v4/people/${id}`,options
     );
   }
 
 
 export const getGetPersonByIdQueryKey = (id: number,) => {
-    return [`/people/${id}`] as const;
+    return [`https://api.jikan.moe/v4/people/${id}`] as const;
     }
 
     
@@ -4348,13 +4348,13 @@ export const getPersonAnime = (
  ): Promise<AxiosResponse<PersonAnime>> => {
     
     return axios.get(
-      `/people/${id}/anime`,options
+      `https://api.jikan.moe/v4/people/${id}/anime`,options
     );
   }
 
 
 export const getGetPersonAnimeQueryKey = (id: number,) => {
-    return [`/people/${id}/anime`] as const;
+    return [`https://api.jikan.moe/v4/people/${id}/anime`] as const;
     }
 
     
@@ -4438,13 +4438,13 @@ export const getPersonVoices = (
  ): Promise<AxiosResponse<PersonVoiceActingRoles>> => {
     
     return axios.get(
-      `/people/${id}/voices`,options
+      `https://api.jikan.moe/v4/people/${id}/voices`,options
     );
   }
 
 
 export const getGetPersonVoicesQueryKey = (id: number,) => {
-    return [`/people/${id}/voices`] as const;
+    return [`https://api.jikan.moe/v4/people/${id}/voices`] as const;
     }
 
     
@@ -4528,13 +4528,13 @@ export const getPersonManga = (
  ): Promise<AxiosResponse<PersonManga>> => {
     
     return axios.get(
-      `/people/${id}/manga`,options
+      `https://api.jikan.moe/v4/people/${id}/manga`,options
     );
   }
 
 
 export const getGetPersonMangaQueryKey = (id: number,) => {
-    return [`/people/${id}/manga`] as const;
+    return [`https://api.jikan.moe/v4/people/${id}/manga`] as const;
     }
 
     
@@ -4618,13 +4618,13 @@ export const getPersonPictures = (
  ): Promise<AxiosResponse<PersonPictures>> => {
     
     return axios.get(
-      `/people/${id}/pictures`,options
+      `https://api.jikan.moe/v4/people/${id}/pictures`,options
     );
   }
 
 
 export const getGetPersonPicturesQueryKey = (id: number,) => {
-    return [`/people/${id}/pictures`] as const;
+    return [`https://api.jikan.moe/v4/people/${id}/pictures`] as const;
     }
 
     
@@ -4708,13 +4708,13 @@ export const getProducerById = (
  ): Promise<AxiosResponse<GetProducerById200>> => {
     
     return axios.get(
-      `/producers/${id}`,options
+      `https://api.jikan.moe/v4/producers/${id}`,options
     );
   }
 
 
 export const getGetProducerByIdQueryKey = (id: number,) => {
-    return [`/producers/${id}`] as const;
+    return [`https://api.jikan.moe/v4/producers/${id}`] as const;
     }
 
     
@@ -4798,13 +4798,13 @@ export const getProducerFullById = (
  ): Promise<AxiosResponse<GetProducerFullById200>> => {
     
     return axios.get(
-      `/producers/${id}/full`,options
+      `https://api.jikan.moe/v4/producers/${id}/full`,options
     );
   }
 
 
 export const getGetProducerFullByIdQueryKey = (id: number,) => {
-    return [`/producers/${id}/full`] as const;
+    return [`https://api.jikan.moe/v4/producers/${id}/full`] as const;
     }
 
     
@@ -4888,13 +4888,13 @@ export const getProducerExternal = (
  ): Promise<AxiosResponse<ExternalLinks>> => {
     
     return axios.get(
-      `/producers/${id}/external`,options
+      `https://api.jikan.moe/v4/producers/${id}/external`,options
     );
   }
 
 
 export const getGetProducerExternalQueryKey = (id: number,) => {
-    return [`/producers/${id}/external`] as const;
+    return [`https://api.jikan.moe/v4/producers/${id}/external`] as const;
     }
 
     
@@ -4978,13 +4978,13 @@ export const getRandomAnime = (
  ): Promise<AxiosResponse<GetRandomAnime200>> => {
     
     return axios.get(
-      `/random/anime`,options
+      `https://api.jikan.moe/v4/random/anime`,options
     );
   }
 
 
 export const getGetRandomAnimeQueryKey = () => {
-    return [`/random/anime`] as const;
+    return [`https://api.jikan.moe/v4/random/anime`] as const;
     }
 
     
@@ -5068,13 +5068,13 @@ export const getRandomManga = (
  ): Promise<AxiosResponse<GetRandomManga200>> => {
     
     return axios.get(
-      `/random/manga`,options
+      `https://api.jikan.moe/v4/random/manga`,options
     );
   }
 
 
 export const getGetRandomMangaQueryKey = () => {
-    return [`/random/manga`] as const;
+    return [`https://api.jikan.moe/v4/random/manga`] as const;
     }
 
     
@@ -5158,13 +5158,13 @@ export const getRandomCharacters = (
  ): Promise<AxiosResponse<GetRandomCharacters200>> => {
     
     return axios.get(
-      `/random/characters`,options
+      `https://api.jikan.moe/v4/random/characters`,options
     );
   }
 
 
 export const getGetRandomCharactersQueryKey = () => {
-    return [`/random/characters`] as const;
+    return [`https://api.jikan.moe/v4/random/characters`] as const;
     }
 
     
@@ -5248,13 +5248,13 @@ export const getRandomPeople = (
  ): Promise<AxiosResponse<GetRandomPeople200>> => {
     
     return axios.get(
-      `/random/people`,options
+      `https://api.jikan.moe/v4/random/people`,options
     );
   }
 
 
 export const getGetRandomPeopleQueryKey = () => {
-    return [`/random/people`] as const;
+    return [`https://api.jikan.moe/v4/random/people`] as const;
     }
 
     
@@ -5338,13 +5338,13 @@ export const getRandomUsers = (
  ): Promise<AxiosResponse<GetRandomUsers200>> => {
     
     return axios.get(
-      `/random/users`,options
+      `https://api.jikan.moe/v4/random/users`,options
     );
   }
 
 
 export const getGetRandomUsersQueryKey = () => {
-    return [`/random/users`] as const;
+    return [`https://api.jikan.moe/v4/random/users`] as const;
     }
 
     
@@ -5428,7 +5428,7 @@ export const getRecentAnimeRecommendations = (
  ): Promise<AxiosResponse<Recommendations>> => {
     
     return axios.get(
-      `/recommendations/anime`,{
+      `https://api.jikan.moe/v4/recommendations/anime`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5436,7 +5436,7 @@ export const getRecentAnimeRecommendations = (
 
 
 export const getGetRecentAnimeRecommendationsQueryKey = (params?: GetRecentAnimeRecommendationsParams,) => {
-    return [`/recommendations/anime`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/recommendations/anime`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5520,7 +5520,7 @@ export const getRecentMangaRecommendations = (
  ): Promise<AxiosResponse<Recommendations>> => {
     
     return axios.get(
-      `/recommendations/manga`,{
+      `https://api.jikan.moe/v4/recommendations/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5528,7 +5528,7 @@ export const getRecentMangaRecommendations = (
 
 
 export const getGetRecentMangaRecommendationsQueryKey = (params?: GetRecentMangaRecommendationsParams,) => {
-    return [`/recommendations/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/recommendations/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5612,7 +5612,7 @@ export const getRecentAnimeReviews = (
  ): Promise<AxiosResponse<unknown>> => {
     
     return axios.get(
-      `/reviews/anime`,{
+      `https://api.jikan.moe/v4/reviews/anime`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5620,7 +5620,7 @@ export const getRecentAnimeReviews = (
 
 
 export const getGetRecentAnimeReviewsQueryKey = (params?: GetRecentAnimeReviewsParams,) => {
-    return [`/reviews/anime`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/reviews/anime`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5704,7 +5704,7 @@ export const getRecentMangaReviews = (
  ): Promise<AxiosResponse<unknown>> => {
     
     return axios.get(
-      `/reviews/manga`,{
+      `https://api.jikan.moe/v4/reviews/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5712,7 +5712,7 @@ export const getRecentMangaReviews = (
 
 
 export const getGetRecentMangaReviewsQueryKey = (params?: GetRecentMangaReviewsParams,) => {
-    return [`/reviews/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/reviews/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5796,7 +5796,7 @@ export const getSchedules = (
  ): Promise<AxiosResponse<Schedules>> => {
     
     return axios.get(
-      `/schedules`,{
+      `https://api.jikan.moe/v4/schedules`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5804,7 +5804,7 @@ export const getSchedules = (
 
 
 export const getGetSchedulesQueryKey = (params?: GetSchedulesParams,) => {
-    return [`/schedules`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/schedules`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5888,7 +5888,7 @@ export const getAnimeSearch = (
  ): Promise<AxiosResponse<AnimeSearch>> => {
     
     return axios.get(
-      `/anime`,{
+      `https://api.jikan.moe/v4/anime`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5896,7 +5896,7 @@ export const getAnimeSearch = (
 
 
 export const getGetAnimeSearchQueryKey = (params?: GetAnimeSearchParams,) => {
-    return [`/anime`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/anime`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5980,7 +5980,7 @@ export const getMangaSearch = (
  ): Promise<AxiosResponse<MangaSearch>> => {
     
     return axios.get(
-      `/manga`,{
+      `https://api.jikan.moe/v4/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5988,7 +5988,7 @@ export const getMangaSearch = (
 
 
 export const getGetMangaSearchQueryKey = (params?: GetMangaSearchParams,) => {
-    return [`/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6072,7 +6072,7 @@ export const getPeopleSearch = (
  ): Promise<AxiosResponse<PeopleSearch>> => {
     
     return axios.get(
-      `/people`,{
+      `https://api.jikan.moe/v4/people`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6080,7 +6080,7 @@ export const getPeopleSearch = (
 
 
 export const getGetPeopleSearchQueryKey = (params?: GetPeopleSearchParams,) => {
-    return [`/people`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/people`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6164,7 +6164,7 @@ export const getCharactersSearch = (
  ): Promise<AxiosResponse<CharactersSearch>> => {
     
     return axios.get(
-      `/characters`,{
+      `https://api.jikan.moe/v4/characters`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6172,7 +6172,7 @@ export const getCharactersSearch = (
 
 
 export const getGetCharactersSearchQueryKey = (params?: GetCharactersSearchParams,) => {
-    return [`/characters`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/characters`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6256,7 +6256,7 @@ export const getUsersSearch = (
  ): Promise<AxiosResponse<UsersSearch>> => {
     
     return axios.get(
-      `/users`,{
+      `https://api.jikan.moe/v4/users`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6264,7 +6264,7 @@ export const getUsersSearch = (
 
 
 export const getGetUsersSearchQueryKey = (params?: GetUsersSearchParams,) => {
-    return [`/users`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/users`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6348,13 +6348,13 @@ export const getUserById = (
  ): Promise<AxiosResponse<GetUserById200>> => {
     
     return axios.get(
-      `/users/userbyid/${id}`,options
+      `https://api.jikan.moe/v4/users/userbyid/${id}`,options
     );
   }
 
 
 export const getGetUserByIdQueryKey = (id: number,) => {
-    return [`/users/userbyid/${id}`] as const;
+    return [`https://api.jikan.moe/v4/users/userbyid/${id}`] as const;
     }
 
     
@@ -6438,7 +6438,7 @@ export const getClubsSearch = (
  ): Promise<AxiosResponse<ClubsSearch>> => {
     
     return axios.get(
-      `/clubs`,{
+      `https://api.jikan.moe/v4/clubs`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6446,7 +6446,7 @@ export const getClubsSearch = (
 
 
 export const getGetClubsSearchQueryKey = (params?: GetClubsSearchParams,) => {
-    return [`/clubs`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/clubs`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6530,7 +6530,7 @@ export const getProducers = (
  ): Promise<AxiosResponse<Producers>> => {
     
     return axios.get(
-      `/producers`,{
+      `https://api.jikan.moe/v4/producers`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6538,7 +6538,7 @@ export const getProducers = (
 
 
 export const getGetProducersQueryKey = (params?: GetProducersParams,) => {
-    return [`/producers`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/producers`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6622,7 +6622,7 @@ export const getSeasonNow = (
  ): Promise<AxiosResponse<AnimeSearch>> => {
     
     return axios.get(
-      `/seasons/now`,{
+      `https://api.jikan.moe/v4/seasons/now`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6630,7 +6630,7 @@ export const getSeasonNow = (
 
 
 export const getGetSeasonNowQueryKey = (params?: GetSeasonNowParams,) => {
-    return [`/seasons/now`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/seasons/now`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6716,7 +6716,7 @@ export const getSeason = (
  ): Promise<AxiosResponse<AnimeSearch>> => {
     
     return axios.get(
-      `/seasons/${year}/${season}`,{
+      `https://api.jikan.moe/v4/seasons/${year}/${season}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6726,7 +6726,7 @@ export const getSeason = (
 export const getGetSeasonQueryKey = (year: number,
     season: string,
     params?: GetSeasonParams,) => {
-    return [`/seasons/${year}/${season}`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/seasons/${year}/${season}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6818,13 +6818,13 @@ export const getSeasonsList = (
  ): Promise<AxiosResponse<Seasons>> => {
     
     return axios.get(
-      `/seasons`,options
+      `https://api.jikan.moe/v4/seasons`,options
     );
   }
 
 
 export const getGetSeasonsListQueryKey = () => {
-    return [`/seasons`] as const;
+    return [`https://api.jikan.moe/v4/seasons`] as const;
     }
 
     
@@ -6908,7 +6908,7 @@ export const getSeasonUpcoming = (
  ): Promise<AxiosResponse<AnimeSearch>> => {
     
     return axios.get(
-      `/seasons/upcoming`,{
+      `https://api.jikan.moe/v4/seasons/upcoming`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6916,7 +6916,7 @@ export const getSeasonUpcoming = (
 
 
 export const getGetSeasonUpcomingQueryKey = (params?: GetSeasonUpcomingParams,) => {
-    return [`/seasons/upcoming`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/seasons/upcoming`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7000,7 +7000,7 @@ export const getTopAnime = (
  ): Promise<AxiosResponse<AnimeSearch>> => {
     
     return axios.get(
-      `/top/anime`,{
+      `https://api.jikan.moe/v4/top/anime`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -7008,7 +7008,7 @@ export const getTopAnime = (
 
 
 export const getGetTopAnimeQueryKey = (params?: GetTopAnimeParams,) => {
-    return [`/top/anime`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/top/anime`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7092,7 +7092,7 @@ export const getTopManga = (
  ): Promise<AxiosResponse<MangaSearch>> => {
     
     return axios.get(
-      `/top/manga`,{
+      `https://api.jikan.moe/v4/top/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -7100,7 +7100,7 @@ export const getTopManga = (
 
 
 export const getGetTopMangaQueryKey = (params?: GetTopMangaParams,) => {
-    return [`/top/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/top/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7184,7 +7184,7 @@ export const getTopPeople = (
  ): Promise<AxiosResponse<PeopleSearch>> => {
     
     return axios.get(
-      `/top/people`,{
+      `https://api.jikan.moe/v4/top/people`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -7192,7 +7192,7 @@ export const getTopPeople = (
 
 
 export const getGetTopPeopleQueryKey = (params?: GetTopPeopleParams,) => {
-    return [`/top/people`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/top/people`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7276,7 +7276,7 @@ export const getTopCharacters = (
  ): Promise<AxiosResponse<CharactersSearch>> => {
     
     return axios.get(
-      `/top/characters`,{
+      `https://api.jikan.moe/v4/top/characters`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -7284,7 +7284,7 @@ export const getTopCharacters = (
 
 
 export const getGetTopCharactersQueryKey = (params?: GetTopCharactersParams,) => {
-    return [`/top/characters`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/top/characters`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7368,7 +7368,7 @@ export const getTopReviews = (
  ): Promise<AxiosResponse<GetTopReviews200>> => {
     
     return axios.get(
-      `/top/reviews`,{
+      `https://api.jikan.moe/v4/top/reviews`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -7376,7 +7376,7 @@ export const getTopReviews = (
 
 
 export const getGetTopReviewsQueryKey = (params?: GetTopReviewsParams,) => {
-    return [`/top/reviews`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/top/reviews`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7460,13 +7460,13 @@ export const getUserFullProfile = (
  ): Promise<AxiosResponse<GetUserFullProfile200>> => {
     
     return axios.get(
-      `/users/${username}/full`,options
+      `https://api.jikan.moe/v4/users/${username}/full`,options
     );
   }
 
 
 export const getGetUserFullProfileQueryKey = (username: string,) => {
-    return [`/users/${username}/full`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/full`] as const;
     }
 
     
@@ -7550,13 +7550,13 @@ export const getUserProfile = (
  ): Promise<AxiosResponse<GetUserProfile200>> => {
     
     return axios.get(
-      `/users/${username}`,options
+      `https://api.jikan.moe/v4/users/${username}`,options
     );
   }
 
 
 export const getGetUserProfileQueryKey = (username: string,) => {
-    return [`/users/${username}`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}`] as const;
     }
 
     
@@ -7640,13 +7640,13 @@ export const getUserStatistics = (
  ): Promise<AxiosResponse<UserStatistics>> => {
     
     return axios.get(
-      `/users/${username}/statistics`,options
+      `https://api.jikan.moe/v4/users/${username}/statistics`,options
     );
   }
 
 
 export const getGetUserStatisticsQueryKey = (username: string,) => {
-    return [`/users/${username}/statistics`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/statistics`] as const;
     }
 
     
@@ -7730,13 +7730,13 @@ export const getUserFavorites = (
  ): Promise<AxiosResponse<GetUserFavorites200>> => {
     
     return axios.get(
-      `/users/${username}/favorites`,options
+      `https://api.jikan.moe/v4/users/${username}/favorites`,options
     );
   }
 
 
 export const getGetUserFavoritesQueryKey = (username: string,) => {
-    return [`/users/${username}/favorites`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/favorites`] as const;
     }
 
     
@@ -7820,13 +7820,13 @@ export const getUserUpdates = (
  ): Promise<AxiosResponse<UserUpdates>> => {
     
     return axios.get(
-      `/users/${username}/userupdates`,options
+      `https://api.jikan.moe/v4/users/${username}/userupdates`,options
     );
   }
 
 
 export const getGetUserUpdatesQueryKey = (username: string,) => {
-    return [`/users/${username}/userupdates`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/userupdates`] as const;
     }
 
     
@@ -7910,13 +7910,13 @@ export const getUserAbout = (
  ): Promise<AxiosResponse<UserAbout>> => {
     
     return axios.get(
-      `/users/${username}/about`,options
+      `https://api.jikan.moe/v4/users/${username}/about`,options
     );
   }
 
 
 export const getGetUserAboutQueryKey = (username: string,) => {
-    return [`/users/${username}/about`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/about`] as const;
     }
 
     
@@ -8001,7 +8001,7 @@ export const getUserHistory = (
  ): Promise<AxiosResponse<UserHistory>> => {
     
     return axios.get(
-      `/users/${username}/history`,{
+      `https://api.jikan.moe/v4/users/${username}/history`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8015,7 +8015,7 @@ export const getUserFriends = (
  ): Promise<AxiosResponse<UserFriends>> => {
     
     return axios.get(
-      `/users/${username}/friends`,{
+      `https://api.jikan.moe/v4/users/${username}/friends`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8024,7 +8024,7 @@ export const getUserFriends = (
 
 export const getGetUserFriendsQueryKey = (username: string,
     params?: GetUserFriendsParams,) => {
-    return [`/users/${username}/friends`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/friends`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8117,7 +8117,7 @@ export const getUserAnimelist = (
  ): Promise<AxiosResponse<unknown>> => {
     
     return axios.get(
-      `/users/${username}/animelist`,{
+      `https://api.jikan.moe/v4/users/${username}/animelist`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8135,7 +8135,7 @@ export const getUserMangaList = (
  ): Promise<AxiosResponse<unknown>> => {
     
     return axios.get(
-      `/users/${username}/mangalist`,{
+      `https://api.jikan.moe/v4/users/${username}/mangalist`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8149,7 +8149,7 @@ export const getUserReviews = (
  ): Promise<AxiosResponse<GetUserReviews200>> => {
     
     return axios.get(
-      `/users/${username}/reviews`,{
+      `https://api.jikan.moe/v4/users/${username}/reviews`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8158,7 +8158,7 @@ export const getUserReviews = (
 
 export const getGetUserReviewsQueryKey = (username: string,
     params?: GetUserReviewsParams,) => {
-    return [`/users/${username}/reviews`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/reviews`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8247,7 +8247,7 @@ export const getUserRecommendations = (
  ): Promise<AxiosResponse<Recommendations>> => {
     
     return axios.get(
-      `/users/${username}/recommendations`,{
+      `https://api.jikan.moe/v4/users/${username}/recommendations`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8256,7 +8256,7 @@ export const getUserRecommendations = (
 
 export const getGetUserRecommendationsQueryKey = (username: string,
     params?: GetUserRecommendationsParams,) => {
-    return [`/users/${username}/recommendations`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/recommendations`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8345,7 +8345,7 @@ export const getUserClubs = (
  ): Promise<AxiosResponse<UserClubs>> => {
     
     return axios.get(
-      `/users/${username}/clubs`,{
+      `https://api.jikan.moe/v4/users/${username}/clubs`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8354,7 +8354,7 @@ export const getUserClubs = (
 
 export const getGetUserClubsQueryKey = (username: string,
     params?: GetUserClubsParams,) => {
-    return [`/users/${username}/clubs`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/clubs`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8442,13 +8442,13 @@ export const getUserExternal = (
  ): Promise<AxiosResponse<ExternalLinks>> => {
     
     return axios.get(
-      `/users/${username}/external`,options
+      `https://api.jikan.moe/v4/users/${username}/external`,options
     );
   }
 
 
 export const getGetUserExternalQueryKey = (username: string,) => {
-    return [`/users/${username}/external`] as const;
+    return [`https://api.jikan.moe/v4/users/${username}/external`] as const;
     }
 
     
@@ -8532,13 +8532,13 @@ export const getWatchRecentEpisodes = (
  ): Promise<AxiosResponse<WatchEpisodes>> => {
     
     return axios.get(
-      `/watch/episodes`,options
+      `https://api.jikan.moe/v4/watch/episodes`,options
     );
   }
 
 
 export const getGetWatchRecentEpisodesQueryKey = () => {
-    return [`/watch/episodes`] as const;
+    return [`https://api.jikan.moe/v4/watch/episodes`] as const;
     }
 
     
@@ -8622,13 +8622,13 @@ export const getWatchPopularEpisodes = (
  ): Promise<AxiosResponse<WatchEpisodes>> => {
     
     return axios.get(
-      `/watch/episodes/popular`,options
+      `https://api.jikan.moe/v4/watch/episodes/popular`,options
     );
   }
 
 
 export const getGetWatchPopularEpisodesQueryKey = () => {
-    return [`/watch/episodes/popular`] as const;
+    return [`https://api.jikan.moe/v4/watch/episodes/popular`] as const;
     }
 
     
@@ -8712,7 +8712,7 @@ export const getWatchRecentPromos = (
  ): Promise<AxiosResponse<WatchPromos>> => {
     
     return axios.get(
-      `/watch/promos`,{
+      `https://api.jikan.moe/v4/watch/promos`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8720,7 +8720,7 @@ export const getWatchRecentPromos = (
 
 
 export const getGetWatchRecentPromosQueryKey = (params?: GetWatchRecentPromosParams,) => {
-    return [`/watch/promos`, ...(params ? [params]: [])] as const;
+    return [`https://api.jikan.moe/v4/watch/promos`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8804,13 +8804,13 @@ export const getWatchPopularPromos = (
  ): Promise<AxiosResponse<WatchPromos>> => {
     
     return axios.get(
-      `/watch/promos/popular`,options
+      `https://api.jikan.moe/v4/watch/promos/popular`,options
     );
   }
 
 
 export const getGetWatchPopularPromosQueryKey = () => {
-    return [`/watch/promos/popular`] as const;
+    return [`https://api.jikan.moe/v4/watch/promos/popular`] as const;
     }
 
     

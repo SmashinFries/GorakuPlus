@@ -6,12 +6,25 @@ fragment MainMeta on Media {
 	format
 	isFavourite
 	description
+	descriptionHTML: description(asHtml: true)
 	genres
 	status
 	siteUrl
 	meanScore
 	averageScore
+	episodes
+	chapters
+	volumes
+	duration
+	season
+	isLicensed
+	isAdult
 	startDate {
+		year
+		month
+		day
+	}
+	endDate {
 		year
 		month
 		day
@@ -60,10 +73,6 @@ fragment AnimeMeta on Media {
 fragment MangaMeta on Media {
 	...MainMeta
 	chapters
-}
-
-fragment NovelMeta on Media {
-	...MainMeta
 	volumes
 }
 
@@ -201,7 +210,7 @@ query MangaExplore(
 			countryOfOrigin: JP
 			isAdult: $isAdult
 			onList: $onList
-			sort: [TRENDING_DESC, POPULARITY_DESC]
+			sort: [TRENDING_DESC]
 			tag_not_in: $tag_not_in
 			format_not_in: NOVEL
 		) {
@@ -429,7 +438,7 @@ query NovelExplore(
 			format: NOVEL
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 		) {
-			...NovelMeta
+			...MangaMeta
 		}
 	}
 	trending: Page(page: 1, perPage: $perPage) {
@@ -446,7 +455,7 @@ query NovelExplore(
 			format: NOVEL
 			tag_not_in: $tag_not_in
 		) {
-			...NovelMeta
+			...MangaMeta
 		}
 	}
 	popular: Page(page: 1, perPage: $perPage) {
@@ -463,7 +472,7 @@ query NovelExplore(
 			format: NOVEL
 			tag_not_in: $tag_not_in
 		) {
-			...NovelMeta
+			...MangaMeta
 		}
 	}
 	top: Page(page: 1, perPage: $perPage) {
@@ -480,7 +489,7 @@ query NovelExplore(
 			format: NOVEL
 			tag_not_in: $tag_not_in
 		) {
-			...NovelMeta
+			...MangaMeta
 		}
 	}
 }

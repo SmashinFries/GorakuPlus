@@ -1,0 +1,194 @@
+query ThreadsOverview($id: Int, $page: Int, $perPage: Int) {
+	Page(page: $page, perPage: $perPage) {
+		pageInfo {
+			total
+			perPage
+			currentPage
+			lastPage
+			hasNextPage
+		}
+		threads(mediaCategoryId: $id, sort: ID_DESC) {
+			id
+			title
+			replyCount
+			viewCount
+			replyCommentId
+			repliedAt
+			createdAt
+			categories {
+				id
+				name
+			}
+			user {
+				id
+				name
+				bannerImage
+				avatar {
+					large
+				}
+			}
+			replyUser {
+				id
+				name
+				avatar {
+					large
+				}
+			}
+		}
+	}
+}
+
+query Threads($id: Int, $page: Int, $perPage: Int) {
+	Page(page: $page, perPage: $perPage) {
+		pageInfo {
+			total
+			perPage
+			currentPage
+			lastPage
+			hasNextPage
+		}
+		threads(mediaCategoryId: $id, sort: ID_DESC) {
+			id
+			title
+			replyCount
+			viewCount
+			replyCommentId
+			repliedAt
+			createdAt
+			categories {
+				id
+				name
+			}
+			user {
+				id
+				name
+				avatar {
+					large
+				}
+			}
+			replyUser {
+				id
+				name
+				avatar {
+					large
+				}
+			}
+		}
+	}
+}
+
+query ThreadDetail($id: Int) {
+	Thread(id: $id) {
+		id
+		title
+		body
+		htmlBody: body(asHtml: true)
+		userId
+		replyCount
+		viewCount
+		isLocked
+		isSticky
+		isSubscribed
+		isLiked
+		likeCount
+		repliedAt
+		createdAt
+		likes {
+			id
+			name
+			avatar {
+				large
+			}
+		}
+		user {
+			id
+			name
+			avatar {
+				large
+			}
+		}
+		categories {
+			id
+			name
+		}
+		mediaCategories {
+			id
+			title {
+				userPreferred
+			}
+			coverImage {
+				large
+			}
+			type
+			format
+		}
+	}
+}
+
+# Query names containing "thread" causes childComments to break, so naming kinda sucks
+query AniListComments($threadId: Int, $page: Int) {
+	Page(page: $page, perPage: 15) {
+		pageInfo {
+			total
+			perPage
+			currentPage
+			lastPage
+			hasNextPage
+		}
+		threadComments(threadId: $threadId) {
+			id
+			threadId
+			comment
+			htmlComment: comment(asHtml: true)
+			isLiked
+			likeCount
+			createdAt
+			childComments
+			user {
+				id
+				name
+				donatorTier
+				donatorBadge
+				moderatorRoles
+				avatar {
+					large
+				}
+			}
+			isLocked
+		}
+	}
+}
+
+query AniListCommentDetails($id: Int) {
+	ThreadComment(id: $id) {
+		id
+		comment
+		htmlComment: comment(asHtml: true)
+		userId
+		threadId
+		likeCount
+		isLiked
+		siteUrl
+		createdAt
+		updatedAt
+		childComments
+		user {
+			id
+			name
+			avatar {
+				large
+			}
+			isFollowing
+			isFollower
+			isBlocked
+		}
+		likes {
+			id
+			name
+			avatar {
+				large
+			}
+		}
+		isLocked
+	}
+}

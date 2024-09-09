@@ -1,0 +1,689 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PanelsDesu API",
+    "version": "1.0.0",
+    "description": "The official API for PanelsDesu",
+    "contact": {}
+  },
+  "paths": {
+    "/v1/search": {
+      "get": {
+        "operationId": "get~search.search_media",
+        "summary": "Search for manga panels",
+        "tags": [
+          "search"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of results to return",
+            "required": false,
+            "in": "query"
+          },
+          {
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search query",
+            "required": true,
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "panels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "page_id": {
+                            "type": "string"
+                          },
+                          "manga_id": {
+                            "type": "string"
+                          },
+                          "x": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "y": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "width": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "height": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "image_url": {
+                            "type": "string"
+                          },
+                          "ocr_text": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "phash": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "manga_id": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "image_url": {
+                            "type": "string"
+                          },
+                          "scrape_url": {
+                            "type": "string"
+                          },
+                          "chapter_scrape_url": {
+                            "type": "string"
+                          },
+                          "chapter_number": {
+                            "type": "number",
+                            "format": "float"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "last_processed_at": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "manga": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "mal_id": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "title_english": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "title_japanese": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "all_titles": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "icon_url": {
+                            "type": "string"
+                          },
+                          "scrape_url": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "chapter_count": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "page_count": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "panel_count": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          },
+                          "authors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/v1/stats": {
+      "get": {
+        "operationId": "get~stats.get_stats",
+        "summary": "Get global stats",
+        "tags": [
+          "stats"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "total_panels": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "total_pages": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "total_manga": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/v1/panel/{panel_id}": {
+      "get": {
+        "operationId": "get~panel.get_panel",
+        "summary": "Get a panel by id",
+        "tags": [
+          "panel"
+        ],
+        "parameters": [
+          {
+            "name": "panel_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "panel": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "page_id": {
+                          "type": "string"
+                        },
+                        "manga_id": {
+                          "type": "string"
+                        },
+                        "x": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "y": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "width": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "height": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "image_url": {
+                          "type": "string"
+                        },
+                        "ocr_text": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "phash": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "manga_id": {
+                          "type": "string"
+                        },
+                        "number": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "image_url": {
+                          "type": "string"
+                        },
+                        "scrape_url": {
+                          "type": "string"
+                        },
+                        "chapter_scrape_url": {
+                          "type": "string"
+                        },
+                        "chapter_number": {
+                          "type": "number",
+                          "format": "float"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "last_processed_at": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "manga": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "mal_id": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "title_english": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "title_japanese": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "all_titles": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "icon_url": {
+                          "type": "string"
+                        },
+                        "scrape_url": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "chapter_count": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "page_count": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "panel_count": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "authors": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "other_panels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "page_id": {
+                            "type": "string"
+                          },
+                          "manga_id": {
+                            "type": "string"
+                          },
+                          "x": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "y": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "width": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "height": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "image_url": {
+                            "type": "string"
+                          },
+                          "ocr_text": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "phash": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/v1/panel/{panel_id}/similar": {
+      "get": {
+        "operationId": "get~panel.get_similar_panels",
+        "summary": "Get panels similar to a panel",
+        "tags": [
+          "panel"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Number of results to return",
+            "required": false,
+            "in": "query"
+          },
+          {
+            "name": "panel_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "panels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "page_id": {
+                            "type": "string"
+                          },
+                          "manga_id": {
+                            "type": "string"
+                          },
+                          "x": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "y": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "width": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "height": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "image_url": {
+                            "type": "string"
+                          },
+                          "ocr_text": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "phash": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "manga_id": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "image_url": {
+                            "type": "string"
+                          },
+                          "scrape_url": {
+                            "type": "string"
+                          },
+                          "chapter_scrape_url": {
+                            "type": "string"
+                          },
+                          "chapter_number": {
+                            "type": "number",
+                            "format": "float"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "last_processed_at": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "manga": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "mal_id": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "title_english": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "title_japanese": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "all_titles": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "icon_url": {
+                            "type": "string"
+                          },
+                          "scrape_url": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "chapter_count": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "page_count": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "panel_count": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          },
+                          "authors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Default Response"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "search"
+    },
+    {
+      "name": "stats"
+    },
+    {
+      "name": "panel"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.panelsdesu.com/",
+      "variables": {}
+    }
+  ],
+  "security": []
+}

@@ -18,12 +18,15 @@ const cleanName = (query: string) => {
 };
 
 export const useCharDetail = (id: number) => {
-	const { booru } = useMatchStore();
-	const { showNSFW } = useSettingsStore();
+	const { booruDB, addBooruTag } = useMatchStore((state) => ({
+		booruDB: state.booru,
+		addBooruTag: state.addBooruTag,
+	}));
+	const showNSFW = useSettingsStore((state) => state.showNSFW);
 	const [isLoading, setIsLoading] = useState(true);
-	const [currentArtTag, setCurrentArtTag] = useState<string>(booru[id] ?? '');
+	const [currentArtTag, setCurrentArtTag] = useState<string>(booruDB[id] ?? '');
 
-	const { mutateAsync } = useToggleFavMutation();
+	const { mutateAsync: toggleFav } = useToggleFavMutation();
 	const charData = useCharacterDetailsQuery({ id: id }, { enabled: !!id });
 	const tagOptions = useTagsSearchQuery(
 		{
@@ -35,29 +38,26 @@ export const useCharDetail = (id: number) => {
 		},
 		!!charData.data?.Character?.name?.full,
 	);
-	const art = usePostsSearch(
-		{
-			limit: 24,
-			tags: currentArtTag
-				? showNSFW
-					? `${currentArtTag} solo`
-					: `${currentArtTag} solo rating:g`
-				: '',
-			page: 1,
-		},
-		{ skip: !currentArtTag, refetchOnMountOrArgChange: true },
-	);
+	const art = usePostsSearch({
+		limit: 24,
+		tags: currentArtTag
+			? showNSFW
+				? `${currentArtTag} solo`
+				: `${currentArtTag} solo rating:g`
+			: '',
+		page: 1,
+	});
 
 	const onTagChange = (tag: string) => {
 		setCurrentArtTag(tag);
 	};
 
 	useEffect(() => {
-		if (tagOptions.data && !charArtDB.data[id]) {
+		if (tagOptions.data && !booruDB[id]) {
 			setCurrentArtTag(tagOptions?.data[0]?.value);
-			dispatch(updateCharArtDB({ aniId: id, booruTag: tagOptions?.data[0]?.value }));
+			addBooruTag(id, tagOptions?.data[0]?.value);
 		}
-	}, [tagOptions.data, charArtDB]);
+	}, [tagOptions.data, booruDB]);
 
 	useEffect(() => {
 		if (!charData.isFetching && !tagOptions.isFetching && !art.isFetching) {

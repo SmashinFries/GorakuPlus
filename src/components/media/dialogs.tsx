@@ -6,22 +6,26 @@ import {
 	List,
 	Portal,
 	Searchbar,
+	Surface,
 	Text,
 	useTheme,
 } from 'react-native-paper';
-import { AniMediaQuery, MediaStatus, MediaTag } from '@/store/services/anilist/generated-anilist';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { ReactNode, useEffect, useState } from 'react';
 import { Image } from 'expo-image';
-import {
-	SearchReleasesPostApiResponse,
-	SeriesSearchResponseV1,
-	useSearchSeriesPostMutation,
-} from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BasicDialogProps } from '@/types';
-import { AnimeFull } from '@/store/services/mal/malApi';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { AniMediaQuery, MediaStatus, MediaTag } from '@/api/anilist/__genereated__/gql';
+import {
+	SearchReleasesPostMutationResult,
+	useSearchSeriesPost,
+} from '@/api/mangaupdates/mangaupdates';
+import { AnimeFull } from '@/api/jikan/models';
+import { useAppTheme } from '@/store/theme/themes';
+import { useMatchStore } from '@/store/matchStore';
+import { useShallow } from 'zustand/react/shallow';
+import { CrunchyRollIcon } from '../svgs';
 
 type TagDialogProps = {
 	visible: boolean;
@@ -119,32 +123,30 @@ export const RemoveListItemDialog = ({
 type MuSearchProps = {
 	title: string;
 	altTitles?: string[];
-	currentMuID: number;
+	aniId: number;
 	onConfirm: (id: number) => void;
 } & BasicDialogProps;
 
 export const MuSearchDialog = ({
 	title,
 	altTitles,
-	currentMuID,
+	aniId,
 	visible,
 	onDismiss,
 	onConfirm,
 }: MuSearchProps) => {
+	const addMangaUpdatesID = useMatchStore((state) => state.addMangaUpdatesID);
+	const muDB = useMatchStore(useShallow((state) => state.mangaUpdates));
 	const [query, setQuery] = useState(title?.replace('[', '').replace(']', ''));
-	const [selected, setSelected] = useState(currentMuID);
-	const [results, setResults] = useState<SeriesSearchResponseV1>();
-	const [search] = useSearchSeriesPostMutation();
+	const [selected, setSelected] = useState(muDB[aniId]);
+	const { data: results, mutateAsync: search } = useSearchSeriesPost();
 
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const searchManga = async (qry: string) => {
-		const response = await search({
-			seriesSearchRequestV1: { search: qry, stype: 'title' },
-		}).unwrap();
-		if (response) {
-			setResults(response);
-		}
+		await search({
+			data: { search: qry, stype: 'title' },
+		});
 	};
 
 	useEffect(() => {
@@ -187,7 +189,7 @@ export const MuSearchDialog = ({
 			</Dialog.Content>
 			<Dialog.ScrollArea>
 				<FlatList
-					data={results?.results ?? []}
+					data={results?.data.results ?? []}
 					renderItem={({ item }) => (
 						<Pressable
 							onPress={() => setSelected(item?.record?.series_id)}
@@ -239,27 +241,37 @@ export const MuSearchDialog = ({
 			</Dialog.ScrollArea>
 			<Dialog.Actions>
 				<Button onPress={onDismiss}>Cancel</Button>
-				<Button onPress={() => onConfirm(selected)}>Confirm</Button>
+				<Button
+					onPress={() => {
+						addMangaUpdatesID(aniId, selected);
+						onConfirm(selected);
+					}}
+				>
+					Confirm
+				</Button>
 			</Dialog.Actions>
 		</Dialog>
 	);
 };
 
 type ReleasesDialogProps = {
-	releases: SearchReleasesPostApiResponse['results'] | undefined;
+	releases: SearchReleasesPostMutationResult['data']['results'] | undefined;
 	animeReleases: AniMediaQuery['Media']['airingSchedule']['nodes'] | undefined;
 	streamingSites: AnimeFull['streaming'];
 	status: MediaStatus;
+	streamingEpisodes: AniMediaQuery['Media']['streamingEpisodes'];
 } & BasicDialogProps;
 
 export const ReleasesDialog = ({
 	releases,
 	animeReleases,
 	streamingSites,
+	streamingEpisodes,
 	status,
 	visible,
 	onDismiss,
 }: ReleasesDialogProps) => {
+	const { colors } = useAppTheme();
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '70%' }}>
 			<Dialog.Title>Estimated Release</Dialog.Title>
@@ -276,7 +288,7 @@ export const ReleasesDialog = ({
 							: 'The episode release time is a direct reflection of the data provided by AniList.\n'}
 					</Text>
 				)}
-				{streamingSites && (
+				{/* {streamingSites && (
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
@@ -293,7 +305,7 @@ export const ReleasesDialog = ({
 							</Button>
 						))}
 					</ScrollView>
-				)}
+				)} */}
 				{(releases || animeReleases) && (
 					<Text variant="titleLarge">{releases ? 'Chapters' : 'Episodes'}</Text>
 				)}
@@ -318,17 +330,69 @@ export const ReleasesDialog = ({
 										)}
 									/>
 								))
-							: animeReleases?.map((episode, idx) => (
-									<List.Item
-										key={idx}
-										title={`EP ${episode.episode}`}
-										right={(props) => (
-											<Text style={[props.style]}>
-												{new Date(episode.airingAt * 1000).toLocaleString()}
-											</Text>
-										)}
-									/>
-								))}
+							: streamingEpisodes
+								? streamingEpisodes.map((streamEP, idx) => (
+										// <List.Item
+										// 	key={idx}
+										// 	title={`${streamEP.title}`}
+										// 	titleNumberOfLines={2}
+										// 	description={() => (
+										// 		<Image
+										// 			source={{ uri: streamEP.thumbnail }}
+										// 			contentFit="cover"
+										// 			style={{ width: '100%', aspectRatio: 32 / 9 }}
+										// 		/>
+										// 	)}
+										// 	onPress={() => openWebBrowser(streamEP.url, true)}
+										// />
+										<Surface
+											key={idx}
+											style={{
+												flex: 1,
+												borderRadius: 8,
+												marginVertical: 6,
+												padding: 6,
+											}}
+										>
+											<View
+												style={{
+													justifyContent: 'space-between',
+													flexDirection: 'row',
+												}}
+											>
+												<Text
+													variant="titleMedium"
+													style={{ flexShrink: 1 }}
+												>
+													{streamEP.title}
+												</Text>
+												<CrunchyRollIcon fontColor={colors.onSurface} />
+											</View>
+											<Image
+												source={{ uri: streamEP.thumbnail }}
+												contentFit="cover"
+												style={{
+													width: '100%',
+													aspectRatio: 32 / 9,
+													borderRadius: 8,
+													marginTop: 4,
+												}}
+											/>
+										</Surface>
+									))
+								: animeReleases?.map((episode, idx) => (
+										<List.Item
+											key={idx}
+											title={`EP ${episode.episode}`}
+											right={(props) => (
+												<Text style={[props.style]}>
+													{new Date(
+														episode.airingAt * 1000,
+													).toLocaleString()}
+												</Text>
+											)}
+										/>
+									))}
 					</ScrollView>
 				</Dialog.ScrollArea>
 			)}

@@ -1,4 +1,6 @@
 import useImageRotation from '@/hooks/useImageRotation';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
@@ -13,13 +15,12 @@ import Animated, {
 
 type Props = {
 	style?: any;
-	url: string;
-	additionalUrls?: string[];
-	allowMotion?: boolean;
+	urls: string[];
 };
-export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) => {
-	const { colors } = useTheme();
-	const img_src = useImageRotation(url, additionalUrls);
+export const MediaBanner = ({ urls, style }: Props) => {
+	const { colors } = useAppTheme();
+	const isMotionAllowed = useSettingsStore((state) => state.allowSensorMotion);
+	const img_src = useImageRotation(urls);
 
 	const { sensor } = useAnimatedSensor(SensorType.ROTATION, { interval: 20 });
 
@@ -30,17 +31,17 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
 			transform: [
 				{ translateX: withSpring(-roll * 25, { damping: 200 }) },
 				{ translateY: withSpring(-pitch * 25, { damping: 200 }) },
-				{ matrix: [] },
 			],
 		};
 	});
 
 	return (
 		<Animated.View style={[style, styles.container]}>
-			<Animated.View style={[allowMotion ? animatedStyle : {}, { paddingBottom: 10 }]}>
+			<Animated.View style={[isMotionAllowed ? animatedStyle : {}, { paddingBottom: 10 }]}>
 				<Image
 					source={{ uri: img_src }}
 					style={[styles.img]}
+					placeholder={{ blurhash: colors.blurhash }}
 					cachePolicy="memory"
 					transition={2000}
 					contentFit="cover"
@@ -48,7 +49,7 @@ export const MediaBanner = ({ url, style, allowMotion, additionalUrls }: Props) 
 
 				<LinearGradient
 					style={[styles.container]}
-					locations={[0, 0.85]}
+					locations={[0, 0.8]}
 					colors={['rgba(0,0,0,.2)', colors.background]}
 				/>
 			</Animated.View>
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: 0,
 		width: '100%',
-		height: 250,
+		height: 300,
 	},
 	img: {
 		width: '100%',

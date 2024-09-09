@@ -1,49 +1,61 @@
 import { useAuthStore } from '@/store/authStore';
-import axios, { AxiosError, isAxiosError } from 'axios';
+import { sendErrorMessage } from '@/utils/toast';
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
 
-interface GraphQLResponse<T> {
-	data: T;
-	errors?: { message: string }[];
-}
+const url = 'https://graphql.anilist.co';
 
 export const fetchAnilistData = <TData, TVariables>(
 	query: string,
-): ((variables?: TVariables) => Promise<TData>) => {
+	variables?: TVariables,
+	options?: AxiosRequestConfig['headers'],
+): (() => Promise<TData>) => {
 	const token = useAuthStore.getState().anilist.token;
-	const url = 'https://graphql.anilist.co'; // Replace this with your GraphQL API URL
+	const headers: AxiosRequestConfig['headers'] = {
+		'Content-Type': 'application/json',
+		...options,
+	};
+	!!token && (headers['Authorization'] = `Bearer ${token}`);
 
-	return async (variables?: TVariables) => {
+	return async () => {
 		try {
-			const response = await axios.post<GraphQLResponse<TData>>(
+			const res = await axios.post(
 				url,
-				{
-					query,
-					variables,
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: token ? `Bearer ${token}` : '',
-					},
-				},
+				{ query, variables },
+				{ headers: { ...headers, ...options } },
 			);
-
-			if (response.data.errors) {
-				throw new Error(response.data.errors[0].message);
-			}
-
-			return response.data.data;
+			// console.log(res.data);
+			return res.data.data;
 		} catch (error) {
-			if (isAxiosError(error)) {
-				const serverError = error as AxiosError<GraphQLResponse<unknown>>;
-				if (serverError && serverError.response) {
-					const errorMessage =
-						serverError.response.data.errors?.[0]?.message ||
-						'Error in GraphQL request';
-					throw new Error(errorMessage);
-				}
+			// console.error(error);
+			if (error instanceof AxiosError) {
+				console.log(error.response?.data);
+				sendErrorMessage(`Error ${error.status}: ${error.message}`);
+			} else {
+				sendErrorMessage(`${error.message}`);
 			}
-			throw error;
 		}
 	};
+
+	// return async () => {
+	// 	const res = await fetch(url, {
+	// 		method: 'POST',
+	// 		headers: {
+	// 			...headers,
+	// 			...options,
+	// 		},
+	// 		body: JSON.stringify({
+	// 			query,
+	// 			variables,
+	// 		}),
+	// 	});
+
+	// 	const json = await res.json();
+
+	// 	if (json.errors) {
+	// 		const { message } = json.errors[0] || {};
+	// 		throw new Error(message || 'Error…');
+	// 	}
+
+	// 	return json.data;
+	// };
 };

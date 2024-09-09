@@ -11,9 +11,7 @@ import {
 } from '@/constants/mediaConsts';
 import { arrayRange } from '@/utils/numbers';
 import { mediaStatusOptions } from '@/constants/anilist';
-import { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { getDatetoFuzzyInt, getFuzzyInttoDate, getFuzzyInttoString } from '@/utils';
-import { openDatePicker } from '@/utils/datepicker';
 import { useSearchStore } from '@/store/search/searchStore';
 import { useAppTheme } from '@/store/theme/themes';
 import {
@@ -23,6 +21,8 @@ import {
 	MediaType,
 	SearchAnimeQueryVariables,
 } from '@/api/anilist/__genereated__/gql';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { CalendarDate } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
 
 type DropdownItemProps = {
 	disabled: boolean;
@@ -148,21 +148,20 @@ export const DialogSelectDate = ({
 	containerStyle,
 	onSelect,
 }: DialogSelectDateProps) => {
+	const [isVis, setIsVis] = useState(false);
 	const [date, setDate] = useState(value !== 'ANY' ? getFuzzyInttoDate(value) : new Date());
 
-	const onChange = (event: DateTimePickerEvent, selectedDate: Date) => {
-		if (event.type === 'set') {
-			const currentDate = selectedDate;
-			setDate(currentDate);
-			onSelect(currentDate);
-		}
+	const onChange = (selectedDate: CalendarDate) => {
+		const currentDate = selectedDate;
+		setDate(currentDate);
+		onSelect(currentDate);
 	};
 
 	return (
 		<View style={[{ flex: 1, marginVertical: 5 }, containerStyle]}>
 			<DropdownButton
 				label={label}
-				openDialog={() => openDatePicker('date', date, onChange)}
+				openDialog={() => setIsVis(true)}
 				value={value !== 'ANY' ? getFuzzyInttoString(value) : 'Any'}
 				left={
 					<TextInput.Icon
@@ -171,15 +170,17 @@ export const DialogSelectDate = ({
 					/>
 				}
 			/>
-			{/* <Portal>
-				{vis && (
-					<DateTimePicker
-						value={date}
-						onChange={onChange}
-						themeVariant={dark ? 'dark' : 'dark'}
-					/>
-				)}
-			</Portal> */}
+			<Portal>
+				<DatePickerModal
+					locale="en"
+					mode="single"
+					visible={isVis}
+					onDismiss={() => setIsVis(false)}
+					date={date}
+					label={label}
+					onConfirm={(params) => onChange(params.date)}
+				/>
+			</Portal>
 		</View>
 	);
 };

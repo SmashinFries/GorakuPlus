@@ -1,6 +1,5 @@
 import { Dialog, Text, RadioButton, Button, Chip, Checkbox, IconButton } from 'react-native-paper';
 import { useCallback, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import DraggableFlatList, {
 	ScaleDecorator,
 	RenderItemParams,
@@ -8,22 +7,22 @@ import DraggableFlatList, {
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { DanbooruRating } from '@/store/services/danbooru/types';
 import { BasicDialogProps } from '@/types';
 import { ExploreTabsProps } from '@/types/navigation';
-import { setSettings } from '@/store/slices/settingsSlice';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
-import { updateListFilter } from '@/store/slices/listSLice';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useListFilterStore } from '@/store/listStore';
+import { MediaType } from '@/api/anilist/__genereated__/gql';
+import { DanbooruRating } from '@/api/danbooru/types';
 
 type DefaultDescDialogProps = BasicDialogProps & {
 	defaultValue: 'ani' | 'mal';
 };
 export const DefaultDescDialog = ({ defaultValue, visible, onDismiss }: DefaultDescDialogProps) => {
 	const [value, setValue] = useState<'ani' | 'mal'>(defaultValue);
-	const dispatch = useAppDispatch();
+	const { setSettings } = useSettingsStore();
 
 	const onDone = useCallback(() => {
-		dispatch(setSettings({ entryType: 'defaultDescription', value: value }));
+		setSettings({ defaultDescription: value });
 		onDismiss();
 	}, [value]);
 
@@ -53,8 +52,7 @@ export const DefaultDescDialog = ({ defaultValue, visible, onDismiss }: DefaultD
 };
 
 export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
-	const dispatch = useAppDispatch();
-	const { exploreTabs, exploreTabOrder } = useAppSelector((state) => state.persistedSettings);
+	const { exploreTabs, exploreTabOrder, setSettings } = useSettingsStore();
 
 	const [tabOrder, setTabOrder] = useState<(keyof ExploreTabsProps)[]>(exploreTabOrder);
 	const [validTabs, setValidTabs] = useState<(keyof ExploreTabsProps)[]>(exploreTabs);
@@ -65,12 +63,12 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 		onDismiss();
 	};
 
-	const editExploreTabs = (tabs: string[]) => {
-		dispatch(setSettings({ entryType: 'exploreTabs', value: tabs }));
+	const editExploreTabs = (tabs: (keyof ExploreTabsProps)[]) => {
+		setSettings({ exploreTabs: tabs });
 	};
 
-	const updateTabOrder = (tabs: string[]) => {
-		dispatch(setSettings({ entryType: 'exploreTabOrder', value: tabs }));
+	const updateTabOrder = (tabs: (keyof ExploreTabsProps)[]) => {
+		setSettings({ exploreTabOrder: tabs });
 	};
 
 	const renderItem = ({ item, drag, isActive }: RenderItemParams<keyof ExploreTabsProps>) => {
@@ -150,9 +148,7 @@ export const ListTabsDialog = ({
 	type,
 	onDismiss,
 }: BasicDialogProps & { type: MediaType }) => {
-	const dispatch = useAppDispatch();
-	const { animeTabOrder, mangaTabOrder } = useAppSelector((state) => state.listFilter);
-
+	const { animeTabOrder, mangaTabOrder, updateListFilter } = useListFilterStore();
 	const [tabOrder, setTabOrder] = useState<string[]>(
 		type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
 	);
@@ -164,12 +160,9 @@ export const ListTabsDialog = ({
 	};
 
 	const updateTabOrder = (tabs: string[]) => {
-		dispatch(
-			updateListFilter({
-				entryType: type === MediaType.Anime ? 'animeTabOrder' : 'mangaTabOrder',
-				value: tabs,
-			}),
-		);
+		updateListFilter({
+			[type === MediaType.Anime ? 'animeTabOrder' : 'mangaTabOrder']: tabs,
+		});
 	};
 
 	const renderItem = ({ item, drag, isActive }: RenderItemParams<string>) => {
@@ -246,8 +239,7 @@ export const ListTabsDialog = ({
 };
 
 export const NSFWLevelDialog = ({ onDismiss, visible }: BasicDialogProps) => {
-	const dispatch = useAppDispatch();
-	const { blurNSFWLevel } = useAppSelector((state) => state.persistedSettings);
+	const { blurNSFWLevel, setSettings } = useSettingsStore();
 
 	const [newLevel, setNewLevel] = useState<DanbooruRating>(blurNSFWLevel);
 
@@ -272,7 +264,7 @@ export const NSFWLevelDialog = ({ onDismiss, visible }: BasicDialogProps) => {
 				<Button onPress={onDismiss}>Cancel</Button>
 				<Button
 					onPress={() => {
-						dispatch(setSettings({ entryType: 'blurNSFWLevel', value: newLevel }));
+						setSettings({ blurNSFWLevel: newLevel });
 						onDismiss();
 					}}
 				>

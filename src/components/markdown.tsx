@@ -1,9 +1,11 @@
 import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { ResizeMode, Video } from 'expo-av';
 import { useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions, Image as RNImage } from 'react-native';
 import Markdown, { ASTNode, MarkdownIt, RenderRules } from 'react-native-markdown-display';
 import { Text } from 'react-native-paper';
+import YoutubePlayer from 'react-native-youtube-iframe';
 
 const Spoiler = (props: {
 	node: ASTNode;
@@ -12,34 +14,7 @@ const Spoiler = (props: {
 	textColor?: string;
 	bgColor?: string;
 }) => {
-	const { width } = useWindowDimensions();
 	const [show, setShow] = useState(false);
-
-	// <View
-	//         style={{ width: width - props?.styles?.body?.paddingHorizontal, alignItems: 'center' }}
-	//     >
-	//         <View
-	//             key={props.node.key}
-	//             style={[
-	//                 {
-	//                     backgroundColor: props.bgColor,
-	//                     padding: 10,
-	//                     borderRadius: 12,
-	//                 },
-	//             ]}
-	//         >
-	//             <Text
-	//                 style={[
-	//                     {
-	//                         color: props.textColor,
-	//                     },
-	//                 ]}
-	//                 onPress={() => setShow((prev) => !prev)}
-	//             >
-	//                 {show ? `\n${props.node.content}\n` : 'Show Spoiler'}
-	//             </Text>
-	//         </View>
-	//     </View>
 
 	return (
 		<Text
@@ -57,6 +32,22 @@ const Spoiler = (props: {
 
 export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 	const { colors } = useAppTheme();
+	const { width } = useWindowDimensions();
+
+	const markdownit: MarkdownIt = new MarkdownIt({ typographer: true, html: true });
+	const [markdownWidth, setMarkdownWidth] = useState(0);
+
+	const onLinkPress = (url: string) => {
+		if (url) {
+			openWebBrowser(url);
+			return false;
+		}
+
+		// return true to open with `Linking.openURL
+		// return false to handle it yourself
+		return true;
+	};
+
 	const rules: RenderRules = {
 		html_block: (node, children, parent, styles) => {
 			// we check that the parent array contans a td because <br> in paragraph setting will create a html_inlinde surrounded by a soft break, try removing the clause to see what happens (double spacing on the <br> between 'top one' and 'bottom one')
@@ -66,9 +57,16 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 						{'\n'}
 					</Text>
 				);
+			} else if (node.content.match(/<h5.*?>/gm)) {
+				console.log('content:', node.content);
+				return (
+					<View key={node.key} style={{ alignItems: 'center' }}>
+						{children}
+					</View>
+				);
+			} else {
+				return <View key={node.key}>{children}</View>;
 			}
-
-			return null;
 		},
 		html_inline: (node, children, parent, styles) => {
 			return (
@@ -101,6 +99,19 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 				</View>
 			);
 		},
+		fence: (node, children, parent, styles) => {
+			return (
+				<Spoiler
+					key={node.key}
+					node={node}
+					styles={styles}
+					textColor={colors.primary}
+					bgColor={colors.backdrop}
+				>
+					{children}
+				</Spoiler>
+			);
+		},
 		code_inline: (node, children, parent, styles) => {
 			return (
 				<Spoiler
@@ -114,43 +125,74 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 				</Spoiler>
 			);
 		},
-		// image: (node, children, parent, styles, allowedImageHandlers, defaultImageHandler) => {
-		//     const { src, alt } = node.attributes;
-		//     // we check that the source starts with at least one of the elements in allowedImageHandlers
-		//     const show =
-		//         allowedImageHandlers.filter((value) => {
-		//             return src.toLowerCase().startsWith(value.toLowerCase());
-		//         }).length > 0;
+		image: (node, children, parent, styles, allowedImageHandlers, defaultImageHandler) => {
+			const { src, alt } = node.attributes;
+			const targetWidth = parseInt((alt as string).replace('img', ''));
+			// we check that the source starts with at least one of the elements in allowedImageHandlers
+			const show =
+				allowedImageHandlers.filter((value) => {
+					return src.toLowerCase().startsWith(value.toLowerCase());
+				}).length > 0;
 
-		//     if (show === false && defaultImageHandler === null) {
-		//         return null;
-		//     }
+			if (show === false && defaultImageHandler === null) {
+				return null;
+			}
 
-		//     return (
-		//         <View
-		//             key={node.key}
-		//             style={{
-		//                 flex: 1,
-		//                 width: '100%',
-		//                 alignItems: 'center',
-		//                 justifyContent: 'center',
-		//             }}
-		//         >
-		//             <Image
-		//                 // we grab the resource identifier provided by require and convert it back to an int
-		//                 source={{ uri: src }}
-		//                 style={[
-		//                     styles.image,
-		//                     {
-		//                         width: '100%',
-		//                     },
-		//                 ]}
-		//                 contentFit="contain"
-		//             />
-		//         </View>
-		//     );
-		// },
+			if (alt === 'youtube') {
+				console.log((src as string).split('watch?v=').at(-1));
+				return (
+					<View style={{ width: width, paddingVertical: 8 }}>
+						<YoutubePlayer
+							key={node.key}
+							height={270}
+							width={markdownWidth} // theres a body padding of 10
+							webViewStyle={{ opacity: 0.99 }}
+							videoId={(src as string).split('watch?v=').at(-1)}
+						/>
+					</View>
+				);
+			}
+
+			if (alt === 'webm') {
+				return (
+					<View style={{ width: '100%', paddingVertical: 8 }}>
+						<Video
+							key={node.key}
+							source={{ uri: src }}
+							style={{ height: 270, width: '100%' }}
+							useNativeControls
+							shouldPlay
+							isMuted
+							isLooping
+							resizeMode={ResizeMode.CONTAIN}
+						/>
+					</View>
+				);
+			}
+
+			return (
+				<RNImage
+					key={node.key}
+					// we grab the resource identifier provided by require and convert it back to an int
+					source={{ uri: src }}
+					style={[
+						// styles.image,
+						{
+							width: '100%',
+							height: undefined,
+							alignSelf: 'center',
+							minHeight: 180,
+							marginVertical: 5,
+						},
+					]}
+					resizeMode="contain"
+				/>
+			);
+		},
 		text: (node, children, parent, styles, inheritedStyles = {}) => {
+			if (node.content.includes('<center>')) {
+				console.log(node);
+			}
 			return (
 				<Text key={node.key} style={[inheritedStyles, styles.text]}>
 					{node.content}
@@ -159,37 +201,62 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 		},
 	};
 
-	const markdownit: MarkdownIt = new MarkdownIt({ typographer: true, html: true });
-
-	const onLinkPress = (url: string) => {
-		if (url) {
-			openWebBrowser(url);
-			return false;
-		}
-
-		// return true to open with `Linking.openURL
-		// return false to handle it yourself
-		return true;
-	};
-
 	return (
 		<Markdown
 			markdownit={markdownit}
 			rules={rules}
 			style={{
 				fence: {
-					backgroundColor: colors.background,
+					backgroundColor: 'transparent',
 					color: colors.onBackground,
 				},
 				body: {
-					backgroundColor: colors.background,
+					backgroundColor: 'transparent',
 					color: colors.onBackground,
-					paddingHorizontal: 10,
+				},
+				link: {
+					color: colors.primary,
+				},
+				hr: {
+					backgroundColor: colors.surfaceVariant,
+					height: 4,
+					borderRadius: 12,
 				},
 			}}
 			onLinkPress={onLinkPress}
 		>
-			{markdown}
+			{markdown
+				?.replaceAll('\\/', '/')
+				?.replaceAll(
+					/<img[^>]*>/g,
+					(t, args) => `![img](${t.split('src="').at(-1).split('"')[0]})`,
+				)
+				.replaceAll('<center>', '')
+				.replaceAll('</center>', '')
+				.replaceAll(
+					/img.*?\%\(.*?\)/g,
+					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
+				)
+				.replaceAll(
+					/img\d*\(.*?\)/g,
+					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
+				)
+				.replaceAll(/youtube\(.*?\)/g, (t) => {
+					console.log(`![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`);
+					return `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`;
+				})
+				.replaceAll(
+					/webm\(.*?\)/g,
+					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
+				)
+				.replaceAll('~~~', '')
+				.replaceAll('~!', '```\n')
+				.replaceAll('!~', '\n```')
+				.replaceAll('__\n', '**\n')
+				.replaceAll('\n__', '\n**')
+				.replaceAll('__', '**')
+				.replaceAll('<blockquote>', '> ')
+				.replaceAll('</blockquote>', '  \n')}
 		</Markdown>
 	);
 };

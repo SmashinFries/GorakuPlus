@@ -1,4 +1,5 @@
 import { MediaListStatus, MediaStatus } from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 
 const RED = '#FF0000';
 const YELLOW = '#FFA500';
@@ -26,26 +27,18 @@ const getMalColor = (
 	}
 };
 
-export const getScoreColor = (
-	score: number,
-	colors: {
-		red: number;
-		yellow: number;
-	},
-	isMal = false,
-): string => {
-	const maxRed = colors.red;
-	const maxYellow = colors.yellow;
+export const getScoreColor = (score: number, isMal = false): string => {
+	const scoreColors = useSettingsStore.getState().scoreColors;
 
 	if (isMal) {
-		return getMalColor(score, colors);
+		return getMalColor(score, scoreColors);
 	}
 
-	if (between(score, 0, colors.red)) {
+	if (between(score, 0, scoreColors.red)) {
 		return RED;
-	} else if (between(score, maxRed + 1, maxYellow)) {
+	} else if (between(score, scoreColors.red + 1, scoreColors.yellow)) {
 		return YELLOW;
-	} else if (between(score, maxYellow + 1, 100)) {
+	} else if (between(score, scoreColors.yellow + 1, 100)) {
 		return GREEN;
 	}
 };
@@ -82,9 +75,10 @@ export const getStatusColor = (status: MediaStatus) => {
 
 export const rgbToRgba = (rgb: string, alpha: number) => {
 	if (rgb.includes('rgba')) {
-		return rgb;
+		return rgb.replace(/(\d+)\)/g, `${alpha})`);
+	} else {
+		return rgb.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
 	}
-	return rgb.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
 };
 
 export const getPieChartColor = (index: number, primaryColor: string) => {

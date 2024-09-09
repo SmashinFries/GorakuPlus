@@ -48,7 +48,7 @@ export const MaterialSwitch = ({
 	switchOffIcon,
 	disabled,
 }: SwitchProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const position = useSharedValue(selected ? 10 : -10);
 	const handleHeight = useSharedValue(selected ? 24 : 16);
 	const handleWidth = useSharedValue(selected ? 24 : 16);
@@ -347,7 +347,7 @@ export const MaterialSwitchListItem = ({
 	disabled,
 }: SwitchListItemProps) => {
 	//#region
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const position = useSharedValue(selected ? 10 : -10);
 	const handleHeight = useSharedValue(selected ? 24 : 16);
 	const handleWidth = useSharedValue(selected ? 24 : 16);

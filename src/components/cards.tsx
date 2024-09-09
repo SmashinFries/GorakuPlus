@@ -1,6 +1,13 @@
 import { Image, ImageBackground } from 'expo-image';
-import { DimensionValue, Pressable, View, useWindowDimensions } from 'react-native';
-import { Avatar, Button, ProgressBar, Text, useTheme } from 'react-native-paper';
+import {
+	DimensionValue,
+	Pressable,
+	View,
+	useWindowDimensions,
+	Image as RNImage,
+	ViewStyle,
+} from 'react-native';
+import { Avatar, Button, ProgressBar, Surface, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ListColors } from '@/utils';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
@@ -19,8 +26,10 @@ import { ScoreVisualType } from '@/store/settings/types';
 import { useAppTheme } from '@/store/theme/themes';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { DanPost } from '@/api/danbooru/types';
+import Animated, { JumpingTransition } from 'react-native-reanimated';
+import { AnimViewMem } from './animations';
 
-const BORDER_RADIUS = 12;
+const BORDER_RADIUS = 8;
 
 type MediaCardProps = {
 	coverImg: string;
@@ -30,7 +39,6 @@ type MediaCardProps = {
 	meanScore?: number;
 	averageScore?: number;
 	imgBgColor?: string;
-	scoreColors?: any;
 	showBanner?: boolean;
 	bannerText?: string | number;
 	editMode?: boolean;
@@ -42,33 +50,47 @@ type MediaCardProps = {
 	width?: number;
 	fitToParent?: boolean;
 	isFavorite?: boolean;
+	contentAmount?: number;
+	onLongPress?: (params: any) => void;
 };
 export const MediaCard = (props: MediaCardProps) => {
-	const card_height = props.height ?? 210;
+	const card_height = props.height ?? 200;
 	const { colors } = useAppTheme();
 	const { scoreColors, mediaLanguage, defaultScore } = useSettingsStore();
 	return (
-		<Pressable
-			onPress={props.navigate && props.navigate}
-			android_ripple={
-				props.navigate ? { color: colors.primary, foreground: true } : undefined
-			}
-			style={{
-				marginHorizontal: 10,
-				overflow: 'hidden',
-				height: !props.width && !props.fitToParent ? card_height : undefined,
-				width: props.fitToParent ? '100%' : props.width ?? undefined,
-				aspectRatio: 2 / 3,
-				borderRadius: BORDER_RADIUS,
-				backgroundColor: 'transparent',
-			}}
-		>
-			<Image
+		<AnimViewMem>
+			<Surface
+				style={{
+					marginHorizontal: 10,
+					marginVertical: 10,
+					overflow: 'hidden',
+					height: !props.width && !props.fitToParent ? card_height : undefined,
+					width: props.fitToParent ? '100%' : props.width ?? undefined,
+					aspectRatio: 2 / 3,
+					borderRadius: BORDER_RADIUS,
+					// backgroundColor: 'transparent',
+				}}
+			>
+				<Pressable
+					onPress={props.navigate && props.navigate}
+					onLongPress={props.onLongPress && props.onLongPress}
+					android_ripple={
+						props.navigate
+							? { foreground: true, borderless: false, color: colors.primary }
+							: undefined
+					}
+					style={{ height: '100%', width: '100%' }}
+				>
+					{/* expo-image causes tab swipe performance drop! 😢
+				Alt solution is use lower res image or switch to stock image comp
+			*/}
+					{/* <Image
 				contentFit="cover"
 				recyclingKey={props.coverImg}
+				cachePolicy="memory-disk"
 				transition={1000}
 				source={{ uri: props.coverImg }}
-				placeholder={colors.blurhash}
+				placeholder={{ blurhash: colors.blurhash }}
 				placeholderContentFit="cover"
 				style={{
 					height: '100%',
@@ -77,57 +99,93 @@ export const MediaCard = (props: MediaCardProps) => {
 					borderRadius: BORDER_RADIUS,
 					backgroundColor: props.imgBgColor ?? undefined,
 				}}
-			/>
-			<LinearGradient
-				style={{
-					width: '100%',
-					height: '100%',
-					borderRadius: BORDER_RADIUS,
-					overflow: 'hidden',
-					justifyContent: 'flex-end',
-				}}
-				colors={[
-					'transparent',
-					'rgba(0,0,0,.4)',
-					props.isFavorite ? 'rgba(79, 0, 0, 1)' : 'black',
-				]}
-			>
-				{(props.meanScore || props.averageScore) && (
-					<ScoreVisual
-						score={
-							defaultScore === 'average' && props.averageScore
-								? props.averageScore
-								: props.meanScore
-						}
-						scoreColors={scoreColors}
-						scoreVisualType={props.scoreVisualType}
-						scoreDistributions={props.scoreDistributions}
-						height={card_height}
+			/> */}
+					<RNImage
+						source={{ uri: props.coverImg }}
+						resizeMode="cover"
+						style={{
+							height: '100%',
+							width: '100%',
+							position: 'absolute',
+							backgroundColor: props.imgBgColor ?? undefined,
+							borderRadius: BORDER_RADIUS,
+							borderBottomRightRadius: props.showBanner
+								? BORDER_RADIUS + 4
+								: undefined,
+							borderBottomLeftRadius: props.showBanner
+								? BORDER_RADIUS + 4
+								: undefined,
+						}}
 					/>
-				)}
-				<Text
-					variant="labelMedium"
-					style={{
-						alignSelf: 'center',
-						paddingHorizontal: 6,
-						paddingVertical: 10,
-						color: 'white',
-					}}
-					numberOfLines={2}
-				>
-					{props.titles[props.titleLang] ??
-						props.titles[mediaLanguage] ??
-						props.titles.romaji}
-				</Text>
-				{props.showBanner ? (
-					<AiringBanner
-						containerColor={colors.primaryContainer}
-						textColor={colors.onPrimaryContainer}
-						text={props.bannerText}
-					/>
-				) : null}
-			</LinearGradient>
-		</Pressable>
+					<LinearGradient
+						style={{
+							position: 'absolute',
+							width: '100%',
+							height: '100%',
+							justifyContent: 'flex-end',
+							borderRadius: BORDER_RADIUS,
+							// weird visual bug where this is slightly visible on the edges. this is an attempt on hiding it
+							borderBottomRightRadius: props.showBanner
+								? BORDER_RADIUS + 4
+								: undefined,
+							borderBottomLeftRadius: props.showBanner
+								? BORDER_RADIUS + 4
+								: undefined,
+						}}
+						colors={[
+							'transparent',
+							'rgba(0,0,0,.4)',
+							props.isFavorite ? 'rgba(79, 0, 0, 1)' : 'black',
+						]}
+					></LinearGradient>
+					<View style={{ flex: 1, justifyContent: 'flex-end' }}>
+						{(props.meanScore || props.averageScore) && (
+							<ScoreVisual
+								score={
+									defaultScore === 'average' && props.averageScore
+										? props.averageScore
+										: props.meanScore
+								}
+								scoreColors={scoreColors}
+								scoreVisualType={props.scoreVisualType}
+								scoreDistributions={props.scoreDistributions}
+								height={card_height}
+								borderRadius={BORDER_RADIUS}
+							/>
+						)}
+						<Text
+							variant="labelMedium"
+							style={{
+								alignSelf: 'center',
+								paddingHorizontal: 6,
+								paddingVertical: 10,
+								color: 'white',
+							}}
+							numberOfLines={2}
+						>
+							{props.titles[props.titleLang] ??
+								props.titles[mediaLanguage] ??
+								props.titles.romaji}
+						</Text>
+						{props.showBanner ? (
+							<AiringBanner
+								containerColor={colors.primaryContainer}
+								textColor={colors.onPrimaryContainer}
+								text={props.bannerText}
+							/>
+						) : null}
+					</View>
+				</Pressable>
+			</Surface>
+			{/* <ProgressBar style={{ width: '90%', alignSelf: 'center' }} progress={0.5} /> */}
+			<View>
+				<MediaProgressBar
+					progress={props.mediaListEntry?.progress}
+					mediaListEntry={props.mediaListEntry as MediaList}
+					total={props.contentAmount}
+				/>
+			</View>
+		</AnimViewMem>
 	);
 };
 
@@ -226,6 +284,8 @@ type MediaProgressBarProps = {
 	showListStatus?: boolean;
 	mediaStatus?: MediaStatus;
 	total?: number;
+	containerStyle?: ViewStyle;
+	barStyle?: ViewStyle;
 };
 export const MediaProgressBar = ({
 	mediaListEntry,
@@ -233,18 +293,21 @@ export const MediaProgressBar = ({
 	total,
 	progress,
 	showListStatus,
+	containerStyle,
+	barStyle,
 }: MediaProgressBarProps) => {
-	const { colors } = useTheme();
-	const { showItemListStatus } = useSettingsStore();
+	const { colors } = useAppTheme();
+	const showItemListStatus = useSettingsStore().showItemListStatus;
 
 	return (
 		<View
 			style={[
 				{
 					alignSelf: 'center',
-					paddingTop: 10,
+					paddingTop: 2,
 					width: '90%',
 				},
+				containerStyle,
 			]}
 		>
 			<ProgressBar
@@ -255,12 +318,15 @@ export const MediaProgressBar = ({
 							? 0
 							: 1
 				}
-				style={{
-					alignSelf: 'center',
-					height: 8,
-					borderRadius: 4,
-					display: mediaListEntry ? undefined : 'none',
-				}}
+				style={[
+					{
+						alignSelf: 'center',
+						height: 8,
+						borderRadius: 4,
+						display: mediaListEntry ? undefined : 'none',
+					},
+					barStyle,
+				]}
 				indeterminate={mediaListEntry?.status === MediaListStatus.Current && !total}
 				color={mediaListEntry?.status ? ListColors[mediaListEntry?.status] : undefined}
 			/>
@@ -296,14 +362,16 @@ type UserCardProps = {
 	progress?: string;
 	size?: number;
 	onPress?: () => void;
+	onLongPress: () => void;
 };
 export const UserCard = (props: UserCardProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	return (
 		<Pressable
 			android_ripple={{ color: colors.primary, foreground: true }}
 			onPress={props.onPress}
+			onLongPress={props.onLongPress}
 			style={{
 				marginHorizontal: 10,
 				overflow: 'hidden',
@@ -361,13 +429,15 @@ type CharacterCardProps = {
 	nativeName: string;
 	role?: string;
 	isFavourite?: boolean;
+	onLongSelect?: () => void;
 };
 export const CharacterCard = (props: CharacterCardProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { mediaLanguage } = useSettingsStore();
 	return (
 		<Pressable
 			onPress={props.onPress}
+			onLongPress={props.onLongSelect}
 			android_ripple={{ color: colors.primary, foreground: true }}
 			style={{
 				marginHorizontal: 5,
@@ -414,7 +484,7 @@ type StudioCardProps = {
 	banners?: string[];
 };
 export const StudioCard = (props: StudioCardProps) => {
-	const img_src = useImageRotation(props.banners[0], props.banners);
+	const img_src = useImageRotation(props.banners);
 	return (
 		<View
 			style={{
@@ -461,9 +531,7 @@ export const DanbooruImageCard = ({
 }: DanbooruImageCardProps) => {
 	const { colors } = useAppTheme();
 	const { width, height } = useWindowDimensions();
-	// const { blurNSFW } = useAppSelector((state) => state.persistedSettings);
 	const { blurAmount, toggleBlur } = useNsfwBlur(item.rating);
-	// navigation.navigate('danbooruDetail', { id: item.id })
 	const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
 	if (!preview) {
 		return null;

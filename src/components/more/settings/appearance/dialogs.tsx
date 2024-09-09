@@ -1,5 +1,4 @@
 import { Dialog, Text, Button, useTheme, RadioButton, Checkbox, List } from 'react-native-paper';
-import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { ScoreContainer } from '../../../score';
@@ -8,7 +7,9 @@ import { rgbToRgba } from '@/utils';
 import dummyData from '@/constants/dummyData';
 import { useTranslation } from 'react-i18next';
 import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
-import { ThemeOptions } from '@/store/theme/themes';
+import { ThemeOptions, useAppTheme } from '@/store/theme/themes';
+import { MUISlider } from '@/components/slider';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 
 type SliderViewProps = {
 	title: string;
@@ -29,7 +30,14 @@ const SliderView = ({
 	return (
 		<View style={{ paddingVertical: 10 }}>
 			<Text>{title}</Text>
-			<Slider
+			{/* <MUISlider
+				initialValue={score}
+				minValue={0}
+				maxValue={100}
+				onValueChange={(value) => setScore(value)}
+				snap={false}
+			/> */}
+			{/* <Slider
 				value={score}
 				onValueChange={(value) => setScore(value)}
 				minimumTrackTintColor={trackColor}
@@ -40,7 +48,7 @@ const SliderView = ({
 				thumbTintColor={trackColor}
 				lowerLimit={lowerLimit ?? null}
 				upperLimit={upperLimit ?? null}
-			/>
+			/> */}
 		</View>
 	);
 };
@@ -48,20 +56,16 @@ const SliderView = ({
 type DialogProps = {
 	visible: boolean;
 	onDismiss: () => void;
-	red: number;
-	yellow: number;
 	updateScoreColor: (red: number, yellow: number) => any;
 };
-export const ScoreColorDialog = ({
-	onDismiss,
-	visible,
-	red,
-	yellow,
-	updateScoreColor,
-}: DialogProps) => {
+export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: DialogProps) => {
+	const { red, yellow } = useSettingsStore((state) => ({
+		red: state.scoreColors?.red,
+		yellow: state.scoreColors?.yellow,
+	}));
 	const [newRed, setRed] = useState(red);
 	const [newYellow, setYellow] = useState(yellow ?? 74);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
@@ -79,19 +83,38 @@ export const ScoreColorDialog = ({
 		<Dialog visible={visible} onDismiss={onDismiss}>
 			<Dialog.Title>{t('Score Colors')}</Dialog.Title>
 			<Dialog.Content>
-				<SliderView
+				<List.Item title={'Max Red Score'} />
+				<MUISlider
+					mode="continuous"
+					value={newRed}
+					onValueChange={(val) => setRed(Math.round(val[0]))}
+					maxValue={newYellow - 1}
+					minValue={0}
+					thumbBackgroundColor={colors.elevation.level3}
+				/>
+				{/* <SliderView
 					score={newRed}
 					setScore={setRed}
 					title="Max Red Score"
 					upperLimit={newYellow - 1}
 					trackColor={colors.primary}
-				/>
-				<SliderView
+				/> */}
+				<List.Item title={'Max Yellow Score'} />
+				{/* <SliderView
 					score={newYellow}
 					setScore={setYellow}
 					title="Max Yellow Score"
 					lowerLimit={newRed + 1}
 					trackColor={colors.primary}
+				/> */}
+				<MUISlider
+					mode="continuous"
+					value={newYellow}
+					onValueChange={(val) => setYellow(Math.round(val[0]))}
+					maxValue={100}
+					minValue={newRed + 1}
+					thumbBackgroundColor={colors.elevation.level3}
+					startFromZero={false}
 				/>
 				<View
 					style={{
@@ -238,7 +261,6 @@ export const MediaTileCustomizer = ({
 	showItemListStatus,
 	mediaLanguage,
 }: MediaTileCustomizerProps) => {
-	const { colors } = useTheme();
 	const [visualPreset, setVisualPreset] = useState<ScoreVisualType>(scoreVisualType);
 	const [showStatus, setShowStatus] = useState(showItemListStatus);
 	const [t, i18n] = useTranslation('dialogs');
@@ -274,7 +296,6 @@ export const MediaTileCustomizer = ({
 						titles={dummyData[themeMode].title}
 						meanScore={dummyData[themeMode].meanScore}
 						averageScore={dummyData[themeMode].averageScore}
-						scoreColors={scoreColors}
 						// scorebgColor={rgbToRgba(colors.primaryContainer, 0.75)}
 						scoreVisualType={visualPreset}
 						navigate={() => null}

@@ -1,30 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const useImageRotation = (url: string, extraUrls: string[], duration = 8000) => {
+const useImageRotation = (urls: string[] = [null], duration = 8000) => {
 	const [image_src_idx, setImageSrcIdx] = useState<number>(0);
 
-	const all_urls =
-		extraUrls && url ? [url, ...new Set(extraUrls)].filter((n) => n) : url ? [url] : null;
-
-	const updateImageSrc = () => {
-		setImageSrcIdx((prev) => (prev + 1) % all_urls?.length);
+	const updateImageSrc = (img_urls: string[]) => {
+		setImageSrcIdx((prev) => {
+			return (prev + 1) % img_urls?.length;
+		});
 	};
 
 	useEffect(() => {
-		if (extraUrls) {
+		if (urls.length > 1) {
 			const interval = setInterval(() => {
-				updateImageSrc();
+				updateImageSrc(urls);
 			}, duration);
 
 			return () => {
 				clearInterval(interval);
 			};
 		}
-	}, []);
+	}, [urls]);
 
-	if (!all_urls) return null;
-
-	return all_urls[image_src_idx];
+	return urls[image_src_idx];
 };
 
 export default useImageRotation;

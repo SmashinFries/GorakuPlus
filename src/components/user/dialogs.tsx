@@ -1,21 +1,25 @@
 import { Dialog, Text, Button, Searchbar, ActivityIndicator, useTheme } from 'react-native-paper';
-import { UserOverviewQuery, UserSearchQuery } from '@/store/services/anilist/generated-anilist';
 import { BasicDialogProps } from '../../types';
 import { useCallback, useState } from 'react';
-import {
-	api,
-	useDeleteActMutation,
-	useLazyUserSearchQuery,
-	useToggleFollowMutation,
-} from '@/store/services/anilist/enhanced';
 import { UserCard } from '../cards';
 import { FlatList, Keyboard } from 'react-native';
 import { View } from 'react-native';
-import { useAppDispatch } from '@/store/hooks';
+import {
+	useDeleteActMutation,
+	UserOverviewQuery,
+	UserSearchQuery,
+	useToggleFollowMutation,
+	useUserActivityQuery,
+	useUserSearchQuery,
+} from '@/api/anilist/__genereated__/gql';
+import useDebounce from '@/hooks/useDebounce';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAppTheme } from '@/store/theme/themes';
+import { useDeleteActivityItemInvalidateMutation } from '@/api/anilist/extended';
 
 type StatDialogProps = BasicDialogProps & {
-	animeStats: UserOverviewQuery['Viewer']['statistics']['anime'];
-	mangaStats: UserOverviewQuery['Viewer']['statistics']['manga'];
+	animeStats: UserOverviewQuery['user']['statistics']['anime'];
+	mangaStats: UserOverviewQuery['user']['statistics']['manga'];
 };
 export const StatDialog = ({ animeStats, mangaStats, visible, onDismiss }: StatDialogProps) => {
 	return (
@@ -35,27 +39,19 @@ export const StatDialog = ({ animeStats, mangaStats, visible, onDismiss }: StatD
 
 type AddFriendDialogProps = BasicDialogProps;
 export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [query, setQuery] = useState('');
-	const [searchUsers, data] = useLazyUserSearchQuery();
-	const [toggleFollow, followResults] = useToggleFollowMutation();
+	const debouncedQuery = useDebounce(query, 600);
+	const { data } = useUserSearchQuery({ search: debouncedQuery });
+	const { data: followResults, mutateAsync: toggleFollow } = useToggleFollowMutation();
 	const [selectedUser, setSelectedUser] = useState<UserSearchQuery['Page']['users'][0] | null>();
 	const [results, setResults] = useState<UserSearchQuery['Page']['users']>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 
-	const onSearch = useCallback(async (search: string) => {
-		Keyboard.dismiss();
-		setIsLoading(true);
-		const response = await searchUsers({ search: search }).unwrap();
-		setResults(response.Page?.users ?? []);
-		setSelectedUser(null);
-		setIsLoading(false);
-	}, []);
-
 	const onFollowToggle = useCallback(async (id: number) => {
 		setIsFollowLoading(true);
-		const response = await toggleFollow({ userId: id }).unwrap();
+		const response = await toggleFollow({ userId: id });
 		setSelectedUser((prev) => ({ ...prev, isFollowing: response.ToggleFollow?.isFollowing }));
 		setResults((prev) =>
 			prev.map((user) =>
@@ -103,14 +99,7 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>Find User</Dialog.Title>
 			<Dialog.Content>
-				<Searchbar
-					value={query}
-					onChangeText={(txt) => setQuery(txt)}
-					onSubmitEditing={({ nativeEvent }) => onSearch(nativeEvent.text)}
-				/>
-				<Button mode="outlined" onPress={() => onSearch(query)}>
-					Search
-				</Button>
+				<Searchbar value={query} onChangeText={(txt) => setQuery(txt)} />
 			</Dialog.Content>
 			{results && (
 				<Dialog.ScrollArea style={{ alignItems: 'center' }}>
@@ -169,12 +158,10 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 
 type ConfirmActDelDialogProps = BasicDialogProps & { id: number | null };
 export const ConfirmActDelDialog = ({ visible, id, onDismiss }: ConfirmActDelDialogProps) => {
-	const [deleteAct, results] = useDeleteActMutation();
-	const dispatch = useAppDispatch();
+	const { mutateAsync: deleteAct } = useDeleteActivityItemInvalidateMutation();
 
 	const onDelete = useCallback(async () => {
 		await deleteAct({ id });
-		dispatch(api.util.invalidateTags([{ type: 'Activity', id: id }]));
 		onDismiss();
 	}, [id]);
 

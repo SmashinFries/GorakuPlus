@@ -5,17 +5,17 @@ import { useCallback } from 'react';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import useStudioList from '@/hooks/studio/useStudio';
 import { MediaCard, MediaProgressBar } from '@/components/cards';
-import { MediaList, StudioListQuery } from '@/store/services/anilist/generated-anilist';
-import { useAppSelector } from '@/store/hooks';
 import { useColumns } from '@/utils';
 import { StudioHeader } from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { MediaList, StudioListQuery } from '@/api/anilist/__genereated__/gql';
 
 const StudioMediaListScreen = () => {
 	const { studioId } = useLocalSearchParams<{ studioId: string }>();
 	const { loadMore, studioData } = useStudioList(Number(studioId));
 	const { height } = useWindowDimensions();
-	const { scoreColors } = useAppSelector((state) => state.persistedSettings);
+	const { scoreColors } = useSettingsStore();
 
 	const RenderItem = useCallback(
 		(props: { item: StudioListQuery['Studio']['media']['nodes'][0] }) => (
@@ -55,7 +55,7 @@ const StudioMediaListScreen = () => {
 		[],
 	);
 
-	if (studioData.isUninitialized) {
+	if (studioData.isLoading) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 				<GorakuActivityIndicator />

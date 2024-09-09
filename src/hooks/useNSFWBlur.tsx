@@ -1,6 +1,6 @@
+import { DanbooruRating } from '@/api/danbooru/types';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useMemo, useState } from 'react';
-import { DanbooruRating } from '@/store/services/danbooru/types';
-import { useAppSelector } from '@/store/hooks';
 
 const nsfwLevelOrder = [
 	DanbooruRating.General,
@@ -10,7 +10,7 @@ const nsfwLevelOrder = [
 ];
 
 export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
-	const { blurNSFW, blurNSFWLevel } = useAppSelector((state) => state.persistedSettings);
+	const { blurNSFW, blurNSFWLevel } = useSettingsStore();
 	const [isBlur, setIsBlur] = useState<boolean>(blurNSFW);
 
 	const userNsfwLevel = useMemo(

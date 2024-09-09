@@ -1,8 +1,3 @@
-export type ThemeOptions = 'mi_chan' | 'hinata' | 'kawaii' | 'aqua' | 'berserk' | 'punpun';
-const themeOptions: ThemeOptions[] = ['mi_chan', 'hinata', 'kawaii', 'aqua', 'berserk', 'punpun'];
-// type ThemeSelection = keyof typeof themes;
-// export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
-
 import {
 	DarkTheme as NavigationDarkTheme,
 	DefaultTheme as NavigationDefaultTheme,
@@ -13,6 +8,11 @@ import { PunpunDark, PunpunLight } from './m3/punpunTheme';
 import { MionDark, MionLight } from './m3/mionTheme';
 import { BerserkLight, BerserkDark } from './m3/berserkTheme';
 import { AquaDark, AquaLight } from './m3/aquaTheme';
+
+export type ThemeOptions = 'mi_chan' | 'hinata' | 'kawaii' | 'aqua' | 'berserk' | 'punpun';
+const themeOptions: ThemeOptions[] = ['mi_chan', 'hinata', 'kawaii', 'aqua', 'berserk', 'punpun'];
+// type ThemeSelection = keyof typeof themes;
+// export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
 	reactNavigationLight: NavigationDefaultTheme,

@@ -1,4 +1,5 @@
 import { ScoreFormat } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 import { scoreStringToNumber, scoreToIndex, scoreValues } from '@/utils/scores';
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'react-native-paper';
@@ -39,7 +40,7 @@ export const NumberPicker = ({
 			? scoreToIndex(defaultValue, mode as ScoreFormat)
 			: defaultValue,
 	);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const onIndexChange = (idx: number) => {
 		setIndex(idx);

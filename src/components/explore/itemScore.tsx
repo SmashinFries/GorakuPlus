@@ -2,13 +2,12 @@ import { ScoreDistribution } from '@/api/anilist/__genereated__/gql';
 import { ScoreColors, StatusColors } from '@/constants/colors';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisualType } from '@/store/settings/types';
+import { useAppTheme } from '@/store/theme/themes';
 import { rgbToRgba } from '@/utils';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, useState } from 'react';
 import { DimensionValue, View } from 'react-native';
 import { Text, useTheme, Icon } from 'react-native-paper';
-
-const BORDER_RADIUS = 12;
 
 type ScoreHealthBarProps = {
 	score: number;
@@ -18,10 +17,17 @@ type ScoreHealthBarProps = {
 	textColor?: string;
 	width?: DimensionValue;
 	horizontal?: boolean;
+	borderRadius?: number;
 };
 type ScoreIconProps = ScoreHealthBarProps & { textColor: string; showScore?: boolean };
-export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: ScoreIconProps) => {
-	const { colors } = useTheme();
+export const ScoreIconText = ({
+	score,
+	scoreColors,
+	textColor,
+	showScore,
+	borderRadius = 12,
+}: ScoreIconProps) => {
+	const { colors } = useAppTheme();
 	if (!score) return null;
 	return (
 		<View
@@ -33,8 +39,8 @@ export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: Scor
 				paddingHorizontal: 10,
 				alignItems: 'center',
 				justifyContent: 'space-evenly',
-				borderBottomLeftRadius: BORDER_RADIUS,
-				borderTopRightRadius: BORDER_RADIUS,
+				borderBottomLeftRadius: borderRadius,
+				borderTopRightRadius: borderRadius,
 				backgroundColor: rgbToRgba(colors.primaryContainer, 0.75),
 				flexDirection: 'row',
 			}}
@@ -48,14 +54,15 @@ export const ScoreIconText = ({ score, scoreColors, textColor, showScore }: Scor
 
 export const ScoreHealthBar = ({
 	score,
-	scoreColors,
 	textColor,
 	heartColor = 'red',
 	showScore = false,
+	scoreColors,
 	width = '45%',
 	horizontal = false,
+	borderRadius = 12,
 }: ScoreHealthBarProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const leftHeart = 'heart';
 	const middleHeart = score > scoreColors.red ? 'heart' : 'heart-outline';
 	const rightHeart = score > scoreColors.yellow ? 'heart' : 'heart-outline';
@@ -69,10 +76,10 @@ export const ScoreHealthBar = ({
 				padding: 3,
 				alignItems: 'center',
 				justifyContent: 'space-evenly',
-				borderBottomLeftRadius: BORDER_RADIUS,
-				borderTopRightRadius: horizontal ? 0 : BORDER_RADIUS,
-				borderTopLeftRadius: horizontal ? BORDER_RADIUS : 0,
-				backgroundColor: rgbToRgba(colors.primaryContainer, 0.75),
+				borderBottomLeftRadius: borderRadius,
+				borderTopRightRadius: horizontal ? 0 : borderRadius,
+				borderTopLeftRadius: horizontal ? borderRadius : 0,
+				backgroundColor: rgbToRgba(colors.primaryContainer, 0.85),
 				flexDirection: 'row',
 			}}
 		>
@@ -97,8 +104,9 @@ type ScoreBarProps = {
 	scores: ScoreDistribution[];
 	isGradient?: boolean;
 	isGraph?: boolean;
+	borderRadius?: number;
 };
-export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
+export const ScoreBar = ({ scores, isGradient, isGraph, borderRadius = 12 }: ScoreBarProps) => {
 	const [card_width, setCardWidth] = useState(0);
 	const colors: string[] = scores?.map((stat) => {
 		return ScoreColors[stat?.score];
@@ -157,7 +165,7 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
 					start={[0, 1]}
 					end={[1, 0]}
 					locations={sortedLocations}
-					style={{ width: '100%', height: 6, borderRadius: BORDER_RADIUS }}
+					style={{ width: '100%', height: 6, borderRadius: borderRadius }}
 				/>
 			) : (
 				<View style={{ flexDirection: 'row' }}>
@@ -168,10 +176,11 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
 								backgroundColor: ScoreColors[stat?.score],
 								height: 6,
 								width: `${(stat.amount / total_users) * 100}%`,
-								borderTopLeftRadius: idx === 0 ? 12 : 0,
-								borderBottomLeftRadius: idx === 0 ? 12 : 0,
-								borderTopRightRadius: idx === scores.length - 1 ? 12 : 0,
-								borderBottomRightRadius: idx === scores.length - 1 ? 12 : 0,
+								borderTopLeftRadius: idx === 0 ? borderRadius : 0,
+								borderBottomLeftRadius: idx === 0 ? borderRadius : 0,
+								borderTopRightRadius: idx === scores.length - 1 ? borderRadius : 0,
+								borderBottomRightRadius:
+									idx === scores.length - 1 ? borderRadius : 0,
 							}}
 						/>
 					))}
@@ -184,11 +193,12 @@ export const ScoreBar = ({ scores, isGradient, isGraph }: ScoreBarProps) => {
 type ScoreVisualProps = {
 	score: number;
 	scoreVisualType: ScoreVisualType;
-	scoreColors: { red: number; yellow: number };
+	scoreColors?: { red: number; yellow: number };
 	scoreDistributions: ScoreDistribution[];
 	height?: number;
 	width?: DimensionValue;
 	horizontal?: boolean;
+	borderRadius?: number;
 };
 export const ScoreVisual = ({
 	score,
@@ -198,19 +208,23 @@ export const ScoreVisual = ({
 	height,
 	width,
 	horizontal = false,
+	borderRadius = 12,
 }: ScoreVisualProps) => {
-	const { colors } = useTheme();
-	const settings = useSettingsStore();
-	switch (scoreVisualType ?? settings.scoreVisualType) {
+	const { colors } = useAppTheme();
+	const savedScoreVisualType = useSettingsStore((state) => state.scoreVisualType);
+	const savedScoreColors = useSettingsStore((state) => state.scoreColors);
+
+	switch (scoreVisualType ?? savedScoreVisualType) {
 		case 'healthbar-full':
 			return (
 				<ScoreHealthBar
 					score={score}
-					scoreColors={scoreColors}
+					scoreColors={scoreColors ?? savedScoreColors}
 					textColor={colors.onPrimaryContainer}
 					heartColor={colors.onPrimaryContainer}
 					width={width ?? '45%'}
 					horizontal={horizontal}
+					borderRadius={borderRadius}
 					showScore
 				/>
 			);
@@ -218,10 +232,11 @@ export const ScoreVisual = ({
 			return (
 				<ScoreHealthBar
 					score={score}
-					scoreColors={scoreColors}
+					scoreColors={scoreColors ?? savedScoreColors}
 					textColor={colors.onPrimaryContainer}
 					heartColor={colors.onPrimaryContainer}
 					width={width ?? '45%'}
+					borderRadius={borderRadius}
 				/>
 			);
 		case 'number':
@@ -229,8 +244,9 @@ export const ScoreVisual = ({
 				<ScoreIconText
 					showScore
 					score={score}
-					scoreColors={scoreColors}
+					scoreColors={scoreColors ?? savedScoreColors}
 					textColor={colors.onPrimaryContainer}
+					borderRadius={borderRadius}
 				/>
 			);
 		case 'bar':

@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import {
@@ -17,7 +18,7 @@ export const RenderTabBar = (
 		bgColor?: string;
 	},
 ) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	// const [titleWidth, setTitleWidth] = useState<number>(20);
 	return (
 		<TabBar
@@ -89,15 +90,16 @@ export const RenderTabBar = (
 	);
 };
 
-export const TabBarWithChip = (
+export const GorakuTabBar = (
 	props: SceneRendererProps & {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		navigationState: NavigationState<any>;
 		disableAutoWidth?: boolean;
 		bgColor?: string;
+		enableChip?: boolean;
 	},
 ) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	// const [titleWidth, setTitleWidth] = useState<number>(20);
 	return (
 		<TabBar
@@ -126,9 +128,9 @@ export const TabBarWithChip = (
 						}}
 						// onLayout={(e) => setTitleWidth(e.nativeEvent.layout.width)}
 					>
-						{route.title.split(' (')[0]}
+						{props.enableChip ? route.title.split(' (')[0] : route.title}
 					</Text>
-					{route.title.split(' (').at(-1).split(')')[0] ? (
+					{props.enableChip && route.title.split(' (').at(-1).split(')')[0] ? (
 						<View
 							style={{
 								backgroundColor: colors.surfaceVariant,

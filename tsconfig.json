@@ -1,12 +1,20 @@
 {
-	"extends": "expo/tsconfig.base",
-	"compilerOptions": {
-		"strict": false,
-		"module": "ES6",
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		},
-		"skipLibCheck": true
-	}
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": false,
+    "module": "ES6",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
 }

@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import { IconButton, Tooltip, useTheme } from 'react-native-paper';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { useAppTheme } from '@/store/theme/themes';
 
 type InteractionBarProps = {
 	profile_url: string;
@@ -15,7 +16,7 @@ export const ProfileActionBar = ({
 	settings_url,
 	onStatPress,
 }: InteractionBarProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<View style={[styles.container]}>
 			{/* <Divider /> */}

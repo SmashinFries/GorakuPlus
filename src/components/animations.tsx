@@ -8,7 +8,7 @@ import {
 	useWindowDimensions,
 	TextStyle,
 } from 'react-native';
-import { Icon, IconButton, Text, TouchableRipple, useTheme } from 'react-native-paper';
+import { Icon, IconButton, Text, TouchableRipple } from 'react-native-paper';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler,
@@ -18,13 +18,24 @@ import Animated, {
 	interpolateColor,
 	withSpring,
 	useAnimatedReaction,
+	withTiming,
+	Easing,
+	cancelAnimation,
+	withDelay,
+	withSequence,
+	SlideInUp,
+	SlideInDown,
+	ZoomIn,
 } from 'react-native-reanimated';
 import { rgbToRgba } from '@/utils';
 import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
+import { useAppTheme } from '@/store/theme/themes';
+import { Image } from 'expo-image';
+import useImageRotation from '@/hooks/useImageRotation';
 
 export const useHeaderAnim = (start = 40, end = 110) => {
 	const input_range = [start, end];
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const rgbaColor = useMemo(
 		() => rgbToRgba(colors.elevation.level3, 0.85),
 		[colors.elevation.level3],
@@ -60,6 +71,7 @@ export const useHeaderAnim = (start = 40, end = 110) => {
 		};
 	});
 
+	// @ts-ignore
 	const bgImageStyle = useAnimatedStyle(() => {
 		const scale = interpolate(scrollY.value, [0, end], [1.05, 1.2], Extrapolation.CLAMP);
 		return {
@@ -84,20 +96,14 @@ export const useHeaderAnim = (start = 40, end = 110) => {
 
 type AnimViewProps = {
 	style?: StyleProp<ViewStyle>;
-	animation?: boolean;
 	delay?: number;
 	children: React.ReactNode;
 };
-export const TransYUpView = ({ children, style, delay, animation = true }: AnimViewProps) => {
-	const { height } = useWindowDimensions();
-
-	if (!animation) {
-		return <View style={style}>{children}</View>;
-	}
-
+export const AnimView = ({ children, style, delay }: AnimViewProps) => {
 	return (
 		<Animated.View
 			style={style}
+			entering={ZoomIn.delay(delay).duration(600)}
 			// from={{ translateY: height }}
 			// animate={{ translateY: 0 }}
 			// delay={delay}
@@ -130,14 +136,14 @@ export const TransXInView = ({
 };
 
 export const TransXInViewMem = memo(TransXInView);
-export const TransYUpViewMem = memo(TransYUpView);
+export const AnimViewMem = memo(AnimView);
 
 type ToggableChevronProps = {
 	isExpanded: boolean;
 };
 const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
 	const iconRotation = useSharedValue(0);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const animatedIconStyle = useAnimatedStyle(() => {
 		return {
@@ -162,15 +168,17 @@ const ToggableChevron = ({ isExpanded }: ToggableChevronProps) => {
 
 type AnimateHeightProps = {
 	initialHeight: number;
+	containerStyle?: ViewStyle;
 	children: ReactNode;
 	toggleUwuifier?: () => void;
 };
 export const ExpandableDescription = ({
 	initialHeight,
+	containerStyle,
 	toggleUwuifier,
 	children,
 }: AnimateHeightProps) => {
-	const { colors, dark } = useTheme();
+	const { colors, dark } = useAppTheme();
 	const height = useSharedValue(initialHeight);
 	const [totalHeight, setTotalHeight] = useState<number>(0);
 	const [currentHeight, setCurrentHeight] = useState<number>(initialHeight);
@@ -187,9 +195,16 @@ export const ExpandableDescription = ({
 	}, [height, totalHeight]);
 
 	const increaseHeight = useCallback(() => {
+		console.log('Updating Height:', totalHeight);
 		height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
 		setCurrentHeight(totalHeight);
 	}, [height, totalHeight]);
+
+	useEffect(() => {
+		if (initialHeight > totalHeight) {
+			height.value = totalHeight;
+		}
+	}, [initialHeight, totalHeight]);
 
 	useEffect(() => {
 		if (isExpanded) {
@@ -200,13 +215,14 @@ export const ExpandableDescription = ({
 	}, [isExpanded]);
 
 	return (
-		<View style={{ marginVertical: 25 }}>
+		<View style={[{ marginBottom: 25 }, containerStyle]}>
 			<Animated.View style={[animatedStyles, { overflow: 'hidden' }]}>
 				<View style={[StyleSheet.absoluteFill, { bottom: 'auto', paddingBottom: 10 }]}>
 					<View
 						onLayout={(e) => setTotalHeight(e.nativeEvent.layout.height)}
 						style={{
-							paddingHorizontal: 20,
+							flex: 1,
+							// paddingHorizontal: 20,
 							paddingVertical: 10,
 							paddingBottom: 20,
 							// backgroundColor: colors.secondaryContainer,
@@ -232,7 +248,7 @@ export const ExpandableDescription = ({
 					/>
 				)}
 			</Animated.View>
-			{currentHeight <= totalHeight && (
+			{totalHeight > initialHeight && (
 				<View>
 					<IconButton
 						icon={
@@ -251,6 +267,25 @@ export const ExpandableDescription = ({
 					/>
 				</View>
 			)}
+			{/* {currentHeight <= totalHeight && (
+				<View>
+					<IconButton
+						icon={
+							Math.floor(currentHeight) === initialHeight
+								? 'chevron-down'
+								: 'chevron-up'
+						}
+						onPress={() => setIsExpanded((prev) => !prev)}
+						onLongPress={toggleUwuifier}
+						style={{
+							position: 'absolute',
+							bottom: -35,
+							alignSelf: 'center',
+							overflow: 'visible',
+						}}
+					/>
+				</View>
+			)} */}
 		</View>
 	);
 };
@@ -281,7 +316,7 @@ export const Accordion = ({
 	initialExpand = false,
 	containerKey = 1,
 }: AccordionProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [isExpanded, setIsExpanded] = useState(initialExpand);
 	const initialHeight = 0;
 	const height = useSharedValue(0);
@@ -405,7 +440,7 @@ export const CustomBackdrop = ({
 	style,
 	onDismiss,
 }: BottomSheetBackdropProps & { onDismiss: () => void }) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	// animated variables
 	const containerAnimatedStyle = useAnimatedStyle(() => ({
 		opacity: interpolate(animatedIndex.value, [0.2, 0.5], [0.2, 0.5], Extrapolation.CLAMP),
@@ -424,4 +459,64 @@ export const CustomBackdrop = ({
 	);
 
 	return <Animated.View style={containerStyle} />;
+};
+
+export const FullscreenBackground = ({
+	urls,
+	imgRotationLength = 7200,
+}: {
+	urls: string[];
+	imgRotationLength?: number;
+}) => {
+	const transition = 1200;
+	const img_src = useImageRotation(urls, imgRotationLength);
+	const { dark, colors } = useAppTheme();
+	const imgScaleVal = useSharedValue(1);
+
+	const imageAnimStyle = useAnimatedStyle(() => {
+		return {
+			transform: [{ scale: imgScaleVal.value }],
+		};
+	});
+
+	const onImageLoaded = () => {
+		imgScaleVal.value = withSequence(
+			withTiming(1, { duration: 0 }),
+			withTiming(1.5, { duration: 15000, easing: Easing.linear }),
+		);
+	};
+
+	return (
+		<View style={{ position: 'absolute', width: '100%', height: '100%' }}>
+			<Animated.View style={[{ width: '100%', height: '100%' }, imageAnimStyle]}>
+				<Image
+					source={{ uri: img_src }}
+					style={{ width: '100%', height: '100%' }}
+					// transition={transition}
+					transition={0}
+					contentFit="cover"
+					placeholder={{ blurhash: colors.blurhash }}
+					onLoad={onImageLoaded}
+				/>
+			</Animated.View>
+			<View
+				style={{
+					position: 'absolute',
+					backgroundColor: dark ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)',
+					width: '100%',
+					height: '100%',
+				}}
+			/>
+			<LinearGradient
+				colors={[
+					colors.elevation.level2,
+					'transparent',
+					'transparent',
+					colors.elevation.level2,
+				]}
+				style={{ position: 'absolute', height: '100%', width: '100%' }}
+				locations={[0, 0.1, 0.6, 1]}
+			/>
+		</View>
+	);
 };

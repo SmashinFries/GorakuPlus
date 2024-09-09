@@ -42,6 +42,7 @@ const use3dPan = (config = animConfig) => {
 		});
 
 	const animatedStyle = useAnimatedStyle<ImageStyle>(() => ({
+		// @ts-ignore this works tho... \0-0/
 		transform: [
 			{ perspective: 500 },
 			{ rotateX: `${xRotation.value}deg` },

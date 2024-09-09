@@ -5,6 +5,7 @@ module.exports = {
 			target: '../../src/api/mangaupdates/mangaupdates.ts',
 			schemas: '../../src/api/mangaupdates/models',
 			client: 'react-query',
+			baseUrl: 'https://api.mangaupdates.com/v1',
 			mock: false,
 			override: {
 				query: {

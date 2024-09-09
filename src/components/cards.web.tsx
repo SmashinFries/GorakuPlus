@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { Platform, Pressable, View, useWindowDimensions } from 'react-native';
-import { Avatar, Button, IconButton, ProgressBar, Text, useTheme } from 'react-native-paper';
+import { Avatar, Button, IconButton, ProgressBar, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { listColor, rgbToRgba } from '@/utils';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
@@ -16,6 +16,7 @@ import { ScoreVisualType } from '@/store/settings/types';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisual } from './explore/itemScore';
 import { DanPost } from '@/api/danbooru/types';
+import { useAppTheme } from '@/store/theme/themes';
 
 const BORDER_RADIUS = 12;
 
@@ -37,7 +38,7 @@ type MediaCardProps = {
 	titleLang?: 'english' | 'romaji' | 'native';
 };
 export const MediaCard = (props: MediaCardProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { scoreColors, mediaLanguage, defaultScore } = useSettingsStore();
 	return (
 		<Pressable
@@ -136,7 +137,7 @@ export const MediaProgressBar = ({
 	progress,
 	showListStatus,
 }: MediaProgressBarProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { showItemListStatus } = useSettingsStore();
 	return (
 		<View
@@ -195,7 +196,7 @@ type UserCardProps = {
 	onPress?: () => void;
 };
 export const UserCard = (props: UserCardProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	return (
 		<Pressable
@@ -260,7 +261,7 @@ type CharacterCardProps = {
 	isFavourite?: boolean;
 };
 export const CharacterCard = (props: CharacterCardProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { mediaLanguage } = useSettingsStore();
 	return (
 		<Pressable
@@ -346,9 +347,7 @@ export const DanbooruImageCard = ({
 	onNavigate,
 }: DanbooruImageCardProps) => {
 	const { width, height } = useWindowDimensions();
-	// const { blurNSFW } = useAppSelector((state) => state.persistedSettings);
 	const { blurAmount, toggleBlur } = useNsfwBlur(item.rating);
-	// navigation.navigate('danbooruDetail', { id: item.id })
 	const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
 	if (!preview) {
 		return null;

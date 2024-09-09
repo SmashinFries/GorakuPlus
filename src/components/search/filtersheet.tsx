@@ -15,7 +15,6 @@ import {
 import { GenreSelection, TagSelection } from './tags';
 import { LicensedSelector, NSFWSelector, OnListSelector } from './buttons';
 import { ScoreSlider } from './slider';
-import { useFilter } from '@/hooks/search/useFilter';
 import { View } from 'react-native';
 import { GenreTagCollectionQuery, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';

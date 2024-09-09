@@ -1,417 +1,171 @@
-import { ScrollView, View, useWindowDimensions } from 'react-native';
+import {
+	ScrollView,
+	View,
+	useWindowDimensions,
+	Image as RNImage,
+	Text as RNText,
+	DimensionValue,
+} from 'react-native';
 import {
 	ActivityIndicator,
 	Avatar,
 	Badge,
 	Button,
 	Divider,
+	Icon,
+	IconButton,
 	MD3DarkTheme,
 	Text,
 	useTheme,
 } from 'react-native-paper';
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '@/store/hooks';
 import { ReviewHeader } from '@/components/headers';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { useReviewsByIdQuery, useToggleFollowMutation } from '@/store/services/anilist/enhanced';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
-import WebView from 'react-native-webview';
-import Markdown, { RenderRules, MarkdownIt, ASTNode } from 'react-native-markdown-display';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Burnt from 'burnt';
-import { ReviewRating, useReviewRatingMutation } from '@/store/services/anilist/generated-anilist';
 import { GorakuActivityIndicator } from '@/components/loading';
+import {
+	ReviewRating,
+	useReviewRatingMutation,
+	useReviewsByIdQuery,
+	useToggleFollowMutation,
+} from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
 
-const Spoiler = (props: {
-	node: ASTNode;
-	children: React.ReactNode[];
-	styles: any;
-	textColor?: string;
-	bgColor?: string;
-}) => {
-	const { width } = useWindowDimensions();
-	const [show, setShow] = useState(false);
-
-	// <View
-	//         style={{ width: width - props?.styles?.body?.paddingHorizontal, alignItems: 'center' }}
-	//     >
-	//         <View
-	//             key={props.node.key}
-	//             style={[
-	//                 {
-	//                     backgroundColor: props.bgColor,
-	//                     padding: 10,
-	//                     borderRadius: 12,
-	//                 },
-	//             ]}
-	//         >
-	//             <Text
-	//                 style={[
-	//                     {
-	//                         color: props.textColor,
-	//                     },
-	//                 ]}
-	//                 onPress={() => setShow((prev) => !prev)}
-	//             >
-	//                 {show ? `\n${props.node.content}\n` : 'Show Spoiler'}
-	//             </Text>
-	//         </View>
-	//     </View>
-
-	return (
-		<Text
-			style={[
-				{
-					color: props.textColor,
-				},
-			]}
-			onPress={() => setShow((prev) => !prev)}
-		>
-			{show ? `\n\n${props.node.content}\n\n` : '\n\nShow Spoiler\n\n'}
-		</Text>
-	);
-};
+import AniListMarkdownViewer from '@/components/markdown/renderer';
+import { LongScrollView } from '@/components/list';
+import { useAuthStore } from '@/store/authStore';
+import { ScoreContainer } from '@/components/score';
+import { MediaScoresView, ScoreView } from '@/components/media/sections/scores';
+import { getScoreColor } from '@/utils';
+import { MediaBanner } from '@/components/media/banner';
 
 type ScoreProps = {
 	reviewId: number;
 	score: number;
-	scoreColor?: string;
 	ratingAmount: number;
 	rating: number;
 	userRating?: ReviewRating;
 };
-const Score = ({ reviewId, score, scoreColor, ratingAmount, rating, userRating }: ScoreProps) => {
-	const { colors } = useTheme();
-	const [rateReview] = useReviewRatingMutation();
+const Score = ({ reviewId, score, ratingAmount, rating, userRating }: ScoreProps) => {
+	const { mutateAsync } = useReviewRatingMutation();
+	const { colors } = useAppTheme();
+	const isAuthed = useAuthStore((state) => !!state.anilist.token);
 	const [userRatingState, setUserRatingState] = useState<ReviewRating>(
 		userRating ?? ReviewRating.NoVote,
 	);
-
-	const iconSize = 45;
-	const ratingPercentage = {
-		positive: ((rating / ratingAmount) * 100).toFixed(0),
-		negative: (((ratingAmount - rating) / ratingAmount) * 100).toFixed(0),
-	};
+	const scoreColor = getScoreColor(score);
+	const [posRatings, setPosRatings] = useState(rating); // for clarity
+	const [negRatings, setNegRatings] = useState(ratingAmount - rating);
+	// const ratingPercentage = {
+	// 	positive: ((rating / ratingAmount) * 100).toFixed(0),
+	// 	negative: (((ratingAmount - rating) / ratingAmount) * 100).toFixed(0),
+	// };
 
 	const onRatePress = async (rate: ReviewRating) => {
+		if (!isAuthed) return;
 		if (rate === userRatingState) {
-			const res = await rateReview({ id: reviewId, rating: ReviewRating.NoVote }).unwrap();
+			const res = await mutateAsync({ id: reviewId, rating: ReviewRating.NoVote });
 			setUserRatingState(res.RateReview.userRating);
+			setPosRatings(res.RateReview?.rating);
+			setNegRatings(res.RateReview?.ratingAmount - res.RateReview?.rating);
 		} else {
-			const res = await rateReview({ id: reviewId, rating: rate }).unwrap();
+			const res = await mutateAsync({ id: reviewId, rating: rate });
 			setUserRatingState(res.RateReview.userRating);
+			setPosRatings(res.RateReview?.rating);
+			setNegRatings(res.RateReview?.ratingAmount - res.RateReview?.rating);
 		}
 	};
 
 	return (
-		<View style={{ marginVertical: 20 }}>
+		<View style={{ paddingBottom: 20 }}>
+			<Divider style={{ marginVertical: 20 }} />
 			<View
 				style={{
 					flexDirection: 'row',
+					justifyContent: 'space-evenly',
 					alignItems: 'center',
-					justifyContent: 'space-around',
 				}}
 			>
 				<View style={{ alignItems: 'center' }}>
-					<MaterialCommunityIcons
-						name={
-							userRatingState === ReviewRating.DownVote
-								? 'thumb-down'
-								: 'thumb-down-outline'
-						}
-						color={'red'}
-						size={iconSize}
+					<IconButton
+						icon={'thumb-down-outline'}
 						onPress={() => onRatePress(ReviewRating.DownVote)}
+						selected={userRatingState === ReviewRating.DownVote}
+						iconColor={userRatingState === ReviewRating.DownVote ? 'red' : undefined}
+						disabled={!isAuthed}
 					/>
-					<Text>{ratingPercentage.negative} %</Text>
+					<Text>{negRatings}</Text>
 				</View>
-
-				<View
-					style={{
-						flexDirection: 'row',
-						backgroundColor: scoreColor,
-						paddingHorizontal: 20,
-						paddingVertical: 10,
-						borderRadius: 12,
-						alignItems: 'center',
-					}}
-				>
-					<Text variant="displayLarge" style={{ color: MD3DarkTheme.colors.onSurface }}>
+				<View style={{ alignItems: 'center', justifyContent: 'center' }}>
+					<Text variant="displayMedium">
 						{score}
+						<Text variant="titleSmall" style={{ lineHeight: 62 }}>
+							/ 100
+						</Text>
 					</Text>
-					<Text variant="headlineMedium" style={{ color: MD3DarkTheme.colors.onSurface }}>
-						/
-					</Text>
-					<Text variant="labelLarge" style={{ color: MD3DarkTheme.colors.onSurface }}>
-						100
-					</Text>
+					<View
+						style={{
+							height: 4,
+							width: '100%',
+							backgroundColor: colors.surfaceVariant,
+							borderRadius: 12,
+							overflow: 'hidden',
+						}}
+					>
+						<View
+							style={{
+								position: 'absolute',
+								width: `${score}%`,
+								height: '100%',
+								backgroundColor: scoreColor,
+							}}
+						/>
+					</View>
 				</View>
 				<View style={{ alignItems: 'center' }}>
-					<MaterialCommunityIcons
-						name={
-							userRatingState === ReviewRating.UpVote
-								? 'thumb-up'
-								: 'thumb-up-outline'
-						}
-						color={'green'}
-						size={iconSize}
+					<IconButton
+						icon={'thumb-up-outline'}
 						onPress={() => onRatePress(ReviewRating.UpVote)}
+						selected={userRatingState === ReviewRating.UpVote}
+						iconColor={userRatingState === ReviewRating.UpVote ? 'green' : undefined}
+						disabled={!isAuthed}
 					/>
-					<Text>{ratingPercentage.positive} %</Text>
+					<Text>{posRatings}</Text>
 				</View>
 			</View>
-			<Text variant="bodyLarge" style={{ textAlign: 'center', paddingTop: 10 }}>
-				{rating} out of {ratingAmount} users liked this review.
-			</Text>
 		</View>
 	);
 };
 
 const ReviewPage = () => {
 	const { reviewId } = useLocalSearchParams<{ reviewId: string }>();
+	const { width } = useWindowDimensions();
 	const id = Number(reviewId);
-	const { width, height } = useWindowDimensions();
-	const { colors } = useTheme();
-	const { scoreColors } = useAppSelector((state) => state.persistedSettings);
-
-	const [showWebview, setShowWebview] = useState(false);
+	const { colors } = useAppTheme();
+	const scoreColors = useSettingsStore((state) => state.scoreColors);
+	const isAuthed = useAuthStore((state) => !!state.anilist.userID);
 
 	const { data, isLoading, isError } = useReviewsByIdQuery(
 		{
 			reviewId: id,
 		},
-		{ skip: reviewId === undefined },
+		{ enabled: !!reviewId },
 	);
-	const [followUser] = useToggleFollowMutation();
+	const { mutateAsync } = useToggleFollowMutation();
 
 	const [isFollowing, setIsFollowing] = useState(data?.Review?.user?.isFollowing ?? false);
 
 	const onFollowPress = async () => {
+		if (!isAuthed) return;
 		if (data?.Review?.user?.id) {
-			const res = await followUser({ userId: data?.Review?.user?.id }).unwrap();
+			const res = await mutateAsync({ userId: data?.Review?.user?.id });
 			setIsFollowing(res.ToggleFollow.isFollowing);
 		} else {
 			Burnt.toast({ title: 'User ID not found 🥲' });
 		}
 	};
-
-	const rules: RenderRules = {
-		html_block: (node, children, parent, styles) => {
-			// we check that the parent array contans a td because <br> in paragraph setting will create a html_inlinde surrounded by a soft break, try removing the clause to see what happens (double spacing on the <br> between 'top one' and 'bottom one')
-			if (node.content.trim() === '<br>') {
-				return (
-					<Text key={node.key} style={{ flex: 1 }}>
-						{'\n'}
-					</Text>
-				);
-			}
-
-			return null;
-		},
-		html_inline: (node, children, parent, styles) => {
-			return (
-				<View key={node.key} style={{ flex: 1, alignItems: 'center' }}>
-					{children}
-				</View>
-			);
-		},
-		link: (node, children, parent, styles) => {
-			return (
-				<Text
-					key={node.key}
-					style={[{ flex: 1, color: colors.primary }]}
-					onPress={() => openWebBrowser(node.attributes.href)}
-				>
-					{children}
-				</Text>
-			);
-		},
-		blockquote: (node, children, parent, styles) => {
-			return (
-				<View
-					key={node.key}
-					style={[
-						styles._VIEW_SAFE_blockquote,
-						{ flex: 1, backgroundColor: colors.backdrop },
-					]}
-				>
-					{children}
-				</View>
-			);
-		},
-		code_inline: (node, children, parent, styles) => {
-			return (
-				<Spoiler
-					key={node.key}
-					node={node}
-					styles={styles}
-					textColor={colors.primary}
-					bgColor={colors.backdrop}
-				>
-					{children}
-				</Spoiler>
-			);
-		},
-		// image: (node, children, parent, styles, allowedImageHandlers, defaultImageHandler) => {
-		//     const { src, alt } = node.attributes;
-		//     // we check that the source starts with at least one of the elements in allowedImageHandlers
-		//     const show =
-		//         allowedImageHandlers.filter((value) => {
-		//             return src.toLowerCase().startsWith(value.toLowerCase());
-		//         }).length > 0;
-
-		//     if (show === false && defaultImageHandler === null) {
-		//         return null;
-		//     }
-
-		//     return (
-		//         <View
-		//             key={node.key}
-		//             style={{
-		//                 flex: 1,
-		//                 width: '100%',
-		//                 alignItems: 'center',
-		//                 justifyContent: 'center',
-		//             }}
-		//         >
-		//             <Image
-		//                 // we grab the resource identifier provided by require and convert it back to an int
-		//                 source={{ uri: src }}
-		//                 style={[
-		//                     styles.image,
-		//                     {
-		//                         width: '100%',
-		//                     },
-		//                 ]}
-		//                 contentFit="contain"
-		//             />
-		//         </View>
-		//     );
-		// },
-		text: (node, children, parent, styles, inheritedStyles = {}) => {
-			return (
-				<Text key={node.key} style={[inheritedStyles, styles.text]}>
-					{node.content}
-				</Text>
-			);
-		},
-	};
-
-	const onLinkPress = (url: string) => {
-		if (url) {
-			openWebBrowser(url);
-			return false;
-		}
-
-		// return true to open with `Linking.openURL
-		// return false to handle it yourself
-		return true;
-	};
-
-	const markdownit: MarkdownIt = new MarkdownIt({ typographer: true, html: true });
-
-	const webStyle = `<style type="text/css">
-    :root {
-        --color-red: 232,93,117;
-        --color-peach: 250,122,122;
-        --color-orange: 247,154,99;
-        --color-yellow: 247,191,99;
-        --color-green: 123,213,85;
-        --color-white: 255,255,255;
-    }
-    body {
-      color: ${colors.onBackground};
-      background: ${colors.background};
-    }
-    .score[data-v-5ca094da] {
-        align-items: center;
-        border-radius: 4px;
-        color: rgb(var(--color-white));
-        display: inline-flex;
-        font-size: 4.5rem;
-        font-weight: 300;
-        height: 100%;
-        justify-content: center;
-        margin-bottom: -80px;
-        margin-top: 35px;
-        max-height: 80px;
-        max-width: 130px;
-        padding: 5px 20px;
-        padding-left: 37px;
-        width: 100%;
-    }
-    .score.green[data-v-5ca094da] {
-        background: rgb(var(--color-green));
-    }
-    .score.orange[data-v-5ca094da] {
-        background: rgb(var(--color-orange));
-    }
-    .score.red[data-v-5ca094da] {
-        background: rgb(var(--color-red));
-    }
-    .body[data-v-5ca094da] {
-        align-items: center;
-        background: rgb(var(--color-foreground));
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-        line-height: 1.6;
-        padding: 40px;
-        position: relative;
-        z-index: 20;
-    }
-    .score .total[data-v-5ca094da] {
-        align-self: flex-end;
-        font-size: 1.3rem;
-        font-style: italic;
-        opacity: .9;
-        line-height: 4rem;
-        display: inline-block;
-        margin-left: -4px;
-    }
-    .rating[data-v-5ca094da] {
-        background: rgb(var(--color-foreground));
-        border-radius: 4px;
-        color: rgb(var(--color-text-lighter));
-        margin: 100px auto;
-        max-width: 300px;
-        padding: 20px;
-        text-align: center;
-        font-size: 1.5rem;
-    }
-    .actions[data-v-5ca094da] {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-    .actions .icon[data-v-5ca094da] {
-        background: rgb(var(--color-green));
-        border-radius: 3px;
-        color: rgb(var(--color-white));
-        cursor: pointer;
-        margin: 0 10px;
-        padding: 10px;
-        transition: .2s;
-    }
-    .actions .icon[data-v-5ca094da]:first-of-type {
-        background: rgb(var(--color-red));
-    }
-  </style>`;
-
-	const webScore = `<div data-v-5ca094da class="body"><div data-v-5ca094da="" class="score ${
-		data?.Review?.score <= scoreColors.red
-			? 'red'
-			: data?.Review?.score <= scoreColors.yellow && data?.Review?.score >= scoreColors.red
-				? 'orange'
-				: 'green'
-	}">
-    ${data?.Review?.score}
-    <span data-v-5ca094da="" class="total">/100</span></div></div>
-    <div data-v-5ca094da="" class="rating"><div data-v-5ca094da="" class="actions"></div>
-			25 out of 32 users liked this review
-		</div>
-    `;
 
 	useEffect(() => {
 		if (data?.Review?.user) {
@@ -431,103 +185,67 @@ const ReviewPage = () => {
 		<View style={{ flex: 1 }}>
 			<Stack.Screen
 				options={{
-					title: 'Review (beta)',
+					title: 'Review',
 					headerShown: true,
 					header: (props) => (
-						<ReviewHeader
-							{...props}
-							shareLink={data?.Review?.siteUrl}
-							onRenderSwitch={() => setShowWebview((prev) => !prev)}
-							render_switch_icon={
-								showWebview ? 'language-html5' : 'language-markdown-outline'
-							}
-						/>
+						<ReviewHeader {...props} shareLink={data?.Review?.siteUrl} />
 					),
 				}}
 			/>
-			{!showWebview ? (
-				<ScrollView style={{ flex: 1 }}>
-					<View style={{ marginVertical: 20 }}>
-						<View style={{ alignItems: 'center' }}>
-							<Avatar.Image
-								size={100}
-								source={{ uri: data?.Review?.user?.avatar?.large }}
-							/>
-							<Text variant={'titleLarge'}>{data?.Review?.user?.name}</Text>
-						</View>
-						<View
-							style={{
-								flexDirection: 'row',
-								justifyContent: 'space-evenly',
-								paddingVertical: 20,
-							}}
-						>
-							<Button
-								icon="account"
-								mode="elevated"
-								onPress={() => openWebBrowser(data?.Review?.user?.siteUrl)}
-							>
-								View Profile
-							</Button>
-							<Button
-								onPress={onFollowPress}
-								icon={isFollowing ? 'minus' : 'plus'}
-								mode="elevated"
-							>
-								{isFollowing ? 'Unfollow' : 'Follow'}
-							</Button>
-						</View>
-					</View>
-					<Divider style={{ marginHorizontal: 20 }} />
-					<Markdown
-						markdownit={markdownit}
-						rules={rules}
-						style={{
-							fence: {
-								backgroundColor: colors.background,
-								color: colors.onBackground,
-							},
-							body: {
-								backgroundColor: colors.background,
-								color: colors.onBackground,
-								paddingHorizontal: 10,
-							},
-						}}
-						onLinkPress={onLinkPress}
-					>
-						{data?.Review?.body}
-					</Markdown>
-					<Score
-						reviewId={id}
-						score={data?.Review?.score}
-						scoreColor={
-							data?.Review?.score <= scoreColors.red
-								? 'red'
-								: data?.Review?.score <= scoreColors.yellow &&
-									  data?.Review?.score >= scoreColors.red
-									? 'orange'
-									: 'green'
-						}
-						ratingAmount={data?.Review?.ratingAmount}
-						rating={data?.Review?.rating}
-					/>
-				</ScrollView>
-			) : (
-				<WebView
-					source={{
-						html:
-							data?.Review?.htmlBody +
-							webScore +
-							'<meta name="viewport" content="initial-scale=1.0" />' +
-							webStyle,
-					}}
-					overScrollMode="never"
-					style={{
-						flex: 1,
-						backgroundColor: colors.background,
-					}}
+			<LongScrollView style={{ flex: 1 }} scrollToTopIconTop={5} nestedScrollEnabled>
+				<MediaBanner
+					urls={[
+						data?.Review?.media?.bannerImage ??
+							data?.Review?.media?.coverImage?.extraLarge,
+					]}
 				/>
-			)}
+				<View style={{ marginVertical: 80 }}>
+					<View style={{ alignItems: 'center' }}>
+						<Avatar.Image
+							size={100}
+							source={{ uri: data?.Review?.user?.avatar?.large }}
+						/>
+						<Text variant={'titleLarge'} style={{ paddingVertical: 12 }}>
+							{data?.Review?.user?.name}
+						</Text>
+					</View>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-evenly',
+						}}
+					>
+						<Button
+							icon="account"
+							mode="elevated"
+							onPress={() => openWebBrowser(data?.Review?.user?.siteUrl)}
+						>
+							View Profile
+						</Button>
+						<Button
+							onPress={onFollowPress}
+							icon={isFollowing ? 'minus' : 'plus'}
+							mode="elevated"
+							disabled={!isAuthed}
+						>
+							{isFollowing ? 'Unfollow' : 'Follow'}
+						</Button>
+					</View>
+				</View>
+				<Divider style={{ marginHorizontal: 20 }} />
+				<View style={{ paddingHorizontal: 10 }}>
+					<AniListMarkdownViewer
+						body={data?.Review?.htmlBody}
+						parentWidth={width - 20} // sub padding
+					/>
+				</View>
+				<Score
+					reviewId={id}
+					score={data?.Review?.score}
+					ratingAmount={data?.Review?.ratingAmount}
+					rating={data?.Review?.rating}
+				/>
+			</LongScrollView>
 		</View>
 	);
 };

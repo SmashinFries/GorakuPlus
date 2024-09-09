@@ -12,7 +12,7 @@ export const AiringBanner = ({ containerColor, textColor, text }: AiringBannerPr
 	return (
 		<View style={[Styles.container, { backgroundColor: containerColor }]}>
 			<Text variant="labelSmall" numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
-				{getTimeUntil(Number(text), 'until')}
+				{getTimeUntil(Number(text))}
 			</Text>
 		</View>
 	);
@@ -22,15 +22,10 @@ export const AiringBannerMemo = memo(AiringBanner);
 
 const Styles = StyleSheet.create({
 	container: {
-		// position: 'absolute',
-		alignSelf: 'center',
-		bottom: 0,
-		borderBottomLeftRadius: 12,
-		borderBottomRightRadius: 12,
 		width: '100%',
-		overflow: 'visible',
-		padding: 3,
-		paddingVertical: 1,
+		overflow: 'hidden',
+		// padding: 3,
+		// paddingVertical: 1,
 		justifyContent: 'center',
 	},
 	txt: {

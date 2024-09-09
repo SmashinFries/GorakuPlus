@@ -12,7 +12,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
 	useAniMediaQuery,
 	useAnimeExploreQuery,
-	useInfiniteSearchMediaQuery,
+	useInfiniteSearchAllQuery,
+	useInfiniteSearchAnimeQuery,
+	useInfiniteSearchMangaQuery,
 	useMangaExploreQuery,
 	useManhuaExploreQuery,
 	useManhwaExploreQuery,
@@ -45,11 +47,13 @@ export const useAnilistAuth = (isSetup = false) => {
 	const [request, setRequest] = useState<AuthRequest | null>(null);
 	const [result, setResult] = useState<AuthSessionResult | null>(null);
 	const queryClient = useQueryClient();
-	const { setAnilistAuth } = useAuthStore();
+	const setAnilistAuth = useAuthStore((state) => state.setAnilistAuth);
+	// const setAnilistAuthTest = useAnilistAuthStore((state) => state.setAnilistAuthTest);
 	const { updateListFilter } = useListFilterStore();
 
 	const promptAsync = useCallback(
 		async (options: AuthRequestPromptOptions = {}) => {
+			console.log('Running PromptAsync!');
 			const browserPackages = await WebBrowser.getCustomTabsSupportingBrowsersAsync();
 			if (!request) {
 				throw new Error(
@@ -70,6 +74,10 @@ export const useAnilistAuth = (isSetup = false) => {
 				expiresAt.setFullYear(expiresAt.getFullYear() + 1);
 				if (accessToken) {
 					// set header
+					// setAnilistAuthTest({
+					// 	token: accessToken,
+					// 	deathDate: expiresAt.toLocaleString(),
+					// });
 					setAnilistAuth({
 						token: accessToken,
 						deathDate: expiresAt.toLocaleString(),
@@ -84,6 +92,13 @@ export const useAnilistAuth = (isSetup = false) => {
 						user.Viewer.avatar?.large ?? user.Viewer.avatar?.medium ?? null;
 					const userID = user.Viewer.id ?? null;
 					const username = user.Viewer.name ?? null;
+					// setAnilistAuthTest({
+					// 	token: accessToken,
+					// 	deathDate: expiresAt.toLocaleString(),
+					// 	avatar: userAvatar,
+					// 	userID: userID,
+					// 	username: username,
+					// });
 					setAnilistAuth({
 						token: accessToken,
 						deathDate: expiresAt.toLocaleString(),
@@ -121,18 +136,16 @@ export const useAnilistAuth = (isSetup = false) => {
 	);
 
 	const invalidateQueries = async () => {
-		await queryClient.invalidateQueries({
-			queryKey: [
-				useAniMediaQuery.getKey(undefined),
-				useInfiniteSearchMediaQuery.getKey(),
-				useAnimeExploreQuery.getKey(),
-				useMangaExploreQuery.getKey(),
-				useManhwaExploreQuery.getKey(),
-				useManhuaExploreQuery.getKey(),
-				useNovelExploreQuery.getKey(),
-				useUserOverviewQuery.getKey(undefined),
-			],
-		});
+		queryClient.invalidateQueries({ queryKey: useAniMediaQuery.getKey(undefined) });
+		queryClient.invalidateQueries({ queryKey: useInfiniteSearchAllQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useInfiniteSearchAnimeQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useInfiniteSearchMangaQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useManhuaExploreQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useNovelExploreQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useUserOverviewQuery.getKey(undefined) });
 	};
 
 	useEffect(() => {

@@ -1,15 +1,17 @@
 import { Accordion } from '@/components/animations';
-import { AniMediaQuery, MediaRankType } from '@/store/services/anilist/generated-anilist';
 import { ScrollView, View, useWindowDimensions } from 'react-native';
-import { Chip, Text } from 'react-native-paper';
+import { Button, Chip, Text } from 'react-native-paper';
 import { ScoreItem, StatBar, StatusItem } from '../statistics';
 import Animated from 'react-native-reanimated';
+import { AniMediaQuery, MediaRankType } from '@/api/anilist/__genereated__/gql';
+import { router } from 'expo-router';
 
 type StatSectionProps = {
+	id: number;
 	statData: AniMediaQuery['Media']['stats'];
 	rankData: AniMediaQuery['Media']['rankings'];
 };
-export const StatSection = ({ rankData, statData }: StatSectionProps) => {
+export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 	if (
 		rankData?.length < 1 &&
 		statData?.scoreDistribution?.length < 1 &&
@@ -40,6 +42,18 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
 	return (
 		<Animated.View style={{ marginVertical: 15 }}>
 			<Accordion title="Statistics">
+				<Button
+					mode="elevated"
+					onPress={() =>
+						router.navigate({
+							pathname: '/statistics/media/[aniIdStat]',
+							params: { id },
+						})
+					}
+					style={{ margin: 10 }}
+				>
+					View all
+				</Button>
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
@@ -76,22 +90,23 @@ export const StatSection = ({ rankData, statData }: StatSectionProps) => {
 					</View>
 				) : null}
 				{statData?.scoreDistribution?.length > 0 && (
-					<View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
+					<View
+						style={{
+							paddingHorizontal: 15,
+							marginTop: 10,
+							marginBottom: 5,
+							alignItems: 'flex-start',
+						}}
+					>
 						<Text variant="titleLarge" style={{ marginBottom: 5 }}>
 							Score Distribution
 						</Text>
 						<StatBar data={statData?.scoreDistribution} />
-						{/* <View
-							style={{
-								flexDirection: 'row',
-								flexWrap: 'wrap',
-								justifyContent: 'flex-start',
-							}}
-						>
+						<ScrollView horizontal>
 							{sortedScores.map((scoreDis, idx) => (
 								<ScoreItem key={idx} score={scoreDis} highestScore={highestScore} />
 							))}
-						</View> */}
+						</ScrollView>
 					</View>
 				)}
 			</Accordion>

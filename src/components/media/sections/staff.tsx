@@ -1,16 +1,24 @@
 import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
-import { AniMediaQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
 import { ListHeading } from '@/components/text';
 import { StaffCard } from '@/components/cards';
+import {
+	AniMediaQuery,
+	CharacterMetaDataFragment,
+	StaffMetaDataFragment,
+} from '@/api/anilist/__genereated__/gql';
 
 type StaffPrevListProps = {
 	data: AniMediaQuery['Media']['staff'];
+	onLongSelect: (
+		type: 'character' | 'staff',
+		character: CharacterMetaDataFragment | StaffMetaDataFragment,
+	) => void;
 	openMore: () => void;
 };
-export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
+export const StaffPrevList = ({ data, openMore, onLongSelect }: StaffPrevListProps) => {
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = useCallback(
 		({ item }: { item: AniMediaQuery['Media']['staff']['edges'][0] }) => (
@@ -20,7 +28,8 @@ export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
 				nativeName={item.node.name.native}
 				role={item.role}
 				isFavourite={item.node.isFavourite}
-				onPress={() => router.push(`/staff/info/${item.node.id}`)}
+				onPress={() => router.push(`/staff/${item.node.id}`)}
+				onLongSelect={() => onLongSelect('staff', item.node)}
 			/>
 		),
 		[],

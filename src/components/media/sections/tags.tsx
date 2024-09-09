@@ -1,11 +1,11 @@
 import { Chip, MD3LightTheme } from 'react-native-paper';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { MediaTag } from '@/store/services/anilist/generated-anilist';
-import { useAppSelector } from '@/store/hooks';
 import { TagDialog } from '../dialogs';
 import { Tag } from '../tag';
+import { MediaTag } from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type TagViewProps = {
 	genres: string[];
@@ -20,12 +20,13 @@ const TagView = ({ genres, tags }: TagViewProps) => {
 		setVisible(true);
 	};
 
-	const { showNSFW } = useAppSelector((state) => state.persistedSettings);
+	const {} = useSettingsStore();
+	const { showNSFW } = useSettingsStore();
 
 	const closeTag = () => setVisible(false);
 
 	return (
-		<View style={{ marginVertical: 15, paddingHorizontal: 10 }}>
+		<View style={{ marginVertical: 15 }}>
 			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 				{genres?.map((genres, index) => (
 					<Chip key={index} style={{ paddingHorizontal: 5, marginHorizontal: 8 }}>

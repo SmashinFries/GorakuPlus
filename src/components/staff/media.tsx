@@ -1,14 +1,15 @@
 import { View } from 'react-native';
 import { MediaCard } from '../cards';
 import { IconButton, Text, useTheme } from 'react-native-paper';
-import { MediaFormat, StaffDetailsQuery } from '@/store/services/anilist/generated-anilist';
+import { MediaFormat, StaffDetailsQuery } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type StaffMediaCardProps = {
 	item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0];
 	onNav: any;
 };
 export const StaffMediaCard = ({ item, onNav }: StaffMediaCardProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<View style={{ marginHorizontal: 10, alignItems: 'center', maxHeight: 300 }}>
 			<MediaCard

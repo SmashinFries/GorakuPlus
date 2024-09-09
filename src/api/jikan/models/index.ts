@@ -415,6 +415,7 @@ export * from './seasons';
 export * from './seasonsDataItem';
 export * from './sfwParameter';
 export * from './spoilerParameter';
+export * from './spoilersParameter';
 export * from './streamingLinks';
 export * from './streamingLinksDataItem';
 export * from './title';

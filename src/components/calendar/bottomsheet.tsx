@@ -1,13 +1,12 @@
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAuthStore } from '@/store/authStore';
+import { useDisplayStore } from '@/store/displayStore';
+import { useAppTheme } from '@/store/theme/themes';
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import React, { useMemo, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { List, Switch, useTheme } from 'react-native-paper';
-import { CustomBackdrop } from '../animations';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { updateCalendarDisplay } from '@/store/slices/displaySlice';
-import Slider from '@react-native-community/slider';
 
 interface CalendarFilterSheetProps {
 	updateAllTitles: (onList: boolean) => void;
@@ -18,7 +17,7 @@ export const CalendarFilterSheet = React.forwardRef<
 	CalendarFilterSheetProps
 >((props, ref) => {
 	const { height } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [mainEntryHeight, setMainEntryHeight] = useState(0);
 	const snapPoints = useMemo(
 		() => [
@@ -30,19 +29,18 @@ export const CalendarFilterSheet = React.forwardRef<
 		[mainEntryHeight, height],
 	);
 
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
-	const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
-	const dispatch = useAppDispatch();
+	const { userID } = useAuthStore().anilist;
+	const { calendar, updateCalendarDisplay } = useDisplayStore();
 
 	const { bottom } = useSafeAreaInsets();
 
 	const updateOnlyShowList = (val: boolean) => {
-		dispatch(updateCalendarDisplay({ list_only: val }));
+		updateCalendarDisplay({ list_only: val });
 		props.updateAllTitles(val);
 	};
 
 	const updateGridSize = (val: number) => {
-		dispatch(updateCalendarDisplay({ grid_size: val }));
+		updateCalendarDisplay({ grid_size: val });
 	};
 
 	return (

@@ -1,12 +1,13 @@
 import {
-	ExploreMediaQueryVariables,
+	AnimeExploreQueryVariables,
+	MangaExploreQueryVariables,
 	MediaListSort,
-} from '@/store/services/anilist/generated-anilist';
+} from '@/api/anilist/__genereated__/gql';
 import { commonSorts } from '@/constants/anilist';
 
-export type FilterOptions = Partial<ExploreMediaQueryVariables>;
+export type FilterOptions = Partial<AnimeExploreQueryVariables | MangaExploreQueryVariables>;
 
-export type UpdateFilter = (filter: ExploreMediaQueryVariables) => void;
+export type UpdateFilter = (filter: AnimeExploreQueryVariables) => void;
 
 export type SortModes = keyof typeof commonSorts;
 

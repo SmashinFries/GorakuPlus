@@ -1,11 +1,14 @@
-import { useTheme, Text, Button, IconButton } from 'react-native-paper';
+import { Text, IconButton } from 'react-native-paper';
 import React, { useState } from 'react';
 import { ExpandableDescription } from '../../animations';
-import { StyleSheet, useWindowDimensions } from 'react-native';
-import RenderHTML from 'react-native-render-html';
-import { useAppSelector } from '@/store/hooks';
+import { useWindowDimensions } from 'react-native';
 import Uwuifier from 'uwuifier';
 import useTTS from '@/hooks/useTTS';
+import { useTTSStore } from '@/store/tts/ttsStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
+import { MarkdownViewer } from '@/components/markdown';
+import AniListMarkdownViewer from '@/components/markdown/renderer';
 
 type DescriptionProps = {
 	aniDescription: string;
@@ -13,12 +16,12 @@ type DescriptionProps = {
 };
 export const Description = ({ aniDescription, malDescription }: DescriptionProps) => {
 	const { width } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
-	const { enabled, english } = useAppSelector((state) => state.ttsSettings);
+	const { enabled, english } = useTTSStore();
 	const { speak } = useTTS();
 
-	const { defaultDescription } = useAppSelector((state) => state.persistedSettings);
+	const { defaultDescription } = useSettingsStore();
 	const [isUwuified, setIsUwuified] = useState(false);
 
 	const uwuifier = new Uwuifier({
@@ -31,14 +34,7 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 		exclamations: 1,
 	});
 
-	const AniDesc = () => (
-		<RenderHTML
-			contentWidth={width}
-			baseStyle={{ color: colors.onBackground }}
-			source={{ html: aniDescription }}
-			defaultTextProps={{ selectable: true, selectionColor: colors.inversePrimary }}
-		/>
-	);
+	const AniDesc = () => <AniListMarkdownViewer body={aniDescription} />;
 	const MalDesc = () => (
 		<>
 			<Text selectable selectionColor={colors.inversePrimary}>
@@ -85,9 +81,9 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 			toggleUwuifier={() => setIsUwuified((prev) => !prev)}
 		>
 			<DescView />
-			{/* {enabled && english && defaultDescription === 'mal' && malDescription && (
+			{enabled && english && defaultDescription === 'mal' && malDescription && (
 				<IconButton icon="text-to-speech" style={{ alignSelf: 'flex-end' }} />
-			)} */}
+			)}
 		</ExpandableDescription>
 	);
 };

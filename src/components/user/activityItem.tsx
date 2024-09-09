@@ -7,11 +7,6 @@ import {
 	Text,
 	useTheme,
 } from 'react-native-paper';
-import {
-	ListActivity,
-	MediaFormat,
-	UserActivityQuery,
-} from '@/store/services/anilist/generated-anilist';
 import { useCallback, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { ListHeading } from '../text';
@@ -20,16 +15,24 @@ import { MediaCard } from '../cards';
 import { getTimeUntil } from '@/utils';
 import { ConfirmActDelDialog } from './dialogs';
 import { router } from 'expo-router';
-import { useAppSelector } from '@/store/hooks';
+import {
+	ListActivity,
+	MediaFormat,
+	UserActivityQuery,
+	UserOverviewQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { useAuthStore } from '@/store/authStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 type ActivityItemProps = {
 	item: ListActivity;
+	id: number;
 	onTrash: (id: number) => void;
 };
 
-export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
-	const { colors } = useTheme();
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
+export const ActivityItem = ({ item, id, onTrash }: ActivityItemProps) => {
+	const { colors } = useAppTheme();
+	const userID = useAuthStore((state) => state.anilist.userID);
 	return (
 		<View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
 			<MediaCard
@@ -78,7 +81,7 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
 			>
 				{getTimeUntil(item.createdAt, 'createdAt')}
 			</Text>
-			{item.user?.id === userID && (
+			{item.user?.id === id && item.user?.id === userID && (
 				<IconButton
 					icon={'trash-can'}
 					iconColor={colors.onPrimaryContainer}
@@ -91,7 +94,7 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
 					onPress={() => onTrash(item.id)}
 				/>
 			)}
-			{item.user?.id !== userID && (
+			{item.user?.id !== id && item.user?.id !== userID && (
 				<Avatar.Image
 					style={{ position: 'absolute', top: 0, right: 0 }}
 					source={{ uri: item.user?.avatar?.large }}
@@ -103,10 +106,12 @@ export const ActivityItem = ({ item, onTrash }: ActivityItemProps) => {
 };
 
 export const ActivityOverview = ({
+	userId,
 	data,
 	onDelete,
 }: {
-	data: UserActivityQuery['Page']['activities'];
+	userId: number;
+	data: UserOverviewQuery['activity']['activities'];
 	onDelete?: (id: number) => void;
 }) => {
 	const { width } = useWindowDimensions();
@@ -134,8 +139,12 @@ export const ActivityOverview = ({
 				<FlashList
 					// @ts-ignore - not sure how to handle this type :/
 					data={data}
-					renderItem={({ item }) => <ActivityItem item={item} onTrash={onTrash} />}
-					keyExtractor={(item) => item.id.toString()}
+					renderItem={({ item }) => (
+						<ActivityItem id={userId} item={item as ListActivity} onTrash={onTrash} />
+					)}
+					keyExtractor={(item) =>
+						item.__typename === 'ListActivity' && item.id.toString()
+					}
 					horizontal
 					estimatedItemSize={185}
 					showsHorizontalScrollIndicator={false}

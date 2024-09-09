@@ -1,14 +1,11 @@
 import { Button, List, Menu, Portal, Text, TextInput, useTheme } from 'react-native-paper';
-import { FuzzyDate, MediaListStatus } from '@/store/services/anilist/generated-anilist';
 import { useState } from 'react';
-import { arrayRange, convertDate, getDatetoFuzzy, getFuzzytoDate } from '@/utils';
-import { Platform, Pressable, View } from 'react-native';
-import Slider from '@react-native-community/slider';
-import DateTimePicker, {
-	DateTimePickerAndroid,
-	DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
-import { openDatePicker } from '@/utils/datepicker';
+import { convertDate, getDatetoFuzzy, getFuzzytoDate } from '@/utils';
+import { Pressable, View } from 'react-native';
+import { FuzzyDate, MediaListStatus } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { CalendarDate } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
 
 type DropdownMenuProps = {
 	value: string;
@@ -60,24 +57,23 @@ type DatePopupProps = {
 	onSelect: (item: FuzzyDate) => void;
 };
 export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopupProps) => {
+	const [isVisible, setIsVisible] = useState(false);
 	const [date, setDate] = useState<Date>(
 		value?.day && value?.month && value?.year ? getFuzzytoDate(value) : new Date(),
 	);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
-	const onChange = (event: DateTimePickerEvent, selectedDate: Date) => {
-		if (event.type === 'set') {
-			const currentDate = selectedDate;
-			setDate(currentDate);
-			const newFuzzy = getDatetoFuzzy(currentDate);
-			onSelect(newFuzzy);
-		}
+	const onChange = (calendarDate: CalendarDate) => {
+		const currentDate = calendarDate;
+		setDate(currentDate);
+		const newFuzzy = getDatetoFuzzy(currentDate);
+		onSelect(newFuzzy);
 	};
 
 	return (
 		<>
 			<Pressable
-				onPress={() => openDatePicker('date', date, onChange)}
+				onPress={() => setIsVisible(true)}
 				android_ripple={{
 					color: colors.primary,
 					borderless: true,
@@ -90,6 +86,17 @@ export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopup
 					{convertDate(value) ?? 'N/A'}
 				</Text>
 			</Pressable>
+			<Portal>
+				<DatePickerModal
+					locale="en"
+					mode="single"
+					visible={isVisible}
+					onDismiss={() => setIsVisible(false)}
+					date={date}
+					label={title}
+					onConfirm={(params) => onChange(params.date)}
+				/>
+			</Portal>
 		</>
 	);
 };
@@ -126,7 +133,7 @@ export const ProgressDropDown = ({
 				}}
 			/>
 			<Text>{disableLimit ? '' : ` / ${total ? total?.toLocaleString() : '???'}`}</Text>
-			{!disableSlider && (
+			{/* {!disableSlider && (
 				<Slider
 					onValueChange={(value) => onSelect(value)}
 					step={step}
@@ -135,7 +142,7 @@ export const ProgressDropDown = ({
 					style={{ flex: 1, width: '70%' }}
 					value={value}
 				/>
-			)}
+			)} */}
 		</View>
 	);
 };

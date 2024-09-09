@@ -12,9 +12,10 @@ const ThemeStorage = getZustandStorage(storage);
 type ThemeState = {
 	mode?: ThemeOptions;
 	isDark?: boolean;
+	isAMOLED?: boolean;
 };
 type ThemeAction = {
-	setTheme: ({ mode, isDark }: ThemeState) => void;
+	setTheme: ({ mode, isDark, isAMOLED }: ThemeState) => void;
 };
 
 export const useThemeStore = create<ThemeState & ThemeAction>()(
@@ -22,12 +23,14 @@ export const useThemeStore = create<ThemeState & ThemeAction>()(
 		(set, get) => ({
 			mode: 'mi_chan',
 			isDark: Appearance.getColorScheme() === 'dark',
-			setTheme: ({ isDark, mode }) =>
+			isAMOLED: false,
+			setTheme: ({ isDark, mode, isAMOLED }) =>
 				switchTheme({
 					switchThemeFunction: () => {
 						set((state) => ({
 							isDark: isDark !== undefined ? isDark : state.isDark,
 							mode: mode !== undefined ? mode : state.mode,
+							isAMOLED: isAMOLED !== undefined ? isAMOLED : state.isAMOLED,
 						}));
 					},
 					animationConfig: {

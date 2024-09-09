@@ -108,7 +108,6 @@ type NSFWSelectorProps = {
 	updateIsAdult: (allowNSFW: boolean | undefined) => void;
 };
 export const NSFWSelector = ({ isAdult = false, updateIsAdult }: NSFWSelectorProps) => {
-	const { colors } = useTheme();
 	const [nsfwSelect, setNsfwSelect] = useState<boolean>(isAdult);
 	const options = {
 		0: {

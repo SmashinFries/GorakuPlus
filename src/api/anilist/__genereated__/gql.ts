@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
-import { useFetchAnilistData } from 'configs/anilist/fetcher';
+import { fetchAnilistData } from 'configs/anilist/fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -4701,7 +4701,7 @@ export type SaveMediaListItemMutationVariables = Exact<{
 }>;
 
 
-export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, countryOfOrigin?: any | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
+export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, mediaId: number, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, countryOfOrigin?: any | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
 
 export type DeleteMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4748,7 +4748,7 @@ export type ReviewRatingMutationVariables = Exact<{
 }>;
 
 
-export type ReviewRatingMutation = { __typename?: 'Mutation', RateReview?: { __typename?: 'Review', id: number, userRating?: ReviewRating | null } | null };
+export type ReviewRatingMutation = { __typename?: 'Mutation', RateReview?: { __typename?: 'Review', id: number, userRating?: ReviewRating | null, rating?: number | null, ratingAmount?: number | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   about?: InputMaybe<Scalars['String']['input']>;
@@ -4779,6 +4779,64 @@ export type ToggleFollowMutationVariables = Exact<{
 
 export type ToggleFollowMutation = { __typename?: 'Mutation', ToggleFollow?: { __typename?: 'User', id: number, isFollowing?: boolean | null } | null };
 
+export type ToggleLikeMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<LikeableType>;
+}>;
+
+
+export type ToggleLikeMutation = { __typename?: 'Mutation', ToggleLikeV2?: { __typename: 'ActivityReply', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'ListActivity', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'MessageActivity', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'TextActivity', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'Thread', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'ThreadComment', id: number, isLiked?: boolean | null, likeCount: number } | null };
+
+export type ToggleThreadSubscriptionMutationVariables = Exact<{
+  threadId?: InputMaybe<Scalars['Int']['input']>;
+  subscribe?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type ToggleThreadSubscriptionMutation = { __typename?: 'Mutation', ToggleThreadSubscription?: { __typename?: 'Thread', id: number, isSubscribed?: boolean | null } | null };
+
+export type SaveThreadCommentMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+  threadId?: InputMaybe<Scalars['Int']['input']>;
+  parentCommentId?: InputMaybe<Scalars['Int']['input']>;
+  comment?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type SaveThreadCommentMutation = { __typename?: 'Mutation', SaveThreadComment?: { __typename?: 'ThreadComment', id: number } | null };
+
+export type DeleteThreadCommentMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type DeleteThreadCommentMutation = { __typename?: 'Mutation', DeleteThreadComment?: { __typename?: 'Deleted', deleted?: boolean | null } | null };
+
+export type SaveThreadMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  body?: InputMaybe<Scalars['String']['input']>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
+  mediaCategories?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
+}>;
+
+
+export type SaveThreadMutation = { __typename?: 'Mutation', SaveThread?: { __typename?: 'Thread', id: number } | null };
+
+export type DeleteThreadMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type DeleteThreadMutation = { __typename?: 'Mutation', DeleteThread?: { __typename?: 'Deleted', deleted?: boolean | null } | null };
+
+export type MediaAniCardQueryQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type MediaAniCardQueryQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, averageScore?: number | null, meanScore?: number | null, status?: MediaStatus | null, description?: string | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, idMal?: number | null, genres?: Array<string | null> | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', name: string } | null> | null } | null };
+
 export type WeeklyAnimeQueryVariables = Exact<{
   weekStart?: InputMaybe<Scalars['Int']['input']>;
   weekEnd?: InputMaybe<Scalars['Int']['input']>;
@@ -4786,15 +4844,13 @@ export type WeeklyAnimeQueryVariables = Exact<{
 }>;
 
 
-export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, status?: MediaStatus | null, season?: MediaSeason | null, format?: MediaFormat | null, episodes?: number | null, source?: MediaSource | null, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, isAdult?: boolean | null, isFavourite: boolean, title?: { __typename?: 'MediaTitle', romaji?: string | null, native?: string | null, english?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null };
+export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null };
 
-export type MainMetaFragment = { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
+export type MainMetaFragment = { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
 
-export type AnimeMetaFragment = { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
+export type AnimeMetaFragment = { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
 
-export type MangaMetaFragment = { __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
-
-export type NovelMetaFragment = { __typename?: 'Media', volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
+export type MangaMetaFragment = { __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
 
 export type AnimeExploreQueryVariables = Exact<{
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -4808,7 +4864,7 @@ export type AnimeExploreQueryVariables = Exact<{
 }>;
 
 
-export type AnimeExploreQuery = { __typename?: 'Query', trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, thisSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, nextSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type AnimeExploreQuery = { __typename?: 'Query', trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, thisSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, nextSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
 
 export type MangaExploreQueryVariables = Exact<{
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -4819,7 +4875,7 @@ export type MangaExploreQueryVariables = Exact<{
 }>;
 
 
-export type MangaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type MangaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
 
 export type ManhwaExploreQueryVariables = Exact<{
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -4830,7 +4886,7 @@ export type ManhwaExploreQueryVariables = Exact<{
 }>;
 
 
-export type ManhwaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type ManhwaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
 
 export type ManhuaExploreQueryVariables = Exact<{
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -4841,7 +4897,7 @@ export type ManhuaExploreQueryVariables = Exact<{
 }>;
 
 
-export type ManhuaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type ManhuaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
 
 export type NovelExploreQueryVariables = Exact<{
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -4852,7 +4908,7 @@ export type NovelExploreQueryVariables = Exact<{
 }>;
 
 
-export type NovelExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type NovelExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
 
 export type RecommendationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -4876,7 +4932,7 @@ export type StudioListQueryVariables = Exact<{
 }>;
 
 
-export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
+export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
 
 export type MediaListEntryFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null };
 
@@ -4887,7 +4943,7 @@ export type UserAnimeListCollectionQueryVariables = Exact<{
 }>;
 
 
-export type UserAnimeListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
+export type UserAnimeListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
 
 export type UserMangaListCollectionQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4896,7 +4952,7 @@ export type UserMangaListCollectionQueryVariables = Exact<{
 }>;
 
 
-export type UserMangaListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
+export type UserMangaListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
 
 export type UserCustomListsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4930,7 +4986,7 @@ export type AniMediaQueryVariables = Exact<{
 }>;
 
 
-export type AniMediaQuery = { __typename?: 'Query', User?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null, Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, mediaList?: Array<{ __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null } | null> | null } | null, Media?: { __typename?: 'Media', averageScore?: number | null, meanScore?: number | null, source?: MediaSource | null, idMal?: number | null, id: number, bannerImage?: string | null, description?: string | null, siteUrl?: string | null, updatedAt?: number | null, season?: MediaSeason | null, seasonYear?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, duration?: number | null, chapters?: number | null, volumes?: number | null, isAdult?: boolean | null, genres?: Array<string | null> | null, countryOfOrigin?: any | null, isLicensed?: boolean | null, hashtag?: string | null, synonyms?: Array<string | null> | null, popularity?: number | null, isLocked?: boolean | null, trending?: number | null, favourites?: number | null, isFavourite: boolean, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, userId?: number | null } | null> | null, trailer?: { __typename?: 'MediaTrailer', id?: string | null, site?: string | null, thumbnail?: string | null } | null, stats?: { __typename?: 'MediaStats', statusDistribution?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, relations?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', id?: number | null, relationType?: MediaRelation | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, isLicensed?: boolean | null, status?: MediaStatus | null, averageScore?: number | null, meanScore?: number | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null, externalLinks?: Array<{ __typename?: 'MediaExternalLink', id: number, site: string, url?: string | null, color?: string | null, icon?: string | null, notes?: string | null, type?: ExternalLinkType | null, language?: string | null } | null> | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, streamingEpisodes?: Array<{ __typename?: 'MediaStreamingEpisode', title?: string | null, thumbnail?: string | null, url?: string | null, site?: string | null } | null> | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', voiceActor?: { __typename?: 'Staff', id: number, language?: string | null, name?: { __typename?: 'StaffName', full?: string | null, userPreferred?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, favourites?: number | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, userPreferred?: string | null, native?: string | null, first?: string | null, last?: string | null } | null } | null } | null> | null } | null, recommendations?: { __typename?: 'RecommendationConnection', edges?: Array<{ __typename?: 'RecommendationEdge', node?: { __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, isLicensed?: boolean | null, status?: MediaStatus | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null, large?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null } | null> | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, notes?: string | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, updatedAt?: number | null, createdAt?: number | null, media?: { __typename?: 'Media', status?: MediaStatus | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', episode: number } | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null, staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, name?: { __typename?: 'StaffName', full?: string | null, first?: string | null, middle?: string | null, last?: string | null, native?: string | null, userPreferred?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null } | null, reviews?: { __typename?: 'ReviewConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, edges?: Array<{ __typename?: 'ReviewEdge', node?: { __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, userRating?: ReviewRating | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', isMain: boolean, node?: { __typename?: 'Studio', id: number, name: string, isFavourite: boolean } | null } | null> | null } | null, airingSchedule?: { __typename?: 'AiringScheduleConnection', nodes?: Array<{ __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number } | null> | null } | null } | null };
+export type AniMediaQuery = { __typename?: 'Query', User?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null, Following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, mediaList?: Array<{ __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null } | null> | null } | null, Media?: { __typename?: 'Media', averageScore?: number | null, meanScore?: number | null, source?: MediaSource | null, idMal?: number | null, id: number, bannerImage?: string | null, description?: string | null, siteUrl?: string | null, updatedAt?: number | null, season?: MediaSeason | null, seasonYear?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, duration?: number | null, chapters?: number | null, volumes?: number | null, isAdult?: boolean | null, genres?: Array<string | null> | null, countryOfOrigin?: any | null, isLicensed?: boolean | null, hashtag?: string | null, synonyms?: Array<string | null> | null, popularity?: number | null, isLocked?: boolean | null, trending?: number | null, favourites?: number | null, isFavourite: boolean, descriptionHTML?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, userId?: number | null } | null> | null, trailer?: { __typename?: 'MediaTrailer', id?: string | null, site?: string | null, thumbnail?: string | null } | null, stats?: { __typename?: 'MediaStats', statusDistribution?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, relations?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', id?: number | null, relationType?: MediaRelation | null, node?: { __typename?: 'Media', chapters?: number | null, volumes?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null, externalLinks?: Array<{ __typename?: 'MediaExternalLink', id: number, site: string, url?: string | null, color?: string | null, icon?: string | null, notes?: string | null, type?: ExternalLinkType | null, language?: string | null } | null> | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, streamingEpisodes?: Array<{ __typename?: 'MediaStreamingEpisode', title?: string | null, thumbnail?: string | null, url?: string | null, site?: string | null } | null> | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', voiceActor?: { __typename?: 'Staff', id: number, language?: string | null, name?: { __typename?: 'StaffName', full?: string | null, userPreferred?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null, recommendations?: { __typename?: 'RecommendationConnection', edges?: Array<{ __typename?: 'RecommendationEdge', node?: { __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, mediaRecommendation?: { __typename?: 'Media', chapters?: number | null, volumes?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null } | null> | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, notes?: string | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, updatedAt?: number | null, createdAt?: number | null, media?: { __typename?: 'Media', status?: MediaStatus | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', episode: number } | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null, staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null } | null, reviews?: { __typename?: 'ReviewConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, edges?: Array<{ __typename?: 'ReviewEdge', node?: { __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, userRating?: ReviewRating | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', isMain: boolean, node?: { __typename?: 'Studio', id: number, name: string, isFavourite: boolean } | null } | null> | null } | null, airingSchedule?: { __typename?: 'AiringScheduleConnection', nodes?: Array<{ __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number } | null> | null } | null } | null };
 
 export type MediaFollowingQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4943,7 +4999,6 @@ export type MediaFollowingQuery = { __typename?: 'Query', Page?: { __typename?: 
 
 export type CharacterListQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
-  type?: InputMaybe<MediaType>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<Array<InputMaybe<CharacterSort>> | InputMaybe<CharacterSort>>;
@@ -5012,16 +5067,21 @@ export type ReviewsQueryVariables = Exact<{
 }>;
 
 
-export type ReviewsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', lastPage?: number | null, total?: number | null, hasNextPage?: boolean | null } | null, reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type ReviewsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', lastPage?: number | null, total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
 
 export type ReviewsByIdQueryVariables = Exact<{
   reviewId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ReviewsByIdQuery = { __typename?: 'Query', Review?: { __typename?: 'Review', id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, userRating?: ReviewRating | null, htmlBody?: string | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null };
+export type ReviewsByIdQuery = { __typename?: 'Query', Review?: { __typename?: 'Review', id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, userRating?: ReviewRating | null, htmlBody?: string | null, media?: { __typename?: 'Media', bannerImage?: string | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null };
 
-export type SearchAnimeQueryVariables = Exact<{
+export type CharacterMetaDataFragment = { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null };
+
+export type StaffMetaDataFragment = { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null };
+
+export type MediaSearchQueryVariables = Exact<{
+  type?: InputMaybe<MediaType>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5095,83 +5155,7 @@ export type SearchAnimeQueryVariables = Exact<{
 }>;
 
 
-export type SearchAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, status?: MediaStatus | null, meanScore?: number | null, averageScore?: number | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, color?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, notes?: string | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
-
-export type SearchMangaQueryVariables = Exact<{
-  page?: InputMaybe<Scalars['Int']['input']>;
-  perPage?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  idMal?: InputMaybe<Scalars['Int']['input']>;
-  startDate?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
-  endDate?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
-  season?: InputMaybe<MediaSeason>;
-  seasonYear?: InputMaybe<Scalars['Int']['input']>;
-  format?: InputMaybe<MediaFormat>;
-  status?: InputMaybe<MediaStatus>;
-  episodes?: InputMaybe<Scalars['Int']['input']>;
-  duration?: InputMaybe<Scalars['Int']['input']>;
-  chapters?: InputMaybe<Scalars['Int']['input']>;
-  volumes?: InputMaybe<Scalars['Int']['input']>;
-  isAdult?: InputMaybe<Scalars['Boolean']['input']>;
-  genre?: InputMaybe<Scalars['String']['input']>;
-  tag?: InputMaybe<Scalars['String']['input']>;
-  minimumTagRank?: InputMaybe<Scalars['Int']['input']>;
-  tagCategory?: InputMaybe<Scalars['String']['input']>;
-  onList?: InputMaybe<Scalars['Boolean']['input']>;
-  licensedBy?: InputMaybe<Scalars['String']['input']>;
-  licensedById?: InputMaybe<Scalars['Int']['input']>;
-  averageScore?: InputMaybe<Scalars['Int']['input']>;
-  popularity?: InputMaybe<Scalars['Int']['input']>;
-  source?: InputMaybe<MediaSource>;
-  countryOfOrigin?: InputMaybe<Scalars['CountryCode']['input']>;
-  isLicensed?: InputMaybe<Scalars['Boolean']['input']>;
-  search?: InputMaybe<Scalars['String']['input']>;
-  id_not?: InputMaybe<Scalars['Int']['input']>;
-  id_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
-  id_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
-  idMal_not?: InputMaybe<Scalars['Int']['input']>;
-  idMal_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
-  idMal_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
-  startDate_greater?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
-  startDate_lesser?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
-  startDate_like?: InputMaybe<Scalars['String']['input']>;
-  endDate_greater?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
-  endDate_lesser?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
-  endDate_like?: InputMaybe<Scalars['String']['input']>;
-  format_in?: InputMaybe<Array<InputMaybe<MediaFormat>> | InputMaybe<MediaFormat>>;
-  format_not?: InputMaybe<MediaFormat>;
-  format_not_in?: InputMaybe<Array<InputMaybe<MediaFormat>> | InputMaybe<MediaFormat>>;
-  status_in?: InputMaybe<Array<InputMaybe<MediaStatus>> | InputMaybe<MediaStatus>>;
-  status_not?: InputMaybe<MediaStatus>;
-  status_not_in?: InputMaybe<Array<InputMaybe<MediaStatus>> | InputMaybe<MediaStatus>>;
-  episodes_greater?: InputMaybe<Scalars['Int']['input']>;
-  episodes_lesser?: InputMaybe<Scalars['Int']['input']>;
-  duration_greater?: InputMaybe<Scalars['Int']['input']>;
-  duration_lesser?: InputMaybe<Scalars['Int']['input']>;
-  chapters_greater?: InputMaybe<Scalars['Int']['input']>;
-  chapters_lesser?: InputMaybe<Scalars['Int']['input']>;
-  volumes_greater?: InputMaybe<Scalars['Int']['input']>;
-  volumes_lesser?: InputMaybe<Scalars['Int']['input']>;
-  genre_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  genre_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  tag_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  tag_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  tagCategory_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  tagCategory_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  licensedBy_in?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
-  licensedById_in?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>> | InputMaybe<Scalars['Int']['input']>>;
-  averageScore_not?: InputMaybe<Scalars['Int']['input']>;
-  averageScore_greater?: InputMaybe<Scalars['Int']['input']>;
-  averageScore_lesser?: InputMaybe<Scalars['Int']['input']>;
-  popularity_not?: InputMaybe<Scalars['Int']['input']>;
-  popularity_greater?: InputMaybe<Scalars['Int']['input']>;
-  popularity_lesser?: InputMaybe<Scalars['Int']['input']>;
-  source_in?: InputMaybe<Array<InputMaybe<MediaSource>> | InputMaybe<MediaSource>>;
-  sort?: InputMaybe<Array<InputMaybe<MediaSort>> | InputMaybe<MediaSort>>;
-}>;
-
-
-export type SearchMangaQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, status?: MediaStatus | null, meanScore?: number | null, averageScore?: number | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, color?: string | null, extraLarge?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, notes?: string | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type MediaSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
 
 export type UserSearchQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -5188,7 +5172,7 @@ export type CharacterSearchQueryVariables = Exact<{
 }>;
 
 
-export type CharacterSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null };
+export type CharacterSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null };
 
 export type StaffSearchQueryVariables = Exact<{
   name?: InputMaybe<Scalars['String']['input']>;
@@ -5198,7 +5182,7 @@ export type StaffSearchQueryVariables = Exact<{
 }>;
 
 
-export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
+export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
 
 export type StudioSearchQueryVariables = Exact<{
   name?: InputMaybe<Scalars['String']['input']>;
@@ -5208,6 +5192,69 @@ export type StudioSearchQueryVariables = Exact<{
 
 
 export type StudioSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', bannerImage?: string | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null } | null> | null } | null } | null> | null } | null };
+
+export type SearchAllQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  isAdult?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type SearchAllQuery = { __typename?: 'Query', Anime?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, Manga?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, Characters?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, Staff?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, Studios?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null } | null> | null } | null, Users?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null };
+
+export type SiteTrendFragment = { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null };
+
+export type SiteStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SiteStatsQuery = { __typename?: 'Query', SiteStatistics?: { __typename?: 'SiteStatistics', users?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, anime?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, manga?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, characters?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, staff?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, reviews?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null } | null };
+
+export type MediaTrendsQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type MediaTrendsQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, trends?: { __typename?: 'MediaTrendConnection', nodes?: Array<{ __typename?: 'MediaTrend', averageScore?: number | null, date: number, trending: number, popularity?: number | null } | null> | null } | null, airingTrends?: { __typename?: 'MediaTrendConnection', nodes?: Array<{ __typename?: 'MediaTrend', averageScore?: number | null, inProgress?: number | null, episode?: number | null } | null> | null } | null, distribution?: { __typename?: 'MediaStats', status?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, score?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null };
+
+export type ThreadsOverviewQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ThreadsOverviewQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, threads?: Array<{ __typename?: 'Thread', id: number, title?: string | null, replyCount?: number | null, viewCount?: number | null, replyCommentId?: number | null, repliedAt?: number | null, createdAt: number, categories?: Array<{ __typename?: 'ThreadCategory', id: number, name: string } | null> | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replyUser?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+
+export type ThreadsQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ThreadsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, threads?: Array<{ __typename?: 'Thread', id: number, title?: string | null, replyCount?: number | null, viewCount?: number | null, replyCommentId?: number | null, repliedAt?: number | null, createdAt: number, categories?: Array<{ __typename?: 'ThreadCategory', id: number, name: string } | null> | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replyUser?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+
+export type ThreadDetailQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ThreadDetailQuery = { __typename?: 'Query', Thread?: { __typename?: 'Thread', id: number, title?: string | null, body?: string | null, userId: number, replyCount?: number | null, viewCount?: number | null, isLocked?: boolean | null, isSticky?: boolean | null, isSubscribed?: boolean | null, isLiked?: boolean | null, likeCount: number, repliedAt?: number | null, createdAt: number, htmlBody?: string | null, likes?: Array<{ __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, categories?: Array<{ __typename?: 'ThreadCategory', id: number, name: string } | null> | null, mediaCategories?: Array<{ __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', large?: string | null } | null } | null> | null } | null };
+
+export type AniListCommentsQueryVariables = Exact<{
+  threadId?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AniListCommentsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, threadComments?: Array<{ __typename?: 'ThreadComment', id: number, threadId?: number | null, comment?: string | null, isLiked?: boolean | null, likeCount: number, createdAt: number, childComments?: any | null, isLocked?: boolean | null, htmlComment?: string | null, user?: { __typename?: 'User', id: number, name: string, donatorTier?: number | null, donatorBadge?: string | null, moderatorRoles?: Array<ModRole | null> | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+
+export type AniListCommentDetailsQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AniListCommentDetailsQuery = { __typename?: 'Query', ThreadComment?: Array<{ __typename?: 'ThreadComment', id: number, comment?: string | null, userId?: number | null, threadId?: number | null, likeCount: number, isLiked?: boolean | null, siteUrl?: string | null, createdAt: number, updatedAt: number, childComments?: any | null, isLocked?: boolean | null, htmlComment?: string | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, likes?: Array<{ __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null> | null };
 
 export type UserAnimeStatsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -5253,10 +5300,11 @@ export type UserOverviewQueryVariables = Exact<{
   followingPerPage?: InputMaybe<Scalars['Int']['input']>;
   followersPerPage?: InputMaybe<Scalars['Int']['input']>;
   favoritesPerPage?: InputMaybe<Scalars['Int']['input']>;
+  reviewsPerPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UserOverviewQuery = { __typename?: 'Query', user?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, activity?: { __typename?: 'Page', activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, format?: MediaFormat | null, isLicensed?: boolean | null, status?: MediaStatus | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null, following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, followers?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null };
+export type UserOverviewQuery = { __typename?: 'Query', user?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number, meanScore: number, count: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number, meanScore: number, count: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, activity?: { __typename?: 'Page', activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, media?: { __typename?: 'Media', volumes?: number | null, chapters?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null, following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, followers?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, reviews?: { __typename?: 'Page', reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number } | null> | null } | null, list?: { __typename?: 'Page', mediaList?: Array<{ __typename?: 'MediaList', media?: { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null };
 
 export type UserFollowingQueryVariables = Exact<{
   userId: Scalars['Int']['input'];
@@ -5306,7 +5354,7 @@ export type UserWaifuFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserWaifuFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserWaifuFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
 
 export type UserStaffFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5315,7 +5363,7 @@ export type UserStaffFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserStaffFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Staff', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserStaffFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null } | null } | null };
 
 export type UserStudiosFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5336,12 +5384,25 @@ export const MainMetaFragmentDoc = `
   format
   isFavourite
   description
+  descriptionHTML: description(asHtml: true)
   genres
   status
   siteUrl
   meanScore
   averageScore
+  episodes
+  chapters
+  volumes
+  duration
+  season
+  isLicensed
+  isAdult
   startDate {
+    year
+    month
+    day
+  }
+  endDate {
     year
     month
     day
@@ -5392,11 +5453,6 @@ export const MangaMetaFragmentDoc = `
     fragment MangaMeta on Media {
   ...MainMeta
   chapters
-}
-    ${MainMetaFragmentDoc}`;
-export const NovelMetaFragmentDoc = `
-    fragment NovelMeta on Media {
-  ...MainMeta
   volumes
 }
     ${MainMetaFragmentDoc}`;
@@ -5541,6 +5597,59 @@ export const ActivityFragmentDoc = `
   }
 }
     `;
+export const CharacterMetaDataFragmentDoc = `
+    fragment CharacterMetaData on Character {
+  id
+  isFavourite
+  dateOfBirth {
+    year
+    month
+    day
+  }
+  name {
+    full
+    native
+  }
+  image {
+    large
+  }
+  gender
+  description
+  descriptionHTML: description(asHtml: true)
+  siteUrl
+}
+    `;
+export const StaffMetaDataFragmentDoc = `
+    fragment StaffMetaData on Staff {
+  id
+  isFavourite
+  dateOfBirth {
+    year
+    month
+    day
+  }
+  name {
+    full
+    native
+  }
+  image {
+    large
+  }
+  description
+  gender
+  descriptionHTML: description(asHtml: true)
+  siteUrl
+}
+    `;
+export const SiteTrendFragmentDoc = `
+    fragment siteTrend on SiteTrendConnection {
+  nodes {
+    date
+    count
+    change
+  }
+}
+    `;
 export const ToggleFavDocument = `
     mutation ToggleFav($animeId: Int, $mangaId: Int, $characterId: Int, $staffId: Int, $studioId: Int) {
   ToggleFavourite(
@@ -5603,13 +5712,13 @@ export const useToggleFavMutation = <
     return useMutation<ToggleFavMutation, TError, ToggleFavMutationVariables, TContext>(
       {
     mutationKey: ['ToggleFav'],
-    mutationFn: (variables?: ToggleFavMutationVariables) => useFetchAnilistData<ToggleFavMutation, ToggleFavMutationVariables>(ToggleFavDocument, variables)(),
+    mutationFn: (variables?: ToggleFavMutationVariables) => fetchAnilistData<ToggleFavMutation, ToggleFavMutationVariables>(ToggleFavDocument, variables)(),
     ...options
   }
     )};
 
 
-useToggleFavMutation.fetcher = (variables?: ToggleFavMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<ToggleFavMutation, ToggleFavMutationVariables>(ToggleFavDocument, variables, options);
+useToggleFavMutation.fetcher = (variables?: ToggleFavMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<ToggleFavMutation, ToggleFavMutationVariables>(ToggleFavDocument, variables, options);
 
 export const SaveMediaListItemDocument = `
     mutation SaveMediaListItem($id: Int, $mediaId: Int, $status: MediaListStatus, $score: Float, $scoreRaw: Int, $progress: Int, $progressVolumes: Int, $private: Boolean, $hideFromStatusList: Boolean, $repeat: Int, $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput, $notes: String, $customLists: [String]) {
@@ -5634,6 +5743,7 @@ export const SaveMediaListItemDocument = `
     score
     progress
     repeat
+    mediaId
     media {
       type
       format
@@ -5664,13 +5774,13 @@ export const useSaveMediaListItemMutation = <
     return useMutation<SaveMediaListItemMutation, TError, SaveMediaListItemMutationVariables, TContext>(
       {
     mutationKey: ['SaveMediaListItem'],
-    mutationFn: (variables?: SaveMediaListItemMutationVariables) => useFetchAnilistData<SaveMediaListItemMutation, SaveMediaListItemMutationVariables>(SaveMediaListItemDocument, variables)(),
+    mutationFn: (variables?: SaveMediaListItemMutationVariables) => fetchAnilistData<SaveMediaListItemMutation, SaveMediaListItemMutationVariables>(SaveMediaListItemDocument, variables)(),
     ...options
   }
     )};
 
 
-useSaveMediaListItemMutation.fetcher = (variables?: SaveMediaListItemMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<SaveMediaListItemMutation, SaveMediaListItemMutationVariables>(SaveMediaListItemDocument, variables, options);
+useSaveMediaListItemMutation.fetcher = (variables?: SaveMediaListItemMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<SaveMediaListItemMutation, SaveMediaListItemMutationVariables>(SaveMediaListItemDocument, variables, options);
 
 export const DeleteMediaListItemDocument = `
     mutation DeleteMediaListItem($id: Int) {
@@ -5688,13 +5798,13 @@ export const useDeleteMediaListItemMutation = <
     return useMutation<DeleteMediaListItemMutation, TError, DeleteMediaListItemMutationVariables, TContext>(
       {
     mutationKey: ['DeleteMediaListItem'],
-    mutationFn: (variables?: DeleteMediaListItemMutationVariables) => useFetchAnilistData<DeleteMediaListItemMutation, DeleteMediaListItemMutationVariables>(DeleteMediaListItemDocument, variables)(),
+    mutationFn: (variables?: DeleteMediaListItemMutationVariables) => fetchAnilistData<DeleteMediaListItemMutation, DeleteMediaListItemMutationVariables>(DeleteMediaListItemDocument, variables)(),
     ...options
   }
     )};
 
 
-useDeleteMediaListItemMutation.fetcher = (variables?: DeleteMediaListItemMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<DeleteMediaListItemMutation, DeleteMediaListItemMutationVariables>(DeleteMediaListItemDocument, variables, options);
+useDeleteMediaListItemMutation.fetcher = (variables?: DeleteMediaListItemMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<DeleteMediaListItemMutation, DeleteMediaListItemMutationVariables>(DeleteMediaListItemDocument, variables, options);
 
 export const ChangeLanguageDocument = `
     mutation ChangeLanguage($titleLanguage: UserTitleLanguage, $staffNameLanguage: UserStaffNameLanguage) {
@@ -5712,13 +5822,13 @@ export const useChangeLanguageMutation = <
     return useMutation<ChangeLanguageMutation, TError, ChangeLanguageMutationVariables, TContext>(
       {
     mutationKey: ['ChangeLanguage'],
-    mutationFn: (variables?: ChangeLanguageMutationVariables) => useFetchAnilistData<ChangeLanguageMutation, ChangeLanguageMutationVariables>(ChangeLanguageDocument, variables)(),
+    mutationFn: (variables?: ChangeLanguageMutationVariables) => fetchAnilistData<ChangeLanguageMutation, ChangeLanguageMutationVariables>(ChangeLanguageDocument, variables)(),
     ...options
   }
     )};
 
 
-useChangeLanguageMutation.fetcher = (variables?: ChangeLanguageMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<ChangeLanguageMutation, ChangeLanguageMutationVariables>(ChangeLanguageDocument, variables, options);
+useChangeLanguageMutation.fetcher = (variables?: ChangeLanguageMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<ChangeLanguageMutation, ChangeLanguageMutationVariables>(ChangeLanguageDocument, variables, options);
 
 export const UpdateViewerDocument = `
     mutation UpdateViewer($notificationOptions: [NotificationOptionInput], $displayNSFW: Boolean) {
@@ -5739,13 +5849,13 @@ export const useUpdateViewerMutation = <
     return useMutation<UpdateViewerMutation, TError, UpdateViewerMutationVariables, TContext>(
       {
     mutationKey: ['UpdateViewer'],
-    mutationFn: (variables?: UpdateViewerMutationVariables) => useFetchAnilistData<UpdateViewerMutation, UpdateViewerMutationVariables>(UpdateViewerDocument, variables)(),
+    mutationFn: (variables?: UpdateViewerMutationVariables) => fetchAnilistData<UpdateViewerMutation, UpdateViewerMutationVariables>(UpdateViewerDocument, variables)(),
     ...options
   }
     )};
 
 
-useUpdateViewerMutation.fetcher = (variables?: UpdateViewerMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<UpdateViewerMutation, UpdateViewerMutationVariables>(UpdateViewerDocument, variables, options);
+useUpdateViewerMutation.fetcher = (variables?: UpdateViewerMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<UpdateViewerMutation, UpdateViewerMutationVariables>(UpdateViewerDocument, variables, options);
 
 export const SaveRecomDocument = `
     mutation SaveRecom($mediaId: Int, $mediaRecommendationId: Int, $rating: RecommendationRating) {
@@ -5768,13 +5878,13 @@ export const useSaveRecomMutation = <
     return useMutation<SaveRecomMutation, TError, SaveRecomMutationVariables, TContext>(
       {
     mutationKey: ['SaveRecom'],
-    mutationFn: (variables?: SaveRecomMutationVariables) => useFetchAnilistData<SaveRecomMutation, SaveRecomMutationVariables>(SaveRecomDocument, variables)(),
+    mutationFn: (variables?: SaveRecomMutationVariables) => fetchAnilistData<SaveRecomMutation, SaveRecomMutationVariables>(SaveRecomDocument, variables)(),
     ...options
   }
     )};
 
 
-useSaveRecomMutation.fetcher = (variables?: SaveRecomMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<SaveRecomMutation, SaveRecomMutationVariables>(SaveRecomDocument, variables, options);
+useSaveRecomMutation.fetcher = (variables?: SaveRecomMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<SaveRecomMutation, SaveRecomMutationVariables>(SaveRecomDocument, variables, options);
 
 export const DeleteActDocument = `
     mutation DeleteAct($id: Int) {
@@ -5792,19 +5902,21 @@ export const useDeleteActMutation = <
     return useMutation<DeleteActMutation, TError, DeleteActMutationVariables, TContext>(
       {
     mutationKey: ['DeleteAct'],
-    mutationFn: (variables?: DeleteActMutationVariables) => useFetchAnilistData<DeleteActMutation, DeleteActMutationVariables>(DeleteActDocument, variables)(),
+    mutationFn: (variables?: DeleteActMutationVariables) => fetchAnilistData<DeleteActMutation, DeleteActMutationVariables>(DeleteActDocument, variables)(),
     ...options
   }
     )};
 
 
-useDeleteActMutation.fetcher = (variables?: DeleteActMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<DeleteActMutation, DeleteActMutationVariables>(DeleteActDocument, variables, options);
+useDeleteActMutation.fetcher = (variables?: DeleteActMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<DeleteActMutation, DeleteActMutationVariables>(DeleteActDocument, variables, options);
 
 export const ReviewRatingDocument = `
     mutation ReviewRating($id: Int, $rating: ReviewRating) {
   RateReview(reviewId: $id, rating: $rating) {
     id
     userRating
+    rating
+    ratingAmount
   }
 }
     `;
@@ -5817,13 +5929,13 @@ export const useReviewRatingMutation = <
     return useMutation<ReviewRatingMutation, TError, ReviewRatingMutationVariables, TContext>(
       {
     mutationKey: ['ReviewRating'],
-    mutationFn: (variables?: ReviewRatingMutationVariables) => useFetchAnilistData<ReviewRatingMutation, ReviewRatingMutationVariables>(ReviewRatingDocument, variables)(),
+    mutationFn: (variables?: ReviewRatingMutationVariables) => fetchAnilistData<ReviewRatingMutation, ReviewRatingMutationVariables>(ReviewRatingDocument, variables)(),
     ...options
   }
     )};
 
 
-useReviewRatingMutation.fetcher = (variables?: ReviewRatingMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<ReviewRatingMutation, ReviewRatingMutationVariables>(ReviewRatingDocument, variables, options);
+useReviewRatingMutation.fetcher = (variables?: ReviewRatingMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<ReviewRatingMutation, ReviewRatingMutationVariables>(ReviewRatingDocument, variables, options);
 
 export const UpdateUserDocument = `
     mutation UpdateUser($about: String, $titleLanguage: UserTitleLanguage, $staffNameLanguage: UserStaffNameLanguage, $airingNotifications: Boolean, $displayAdultContent: Boolean, $scoreFormat: ScoreFormat, $rowOrder: String, $profileColor: String, $donatorBadge: String, $notificationOptions: [NotificationOptionInput], $animeListOptions: MediaListOptionsInput, $mangaListOptions: MediaListOptionsInput, $timezone: String, $activityMergeTime: Int, $restrictMessagesToFollowing: Boolean, $disabledListActivity: [ListActivityOptionInput]) {
@@ -5904,13 +6016,13 @@ export const useUpdateUserMutation = <
     return useMutation<UpdateUserMutation, TError, UpdateUserMutationVariables, TContext>(
       {
     mutationKey: ['UpdateUser'],
-    mutationFn: (variables?: UpdateUserMutationVariables) => useFetchAnilistData<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables)(),
+    mutationFn: (variables?: UpdateUserMutationVariables) => fetchAnilistData<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables)(),
     ...options
   }
     )};
 
 
-useUpdateUserMutation.fetcher = (variables?: UpdateUserMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables, options);
+useUpdateUserMutation.fetcher = (variables?: UpdateUserMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, variables, options);
 
 export const ToggleFollowDocument = `
     mutation ToggleFollow($userId: Int) {
@@ -5929,13 +6041,277 @@ export const useToggleFollowMutation = <
     return useMutation<ToggleFollowMutation, TError, ToggleFollowMutationVariables, TContext>(
       {
     mutationKey: ['ToggleFollow'],
-    mutationFn: (variables?: ToggleFollowMutationVariables) => useFetchAnilistData<ToggleFollowMutation, ToggleFollowMutationVariables>(ToggleFollowDocument, variables)(),
+    mutationFn: (variables?: ToggleFollowMutationVariables) => fetchAnilistData<ToggleFollowMutation, ToggleFollowMutationVariables>(ToggleFollowDocument, variables)(),
     ...options
   }
     )};
 
 
-useToggleFollowMutation.fetcher = (variables?: ToggleFollowMutationVariables, options?: RequestInit['headers']) => useFetchAnilistData<ToggleFollowMutation, ToggleFollowMutationVariables>(ToggleFollowDocument, variables, options);
+useToggleFollowMutation.fetcher = (variables?: ToggleFollowMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<ToggleFollowMutation, ToggleFollowMutationVariables>(ToggleFollowDocument, variables, options);
+
+export const ToggleLikeDocument = `
+    mutation ToggleLike($id: Int, $type: LikeableType) {
+  ToggleLikeV2(id: $id, type: $type) {
+    __typename
+    ... on ThreadComment {
+      id
+      isLiked
+      likeCount
+    }
+    ... on Thread {
+      id
+      isLiked
+      likeCount
+    }
+    ... on ListActivity {
+      id
+      isLiked
+      likeCount
+    }
+    ... on TextActivity {
+      id
+      isLiked
+      likeCount
+    }
+    ... on MessageActivity {
+      id
+      isLiked
+      likeCount
+    }
+    ... on ActivityReply {
+      id
+      isLiked
+      likeCount
+    }
+  }
+}
+    `;
+
+export const useToggleLikeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ToggleLikeMutation, TError, ToggleLikeMutationVariables, TContext>) => {
+    
+    return useMutation<ToggleLikeMutation, TError, ToggleLikeMutationVariables, TContext>(
+      {
+    mutationKey: ['ToggleLike'],
+    mutationFn: (variables?: ToggleLikeMutationVariables) => fetchAnilistData<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useToggleLikeMutation.fetcher = (variables?: ToggleLikeMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, variables, options);
+
+export const ToggleThreadSubscriptionDocument = `
+    mutation ToggleThreadSubscription($threadId: Int, $subscribe: Boolean) {
+  ToggleThreadSubscription(threadId: $threadId, subscribe: $subscribe) {
+    id
+    isSubscribed
+  }
+}
+    `;
+
+export const useToggleThreadSubscriptionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ToggleThreadSubscriptionMutation, TError, ToggleThreadSubscriptionMutationVariables, TContext>) => {
+    
+    return useMutation<ToggleThreadSubscriptionMutation, TError, ToggleThreadSubscriptionMutationVariables, TContext>(
+      {
+    mutationKey: ['ToggleThreadSubscription'],
+    mutationFn: (variables?: ToggleThreadSubscriptionMutationVariables) => fetchAnilistData<ToggleThreadSubscriptionMutation, ToggleThreadSubscriptionMutationVariables>(ToggleThreadSubscriptionDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useToggleThreadSubscriptionMutation.fetcher = (variables?: ToggleThreadSubscriptionMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<ToggleThreadSubscriptionMutation, ToggleThreadSubscriptionMutationVariables>(ToggleThreadSubscriptionDocument, variables, options);
+
+export const SaveThreadCommentDocument = `
+    mutation SaveThreadComment($id: Int, $threadId: Int, $parentCommentId: Int, $comment: String) {
+  SaveThreadComment(
+    id: $id
+    threadId: $threadId
+    comment: $comment
+    parentCommentId: $parentCommentId
+  ) {
+    id
+  }
+}
+    `;
+
+export const useSaveThreadCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SaveThreadCommentMutation, TError, SaveThreadCommentMutationVariables, TContext>) => {
+    
+    return useMutation<SaveThreadCommentMutation, TError, SaveThreadCommentMutationVariables, TContext>(
+      {
+    mutationKey: ['SaveThreadComment'],
+    mutationFn: (variables?: SaveThreadCommentMutationVariables) => fetchAnilistData<SaveThreadCommentMutation, SaveThreadCommentMutationVariables>(SaveThreadCommentDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useSaveThreadCommentMutation.fetcher = (variables?: SaveThreadCommentMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<SaveThreadCommentMutation, SaveThreadCommentMutationVariables>(SaveThreadCommentDocument, variables, options);
+
+export const DeleteThreadCommentDocument = `
+    mutation DeleteThreadComment($id: Int) {
+  DeleteThreadComment(id: $id) {
+    deleted
+  }
+}
+    `;
+
+export const useDeleteThreadCommentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteThreadCommentMutation, TError, DeleteThreadCommentMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteThreadCommentMutation, TError, DeleteThreadCommentMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteThreadComment'],
+    mutationFn: (variables?: DeleteThreadCommentMutationVariables) => fetchAnilistData<DeleteThreadCommentMutation, DeleteThreadCommentMutationVariables>(DeleteThreadCommentDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useDeleteThreadCommentMutation.fetcher = (variables?: DeleteThreadCommentMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<DeleteThreadCommentMutation, DeleteThreadCommentMutationVariables>(DeleteThreadCommentDocument, variables, options);
+
+export const SaveThreadDocument = `
+    mutation SaveThread($id: Int, $title: String, $body: String, $categories: [Int], $mediaCategories: [Int]) {
+  SaveThread(
+    id: $id
+    title: $title
+    body: $body
+    categories: $categories
+    mediaCategories: $mediaCategories
+  ) {
+    id
+  }
+}
+    `;
+
+export const useSaveThreadMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SaveThreadMutation, TError, SaveThreadMutationVariables, TContext>) => {
+    
+    return useMutation<SaveThreadMutation, TError, SaveThreadMutationVariables, TContext>(
+      {
+    mutationKey: ['SaveThread'],
+    mutationFn: (variables?: SaveThreadMutationVariables) => fetchAnilistData<SaveThreadMutation, SaveThreadMutationVariables>(SaveThreadDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useSaveThreadMutation.fetcher = (variables?: SaveThreadMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<SaveThreadMutation, SaveThreadMutationVariables>(SaveThreadDocument, variables, options);
+
+export const DeleteThreadDocument = `
+    mutation DeleteThread($id: Int) {
+  DeleteThread(id: $id) {
+    deleted
+  }
+}
+    `;
+
+export const useDeleteThreadMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteThreadMutation, TError, DeleteThreadMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteThreadMutation, TError, DeleteThreadMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteThread'],
+    mutationFn: (variables?: DeleteThreadMutationVariables) => fetchAnilistData<DeleteThreadMutation, DeleteThreadMutationVariables>(DeleteThreadDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useDeleteThreadMutation.fetcher = (variables?: DeleteThreadMutationVariables, options?: RequestInit['headers']) => fetchAnilistData<DeleteThreadMutation, DeleteThreadMutationVariables>(DeleteThreadDocument, variables, options);
+
+export const MediaAniCardQueryDocument = `
+    query MediaAniCardQuery($id: Int) {
+  Media(id: $id) {
+    type
+    format
+    averageScore
+    meanScore
+    status
+    description
+    episodes
+    chapters
+    volumes
+    idMal
+    title {
+      romaji
+      english
+      native
+      userPreferred
+    }
+    coverImage {
+      color
+      extraLarge
+    }
+    startDate {
+      year
+      month
+      day
+    }
+    genres
+    tags {
+      name
+    }
+  }
+}
+    `;
+
+export const useMediaAniCardQueryQuery = <
+      TData = MediaAniCardQueryQuery,
+      TError = unknown
+    >(
+      variables?: MediaAniCardQueryQueryVariables,
+      options?: Omit<UseQueryOptions<MediaAniCardQueryQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MediaAniCardQueryQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MediaAniCardQueryQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['MediaAniCardQuery'] : ['MediaAniCardQuery', variables],
+    queryFn: fetchAnilistData<MediaAniCardQueryQuery, MediaAniCardQueryQueryVariables>(MediaAniCardQueryDocument, variables),
+    ...options
+  }
+    )};
+
+useMediaAniCardQueryQuery.getKey = (variables?: MediaAniCardQueryQueryVariables) => variables === undefined ? ['MediaAniCardQuery'] : ['MediaAniCardQuery', variables];
+
+export const useInfiniteMediaAniCardQueryQuery = <
+      TData = InfiniteData<MediaAniCardQueryQuery>,
+      TError = unknown
+    >(
+      variables: MediaAniCardQueryQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<MediaAniCardQueryQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MediaAniCardQueryQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<MediaAniCardQueryQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['MediaAniCardQuery.infinite'] : ['MediaAniCardQuery.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<MediaAniCardQueryQuery, MediaAniCardQueryQueryVariables>(MediaAniCardQueryDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteMediaAniCardQueryQuery.getKey = (variables?: MediaAniCardQueryQueryVariables) => variables === undefined ? ['MediaAniCardQuery.infinite'] : ['MediaAniCardQuery.infinite', variables];
+
+
+useMediaAniCardQueryQuery.fetcher = (variables?: MediaAniCardQueryQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MediaAniCardQueryQuery, MediaAniCardQueryQueryVariables>(MediaAniCardQueryDocument, variables, options);
 
 export const WeeklyAnimeDocument = `
     query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
@@ -5950,57 +6326,12 @@ export const WeeklyAnimeDocument = `
       airingAt
       timeUntilAiring
       media {
-        id
-        idMal
-        title {
-          romaji
-          native
-          english
-        }
-        startDate {
-          year
-          month
-          day
-        }
-        endDate {
-          year
-          month
-          day
-        }
-        status
-        season
-        format
-        episodes
-        source(version: 2)
-        averageScore
-        meanScore
-        bannerImage
-        isAdult
-        isFavourite
-        coverImage {
-          extraLarge
-          color
-        }
-        mediaListEntry {
-          id
-          mediaId
-          status
-          score
-          progress
-          progressVolumes
-          repeat
-        }
-        stats {
-          scoreDistribution {
-            score
-            amount
-          }
-        }
+        ...AnimeMeta
       }
     }
   }
 }
-    `;
+    ${AnimeMetaFragmentDoc}`;
 
 export const useWeeklyAnimeQuery = <
       TData = WeeklyAnimeQuery,
@@ -6013,7 +6344,7 @@ export const useWeeklyAnimeQuery = <
     return useQuery<WeeklyAnimeQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['WeeklyAnime'] : ['WeeklyAnime', variables],
-    queryFn: useFetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, variables),
+    queryFn: fetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, variables),
     ...options
   }
     )};
@@ -6033,7 +6364,7 @@ export const useInfiniteWeeklyAnimeQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['WeeklyAnime.infinite'] : ['WeeklyAnime.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6042,7 +6373,7 @@ export const useInfiniteWeeklyAnimeQuery = <
 useInfiniteWeeklyAnimeQuery.getKey = (variables?: WeeklyAnimeQueryVariables) => variables === undefined ? ['WeeklyAnime.infinite'] : ['WeeklyAnime.infinite', variables];
 
 
-useWeeklyAnimeQuery.fetcher = (variables?: WeeklyAnimeQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, variables, options);
+useWeeklyAnimeQuery.fetcher = (variables?: WeeklyAnimeQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, variables, options);
 
 export const AnimeExploreDocument = `
     query AnimeExplore($perPage: Int, $season: MediaSeason, $seasonYear: Int, $nextSeason: MediaSeason, $nextSeasonYear: Int, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
@@ -6144,7 +6475,7 @@ export const useAnimeExploreQuery = <
     return useQuery<AnimeExploreQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['AnimeExplore'] : ['AnimeExplore', variables],
-    queryFn: useFetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables),
+    queryFn: fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables),
     ...options
   }
     )};
@@ -6164,7 +6495,7 @@ export const useInfiniteAnimeExploreQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['AnimeExplore.infinite'] : ['AnimeExplore.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6173,7 +6504,7 @@ export const useInfiniteAnimeExploreQuery = <
 useInfiniteAnimeExploreQuery.getKey = (variables?: AnimeExploreQueryVariables) => variables === undefined ? ['AnimeExplore.infinite'] : ['AnimeExplore.infinite', variables];
 
 
-useAnimeExploreQuery.fetcher = (variables?: AnimeExploreQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables, options);
+useAnimeExploreQuery.fetcher = (variables?: AnimeExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables, options);
 
 export const MangaExploreDocument = `
     query MangaExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
@@ -6208,7 +6539,7 @@ export const MangaExploreDocument = `
       countryOfOrigin: JP
       isAdult: $isAdult
       onList: $onList
-      sort: [TRENDING_DESC, POPULARITY_DESC]
+      sort: [TRENDING_DESC]
       tag_not_in: $tag_not_in
       format_not_in: NOVEL
     ) {
@@ -6265,7 +6596,7 @@ export const useMangaExploreQuery = <
     return useQuery<MangaExploreQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['MangaExplore'] : ['MangaExplore', variables],
-    queryFn: useFetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables),
+    queryFn: fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables),
     ...options
   }
     )};
@@ -6285,7 +6616,7 @@ export const useInfiniteMangaExploreQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['MangaExplore.infinite'] : ['MangaExplore.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6294,7 +6625,7 @@ export const useInfiniteMangaExploreQuery = <
 useInfiniteMangaExploreQuery.getKey = (variables?: MangaExploreQueryVariables) => variables === undefined ? ['MangaExplore.infinite'] : ['MangaExplore.infinite', variables];
 
 
-useMangaExploreQuery.fetcher = (variables?: MangaExploreQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables, options);
+useMangaExploreQuery.fetcher = (variables?: MangaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables, options);
 
 export const ManhwaExploreDocument = `
     query ManhwaExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
@@ -6383,7 +6714,7 @@ export const useManhwaExploreQuery = <
     return useQuery<ManhwaExploreQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['ManhwaExplore'] : ['ManhwaExplore', variables],
-    queryFn: useFetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables),
+    queryFn: fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables),
     ...options
   }
     )};
@@ -6403,7 +6734,7 @@ export const useInfiniteManhwaExploreQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['ManhwaExplore.infinite'] : ['ManhwaExplore.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6412,7 +6743,7 @@ export const useInfiniteManhwaExploreQuery = <
 useInfiniteManhwaExploreQuery.getKey = (variables?: ManhwaExploreQueryVariables) => variables === undefined ? ['ManhwaExplore.infinite'] : ['ManhwaExplore.infinite', variables];
 
 
-useManhwaExploreQuery.fetcher = (variables?: ManhwaExploreQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables, options);
+useManhwaExploreQuery.fetcher = (variables?: ManhwaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables, options);
 
 export const ManhuaExploreDocument = `
     query ManhuaExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
@@ -6501,7 +6832,7 @@ export const useManhuaExploreQuery = <
     return useQuery<ManhuaExploreQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['ManhuaExplore'] : ['ManhuaExplore', variables],
-    queryFn: useFetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables),
+    queryFn: fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables),
     ...options
   }
     )};
@@ -6521,7 +6852,7 @@ export const useInfiniteManhuaExploreQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['ManhuaExplore.infinite'] : ['ManhuaExplore.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6530,7 +6861,7 @@ export const useInfiniteManhuaExploreQuery = <
 useInfiniteManhuaExploreQuery.getKey = (variables?: ManhuaExploreQueryVariables) => variables === undefined ? ['ManhuaExplore.infinite'] : ['ManhuaExplore.infinite', variables];
 
 
-useManhuaExploreQuery.fetcher = (variables?: ManhuaExploreQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables, options);
+useManhuaExploreQuery.fetcher = (variables?: ManhuaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables, options);
 
 export const NovelExploreDocument = `
     query NovelExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
@@ -6550,7 +6881,7 @@ export const NovelExploreDocument = `
       format: NOVEL
       sort: [TRENDING_DESC, POPULARITY_DESC]
     ) {
-      ...NovelMeta
+      ...MangaMeta
     }
   }
   trending: Page(page: 1, perPage: $perPage) {
@@ -6567,7 +6898,7 @@ export const NovelExploreDocument = `
       format: NOVEL
       tag_not_in: $tag_not_in
     ) {
-      ...NovelMeta
+      ...MangaMeta
     }
   }
   popular: Page(page: 1, perPage: $perPage) {
@@ -6584,7 +6915,7 @@ export const NovelExploreDocument = `
       format: NOVEL
       tag_not_in: $tag_not_in
     ) {
-      ...NovelMeta
+      ...MangaMeta
     }
   }
   top: Page(page: 1, perPage: $perPage) {
@@ -6601,11 +6932,11 @@ export const NovelExploreDocument = `
       format: NOVEL
       tag_not_in: $tag_not_in
     ) {
-      ...NovelMeta
+      ...MangaMeta
     }
   }
 }
-    ${NovelMetaFragmentDoc}`;
+    ${MangaMetaFragmentDoc}`;
 
 export const useNovelExploreQuery = <
       TData = NovelExploreQuery,
@@ -6618,7 +6949,7 @@ export const useNovelExploreQuery = <
     return useQuery<NovelExploreQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['NovelExplore'] : ['NovelExplore', variables],
-    queryFn: useFetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables),
+    queryFn: fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables),
     ...options
   }
     )};
@@ -6638,7 +6969,7 @@ export const useInfiniteNovelExploreQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['NovelExplore.infinite'] : ['NovelExplore.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6647,7 +6978,7 @@ export const useInfiniteNovelExploreQuery = <
 useInfiniteNovelExploreQuery.getKey = (variables?: NovelExploreQueryVariables) => variables === undefined ? ['NovelExplore.infinite'] : ['NovelExplore.infinite', variables];
 
 
-useNovelExploreQuery.fetcher = (variables?: NovelExploreQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables, options);
+useNovelExploreQuery.fetcher = (variables?: NovelExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables, options);
 
 export const RecommendationsDocument = `
     query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $onList: Boolean) {
@@ -6780,7 +7111,7 @@ export const useRecommendationsQuery = <
     return useQuery<RecommendationsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['Recommendations'] : ['Recommendations', variables],
-    queryFn: useFetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, variables),
+    queryFn: fetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, variables),
     ...options
   }
     )};
@@ -6800,7 +7131,7 @@ export const useInfiniteRecommendationsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['Recommendations.infinite'] : ['Recommendations.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6809,7 +7140,7 @@ export const useInfiniteRecommendationsQuery = <
 useInfiniteRecommendationsQuery.getKey = (variables?: RecommendationsQueryVariables) => variables === undefined ? ['Recommendations.infinite'] : ['Recommendations.infinite', variables];
 
 
-useRecommendationsQuery.fetcher = (variables?: RecommendationsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, variables, options);
+useRecommendationsQuery.fetcher = (variables?: RecommendationsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, variables, options);
 
 export const GenreTagCollectionDocument = `
     query GenreTagCollection {
@@ -6838,7 +7169,7 @@ export const useGenreTagCollectionQuery = <
     return useQuery<GenreTagCollectionQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['GenreTagCollection'] : ['GenreTagCollection', variables],
-    queryFn: useFetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, variables),
+    queryFn: fetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, variables),
     ...options
   }
     )};
@@ -6858,7 +7189,7 @@ export const useInfiniteGenreTagCollectionQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['GenreTagCollection.infinite'] : ['GenreTagCollection.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6867,7 +7198,7 @@ export const useInfiniteGenreTagCollectionQuery = <
 useInfiniteGenreTagCollectionQuery.getKey = (variables?: GenreTagCollectionQueryVariables) => variables === undefined ? ['GenreTagCollection.infinite'] : ['GenreTagCollection.infinite', variables];
 
 
-useGenreTagCollectionQuery.fetcher = (variables?: GenreTagCollectionQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, variables, options);
+useGenreTagCollectionQuery.fetcher = (variables?: GenreTagCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, variables, options);
 
 export const StudioListDocument = `
     query StudioList($studioId: Int, $page: Int, $perPage: Int) {
@@ -6904,7 +7235,7 @@ export const useStudioListQuery = <
     return useQuery<StudioListQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['StudioList'] : ['StudioList', variables],
-    queryFn: useFetchAnilistData<StudioListQuery, StudioListQueryVariables>(StudioListDocument, variables),
+    queryFn: fetchAnilistData<StudioListQuery, StudioListQueryVariables>(StudioListDocument, variables),
     ...options
   }
     )};
@@ -6924,7 +7255,7 @@ export const useInfiniteStudioListQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['StudioList.infinite'] : ['StudioList.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<StudioListQuery, StudioListQueryVariables>(StudioListDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<StudioListQuery, StudioListQueryVariables>(StudioListDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -6933,7 +7264,7 @@ export const useInfiniteStudioListQuery = <
 useInfiniteStudioListQuery.getKey = (variables?: StudioListQueryVariables) => variables === undefined ? ['StudioList.infinite'] : ['StudioList.infinite', variables];
 
 
-useStudioListQuery.fetcher = (variables?: StudioListQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<StudioListQuery, StudioListQueryVariables>(StudioListDocument, variables, options);
+useStudioListQuery.fetcher = (variables?: StudioListQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<StudioListQuery, StudioListQueryVariables>(StudioListDocument, variables, options);
 
 export const UserAnimeListCollectionDocument = `
     query UserAnimeListCollection($userId: Int, $userName: String, $sort: [MediaListSort]) {
@@ -6946,7 +7277,7 @@ export const UserAnimeListCollectionDocument = `
     lists {
       name
       isCustomList
-      isCompletedList: isSplitCompletedList
+      isSplitCompletedList
       entries {
         ...mediaListEntry
       }
@@ -6976,7 +7307,7 @@ export const useUserAnimeListCollectionQuery = <
     return useQuery<UserAnimeListCollectionQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserAnimeListCollection'] : ['UserAnimeListCollection', variables],
-    queryFn: useFetchAnilistData<UserAnimeListCollectionQuery, UserAnimeListCollectionQueryVariables>(UserAnimeListCollectionDocument, variables),
+    queryFn: fetchAnilistData<UserAnimeListCollectionQuery, UserAnimeListCollectionQueryVariables>(UserAnimeListCollectionDocument, variables),
     ...options
   }
     )};
@@ -6996,7 +7327,7 @@ export const useInfiniteUserAnimeListCollectionQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserAnimeListCollection.infinite'] : ['UserAnimeListCollection.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserAnimeListCollectionQuery, UserAnimeListCollectionQueryVariables>(UserAnimeListCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserAnimeListCollectionQuery, UserAnimeListCollectionQueryVariables>(UserAnimeListCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7005,7 +7336,7 @@ export const useInfiniteUserAnimeListCollectionQuery = <
 useInfiniteUserAnimeListCollectionQuery.getKey = (variables?: UserAnimeListCollectionQueryVariables) => variables === undefined ? ['UserAnimeListCollection.infinite'] : ['UserAnimeListCollection.infinite', variables];
 
 
-useUserAnimeListCollectionQuery.fetcher = (variables?: UserAnimeListCollectionQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserAnimeListCollectionQuery, UserAnimeListCollectionQueryVariables>(UserAnimeListCollectionDocument, variables, options);
+useUserAnimeListCollectionQuery.fetcher = (variables?: UserAnimeListCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserAnimeListCollectionQuery, UserAnimeListCollectionQueryVariables>(UserAnimeListCollectionDocument, variables, options);
 
 export const UserMangaListCollectionDocument = `
     query UserMangaListCollection($userId: Int, $userName: String, $sort: [MediaListSort]) {
@@ -7018,7 +7349,7 @@ export const UserMangaListCollectionDocument = `
     lists {
       name
       isCustomList
-      isCompletedList: isSplitCompletedList
+      isSplitCompletedList
       entries {
         ...mediaListEntry
       }
@@ -7048,7 +7379,7 @@ export const useUserMangaListCollectionQuery = <
     return useQuery<UserMangaListCollectionQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserMangaListCollection'] : ['UserMangaListCollection', variables],
-    queryFn: useFetchAnilistData<UserMangaListCollectionQuery, UserMangaListCollectionQueryVariables>(UserMangaListCollectionDocument, variables),
+    queryFn: fetchAnilistData<UserMangaListCollectionQuery, UserMangaListCollectionQueryVariables>(UserMangaListCollectionDocument, variables),
     ...options
   }
     )};
@@ -7068,7 +7399,7 @@ export const useInfiniteUserMangaListCollectionQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserMangaListCollection.infinite'] : ['UserMangaListCollection.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserMangaListCollectionQuery, UserMangaListCollectionQueryVariables>(UserMangaListCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserMangaListCollectionQuery, UserMangaListCollectionQueryVariables>(UserMangaListCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7077,7 +7408,7 @@ export const useInfiniteUserMangaListCollectionQuery = <
 useInfiniteUserMangaListCollectionQuery.getKey = (variables?: UserMangaListCollectionQueryVariables) => variables === undefined ? ['UserMangaListCollection.infinite'] : ['UserMangaListCollection.infinite', variables];
 
 
-useUserMangaListCollectionQuery.fetcher = (variables?: UserMangaListCollectionQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserMangaListCollectionQuery, UserMangaListCollectionQueryVariables>(UserMangaListCollectionDocument, variables, options);
+useUserMangaListCollectionQuery.fetcher = (variables?: UserMangaListCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserMangaListCollectionQuery, UserMangaListCollectionQueryVariables>(UserMangaListCollectionDocument, variables, options);
 
 export const UserCustomListsDocument = `
     query UserCustomLists($userId: Int, $userName: String, $type: MediaType) {
@@ -7107,7 +7438,7 @@ export const useUserCustomListsQuery = <
     return useQuery<UserCustomListsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserCustomLists'] : ['UserCustomLists', variables],
-    queryFn: useFetchAnilistData<UserCustomListsQuery, UserCustomListsQueryVariables>(UserCustomListsDocument, variables),
+    queryFn: fetchAnilistData<UserCustomListsQuery, UserCustomListsQueryVariables>(UserCustomListsDocument, variables),
     ...options
   }
     )};
@@ -7127,7 +7458,7 @@ export const useInfiniteUserCustomListsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserCustomLists.infinite'] : ['UserCustomLists.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserCustomListsQuery, UserCustomListsQueryVariables>(UserCustomListsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserCustomListsQuery, UserCustomListsQueryVariables>(UserCustomListsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7136,7 +7467,7 @@ export const useInfiniteUserCustomListsQuery = <
 useInfiniteUserCustomListsQuery.getKey = (variables?: UserCustomListsQueryVariables) => variables === undefined ? ['UserCustomLists.infinite'] : ['UserCustomLists.infinite', variables];
 
 
-useUserCustomListsQuery.fetcher = (variables?: UserCustomListsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserCustomListsQuery, UserCustomListsQueryVariables>(UserCustomListsDocument, variables, options);
+useUserCustomListsQuery.fetcher = (variables?: UserCustomListsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserCustomListsQuery, UserCustomListsQueryVariables>(UserCustomListsDocument, variables, options);
 
 export const RandomMediaDocument = `
     query RandomMedia($random: Int, $perRandom: Int, $type: MediaType, $isAdult: Boolean) {
@@ -7191,7 +7522,7 @@ export const useRandomMediaQuery = <
     return useQuery<RandomMediaQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['RandomMedia'] : ['RandomMedia', variables],
-    queryFn: useFetchAnilistData<RandomMediaQuery, RandomMediaQueryVariables>(RandomMediaDocument, variables),
+    queryFn: fetchAnilistData<RandomMediaQuery, RandomMediaQueryVariables>(RandomMediaDocument, variables),
     ...options
   }
     )};
@@ -7211,7 +7542,7 @@ export const useInfiniteRandomMediaQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['RandomMedia.infinite'] : ['RandomMedia.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<RandomMediaQuery, RandomMediaQueryVariables>(RandomMediaDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<RandomMediaQuery, RandomMediaQueryVariables>(RandomMediaDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7220,7 +7551,7 @@ export const useInfiniteRandomMediaQuery = <
 useInfiniteRandomMediaQuery.getKey = (variables?: RandomMediaQueryVariables) => variables === undefined ? ['RandomMedia.infinite'] : ['RandomMedia.infinite', variables];
 
 
-useRandomMediaQuery.fetcher = (variables?: RandomMediaQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<RandomMediaQuery, RandomMediaQueryVariables>(RandomMediaDocument, variables, options);
+useRandomMediaQuery.fetcher = (variables?: RandomMediaQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<RandomMediaQuery, RandomMediaQueryVariables>(RandomMediaDocument, variables, options);
 
 export const AniMediaDocument = `
     query AniMedia($id: Int, $sort_c: [CharacterSort], $role_c: CharacterRole, $page_c: Int, $perPage_c: Int, $page_rec: Int, $perPage_rec: Int, $userId: Int, $skipUser: Boolean!) {
@@ -7235,7 +7566,7 @@ export const AniMediaDocument = `
       scoreFormat
     }
   }
-  Page(page: 1) {
+  Following: Page(page: 1) {
     pageInfo {
       total
       perPage
@@ -7251,13 +7582,16 @@ export const AniMediaDocument = `
       user {
         id
         name
+        aboutHTML: about(asHtml: true)
         isFollowing
+        isFollower
         avatar {
           large
         }
         mediaListOptions {
           scoreFormat
         }
+        siteUrl
       }
     }
   }
@@ -7311,34 +7645,9 @@ export const AniMediaDocument = `
         id
         relationType(version: 2)
         node {
-          id
-          idMal
-          bannerImage
-          type
-          format
-          isFavourite
-          isLicensed
-          bannerImage
-          status(version: 2)
-          title {
-            romaji
-            english
-            native
-            userPreferred
-          }
-          coverImage {
-            extraLarge
-            large
-            color
-          }
-          stats {
-            scoreDistribution {
-              score
-              amount
-            }
-          }
-          averageScore
-          meanScore
+          ...AnimeMeta
+          chapters
+          volumes
         }
       }
     }
@@ -7403,19 +7712,7 @@ export const AniMediaDocument = `
           }
         }
         node {
-          id
-          isFavourite
-          image {
-            large
-          }
-          name {
-            full
-            userPreferred
-            native
-            first
-            last
-          }
-          favourites
+          ...CharacterMetaData
         }
       }
     }
@@ -7426,40 +7723,9 @@ export const AniMediaDocument = `
           rating
           userRating
           mediaRecommendation {
-            id
-            idMal
-            bannerImage
-            type
-            format
-            isFavourite
-            isLicensed
-            status(version: 2)
-            title {
-              romaji
-              english
-              native
-              userPreferred
-            }
-            coverImage {
-              extraLarge
-              color
-              large
-            }
-            mediaListEntry {
-              id
-              status
-              score
-              progress
-              progressVolumes
-            }
-            stats {
-              scoreDistribution {
-                score
-                amount
-              }
-            }
-            meanScore
-            averageScore
+            ...AnimeMeta
+            chapters
+            volumes
           }
         }
       }
@@ -7509,19 +7775,7 @@ export const AniMediaDocument = `
       edges {
         role
         node {
-          id
-          name {
-            full
-            first
-            middle
-            last
-            native
-            userPreferred
-          }
-          image {
-            large
-          }
-          isFavourite
+          ...StaffMetaData
         }
       }
     }
@@ -7564,7 +7818,7 @@ export const AniMediaDocument = `
         }
       }
     }
-    airingSchedule(page: 1, perPage: 25, notYetAired: true) {
+    airingSchedule(page: 1, perPage: 25) {
       nodes {
         id
         airingAt
@@ -7576,7 +7830,8 @@ export const AniMediaDocument = `
     idMal
     id
     bannerImage
-    description(asHtml: true)
+    description(asHtml: false)
+    descriptionHTML: description(asHtml: true)
     siteUrl
     updatedAt
     season
@@ -7601,7 +7856,9 @@ export const AniMediaDocument = `
     isFavourite
   }
 }
-    `;
+    ${AnimeMetaFragmentDoc}
+${CharacterMetaDataFragmentDoc}
+${StaffMetaDataFragmentDoc}`;
 
 export const useAniMediaQuery = <
       TData = AniMediaQuery,
@@ -7614,7 +7871,7 @@ export const useAniMediaQuery = <
     return useQuery<AniMediaQuery, TError, TData>(
       {
     queryKey: ['AniMedia', variables],
-    queryFn: useFetchAnilistData<AniMediaQuery, AniMediaQueryVariables>(AniMediaDocument, variables),
+    queryFn: fetchAnilistData<AniMediaQuery, AniMediaQueryVariables>(AniMediaDocument, variables),
     ...options
   }
     )};
@@ -7634,7 +7891,7 @@ export const useInfiniteAniMediaQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['AniMedia.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<AniMediaQuery, AniMediaQueryVariables>(AniMediaDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<AniMediaQuery, AniMediaQueryVariables>(AniMediaDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7643,7 +7900,7 @@ export const useInfiniteAniMediaQuery = <
 useInfiniteAniMediaQuery.getKey = (variables: AniMediaQueryVariables) => ['AniMedia.infinite', variables];
 
 
-useAniMediaQuery.fetcher = (variables: AniMediaQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<AniMediaQuery, AniMediaQueryVariables>(AniMediaDocument, variables, options);
+useAniMediaQuery.fetcher = (variables: AniMediaQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AniMediaQuery, AniMediaQueryVariables>(AniMediaDocument, variables, options);
 
 export const MediaFollowingDocument = `
     query MediaFollowing($id: Int, $page: Int, $perPage: Int) {
@@ -7686,7 +7943,7 @@ export const useMediaFollowingQuery = <
     return useQuery<MediaFollowingQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['MediaFollowing'] : ['MediaFollowing', variables],
-    queryFn: useFetchAnilistData<MediaFollowingQuery, MediaFollowingQueryVariables>(MediaFollowingDocument, variables),
+    queryFn: fetchAnilistData<MediaFollowingQuery, MediaFollowingQueryVariables>(MediaFollowingDocument, variables),
     ...options
   }
     )};
@@ -7706,7 +7963,7 @@ export const useInfiniteMediaFollowingQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['MediaFollowing.infinite'] : ['MediaFollowing.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<MediaFollowingQuery, MediaFollowingQueryVariables>(MediaFollowingDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<MediaFollowingQuery, MediaFollowingQueryVariables>(MediaFollowingDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7715,11 +7972,11 @@ export const useInfiniteMediaFollowingQuery = <
 useInfiniteMediaFollowingQuery.getKey = (variables?: MediaFollowingQueryVariables) => variables === undefined ? ['MediaFollowing.infinite'] : ['MediaFollowing.infinite', variables];
 
 
-useMediaFollowingQuery.fetcher = (variables?: MediaFollowingQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<MediaFollowingQuery, MediaFollowingQueryVariables>(MediaFollowingDocument, variables, options);
+useMediaFollowingQuery.fetcher = (variables?: MediaFollowingQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MediaFollowingQuery, MediaFollowingQueryVariables>(MediaFollowingDocument, variables, options);
 
 export const CharacterListDocument = `
-    query CharacterList($id: Int, $type: MediaType, $page: Int, $perPage: Int, $sort: [CharacterSort]) {
-  Media(id: $id, type: $type) {
+    query CharacterList($id: Int, $page: Int, $perPage: Int, $sort: [CharacterSort]) {
+  Media(id: $id) {
     id
     characters(sort: $sort, page: $page, perPage: $perPage) {
       pageInfo {
@@ -7778,7 +8035,7 @@ export const useCharacterListQuery = <
     return useQuery<CharacterListQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['CharacterList'] : ['CharacterList', variables],
-    queryFn: useFetchAnilistData<CharacterListQuery, CharacterListQueryVariables>(CharacterListDocument, variables),
+    queryFn: fetchAnilistData<CharacterListQuery, CharacterListQueryVariables>(CharacterListDocument, variables),
     ...options
   }
     )};
@@ -7798,7 +8055,7 @@ export const useInfiniteCharacterListQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['CharacterList.infinite'] : ['CharacterList.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<CharacterListQuery, CharacterListQueryVariables>(CharacterListDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<CharacterListQuery, CharacterListQueryVariables>(CharacterListDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7807,7 +8064,7 @@ export const useInfiniteCharacterListQuery = <
 useInfiniteCharacterListQuery.getKey = (variables?: CharacterListQueryVariables) => variables === undefined ? ['CharacterList.infinite'] : ['CharacterList.infinite', variables];
 
 
-useCharacterListQuery.fetcher = (variables?: CharacterListQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<CharacterListQuery, CharacterListQueryVariables>(CharacterListDocument, variables, options);
+useCharacterListQuery.fetcher = (variables?: CharacterListQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<CharacterListQuery, CharacterListQueryVariables>(CharacterListDocument, variables, options);
 
 export const CharacterDetailsDocument = `
     query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) {
@@ -7901,7 +8158,7 @@ export const useCharacterDetailsQuery = <
     return useQuery<CharacterDetailsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['CharacterDetails'] : ['CharacterDetails', variables],
-    queryFn: useFetchAnilistData<CharacterDetailsQuery, CharacterDetailsQueryVariables>(CharacterDetailsDocument, variables),
+    queryFn: fetchAnilistData<CharacterDetailsQuery, CharacterDetailsQueryVariables>(CharacterDetailsDocument, variables),
     ...options
   }
     )};
@@ -7921,7 +8178,7 @@ export const useInfiniteCharacterDetailsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['CharacterDetails.infinite'] : ['CharacterDetails.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<CharacterDetailsQuery, CharacterDetailsQueryVariables>(CharacterDetailsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<CharacterDetailsQuery, CharacterDetailsQueryVariables>(CharacterDetailsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -7930,7 +8187,7 @@ export const useInfiniteCharacterDetailsQuery = <
 useInfiniteCharacterDetailsQuery.getKey = (variables?: CharacterDetailsQueryVariables) => variables === undefined ? ['CharacterDetails.infinite'] : ['CharacterDetails.infinite', variables];
 
 
-useCharacterDetailsQuery.fetcher = (variables?: CharacterDetailsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<CharacterDetailsQuery, CharacterDetailsQueryVariables>(CharacterDetailsDocument, variables, options);
+useCharacterDetailsQuery.fetcher = (variables?: CharacterDetailsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<CharacterDetailsQuery, CharacterDetailsQueryVariables>(CharacterDetailsDocument, variables, options);
 
 export const StaffListDocument = `
     query StaffList($id: Int, $page: Int, $perPage: Int) {
@@ -7976,7 +8233,7 @@ export const useStaffListQuery = <
     return useQuery<StaffListQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['StaffList'] : ['StaffList', variables],
-    queryFn: useFetchAnilistData<StaffListQuery, StaffListQueryVariables>(StaffListDocument, variables),
+    queryFn: fetchAnilistData<StaffListQuery, StaffListQueryVariables>(StaffListDocument, variables),
     ...options
   }
     )};
@@ -7996,7 +8253,7 @@ export const useInfiniteStaffListQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['StaffList.infinite'] : ['StaffList.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<StaffListQuery, StaffListQueryVariables>(StaffListDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<StaffListQuery, StaffListQueryVariables>(StaffListDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8005,7 +8262,7 @@ export const useInfiniteStaffListQuery = <
 useInfiniteStaffListQuery.getKey = (variables?: StaffListQueryVariables) => variables === undefined ? ['StaffList.infinite'] : ['StaffList.infinite', variables];
 
 
-useStaffListQuery.fetcher = (variables?: StaffListQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<StaffListQuery, StaffListQueryVariables>(StaffListDocument, variables, options);
+useStaffListQuery.fetcher = (variables?: StaffListQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<StaffListQuery, StaffListQueryVariables>(StaffListDocument, variables, options);
 
 export const StaffDetailsDocument = `
     query StaffDetails($staff_media_page: Int, $staff_media_perPage: Int, $id: Int, $char_page: Int, $char_perPage: Int) {
@@ -8121,7 +8378,7 @@ export const useStaffDetailsQuery = <
     return useQuery<StaffDetailsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['StaffDetails'] : ['StaffDetails', variables],
-    queryFn: useFetchAnilistData<StaffDetailsQuery, StaffDetailsQueryVariables>(StaffDetailsDocument, variables),
+    queryFn: fetchAnilistData<StaffDetailsQuery, StaffDetailsQueryVariables>(StaffDetailsDocument, variables),
     ...options
   }
     )};
@@ -8141,7 +8398,7 @@ export const useInfiniteStaffDetailsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['StaffDetails.infinite'] : ['StaffDetails.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<StaffDetailsQuery, StaffDetailsQueryVariables>(StaffDetailsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<StaffDetailsQuery, StaffDetailsQueryVariables>(StaffDetailsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8150,7 +8407,7 @@ export const useInfiniteStaffDetailsQuery = <
 useInfiniteStaffDetailsQuery.getKey = (variables?: StaffDetailsQueryVariables) => variables === undefined ? ['StaffDetails.infinite'] : ['StaffDetails.infinite', variables];
 
 
-useStaffDetailsQuery.fetcher = (variables?: StaffDetailsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<StaffDetailsQuery, StaffDetailsQueryVariables>(StaffDetailsDocument, variables, options);
+useStaffDetailsQuery.fetcher = (variables?: StaffDetailsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<StaffDetailsQuery, StaffDetailsQueryVariables>(StaffDetailsDocument, variables, options);
 
 export const GetNotificationsDocument = `
     query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
@@ -8293,7 +8550,7 @@ export const useGetNotificationsQuery = <
     return useQuery<GetNotificationsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['GetNotifications'] : ['GetNotifications', variables],
-    queryFn: useFetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, variables),
+    queryFn: fetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, variables),
     ...options
   }
     )};
@@ -8313,7 +8570,7 @@ export const useInfiniteGetNotificationsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['GetNotifications.infinite'] : ['GetNotifications.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8322,7 +8579,7 @@ export const useInfiniteGetNotificationsQuery = <
 useInfiniteGetNotificationsQuery.getKey = (variables?: GetNotificationsQueryVariables) => variables === undefined ? ['GetNotifications.infinite'] : ['GetNotifications.infinite', variables];
 
 
-useGetNotificationsQuery.fetcher = (variables?: GetNotificationsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, variables, options);
+useGetNotificationsQuery.fetcher = (variables?: GetNotificationsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, variables, options);
 
 export const ReviewsDocument = `
     query Reviews($mediaId: Int, $page: Int, $perPage: Int) {
@@ -8331,6 +8588,7 @@ export const ReviewsDocument = `
       lastPage
       total
       hasNextPage
+      currentPage
     }
     reviews(mediaId: $mediaId, sort: [RATING_DESC, ID]) {
       id
@@ -8365,7 +8623,7 @@ export const useReviewsQuery = <
     return useQuery<ReviewsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['Reviews'] : ['Reviews', variables],
-    queryFn: useFetchAnilistData<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, variables),
+    queryFn: fetchAnilistData<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, variables),
     ...options
   }
     )};
@@ -8385,7 +8643,7 @@ export const useInfiniteReviewsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['Reviews.infinite'] : ['Reviews.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8394,7 +8652,7 @@ export const useInfiniteReviewsQuery = <
 useInfiniteReviewsQuery.getKey = (variables?: ReviewsQueryVariables) => variables === undefined ? ['Reviews.infinite'] : ['Reviews.infinite', variables];
 
 
-useReviewsQuery.fetcher = (variables?: ReviewsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, variables, options);
+useReviewsQuery.fetcher = (variables?: ReviewsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ReviewsQuery, ReviewsQueryVariables>(ReviewsDocument, variables, options);
 
 export const ReviewsByIdDocument = `
     query ReviewsById($reviewId: Int) {
@@ -8404,6 +8662,13 @@ export const ReviewsByIdDocument = `
     body(asHtml: false)
     htmlBody: body(asHtml: true)
     mediaType
+    media {
+      coverImage {
+        extraLarge
+        color
+      }
+      bannerImage
+    }
     rating
     ratingAmount
     score
@@ -8436,7 +8701,7 @@ export const useReviewsByIdQuery = <
     return useQuery<ReviewsByIdQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['ReviewsById'] : ['ReviewsById', variables],
-    queryFn: useFetchAnilistData<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, variables),
+    queryFn: fetchAnilistData<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, variables),
     ...options
   }
     )};
@@ -8456,7 +8721,7 @@ export const useInfiniteReviewsByIdQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['ReviewsById.infinite'] : ['ReviewsById.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8465,10 +8730,10 @@ export const useInfiniteReviewsByIdQuery = <
 useInfiniteReviewsByIdQuery.getKey = (variables?: ReviewsByIdQueryVariables) => variables === undefined ? ['ReviewsById.infinite'] : ['ReviewsById.infinite', variables];
 
 
-useReviewsByIdQuery.fetcher = (variables?: ReviewsByIdQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, variables, options);
+useReviewsByIdQuery.fetcher = (variables?: ReviewsByIdQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ReviewsByIdQuery, ReviewsByIdQueryVariables>(ReviewsByIdDocument, variables, options);
 
-export const SearchAnimeDocument = `
-    query SearchAnime($page: Int, $perPage: Int, $id: Int, $idMal: Int, $startDate: FuzzyDateInt, $endDate: FuzzyDateInt, $season: MediaSeason, $seasonYear: Int, $format: MediaFormat, $status: MediaStatus, $episodes: Int, $duration: Int, $chapters: Int, $volumes: Int, $isAdult: Boolean, $genre: String, $tag: String, $minimumTagRank: Int, $tagCategory: String, $onList: Boolean, $licensedBy: String, $licensedById: Int, $averageScore: Int, $popularity: Int, $source: MediaSource, $countryOfOrigin: CountryCode, $isLicensed: Boolean, $search: String, $id_not: Int, $id_in: [Int], $id_not_in: [Int], $idMal_not: Int, $idMal_in: [Int], $idMal_not_in: [Int], $startDate_greater: FuzzyDateInt, $startDate_lesser: FuzzyDateInt, $startDate_like: String, $endDate_greater: FuzzyDateInt, $endDate_lesser: FuzzyDateInt, $endDate_like: String, $format_in: [MediaFormat], $format_not: MediaFormat, $format_not_in: [MediaFormat], $status_in: [MediaStatus], $status_not: MediaStatus, $status_not_in: [MediaStatus], $episodes_greater: Int, $episodes_lesser: Int, $duration_greater: Int, $duration_lesser: Int, $chapters_greater: Int, $chapters_lesser: Int, $volumes_greater: Int, $volumes_lesser: Int, $genre_in: [String], $genre_not_in: [String], $tag_in: [String], $tag_not_in: [String], $tagCategory_in: [String], $tagCategory_not_in: [String], $licensedBy_in: [String], $licensedById_in: [Int], $averageScore_not: Int, $averageScore_greater: Int, $averageScore_lesser: Int, $popularity_not: Int, $popularity_greater: Int, $popularity_lesser: Int, $source_in: [MediaSource], $sort: [MediaSort]) {
+export const MediaSearchDocument = `
+    query MediaSearch($type: MediaType, $page: Int, $perPage: Int, $id: Int, $idMal: Int, $startDate: FuzzyDateInt, $endDate: FuzzyDateInt, $season: MediaSeason, $seasonYear: Int, $format: MediaFormat, $status: MediaStatus, $episodes: Int, $duration: Int, $chapters: Int, $volumes: Int, $isAdult: Boolean, $genre: String, $tag: String, $minimumTagRank: Int, $tagCategory: String, $onList: Boolean, $licensedBy: String, $licensedById: Int, $averageScore: Int, $popularity: Int, $source: MediaSource, $countryOfOrigin: CountryCode, $isLicensed: Boolean, $search: String, $id_not: Int, $id_in: [Int], $id_not_in: [Int], $idMal_not: Int, $idMal_in: [Int], $idMal_not_in: [Int], $startDate_greater: FuzzyDateInt, $startDate_lesser: FuzzyDateInt, $startDate_like: String, $endDate_greater: FuzzyDateInt, $endDate_lesser: FuzzyDateInt, $endDate_like: String, $format_in: [MediaFormat], $format_not: MediaFormat, $format_not_in: [MediaFormat], $status_in: [MediaStatus], $status_not: MediaStatus, $status_not_in: [MediaStatus], $episodes_greater: Int, $episodes_lesser: Int, $duration_greater: Int, $duration_lesser: Int, $chapters_greater: Int, $chapters_lesser: Int, $volumes_greater: Int, $volumes_lesser: Int, $genre_in: [String], $genre_not_in: [String], $tag_in: [String], $tag_not_in: [String], $tagCategory_in: [String], $tagCategory_not_in: [String], $licensedBy_in: [String], $licensedById_in: [Int], $averageScore_not: Int, $averageScore_greater: Int, $averageScore_lesser: Int, $popularity_not: Int, $popularity_greater: Int, $popularity_lesser: Int, $source_in: [MediaSource], $sort: [MediaSort]) {
   Page(page: $page, perPage: $perPage) {
     pageInfo {
       hasNextPage
@@ -8482,7 +8747,7 @@ export const SearchAnimeDocument = `
       endDate: $endDate
       season: $season
       seasonYear: $seasonYear
-      type: ANIME
+      type: $type
       format: $format
       status: $status
       episodes: $episodes
@@ -8546,312 +8811,55 @@ export const SearchAnimeDocument = `
       source_in: $source_in
       sort: $sort
     ) {
-      id
-      idMal
-      bannerImage
-      type
-      format
-      isFavourite
-      description
-      genres
-      episodes
+      ...AnimeMeta
       chapters
       volumes
-      status
-      title {
-        english
-        native
-        romaji
-        userPreferred
-      }
-      coverImage {
-        medium
-        large
-        color
-        extraLarge
-      }
-      meanScore
-      averageScore
-      mediaListEntry {
-        id
-        mediaId
-        status
-        score
-        progress
-        progressVolumes
-        repeat
-        priority
-        private
-        notes
-        hiddenFromStatusLists
-        customLists
-        advancedScores
-        startedAt {
-          year
-          month
-          day
-        }
-        completedAt {
-          year
-          month
-          day
-        }
-        updatedAt
-        createdAt
-      }
-      nextAiringEpisode {
-        id
-        airingAt
-        timeUntilAiring
-        episode
-        mediaId
-      }
-      stats {
-        scoreDistribution {
-          score
-          amount
-        }
-      }
-      siteUrl
     }
   }
 }
-    `;
+    ${AnimeMetaFragmentDoc}`;
 
-export const useSearchAnimeQuery = <
-      TData = SearchAnimeQuery,
+export const useMediaSearchQuery = <
+      TData = MediaSearchQuery,
       TError = unknown
     >(
-      variables?: SearchAnimeQueryVariables,
-      options?: Omit<UseQueryOptions<SearchAnimeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<SearchAnimeQuery, TError, TData>['queryKey'] }
+      variables?: MediaSearchQueryVariables,
+      options?: Omit<UseQueryOptions<MediaSearchQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MediaSearchQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<SearchAnimeQuery, TError, TData>(
+    return useQuery<MediaSearchQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['SearchAnime'] : ['SearchAnime', variables],
-    queryFn: useFetchAnilistData<SearchAnimeQuery, SearchAnimeQueryVariables>(SearchAnimeDocument, variables),
+    queryKey: variables === undefined ? ['MediaSearch'] : ['MediaSearch', variables],
+    queryFn: fetchAnilistData<MediaSearchQuery, MediaSearchQueryVariables>(MediaSearchDocument, variables),
     ...options
   }
     )};
 
-useSearchAnimeQuery.getKey = (variables?: SearchAnimeQueryVariables) => variables === undefined ? ['SearchAnime'] : ['SearchAnime', variables];
+useMediaSearchQuery.getKey = (variables?: MediaSearchQueryVariables) => variables === undefined ? ['MediaSearch'] : ['MediaSearch', variables];
 
-export const useInfiniteSearchAnimeQuery = <
-      TData = InfiniteData<SearchAnimeQuery>,
+export const useInfiniteMediaSearchQuery = <
+      TData = InfiniteData<MediaSearchQuery>,
       TError = unknown
     >(
-      variables: SearchAnimeQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<SearchAnimeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<SearchAnimeQuery, TError, TData>['queryKey'] }
+      variables: MediaSearchQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<MediaSearchQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MediaSearchQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useInfiniteQuery<SearchAnimeQuery, TError, TData>(
+    return useInfiniteQuery<MediaSearchQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['SearchAnime.infinite'] : ['SearchAnime.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<SearchAnimeQuery, SearchAnimeQueryVariables>(SearchAnimeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryKey: optionsQueryKey ?? variables === undefined ? ['MediaSearch.infinite'] : ['MediaSearch.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<MediaSearchQuery, MediaSearchQueryVariables>(MediaSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteSearchAnimeQuery.getKey = (variables?: SearchAnimeQueryVariables) => variables === undefined ? ['SearchAnime.infinite'] : ['SearchAnime.infinite', variables];
+useInfiniteMediaSearchQuery.getKey = (variables?: MediaSearchQueryVariables) => variables === undefined ? ['MediaSearch.infinite'] : ['MediaSearch.infinite', variables];
 
 
-useSearchAnimeQuery.fetcher = (variables?: SearchAnimeQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<SearchAnimeQuery, SearchAnimeQueryVariables>(SearchAnimeDocument, variables, options);
-
-export const SearchMangaDocument = `
-    query SearchManga($page: Int, $perPage: Int, $id: Int, $idMal: Int, $startDate: FuzzyDateInt, $endDate: FuzzyDateInt, $season: MediaSeason, $seasonYear: Int, $format: MediaFormat, $status: MediaStatus, $episodes: Int, $duration: Int, $chapters: Int, $volumes: Int, $isAdult: Boolean, $genre: String, $tag: String, $minimumTagRank: Int, $tagCategory: String, $onList: Boolean, $licensedBy: String, $licensedById: Int, $averageScore: Int, $popularity: Int, $source: MediaSource, $countryOfOrigin: CountryCode, $isLicensed: Boolean, $search: String, $id_not: Int, $id_in: [Int], $id_not_in: [Int], $idMal_not: Int, $idMal_in: [Int], $idMal_not_in: [Int], $startDate_greater: FuzzyDateInt, $startDate_lesser: FuzzyDateInt, $startDate_like: String, $endDate_greater: FuzzyDateInt, $endDate_lesser: FuzzyDateInt, $endDate_like: String, $format_in: [MediaFormat], $format_not: MediaFormat, $format_not_in: [MediaFormat], $status_in: [MediaStatus], $status_not: MediaStatus, $status_not_in: [MediaStatus], $episodes_greater: Int, $episodes_lesser: Int, $duration_greater: Int, $duration_lesser: Int, $chapters_greater: Int, $chapters_lesser: Int, $volumes_greater: Int, $volumes_lesser: Int, $genre_in: [String], $genre_not_in: [String], $tag_in: [String], $tag_not_in: [String], $tagCategory_in: [String], $tagCategory_not_in: [String], $licensedBy_in: [String], $licensedById_in: [Int], $averageScore_not: Int, $averageScore_greater: Int, $averageScore_lesser: Int, $popularity_not: Int, $popularity_greater: Int, $popularity_lesser: Int, $source_in: [MediaSource], $sort: [MediaSort]) {
-  Page(page: $page, perPage: $perPage) {
-    pageInfo {
-      hasNextPage
-      currentPage
-      total
-    }
-    media(
-      id: $id
-      idMal: $idMal
-      startDate: $startDate
-      endDate: $endDate
-      season: $season
-      seasonYear: $seasonYear
-      type: MANGA
-      format: $format
-      status: $status
-      episodes: $episodes
-      duration: $duration
-      chapters: $chapters
-      volumes: $volumes
-      isAdult: $isAdult
-      genre: $genre
-      tag: $tag
-      minimumTagRank: $minimumTagRank
-      tagCategory: $tagCategory
-      onList: $onList
-      licensedBy: $licensedBy
-      licensedById: $licensedById
-      averageScore: $averageScore
-      popularity: $popularity
-      source: $source
-      countryOfOrigin: $countryOfOrigin
-      isLicensed: $isLicensed
-      search: $search
-      id_not: $id_not
-      id_in: $id_in
-      id_not_in: $id_not_in
-      idMal_not: $idMal_not
-      idMal_in: $idMal_in
-      idMal_not_in: $idMal_not_in
-      startDate_greater: $startDate_greater
-      startDate_lesser: $startDate_lesser
-      startDate_like: $startDate_like
-      endDate_greater: $endDate_greater
-      endDate_lesser: $endDate_lesser
-      endDate_like: $endDate_like
-      format_in: $format_in
-      format_not: $format_not
-      format_not_in: $format_not_in
-      status_in: $status_in
-      status_not: $status_not
-      status_not_in: $status_not_in
-      episodes_greater: $episodes_greater
-      episodes_lesser: $episodes_lesser
-      duration_greater: $duration_greater
-      duration_lesser: $duration_lesser
-      chapters_greater: $chapters_greater
-      chapters_lesser: $chapters_lesser
-      volumes_greater: $volumes_greater
-      volumes_lesser: $volumes_lesser
-      genre_in: $genre_in
-      genre_not_in: $genre_not_in
-      tag_in: $tag_in
-      tag_not_in: $tag_not_in
-      tagCategory_in: $tagCategory_in
-      tagCategory_not_in: $tagCategory_not_in
-      licensedBy_in: $licensedBy_in
-      licensedById_in: $licensedById_in
-      averageScore_not: $averageScore_not
-      averageScore_greater: $averageScore_greater
-      averageScore_lesser: $averageScore_lesser
-      popularity_not: $popularity_not
-      popularity_greater: $popularity_greater
-      popularity_lesser: $popularity_lesser
-      source_in: $source_in
-      sort: $sort
-    ) {
-      id
-      idMal
-      bannerImage
-      type
-      format
-      isFavourite
-      description
-      genres
-      episodes
-      chapters
-      volumes
-      status
-      title {
-        english
-        native
-        romaji
-        userPreferred
-      }
-      coverImage {
-        medium
-        large
-        color
-        extraLarge
-      }
-      meanScore
-      averageScore
-      mediaListEntry {
-        id
-        mediaId
-        status
-        score
-        progress
-        progressVolumes
-        repeat
-        priority
-        private
-        notes
-        hiddenFromStatusLists
-        customLists
-        advancedScores
-        startedAt {
-          year
-          month
-          day
-        }
-        completedAt {
-          year
-          month
-          day
-        }
-        updatedAt
-        createdAt
-      }
-      nextAiringEpisode {
-        id
-        airingAt
-        timeUntilAiring
-        episode
-        mediaId
-      }
-      stats {
-        scoreDistribution {
-          score
-          amount
-        }
-      }
-      siteUrl
-    }
-  }
-}
-    `;
-
-export const useSearchMangaQuery = <
-      TData = SearchMangaQuery,
-      TError = unknown
-    >(
-      variables?: SearchMangaQueryVariables,
-      options?: Omit<UseQueryOptions<SearchMangaQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<SearchMangaQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<SearchMangaQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['SearchManga'] : ['SearchManga', variables],
-    queryFn: useFetchAnilistData<SearchMangaQuery, SearchMangaQueryVariables>(SearchMangaDocument, variables),
-    ...options
-  }
-    )};
-
-useSearchMangaQuery.getKey = (variables?: SearchMangaQueryVariables) => variables === undefined ? ['SearchManga'] : ['SearchManga', variables];
-
-export const useInfiniteSearchMangaQuery = <
-      TData = InfiniteData<SearchMangaQuery>,
-      TError = unknown
-    >(
-      variables: SearchMangaQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<SearchMangaQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<SearchMangaQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<SearchMangaQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['SearchManga.infinite'] : ['SearchManga.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<SearchMangaQuery, SearchMangaQueryVariables>(SearchMangaDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteSearchMangaQuery.getKey = (variables?: SearchMangaQueryVariables) => variables === undefined ? ['SearchManga.infinite'] : ['SearchManga.infinite', variables];
-
-
-useSearchMangaQuery.fetcher = (variables?: SearchMangaQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<SearchMangaQuery, SearchMangaQueryVariables>(SearchMangaDocument, variables, options);
+useMediaSearchQuery.fetcher = (variables?: MediaSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MediaSearchQuery, MediaSearchQueryVariables>(MediaSearchDocument, variables, options);
 
 export const UserSearchDocument = `
     query UserSearch($search: String) {
@@ -8880,7 +8888,7 @@ export const useUserSearchQuery = <
     return useQuery<UserSearchQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserSearch'] : ['UserSearch', variables],
-    queryFn: useFetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, variables),
+    queryFn: fetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, variables),
     ...options
   }
     )};
@@ -8900,7 +8908,7 @@ export const useInfiniteUserSearchQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserSearch.infinite'] : ['UserSearch.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8909,7 +8917,7 @@ export const useInfiniteUserSearchQuery = <
 useInfiniteUserSearchQuery.getKey = (variables?: UserSearchQueryVariables) => variables === undefined ? ['UserSearch.infinite'] : ['UserSearch.infinite', variables];
 
 
-useUserSearchQuery.fetcher = (variables?: UserSearchQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, variables, options);
+useUserSearchQuery.fetcher = (variables?: UserSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, variables, options);
 
 export const CharacterSearchDocument = `
     query CharacterSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [CharacterSort]) {
@@ -8922,24 +8930,11 @@ export const CharacterSearchDocument = `
       hasNextPage
     }
     characters(search: $name, isBirthday: $isBirthday, sort: $sort) {
-      id
-      isFavourite
-      dateOfBirth {
-        year
-        month
-        day
-      }
-      name {
-        full
-        native
-      }
-      image {
-        large
-      }
+      ...CharacterMetaData
     }
   }
 }
-    `;
+    ${CharacterMetaDataFragmentDoc}`;
 
 export const useCharacterSearchQuery = <
       TData = CharacterSearchQuery,
@@ -8952,7 +8947,7 @@ export const useCharacterSearchQuery = <
     return useQuery<CharacterSearchQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['CharacterSearch'] : ['CharacterSearch', variables],
-    queryFn: useFetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, variables),
+    queryFn: fetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, variables),
     ...options
   }
     )};
@@ -8972,7 +8967,7 @@ export const useInfiniteCharacterSearchQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['CharacterSearch.infinite'] : ['CharacterSearch.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -8981,7 +8976,7 @@ export const useInfiniteCharacterSearchQuery = <
 useInfiniteCharacterSearchQuery.getKey = (variables?: CharacterSearchQueryVariables) => variables === undefined ? ['CharacterSearch.infinite'] : ['CharacterSearch.infinite', variables];
 
 
-useCharacterSearchQuery.fetcher = (variables?: CharacterSearchQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, variables, options);
+useCharacterSearchQuery.fetcher = (variables?: CharacterSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, variables, options);
 
 export const StaffSearchDocument = `
     query StaffSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [StaffSort]) {
@@ -8994,24 +8989,11 @@ export const StaffSearchDocument = `
       hasNextPage
     }
     staff(search: $name, isBirthday: $isBirthday, sort: $sort) {
-      id
-      isFavourite
-      dateOfBirth {
-        year
-        month
-        day
-      }
-      name {
-        full
-        native
-      }
-      image {
-        large
-      }
+      ...StaffMetaData
     }
   }
 }
-    `;
+    ${StaffMetaDataFragmentDoc}`;
 
 export const useStaffSearchQuery = <
       TData = StaffSearchQuery,
@@ -9024,7 +9006,7 @@ export const useStaffSearchQuery = <
     return useQuery<StaffSearchQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['StaffSearch'] : ['StaffSearch', variables],
-    queryFn: useFetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, variables),
+    queryFn: fetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, variables),
     ...options
   }
     )};
@@ -9044,7 +9026,7 @@ export const useInfiniteStaffSearchQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['StaffSearch.infinite'] : ['StaffSearch.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9053,7 +9035,7 @@ export const useInfiniteStaffSearchQuery = <
 useInfiniteStaffSearchQuery.getKey = (variables?: StaffSearchQueryVariables) => variables === undefined ? ['StaffSearch.infinite'] : ['StaffSearch.infinite', variables];
 
 
-useStaffSearchQuery.fetcher = (variables?: StaffSearchQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, variables, options);
+useStaffSearchQuery.fetcher = (variables?: StaffSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, variables, options);
 
 export const StudioSearchDocument = `
     query StudioSearch($name: String, $page: Int, $sort: [StudioSort]) {
@@ -9096,7 +9078,7 @@ export const useStudioSearchQuery = <
     return useQuery<StudioSearchQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['StudioSearch'] : ['StudioSearch', variables],
-    queryFn: useFetchAnilistData<StudioSearchQuery, StudioSearchQueryVariables>(StudioSearchDocument, variables),
+    queryFn: fetchAnilistData<StudioSearchQuery, StudioSearchQueryVariables>(StudioSearchDocument, variables),
     ...options
   }
     )};
@@ -9116,7 +9098,7 @@ export const useInfiniteStudioSearchQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['StudioSearch.infinite'] : ['StudioSearch.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<StudioSearchQuery, StudioSearchQueryVariables>(StudioSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<StudioSearchQuery, StudioSearchQueryVariables>(StudioSearchDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9125,7 +9107,743 @@ export const useInfiniteStudioSearchQuery = <
 useInfiniteStudioSearchQuery.getKey = (variables?: StudioSearchQueryVariables) => variables === undefined ? ['StudioSearch.infinite'] : ['StudioSearch.infinite', variables];
 
 
-useStudioSearchQuery.fetcher = (variables?: StudioSearchQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<StudioSearchQuery, StudioSearchQueryVariables>(StudioSearchDocument, variables, options);
+useStudioSearchQuery.fetcher = (variables?: StudioSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<StudioSearchQuery, StudioSearchQueryVariables>(StudioSearchDocument, variables, options);
+
+export const SearchAllDocument = `
+    query SearchAll($search: String, $perPage: Int, $isAdult: Boolean) {
+  Anime: Page(page: 1, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(type: ANIME, search: $search, isAdult: $isAdult, sort: SEARCH_MATCH) {
+      ...AnimeMeta
+    }
+  }
+  Manga: Page(page: 1, perPage: $perPage) {
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    media(type: MANGA, search: $search, isAdult: $isAdult, sort: SEARCH_MATCH) {
+      ...MangaMeta
+    }
+  }
+  Characters: Page(page: 1, perPage: $perPage) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    characters(search: $search, sort: SEARCH_MATCH) {
+      id
+      isFavourite
+      dateOfBirth {
+        year
+        month
+        day
+      }
+      name {
+        full
+        native
+      }
+      image {
+        large
+      }
+    }
+  }
+  Staff: Page(page: 1, perPage: $perPage) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    staff(search: $search, sort: SEARCH_MATCH) {
+      id
+      isFavourite
+      dateOfBirth {
+        year
+        month
+        day
+      }
+      name {
+        full
+        native
+      }
+      image {
+        large
+      }
+    }
+  }
+  Studios: Page(page: 1, perPage: $perPage) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    studios(search: $search, sort: SEARCH_MATCH) {
+      id
+      name
+      media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
+        edges {
+          node {
+            ...AnimeMeta
+          }
+        }
+      }
+      isFavourite
+      siteUrl
+    }
+  }
+  Users: Page(page: 1, perPage: $perPage) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    users(search: $search) {
+      id
+      name
+      avatar {
+        large
+      }
+      isFollowing
+      isFollower
+    }
+  }
+}
+    ${AnimeMetaFragmentDoc}
+${MangaMetaFragmentDoc}`;
+
+export const useSearchAllQuery = <
+      TData = SearchAllQuery,
+      TError = unknown
+    >(
+      variables?: SearchAllQueryVariables,
+      options?: Omit<UseQueryOptions<SearchAllQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<SearchAllQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<SearchAllQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['SearchAll'] : ['SearchAll', variables],
+    queryFn: fetchAnilistData<SearchAllQuery, SearchAllQueryVariables>(SearchAllDocument, variables),
+    ...options
+  }
+    )};
+
+useSearchAllQuery.getKey = (variables?: SearchAllQueryVariables) => variables === undefined ? ['SearchAll'] : ['SearchAll', variables];
+
+export const useInfiniteSearchAllQuery = <
+      TData = InfiniteData<SearchAllQuery>,
+      TError = unknown
+    >(
+      variables: SearchAllQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<SearchAllQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<SearchAllQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<SearchAllQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['SearchAll.infinite'] : ['SearchAll.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<SearchAllQuery, SearchAllQueryVariables>(SearchAllDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteSearchAllQuery.getKey = (variables?: SearchAllQueryVariables) => variables === undefined ? ['SearchAll.infinite'] : ['SearchAll.infinite', variables];
+
+
+useSearchAllQuery.fetcher = (variables?: SearchAllQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<SearchAllQuery, SearchAllQueryVariables>(SearchAllDocument, variables, options);
+
+export const SiteStatsDocument = `
+    query SiteStats {
+  SiteStatistics {
+    users(sort: DATE_DESC) {
+      ...siteTrend
+    }
+    anime(sort: DATE_DESC) {
+      ...siteTrend
+    }
+    manga(sort: DATE_DESC) {
+      ...siteTrend
+    }
+    characters(sort: DATE_DESC) {
+      ...siteTrend
+    }
+    staff(sort: DATE_DESC) {
+      ...siteTrend
+    }
+    reviews(sort: DATE_DESC) {
+      ...siteTrend
+    }
+  }
+}
+    ${SiteTrendFragmentDoc}`;
+
+export const useSiteStatsQuery = <
+      TData = SiteStatsQuery,
+      TError = unknown
+    >(
+      variables?: SiteStatsQueryVariables,
+      options?: Omit<UseQueryOptions<SiteStatsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<SiteStatsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<SiteStatsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['SiteStats'] : ['SiteStats', variables],
+    queryFn: fetchAnilistData<SiteStatsQuery, SiteStatsQueryVariables>(SiteStatsDocument, variables),
+    ...options
+  }
+    )};
+
+useSiteStatsQuery.getKey = (variables?: SiteStatsQueryVariables) => variables === undefined ? ['SiteStats'] : ['SiteStats', variables];
+
+export const useInfiniteSiteStatsQuery = <
+      TData = InfiniteData<SiteStatsQuery>,
+      TError = unknown
+    >(
+      variables: SiteStatsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<SiteStatsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<SiteStatsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<SiteStatsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['SiteStats.infinite'] : ['SiteStats.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<SiteStatsQuery, SiteStatsQueryVariables>(SiteStatsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteSiteStatsQuery.getKey = (variables?: SiteStatsQueryVariables) => variables === undefined ? ['SiteStats.infinite'] : ['SiteStats.infinite', variables];
+
+
+useSiteStatsQuery.fetcher = (variables?: SiteStatsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<SiteStatsQuery, SiteStatsQueryVariables>(SiteStatsDocument, variables, options);
+
+export const MediaTrendsDocument = `
+    query MediaTrends($id: Int) {
+  Media(id: $id) {
+    id
+    title {
+      romaji
+      english
+      native
+      userPreferred
+    }
+    coverImage {
+      extraLarge
+      color
+    }
+    type
+    format
+    rankings {
+      id
+      rank
+      type
+      format
+      year
+      season
+      allTime
+      context
+    }
+    trends(sort: ID_DESC) {
+      nodes {
+        averageScore
+        date
+        trending
+        popularity
+      }
+    }
+    airingTrends: trends(releasing: true, sort: EPISODE_DESC) {
+      nodes {
+        averageScore
+        inProgress
+        episode
+      }
+    }
+    distribution: stats {
+      status: statusDistribution {
+        status
+        amount
+      }
+      score: scoreDistribution {
+        score
+        amount
+      }
+    }
+  }
+}
+    `;
+
+export const useMediaTrendsQuery = <
+      TData = MediaTrendsQuery,
+      TError = unknown
+    >(
+      variables?: MediaTrendsQueryVariables,
+      options?: Omit<UseQueryOptions<MediaTrendsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MediaTrendsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MediaTrendsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['MediaTrends'] : ['MediaTrends', variables],
+    queryFn: fetchAnilistData<MediaTrendsQuery, MediaTrendsQueryVariables>(MediaTrendsDocument, variables),
+    ...options
+  }
+    )};
+
+useMediaTrendsQuery.getKey = (variables?: MediaTrendsQueryVariables) => variables === undefined ? ['MediaTrends'] : ['MediaTrends', variables];
+
+export const useInfiniteMediaTrendsQuery = <
+      TData = InfiniteData<MediaTrendsQuery>,
+      TError = unknown
+    >(
+      variables: MediaTrendsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<MediaTrendsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MediaTrendsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<MediaTrendsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['MediaTrends.infinite'] : ['MediaTrends.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<MediaTrendsQuery, MediaTrendsQueryVariables>(MediaTrendsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteMediaTrendsQuery.getKey = (variables?: MediaTrendsQueryVariables) => variables === undefined ? ['MediaTrends.infinite'] : ['MediaTrends.infinite', variables];
+
+
+useMediaTrendsQuery.fetcher = (variables?: MediaTrendsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MediaTrendsQuery, MediaTrendsQueryVariables>(MediaTrendsDocument, variables, options);
+
+export const ThreadsOverviewDocument = `
+    query ThreadsOverview($id: Int, $page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    threads(mediaCategoryId: $id, sort: ID_DESC) {
+      id
+      title
+      replyCount
+      viewCount
+      replyCommentId
+      repliedAt
+      createdAt
+      categories {
+        id
+        name
+      }
+      user {
+        id
+        name
+        bannerImage
+        avatar {
+          large
+        }
+      }
+      replyUser {
+        id
+        name
+        avatar {
+          large
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useThreadsOverviewQuery = <
+      TData = ThreadsOverviewQuery,
+      TError = unknown
+    >(
+      variables?: ThreadsOverviewQueryVariables,
+      options?: Omit<UseQueryOptions<ThreadsOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ThreadsOverviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ThreadsOverviewQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ThreadsOverview'] : ['ThreadsOverview', variables],
+    queryFn: fetchAnilistData<ThreadsOverviewQuery, ThreadsOverviewQueryVariables>(ThreadsOverviewDocument, variables),
+    ...options
+  }
+    )};
+
+useThreadsOverviewQuery.getKey = (variables?: ThreadsOverviewQueryVariables) => variables === undefined ? ['ThreadsOverview'] : ['ThreadsOverview', variables];
+
+export const useInfiniteThreadsOverviewQuery = <
+      TData = InfiniteData<ThreadsOverviewQuery>,
+      TError = unknown
+    >(
+      variables: ThreadsOverviewQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ThreadsOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ThreadsOverviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ThreadsOverviewQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['ThreadsOverview.infinite'] : ['ThreadsOverview.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<ThreadsOverviewQuery, ThreadsOverviewQueryVariables>(ThreadsOverviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteThreadsOverviewQuery.getKey = (variables?: ThreadsOverviewQueryVariables) => variables === undefined ? ['ThreadsOverview.infinite'] : ['ThreadsOverview.infinite', variables];
+
+
+useThreadsOverviewQuery.fetcher = (variables?: ThreadsOverviewQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ThreadsOverviewQuery, ThreadsOverviewQueryVariables>(ThreadsOverviewDocument, variables, options);
+
+export const ThreadsDocument = `
+    query Threads($id: Int, $page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    threads(mediaCategoryId: $id, sort: ID_DESC) {
+      id
+      title
+      replyCount
+      viewCount
+      replyCommentId
+      repliedAt
+      createdAt
+      categories {
+        id
+        name
+      }
+      user {
+        id
+        name
+        avatar {
+          large
+        }
+      }
+      replyUser {
+        id
+        name
+        avatar {
+          large
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useThreadsQuery = <
+      TData = ThreadsQuery,
+      TError = unknown
+    >(
+      variables?: ThreadsQueryVariables,
+      options?: Omit<UseQueryOptions<ThreadsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ThreadsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ThreadsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Threads'] : ['Threads', variables],
+    queryFn: fetchAnilistData<ThreadsQuery, ThreadsQueryVariables>(ThreadsDocument, variables),
+    ...options
+  }
+    )};
+
+useThreadsQuery.getKey = (variables?: ThreadsQueryVariables) => variables === undefined ? ['Threads'] : ['Threads', variables];
+
+export const useInfiniteThreadsQuery = <
+      TData = InfiniteData<ThreadsQuery>,
+      TError = unknown
+    >(
+      variables: ThreadsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ThreadsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ThreadsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ThreadsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Threads.infinite'] : ['Threads.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<ThreadsQuery, ThreadsQueryVariables>(ThreadsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteThreadsQuery.getKey = (variables?: ThreadsQueryVariables) => variables === undefined ? ['Threads.infinite'] : ['Threads.infinite', variables];
+
+
+useThreadsQuery.fetcher = (variables?: ThreadsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ThreadsQuery, ThreadsQueryVariables>(ThreadsDocument, variables, options);
+
+export const ThreadDetailDocument = `
+    query ThreadDetail($id: Int) {
+  Thread(id: $id) {
+    id
+    title
+    body
+    htmlBody: body(asHtml: true)
+    userId
+    replyCount
+    viewCount
+    isLocked
+    isSticky
+    isSubscribed
+    isLiked
+    likeCount
+    repliedAt
+    createdAt
+    likes {
+      id
+      name
+      avatar {
+        large
+      }
+    }
+    user {
+      id
+      name
+      avatar {
+        large
+      }
+    }
+    categories {
+      id
+      name
+    }
+    mediaCategories {
+      id
+      title {
+        userPreferred
+      }
+      coverImage {
+        large
+      }
+      type
+      format
+    }
+  }
+}
+    `;
+
+export const useThreadDetailQuery = <
+      TData = ThreadDetailQuery,
+      TError = unknown
+    >(
+      variables?: ThreadDetailQueryVariables,
+      options?: Omit<UseQueryOptions<ThreadDetailQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ThreadDetailQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ThreadDetailQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ThreadDetail'] : ['ThreadDetail', variables],
+    queryFn: fetchAnilistData<ThreadDetailQuery, ThreadDetailQueryVariables>(ThreadDetailDocument, variables),
+    ...options
+  }
+    )};
+
+useThreadDetailQuery.getKey = (variables?: ThreadDetailQueryVariables) => variables === undefined ? ['ThreadDetail'] : ['ThreadDetail', variables];
+
+export const useInfiniteThreadDetailQuery = <
+      TData = InfiniteData<ThreadDetailQuery>,
+      TError = unknown
+    >(
+      variables: ThreadDetailQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ThreadDetailQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ThreadDetailQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ThreadDetailQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['ThreadDetail.infinite'] : ['ThreadDetail.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<ThreadDetailQuery, ThreadDetailQueryVariables>(ThreadDetailDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteThreadDetailQuery.getKey = (variables?: ThreadDetailQueryVariables) => variables === undefined ? ['ThreadDetail.infinite'] : ['ThreadDetail.infinite', variables];
+
+
+useThreadDetailQuery.fetcher = (variables?: ThreadDetailQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ThreadDetailQuery, ThreadDetailQueryVariables>(ThreadDetailDocument, variables, options);
+
+export const AniListCommentsDocument = `
+    query AniListComments($threadId: Int, $page: Int) {
+  Page(page: $page, perPage: 15) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    threadComments(threadId: $threadId) {
+      id
+      threadId
+      comment
+      htmlComment: comment(asHtml: true)
+      isLiked
+      likeCount
+      createdAt
+      childComments
+      user {
+        id
+        name
+        donatorTier
+        donatorBadge
+        moderatorRoles
+        avatar {
+          large
+        }
+      }
+      isLocked
+    }
+  }
+}
+    `;
+
+export const useAniListCommentsQuery = <
+      TData = AniListCommentsQuery,
+      TError = unknown
+    >(
+      variables?: AniListCommentsQueryVariables,
+      options?: Omit<UseQueryOptions<AniListCommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AniListCommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AniListCommentsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['AniListComments'] : ['AniListComments', variables],
+    queryFn: fetchAnilistData<AniListCommentsQuery, AniListCommentsQueryVariables>(AniListCommentsDocument, variables),
+    ...options
+  }
+    )};
+
+useAniListCommentsQuery.getKey = (variables?: AniListCommentsQueryVariables) => variables === undefined ? ['AniListComments'] : ['AniListComments', variables];
+
+export const useInfiniteAniListCommentsQuery = <
+      TData = InfiniteData<AniListCommentsQuery>,
+      TError = unknown
+    >(
+      variables: AniListCommentsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AniListCommentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AniListCommentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AniListCommentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['AniListComments.infinite'] : ['AniListComments.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<AniListCommentsQuery, AniListCommentsQueryVariables>(AniListCommentsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAniListCommentsQuery.getKey = (variables?: AniListCommentsQueryVariables) => variables === undefined ? ['AniListComments.infinite'] : ['AniListComments.infinite', variables];
+
+
+useAniListCommentsQuery.fetcher = (variables?: AniListCommentsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AniListCommentsQuery, AniListCommentsQueryVariables>(AniListCommentsDocument, variables, options);
+
+export const AniListCommentDetailsDocument = `
+    query AniListCommentDetails($id: Int) {
+  ThreadComment(id: $id) {
+    id
+    comment
+    htmlComment: comment(asHtml: true)
+    userId
+    threadId
+    likeCount
+    isLiked
+    siteUrl
+    createdAt
+    updatedAt
+    childComments
+    user {
+      id
+      name
+      avatar {
+        large
+      }
+      isFollowing
+      isFollower
+      isBlocked
+    }
+    likes {
+      id
+      name
+      avatar {
+        large
+      }
+    }
+    isLocked
+  }
+}
+    `;
+
+export const useAniListCommentDetailsQuery = <
+      TData = AniListCommentDetailsQuery,
+      TError = unknown
+    >(
+      variables?: AniListCommentDetailsQueryVariables,
+      options?: Omit<UseQueryOptions<AniListCommentDetailsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AniListCommentDetailsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AniListCommentDetailsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['AniListCommentDetails'] : ['AniListCommentDetails', variables],
+    queryFn: fetchAnilistData<AniListCommentDetailsQuery, AniListCommentDetailsQueryVariables>(AniListCommentDetailsDocument, variables),
+    ...options
+  }
+    )};
+
+useAniListCommentDetailsQuery.getKey = (variables?: AniListCommentDetailsQueryVariables) => variables === undefined ? ['AniListCommentDetails'] : ['AniListCommentDetails', variables];
+
+export const useInfiniteAniListCommentDetailsQuery = <
+      TData = InfiniteData<AniListCommentDetailsQuery>,
+      TError = unknown
+    >(
+      variables: AniListCommentDetailsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AniListCommentDetailsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AniListCommentDetailsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AniListCommentDetailsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['AniListCommentDetails.infinite'] : ['AniListCommentDetails.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<AniListCommentDetailsQuery, AniListCommentDetailsQueryVariables>(AniListCommentDetailsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAniListCommentDetailsQuery.getKey = (variables?: AniListCommentDetailsQueryVariables) => variables === undefined ? ['AniListCommentDetails.infinite'] : ['AniListCommentDetails.infinite', variables];
+
+
+useAniListCommentDetailsQuery.fetcher = (variables?: AniListCommentDetailsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AniListCommentDetailsQuery, AniListCommentDetailsQueryVariables>(AniListCommentDetailsDocument, variables, options);
 
 export const UserAnimeStatsDocument = `
     query UserAnimeStats($userId: Int) {
@@ -9270,7 +9988,7 @@ export const useUserAnimeStatsQuery = <
     return useQuery<UserAnimeStatsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserAnimeStats'] : ['UserAnimeStats', variables],
-    queryFn: useFetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, variables),
+    queryFn: fetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, variables),
     ...options
   }
     )};
@@ -9290,7 +10008,7 @@ export const useInfiniteUserAnimeStatsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserAnimeStats.infinite'] : ['UserAnimeStats.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9299,7 +10017,7 @@ export const useInfiniteUserAnimeStatsQuery = <
 useInfiniteUserAnimeStatsQuery.getKey = (variables?: UserAnimeStatsQueryVariables) => variables === undefined ? ['UserAnimeStats.infinite'] : ['UserAnimeStats.infinite', variables];
 
 
-useUserAnimeStatsQuery.fetcher = (variables?: UserAnimeStatsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, variables, options);
+useUserAnimeStatsQuery.fetcher = (variables?: UserAnimeStatsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, variables, options);
 
 export const UserMangaStatsDocument = `
     query UserMangaStats($userId: Int) {
@@ -9414,7 +10132,7 @@ export const useUserMangaStatsQuery = <
     return useQuery<UserMangaStatsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserMangaStats'] : ['UserMangaStats', variables],
-    queryFn: useFetchAnilistData<UserMangaStatsQuery, UserMangaStatsQueryVariables>(UserMangaStatsDocument, variables),
+    queryFn: fetchAnilistData<UserMangaStatsQuery, UserMangaStatsQueryVariables>(UserMangaStatsDocument, variables),
     ...options
   }
     )};
@@ -9434,7 +10152,7 @@ export const useInfiniteUserMangaStatsQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserMangaStats.infinite'] : ['UserMangaStats.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserMangaStatsQuery, UserMangaStatsQueryVariables>(UserMangaStatsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserMangaStatsQuery, UserMangaStatsQueryVariables>(UserMangaStatsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9443,7 +10161,7 @@ export const useInfiniteUserMangaStatsQuery = <
 useInfiniteUserMangaStatsQuery.getKey = (variables?: UserMangaStatsQueryVariables) => variables === undefined ? ['UserMangaStats.infinite'] : ['UserMangaStats.infinite', variables];
 
 
-useUserMangaStatsQuery.fetcher = (variables?: UserMangaStatsQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserMangaStatsQuery, UserMangaStatsQueryVariables>(UserMangaStatsDocument, variables, options);
+useUserMangaStatsQuery.fetcher = (variables?: UserMangaStatsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserMangaStatsQuery, UserMangaStatsQueryVariables>(UserMangaStatsDocument, variables, options);
 
 export const UserActivityDocument = `
     query UserActivity($page: Int, $perPage: Int, $isFollowing: Boolean, $userId: Int) {
@@ -9550,7 +10268,7 @@ export const useUserActivityQuery = <
     return useQuery<UserActivityQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserActivity'] : ['UserActivity', variables],
-    queryFn: useFetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, variables),
+    queryFn: fetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, variables),
     ...options
   }
     )};
@@ -9570,7 +10288,7 @@ export const useInfiniteUserActivityQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserActivity.infinite'] : ['UserActivity.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9579,7 +10297,7 @@ export const useInfiniteUserActivityQuery = <
 useInfiniteUserActivityQuery.getKey = (variables?: UserActivityQueryVariables) => variables === undefined ? ['UserActivity.infinite'] : ['UserActivity.infinite', variables];
 
 
-useUserActivityQuery.fetcher = (variables?: UserActivityQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, variables, options);
+useUserActivityQuery.fetcher = (variables?: UserActivityQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, variables, options);
 
 export const UserDataDocument = `
     query UserData {
@@ -9615,7 +10333,7 @@ export const useUserDataQuery = <
     return useQuery<UserDataQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserData'] : ['UserData', variables],
-    queryFn: useFetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, variables),
+    queryFn: fetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, variables),
     ...options
   }
     )};
@@ -9635,7 +10353,7 @@ export const useInfiniteUserDataQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserData.infinite'] : ['UserData.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9644,7 +10362,7 @@ export const useInfiniteUserDataQuery = <
 useInfiniteUserDataQuery.getKey = (variables?: UserDataQueryVariables) => variables === undefined ? ['UserData.infinite'] : ['UserData.infinite', variables];
 
 
-useUserDataQuery.fetcher = (variables?: UserDataQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, variables, options);
+useUserDataQuery.fetcher = (variables?: UserDataQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, variables, options);
 
 export const ExtUserDataDocument = `
     query ExtUserData($id: Int, $name: String) {
@@ -9673,7 +10391,7 @@ export const useExtUserDataQuery = <
     return useQuery<ExtUserDataQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['ExtUserData'] : ['ExtUserData', variables],
-    queryFn: useFetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, variables),
+    queryFn: fetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, variables),
     ...options
   }
     )};
@@ -9693,7 +10411,7 @@ export const useInfiniteExtUserDataQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['ExtUserData.infinite'] : ['ExtUserData.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9702,10 +10420,10 @@ export const useInfiniteExtUserDataQuery = <
 useInfiniteExtUserDataQuery.getKey = (variables?: ExtUserDataQueryVariables) => variables === undefined ? ['ExtUserData.infinite'] : ['ExtUserData.infinite', variables];
 
 
-useExtUserDataQuery.fetcher = (variables?: ExtUserDataQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, variables, options);
+useExtUserDataQuery.fetcher = (variables?: ExtUserDataQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, variables, options);
 
 export const UserOverviewDocument = `
-    query UserOverview($userId: Int!, $isFollowing: Boolean, $activityPerPage: Int, $followingPerPage: Int, $followersPerPage: Int, $favoritesPerPage: Int) {
+    query UserOverview($userId: Int!, $isFollowing: Boolean, $activityPerPage: Int, $followingPerPage: Int, $followersPerPage: Int, $favoritesPerPage: Int, $reviewsPerPage: Int) {
   user: User(id: $userId) {
     name
     avatar {
@@ -9713,6 +10431,7 @@ export const UserOverviewDocument = `
     }
     bannerImage
     about
+    aboutHTML: about(asHtml: true)
     stats {
       favouredGenresOverview {
         genre
@@ -9730,10 +10449,14 @@ export const UserOverviewDocument = `
       anime {
         minutesWatched
         episodesWatched
+        meanScore
+        count
       }
       manga {
         chaptersRead
         volumesRead
+        meanScore
+        count
       }
     }
     mediaListOptions {
@@ -9852,24 +10575,17 @@ export const UserOverviewDocument = `
         progress
         status
         createdAt
-        media {
+        user {
           id
-          type
-          bannerImage
-          isAdult
-          format
-          isLicensed
-          status
-          title {
-            userPreferred
-            romaji
-            english
-            native
+          name
+          avatar {
+            large
           }
-          coverImage {
-            color
-            extraLarge
-          }
+        }
+        media {
+          ...AnimeMeta
+          volumes
+          chapters
         }
         siteUrl
       }
@@ -9913,8 +10629,26 @@ export const UserOverviewDocument = `
       siteUrl
     }
   }
+  reviews: Page(page: 1, perPage: $reviewsPerPage) {
+    reviews(userId: $userId) {
+      id
+      summary
+      rating
+      ratingAmount
+      score
+      createdAt
+      updatedAt
+    }
+  }
+  list: Page(page: 1, perPage: 10) {
+    mediaList(userId: $userId, status: CURRENT) {
+      media {
+        ...AnimeMeta
+      }
+    }
+  }
 }
-    `;
+    ${AnimeMetaFragmentDoc}`;
 
 export const useUserOverviewQuery = <
       TData = UserOverviewQuery,
@@ -9927,7 +10661,7 @@ export const useUserOverviewQuery = <
     return useQuery<UserOverviewQuery, TError, TData>(
       {
     queryKey: ['UserOverview', variables],
-    queryFn: useFetchAnilistData<UserOverviewQuery, UserOverviewQueryVariables>(UserOverviewDocument, variables),
+    queryFn: fetchAnilistData<UserOverviewQuery, UserOverviewQueryVariables>(UserOverviewDocument, variables),
     ...options
   }
     )};
@@ -9947,7 +10681,7 @@ export const useInfiniteUserOverviewQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['UserOverview.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserOverviewQuery, UserOverviewQueryVariables>(UserOverviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserOverviewQuery, UserOverviewQueryVariables>(UserOverviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -9956,7 +10690,7 @@ export const useInfiniteUserOverviewQuery = <
 useInfiniteUserOverviewQuery.getKey = (variables: UserOverviewQueryVariables) => ['UserOverview.infinite', variables];
 
 
-useUserOverviewQuery.fetcher = (variables: UserOverviewQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserOverviewQuery, UserOverviewQueryVariables>(UserOverviewDocument, variables, options);
+useUserOverviewQuery.fetcher = (variables: UserOverviewQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserOverviewQuery, UserOverviewQueryVariables>(UserOverviewDocument, variables, options);
 
 export const UserFollowingDocument = `
     query UserFollowing($userId: Int!, $page: Int) {
@@ -9993,7 +10727,7 @@ export const useUserFollowingQuery = <
     return useQuery<UserFollowingQuery, TError, TData>(
       {
     queryKey: ['UserFollowing', variables],
-    queryFn: useFetchAnilistData<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, variables),
+    queryFn: fetchAnilistData<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, variables),
     ...options
   }
     )};
@@ -10013,7 +10747,7 @@ export const useInfiniteUserFollowingQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['UserFollowing.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10022,7 +10756,7 @@ export const useInfiniteUserFollowingQuery = <
 useInfiniteUserFollowingQuery.getKey = (variables: UserFollowingQueryVariables) => ['UserFollowing.infinite', variables];
 
 
-useUserFollowingQuery.fetcher = (variables: UserFollowingQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, variables, options);
+useUserFollowingQuery.fetcher = (variables: UserFollowingQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserFollowingQuery, UserFollowingQueryVariables>(UserFollowingDocument, variables, options);
 
 export const UserFollowersDocument = `
     query UserFollowers($userId: Int!, $page: Int) {
@@ -10059,7 +10793,7 @@ export const useUserFollowersQuery = <
     return useQuery<UserFollowersQuery, TError, TData>(
       {
     queryKey: ['UserFollowers', variables],
-    queryFn: useFetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, variables),
+    queryFn: fetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, variables),
     ...options
   }
     )};
@@ -10079,7 +10813,7 @@ export const useInfiniteUserFollowersQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? ['UserFollowers.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10088,7 +10822,7 @@ export const useInfiniteUserFollowersQuery = <
 useInfiniteUserFollowersQuery.getKey = (variables: UserFollowersQueryVariables) => ['UserFollowers.infinite', variables];
 
 
-useUserFollowersQuery.fetcher = (variables: UserFollowersQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, variables, options);
+useUserFollowersQuery.fetcher = (variables: UserFollowersQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, variables, options);
 
 export const UserFavoritesOverviewDocument = `
     query UserFavoritesOverview($userID: Int) {
@@ -10148,7 +10882,7 @@ export const useUserFavoritesOverviewQuery = <
     return useQuery<UserFavoritesOverviewQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserFavoritesOverview'] : ['UserFavoritesOverview', variables],
-    queryFn: useFetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, variables),
+    queryFn: fetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, variables),
     ...options
   }
     )};
@@ -10168,7 +10902,7 @@ export const useInfiniteUserFavoritesOverviewQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserFavoritesOverview.infinite'] : ['UserFavoritesOverview.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10177,7 +10911,7 @@ export const useInfiniteUserFavoritesOverviewQuery = <
 useInfiniteUserFavoritesOverviewQuery.getKey = (variables?: UserFavoritesOverviewQueryVariables) => variables === undefined ? ['UserFavoritesOverview.infinite'] : ['UserFavoritesOverview.infinite', variables];
 
 
-useUserFavoritesOverviewQuery.fetcher = (variables?: UserFavoritesOverviewQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, variables, options);
+useUserFavoritesOverviewQuery.fetcher = (variables?: UserFavoritesOverviewQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, variables, options);
 
 export const UserAnimeFavoritesDocument = `
     query UserAnimeFavorites($userID: Int, $page: Int, $perPage: Int) {
@@ -10246,7 +10980,7 @@ export const useUserAnimeFavoritesQuery = <
     return useQuery<UserAnimeFavoritesQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserAnimeFavorites'] : ['UserAnimeFavorites', variables],
-    queryFn: useFetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, variables),
+    queryFn: fetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, variables),
     ...options
   }
     )};
@@ -10266,7 +11000,7 @@ export const useInfiniteUserAnimeFavoritesQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserAnimeFavorites.infinite'] : ['UserAnimeFavorites.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10275,7 +11009,7 @@ export const useInfiniteUserAnimeFavoritesQuery = <
 useInfiniteUserAnimeFavoritesQuery.getKey = (variables?: UserAnimeFavoritesQueryVariables) => variables === undefined ? ['UserAnimeFavorites.infinite'] : ['UserAnimeFavorites.infinite', variables];
 
 
-useUserAnimeFavoritesQuery.fetcher = (variables?: UserAnimeFavoritesQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, variables, options);
+useUserAnimeFavoritesQuery.fetcher = (variables?: UserAnimeFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, variables, options);
 
 export const UserMangaFavoritesDocument = `
     query UserMangaFavorites($userID: Int, $page: Int, $perPage: Int) {
@@ -10345,7 +11079,7 @@ export const useUserMangaFavoritesQuery = <
     return useQuery<UserMangaFavoritesQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserMangaFavorites'] : ['UserMangaFavorites', variables],
-    queryFn: useFetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, variables),
+    queryFn: fetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, variables),
     ...options
   }
     )};
@@ -10365,7 +11099,7 @@ export const useInfiniteUserMangaFavoritesQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserMangaFavorites.infinite'] : ['UserMangaFavorites.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10374,7 +11108,7 @@ export const useInfiniteUserMangaFavoritesQuery = <
 useInfiniteUserMangaFavoritesQuery.getKey = (variables?: UserMangaFavoritesQueryVariables) => variables === undefined ? ['UserMangaFavorites.infinite'] : ['UserMangaFavorites.infinite', variables];
 
 
-useUserMangaFavoritesQuery.fetcher = (variables?: UserMangaFavoritesQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, variables, options);
+useUserMangaFavoritesQuery.fetcher = (variables?: UserMangaFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, variables, options);
 
 export const UserWaifuFavoritesDocument = `
     query UserWaifuFavorites($userID: Int, $page: Int, $perPage: Int) {
@@ -10389,22 +11123,13 @@ export const UserWaifuFavoritesDocument = `
           lastPage
         }
         nodes {
-          id
-          name {
-            full
-            native
-          }
-          gender
-          isFavourite
-          image {
-            large
-          }
+          ...CharacterMetaData
         }
       }
     }
   }
 }
-    `;
+    ${CharacterMetaDataFragmentDoc}`;
 
 export const useUserWaifuFavoritesQuery = <
       TData = UserWaifuFavoritesQuery,
@@ -10417,7 +11142,7 @@ export const useUserWaifuFavoritesQuery = <
     return useQuery<UserWaifuFavoritesQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserWaifuFavorites'] : ['UserWaifuFavorites', variables],
-    queryFn: useFetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, variables),
+    queryFn: fetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, variables),
     ...options
   }
     )};
@@ -10437,7 +11162,7 @@ export const useInfiniteUserWaifuFavoritesQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserWaifuFavorites.infinite'] : ['UserWaifuFavorites.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10446,7 +11171,7 @@ export const useInfiniteUserWaifuFavoritesQuery = <
 useInfiniteUserWaifuFavoritesQuery.getKey = (variables?: UserWaifuFavoritesQueryVariables) => variables === undefined ? ['UserWaifuFavorites.infinite'] : ['UserWaifuFavorites.infinite', variables];
 
 
-useUserWaifuFavoritesQuery.fetcher = (variables?: UserWaifuFavoritesQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, variables, options);
+useUserWaifuFavoritesQuery.fetcher = (variables?: UserWaifuFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, variables, options);
 
 export const UserStaffFavoritesDocument = `
     query UserStaffFavorites($userID: Int, $page: Int, $perPage: Int) {
@@ -10461,22 +11186,13 @@ export const UserStaffFavoritesDocument = `
           lastPage
         }
         nodes {
-          id
-          name {
-            full
-            native
-          }
-          gender
-          isFavourite
-          image {
-            large
-          }
+          ...StaffMetaData
         }
       }
     }
   }
 }
-    `;
+    ${StaffMetaDataFragmentDoc}`;
 
 export const useUserStaffFavoritesQuery = <
       TData = UserStaffFavoritesQuery,
@@ -10489,7 +11205,7 @@ export const useUserStaffFavoritesQuery = <
     return useQuery<UserStaffFavoritesQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserStaffFavorites'] : ['UserStaffFavorites', variables],
-    queryFn: useFetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, variables),
+    queryFn: fetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, variables),
     ...options
   }
     )};
@@ -10509,7 +11225,7 @@ export const useInfiniteUserStaffFavoritesQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserStaffFavorites.infinite'] : ['UserStaffFavorites.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10518,7 +11234,7 @@ export const useInfiniteUserStaffFavoritesQuery = <
 useInfiniteUserStaffFavoritesQuery.getKey = (variables?: UserStaffFavoritesQueryVariables) => variables === undefined ? ['UserStaffFavorites.infinite'] : ['UserStaffFavorites.infinite', variables];
 
 
-useUserStaffFavoritesQuery.fetcher = (variables?: UserStaffFavoritesQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, variables, options);
+useUserStaffFavoritesQuery.fetcher = (variables?: UserStaffFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, variables, options);
 
 export const UserStudiosFavoritesDocument = `
     query UserStudiosFavorites($userID: Int, $page: Int, $perPage: Int) {
@@ -10555,7 +11271,7 @@ export const useUserStudiosFavoritesQuery = <
     return useQuery<UserStudiosFavoritesQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['UserStudiosFavorites'] : ['UserStudiosFavorites', variables],
-    queryFn: useFetchAnilistData<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables>(UserStudiosFavoritesDocument, variables),
+    queryFn: fetchAnilistData<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables>(UserStudiosFavoritesDocument, variables),
     ...options
   }
     )};
@@ -10575,7 +11291,7 @@ export const useInfiniteUserStudiosFavoritesQuery = <
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
       queryKey: optionsQueryKey ?? variables === undefined ? ['UserStudiosFavorites.infinite'] : ['UserStudiosFavorites.infinite', variables],
-      queryFn: (metaData) => useFetchAnilistData<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables>(UserStudiosFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryFn: (metaData) => fetchAnilistData<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables>(UserStudiosFavoritesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
@@ -10584,4 +11300,4 @@ export const useInfiniteUserStudiosFavoritesQuery = <
 useInfiniteUserStudiosFavoritesQuery.getKey = (variables?: UserStudiosFavoritesQueryVariables) => variables === undefined ? ['UserStudiosFavorites.infinite'] : ['UserStudiosFavorites.infinite', variables];
 
 
-useUserStudiosFavoritesQuery.fetcher = (variables?: UserStudiosFavoritesQueryVariables, options?: RequestInit['headers']) => useFetchAnilistData<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables>(UserStudiosFavoritesDocument, variables, options);
+useUserStudiosFavoritesQuery.fetcher = (variables?: UserStudiosFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserStudiosFavoritesQuery, UserStudiosFavoritesQueryVariables>(UserStudiosFavoritesDocument, variables, options);

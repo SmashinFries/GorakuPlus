@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
@@ -11,6 +12,7 @@ type ScoreContainerProps = {
 	isMal?: boolean;
 	animate?: boolean;
 	delay?: number;
+	size?: number;
 };
 export const ScoreContainer = ({
 	title,
@@ -20,12 +22,14 @@ export const ScoreContainer = ({
 	delay,
 	animate = true,
 	isMal = false,
+	size = 85,
 }: ScoreContainerProps) => {
-	const height = 85;
+	const height = size;
+	const width = size;
 	const heightAnim = useSharedValue(0);
 	const fillHeight = score ? ((isMal ? score * 10 : score) / 100) * height : 0;
-	const width = 85;
-	const { colors } = useTheme();
+
+	const { colors } = useAppTheme();
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {

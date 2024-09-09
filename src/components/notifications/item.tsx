@@ -1,18 +1,19 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Pressable, View } from 'react-native';
-import { Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { Image } from 'expo-image';
-import { GetNotificationsQuery } from '@/store/services/anilist/generated-anilist';
 import { getNotificationMessage, getTimeUntil, rgbToRgba } from '../../utils';
-import { useAppSelector } from '@/store/hooks';
+import { GetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 type NotifItemProps = {
 	item: GetNotificationsQuery['Page']['notifications'][0];
 	onNav: () => void;
 };
 export const NotifItem = ({ item, onNav }: NotifItemProps) => {
-	const { colors } = useTheme();
-	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
+	const { colors } = useAppTheme();
+	const { mediaLanguage } = useSettingsStore();
 
 	if (!item?.media) return null;
 

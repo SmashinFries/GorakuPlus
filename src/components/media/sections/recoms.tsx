@@ -2,16 +2,23 @@ import { IconButton, Text, useTheme } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
-import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from '@/components/cards';
 import { router } from 'expo-router';
 import { ListHeading } from '@/components/text';
+import {
+	AniMediaQuery,
+	AnimeMetaFragment,
+	MangaMetaFragment,
+	MediaFormat,
+} from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type RecProps = {
 	data: AniMediaQuery['Media']['recommendations'];
+	onLongSelect: (media: AnimeMetaFragment | MangaMetaFragment) => void;
 };
-const RecList = ({ data }: RecProps) => {
-	const { colors } = useTheme();
+const RecList = ({ data, onLongSelect }: RecProps) => {
+	const { colors } = useAppTheme();
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = ({
 		item,
@@ -36,6 +43,7 @@ const RecList = ({ data }: RecProps) => {
 					}
 					scoreDistributions={item.node.mediaRecommendation?.stats?.scoreDistribution}
 					isFavorite={item.node.mediaRecommendation?.isFavourite}
+					onLongPress={() => onLongSelect(item.node?.mediaRecommendation)}
 				/>
 				<Text
 					variant="labelLarge"

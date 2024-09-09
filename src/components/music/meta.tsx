@@ -1,6 +1,5 @@
-import { MotiView } from 'moti';
-import { Animetheme } from '@/store/services/animethemes/types';
-import { StyleSheet } from 'react-native';
+import { Animetheme } from '@/api/animethemes/types';
+import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 type SongMetaProps = {
@@ -8,10 +7,10 @@ type SongMetaProps = {
 };
 export const SongMeta = ({ data }: SongMetaProps) => {
 	return (
-		<MotiView style={[styles.container]}>
+		<View style={[styles.container]}>
 			<Text variant="titleLarge">{data?.song.title}</Text>
 			<Text>By {data?.song.artists[0]?.name}</Text>
-		</MotiView>
+		</View>
 	);
 };
 

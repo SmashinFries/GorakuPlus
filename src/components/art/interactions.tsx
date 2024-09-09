@@ -4,6 +4,7 @@ import { Divider, IconButton, Text, useTheme } from 'react-native-paper';
 import { saveImage } from '../../utils/images';
 import { TOAST } from '@/constants/toast';
 import * as Burnt from 'burnt';
+import { useAppTheme } from '@/store/theme/themes';
 
 type InteractionBarProps = {
 	url: string;
@@ -11,7 +12,7 @@ type InteractionBarProps = {
 	name: string;
 };
 export const InteractionBar = ({ url, name, share_url }: InteractionBarProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<View style={[styles.container]}>
 			<Divider />

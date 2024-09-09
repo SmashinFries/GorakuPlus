@@ -10,17 +10,9 @@ import { SearchHeader } from '@/components/headers';
 import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog, FilterTagDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';
-import {
-	AnimeSearchList,
-	MangaSearchList,
-	CharacterList,
-	ImageSearchList,
-	StaffList,
-	StudioList,
-	WaifuSearchList,
-} from '@/components/search/lists';
+import { AnimeSearchList, MangaSearchList } from '@/components/search/lists';
 import { MediaSelectorMem } from '@/components/search/mediaSelector';
-import { useFilter } from '@/hooks/search/useFilter';
+import { useStickyHeader } from '@/hooks/animations/useStickyHeader';
 import useFilterSheet from '@/hooks/search/useSheet';
 import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
 import { useSearchStore } from '@/store/search/searchStore';
@@ -71,26 +63,6 @@ const SearchPage = () => {
 	const scrollClamp = useSharedValue(0);
 	const scrollOffset = useSharedValue(0);
 	const [showScrollToTop, setShowScrollToTop] = useState(false);
-	const scrollHandler = useAnimatedScrollHandler(
-		{
-			onBeginDrag: (e, ctx: ScrollCtx) => {
-				'worklet';
-				ctx.prevY = e.contentOffset.y;
-			},
-			onScroll: (e, ctx: ScrollCtx) => {
-				'worklet';
-				// scrollPos.value = e.contentOffset.y;
-				const diff = e.contentOffset.y - ctx.prevY;
-				scrollClamp.value = clamp(scrollClamp.value + diff, 0, categoryHeight);
-				ctx.prevY = e.contentOffset.y;
-				scrollOffset.value = e.contentOffset.y;
-			},
-			onMomentumEnd: () => {
-				'worklet';
-			},
-		},
-		[categoryHeight],
-	);
 
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
@@ -221,20 +193,7 @@ const SearchPage = () => {
 	// 	}
 	// };
 
-	const stickyHeaderStyle = useAnimatedStyle(() => {
-		return {
-			transform: [
-				{
-					translateY: interpolate(
-						scrollClamp.value,
-						[0, categoryHeight],
-						[0, -categoryHeight],
-						Extrapolation.CLAMP,
-					),
-				},
-			],
-		};
-	}, [categoryHeight]);
+	const { scrollHandler, stickyHeaderStyle } = useStickyHeader(categoryHeight);
 
 	useAnimatedReaction(
 		() => {

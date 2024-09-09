@@ -1,19 +1,19 @@
+import { AniMediaQuery } from '@/api/anilist/__genereated__/gql';
 import { ScoreColors, StatusColors } from '@/constants/colors';
-import { AniMediaQuery, MediaListStatus } from '@/store/services/anilist/generated-anilist';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, useWindowDimensions } from 'react-native';
-import { Button, Chip, MD3DarkTheme, Text } from 'react-native-paper';
+import { Button, Chip, MD3DarkTheme, MD3LightTheme, Text } from 'react-native-paper';
 
 type StatusItemProps = {
 	status: AniMediaQuery['Media']['stats']['statusDistribution'][0];
 };
 export const StatusItem = ({ status }: StatusItemProps) => {
 	return (
-		<View style={{ margin: 10, alignItems: 'center' }}>
+		<View style={{ marginRight: 8, marginTop: 8, alignItems: 'center' }}>
 			<Chip
 				mode="flat"
 				elevated
-				textStyle={{ color: MD3DarkTheme.colors.onBackground }}
+				textStyle={{ color: MD3DarkTheme.colors.onBackground, fontWeight: '900' }}
 				style={{ backgroundColor: StatusColors[status.status], padding: 2 }}
 			>
 				{status.status}
@@ -34,20 +34,19 @@ type ScoreItemProps = {
 };
 export const ScoreItem = ({ score, highestScore }: ScoreItemProps) => {
 	return (
-		<View style={{ margin: 10, alignItems: 'center' }}>
+		<View style={{ marginRight: 20, marginTop: 10, alignItems: 'center' }}>
 			<Chip
 				mode="flat"
 				elevated
-				textStyle={{ color: MD3DarkTheme.colors.onBackground }}
+				textStyle={{ color: MD3LightTheme.colors.onBackground, fontWeight: '900' }}
 				style={{ backgroundColor: ScoreColors[score.score], padding: 2 }}
 			>
+				{score.score === highestScore && '🔥 '}
 				{score.score} %
 			</Chip>
 			<Text>
 				<Text style={{ color: ScoreColors[score.score] }}>
-					{score.score === highestScore
-						? '🔥' + score?.amount.toLocaleString()
-						: score?.amount.toLocaleString()}
+					{score?.amount.toLocaleString()}
 				</Text>{' '}
 				Users
 			</Text>

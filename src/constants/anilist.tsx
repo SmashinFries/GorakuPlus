@@ -1,4 +1,4 @@
-import { MediaStatus, MediaType } from '@/api/anilist/__genereated__/gql';
+import { MediaFormat, MediaStatus, MediaType } from '@/api/anilist/__genereated__/gql';
 
 export type MediaSearchSelection = MediaType.Anime | MediaType.Manga | 'NOVEL';
 
@@ -71,4 +71,17 @@ export const COUNTRY_OPTIONS = {
 		name: '🇹🇼 Taiwan',
 		flag: '🇹🇼',
 	},
+};
+
+export const media_format_alt = {
+	[MediaFormat.Manga]: 'Manga',
+	[MediaFormat.OneShot]: 'One Shot',
+	[MediaFormat.Novel]: 'Light Novel',
+	[MediaFormat.Movie]: 'Movie',
+	[MediaFormat.Music]: 'Music',
+	[MediaFormat.Ona]: 'ONA',
+	[MediaFormat.Ova]: 'OVA',
+	[MediaFormat.Special]: 'Special',
+	[MediaFormat.Tv]: 'TV',
+	[MediaFormat.TvShort]: 'TV Short',
 };

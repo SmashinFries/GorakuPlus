@@ -2,6 +2,7 @@ import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
 import { Pressable, ScrollView, View } from 'react-native';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { User } from '@/api/anilist/__genereated__/gql';
+import { router } from 'expo-router';
 
 type FollowUserItemProps = {
 	user: User;
@@ -9,7 +10,17 @@ type FollowUserItemProps = {
 const FollowUserItem = ({ user }: FollowUserItemProps) => {
 	return (
 		<Pressable
-			onPress={() => openWebBrowser(`https://anilist.co/user/${user.name}`)}
+			onPress={() =>
+				router.push({
+					pathname: '/user',
+					params: {
+						userId: user.id,
+						name: user.name,
+						avatarUrl: user.avatar.large,
+						bannerUrl: user.bannerImage,
+					},
+				})
+			}
 			style={{ margin: 12, alignItems: 'center' }}
 		>
 			<View>

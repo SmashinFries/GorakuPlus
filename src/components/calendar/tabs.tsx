@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { getTimeUntil, useColumns } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
-import { MediaList, MediaType, WeeklyAnimeQuery } from '@/store/services/anilist/generated-anilist';
 import { router } from 'expo-router';
 import { MediaCard, MediaCardRow, MediaProgressBar } from '../cards';
-import { useAppSelector } from '@/store/hooks';
 import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import Animated, {
 	useAnimatedStyle,
@@ -16,7 +13,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import { ProgressBar, Text } from 'react-native-paper';
 import { useWindowDimensions } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import {
+	AnimeMetaFragment,
+	MangaMetaFragment,
+	MediaList,
+	MediaType,
+	WeeklyAnimeQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useDisplayStore } from '@/store/displayStore';
 
 const RenderEmpty = ({ message }: { message: string }) => {
 	const rotate = useSharedValue(0);
@@ -53,11 +58,12 @@ const RenderEmpty = ({ message }: { message: string }) => {
 
 type DayTabProps = {
 	data: WeeklyAnimeQuery['Page']['airingSchedules'];
+	onLongSelect: (media: AnimeMetaFragment) => void;
 };
-export const DayTab = ({ data }: DayTabProps) => {
+export const DayTab = ({ data, onLongSelect }: DayTabProps) => {
 	const { width } = useWindowDimensions();
-	const { showItemListStatus, showNSFW } = useAppSelector((state) => state.persistedSettings);
-	const { calendar } = useAppSelector((state) => state.persistedDisplaySettings);
+	const { showItemListStatus, showNSFW } = useSettingsStore();
+	const { calendar } = useDisplayStore();
 
 	const { dismissAll: dismissAllModals } = useBottomSheetModal();
 
@@ -94,6 +100,7 @@ export const DayTab = ({ data }: DayTabProps) => {
 						}}
 						fitToParent
 						isFavorite={item.media.isFavourite}
+						onLongPress={() => onLongSelect(item.media)}
 					/>
 					<MediaProgressBar
 						progress={item.media.mediaListEntry?.progress}
@@ -107,46 +114,46 @@ export const DayTab = ({ data }: DayTabProps) => {
 		[data, showItemListStatus, showNSFW],
 	);
 
-	const RenderItemTest = React.useCallback(
-		({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
-			const bannerText = item.timeUntilAiring as unknown as string;
+	// const RenderItemTest = React.useCallback(
+	// 	({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
+	// 		const bannerText = item.timeUntilAiring as unknown as string;
 
-			if (!showNSFW && item.media?.isAdult) return null;
-			return (
-				<View>
-					<MediaCardRow
-						titles={item.media?.title}
-						coverImg={item.media.coverImage.extraLarge}
-						bannerImg={item.media.bannerImage}
-						imgBgColor={item.media.coverImage.color}
-						averageScore={item.media?.averageScore}
-						meanScore={item.media?.meanScore}
-						showBanner
-						bannerText={bannerText}
-						scoreDistributions={item.media.stats?.scoreDistribution}
-						navigate={() => {
-							dismissAllModals();
-							router.push(
-								`/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
-							);
-						}}
-						scoreWidth={'20%'}
-					/>
-					{item.media.mediaListEntry?.progress && (
-						<ProgressBar
-							style={{ width: '100%' }}
-							progress={
-								item.media.episodes && item.media.mediaListEntry?.progress
-									? item.media.mediaListEntry?.progress / item.media.episodes
-									: 1
-							}
-						/>
-					)}
-				</View>
-			);
-		},
-		[data, showItemListStatus, showNSFW],
-	);
+	// 		if (!showNSFW && item.media?.isAdult) return null;
+	// 		return (
+	// 			<View>
+	// 				<MediaCardRow
+	// 					titles={item.media?.title}
+	// 					coverImg={item.media.coverImage.extraLarge}
+	// 					bannerImg={item.media.bannerImage}
+	// 					imgBgColor={item.media.coverImage.color}
+	// 					averageScore={item.media?.averageScore}
+	// 					meanScore={item.media?.meanScore}
+	// 					showBanner
+	// 					bannerText={bannerText}
+	// 					scoreDistributions={item.media.stats?.scoreDistribution}
+	// 					navigate={() => {
+	// 						dismissAllModals();
+	// 						router.push(
+	// 							`/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
+	// 						);
+	// 					}}
+	// 					scoreWidth={'20%'}
+	// 				/>
+	// 				{item.media.mediaListEntry?.progress && (
+	// 					<ProgressBar
+	// 						style={{ width: '100%' }}
+	// 						progress={
+	// 							item.media.episodes && item.media.mediaListEntry?.progress
+	// 								? item.media.mediaListEntry?.progress / item.media.episodes
+	// 								: 1
+	// 						}
+	// 					/>
+	// 				)}
+	// 			</View>
+	// 		);
+	// 	},
+	// 	[data, showItemListStatus, showNSFW],
+	// );
 
 	return (
 		<View style={{ width: '100%', height: '100%' }}>

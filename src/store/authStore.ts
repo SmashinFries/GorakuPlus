@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
 import Constants from 'expo-constants';
-import { AxiosHeaderValue, AxiosRequestHeaders } from 'axios';
 
 const storage = new MMKV({
 	id: 'auth-storage',
@@ -24,9 +23,6 @@ type AuthState = {
 	};
 	waifuit: {
 		token: string | null;
-		header?: {
-			Authorization: AxiosHeaderValue;
-		};
 	};
 };
 type AuthAction = {
@@ -48,7 +44,6 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 			},
 			waifuit: {
 				token: null,
-				header: { Authorization: get().waifuit.token },
 			},
 			sauceNao: {
 				api_key: null,

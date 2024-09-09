@@ -14,7 +14,12 @@ export const launchAPK = async (destination: string) => {
 	});
 };
 
-export const downloadAppUpdate = async (url: string, version: string) => {
+export const downloadAppUpdate = async (
+	url: string,
+	version: string,
+	onDownload: (progress: number) => void,
+	onIsDownloading: (isDownloadActive: boolean) => void,
+) => {
 	const jobId = `goraku${version.replaceAll('.', '-')}`;
 	const destination = `${FileSystem.documentDirectory}/${jobId}.apk`;
 	console.log('Destination:', destination);
@@ -29,14 +34,16 @@ export const downloadAppUpdate = async (url: string, version: string) => {
 		},
 	})
 		.begin(({ expectedBytes, headers }) => {
+			onIsDownloading(true);
 			console.log(`Going to download ${expectedBytes} bytes!`);
 		})
 		.progress(({ bytesDownloaded, bytesTotal }) => {
+			onDownload((bytesDownloaded / bytesTotal) * 100);
 			console.log(`Downloaded: ${(bytesDownloaded / bytesTotal) * 100}%`);
 		})
 		.done(({ bytesDownloaded, bytesTotal }) => {
 			console.log('Download is done!', { bytesDownloaded, bytesTotal });
-
+			onIsDownloading(false);
 			// PROCESS YOUR STUFF
 			launchAPK(destination);
 
@@ -45,6 +52,7 @@ export const downloadAppUpdate = async (url: string, version: string) => {
 		})
 		.error(({ error, errorCode }) => {
 			console.log('Download canceled due to error: ', { error, errorCode });
+			onIsDownloading(false);
 		});
 };
 

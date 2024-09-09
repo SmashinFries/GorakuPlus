@@ -1,5 +1,4 @@
 import { IconButton, Text, useTheme } from 'react-native-paper';
-import { MediaExternalLink } from '@/store/services/anilist/generated-anilist';
 import { ListHeading } from '@/components/text';
 import { ScrollView } from 'react-native';
 import { openWebBrowser } from '@/utils/webBrowser';
@@ -13,9 +12,11 @@ import {
 	NetflixIcon,
 } from '@/components/svgs';
 import { View } from 'react-native';
-import { AnimeFull } from '@/store/services/mal/malApi';
 import { StreamSites } from '@/types/mal';
 import Animated from 'react-native-reanimated';
+import { MediaExternalLink } from '@/api/anilist/__genereated__/gql';
+import { AnimeFull } from '@/api/jikan/models';
+import { useAppTheme } from '@/store/theme/themes';
 
 type LinkIconButtonProps = {
 	index: number;
@@ -90,7 +91,7 @@ type MediaLinksProps = {
 	aniLink: string;
 };
 const MediaLinks = ({ links, aniLink, malLink, muLink }: MediaLinksProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { dbLinks, extLinks } = useMediaLinks(links, aniLink, malLink, muLink);
 
 	return (
@@ -153,7 +154,7 @@ const MediaLinks = ({ links, aniLink, malLink, muLink }: MediaLinksProps) => {
 };
 
 export const StreamingLinks = ({ streamLinks }: { streamLinks: AnimeFull['streaming'] }) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const CustomIcon = ({ name, size }: { name: string; size: number }) => {
 		switch (name as StreamSites) {

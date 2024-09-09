@@ -1,15 +1,15 @@
 import { Button, List, Surface, Text, TouchableRipple, useTheme } from 'react-native-paper';
-import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
 import { convertDate, copyToClipboard, rgbToRgba } from '@/utils';
 import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import { RetrieveSeriesApiResponse } from '@/store/services/mangaupdates/mangaUpdatesApi';
 import { useEffect, useMemo } from 'react';
 import { Accordion } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
-import { AnimeFull, MangaFull } from '@/store/services/mal/malApi';
 import { router } from 'expo-router';
-import { useAppTheme } from '@/store/theme/theme';
 import Animated from 'react-native-reanimated';
+import { AniMediaQuery, MediaFormat, MediaType } from '@/api/anilist/__genereated__/gql';
+import { AnimeFull, MangaFull } from '@/api/jikan/models';
+import { useAppTheme } from '@/store/theme/themes';
+import { SeriesModelV1 } from '@/api/mangaupdates/models';
 
 type MetaDataProps = {
 	data: AniMediaQuery['Media'];
@@ -318,10 +318,10 @@ export const MUData = ({
 	data,
 	openMuDialog,
 }: {
-	data: RetrieveSeriesApiResponse;
+	data: SeriesModelV1;
 	openMuDialog: () => void;
 }) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const isEnglishTrans = useMemo(
 		() => data?.publishers?.some((pub) => pub.type === 'English') ?? false,
 		[data?.publishers],

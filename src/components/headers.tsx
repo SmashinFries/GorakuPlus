@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
 	Appbar,
+	AppbarProps,
 	Badge,
 	Icon,
 	IconButton,
@@ -55,22 +56,39 @@ import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useFavoritesFilterStore } from '@/store/favoritesStore';
 import { SearchType } from '@/store/search/searchStore';
+import { AniCardPageParams } from '@/types/anicard';
 
-const PaperHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+const PaperHeader = ({
+	navigation,
+	options,
+	route,
+	back,
+	mode,
+	dark,
+	elevated,
+	actions,
+}: NativeStackHeaderProps & {
+	mode?: AppbarProps['mode'];
+	dark?: boolean;
+	elevated?: boolean;
+	actions?: { icon: string; onPress: () => void }[];
+}) => {
 	const title = getHeaderTitle(options, route.name);
 	return (
-		<Appbar.Header>
+		<Appbar.Header mode={mode} dark={dark} elevated={elevated}>
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
-			<Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
+			<Appbar.Content
+				title={title}
+				titleStyle={{ textTransform: 'capitalize' }}
+				// mode={mode}
+			/>
+			{actions?.map((action, idx) => <Appbar.Action key={idx} {...action} />)}
 		</Appbar.Header>
 	);
 };
 
 export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderProps) => {
 	const title = getHeaderTitle(options, route.name);
-	const { colors } = useTheme();
-	const { width } = useWindowDimensions();
-	const { mode } = useThemeStore();
 
 	const [showBCDialog, setShowBCDialog] = useState(false);
 
@@ -146,7 +164,7 @@ export const SearchHeader = ({
 	openWaifuSearch,
 	onFocus,
 }: SearchHeaderProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { right, left } = useSafeAreaInsets();
 	const [query, setQuery] = useState(searchTerm);
 
@@ -275,7 +293,7 @@ export const BanTagHeader = ({
 	onSave,
 }: NativeStackHeaderProps & { onSave: () => void; iconColor: string }) => {
 	const title = getHeaderTitle(options, route.name);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
 	return (
 		<Appbar.Header>
@@ -296,6 +314,7 @@ type MediaHeaderProps = {
 	streamingLinks?: AniMediaQuery['Media']['externalLinks'];
 	onBack: () => void;
 	onEdit: () => void;
+	onAniCard?: () => void;
 };
 export const MediaHeader = ({
 	navigation,
@@ -307,6 +326,7 @@ export const MediaHeader = ({
 	streamingLinks,
 	onBack,
 	onEdit,
+	onAniCard,
 }: MediaHeaderProps) => {
 	const [streamVisible, setStreamVisible] = useState(false);
 	const [moreVisible, setMoreVisible] = useState(false);
@@ -422,7 +442,7 @@ export const MediaHeader = ({
 						/>
 					</Animated.View>
 				)}
-				{shareLink && onEdit && streamingLinks?.length > 0 && (
+				{shareLink && onEdit && (streamingLinks?.length > 0 || onAniCard) && (
 					<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
 						<Menu
 							visible={moreVisible}
@@ -445,6 +465,15 @@ export const MediaHeader = ({
 									})
 								}
 								title={'Share'}
+							/>
+							<Menu.Item
+								leadingIcon={'card-text-outline'}
+								onPress={() => {
+									console.log('Routing!');
+									closeMoreMenu();
+									onAniCard();
+								}}
+								title={'AniCard'}
 							/>
 						</Menu>
 					</Animated.View>
@@ -469,6 +498,7 @@ type FadeHeaderProps = {
 	loading?: boolean;
 	disableBack?: boolean;
 	addFriendIcon?: boolean;
+	isFriend?: boolean;
 	onAddFriend?: () => void;
 	notificationIcon?: boolean;
 	newNotifs?: number;
@@ -482,6 +512,7 @@ type FadeHeaderProps = {
 	isMediaScreen?: boolean;
 	BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
 	onBack?: () => void;
+	onAniCard?: () => void;
 };
 export const FadeHeaderProvider = ({
 	children,
@@ -493,6 +524,7 @@ export const FadeHeaderProvider = ({
 	onEdit,
 	loading,
 	addFriendIcon,
+	isFriend,
 	onAddFriend,
 	notificationIcon,
 	newNotifs,
@@ -503,12 +535,12 @@ export const FadeHeaderProvider = ({
 	isMediaScreen = false,
 	BgImage,
 	onBack,
+	onAniCard,
 }: FadeHeaderProps) => {
 	const navigation = useNavigation<NativeStackNavigationProp<any>>();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { headerStyle, headerTitleStyle, bgImageStyle, headerActionStyle, scrollHandler } =
 		useHeaderAnim(animationRange[0], animationRange[1]);
-	const { width, height } = useWindowDimensions();
 	const { userID } = useAuthStore().anilist;
 	const { navAnimation } = useSettingsStore();
 
@@ -631,7 +663,10 @@ export const FadeHeaderProvider = ({
 								headerActionStyle,
 							]}
 						>
-							<Appbar.Action icon={'account-plus-outline'} onPress={onAddFriend} />
+							<Appbar.Action
+								icon={isFriend ? 'account-minus-outline' : 'account-plus-outline'}
+								onPress={onAddFriend}
+							/>
 						</Animated.View>
 					)}
 					{userID && notificationIcon && (
@@ -680,6 +715,7 @@ export const FadeHeaderProvider = ({
 						headerStyle={headerStyle}
 						headerTitleStyle={headerTitleStyle}
 						streamingLinks={streamingLinks}
+						onAniCard={onAniCard}
 					/>
 				) : (
 					<Header />
@@ -712,7 +748,7 @@ export const CharStaffHeader = ({ navigation, options, route, back }: NativeStac
 };
 
 type ReviewHeaderProps = NativeStackHeaderProps & {
-	onRenderSwitch: () => void;
+	onRenderSwitch?: () => void;
 	shareLink?: string;
 	render_switch_icon?: string;
 };
@@ -760,9 +796,13 @@ const HeaderStyles = StyleSheet.create({
 });
 
 export const ListHeader = ({
+	title = 'List',
+	isViewer = true,
 	openFilter,
 	onRefresh,
 }: {
+	title?: string;
+	isViewer?: boolean;
 	openFilter: () => void;
 	onRefresh: () => void;
 }) => {
@@ -772,7 +812,13 @@ export const ListHeader = ({
 
 	useFocusEffect(() => {
 		const backAction = () => {
-			setIsOpen(false);
+			setIsOpen((prev) => {
+				if (prev === false) {
+					router.back();
+				} else {
+					return false;
+				}
+			});
 			return true;
 		};
 
@@ -787,6 +833,7 @@ export const ListHeader = ({
 
 	return (
 		<Appbar.Header>
+			{!isViewer && !isOpen && <Appbar.BackAction onPress={() => router.back()} />}
 			{isOpen ? (
 				<Animated.View
 					entering={FadeIn}
@@ -812,14 +859,14 @@ export const ListHeader = ({
 					/>
 				</Animated.View>
 			) : (
-				<Appbar.Content title={'List'} />
+				<Appbar.Content title={title} />
 			)}
 			{!isOpen && (
 				<Animated.View exiting={FadeOut}>
 					<Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />
 				</Animated.View>
 			)}
-			<Appbar.Action icon="refresh" onPress={onRefresh} />
+			{/* <Appbar.Action icon="refresh" onPress={onRefresh} /> */}
 			<Appbar.Action icon="filter-variant" onPress={openFilter} />
 			{/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
 		</Appbar.Header>
@@ -923,6 +970,24 @@ export const StudioHeader = ({
 					})
 				}
 			/>
+		</Appbar.Header>
+	);
+};
+
+export const AniCardHeader = ({
+	navigation,
+	options,
+	route,
+	back,
+	onSave,
+}: NativeStackHeaderProps & { onSave: () => void }) => {
+	const title = getHeaderTitle(options, route.name);
+
+	return (
+		<Appbar.Header>
+			{back && <Appbar.BackAction onPress={navigation.goBack} />}
+			<Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
+			<Appbar.Action icon={'download-outline'} onPress={onSave} />
 		</Appbar.Header>
 	);
 };

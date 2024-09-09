@@ -1,8 +1,9 @@
-import Slider from '@react-native-community/slider';
+import { useAppTheme } from '@/store/theme/themes';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { Text, useTheme } from 'react-native-paper';
+import { MUISlider } from '../slider';
 
 type ScoreSliderProps = {
 	updateScore: (score: number) => void;
@@ -18,7 +19,7 @@ export const ScoreSlider = ({
 	maxValue = 100,
 	minValue = 0,
 }: ScoreSliderProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [value, setValue] = useState(initialScore ?? 0);
 	return (
 		<NativeViewGestureHandler disallowInterruption={true}>
@@ -26,18 +27,16 @@ export const ScoreSlider = ({
 				<Text variant="titleMedium">
 					{title} - {value}
 				</Text>
-				<Slider
+				<MUISlider
 					value={value}
-					onValueChange={(value) => setValue(value)}
-					onSlidingComplete={(value) => updateScore(value)}
-					minimumTrackTintColor={colors.primary}
-					maximumTrackTintColor={colors.secondary}
+					onValueChange={(value) => {
+						setValue(value[0]);
+						updateScore(value[0]);
+					}}
+					// onSlidingComplete={(value) => updateScore(value)}
 					step={5}
-					minimumValue={0}
-					maximumValue={100}
-					thumbTintColor={colors.primary}
-					lowerLimit={minValue ?? null}
-					upperLimit={maxValue ?? null}
+					minValue={0}
+					maxValue={100}
 				/>
 			</View>
 		</NativeViewGestureHandler>

@@ -244,7 +244,7 @@ export const addAboutusCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/aboutus/category`,
+      `https://api.mangaupdates.com/v1/aboutus/category`,
       aboutusCategoryModelUpdateV1,options
     );
   }
@@ -300,7 +300,7 @@ export const retrieveAboutusCategory = (
  ): Promise<AxiosResponse<AboutusCategoryModelV1>> => {
     
     return axios.get(
-      `/aboutus/category/${categoryId}`,{
+      `https://api.mangaupdates.com/v1/aboutus/category/${categoryId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -309,7 +309,7 @@ export const retrieveAboutusCategory = (
 
 export const getRetrieveAboutusCategoryQueryKey = (categoryId: number,
     params?: RetrieveAboutusCategoryParams,) => {
-    return [`/aboutus/category/${categoryId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/aboutus/category/${categoryId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -406,7 +406,7 @@ export const deleteAboutusCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/aboutus/category/${categoryId}`,options
+      `https://api.mangaupdates.com/v1/aboutus/category/${categoryId}`,options
     );
   }
 
@@ -461,7 +461,7 @@ export const updateAboutusCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/aboutus/category/${categoryId}`,
+      `https://api.mangaupdates.com/v1/aboutus/category/${categoryId}`,
       aboutusCategoryModelUpdateV1,options
     );
   }
@@ -516,13 +516,13 @@ export const retrieveAboutusCategoriesAndUsers = (
  ): Promise<AxiosResponse<AboutusCategoryModelV1[]>> => {
     
     return axios.get(
-      `/aboutus/users`,options
+      `https://api.mangaupdates.com/v1/aboutus/users`,options
     );
   }
 
 
 export const getRetrieveAboutusCategoriesAndUsersQueryKey = () => {
-    return [`/aboutus/users`] as const;
+    return [`https://api.mangaupdates.com/v1/aboutus/users`] as const;
     }
 
     
@@ -615,7 +615,7 @@ export const retrieveAboutusDescription = (
  ): Promise<AxiosResponse<AboutusDescriptionModelV1>> => {
     
     return axios.get(
-      `/aboutus`,{
+      `https://api.mangaupdates.com/v1/aboutus`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -623,7 +623,7 @@ export const retrieveAboutusDescription = (
 
 
 export const getRetrieveAboutusDescriptionQueryKey = (params?: RetrieveAboutusDescriptionParams,) => {
-    return [`/aboutus`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/aboutus`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -716,7 +716,7 @@ export const updateAboutusDescription = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/aboutus`,
+      `https://api.mangaupdates.com/v1/aboutus`,
       aboutusDescriptionModelV1,options
     );
   }
@@ -771,7 +771,7 @@ export const reorderAboutus = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/aboutus/reorder`,
+      `https://api.mangaupdates.com/v1/aboutus/reorder`,
       aboutusCategoryReorderModelV1,options
     );
   }
@@ -827,7 +827,7 @@ export const addAboutusCategoryUser = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/aboutus/category/${categoryId}/users`,
+      `https://api.mangaupdates.com/v1/aboutus/category/${categoryId}/users`,
       aboutusUserModelUpdateV1,options
     );
   }
@@ -883,7 +883,7 @@ export const deleteAboutusCategoryUser = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/aboutus/category/${categoryId}/users/${entryId}`,options
+      `https://api.mangaupdates.com/v1/aboutus/category/${categoryId}/users/${entryId}`,options
     );
   }
 
@@ -937,13 +937,13 @@ export const captcha = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.get(
-      `/account/captcha`,options
+      `https://api.mangaupdates.com/v1/account/captcha`,options
     );
   }
 
 
 export const getCaptchaQueryKey = () => {
-    return [`/account/captcha`] as const;
+    return [`https://api.mangaupdates.com/v1/account/captcha`] as const;
     }
 
     
@@ -1036,7 +1036,7 @@ export const confirmDeleteAccount = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/delete/confirm/${authHash}`,undefined,options
+      `https://api.mangaupdates.com/v1/account/delete/confirm/${authHash}`,undefined,options
     );
   }
 
@@ -1090,7 +1090,7 @@ export const deleteAccount = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/delete/${captchaResponse}`,undefined,options
+      `https://api.mangaupdates.com/v1/account/delete/${captchaResponse}`,undefined,options
     );
   }
 
@@ -1145,7 +1145,7 @@ export const confirmAndChangePassword = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/forgotpass/confirm/${authHash}`,
+      `https://api.mangaupdates.com/v1/account/forgotpass/confirm/${authHash}`,
       userModelUpdatePasswordV1,options
     );
   }
@@ -1201,7 +1201,7 @@ export const forgotPassword = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/forgotpass/${captchaResponse}`,
+      `https://api.mangaupdates.com/v1/account/forgotpass/${captchaResponse}`,
       accountForgotPassModelV1,options
     );
   }
@@ -1256,7 +1256,7 @@ export const login = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.put(
-      `/account/login`,
+      `https://api.mangaupdates.com/v1/account/login`,
       accountLoginModelV1,options
     );
   }
@@ -1311,7 +1311,7 @@ export const logout = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/logout`,undefined,options
+      `https://api.mangaupdates.com/v1/account/logout`,undefined,options
     );
   }
 
@@ -1365,13 +1365,13 @@ export const profile = (
  ): Promise<AxiosResponse<UserModelV1>> => {
     
     return axios.get(
-      `/account/profile`,options
+      `https://api.mangaupdates.com/v1/account/profile`,options
     );
   }
 
 
 export const getProfileQueryKey = () => {
-    return [`/account/profile`] as const;
+    return [`https://api.mangaupdates.com/v1/account/profile`] as const;
     }
 
     
@@ -1464,7 +1464,7 @@ export const confirmRegistration = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/register/confirm/${authHash}`,undefined,options
+      `https://api.mangaupdates.com/v1/account/register/confirm/${authHash}`,undefined,options
     );
   }
 
@@ -1519,7 +1519,7 @@ export const registerMember = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/register/${captchaResponse}`,
+      `https://api.mangaupdates.com/v1/account/register/${captchaResponse}`,
       userModelRegisterV1,options
     );
   }
@@ -1574,7 +1574,7 @@ export const resendAuthEmail = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/resendauth/${id}`,undefined,options
+      `https://api.mangaupdates.com/v1/account/resendauth/${id}`,undefined,options
     );
   }
 
@@ -1628,7 +1628,7 @@ export const sendForgotEmail = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/account/sendforgot/${id}`,undefined,options
+      `https://api.mangaupdates.com/v1/account/sendforgot/${id}`,undefined,options
     );
   }
 
@@ -1682,7 +1682,7 @@ export const addAuthor = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/authors`,
+      `https://api.mangaupdates.com/v1/authors`,
       authorsModelUpdateV1,options
     );
   }
@@ -1738,7 +1738,7 @@ export const retrieveAuthor = (
  ): Promise<AxiosResponse<AuthorsModelV1>> => {
     
     return axios.get(
-      `/authors/${id}`,{
+      `https://api.mangaupdates.com/v1/authors/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1747,7 +1747,7 @@ export const retrieveAuthor = (
 
 export const getRetrieveAuthorQueryKey = (id: number,
     params?: RetrieveAuthorParams,) => {
-    return [`/authors/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/authors/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1844,7 +1844,7 @@ export const deleteAuthor = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/authors/${id}`,options
+      `https://api.mangaupdates.com/v1/authors/${id}`,options
     );
   }
 
@@ -1899,7 +1899,7 @@ export const updateAuthor = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/authors/${id}`,
+      `https://api.mangaupdates.com/v1/authors/${id}`,
       authorsModelUpdateV1,options
     );
   }
@@ -1954,13 +1954,13 @@ export const retrieveAuthorLocks = (
  ): Promise<AxiosResponse<AuthorsLockModelV1[]>> => {
     
     return axios.get(
-      `/authors/${id}/locks`,options
+      `https://api.mangaupdates.com/v1/authors/${id}/locks`,options
     );
   }
 
 
 export const getRetrieveAuthorLocksQueryKey = (id: number,) => {
-    return [`/authors/${id}/locks`] as const;
+    return [`https://api.mangaupdates.com/v1/authors/${id}/locks`] as const;
     }
 
     
@@ -2055,7 +2055,7 @@ export const lockAuthorField = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/authors/${id}/locks/${item}/lock`,
+      `https://api.mangaupdates.com/v1/authors/${id}/locks/${item}/lock`,
       authorsLockModelUpdateV1,options
     );
   }
@@ -2111,7 +2111,7 @@ export const unlockAuthorField = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/authors/${id}/locks/${item}/unlock`,undefined,options
+      `https://api.mangaupdates.com/v1/authors/${id}/locks/${item}/unlock`,undefined,options
     );
   }
 
@@ -2165,7 +2165,7 @@ export const searchAuthorsPost = (
  ): Promise<AxiosResponse<AuthorsSearchResponseV1>> => {
     
     return axios.post(
-      `/authors/search`,
+      `https://api.mangaupdates.com/v1/authors/search`,
       authorsSearchRequestV1,options
     );
   }
@@ -2221,7 +2221,7 @@ export const retrieveAuthorSeries = (
  ): Promise<AxiosResponse<AuthorsSeriesListResponseV1>> => {
     
     return axios.post(
-      `/authors/${id}/series`,
+      `https://api.mangaupdates.com/v1/authors/${id}/series`,
       authorsSeriesListRequestV1,options
     );
   }
@@ -2281,7 +2281,7 @@ if(updateImageBody.image !== undefined) {
 
     
     return axios.post(
-      `/authors/${id}/image`,
+      `https://api.mangaupdates.com/v1/authors/${id}/image`,
       formData,options
     );
   }
@@ -2336,7 +2336,7 @@ export const deleteImage = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/authors/${id}/image`,options
+      `https://api.mangaupdates.com/v1/authors/${id}/image`,options
     );
   }
 
@@ -2390,7 +2390,7 @@ export const bulkCombineSeriesCategories = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/categories/bulk/combine`,
+      `https://api.mangaupdates.com/v1/categories/bulk/combine`,
       seriesCategoryUpdateModelV1,options
     );
   }
@@ -2445,7 +2445,7 @@ export const bulkDeleteSeriesCategories = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/categories/bulk/delete`,
+      `https://api.mangaupdates.com/v1/categories/bulk/delete`,
       categoriesModelUpdateV1,options
     );
   }
@@ -2500,7 +2500,7 @@ export const findCategoryByPrefix = (
  ): Promise<AxiosResponse<CategoriesModelV1[]>> => {
     
     return axios.post(
-      `/categories/findByPrefix`,
+      `https://api.mangaupdates.com/v1/categories/findByPrefix`,
       categoriesModelUpdateV1,options
     );
   }
@@ -2555,7 +2555,7 @@ export const findCategoryByExact = (
  ): Promise<AxiosResponse<CategoriesModelV1>> => {
     
     return axios.post(
-      `/categories/findByExact`,
+      `https://api.mangaupdates.com/v1/categories/findByExact`,
       categoriesModelUpdateV1,options
     );
   }
@@ -2610,7 +2610,7 @@ export const searchCategoriesPost = (
  ): Promise<AxiosResponse<CategoriesSearchResponseV1>> => {
     
     return axios.post(
-      `/categories/search`,
+      `https://api.mangaupdates.com/v1/categories/search`,
       categoriesSearchRequestV1,options
     );
   }
@@ -2665,7 +2665,7 @@ export const addConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo`,
+      `https://api.mangaupdates.com/v1/convo`,
       convoModelAddV1,options
     );
   }
@@ -2720,7 +2720,7 @@ export const abandonConvoBulk = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/bulk/abandon`,
+      `https://api.mangaupdates.com/v1/convo/bulk/abandon`,
       convoBulkModelV1,options
     );
   }
@@ -2775,7 +2775,7 @@ export const deleteConvoBulk = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/bulk/delete`,
+      `https://api.mangaupdates.com/v1/convo/bulk/delete`,
       convoBulkModelV1,options
     );
   }
@@ -2831,7 +2831,7 @@ export const retrieveConvo = (
  ): Promise<AxiosResponse<ConvoModelV1>> => {
     
     return axios.get(
-      `/convo/${id}`,{
+      `https://api.mangaupdates.com/v1/convo/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2840,7 +2840,7 @@ export const retrieveConvo = (
 
 export const getRetrieveConvoQueryKey = (id: number,
     params?: RetrieveConvoParams,) => {
-    return [`/convo/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/convo/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2937,7 +2937,7 @@ export const deleteConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/convo/${id}`,options
+      `https://api.mangaupdates.com/v1/convo/${id}`,options
     );
   }
 
@@ -2992,7 +2992,7 @@ export const updateConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/convo/${id}`,
+      `https://api.mangaupdates.com/v1/convo/${id}`,
       convoModelUpdateV1,options
     );
   }
@@ -3047,13 +3047,13 @@ export const isUserIgnored = (
  ): Promise<AxiosResponse<ConvoUserIgnoreModelV1>> => {
     
     return axios.get(
-      `/convo/ignore/${userId}`,options
+      `https://api.mangaupdates.com/v1/convo/ignore/${userId}`,options
     );
   }
 
 
 export const getIsUserIgnoredQueryKey = (userId: number,) => {
-    return [`/convo/ignore/${userId}`] as const;
+    return [`https://api.mangaupdates.com/v1/convo/ignore/${userId}`] as const;
     }
 
     
@@ -3146,7 +3146,7 @@ export const ignoreUser = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/ignore/${userId}`,undefined,options
+      `https://api.mangaupdates.com/v1/convo/ignore/${userId}`,undefined,options
     );
   }
 
@@ -3200,7 +3200,7 @@ export const unIgnoreUser = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/convo/ignore/${userId}`,options
+      `https://api.mangaupdates.com/v1/convo/ignore/${userId}`,options
     );
   }
 
@@ -3254,13 +3254,13 @@ export const convoInbox = (
  ): Promise<AxiosResponse<ConvoSearchResponseV1>> => {
     
     return axios.get(
-      `/convo/inbox`,options
+      `https://api.mangaupdates.com/v1/convo/inbox`,options
     );
   }
 
 
 export const getConvoInboxQueryKey = () => {
-    return [`/convo/inbox`] as const;
+    return [`https://api.mangaupdates.com/v1/convo/inbox`] as const;
     }
 
     
@@ -3353,13 +3353,13 @@ export const convoInboxCount = (
  ): Promise<AxiosResponse<ConvoSearchResponseV1>> => {
     
     return axios.get(
-      `/convo/inbox/count`,options
+      `https://api.mangaupdates.com/v1/convo/inbox/count`,options
     );
   }
 
 
 export const getConvoInboxCountQueryKey = () => {
-    return [`/convo/inbox/count`] as const;
+    return [`https://api.mangaupdates.com/v1/convo/inbox/count`] as const;
     }
 
     
@@ -3452,7 +3452,7 @@ export const convoSent = (
  ): Promise<AxiosResponse<ConvoSearchResponseV1>> => {
     
     return axios.post(
-      `/convo/sent`,
+      `https://api.mangaupdates.com/v1/convo/sent`,
       perPageSearchRequestV1,options
     );
   }
@@ -3507,7 +3507,7 @@ export const convoReceived = (
  ): Promise<AxiosResponse<ConvoSearchResponseV1>> => {
     
     return axios.post(
-      `/convo/received`,
+      `https://api.mangaupdates.com/v1/convo/received`,
       perPageSearchRequestV1,options
     );
   }
@@ -3563,7 +3563,7 @@ export const addConvoMessage = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/messages`,
+      `https://api.mangaupdates.com/v1/convo/${id}/messages`,
       convoMessageModelUpdateV1,options
     );
   }
@@ -3619,7 +3619,7 @@ export const listConvoMessages = (
  ): Promise<AxiosResponse<ConvoMessageSearchResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/messages/list`,
+      `https://api.mangaupdates.com/v1/convo/${id}/messages/list`,
       convoMessageListRequestV1,options
     );
   }
@@ -3676,7 +3676,7 @@ export const retrieveConvoMessage = (
  ): Promise<AxiosResponse<ConvoMessageModelV1>> => {
     
     return axios.get(
-      `/convo/${id}/messages/${messageId}`,{
+      `https://api.mangaupdates.com/v1/convo/${id}/messages/${messageId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3686,7 +3686,7 @@ export const retrieveConvoMessage = (
 export const getRetrieveConvoMessageQueryKey = (id: number,
     messageId: number,
     params?: RetrieveConvoMessageParams,) => {
-    return [`/convo/${id}/messages/${messageId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/convo/${id}/messages/${messageId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3789,7 +3789,7 @@ export const updateConvoMessage = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/convo/${id}/messages/${messageId}`,
+      `https://api.mangaupdates.com/v1/convo/${id}/messages/${messageId}`,
       convoMessageModelUpdateV1,options
     );
   }
@@ -3845,14 +3845,14 @@ export const retrieveConvoMessageLocation = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.get(
-      `/convo/${id}/messages/${messageId}/location`,options
+      `https://api.mangaupdates.com/v1/convo/${id}/messages/${messageId}/location`,options
     );
   }
 
 
 export const getRetrieveConvoMessageLocationQueryKey = (id: number,
     messageId: number,) => {
-    return [`/convo/${id}/messages/${messageId}/location`] as const;
+    return [`https://api.mangaupdates.com/v1/convo/${id}/messages/${messageId}/location`] as const;
     }
 
     
@@ -3950,7 +3950,7 @@ export const searchConvoMessagesPost = (
  ): Promise<AxiosResponse<ConvoMessageSearchResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/messages/search`,
+      `https://api.mangaupdates.com/v1/convo/${id}/messages/search`,
       convoMessageSearchRequestV1,options
     );
   }
@@ -4005,7 +4005,7 @@ export const abandonConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/abandon`,undefined,options
+      `https://api.mangaupdates.com/v1/convo/${id}/abandon`,undefined,options
     );
   }
 
@@ -4060,7 +4060,7 @@ export const inviteUserToConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/invite`,
+      `https://api.mangaupdates.com/v1/convo/${id}/invite`,
       convoParticipantModelAddV1,options
     );
   }
@@ -4115,7 +4115,7 @@ export const joinConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/join`,undefined,options
+      `https://api.mangaupdates.com/v1/convo/${id}/join`,undefined,options
     );
   }
 
@@ -4170,7 +4170,7 @@ export const kickUserFromConvo = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/convo/${id}/kick/${userId}`,undefined,options
+      `https://api.mangaupdates.com/v1/convo/${id}/kick/${userId}`,undefined,options
     );
   }
 
@@ -4224,13 +4224,13 @@ export const retrieveConvoParticipants = (
  ): Promise<AxiosResponse<ConvoParticipantModelV1[]>> => {
     
     return axios.get(
-      `/convo/${id}/participants`,options
+      `https://api.mangaupdates.com/v1/convo/${id}/participants`,options
     );
   }
 
 
 export const getRetrieveConvoParticipantsQueryKey = (id: number,) => {
-    return [`/convo/${id}/participants`] as const;
+    return [`https://api.mangaupdates.com/v1/convo/${id}/participants`] as const;
     }
 
     
@@ -4323,7 +4323,7 @@ export const searchConvoPost = (
  ): Promise<AxiosResponse<ConvoSearchResponseV1>> => {
     
     return axios.post(
-      `/convo/search`,
+      `https://api.mangaupdates.com/v1/convo/search`,
       convoSearchRequestV1,options
     );
   }
@@ -4378,13 +4378,13 @@ export const retrieveAllFaqCategoriesAndQuestions = (
  ): Promise<AxiosResponse<FaqCategoryQuestionsModelV1[]>> => {
     
     return axios.get(
-      `/faq`,options
+      `https://api.mangaupdates.com/v1/faq`,options
     );
   }
 
 
 export const getRetrieveAllFaqCategoriesAndQuestionsQueryKey = () => {
-    return [`/faq`] as const;
+    return [`https://api.mangaupdates.com/v1/faq`] as const;
     }
 
     
@@ -4477,7 +4477,7 @@ export const addFaqCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/faq`,
+      `https://api.mangaupdates.com/v1/faq`,
       faqCategoryModelUpdateV1,options
     );
   }
@@ -4533,7 +4533,7 @@ export const retrieveFaqCategory = (
  ): Promise<AxiosResponse<FaqCategoryModelV1>> => {
     
     return axios.get(
-      `/faq/${categoryId}`,{
+      `https://api.mangaupdates.com/v1/faq/${categoryId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4542,7 +4542,7 @@ export const retrieveFaqCategory = (
 
 export const getRetrieveFaqCategoryQueryKey = (categoryId: number,
     params?: RetrieveFaqCategoryParams,) => {
-    return [`/faq/${categoryId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/faq/${categoryId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4639,7 +4639,7 @@ export const deleteFaqCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/faq/${categoryId}`,options
+      `https://api.mangaupdates.com/v1/faq/${categoryId}`,options
     );
   }
 
@@ -4694,7 +4694,7 @@ export const updateFaqCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/faq/${categoryId}`,
+      `https://api.mangaupdates.com/v1/faq/${categoryId}`,
       faqCategoryModelUpdateV1,options
     );
   }
@@ -4749,13 +4749,13 @@ export const retrieveAllFaqCategoryQuestions = (
  ): Promise<AxiosResponse<FaqQuestionModelV1[]>> => {
     
     return axios.get(
-      `/faq/${categoryId}/questions`,options
+      `https://api.mangaupdates.com/v1/faq/${categoryId}/questions`,options
     );
   }
 
 
 export const getRetrieveAllFaqCategoryQuestionsQueryKey = (categoryId: number,) => {
-    return [`/faq/${categoryId}/questions`] as const;
+    return [`https://api.mangaupdates.com/v1/faq/${categoryId}/questions`] as const;
     }
 
     
@@ -4849,7 +4849,7 @@ export const addFaqQuestion = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/faq/${categoryId}/questions`,
+      `https://api.mangaupdates.com/v1/faq/${categoryId}/questions`,
       faqQuestionModelUpdateV1,options
     );
   }
@@ -4906,7 +4906,7 @@ export const retrieveFaqQuestion = (
  ): Promise<AxiosResponse<FaqQuestionModelV1>> => {
     
     return axios.get(
-      `/faq/${categoryId}/questions/${questionId}`,{
+      `https://api.mangaupdates.com/v1/faq/${categoryId}/questions/${questionId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4916,7 +4916,7 @@ export const retrieveFaqQuestion = (
 export const getRetrieveFaqQuestionQueryKey = (categoryId: number,
     questionId: number,
     params?: RetrieveFaqQuestionParams,) => {
-    return [`/faq/${categoryId}/questions/${questionId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/faq/${categoryId}/questions/${questionId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5018,7 +5018,7 @@ export const deleteFaqQuestion = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/faq/${categoryId}/questions/${questionId}`,options
+      `https://api.mangaupdates.com/v1/faq/${categoryId}/questions/${questionId}`,options
     );
   }
 
@@ -5074,7 +5074,7 @@ export const updateFaqQuestion = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/faq/${categoryId}/questions/${questionId}`,
+      `https://api.mangaupdates.com/v1/faq/${categoryId}/questions/${questionId}`,
       faqQuestionModelUpdateV1,options
     );
   }
@@ -5129,7 +5129,7 @@ export const reorderFaq = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/faq/reorder`,
+      `https://api.mangaupdates.com/v1/faq/reorder`,
       faqCategoryReorderModelV1,options
     );
   }
@@ -5185,7 +5185,7 @@ export const addForumAdmin = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.put(
-      `/forums/${forumId}/admins/${userId}`,undefined,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/admins/${userId}`,undefined,options
     );
   }
 
@@ -5240,7 +5240,7 @@ export const removeForumAdmin = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/forums/${forumId}/admins/${userId}`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/admins/${userId}`,options
     );
   }
 
@@ -5295,7 +5295,7 @@ export const retrieveForum = (
  ): Promise<AxiosResponse<ForumForumModelV1>> => {
     
     return axios.get(
-      `/forums/${forumId}`,{
+      `https://api.mangaupdates.com/v1/forums/${forumId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5304,7 +5304,7 @@ export const retrieveForum = (
 
 export const getRetrieveForumQueryKey = (forumId: number,
     params?: RetrieveForumParams,) => {
-    return [`/forums/${forumId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/forums/${forumId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5402,7 +5402,7 @@ export const addTopic = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}`,
       forumTopicModelAddV1,options
     );
   }
@@ -5457,7 +5457,7 @@ export const showLogPost = (
  ): Promise<AxiosResponse<ForumAdminHistorySearchResponseV1>> => {
     
     return axios.post(
-      `/forums/log`,
+      `https://api.mangaupdates.com/v1/forums/log`,
       forumAdminHistorySearchRequestV1,options
     );
   }
@@ -5512,13 +5512,13 @@ export const listCategories = (
  ): Promise<AxiosResponse<ForumCategoryModelListV1[]>> => {
     
     return axios.get(
-      `/forums`,options
+      `https://api.mangaupdates.com/v1/forums`,options
     );
   }
 
 
 export const getListCategoriesQueryKey = () => {
-    return [`/forums`] as const;
+    return [`https://api.mangaupdates.com/v1/forums`] as const;
     }
 
     
@@ -5611,13 +5611,13 @@ export const listPopularForums = (
  ): Promise<AxiosResponse<ForumForumModelListV1[]>> => {
     
     return axios.get(
-      `/forums/popular`,options
+      `https://api.mangaupdates.com/v1/forums/popular`,options
     );
   }
 
 
 export const getListPopularForumsQueryKey = () => {
-    return [`/forums/popular`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/popular`] as const;
     }
 
     
@@ -5711,14 +5711,14 @@ export const listPostsByMe = (
  ): Promise<AxiosResponse<ForumPostByUserResponseV1>> => {
     
     return axios.get(
-      `/forums/${forumId}/topics/${topicId}/my_posts`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/my_posts`,options
     );
   }
 
 
 export const getListPostsByMeQueryKey = (forumId: number,
     topicId: number,) => {
-    return [`/forums/${forumId}/topics/${topicId}/my_posts`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/my_posts`] as const;
     }
 
     
@@ -5817,7 +5817,7 @@ export const listPosts = (
  ): Promise<AxiosResponse<ForumPostListResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/topics/${topicId}/list`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/list`,
       perPageSearchRequestV1,options
     );
   }
@@ -5874,7 +5874,7 @@ export const listTopics = (
  ): Promise<AxiosResponse<ForumTopicListResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/list`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/list`,
       forumTopicListRequestV1,{
     ...options,
         params: {...params, ...options?.params},}
@@ -5931,13 +5931,13 @@ export const listGlobalTopics = (
  ): Promise<AxiosResponse<ForumTopicListResponseV1>> => {
     
     return axios.get(
-      `/forums/global`,options
+      `https://api.mangaupdates.com/v1/forums/global`,options
     );
   }
 
 
 export const getListGlobalTopicsQueryKey = () => {
-    return [`/forums/global`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/global`] as const;
     }
 
     
@@ -6030,13 +6030,13 @@ export const lookupSeries = (
  ): Promise<AxiosResponse<ForumLookupResponseV1>> => {
     
     return axios.get(
-      `/forums/lookup/series/${seriesId}`,options
+      `https://api.mangaupdates.com/v1/forums/lookup/series/${seriesId}`,options
     );
   }
 
 
 export const getLookupSeriesQueryKey = (seriesId: number,) => {
-    return [`/forums/lookup/series/${seriesId}`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/lookup/series/${seriesId}`] as const;
     }
 
     
@@ -6129,13 +6129,13 @@ export const lookupTopic = (
  ): Promise<AxiosResponse<ForumLookupResponseV1>> => {
     
     return axios.get(
-      `/forums/lookup/topic/${topicId}`,options
+      `https://api.mangaupdates.com/v1/forums/lookup/topic/${topicId}`,options
     );
   }
 
 
 export const getLookupTopicQueryKey = (topicId: number,) => {
-    return [`/forums/lookup/topic/${topicId}`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/lookup/topic/${topicId}`] as const;
     }
 
     
@@ -6228,13 +6228,13 @@ export const lookupPost = (
  ): Promise<AxiosResponse<ForumLookupResponseV1>> => {
     
     return axios.get(
-      `/forums/lookup/post/${postId}`,options
+      `https://api.mangaupdates.com/v1/forums/lookup/post/${postId}`,options
     );
   }
 
 
 export const getLookupPostQueryKey = (postId: number,) => {
-    return [`/forums/lookup/post/${postId}`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/lookup/post/${postId}`] as const;
     }
 
     
@@ -6327,13 +6327,13 @@ export const retrieveTemporaryPollImages = (
  ): Promise<AxiosResponse<ForumPollTempImageModelV1[]>> => {
     
     return axios.get(
-      `/forums/temp_poll_images`,options
+      `https://api.mangaupdates.com/v1/forums/temp_poll_images`,options
     );
   }
 
 
 export const getRetrieveTemporaryPollImagesQueryKey = () => {
-    return [`/forums/temp_poll_images`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/temp_poll_images`] as const;
     }
 
     
@@ -6433,7 +6433,7 @@ if(addTemporaryPollImageBody.caption !== undefined) {
 
     
     return axios.post(
-      `/forums/temp_poll_images`,
+      `https://api.mangaupdates.com/v1/forums/temp_poll_images`,
       formData,options
     );
   }
@@ -6490,7 +6490,7 @@ export const updateTopicPoll = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/forums/${forumId}/topics/${topicId}/poll`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/poll`,
       forumPollModelUpdateV1,options
     );
   }
@@ -6547,7 +6547,7 @@ export const addPollVote = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/topics/${topicId}/poll/vote/${choiceId}`,undefined,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/poll/vote/${choiceId}`,undefined,options
     );
   }
 
@@ -6602,14 +6602,14 @@ export const retrieveVote = (
  ): Promise<AxiosResponse<ForumPollVoteModelV1>> => {
     
     return axios.get(
-      `/forums/${forumId}/topics/${topicId}/poll/vote`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/poll/vote`,options
     );
   }
 
 
 export const getRetrieveVoteQueryKey = (forumId: number,
     topicId: number,) => {
-    return [`/forums/${forumId}/topics/${topicId}/poll/vote`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/poll/vote`] as const;
     }
 
     
@@ -6708,7 +6708,7 @@ export const retrieveTopic = (
  ): Promise<AxiosResponse<ForumTopicModelV1>> => {
     
     return axios.get(
-      `/forums/${forumId}/topics/${topicId}`,{
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6718,7 +6718,7 @@ export const retrieveTopic = (
 export const getRetrieveTopicQueryKey = (forumId: number,
     topicId: number,
     params?: RetrieveTopicParams,) => {
-    return [`/forums/${forumId}/topics/${topicId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6821,7 +6821,7 @@ export const addPost = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/topics/${topicId}`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}`,
       forumPostModelUpdateV1,options
     );
   }
@@ -6877,7 +6877,7 @@ export const deleteTopic = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/forums/${forumId}/topics/${topicId}`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}`,options
     );
   }
 
@@ -6933,7 +6933,7 @@ export const updateTopic = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/forums/${forumId}/topics/${topicId}`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}`,
       forumTopicModelUpdateV1,options
     );
   }
@@ -6991,7 +6991,7 @@ export const retrievePost = (
  ): Promise<AxiosResponse<ForumPostModelV1>> => {
     
     return axios.get(
-      `/forums/${forumId}/topics/${topicId}/posts/${postId}`,{
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -7002,7 +7002,7 @@ export const getRetrievePostQueryKey = (forumId: number,
     topicId: number,
     postId: number,
     params?: RetrievePostParams,) => {
-    return [`/forums/${forumId}/topics/${topicId}/posts/${postId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -7109,7 +7109,7 @@ export const deletePost = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/forums/${forumId}/topics/${topicId}/posts/${postId}`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}`,options
     );
   }
 
@@ -7166,7 +7166,7 @@ export const updatePost = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/forums/${forumId}/topics/${topicId}/posts/${postId}`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}`,
       forumPostModelUpdateV1,options
     );
   }
@@ -7224,7 +7224,7 @@ export const reportPost = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/topics/${topicId}/posts/${postId}/report`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}/report`,
       forumPostReportModelUpdateV1,options
     );
   }
@@ -7281,7 +7281,7 @@ export const deletePostReport = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/forums/${forumId}/topics/${topicId}/posts/${postId}/report`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}/report`,options
     );
   }
 
@@ -7335,13 +7335,13 @@ export const listReportedPosts = (
  ): Promise<AxiosResponse<ForumPostReportModelV1[]>> => {
     
     return axios.get(
-      `/forums/report`,options
+      `https://api.mangaupdates.com/v1/forums/report`,options
     );
   }
 
 
 export const getListReportedPostsQueryKey = () => {
-    return [`/forums/report`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/report`] as const;
     }
 
     
@@ -7436,7 +7436,7 @@ export const retrievePostLocation = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.get(
-      `/forums/${forumId}/topics/${topicId}/posts/${postId}/location`,options
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}/location`,options
     );
   }
 
@@ -7444,7 +7444,7 @@ export const retrievePostLocation = (
 export const getRetrievePostLocationQueryKey = (forumId: number,
     topicId: number,
     postId: number,) => {
-    return [`/forums/${forumId}/topics/${topicId}/posts/${postId}/location`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/posts/${postId}/location`] as const;
     }
 
     
@@ -7545,7 +7545,7 @@ export const searchForumPost = (
  ): Promise<AxiosResponse<ForumSearchResponseV1>> => {
     
     return axios.post(
-      `/forums/search`,
+      `https://api.mangaupdates.com/v1/forums/search`,
       forumSearchRequestV1,options
     );
   }
@@ -7601,7 +7601,7 @@ export const searchSpecificForumPost = (
  ): Promise<AxiosResponse<ForumSearchResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/search`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/search`,
       forumSearchRequestV1,options
     );
   }
@@ -7658,7 +7658,7 @@ export const searchSpecificTopicPost = (
  ): Promise<AxiosResponse<ForumSearchResponseV1>> => {
     
     return axios.post(
-      `/forums/${forumId}/topics/${topicId}/search`,
+      `https://api.mangaupdates.com/v1/forums/${forumId}/topics/${topicId}/search`,
       forumSearchRequestV1,options
     );
   }
@@ -7713,13 +7713,13 @@ export const listWarnHistoryForUser = (
  ): Promise<AxiosResponse<ForumWarnModelV1[]>> => {
     
     return axios.get(
-      `/forums/warn/${userId}/history`,options
+      `https://api.mangaupdates.com/v1/forums/warn/${userId}/history`,options
     );
   }
 
 
 export const getListWarnHistoryForUserQueryKey = (userId: number,) => {
-    return [`/forums/warn/${userId}/history`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/warn/${userId}/history`] as const;
     }
 
     
@@ -7812,13 +7812,13 @@ export const getCurrentWarnForUser = (
  ): Promise<AxiosResponse<ForumWarnModelV1>> => {
     
     return axios.get(
-      `/forums/warn/${userId}`,options
+      `https://api.mangaupdates.com/v1/forums/warn/${userId}`,options
     );
   }
 
 
 export const getGetCurrentWarnForUserQueryKey = (userId: number,) => {
-    return [`/forums/warn/${userId}`] as const;
+    return [`https://api.mangaupdates.com/v1/forums/warn/${userId}`] as const;
     }
 
     
@@ -7912,7 +7912,7 @@ export const updateUserWarnLevel = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.put(
-      `/forums/warn/${userId}`,
+      `https://api.mangaupdates.com/v1/forums/warn/${userId}`,
       forumWarnModelUpdateV1,options
     );
   }
@@ -7967,13 +7967,13 @@ export const retrieveGenres = (
  ): Promise<AxiosResponse<GenreModelStatsV1[]>> => {
     
     return axios.get(
-      `/genres`,options
+      `https://api.mangaupdates.com/v1/genres`,options
     );
   }
 
 
 export const getRetrieveGenresQueryKey = () => {
-    return [`/genres`] as const;
+    return [`https://api.mangaupdates.com/v1/genres`] as const;
     }
 
     
@@ -8066,7 +8066,7 @@ export const addGenre = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/genres`,
+      `https://api.mangaupdates.com/v1/genres`,
       genreModelUpdateV1,options
     );
   }
@@ -8122,7 +8122,7 @@ export const retrieveGenreById = (
  ): Promise<AxiosResponse<GenreModelStatsV1>> => {
     
     return axios.get(
-      `/genres/${id}`,{
+      `https://api.mangaupdates.com/v1/genres/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8131,7 +8131,7 @@ export const retrieveGenreById = (
 
 export const getRetrieveGenreByIdQueryKey = (id: number,
     params?: RetrieveGenreByIdParams,) => {
-    return [`/genres/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/genres/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8228,7 +8228,7 @@ export const deleteGenre = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/genres/${id}`,options
+      `https://api.mangaupdates.com/v1/genres/${id}`,options
     );
   }
 
@@ -8283,7 +8283,7 @@ export const updateGenre = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/genres/${id}`,
+      `https://api.mangaupdates.com/v1/genres/${id}`,
       genreModelUpdateV1,options
     );
   }
@@ -8338,7 +8338,7 @@ export const addGroup = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/groups`,
+      `https://api.mangaupdates.com/v1/groups`,
       groupsModelUpdateV1,options
     );
   }
@@ -8394,7 +8394,7 @@ export const retrieveGroup = (
  ): Promise<AxiosResponse<GroupsModelV1>> => {
     
     return axios.get(
-      `/groups/${id}`,{
+      `https://api.mangaupdates.com/v1/groups/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8403,7 +8403,7 @@ export const retrieveGroup = (
 
 export const getRetrieveGroupQueryKey = (id: number,
     params?: RetrieveGroupParams,) => {
-    return [`/groups/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/groups/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -8500,7 +8500,7 @@ export const deleteGroup = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/groups/${id}`,options
+      `https://api.mangaupdates.com/v1/groups/${id}`,options
     );
   }
 
@@ -8555,7 +8555,7 @@ export const updateGroup = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/groups/${id}`,
+      `https://api.mangaupdates.com/v1/groups/${id}`,
       groupsModelUpdateV1,options
     );
   }
@@ -8610,7 +8610,7 @@ export const rejectGroup = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/groups/${id}/reject`,undefined,options
+      `https://api.mangaupdates.com/v1/groups/${id}/reject`,undefined,options
     );
   }
 
@@ -8664,7 +8664,7 @@ export const searchGroupsPost = (
  ): Promise<AxiosResponse<GroupsSearchResponseV1>> => {
     
     return axios.post(
-      `/groups/search`,
+      `https://api.mangaupdates.com/v1/groups/search`,
       groupsSearchRequestV1,options
     );
   }
@@ -8719,13 +8719,13 @@ export const retrieveGroupSeries = (
  ): Promise<AxiosResponse<GroupsSeriesListResponseV1>> => {
     
     return axios.get(
-      `/groups/${id}/series`,options
+      `https://api.mangaupdates.com/v1/groups/${id}/series`,options
     );
   }
 
 
 export const getRetrieveGroupSeriesQueryKey = (id: number,) => {
-    return [`/groups/${id}/series`] as const;
+    return [`https://api.mangaupdates.com/v1/groups/${id}/series`] as const;
     }
 
     
@@ -8818,13 +8818,13 @@ export const retrieveLists = (
  ): Promise<AxiosResponse<ListsModelV1[]>> => {
     
     return axios.get(
-      `/lists`,options
+      `https://api.mangaupdates.com/v1/lists`,options
     );
   }
 
 
 export const getRetrieveListsQueryKey = () => {
-    return [`/lists`] as const;
+    return [`https://api.mangaupdates.com/v1/lists`] as const;
     }
 
     
@@ -8917,7 +8917,7 @@ export const addCustomList = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/lists`,
+      `https://api.mangaupdates.com/v1/lists`,
       listsModelUpdateV1,options
     );
   }
@@ -8973,7 +8973,7 @@ export const retrieveListById = (
  ): Promise<AxiosResponse<ListsModelV1>> => {
     
     return axios.get(
-      `/lists/${id}`,{
+      `https://api.mangaupdates.com/v1/lists/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -8982,7 +8982,7 @@ export const retrieveListById = (
 
 export const getRetrieveListByIdQueryKey = (id: number,
     params?: RetrieveListByIdParams,) => {
-    return [`/lists/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/lists/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -9079,7 +9079,7 @@ export const deleteCustomList = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/lists/${id}`,options
+      `https://api.mangaupdates.com/v1/lists/${id}`,options
     );
   }
 
@@ -9134,7 +9134,7 @@ export const updateList = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/lists/${id}`,
+      `https://api.mangaupdates.com/v1/lists/${id}`,
       listsModelUpdateV1,options
     );
   }
@@ -9189,13 +9189,13 @@ export const retrievePublicLists = (
  ): Promise<AxiosResponse<ListsModelV1[]>> => {
     
     return axios.get(
-      `/lists/public/${userId}`,options
+      `https://api.mangaupdates.com/v1/lists/public/${userId}`,options
     );
   }
 
 
 export const getRetrievePublicListsQueryKey = (userId: number,) => {
-    return [`/lists/public/${userId}`] as const;
+    return [`https://api.mangaupdates.com/v1/lists/public/${userId}`] as const;
     }
 
     
@@ -9288,13 +9288,13 @@ export const retrievePublicListStats = (
  ): Promise<AxiosResponse<ListsPublicStatsModelV1>> => {
     
     return axios.get(
-      `/lists/public/${userId}/stats`,options
+      `https://api.mangaupdates.com/v1/lists/public/${userId}/stats`,options
     );
   }
 
 
 export const getRetrievePublicListStatsQueryKey = (userId: number,) => {
-    return [`/lists/public/${userId}/stats`] as const;
+    return [`https://api.mangaupdates.com/v1/lists/public/${userId}/stats`] as const;
     }
 
     
@@ -9389,7 +9389,7 @@ export const searchPublicListsPost = (
  ): Promise<AxiosResponse<ListsPublicSearchResponseV1>> => {
     
     return axios.post(
-      `/lists/public/${userId}/search/${id}`,
+      `https://api.mangaupdates.com/v1/lists/public/${userId}/search/${id}`,
       listsSearchRequestV1,options
     );
   }
@@ -9445,7 +9445,7 @@ export const searchListsPost = (
  ): Promise<AxiosResponse<ListsSearchResponseV1>> => {
     
     return axios.post(
-      `/lists/${id}/search`,
+      `https://api.mangaupdates.com/v1/lists/${id}/search`,
       listsSearchRequestV1,options
     );
   }
@@ -9500,7 +9500,7 @@ export const addListSeries = (
  ): Promise<AxiosResponse<void>> => {
     
     return axios.post(
-      `/lists/series`,
+      `https://api.mangaupdates.com/v1/lists/series`,
       listsSeriesModelUpdateV1,options
     );
   }
@@ -9556,7 +9556,7 @@ export const addListSeriesBulk = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/lists/${id}/series/bulk`,
+      `https://api.mangaupdates.com/v1/lists/${id}/series/bulk`,
       listsBulkAddModelV1,options
     );
   }
@@ -9611,7 +9611,7 @@ export const deleteListSeries = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/lists/series/delete`,
+      `https://api.mangaupdates.com/v1/lists/series/delete`,
       deleteListSeriesBody,options
     );
   }
@@ -9667,7 +9667,7 @@ export const retrieveListSeries = (
  ): Promise<AxiosResponse<ListsSeriesModelV1>> => {
     
     return axios.get(
-      `/lists/series/${seriesId}`,{
+      `https://api.mangaupdates.com/v1/lists/series/${seriesId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -9676,7 +9676,7 @@ export const retrieveListSeries = (
 
 export const getRetrieveListSeriesQueryKey = (seriesId: number,
     params?: RetrieveListSeriesParams,) => {
-    return [`/lists/series/${seriesId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/lists/series/${seriesId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -9773,7 +9773,7 @@ export const updateListSeries = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/lists/series/update`,
+      `https://api.mangaupdates.com/v1/lists/series/update`,
       listsSeriesModelUpdateV1,options
     );
   }
@@ -9829,14 +9829,14 @@ export const retrieveSimilarUsersBySeries = (
  ): Promise<AxiosResponse<ListsSimilarUsersResponseV1>> => {
     
     return axios.get(
-      `/lists/similar/${listName}/${seriesId}`,options
+      `https://api.mangaupdates.com/v1/lists/similar/${listName}/${seriesId}`,options
     );
   }
 
 
 export const getRetrieveSimilarUsersBySeriesQueryKey = (listName: 'read' | 'wish' | 'complete' | 'unfinished' | 'hold',
     seriesId: number,) => {
-    return [`/lists/similar/${listName}/${seriesId}`] as const;
+    return [`https://api.mangaupdates.com/v1/lists/similar/${listName}/${seriesId}`] as const;
     }
 
     
@@ -9933,13 +9933,13 @@ export const time = (
  ): Promise<AxiosResponse<TimeV1>> => {
     
     return axios.get(
-      `/misc/time`,options
+      `https://api.mangaupdates.com/v1/misc/time`,options
     );
   }
 
 
 export const getTimeQueryKey = () => {
-    return [`/misc/time`] as const;
+    return [`https://api.mangaupdates.com/v1/misc/time`] as const;
     }
 
     
@@ -10032,13 +10032,13 @@ export const listOnlineUsers = (
  ): Promise<AxiosResponse<MiscOnlineUsersModelV1>> => {
     
     return axios.get(
-      `/misc/online`,options
+      `https://api.mangaupdates.com/v1/misc/online`,options
     );
   }
 
 
 export const getListOnlineUsersQueryKey = () => {
-    return [`/misc/online`] as const;
+    return [`https://api.mangaupdates.com/v1/misc/online`] as const;
     }
 
     
@@ -10131,13 +10131,13 @@ export const retrieveSlowTransactionStatus = (
  ): Promise<AxiosResponse<MiscSlowTransactionStatusResponseV1>> => {
     
     return axios.get(
-      `/misc/slow-transaction-status/${transactionId}`,options
+      `https://api.mangaupdates.com/v1/misc/slow-transaction-status/${transactionId}`,options
     );
   }
 
 
 export const getRetrieveSlowTransactionStatusQueryKey = (transactionId: string,) => {
-    return [`/misc/slow-transaction-status/${transactionId}`] as const;
+    return [`https://api.mangaupdates.com/v1/misc/slow-transaction-status/${transactionId}`] as const;
     }
 
     
@@ -10230,13 +10230,13 @@ export const siteStats = (
  ): Promise<AxiosResponse<MiscStatsModelV1>> => {
     
     return axios.get(
-      `/misc/stats`,options
+      `https://api.mangaupdates.com/v1/misc/stats`,options
     );
   }
 
 
 export const getSiteStatsQueryKey = () => {
-    return [`/misc/stats`] as const;
+    return [`https://api.mangaupdates.com/v1/misc/stats`] as const;
     }
 
     
@@ -10329,13 +10329,13 @@ export const retrievePoll = (
  ): Promise<AxiosResponse<PollModelV1>> => {
     
     return axios.get(
-      `/poll`,options
+      `https://api.mangaupdates.com/v1/poll`,options
     );
   }
 
 
 export const getRetrievePollQueryKey = () => {
-    return [`/poll`] as const;
+    return [`https://api.mangaupdates.com/v1/poll`] as const;
     }
 
     
@@ -10428,7 +10428,7 @@ export const addPoll = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/poll`,
+      `https://api.mangaupdates.com/v1/poll`,
       pollModelUpdateV1,options
     );
   }
@@ -10483,7 +10483,7 @@ export const archivePoll = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/poll`,options
+      `https://api.mangaupdates.com/v1/poll`,options
     );
   }
 
@@ -10537,13 +10537,13 @@ export const retrieveOldPolls = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.get(
-      `/poll/old`,options
+      `https://api.mangaupdates.com/v1/poll/old`,options
     );
   }
 
 
 export const getRetrieveOldPollsQueryKey = () => {
-    return [`/poll/old`] as const;
+    return [`https://api.mangaupdates.com/v1/poll/old`] as const;
     }
 
     
@@ -10636,7 +10636,7 @@ export const votePollNoAnswer = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/poll/vote`,undefined,options
+      `https://api.mangaupdates.com/v1/poll/vote`,undefined,options
     );
   }
 
@@ -10690,7 +10690,7 @@ export const votePollAnswer = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/poll/vote/${answerId}`,undefined,options
+      `https://api.mangaupdates.com/v1/poll/vote/${answerId}`,undefined,options
     );
   }
 
@@ -10744,13 +10744,13 @@ export const retrieveVoteStatus = (
  ): Promise<AxiosResponse<PollVoteStatusModelV1>> => {
     
     return axios.get(
-      `/poll/vote/status`,options
+      `https://api.mangaupdates.com/v1/poll/vote/status`,options
     );
   }
 
 
 export const getRetrieveVoteStatusQueryKey = () => {
-    return [`/poll/vote/status`] as const;
+    return [`https://api.mangaupdates.com/v1/poll/vote/status`] as const;
     }
 
     
@@ -10843,7 +10843,7 @@ export const addPublisher = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/publishers`,
+      `https://api.mangaupdates.com/v1/publishers`,
       publishersModelUpdateV1,options
     );
   }
@@ -10899,7 +10899,7 @@ export const retrievePublisher = (
  ): Promise<AxiosResponse<PublishersModelV1>> => {
     
     return axios.get(
-      `/publishers/${id}`,{
+      `https://api.mangaupdates.com/v1/publishers/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -10908,7 +10908,7 @@ export const retrievePublisher = (
 
 export const getRetrievePublisherQueryKey = (id: number,
     params?: RetrievePublisherParams,) => {
-    return [`/publishers/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/publishers/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -11005,7 +11005,7 @@ export const deletePublisher = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/publishers/${id}`,options
+      `https://api.mangaupdates.com/v1/publishers/${id}`,options
     );
   }
 
@@ -11060,7 +11060,7 @@ export const updatePublisher = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/publishers/${id}`,
+      `https://api.mangaupdates.com/v1/publishers/${id}`,
       publishersModelUpdateV1,options
     );
   }
@@ -11115,7 +11115,7 @@ export const searchPublishersPost = (
  ): Promise<AxiosResponse<PublishersSearchResponseV1>> => {
     
     return axios.post(
-      `/publishers/search`,
+      `https://api.mangaupdates.com/v1/publishers/search`,
       publishersSearchRequestV1,options
     );
   }
@@ -11170,13 +11170,13 @@ export const retrievePublisherSeries = (
  ): Promise<AxiosResponse<PublishersSeriesListResponseV1>> => {
     
     return axios.get(
-      `/publishers/${id}/series`,options
+      `https://api.mangaupdates.com/v1/publishers/${id}/series`,options
     );
   }
 
 
 export const getRetrievePublisherSeriesQueryKey = (id: number,) => {
-    return [`/publishers/${id}/series`] as const;
+    return [`https://api.mangaupdates.com/v1/publishers/${id}/series`] as const;
     }
 
     
@@ -11269,7 +11269,7 @@ export const retrievePublicationSeries = (
  ): Promise<AxiosResponse<PublishersPublicationResponseV1>> => {
     
     return axios.get(
-      `/publishers/publication`,{
+      `https://api.mangaupdates.com/v1/publishers/publication`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -11277,7 +11277,7 @@ export const retrievePublicationSeries = (
 
 
 export const getRetrievePublicationSeriesQueryKey = (params: RetrievePublicationSeriesParams,) => {
-    return [`/publishers/publication`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/publishers/publication`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -11370,7 +11370,7 @@ export const addRelease = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/releases`,
+      `https://api.mangaupdates.com/v1/releases`,
       releaseModelUpdateV1,options
     );
   }
@@ -11426,7 +11426,7 @@ export const retrieveRelease = (
  ): Promise<AxiosResponse<ReleaseModelV1>> => {
     
     return axios.get(
-      `/releases/${id}`,{
+      `https://api.mangaupdates.com/v1/releases/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -11435,7 +11435,7 @@ export const retrieveRelease = (
 
 export const getRetrieveReleaseQueryKey = (id: number,
     params?: RetrieveReleaseParams,) => {
-    return [`/releases/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/releases/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -11532,7 +11532,7 @@ export const deleteRelease = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/releases/${id}`,options
+      `https://api.mangaupdates.com/v1/releases/${id}`,options
     );
   }
 
@@ -11587,7 +11587,7 @@ export const updateRelease = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/releases/${id}`,
+      `https://api.mangaupdates.com/v1/releases/${id}`,
       releaseModelUpdateV1,options
     );
   }
@@ -11642,7 +11642,7 @@ export const moderateReleasesPost = (
  ): Promise<AxiosResponse<ReleaseModerateResponseV1>> => {
     
     return axios.post(
-      `/releases/moderate`,
+      `https://api.mangaupdates.com/v1/releases/moderate`,
       releaseModerateRequestV1,options
     );
   }
@@ -11697,7 +11697,7 @@ export const listReleasesByDay = (
  ): Promise<AxiosResponse<ReleaseSearchResponseV1>> => {
     
     return axios.get(
-      `/releases/days`,{
+      `https://api.mangaupdates.com/v1/releases/days`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -11705,7 +11705,7 @@ export const listReleasesByDay = (
 
 
 export const getListReleasesByDayQueryKey = (params?: ListReleasesByDayParams,) => {
-    return [`/releases/days`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/releases/days`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -11798,13 +11798,13 @@ export const releaseRssFeed = (
  ): Promise<AxiosResponse<string>> => {
     
     return axios.get(
-      `/releases/rss`,options
+      `https://api.mangaupdates.com/v1/releases/rss`,options
     );
   }
 
 
 export const getReleaseRssFeedQueryKey = () => {
-    return [`/releases/rss`] as const;
+    return [`https://api.mangaupdates.com/v1/releases/rss`] as const;
     }
 
     
@@ -11897,7 +11897,7 @@ export const searchReleasesPost = (
  ): Promise<AxiosResponse<ReleaseSearchResponseV1>> => {
     
     return axios.post(
-      `/releases/search`,
+      `https://api.mangaupdates.com/v1/releases/search`,
       releaseSearchRequestV1,options
     );
   }
@@ -11952,7 +11952,7 @@ export const addReview = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/reviews`,
+      `https://api.mangaupdates.com/v1/reviews`,
       reviewModelUpdateV1,options
     );
   }
@@ -12008,7 +12008,7 @@ export const addReviewComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/reviews/${id}/comments`,
+      `https://api.mangaupdates.com/v1/reviews/${id}/comments`,
       reviewCommentModelUpdateV1,options
     );
   }
@@ -12065,7 +12065,7 @@ export const retrieveReviewComment = (
  ): Promise<AxiosResponse<ReviewCommentModelV1>> => {
     
     return axios.get(
-      `/reviews/${id}/comments/${commentId}`,{
+      `https://api.mangaupdates.com/v1/reviews/${id}/comments/${commentId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -12075,7 +12075,7 @@ export const retrieveReviewComment = (
 export const getRetrieveReviewCommentQueryKey = (id: number,
     commentId: number,
     params?: RetrieveReviewCommentParams,) => {
-    return [`/reviews/${id}/comments/${commentId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/reviews/${id}/comments/${commentId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -12177,7 +12177,7 @@ export const deleteReviewComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/reviews/${id}/comments/${commentId}`,options
+      `https://api.mangaupdates.com/v1/reviews/${id}/comments/${commentId}`,options
     );
   }
 
@@ -12233,7 +12233,7 @@ export const updateReviewComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/reviews/${id}/comments/${commentId}`,
+      `https://api.mangaupdates.com/v1/reviews/${id}/comments/${commentId}`,
       reviewCommentModelUpdateV1,options
     );
   }
@@ -12288,7 +12288,7 @@ export const reviewCommentsModerationPost = (
  ): Promise<AxiosResponse<ReviewCommentSearchResponseV1>> => {
     
     return axios.post(
-      `/reviews/comments/moderation`,
+      `https://api.mangaupdates.com/v1/reviews/comments/moderation`,
       reviewCommentSearchRequestV1,options
     );
   }
@@ -12344,7 +12344,7 @@ export const searchReviewCommentsPost = (
  ): Promise<AxiosResponse<ReviewCommentSearchResponseV1>> => {
     
     return axios.post(
-      `/reviews/${id}/comments/search`,
+      `https://api.mangaupdates.com/v1/reviews/${id}/comments/search`,
       reviewCommentSearchRequestV1,options
     );
   }
@@ -12400,7 +12400,7 @@ export const retrieveReview = (
  ): Promise<AxiosResponse<ReviewModelV1>> => {
     
     return axios.get(
-      `/reviews/${id}`,{
+      `https://api.mangaupdates.com/v1/reviews/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -12409,7 +12409,7 @@ export const retrieveReview = (
 
 export const getRetrieveReviewQueryKey = (id: number,
     params?: RetrieveReviewParams,) => {
-    return [`/reviews/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/reviews/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -12506,7 +12506,7 @@ export const deleteReview = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/reviews/${id}`,options
+      `https://api.mangaupdates.com/v1/reviews/${id}`,options
     );
   }
 
@@ -12561,7 +12561,7 @@ export const updateReview = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/reviews/${id}`,
+      `https://api.mangaupdates.com/v1/reviews/${id}`,
       reviewModelUpdateV1,options
     );
   }
@@ -12616,7 +12616,7 @@ export const searchReviewsPost = (
  ): Promise<AxiosResponse<ReviewSearchResponseV1>> => {
     
     return axios.post(
-      `/reviews/search`,
+      `https://api.mangaupdates.com/v1/reviews/search`,
       reviewSearchRequestV1,options
     );
   }
@@ -12671,7 +12671,7 @@ export const addSeries = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series`,
+      `https://api.mangaupdates.com/v1/series`,
       seriesModelUpdateV1,options
     );
   }
@@ -12727,7 +12727,7 @@ export const combineSeriesCategories = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/categories/combine`,
+      `https://api.mangaupdates.com/v1/series/${id}/categories/combine`,
       seriesCategoryUpdateModelV1,options
     );
   }
@@ -12783,7 +12783,7 @@ export const deleteSeriesCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/categories/delete`,
+      `https://api.mangaupdates.com/v1/series/${id}/categories/delete`,
       categoriesModelUpdateV1,options
     );
   }
@@ -12839,7 +12839,7 @@ export const renameSeriesCategory = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/categories/rename`,
+      `https://api.mangaupdates.com/v1/series/${id}/categories/rename`,
       seriesCategoryUpdateModelV1,options
     );
   }
@@ -12894,13 +12894,13 @@ export const retrieveSeriesCategoryVotes = (
  ): Promise<AxiosResponse<SeriesCategoryVoteModelV1[]>> => {
     
     return axios.get(
-      `/series/${id}/categories/votes`,options
+      `https://api.mangaupdates.com/v1/series/${id}/categories/votes`,options
     );
   }
 
 
 export const getRetrieveSeriesCategoryVotesQueryKey = (id: number,) => {
-    return [`/series/${id}/categories/votes`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/categories/votes`] as const;
     }
 
     
@@ -12994,7 +12994,7 @@ export const addSeriesCategoryVote = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/categories/vote`,
+      `https://api.mangaupdates.com/v1/series/${id}/categories/vote`,
       seriesCategoryVoteModelV1,options
     );
   }
@@ -13050,7 +13050,7 @@ export const removeSeriesCategoryVote = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/categories/vote/delete`,
+      `https://api.mangaupdates.com/v1/series/${id}/categories/vote/delete`,
       seriesCategoryVoteDeleteModelV1,options
     );
   }
@@ -13106,7 +13106,7 @@ export const addSeriesComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/comments`,
+      `https://api.mangaupdates.com/v1/series/${id}/comments`,
       seriesCommentModelUpdateV1,options
     );
   }
@@ -13163,7 +13163,7 @@ export const retrieveSeriesComment = (
  ): Promise<AxiosResponse<SeriesCommentModelV1>> => {
     
     return axios.get(
-      `/series/${id}/comments/${commentId}`,{
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -13173,7 +13173,7 @@ export const retrieveSeriesComment = (
 export const getRetrieveSeriesCommentQueryKey = (id: number,
     commentId: number,
     params?: RetrieveSeriesCommentParams,) => {
-    return [`/series/${id}/comments/${commentId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -13275,7 +13275,7 @@ export const deleteSeriesComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/series/${id}/comments/${commentId}`,options
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}`,options
     );
   }
 
@@ -13331,7 +13331,7 @@ export const updateSeriesComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/series/${id}/comments/${commentId}`,
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}`,
       seriesCommentModelUpdateV1,options
     );
   }
@@ -13386,7 +13386,7 @@ export const seriesCommentsModerationPost = (
  ): Promise<AxiosResponse<SeriesCommentModerationResponseV1>> => {
     
     return axios.post(
-      `/series/comments/moderation`,
+      `https://api.mangaupdates.com/v1/series/comments/moderation`,
       seriesCommentSearchRequestV1,options
     );
   }
@@ -13443,7 +13443,7 @@ export const reportSeriesComment = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/comments/${commentId}/report`,
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}/report`,
       seriesCommentReportModelV1,options
     );
   }
@@ -13499,7 +13499,7 @@ export const retrieveMySeriesComment = (
  ): Promise<AxiosResponse<SeriesCommentModelV1>> => {
     
     return axios.get(
-      `/series/${id}/comments/my_comment`,{
+      `https://api.mangaupdates.com/v1/series/${id}/comments/my_comment`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -13508,7 +13508,7 @@ export const retrieveMySeriesComment = (
 
 export const getRetrieveMySeriesCommentQueryKey = (id: number,
     params?: RetrieveMySeriesCommentParams,) => {
-    return [`/series/${id}/comments/my_comment`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/comments/my_comment`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -13606,14 +13606,14 @@ export const retrieveSeriesCommentLocation = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.get(
-      `/series/${id}/comments/${commentId}/location`,options
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}/location`,options
     );
   }
 
 
 export const getRetrieveSeriesCommentLocationQueryKey = (id: number,
     commentId: number,) => {
-    return [`/series/${id}/comments/${commentId}/location`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}/location`] as const;
     }
 
     
@@ -13711,7 +13711,7 @@ export const searchSeriesCommentsPost = (
  ): Promise<AxiosResponse<SeriesCommentSearchResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/comments/search`,
+      `https://api.mangaupdates.com/v1/series/${id}/comments/search`,
       seriesCommentSearchRequestV1,options
     );
   }
@@ -13768,7 +13768,7 @@ export const addSeriesCommentUsefulFlag = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.put(
-      `/series/${id}/comments/${commentId}/useful`,
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}/useful`,
       seriesCommentUsefulModelV1,options
     );
   }
@@ -13824,7 +13824,7 @@ export const removeSeriesCommentUsefulFlag = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/series/${id}/comments/${commentId}/useful`,options
+      `https://api.mangaupdates.com/v1/series/${id}/comments/${commentId}/useful`,options
     );
   }
 
@@ -13879,7 +13879,7 @@ export const retrieveSeries = (
  ): Promise<AxiosResponse<SeriesModelV1>> => {
     
     return axios.get(
-      `/series/${id}`,{
+      `https://api.mangaupdates.com/v1/series/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -13888,7 +13888,7 @@ export const retrieveSeries = (
 
 export const getRetrieveSeriesQueryKey = (id: number,
     params?: RetrieveSeriesParams,) => {
-    return [`/series/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -13985,7 +13985,7 @@ export const deleteSeries = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/series/${id}`,options
+      `https://api.mangaupdates.com/v1/series/${id}`,options
     );
   }
 
@@ -14040,7 +14040,7 @@ export const updateSeries = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/series/${id}`,
+      `https://api.mangaupdates.com/v1/series/${id}`,
       seriesModelUpdateV1,options
     );
   }
@@ -14095,13 +14095,13 @@ export const retrieveSeriesGroups = (
  ): Promise<AxiosResponse<SeriesGroupListResponseV1>> => {
     
     return axios.get(
-      `/series/${id}/groups`,options
+      `https://api.mangaupdates.com/v1/series/${id}/groups`,options
     );
   }
 
 
 export const getRetrieveSeriesGroupsQueryKey = (id: number,) => {
-    return [`/series/${id}/groups`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/groups`] as const;
     }
 
     
@@ -14195,7 +14195,7 @@ export const searchSeriesHistoryPost = (
  ): Promise<AxiosResponse<SeriesHistorySearchResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/history`,
+      `https://api.mangaupdates.com/v1/series/${id}/history`,
       perPageSearchRequestV1,options
     );
   }
@@ -14250,13 +14250,13 @@ export const retrieveSeriesLocks = (
  ): Promise<AxiosResponse<SeriesLockModelV1[]>> => {
     
     return axios.get(
-      `/series/${id}/locks`,options
+      `https://api.mangaupdates.com/v1/series/${id}/locks`,options
     );
   }
 
 
 export const getRetrieveSeriesLocksQueryKey = (id: number,) => {
-    return [`/series/${id}/locks`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/locks`] as const;
     }
 
     
@@ -14351,7 +14351,7 @@ export const lockSeriesField = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/locks/${item}/lock`,
+      `https://api.mangaupdates.com/v1/series/${id}/locks/${item}/lock`,
       seriesLockModelUpdateV1,options
     );
   }
@@ -14407,7 +14407,7 @@ export const unlockSeriesField = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/series/${id}/locks/${item}/unlock`,undefined,options
+      `https://api.mangaupdates.com/v1/series/${id}/locks/${item}/unlock`,undefined,options
     );
   }
 
@@ -14462,14 +14462,14 @@ export const retrieveSeriesRankLocation = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.get(
-      `/series/${id}/rank/${type}`,options
+      `https://api.mangaupdates.com/v1/series/${id}/rank/${type}`,options
     );
   }
 
 
 export const getRetrieveSeriesRankLocationQueryKey = (id: number,
     type: string,) => {
-    return [`/series/${id}/rank/${type}`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/rank/${type}`] as const;
     }
 
     
@@ -14566,13 +14566,13 @@ export const retrieveUserSeriesRating = (
  ): Promise<AxiosResponse<SeriesRatingModelV1>> => {
     
     return axios.get(
-      `/series/${id}/rating`,options
+      `https://api.mangaupdates.com/v1/series/${id}/rating`,options
     );
   }
 
 
 export const getRetrieveUserSeriesRatingQueryKey = (id: number,) => {
-    return [`/series/${id}/rating`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/rating`] as const;
     }
 
     
@@ -14666,7 +14666,7 @@ export const updateUserSeriesRating = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.put(
-      `/series/${id}/rating`,
+      `https://api.mangaupdates.com/v1/series/${id}/rating`,
       seriesRatingModelV1,options
     );
   }
@@ -14721,7 +14721,7 @@ export const deleteUserSeriesRating = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/series/${id}/rating`,options
+      `https://api.mangaupdates.com/v1/series/${id}/rating`,options
     );
   }
 
@@ -14775,13 +14775,13 @@ export const retrieveSeriesRatingRainbow = (
  ): Promise<AxiosResponse<SeriesRatingRainbowModelV1>> => {
     
     return axios.get(
-      `/series/${id}/ratingrainbow`,options
+      `https://api.mangaupdates.com/v1/series/${id}/ratingrainbow`,options
     );
   }
 
 
 export const getRetrieveSeriesRatingRainbowQueryKey = (id: number,) => {
-    return [`/series/${id}/ratingrainbow`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/ratingrainbow`] as const;
     }
 
     
@@ -14874,13 +14874,13 @@ export const seriesReleaseRssFeed = (
  ): Promise<AxiosResponse<string>> => {
     
     return axios.get(
-      `/series/${id}/rss`,options
+      `https://api.mangaupdates.com/v1/series/${id}/rss`,options
     );
   }
 
 
 export const getSeriesReleaseRssFeedQueryKey = (id: number,) => {
-    return [`/series/${id}/rss`] as const;
+    return [`https://api.mangaupdates.com/v1/series/${id}/rss`] as const;
     }
 
     
@@ -14973,7 +14973,7 @@ export const searchSeriesPost = (
  ): Promise<AxiosResponse<SeriesSearchResponseV1>> => {
     
     return axios.post(
-      `/series/search`,
+      `https://api.mangaupdates.com/v1/series/search`,
       seriesSearchRequestV1,options
     );
   }
@@ -15033,7 +15033,7 @@ if(updateSeriesImageBody.image !== undefined) {
 
     
     return axios.post(
-      `/series/${id}/image`,
+      `https://api.mangaupdates.com/v1/series/${id}/image`,
       formData,options
     );
   }
@@ -15088,7 +15088,7 @@ export const deleteSeriesImage = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/series/${id}/image`,options
+      `https://api.mangaupdates.com/v1/series/${id}/image`,options
     );
   }
 
@@ -15143,7 +15143,7 @@ export const retrieveUserGroupById = (
  ): Promise<AxiosResponse<UserGroupModelV1>> => {
     
     return axios.get(
-      `/membergroups/${id}`,{
+      `https://api.mangaupdates.com/v1/membergroups/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -15152,7 +15152,7 @@ export const retrieveUserGroupById = (
 
 export const getRetrieveUserGroupByIdQueryKey = (id: string,
     params?: RetrieveUserGroupByIdParams,) => {
-    return [`/membergroups/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/membergroups/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -15250,7 +15250,7 @@ export const addOrUpdateUserGroup = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.put(
-      `/membergroups/${id}`,
+      `https://api.mangaupdates.com/v1/membergroups/${id}`,
       userGroupModelUpdateV1,options
     );
   }
@@ -15305,7 +15305,7 @@ export const deleteUserGroup = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/membergroups/${id}`,options
+      `https://api.mangaupdates.com/v1/membergroups/${id}`,options
     );
   }
 
@@ -15359,13 +15359,13 @@ export const retrieveUserGroups = (
  ): Promise<AxiosResponse<UserGroupModelV1[]>> => {
     
     return axios.get(
-      `/membergroups`,options
+      `https://api.mangaupdates.com/v1/membergroups`,options
     );
   }
 
 
 export const getRetrieveUserGroupsQueryKey = () => {
-    return [`/membergroups`] as const;
+    return [`https://api.mangaupdates.com/v1/membergroups`] as const;
     }
 
     
@@ -15458,7 +15458,7 @@ export const addMember = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members`,
+      `https://api.mangaupdates.com/v1/members`,
       userModelUpdateV1,options
     );
   }
@@ -15514,7 +15514,7 @@ export const searchMemberChangeRequests = (
  ): Promise<AxiosResponse<UserChangeRequestSearchResponseV1>> => {
     
     return axios.get(
-      `/members/${id}/requests`,{
+      `https://api.mangaupdates.com/v1/members/${id}/requests`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -15523,7 +15523,7 @@ export const searchMemberChangeRequests = (
 
 export const getSearchMemberChangeRequestsQueryKey = (id: number,
     params?: SearchMemberChangeRequestsParams,) => {
-    return [`/members/${id}/requests`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/requests`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -15621,7 +15621,7 @@ export const addMemberChangeRequest = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/requests`,
+      `https://api.mangaupdates.com/v1/members/${id}/requests`,
       userChangeRequestModelUpdateV1,options
     );
   }
@@ -15677,14 +15677,14 @@ export const retrieveMemberChangeRequest = (
  ): Promise<AxiosResponse<UserChangeRequestModelV1>> => {
     
     return axios.get(
-      `/members/${id}/requests/${requestId}`,options
+      `https://api.mangaupdates.com/v1/members/${id}/requests/${requestId}`,options
     );
   }
 
 
 export const getRetrieveMemberChangeRequestQueryKey = (id: number,
     requestId: number,) => {
-    return [`/members/${id}/requests/${requestId}`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/requests/${requestId}`] as const;
     }
 
     
@@ -15782,7 +15782,7 @@ export const deleteMemberChangeRequest = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}/requests/${requestId}`,options
+      `https://api.mangaupdates.com/v1/members/${id}/requests/${requestId}`,options
     );
   }
 
@@ -15838,7 +15838,7 @@ export const updateMemberChangeRequest = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/members/${id}/requests/${requestId}`,
+      `https://api.mangaupdates.com/v1/members/${id}/requests/${requestId}`,
       userChangeRequestModelUpdateV1,options
     );
   }
@@ -15894,7 +15894,7 @@ export const retrieveMember = (
  ): Promise<AxiosResponse<UserModelV1>> => {
     
     return axios.get(
-      `/members/${id}`,{
+      `https://api.mangaupdates.com/v1/members/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -15903,7 +15903,7 @@ export const retrieveMember = (
 
 export const getRetrieveMemberQueryKey = (id: number,
     params?: RetrieveMemberParams,) => {
-    return [`/members/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -16000,7 +16000,7 @@ export const deleteMember = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}`,options
+      `https://api.mangaupdates.com/v1/members/${id}`,options
     );
   }
 
@@ -16055,7 +16055,7 @@ export const updateMember = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.patch(
-      `/members/${id}`,
+      `https://api.mangaupdates.com/v1/members/${id}`,
       userModelUpdateV1,options
     );
   }
@@ -16110,13 +16110,13 @@ export const retrieveMemberGenreFilters = (
  ): Promise<AxiosResponse<UserGenreFilterModelV1[]>> => {
     
     return axios.get(
-      `/members/${id}/genre/filters`,options
+      `https://api.mangaupdates.com/v1/members/${id}/genre/filters`,options
     );
   }
 
 
 export const getRetrieveMemberGenreFiltersQueryKey = (id: number,) => {
-    return [`/members/${id}/genre/filters`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/genre/filters`] as const;
     }
 
     
@@ -16210,7 +16210,7 @@ export const addMemberGenreFilter = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/genre/${genreId}/filter`,undefined,options
+      `https://api.mangaupdates.com/v1/members/${id}/genre/${genreId}/filter`,undefined,options
     );
   }
 
@@ -16265,7 +16265,7 @@ export const removeMemberGenreFilter = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}/genre/${genreId}/filter`,options
+      `https://api.mangaupdates.com/v1/members/${id}/genre/${genreId}/filter`,options
     );
   }
 
@@ -16319,13 +16319,13 @@ export const retrieveMemberGenreHighlights = (
  ): Promise<AxiosResponse<UserGenreHighlightModelV1[]>> => {
     
     return axios.get(
-      `/members/${id}/genre/highlights`,options
+      `https://api.mangaupdates.com/v1/members/${id}/genre/highlights`,options
     );
   }
 
 
 export const getRetrieveMemberGenreHighlightsQueryKey = (id: number,) => {
-    return [`/members/${id}/genre/highlights`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/genre/highlights`] as const;
     }
 
     
@@ -16420,7 +16420,7 @@ export const addMemberGenreHighlight = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/genre/${genreId}/highlight`,
+      `https://api.mangaupdates.com/v1/members/${id}/genre/${genreId}/highlight`,
       userGenreHighlightModelUpdateV1,options
     );
   }
@@ -16476,7 +16476,7 @@ export const removeMemberGenreHighlight = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}/genre/${genreId}/highlight`,options
+      `https://api.mangaupdates.com/v1/members/${id}/genre/${genreId}/highlight`,options
     );
   }
 
@@ -16530,7 +16530,7 @@ export const resetGenreSettings = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/genre/reset`,undefined,options
+      `https://api.mangaupdates.com/v1/members/${id}/genre/reset`,undefined,options
     );
   }
 
@@ -16584,13 +16584,13 @@ export const retrieveMemberGroupFilters = (
  ): Promise<AxiosResponse<UserGroupFilterModelV1[]>> => {
     
     return axios.get(
-      `/members/${id}/group/filters`,options
+      `https://api.mangaupdates.com/v1/members/${id}/group/filters`,options
     );
   }
 
 
 export const getRetrieveMemberGroupFiltersQueryKey = (id: number,) => {
-    return [`/members/${id}/group/filters`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/group/filters`] as const;
     }
 
     
@@ -16684,7 +16684,7 @@ export const addUserGroupFilter = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/group/${groupId}/filter`,undefined,options
+      `https://api.mangaupdates.com/v1/members/${id}/group/${groupId}/filter`,undefined,options
     );
   }
 
@@ -16739,7 +16739,7 @@ export const removeUserGroupFilter = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}/group/${groupId}/filter`,options
+      `https://api.mangaupdates.com/v1/members/${id}/group/${groupId}/filter`,options
     );
   }
 
@@ -16793,13 +16793,13 @@ export const retrieveMemberAvatars = (
  ): Promise<AxiosResponse<AvatarModelV1[]>> => {
     
     return axios.get(
-      `/members/${id}/avatars`,options
+      `https://api.mangaupdates.com/v1/members/${id}/avatars`,options
     );
   }
 
 
 export const getRetrieveMemberAvatarsQueryKey = (id: number,) => {
-    return [`/members/${id}/avatars`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/avatars`] as const;
     }
 
     
@@ -16892,7 +16892,7 @@ export const searchMembersPost = (
  ): Promise<AxiosResponse<UserSearchResponseV1>> => {
     
     return axios.post(
-      `/members/search`,
+      `https://api.mangaupdates.com/v1/members/search`,
       userSearchRequestV1,options
     );
   }
@@ -16947,13 +16947,13 @@ export const retrieveMemberTopicSubscriptions = (
  ): Promise<AxiosResponse<UserSubscribedTopicModelV1[]>> => {
     
     return axios.get(
-      `/members/${id}/topics`,options
+      `https://api.mangaupdates.com/v1/members/${id}/topics`,options
     );
   }
 
 
 export const getRetrieveMemberTopicSubscriptionsQueryKey = (id: number,) => {
-    return [`/members/${id}/topics`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/topics`] as const;
     }
 
     
@@ -17047,14 +17047,14 @@ export const retrieveMemberTopicSubscription = (
  ): Promise<AxiosResponse<UserSubscribedTopicModelV1>> => {
     
     return axios.get(
-      `/members/${id}/topics/${topicId}`,options
+      `https://api.mangaupdates.com/v1/members/${id}/topics/${topicId}`,options
     );
   }
 
 
 export const getRetrieveMemberTopicSubscriptionQueryKey = (id: number,
     topicId: number,) => {
-    return [`/members/${id}/topics/${topicId}`] as const;
+    return [`https://api.mangaupdates.com/v1/members/${id}/topics/${topicId}`] as const;
     }
 
     
@@ -17152,7 +17152,7 @@ export const addUserTopicSubscription = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/topics/${topicId}`,undefined,options
+      `https://api.mangaupdates.com/v1/members/${id}/topics/${topicId}`,undefined,options
     );
   }
 
@@ -17207,7 +17207,7 @@ export const removeUserTopicSubscription = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}/topics/${topicId}`,options
+      `https://api.mangaupdates.com/v1/members/${id}/topics/${topicId}`,options
     );
   }
 
@@ -17269,7 +17269,7 @@ if(addMemberAvatarBody.title !== undefined) {
 
     
     return axios.post(
-      `/members/${id}/avatar`,
+      `https://api.mangaupdates.com/v1/members/${id}/avatar`,
       formData,options
     );
   }
@@ -17325,7 +17325,7 @@ export const deleteMemberAvatar = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.delete(
-      `/members/${id}/avatar/${avatarId}`,options
+      `https://api.mangaupdates.com/v1/members/${id}/avatar/${avatarId}`,options
     );
   }
 
@@ -17379,7 +17379,7 @@ export const approveMemberUpgrade = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/upgrade/approve`,undefined,options
+      `https://api.mangaupdates.com/v1/members/${id}/upgrade/approve`,undefined,options
     );
   }
 
@@ -17433,7 +17433,7 @@ export const rejectMemberUpgrade = (
  ): Promise<AxiosResponse<ApiResponseV1>> => {
     
     return axios.post(
-      `/members/${id}/upgrade/reject`,undefined,options
+      `https://api.mangaupdates.com/v1/members/${id}/upgrade/reject`,undefined,options
     );
   }
 

@@ -14,11 +14,12 @@ import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { useArtistCommentaryQuery, usePostQuery } from '@/api/danbooru/danbooru';
+import { useAppTheme } from '@/store/theme/themes';
 
 const DanbooruPostPage = () => {
 	const { postId } = useLocalSearchParams<{ postId: string }>();
 	const id = parseInt(postId);
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { width, height } = useWindowDimensions();
 	const { data, isLoading, isFetching } = usePostQuery(id);
 	const commentary = useArtistCommentaryQuery({ 'search[post_id]': id });

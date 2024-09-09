@@ -1,7 +1,8 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { useCallback } from 'react';
 import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
-import { Button, Divider, IconButton, Text, useTheme } from 'react-native-paper';
+import { Button, Divider, IconButton, Text } from 'react-native-paper';
 
 type StatisticsBarProps = {
 	favorites: number;
@@ -9,7 +10,7 @@ type StatisticsBarProps = {
 	down_score?: number;
 };
 export const StatisticsBar = ({ favorites, up_score, down_score }: StatisticsBarProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const totalScore = up_score + -down_score;
 	const percentage = `${totalScore} (${(
 		(totalScore > 0 ? up_score / totalScore : 1) * 100

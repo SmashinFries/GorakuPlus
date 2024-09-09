@@ -355,45 +355,6 @@ query ExtUserData($id: Int, $name: String) {
 	}
 }
 
-# query UserOverview {
-# 	Viewer {
-# 		name
-# 		avatar {
-# 			large
-# 		}
-# 		bannerImage
-# 		about
-# 		stats {
-# 			favouredGenresOverview {
-# 				genre
-# 				amount
-# 				meanScore
-# 				timeWatched
-# 			}
-# 			activityHistory {
-# 				date
-# 				amount
-# 				level
-# 			}
-# 		}
-# 		statistics {
-# 			anime {
-# 				minutesWatched
-# 				episodesWatched
-# 			}
-# 			manga {
-# 				chaptersRead
-# 				volumesRead
-# 			}
-# 		}
-# 		mediaListOptions {
-# 			scoreFormat
-# 		}
-# 		unreadNotificationCount
-# 		siteUrl
-# 	}
-# }
-
 query UserOverview(
 	$userId: Int!
 	$isFollowing: Boolean
@@ -401,6 +362,7 @@ query UserOverview(
 	$followingPerPage: Int
 	$followersPerPage: Int
 	$favoritesPerPage: Int
+	$reviewsPerPage: Int
 ) {
 	user: User(id: $userId) {
 		name
@@ -409,6 +371,7 @@ query UserOverview(
 		}
 		bannerImage
 		about
+		aboutHTML: about(asHtml: true)
 		stats {
 			favouredGenresOverview {
 				genre
@@ -426,10 +389,14 @@ query UserOverview(
 			anime {
 				minutesWatched
 				episodesWatched
+				meanScore
+				count
 			}
 			manga {
 				chaptersRead
 				volumesRead
+				meanScore
+				count
 			}
 		}
 		mediaListOptions {
@@ -548,24 +515,17 @@ query UserOverview(
 				progress
 				status
 				createdAt
-				media {
+				user {
 					id
-					type
-					bannerImage
-					isAdult
-					format
-					isLicensed
-					status
-					title {
-						userPreferred
-						romaji
-						english
-						native
+					name
+					avatar {
+						large
 					}
-					coverImage {
-						color
-						extraLarge
-					}
+				}
+				media {
+					...AnimeMeta
+					volumes
+					chapters
 				}
 				siteUrl
 			}
@@ -607,6 +567,24 @@ query UserOverview(
 			isFollower
 			isBlocked
 			siteUrl
+		}
+	}
+	reviews: Page(page: 1, perPage: $reviewsPerPage) {
+		reviews(userId: $userId) {
+			id
+			summary
+			rating
+			ratingAmount
+			score
+			createdAt
+			updatedAt
+		}
+	}
+	list: Page(page: 1, perPage: 10) {
+		mediaList(userId: $userId, status: CURRENT) {
+			media {
+				...AnimeMeta
+			}
 		}
 	}
 }
@@ -821,16 +799,7 @@ query UserWaifuFavorites($userID: Int, $page: Int, $perPage: Int) {
 					lastPage
 				}
 				nodes {
-					id
-					name {
-						full
-						native
-					}
-					gender
-					isFavourite
-					image {
-						large
-					}
+					...CharacterMetaData
 				}
 			}
 		}
@@ -849,16 +818,7 @@ query UserStaffFavorites($userID: Int, $page: Int, $perPage: Int) {
 					lastPage
 				}
 				nodes {
-					id
-					name {
-						full
-						native
-					}
-					gender
-					isFavourite
-					image {
-						large
-					}
+					...StaffMetaData
 				}
 			}
 		}

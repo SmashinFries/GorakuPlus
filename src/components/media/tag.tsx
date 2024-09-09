@@ -1,6 +1,6 @@
 import { Chip, MD3LightTheme } from 'react-native-paper';
 import React, { useState } from 'react';
-import { MediaTag } from '@/store/services/anilist/generated-anilist';
+import { MediaTag } from '@/api/anilist/__genereated__/gql';
 
 type TagProps = {
 	tag: MediaTag;
@@ -28,6 +28,7 @@ export const Tag = ({ tag, openTag, allowAdult }: TagProps) => {
 	return (
 		<Chip
 			onPress={handleTagPress}
+			mode="outlined"
 			style={[
 				{
 					paddingHorizontal: 5,

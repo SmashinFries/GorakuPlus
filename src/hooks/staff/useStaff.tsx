@@ -1,5 +1,5 @@
+import { useStaffListQuery } from '@/api/anilist/__genereated__/gql';
 import { useCallback, useState } from 'react';
-import { useStaffListQuery } from '@/store/services/anilist/enhanced';
 
 export const useStaffList = (id: number) => {
 	const [page, setPage] = useState(1);

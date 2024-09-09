@@ -1,0 +1,5 @@
+src-tauri/
+.downloads
+.builds
+node_modules
+.env*

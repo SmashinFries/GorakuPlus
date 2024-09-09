@@ -1,10 +1,30 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, UseMutationOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	AniMediaQuery,
+	AnimeExploreQuery,
 	CharacterSort,
+	DeleteActMutation,
+	DeleteActMutationVariables,
+	DeleteMediaListItemMutation,
+	DeleteMediaListItemMutationVariables,
+	MangaExploreQuery,
+	ManhuaExploreQuery,
+	ManhwaExploreQuery,
 	MediaFormat,
 	MediaType,
+	NovelExploreQuery,
+	SaveMediaListItemMutation,
+	SaveMediaListItemMutationVariables,
 	useAniMediaQuery,
+	useAnimeExploreQuery,
+	useDeleteActMutation,
+	useDeleteMediaListItemMutation,
+	useMangaExploreQuery,
+	useManhuaExploreQuery,
+	useManhwaExploreQuery,
+	useNovelExploreQuery,
+	useSaveMediaListItemMutation,
+	useUserOverviewQuery,
 } from './__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import {
@@ -29,6 +49,63 @@ import {
 } from '../mangaupdates/models';
 import { AnimeFull, MangaFull } from '../jikan/models';
 
+// Not sure how to update cache correctly - will come back
+//
+// const updateExploreOldEntriesSave = (
+// 	data:
+// 		| AnimeExploreQuery
+// 		| MangaExploreQuery
+// 		| ManhwaExploreQuery
+// 		| ManhuaExploreQuery
+// 		| NovelExploreQuery,
+// 	newData: SaveMediaListItemMutation,
+// ) => {
+// 	const tempData = { ...data };
+// 	console.log('OldData:', Object.keys(data).join(', '));
+// 	console.log('NewData:', Object.keys(newData).join(', '));
+// 	Object.keys(data).forEach((rootKey) => {
+// 		const foundIdx = tempData[rootKey]?.media?.findIndex(
+// 			(media) => media?.id === newData.SaveMediaListEntry?.mediaId,
+// 		);
+// 		if (foundIdx > -1) {
+// 			tempData[rootKey].media[foundIdx].mediaListEntry = {
+// 				...tempData[rootKey].media[foundIdx].mediaListEntry,
+// 				...newData.SaveMediaListEntry,
+// 			};
+// 		}
+// 	});
+// 	return tempData;
+// };
+
+// const updateExploreOldEntriesDelete = (
+// 	data:
+// 		| AnimeExploreQuery
+// 		| MangaExploreQuery
+// 		| ManhwaExploreQuery
+// 		| ManhuaExploreQuery
+// 		| NovelExploreQuery,
+// 	entryId: number,
+// ) => {
+// 	const tempData = { ...data };
+// 	Object.keys(data).forEach((rootKey) => {
+// 		const foundIdx = data[rootKey]?.media?.findIndex(
+// 			(media) => media.mediaListEntry.id === entryId,
+// 		);
+// 		if (foundIdx > -1) {
+// 			tempData[rootKey].media[foundIdx].mediaListEntry = null;
+// 		}
+// 	});
+// 	return tempData;
+// };
+
+const invalidateExploreQueries = (queryClient: QueryClient) => {
+	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey() });
+	queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey() });
+	queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey() });
+	queryClient.invalidateQueries({ queryKey: useManhuaExploreQuery.getKey() });
+	queryClient.invalidateQueries({ queryKey: useNovelExploreQuery.getKey() });
+};
+
 export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 	const queryClient = useQueryClient();
 	const { userID } = useAuthStore().anilist;
@@ -36,7 +113,7 @@ export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 	const { mutateAsync: searchSeries } = useSearchSeriesPost();
 	const { mutateAsync: searchReleases } = useSearchReleasesPost();
 
-	const fetchAniData = () => {
+	const fetchAniData = async () => {
 		const anilistParams = {
 			id: aniId,
 			userId: userID,
@@ -163,63 +240,101 @@ export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 	});
 };
 
-export const useMalQuery = (malId: number, type: MediaType) => {
-	if (type === MediaType.Anime) {
-		return useGetAnimeFullById(malId, { query: { enabled: !!malId } });
-	} else {
-		return useGetMangaFullById(malId, { query: { enabled: !!malId } });
-	}
-};
-
-export const useMangaUpdatesQuery = (
-	aniId: number,
-	muId: number,
-	title?: string,
-	isNovel: boolean = false,
+export const useSaveMediaListItemInvalidatedMutation = (
+	options?: UseMutationOptions<
+		SaveMediaListItemMutation,
+		unknown,
+		SaveMediaListItemMutationVariables,
+		unknown
+	>,
 ) => {
 	const queryClient = useQueryClient();
-	const { mangaUpdates: muDB, addMangaUpdatesID } = useMatchStore();
-	const { mutateAsync: searchSeries } = useSearchSeriesPost();
-	if (muId) {
-		if (muDB[aniId] !== muId) {
-			addMangaUpdatesID(aniId, muId);
-		}
-		return useRetrieveSeries(muId);
-	} else {
-		return useQuery({
-			queryKey: ['MangaUpdates'],
-			queryFn: async () => {
-				const searchResults = await searchSeries({
-					data: { search: `${title}${isNovel ? ' (Novel)' : ''}`, stype: 'title' },
-				});
-				const muIdResponse = await queryClient.fetchQuery(
-					getRetrieveSeriesQueryOptions(
-						(searchResults.data as SeriesSearchResponseV1).results[0]?.record
-							?.series_id,
-					),
-				);
-				addMangaUpdatesID(aniId, muIdResponse.data.series_id);
-				return muIdResponse;
-			},
-			enabled: !!muId || !!title,
-		});
-	}
+	return useSaveMediaListItemMutation({
+		...options,
+
+		onSuccess(data, variables, context) {
+			invalidateExploreQueries(queryClient);
+			// queryClient.setQueriesData(
+			// 	{ queryKey: [useAnimeExploreQuery.getKey(), useMangaExploreQuery.getKey()] },
+			// 	(
+			// 		oldData:
+			// 			| AnimeExploreQuery
+			// 			| MangaExploreQuery
+			// 			| ManhwaExploreQuery
+			// 			| ManhuaExploreQuery
+			// 			| NovelExploreQuery,
+			// 	) => {
+			// 		if (oldData) {
+			// 			const newData = updateExploreOldEntriesSave(oldData, data);
+			// 			return {
+			// 				...oldData,
+			// 				...newData,
+			// 			};
+			// 		} else {
+			// 			return oldData;
+			// 		}
+			// 	},
+			// );
+		},
+	});
 };
 
-export const useMuReleasesQuery = (muId: number) => {
-	const { mutateAsync: searchReleases } = useSearchReleasesPost();
-
-	return useQuery({
-		queryKey: ['MangaUpdatesReleases'],
-		queryFn: async () => {
-			const response = await searchReleases({
-				data: {
-					search_type: 'series',
-					search: `${muId}`,
-				},
+export const useDeleteMediaListItemInvalidatedMutation = (
+	options?: UseMutationOptions<
+		DeleteMediaListItemMutation,
+		unknown,
+		DeleteMediaListItemMutationVariables,
+		unknown
+	>,
+) => {
+	const queryClient = useQueryClient();
+	return useDeleteMediaListItemMutation({
+		...options,
+		onSuccess(data, variables, context) {
+			invalidateExploreQueries(queryClient);
+			queryClient.invalidateQueries({
+				queryKey: useAniMediaQuery.getKey({
+					id: options.meta?.mediaId as number,
+					skipUser: false,
+				}),
 			});
-			return response.data;
+			// queryClient.setQueriesData(
+			// 	{ queryKey: [useAnimeExploreQuery.getKey(), useMangaExploreQuery.getKey()] },
+			// 	(
+			// 		oldData:
+			// 			| AnimeExploreQuery
+			// 			| MangaExploreQuery
+			// 			| ManhwaExploreQuery
+			// 			| ManhuaExploreQuery
+			// 			| NovelExploreQuery,
+			// 	) => {
+			// 		if (oldData) {
+			// 			const newData = updateExploreOldEntriesDelete(oldData, variables.id);
+			// 			return {
+			// 				...oldData,
+			// 				...newData,
+			// 			};
+			// 		} else {
+			// 			return oldData;
+			// 		}
+			// 	},
+			// );
 		},
-		enabled: !!muId,
+	});
+};
+
+export const useDeleteActivityItemInvalidateMutation = (
+	options?: UseMutationOptions<DeleteActMutation, unknown, DeleteActMutationVariables, unknown>,
+) => {
+	const queryClient = useQueryClient();
+	return useDeleteActMutation({
+		...options,
+		onSuccess(data, variables, context) {
+			queryClient.invalidateQueries({
+				queryKey: useUserOverviewQuery.getKey({
+					userId: useAuthStore.getState().anilist.userID,
+				}),
+			});
+		},
 	});
 };

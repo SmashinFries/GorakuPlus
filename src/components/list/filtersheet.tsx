@@ -1,4 +1,3 @@
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
 	BottomSheetBackdrop,
 	BottomSheetModal,
@@ -9,76 +8,27 @@ import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/typ
 import React, { useMemo, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Button, Chip, List, Switch, useTheme } from 'react-native-paper';
-import { updateListFilter } from '@/store/slices/listSLice';
-import { MediaListSort, MediaTag, MediaType } from '@/store/services/anilist/generated-anilist';
 import { TabView } from 'react-native-tab-view';
 import { RenderTabBar } from '../tab';
-import { useAppTheme } from '@/store/theme/theme';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ListSortOptions, ListSortOptionsType } from '@/types/anilist';
-
-// export enum ListSortOptions {
-//     "AverageScore" = "AverageScore",
-// } & MediaListSort;
-
-const ListFilterFilter = ({ genres, tags }: { genres: string[]; tags: MediaTag[] }) => {
-	const { genre } = useAppSelector((state) => state.listFilter);
-	const dispatch = useAppDispatch();
-
-	const addGenre = (genres: string) => {
-		dispatch(updateListFilter({ entryType: 'genre', value: [...genre, genres] }));
-	};
-	const removeGenre = (genres: string) => {
-		dispatch(
-			updateListFilter({ entryType: 'genre', value: genre.filter((g) => g !== genres) }),
-		);
-	};
-
-	return (
-		<BottomSheetScrollView>
-			<List.Section title={'Genres'}>
-				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-					{genres.map((genre, idx) => (
-						<Chip
-							key={idx}
-							onPress={() => addGenre(genre)}
-							style={{ marginHorizontal: 3 }}
-						>
-							{genre}
-						</Chip>
-					))}
-				</ScrollView>
-			</List.Section>
-			<List.Section title={'Tags'}>
-				<View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
-					{tags.map((tag, idx) => (
-						<Chip key={idx} style={{ margin: 3 }}>
-							{tag.name}
-						</Chip>
-					))}
-				</View>
-			</List.Section>
-		</BottomSheetScrollView>
-	);
-};
+import { MediaListSort, MediaTag, MediaType } from '@/api/anilist/__genereated__/gql';
+import { useListFilterStore } from '@/store/listStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 const ListFilterSort = ({ setHeight }: { setHeight: (height: number) => void }) => {
 	const { colors } = useAppTheme();
-	const { sort } = useAppSelector((state) => state.listFilter);
-	const dispatch = useAppDispatch();
+	const { sort, updateListFilter } = useListFilterStore();
 
 	const onSortSelect = (newSort: ListSortOptionsType) => {
 		// console.log('NEW SORT:', newSort);
 		// console.log('SORT:', sort);
 		if (newSort.replace('_DESC', '').includes(sort.replace('_DESC', ''))) {
-			dispatch(
-				updateListFilter({
-					entryType: 'sort',
-					value: !sort.includes('DESC') ? newSort : newSort.replace('_DESC', ''),
-				}),
-			);
+			updateListFilter({
+				sort: !sort.includes('DESC') ? newSort : newSort.replace('_DESC', ''),
+			});
 		} else {
-			dispatch(updateListFilter({ entryType: 'sort', value: newSort }));
+			updateListFilter({ sort: newSort });
 		}
 	};
 
@@ -193,7 +143,7 @@ type ListFilterSheetProps = {
 export const ListFilterSheet = React.forwardRef<BottomSheetModalMethods, ListFilterSheetProps>(
 	(props, ref) => {
 		const { height } = useWindowDimensions();
-		const { colors } = useTheme();
+		const { colors } = useAppTheme();
 		const [mainEntryHeight, setMainEntryHeight] = useState(0);
 		// const snapPoints = useMemo(
 		//     () => [

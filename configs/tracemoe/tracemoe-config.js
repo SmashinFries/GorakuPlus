@@ -18,6 +18,7 @@ module.exports = {
 			target: '../../src/api/tracemoe/tracemoe.ts',
 			schemas: '../../src/api/tracemoe/models',
 			client: 'react-query',
+			baseUrl: 'https://api.trace.moe',
 			mock: false,
 			override: {
 				query: {

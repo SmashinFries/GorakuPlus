@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import { filesize } from 'filesize';
-import { IconButton, List, Text } from 'react-native-paper';
-import { DanRatings } from '@/store/services/danbooru/types';
-import { getAR, getAspectRatio } from '../../utils';
+import { List, Text } from 'react-native-paper';
+import { getAR } from '../../utils';
+import { DanRatings } from '@/api/danbooru/types';
 
 const ratings = {
 	g: { title: 'General', icon: 'account-group' },

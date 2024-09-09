@@ -6,6 +6,7 @@ module.exports = {
 			schemas: '../../src/api/mangadex/models',
 			client: 'react-query',
 			mock: false,
+			baseUrl: 'https://api.mangadex.org',
 			override: {
 				query: {
 					useQuery: true,

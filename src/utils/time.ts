@@ -6,6 +6,12 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useEffect, useState } from 'react';
 
+export const getOrdinalString = (number: number) => {
+	const suffixes = ['th', 'st', 'nd', 'rd'];
+	const value = number % 100;
+	return `${value}${suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]}`;
+};
+
 const monthByNumber = {
 	[1]: 'Jan',
 	[2]: 'Feb',
@@ -91,6 +97,10 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 				? pos_estimated_days.toString() + ' day'
 				: 'Today'
 	}`;
+};
+
+export const getMovieDuration = (minutes: number) => {
+	return `${Math.floor(minutes / 60)} ${Math.floor(minutes / 60) > 1 ? 'hours' : 'hour'}, ${minutes % 60} minutes`;
 };
 
 const getDateDifferences = (dates: Date[]) => {

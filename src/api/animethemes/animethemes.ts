@@ -21,4 +21,5 @@ export const useAnimeSongs = (aniId: number) =>
 			const { data } = await AnimeThemesClient.get<MainMusic>('/anime/', { params });
 			return data;
 		},
+		enabled: !!aniId,
 	});

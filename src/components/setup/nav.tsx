@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 import { IconButton, useTheme } from 'react-native-paper';
@@ -30,7 +31,7 @@ type PageIndicatorProps = {
 	onPress: (page: number) => void;
 };
 const PageIndicator = ({ page, numPages, onPress }: PageIndicatorProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const PageItem = (idx: number) => {
 		const pageAnimVal = useSharedValue(1);
 		const animatedStyle = useAnimatedStyle(() => {

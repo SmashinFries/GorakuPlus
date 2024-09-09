@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { router } from 'expo-router';
 import { View } from 'react-native';
@@ -78,7 +79,7 @@ type HTMLTextProps = {
 };
 export const HTMLText = ({ html }: HTMLTextProps) => {
 	const { width } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const renderers: CustomTagRendererRecord = {
 		p: UwuTextRenderer,

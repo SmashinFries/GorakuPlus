@@ -21,7 +21,7 @@ const removeNonImages = (posts: DanPost[]) => {
 };
 
 export const usePostsSearch = (params: DanSearchQuery) => {
-	const { showNSFW } = useSettingsStore();
+	const showNSFW = useSettingsStore((state) => state.showNSFW);
 	return useInfiniteQuery({
 		queryKey: ['DanbooruSearch', params.tags],
 		queryFn: async () => {
@@ -50,6 +50,7 @@ export const usePostsSearch = (params: DanSearchQuery) => {
 			}
 			return firstPageParam - 1;
 		},
+		enabled: !!params.tags,
 	});
 };
 
@@ -93,4 +94,5 @@ export const useTagWikiQuery = (tag: string) =>
 			const { data } = await DanbooruClient.get<DanWikiPage>(`/wiki_pages/${tag}.json`);
 			return data;
 		},
+		enabled: !!tag,
 	});

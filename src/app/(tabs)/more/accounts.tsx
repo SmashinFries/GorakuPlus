@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import { List, Portal } from 'react-native-paper';
+import { Button, List, Portal } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { Style } from 'react-native-paper/lib/typescript/components/List/utils';
 import { AnilistIcon } from '@/components/svgs';
@@ -8,15 +8,20 @@ import { ListSubheader } from '@/components/titles';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
+import Constants from 'expo-constants';
+import { MMKV, useMMKVNumber, useMMKVObject } from 'react-native-mmkv';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const AccountsPage = () => {
-	const { anilist, sauceNao, waifuit } = useAuthStore();
+	const anilist = useAuthStore((state) => state.anilist);
+	const sauceNao = useAuthStore((state) => state.sauceNao);
+	const waifuit = useAuthStore((state) => state.waifuit);
 	const { colors, dark } = useAppTheme();
 	const aniAuth = useAnilistAuth();
 	const [showAniAuth, setShowAniAuth] = useState(false);
 	const [showWaifuIt, setShowWaifuIt] = useState(false);
+	// const { userID } = useAnilistAuthStore();
 
 	const ActiveIcon = (props: { color: string; style?: Style }) => (
 		<List.Icon {...props} icon={'check'} color={'green'} />
@@ -53,8 +58,15 @@ const AccountsPage = () => {
 					)}
 				/>
 			</List.Section>
+			<Button
+				onPress={() => {
+					console.log(anilist.userID); // Should return true or false
+				}}
+			>
+				TEST
+			</Button>
 			<Portal>
-				<AniListLoginDialog
+				{/* <AniListLoginDialog
 					visible={showAniAuth}
 					onDismiss={() => setShowAniAuth(false)}
 					onLogout={() => {
@@ -97,7 +109,7 @@ const AccountsPage = () => {
 					}}
 					onRelogin={() => aniAuth.promptAsync()}
 				/>
-				<WaifuItTokenDialog visible={showWaifuIt} onDismiss={() => setShowWaifuIt(false)} />
+				<WaifuItTokenDialog visible={showWaifuIt} onDismiss={() => setShowWaifuIt(false)} /> */}
 			</Portal>
 		</View>
 	);

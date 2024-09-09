@@ -1,13 +1,11 @@
 import { Image } from 'expo-image';
-import { MotiView } from 'moti';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { CharacterEdge, CharacterListQuery } from '@/store/services/anilist/generated-anilist';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { TransYUpView } from '../animations';
 import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
-import { Selectable } from '../moti';
 import { memo } from 'react';
+import { CharacterListQuery } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type CharacterItemProps = {
 	item: CharacterListQuery['Media']['characters']['edges'][0];
@@ -19,7 +17,7 @@ type CharacterItemProps = {
 const BORDER_RADIUS = 12;
 
 export const CharacterItem = ({ item, subTextColor, onNavigation }: CharacterItemProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<Pressable
 			style={[styles.container]}

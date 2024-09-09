@@ -1,9 +1,7 @@
 import { AppState, StyleSheet, useWindowDimensions } from 'react-native';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { AnimeVideos } from '@/store/services/mal/malApi';
 import YoutubePlayer, { YoutubeIframeRef } from 'react-native-youtube-iframe';
-import { Animetheme } from '@/store/services/animethemes/types';
 import {
 	AVPlaybackStatus,
 	ResizeMode,
@@ -18,6 +16,9 @@ import { VideoControls } from './controls';
 import { Accordion } from '../animations';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { Animetheme } from '@/api/animethemes/types';
+import { AnimeVideos } from '@/api/jikan/models';
+import { useAppTheme } from '@/store/theme/themes';
 
 type MusicVideoProps = {
 	theme: Animetheme;
@@ -122,7 +123,7 @@ const FullscreenVideo = ({
 };
 
 export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [sound, setSound] = useState<Audio.Sound>();
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);

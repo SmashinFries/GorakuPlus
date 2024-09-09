@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { View } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
 
@@ -7,7 +8,7 @@ type GeneralStatBlockProps = {
 	value: number | string;
 };
 export const GeneralStatBlock = ({ icon, title, value }: GeneralStatBlockProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<View style={{ alignItems: 'flex-start', width: '50%', padding: 15 }}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>

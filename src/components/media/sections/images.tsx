@@ -1,17 +1,15 @@
-import { GetAnimePicturesApiResponse } from '@/store/services/mal/malApi';
 import { Portal } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
-import { MotiPressable } from 'moti/interactions';
-import { TransYUpViewMem } from '@/components/animations';
 import { ListHeading } from '@/components/text';
 import { SaveImageDialog } from '@/utils/images';
 import { useCallback, useState } from 'react';
 import Animated from 'react-native-reanimated';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { GetAnimePicturesQueryResult } from '@/api/jikan/jikan';
 
 type MalImageItemProps = {
-	item: GetAnimePicturesApiResponse['data'][0];
+	item: GetAnimePicturesQueryResult['data']['data'][0];
 	index: number;
 };
 const MalImageItem = ({
@@ -20,9 +18,9 @@ const MalImageItem = ({
 	onDownload,
 }: MalImageItemProps & { onDownload: (img: string) => void }) => {
 	return (
-		<MotiPressable
+		<Pressable
 			onLongPress={() => {
-				onDownload(item.jpg?.large_image_url);
+				onDownload(item.images?.jpg?.image_url);
 			}}
 			style={{ marginHorizontal: 5 }}
 		>
@@ -32,12 +30,12 @@ const MalImageItem = ({
 				style={{ width: 225, height: 250 }}
 				contentFit="scale-down"
 			/>
-		</MotiPressable>
+		</Pressable>
 	);
 };
 
 type MalImagesProps = {
-	data: GetAnimePicturesApiResponse;
+	data: GetAnimePicturesQueryResult['data'];
 };
 const MalImages = ({ data }: MalImagesProps) => {
 	const [selectedImg, setSelectedImg] = useState('');

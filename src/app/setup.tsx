@@ -7,11 +7,13 @@ import { MediaCard, MediaProgressBar } from '@/components/cards';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { SetupNavBar } from '@/components/setup/nav';
 import { AnilistIcon } from '@/components/svgs';
+import { MaterialSwitchListItem } from '@/components/switch';
 import dummyData from '@/constants/dummyData';
+import useDebounce from '@/hooks/useDebounce';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
-import { availableThemes, themeOptions, useAppTheme } from '@/store/theme/themes';
+import { availableThemes, ThemeOptions, themeOptions, useAppTheme } from '@/store/theme/themes';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { ExploreTabsProps } from '@/types/navigation';
 import { rgbToRgba, useColumns } from '@/utils';
@@ -47,10 +49,11 @@ import {
 	Searchbar,
 	Switch,
 	Text,
-	useTheme,
 } from 'react-native-paper';
-import Animated, { AnimatedStyle } from 'react-native-reanimated';
+import Animated, { AnimatedStyle, FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import switchTheme from 'react-native-theme-switch-animation';
+import { useShallow } from 'zustand/react/shallow';
 
 const SETUP_PAGES = 7;
 
@@ -130,22 +133,55 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
 };
 
 const IntroPage = () => {
+	const showNSFW = useSettingsStore((state) => state.showNSFW);
+	const setSettings = useSettingsStore((state) => state.setSettings);
 	return (
-		<Body style={{ flex: 1, justifyContent: 'center' }}>
+		<View style={{ flex: 1, justifyContent: 'center' }}>
 			{/* <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} /> */}
-			<TitleText
-				title={'Welcome to Goraku!'}
-				description="Take a moment to setup the app for an optimal experience"
-				containerStyle={{ flex: 0, justifyContent: 'center', paddingTop: 0 }}
-				showLogo
-			/>
-		</Body>
+			<View style={{ flex: 1, justifyContent: 'center' }}>
+				<TitleText
+					title={'Welcome to Goraku!'}
+					description="Take a moment to setup the app for an optimal experience."
+					containerStyle={{ flex: 0, justifyContent: 'center', paddingTop: 0 }}
+					showLogo
+				/>
+			</View>
+			<Divider />
+			<View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 30 }}>
+				<Text style={{ alignSelf: 'flex-start', paddingLeft: 15, width: '100%' }}>
+					Before continuing, allow adult content?
+				</Text>
+				<MaterialSwitchListItem
+					title="NSFW"
+					selected={showNSFW}
+					onPress={() => setSettings({ showNSFW: !showNSFW })}
+				/>
+			</View>
+		</View>
 	);
 };
 
 const ThemeSetup = () => {
 	const { colors } = useAppTheme();
-	const { isDark, mode, setTheme } = useThemeStore();
+	const { isDark, mode } = useThemeStore(
+		useShallow((state) => ({ mode: state.mode, isDark: state.isDark })),
+	);
+	const setTheme = useThemeStore((state) => state.setTheme);
+
+	const [tempConfig, setTempConfig] = useState({ isDark, mode });
+
+	const onDarkToggle = (toggle: boolean) => {
+		setTheme({ isDark: toggle });
+		// setTempConfig((prev) => ({ ...prev, isDark: toggle }));
+	};
+	const onModeChange = (theme: ThemeOptions) => {
+		setTheme({ mode: theme });
+		// setTempConfig((prev) => ({ ...prev, mode: theme }));
+	};
+
+	useEffect(() => {
+		// setTheme({ mode: tempConfig.mode, isDark: tempConfig.isDark });
+	}, [tempConfig]);
 
 	return (
 		<Body>
@@ -162,7 +198,7 @@ const ThemeSetup = () => {
 					}}
 				>
 					<Pressable
-						onPress={(e) => setTheme({ isDark: false })}
+						onPress={() => onDarkToggle(false)}
 						style={{
 							alignItems: 'center',
 							justifyContent: 'center',
@@ -173,7 +209,7 @@ const ThemeSetup = () => {
 						<Text variant="labelLarge">Light Mode</Text>
 					</Pressable>
 					<Pressable
-						onPress={(e) => setTheme({ isDark: true })}
+						onPress={() => onDarkToggle(true)}
 						style={{
 							alignItems: 'center',
 							justifyContent: 'center',
@@ -199,7 +235,7 @@ const ThemeSetup = () => {
 										marginHorizontal: 10,
 										borderRadius: 12,
 									}}
-									onPress={() => setTheme({ mode: theme })}
+									onPress={() => onModeChange(theme)}
 								>
 									<View
 										style={{
@@ -243,7 +279,7 @@ const ThemeSetup = () => {
 const AnilistSetup = () => {
 	const { request, result, promptAsync } = useAnilistAuth(true);
 	const { token, avatar, username } = useAuthStore().anilist;
-	const { dark } = useTheme();
+	const { dark } = useAppTheme();
 
 	return (
 		<Body style={{ justifyContent: 'center' }}>
@@ -289,17 +325,28 @@ const AnilistSetup = () => {
 };
 
 const CardSetup = () => {
-	const { scoreColors, scoreVisualType, mediaLanguage, setSettings } = useSettingsStore();
-	const { mode } = useThemeStore();
-	const { colors } = useTheme();
+	const setSettings = useSettingsStore((state) => state.setSettings);
+	const scoreVisualType = useSettingsStore(useShallow((state) => state.scoreVisualType));
+	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
+	const mode = useThemeStore(useShallow((state) => state.mode));
+	const { colors } = useAppTheme();
+
+	const [tempConfig, setTempConfig] = useState({
+		scoreVisType: scoreVisualType,
+		lang: mediaLanguage,
+	});
 
 	const onScoreDesignChange = (preset: ScoreVisualType) => {
-		setSettings({ scoreVisualType: preset });
+		setTempConfig((prev) => ({ ...prev, scoreVisType: preset }));
 	};
 
 	const onTitleLanguageChange = (lang: typeof mediaLanguage) => {
-		setSettings({ mediaLanguage: lang });
+		setTempConfig((prev) => ({ ...prev, lang }));
 	};
+
+	useEffect(() => {
+		setSettings({ scoreVisualType: tempConfig.scoreVisType, mediaLanguage: tempConfig.lang });
+	}, [tempConfig]);
 
 	return (
 		<Body>
@@ -316,10 +363,9 @@ const CardSetup = () => {
 						titles={dummyData[mode].title}
 						meanScore={dummyData[mode].meanScore}
 						averageScore={dummyData[mode].averageScore}
-						scoreColors={scoreColors}
-						// scoreVisualType={scoreVisualType}
 						scoreDistributions={dummyData[mode].stats?.scoreDistribution}
-						// height={210}
+						titleLang={tempConfig.lang}
+						scoreVisualType={tempConfig.scoreVisType}
 						fitToParent
 					/>
 					<View>
@@ -347,11 +393,11 @@ const CardSetup = () => {
 							<Chip
 								key={idx}
 								mode="outlined"
-								selected={scoreVisualType === ScoreVisualTypeEnum[visual]}
+								selected={tempConfig.scoreVisType === ScoreVisualTypeEnum[visual]}
 								onPress={() => onScoreDesignChange(ScoreVisualTypeEnum[visual])}
 								textStyle={{
 									color:
-										scoreVisualType === ScoreVisualTypeEnum[visual]
+										tempConfig.scoreVisType === ScoreVisualTypeEnum[visual]
 											? colors.primary
 											: colors.onBackground,
 								}}
@@ -380,7 +426,7 @@ const CardSetup = () => {
 							<Chip
 								key={idx}
 								mode="outlined"
-								selected={mediaLanguage === lang}
+								selected={tempConfig.lang === lang}
 								onPress={() =>
 									onTitleLanguageChange(lang as 'english' | 'romaji' | 'native')
 								}
@@ -388,7 +434,7 @@ const CardSetup = () => {
 								textStyle={{
 									textTransform: 'capitalize',
 									color:
-										mediaLanguage === lang
+										tempConfig.lang === lang
 											? colors.primary
 											: colors.onBackground,
 								}}
@@ -405,16 +451,14 @@ const CardSetup = () => {
 };
 
 const TagBLSetup = () => {
-	const { colors } = useTheme();
-	const { width } = useWindowDimensions();
-	const { tagBlacklist, setSettings } = useSettingsStore();
+	const { colors } = useAppTheme();
+	const tagBlacklist = useSettingsStore((state) => state.tagBlacklist);
+	const setSettings = useSettingsStore((state) => state.setSettings);
+	const showNSFW = useSettingsStore((state) => state.showNSFW);
 	const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
 	const [search, setSearch] = useState<string>('');
-	const [searchResults, setSearchResults] = useState<
-		GenreTagCollectionQuery['MediaTagCollection']
-	>([]);
 
-	const { data, isFetching, isError } = useGenreTagCollectionQuery();
+	const { data, isFetching, isError } = useGenreTagCollectionQuery({}, { enabled: true });
 
 	const TagChip = useCallback(
 		({ name, onPress, icon }) => (
@@ -422,6 +466,7 @@ const TagBLSetup = () => {
 				style={{ margin: 8, borderColor: colors.primary }}
 				icon={icon ?? undefined}
 				mode="outlined"
+				compact
 				// selectedColor={isSelected(name) ? colors.primary : undefined}
 				onPress={() => onPress(name)}
 			>
@@ -433,87 +478,91 @@ const TagBLSetup = () => {
 
 	const onAdd = (tag: string) => {
 		setSettings({ tagBlacklist: [tag, ...tagBlacklist] });
+		setSearch('');
 	};
 
 	const onRemove = (tag: string) => {
 		setSettings({ tagBlacklist: tagBlacklist.filter((t) => t !== tag) });
 	};
 
-	useEffect(() => {
-		if (data) {
-			setSearchResults(data.MediaTagCollection);
-		}
-	}, [data]);
-
-	useEffect(() => {
-		if (data && tagBlacklist) {
-			setSearchResults(
-				data.MediaTagCollection?.filter((t) => !tagBlacklist.includes(t.name)),
-			);
-		}
-	}, [data, tagBlacklist]);
-
-	useEffect(() => {
-		if (data && search.length > 0) {
-			setSearchResults(
-				data.MediaTagCollection?.filter((t) =>
-					t.name.toLowerCase().includes(search.toLowerCase()),
-				),
-			);
-		}
-	}, [search, data]);
-
 	return (
-		<Body>
+		<View>
 			<TitleText
 				title={'Blacklist Tags'}
 				description="Select tags that you want hidden. This will globally exclude content containing any of these tags."
 				containerStyle={{ paddingTop: 10 }}
 			/>
-			<ScrollView
-				horizontal
-				contentContainerStyle={{ alignItems: 'flex-start' }}
-				style={{ minHeight: 50, marginVertical: 5 }}
-			>
-				{tagBlacklist.map((tag, idx) => (
-					<TagChip key={idx} name={tag} onPress={() => onRemove(tag)} icon={'close'} />
-				))}
-			</ScrollView>
-			<Searchbar
-				style={{
-					margin: 10,
-					backgroundColor: colors.background,
-					borderColor: colors.primary,
-				}}
-				value={search}
-				onChangeText={(txt) => setSearch(txt)}
-				mode="bar"
-			/>
-			<FlatList
-				key={searchResults?.length ?? 2}
-				numColumns={searchResults?.length > 0 ? searchResults.length : 2}
-				data={searchResults}
-				contentContainerStyle={{
-					paddingBottom: 50,
-				}}
-				columnWrapperStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
-				keyExtractor={(item, idx) => idx.toString()}
-				renderItem={({ item }) =>
-					!item.isAdult && (
-						<Chip
-							mode="outlined"
-							onPress={() => onAdd(item.name)}
-							style={{
-								margin: 5,
-							}}
-						>
-							{item.name}
-						</Chip>
-					)
-				}
-			/>
+			<View style={{ width: '100%' }}>
+				<View>
+					<Searchbar
+						style={{
+							margin: 10,
+							backgroundColor: colors.background,
+							borderColor: colors.primary,
+						}}
+						value={search}
+						onChangeText={(txt) => setSearch(txt)}
+						mode="bar"
+					/>
+					<View>
+						{search && data && (
+							<Animated.View
+								entering={FadeIn}
+								exiting={FadeOut}
+								style={{
+									position: 'absolute',
+									zIndex: 10,
+									width: '98%',
+									alignSelf: 'center',
+									borderRadius: 12,
+									backgroundColor: colors.surface,
+								}}
+							>
+								{data?.MediaTagCollection?.filter((val) => {
+									if (!showNSFW && val.isAdult) {
+										return false;
+									} else {
+										return val.name
+											.toLowerCase()
+											.includes(search.toLowerCase());
+									}
+								}).map(
+									(tag, idx) =>
+										idx < 6 && (
+											<List.Item
+												key={idx}
+												title={tag.name}
+												onPress={() => onAdd(tag.name)}
+											/>
+										),
+								)}
+							</Animated.View>
+						)}
+					</View>
+				</View>
+			</View>
 			<Divider style={{ width: '100%', marginBottom: 10 }} />
-		</Body>
+			<View>
+				{tagBlacklist.length > 0 && (
+					<ScrollView
+						style={{
+							marginVertical: 5,
+						}}
+					>
+						<View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
+							{tagBlacklist.map((tag, idx) => (
+								<TagChip
+									key={idx}
+									name={tag}
+									onPress={() => onRemove(tag)}
+									icon={'close'}
+								/>
+							))}
+						</View>
+					</ScrollView>
+				)}
+			</View>
+		</View>
 	);
 };
 

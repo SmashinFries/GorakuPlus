@@ -5,14 +5,10 @@ import { TOAST } from '@/constants/toast';
 import {
 	CharacterSearchQuery,
 	CharacterSearchQueryVariables,
-	SearchAnimeQueryVariables,
-	SearchMangaQueryVariables,
 	StaffSearchQueryVariables,
 	StudioSearchQueryVariables,
 	useCharacterSearchQuery,
 	useInfiniteCharacterSearchQuery,
-	useInfiniteSearchAnimeQuery,
-	useInfiniteSearchMangaQuery,
 	useInfiniteStaffSearchQuery,
 	useInfiniteStudioSearchQuery,
 } from '@/api/anilist/__genereated__/gql';
@@ -21,42 +17,10 @@ import { getGetSearchQueryOptions, usePostSearch } from '@/api/tracemoe/tracemoe
 import { fetchPredictWaifu } from '@/api/huggingface/hf';
 import { useQueryClient } from '@tanstack/react-query';
 
-export const useAnimeSearch = (params: SearchAnimeQueryVariables) => {
-	const animeSearchQuery = useInfiniteSearchAnimeQuery(params, {
-		initialPageParam: 1,
-		getNextPageParam(lastPage) {
-			if (lastPage.Page.pageInfo.hasNextPage) {
-				return {
-					page: lastPage.Page.pageInfo.currentPage + 1,
-				};
-			}
-		},
-		// select(data) {
-		// 	return {...data, }
-		// },
-		enabled: true,
-	});
-
-	return animeSearchQuery;
-};
-
-export const useMangaSearch = (params: SearchMangaQueryVariables) => {
-	const mangaSearchQuery = useInfiniteSearchMangaQuery(params, {
-		initialPageParam: 1,
-		getNextPageParam(lastPage) {
-			if (lastPage.Page.pageInfo.hasNextPage) {
-				return {
-					page: lastPage.Page.pageInfo.currentPage + 1,
-				};
-			}
-		},
-		enabled: true,
-	});
-
-	return mangaSearchQuery;
-};
-
-export const useCharacterSearch = (params: CharacterSearchQueryVariables) => {
+export const useCharacterSearch = (
+	params: CharacterSearchQueryVariables,
+	enabled: boolean = true,
+) => {
 	const characterSearchQuery = useInfiniteCharacterSearchQuery(params, {
 		initialPageParam: 1,
 		getNextPageParam(lastPage) {
@@ -66,7 +30,7 @@ export const useCharacterSearch = (params: CharacterSearchQueryVariables) => {
 				};
 			}
 		},
-		enabled: false,
+		enabled: enabled,
 	});
 
 	return { characterSearchQuery };

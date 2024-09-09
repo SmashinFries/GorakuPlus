@@ -1,10 +1,8 @@
 import { FlashList } from '@shopify/flash-list';
-import { AnimatePresence } from 'moti';
 import { Avatar, Text } from 'react-native-paper';
-import { MotiPressable } from 'moti/interactions';
-import { View } from 'react-native';
-import { StaffDetailsQuery } from '@/store/services/anilist/generated-anilist';
+import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
+import { StaffDetailsQuery } from '@/api/anilist/__genereated__/gql';
 
 type CharacterPrevItemProps = {
 	onPress: () => void;
@@ -13,7 +11,7 @@ type CharacterPrevItemProps = {
 };
 const CharacterPrevItem = ({ onPress, item, index }: CharacterPrevItemProps) => {
 	return (
-		<MotiPressable
+		<Pressable
 			// from={{ opacity: 0, scale: 0 }}
 			// animate={{
 			//     opacity: 1,
@@ -27,7 +25,7 @@ const CharacterPrevItem = ({ onPress, item, index }: CharacterPrevItemProps) => 
 			<Text numberOfLines={2} style={{ textAlign: 'center', width: 110 + 10 }}>
 				{item.node.name.full}
 			</Text>
-		</MotiPressable>
+		</Pressable>
 	);
 };
 
@@ -44,23 +42,21 @@ export const CharacterPrevList = ({ data }: CharacterPrevListProps) => {
 			<Text variant="titleLarge" style={{ padding: 15, paddingBottom: 8 }}>
 				Characters
 			</Text>
-			<AnimatePresence>
-				<FlashList
-					data={data.edges}
-					renderItem={(props) => (
-						<CharacterPrevItem
-							{...props}
-							onPress={() => router.push(`/characters/info/${props?.item?.node?.id}`)}
-						/>
-					)}
-					keyExtractor={(item, index) => index.toString()}
-					horizontal
-					estimatedItemSize={120}
-					contentContainerStyle={{ padding: 15 }}
-					showsHorizontalScrollIndicator={false}
-					drawDistance={110 * 25}
-				/>
-			</AnimatePresence>
+			<FlashList
+				data={data.edges}
+				renderItem={(props) => (
+					<CharacterPrevItem
+						{...props}
+						onPress={() => router.push(`/characters/info/${props?.item?.node?.id}`)}
+					/>
+				)}
+				keyExtractor={(item, index) => index.toString()}
+				horizontal
+				estimatedItemSize={120}
+				contentContainerStyle={{ padding: 15 }}
+				showsHorizontalScrollIndicator={false}
+				drawDistance={110 * 25}
+			/>
 		</View>
 	);
 };

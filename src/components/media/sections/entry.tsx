@@ -9,20 +9,6 @@ import {
 	TextInput,
 	useTheme,
 } from 'react-native-paper';
-import {
-	AniMediaQuery,
-	FuzzyDate,
-	MediaList,
-	MediaListStatus,
-	MediaStatus,
-	MediaType,
-	SaveMediaListItemMutation,
-	SaveMediaListItemMutationVariables,
-	ScoreFormat,
-} from '@/store/services/anilist/generated-anilist';
-import { useListEntry } from '@/hooks/media/useMutations';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RemoveListItemDialog } from '@/components/media/dialogs';
 import { Pressable, StyleProp, View, ViewStyle, useWindowDimensions } from 'react-native';
@@ -37,11 +23,28 @@ import {
 } from '@gorhom/bottom-sheet';
 import { DatePopup, StatusDropDown } from '../entryActions';
 import { NumberPickerMode } from '@/components/picker';
-import { useAppTheme } from '@/store/theme/theme';
 import { ScrollView } from 'react-native-gesture-handler';
 import { compareArrays } from '@/utils/compare';
 import { scoreValues } from '@/utils/scores';
 import Animated from 'react-native-reanimated';
+import {
+	AniMediaQuery,
+	FuzzyDate,
+	MediaListStatus,
+	MediaStatus,
+	MediaType,
+	SaveMediaListItemMutation,
+	SaveMediaListItemMutationVariables,
+	ScoreFormat,
+	useDeleteMediaListItemMutation,
+	useSaveMediaListItemMutation,
+	useToggleFavMutation,
+} from '@/api/anilist/__genereated__/gql';
+import { useAuthStore } from '@/store/authStore';
+import { useAppTheme } from '@/store/theme/themes';
+import { AnimViewMem } from '@/components/animations';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { getFuzzytoDate } from '@/utils';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -68,7 +71,7 @@ type ActionIconProps = {
 	onLongPress?: () => void;
 };
 export const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<Pressable
 			onPress={onPress}
@@ -104,17 +107,14 @@ const ListEntryView = ({
 	refreshData,
 	onShowReleases,
 }: ListEntryViewProps) => {
-	const {
-		deleteListItem,
-		saveListItem,
-		toggleFav,
-		deletedListItemLoading,
-		favLoading,
-		savedMediaLoading,
-	} = useListEntry();
+	const { isPending: favLoading, mutateAsync: toggleFav } = useToggleFavMutation();
+	const { isPending: savedMediaLoading, mutateAsync: saveListItem } =
+		useSaveMediaListItemMutation();
+	const { isPending: deletedListItemLoading, mutateAsync: deleteListItem } =
+		useDeleteMediaListItemMutation();
 
-	const { userID } = useSelector((state: RootState) => state.persistedAniLogin);
-	const { colors } = useTheme();
+	const { userID } = useAuthStore().anilist;
+	const { colors } = useAppTheme();
 
 	const sheetRef = useRef<BottomSheetModalMethods>(null);
 	const { isFilterOpen, openSheet } = useFilterSheet(sheetRef);
@@ -170,7 +170,7 @@ const ListEntryView = ({
 	return (
 		<>
 			<View>
-				<Animated.View
+				<AnimViewMem
 					style={{
 						flexDirection: 'row',
 						marginTop: 15,
@@ -286,7 +286,7 @@ const ListEntryView = ({
 							</Text>
 						</ActionIcon>
 					</View>
-				</Animated.View>
+				</AnimViewMem>
 			</View>
 			<Portal>
 				<RemoveListItemDialog
@@ -458,7 +458,7 @@ type ListEntrySheetProps = {
 export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntrySheetProps>(
 	(props, ref) => {
 		const { height } = useWindowDimensions();
-		const { colors } = useTheme();
+		const { colors } = useAppTheme();
 		const [mainEntryHeight, setMainEntryHeight] = useState(0);
 		const snapPoints = useMemo(
 			() => [
@@ -471,6 +471,8 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 			[mainEntryHeight, height],
 		);
 
+		const [isStartAtVis, setIsStartAtVis] = useState(false);
+		const [isEndAtVis, setIsEndAtVis] = useState(false);
 		const [tempParams, setTempParams] = useState<SaveMediaListItemMutationVariables>({
 			status: props?.status as MediaListStatus,
 			score: props.entryData?.score,
@@ -672,8 +674,6 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 						/>
 					)}
 					onDismiss={() => submitNewEntry()}
-
-					// onChange={handleSheetChange}
 				>
 					<BottomSheetScrollView style={{ flex: 1 }} nestedScrollEnabled>
 						<View
@@ -882,5 +882,4 @@ export const ListEntrySheet = React.forwardRef<BottomSheetModalMethods, ListEntr
 	},
 );
 
-export const ListEntryViewMem = memo(ListEntryView);
 export default ListEntryView;

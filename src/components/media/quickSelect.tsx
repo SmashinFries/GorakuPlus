@@ -1,6 +1,7 @@
 import { IconButton, useTheme } from 'react-native-paper';
 import { CrunchyRollIcon } from '@/components/svgs';
 import { View } from 'react-native';
+import { useAppTheme } from '@/store/theme/themes';
 
 type QuickSelectorProps = {
 	icon: string;
@@ -8,7 +9,7 @@ type QuickSelectorProps = {
 	onPress?: () => void;
 };
 export const QuickSelector = ({ icon, disabled = false, onPress }: QuickSelectorProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<View
 			style={{

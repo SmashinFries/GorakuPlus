@@ -281,7 +281,7 @@ const dummyAquaData: Media = {
 	status: MediaStatus.Finished,
 	meanScore: 84,
 	averageScore: 83,
-	chapters: 127,
+	chapters: null,
 	startDate: {
 		year: 2013,
 		month: 10,
@@ -310,7 +310,7 @@ const dummyAquaData: Media = {
 		mediaId: 1,
 		userId: 1,
 		status: MediaListStatus.Current,
-		progress: 127 / 2,
+		progress: 50,
 	},
 	stats: {
 		scoreDistribution: ScoreStats,

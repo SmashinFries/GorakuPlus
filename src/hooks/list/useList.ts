@@ -1,5 +1,87 @@
 import { useEffect, useMemo, useState } from 'react';
 import { sortListTabs } from '@/utils/sort';
+import {
+	MediaListCollection,
+	MediaListGroup,
+	MediaListSort,
+	MediaTag,
+	MediaType,
+	UserAnimeListCollectionQuery,
+	UserMangaListCollectionQuery,
+	useUserAnimeListCollectionQuery,
+	useUserMangaListCollectionQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { useListFilterStore } from '@/store/listStore';
+import { useAuthStore } from '@/store/authStore';
+import { NavigationState } from 'react-native-tab-view';
+
+const orderList = (listData: string[], order?: string[], isViewer: boolean = false) => {
+	if (isViewer && order) {
+		const listOrder = listData.sort((a, b) => {
+			return order.indexOf(a) - order.indexOf(b);
+		});
+		return listOrder;
+	} else {
+		return listData;
+	}
+};
+
+const useListOrder = (
+	animeList: MediaListGroup[],
+	mangaList: MediaListGroup[],
+	isViewer: boolean = false,
+) => {
+	const [animeRoutes, setAnimeRoutes] = useState<NavigationState<any>['routes']>();
+	const [mangaRoutes, setMangaRoutes] = useState<NavigationState<any>['routes']>();
+	const { animeTabOrder, mangaTabOrder, checkListNames } = useListFilterStore((state) => ({
+		animeTabOrder: state.animeTabOrder,
+		mangaTabOrder: state.mangaTabOrder,
+		checkListNames: state.checkListNames,
+	}));
+
+	const getListRoutes = (listData: MediaListGroup[], type: MediaType) => {
+		const count = {};
+		for (const list of listData) {
+			count[list.name] = list.entries.length;
+		}
+		const listNames = listData
+			.filter((list) => list.isSplitCompletedList === false) // remove split lists (like anilist site)
+			.sort((a, b) => Number(a.isCustomList) - Number(b.isCustomList)) // puts customs lists at end
+			.map((list) => list.name);
+		console.log(type, listNames);
+		checkListNames(type, listNames);
+		const listOrder = orderList(
+			listNames,
+			type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
+			isViewer,
+		);
+		return listOrder.map((name) => ({
+			key: name,
+			title: `${name}  (${count[name] ?? 0})`,
+		}));
+	};
+
+	// const getTotalTitles = (lists: MediaListGroup[] | MediaListGroup[]) => {
+	// 	let count = 0;
+	// 	for (const list of lists) {
+	// 		count += list.entries.length;
+	// 	}
+	// 	return count;
+	// };
+
+	useEffect(() => {
+		if (animeList) {
+			const routes = getListRoutes(animeList, MediaType.Anime);
+			setAnimeRoutes(routes);
+		}
+		if (mangaList) {
+			const routes = getListRoutes(mangaList, MediaType.Manga);
+			setMangaRoutes(routes);
+		}
+	}, [animeList, mangaList]);
+
+	return { animeRoutes, mangaRoutes };
+};
 
 const getAllGenres = (
 	animeList: UserAnimeListCollectionQuery['MediaListCollection']['lists'],
@@ -56,20 +138,34 @@ const getAllTags = (
 		.sort((a, b) => (a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
 };
 
-export const useList = (userId: number) => {
-	const [fetchAnimeList, animeList] = useLazyUserAnimeListCollectionQuery();
-	const [fetchMangaList, mangaList] = useLazyUserMangaListCollectionQuery();
-	const [loading, setLoading] = useState<boolean>(true);
-	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-	const [animeRoutes, setAnimeRoutes] = useState<{ key: string; title: string }[]>([]);
-	const [mangaRoutes, setMangaRoutes] = useState<{ key: string; title: string }[]>([]);
+export const useList = (userId: number, isViewer = true) => {
+	const viewerId = useAuthStore((state) => state.anilist.userID);
+	const {
+		data: animeList,
+		isLoading: isAnimeListLoading,
+		isRefetching: isAnimeListRefetching,
+		isFetched: isAnimeListFetched,
+		refetch: refreshAnimeList,
+	} = useUserAnimeListCollectionQuery(
+		{ userId: userId, sort: MediaListSort.AddedTimeDesc },
+		{ enabled: !!userId, meta: { persist: viewerId === userId } },
+	);
+	const {
+		data: mangaList,
+		isLoading: isMangaListLoading,
+		isRefetching: isMangaListRefetching,
+		isFetched: isMangaListFetched,
+		refetch: refreshMangaList,
+	} = useUserMangaListCollectionQuery(
+		{ userId: userId, sort: MediaListSort.AddedTimeDesc },
+		{ enabled: !!userId, meta: { persist: viewerId === userId } },
+	);
 	const [rootRoutes, setRootRoutes] = useState<{ key: string; title: string }[]>([]);
-
-	const [genres, setGenres] = useState<string[]>([]);
-	const [tags, setTags] = useState<MediaTag[]>([]);
-
-	const { animeTabOrder, mangaTabOrder } = useAppSelector((state) => state.listFilter);
-	const dispatch = useAppDispatch();
+	const { animeRoutes, mangaRoutes } = useListOrder(
+		animeList?.MediaListCollection?.lists as MediaListGroup[],
+		mangaList?.MediaListCollection?.lists as MediaListGroup[],
+		isViewer,
+	);
 
 	const getTotalTitles = (
 		lists:
@@ -83,99 +179,102 @@ export const useList = (userId: number) => {
 		return count;
 	};
 
-	const fetchAll = async () => {
-		setLoading(true);
-		const animeData = await fetchAnimeList({
-			userId: userId,
-			sort: MediaListSort.AddedTimeDesc,
-		});
-		const mangaData = await fetchMangaList({
-			userId: userId,
-			sort: MediaListSort.AddedTimeDesc,
-		});
-		const customAnimeLists = animeData?.data?.MediaListCollection?.lists
-			?.map((list) => (!animeTabOrder.includes(list.name) ? list.name : null))
-			.filter((x) => x !== null);
-		const customMangaLists = mangaData?.data?.MediaListCollection?.lists
-			?.map((list) => (!mangaTabOrder.includes(list.name) ? list.name : null))
-			.filter((x) => x !== null);
-
-		const animeListCounts = {};
-		const mangaListCounts = {};
-
-		for (const list of animeData?.data?.MediaListCollection?.lists) {
-			animeListCounts[list.name] = list.entries.length;
-		}
-		for (const list of mangaData?.data?.MediaListCollection?.lists) {
-			mangaListCounts[list.name] = list.entries.length;
-		}
-		// animeData?.data?.MediaListCollection?.lists.map(list => ({ [list.name]: list.entries.length }));
-
-		const aRoutes = sortListTabs(
-			animeData?.data?.MediaListCollection?.lists.map((list) => list.name),
-			animeTabOrder,
-			animeListCounts,
-		);
-		const mRoutes = sortListTabs(
-			mangaData?.data?.MediaListCollection?.lists.map((list) => list.name),
-			mangaTabOrder,
-			mangaListCounts,
-		);
-		// const aRoutes = sortedAnimeRoutes.map((route) => ({
-		// 	key: route.key,
-		// 	title: `${route.title} (${animeData?.data?.MediaListCollection?.lists?.find(list => list.name === route.key)?.entries.length})`
-		// }));
-		// const mRoutes = sortedMangaRoutes.map((route) => ({
-		// 	key: route.key,
-		// 	title: `${route.title} (${mangaData?.data?.MediaListCollection?.lists?.find(list => list.name === route.key)?.entries.length})`
-		// }))
-		// setGenres(getAllGenres(animeData?.data?.MediaListCollection?.lists, mangaData?.data?.MediaListCollection?.lists));
-		// setTags(getAllTags(animeData?.data?.MediaListCollection?.lists, mangaData?.data?.MediaListCollection?.lists));
-
-		dispatch(
-			updateListFilter({
-				entryType: 'animeTabOrder',
-				value: [...new Set([...animeTabOrder, ...customAnimeLists])],
-			}),
-		);
-		dispatch(
-			updateListFilter({
-				entryType: 'mangaTabOrder',
-				value: [...new Set([...mangaTabOrder, ...customMangaLists])],
-			}),
-		);
-		setRootRoutes([
-			{
-				key: 'anime',
-				title: `Anime (${getTotalTitles(animeData?.data?.MediaListCollection?.lists)})`,
-			},
-			{
-				key: 'manga',
-				title: `Manga (${getTotalTitles(mangaData?.data?.MediaListCollection?.lists)})`,
-			},
-		]);
-		setAnimeRoutes(aRoutes);
-		setMangaRoutes(mRoutes);
-		setLoading(false);
-	};
-
-	const refreshAnimeList = async () => {
-		setIsRefreshing(true);
-		await fetchAnimeList({ userId: userId, sort: MediaListSort.AddedTimeDesc });
-		setIsRefreshing(false);
-	};
-
-	const refreshMangaList = async () => {
-		setIsRefreshing(true);
-		await fetchMangaList({ userId: userId, sort: MediaListSort.AddedTimeDesc });
-		setIsRefreshing(false);
-	};
-
 	useEffect(() => {
-		if (userId && animeList.isUninitialized && mangaList.isUninitialized) {
-			fetchAll();
+		// if (animeList?.MediaListCollection?.lists) {
+		// 	const list = animeList?.MediaListCollection?.lists;
+
+		// 	const listOrder = orderList(list as MediaListGroup[], animeTabOrder, isViewer);
+		// 	setAnimeRoutes(
+		// 		listOrder.map((name) => ({
+		// 			key: name,
+		// 			title: `${name}  (${count[name] ?? 0})`,
+		// 		})),
+		// 	);
+		// }
+		// if (mangaList?.MediaListCollection?.lists) {
+		// 	const list = mangaList?.MediaListCollection?.lists;
+		// 	const count = {};
+		// 	for (const list of mangaList?.MediaListCollection?.lists) {
+		// 		count[list.name] = list.entries.length;
+		// 	}
+		// 	const listOrder = orderList(list as MediaListGroup[], animeTabOrder, isViewer);
+		// 	setMangaRoutes(
+		// 		mangaList?.MediaListCollection?.lists.map((list) => ({
+		// 			key: list.name,
+		// 			title: `${list.name}  (${count[list.name] ?? 0})`,
+		// 		})),
+		// 	);
+		// }
+		if (isAnimeListFetched && isMangaListFetched) {
+			setRootRoutes([
+				{
+					key: 'anime',
+					title: `Anime (${getTotalTitles(animeList?.MediaListCollection?.lists)})`,
+				},
+				{
+					key: 'manga',
+					title: `Manga (${getTotalTitles(mangaList?.MediaListCollection?.lists)})`,
+				},
+			]);
 		}
-	}, []);
+		// if (animeList && mangaList) {
+		// 	const animeListCounts = {};
+		// 	const mangaListCounts = {};
+		// 	const customAnimeLists = animeList?.MediaListCollection?.lists
+		// 		?.map((list) => (!animeTabOrder.includes(list.name) ? list.name : null))
+		// 		.filter((x) => x !== null);
+		// 	const customMangaLists = mangaList?.MediaListCollection?.lists
+		// 		?.map((list) => (!mangaTabOrder.includes(list.name) ? list.name : null))
+		// 		.filter((x) => x !== null);
+
+		// 	for (const list of animeList?.MediaListCollection?.lists) {
+		// 		animeListCounts[list.name] = list.entries.length;
+		// 	}
+		// 	for (const list of mangaList?.MediaListCollection?.lists) {
+		// 		mangaListCounts[list.name] = list.entries.length;
+		// 	}
+		// 	const aRoutes = isViewer
+		// 		? sortListTabs(
+		// 				animeList?.MediaListCollection?.lists.map((list) => list.name),
+		// 				animeTabOrder,
+		// 				animeListCounts,
+		// 			)
+		// 		: animeList?.MediaListCollection?.lists.map((list) => ({
+		// 				key: list.name,
+		// 				title: `${list.name}  (${animeListCounts[list.name] ?? 0})`,
+		// 			}));
+		// 	const mRoutes = isViewer
+		// 		? sortListTabs(
+		// 				mangaList?.MediaListCollection?.lists.map((list) => list.name),
+		// 				mangaTabOrder,
+		// 				mangaListCounts,
+		// 			)
+		// 		: mangaList?.MediaListCollection?.lists.map((list) => ({
+		// 				key: list.name,
+		// 				title: `${list.name}  (${mangaListCounts[list.name] ?? 0})`,
+		// 			}));
+		// 	isViewer &&
+		// 		updateListFilter({
+		// 			animeTabOrder: [...new Set([...animeTabOrder, ...customAnimeLists])],
+		// 		});
+		// 	isViewer &&
+		// 		updateListFilter({
+		// 			mangaTabOrder: [...new Set([...mangaTabOrder, ...customMangaLists])],
+		// 		});
+		// 	setRootRoutes([
+		// 		{
+		// 			key: 'anime',
+		// 			title: `Anime (${getTotalTitles(animeList?.MediaListCollection?.lists)})`,
+		// 		},
+		// 		{
+		// 			key: 'manga',
+		// 			title: `Manga (${getTotalTitles(mangaList?.MediaListCollection?.lists)})`,
+		// 		},
+		// 	]);
+		// 	setAnimeRoutes(aRoutes);
+		// 	setMangaRoutes(mRoutes);
+		// }
+	}, [animeList, mangaList, isAnimeListFetched, isMangaListFetched]);
 
 	return {
 		animeList,
@@ -183,10 +282,8 @@ export const useList = (userId: number) => {
 		rootRoutes,
 		animeRoutes,
 		mangaRoutes,
-		genres,
-		tags,
-		loading,
-		isRefreshing,
+		loading: isAnimeListLoading || isMangaListLoading,
+		isRefreshing: isAnimeListRefetching || isMangaListRefetching,
 		refreshAnimeList,
 		refreshMangaList,
 	};

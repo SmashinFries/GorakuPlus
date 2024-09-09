@@ -1,7 +1,5 @@
-import { MotiView } from 'moti';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { Selectable } from '../moti';
 import { AVPlaybackStatus, Video } from 'expo-av';
 import { useEffect, useState } from 'react';
 
@@ -13,15 +11,13 @@ type ControlIconProps = {
 };
 const ControlIcon = ({ icon, size, disabled, onPress }: ControlIconProps) => {
 	return (
-		<Selectable>
-			<IconButton
-				rippleColor={'transparent'}
-				disabled={disabled}
-				icon={icon}
-				size={size ?? 28}
-				onPress={onPress}
-			/>
-		</Selectable>
+		<IconButton
+			rippleColor={'transparent'}
+			disabled={disabled}
+			icon={icon}
+			size={size ?? 28}
+			onPress={onPress}
+		/>
 	);
 };
 
@@ -59,7 +55,7 @@ export const VideoControls = ({ status, vidRef }: VideoControlsProps) => {
 	}, [status]);
 
 	return (
-		<MotiView style={[styles.container]}>
+		<View style={[styles.container]}>
 			<ControlIcon
 				icon="step-backward"
 				disabled={status?.isLoaded && status?.positionMillis === 0}
@@ -67,7 +63,7 @@ export const VideoControls = ({ status, vidRef }: VideoControlsProps) => {
 			/>
 			<ControlIcon icon={playIcon} size={58} onPress={() => togglePlay()} />
 			<ControlIcon icon="step-forward" onPress={() => seek(5000)} />
-		</MotiView>
+		</View>
 	);
 };
 
@@ -79,7 +75,7 @@ type VideoControlsYTProps = {
 };
 export const VideoControlsYT = ({ isPlaying, seek, togglePlay }: VideoControlsYTProps) => {
 	return (
-		<MotiView style={[styles.container]}>
+		<View style={[styles.container]}>
 			<ControlIcon
 				icon="step-backward"
 				// disabled={!vidRef.current}
@@ -91,7 +87,7 @@ export const VideoControlsYT = ({ isPlaying, seek, togglePlay }: VideoControlsYT
 				onPress={() => togglePlay()}
 			/>
 			<ControlIcon icon="step-forward" onPress={() => seek(5)} />
-		</MotiView>
+		</View>
 	);
 };
 

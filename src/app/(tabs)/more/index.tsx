@@ -12,13 +12,13 @@ const MorePage = () => {
 			<List.Item
 				title="Weeb Lab"
 				description="Test new features that may or may not make it in future builds!"
-				onPress={() => router.push('/more/weeblab')}
+				onPress={() => router.navigate('/more/weeblab')}
 				left={(props) => <List.Icon {...props} color={colors.primary} icon="flask" />}
 			/>
 			<Divider />
 			<List.Item
 				title="Accounts"
-				onPress={() => router.push('/more/accounts')}
+				onPress={() => router.navigate('/more/accounts')}
 				// description="Manage accounts"
 				left={(props) => (
 					<List.Icon {...props} color={colors.primary} icon="account-outline" />
@@ -27,12 +27,17 @@ const MorePage = () => {
 			<List.Item
 				title="Settings"
 				// description="Customize your UI"
-				onPress={() => router.push('/more/settings')}
+				onPress={() => router.navigate('/more/settings')}
 				left={(props) => <List.Icon {...props} color={colors.primary} icon="cog-outline" />}
 			/>
 			<List.Item
+				title="AniList Site Stats"
+				onPress={() => router.navigate('/more/sitestats')}
+				left={(props) => <List.Icon {...props} color={colors.primary} icon="chart-line" />}
+			/>
+			<List.Item
 				title="About"
-				onPress={() => router.push('/more/about')}
+				onPress={() => router.navigate('/more/about')}
 				left={(props) => (
 					<List.Icon {...props} color={colors.primary} icon="information-outline" />
 				)}

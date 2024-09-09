@@ -4,6 +4,12 @@ import * as Haptics from 'expo-haptics';
 
 export const captilize = (txt: string) => txt.charAt(0).toUpperCase() + txt.slice(1);
 
+export const getCompactNumberForm = (number: number) =>
+	Intl.NumberFormat('en-US', {
+		notation: 'compact',
+		maximumFractionDigits: 1,
+	}).format(number);
+
 export const copyToClipboard = async (txt: string) => {
 	await Clipboard.setStringAsync(txt);
 	await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

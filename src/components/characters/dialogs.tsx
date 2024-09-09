@@ -6,6 +6,7 @@ import { DanTags } from '@/api/danbooru/types';
 import { useTagsSearchQuery } from '@/api/danbooru/danbooru';
 import useDebounce from '@/hooks/useDebounce';
 import { useMatchStore } from '@/store/matchStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 type TagSearchDialogProps = BasicDialogProps & {
 	initialQuery: string;
@@ -25,7 +26,7 @@ export const TagSearchDialog = ({
 	onTagChange,
 	// saveTag,
 }: TagSearchDialogProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { addBooruTag } = useMatchStore();
 	const [query, setQuery] = useState(initialQuery);
 	const debouncedQuery = useDebounce(query, 600);

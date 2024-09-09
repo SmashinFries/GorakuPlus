@@ -3,10 +3,11 @@ import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback } from 'react';
 import { View } from 'react-native';
 import { MD3Colors } from 'react-native-paper/lib/typescript/types';
-import { AniMediaQuery, MediaFormat, MediaType } from '@/store/services/anilist/generated-anilist';
 import { MediaCard } from '@/components/cards';
 import { Link, router, useNavigation } from 'expo-router';
 import { ListHeading } from '@/components/text';
+import { AniMediaQuery, MediaFormat, MediaType } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type RelationItemProps = {
 	textColor: string;
@@ -19,9 +20,10 @@ type RelationItemProps = {
 
 type RelationsProps = {
 	data: AniMediaQuery['Media']['relations'];
+	onLongSelect: (media: AniMediaQuery['Media']['relations']['edges'][0]['node']) => void;
 };
-const Relations = ({ data }: RelationsProps) => {
-	const { colors } = useTheme();
+const Relations = ({ data, onLongSelect }: RelationsProps) => {
+	const { colors } = useAppTheme();
 
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = useCallback(
@@ -38,6 +40,7 @@ const Relations = ({ data }: RelationsProps) => {
 						router.push(`/${item.node?.type?.toLowerCase()}/${item.node?.id}`)
 					}
 					isFavorite={item.node?.isFavourite}
+					onLongPress={() => onLongSelect(item.node)}
 				/>
 				<Text
 					variant="labelLarge"

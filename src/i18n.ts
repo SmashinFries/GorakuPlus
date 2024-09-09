@@ -1,34 +1,28 @@
-import i18n, { NewableModule } from 'i18next';
+import i18n, { Module, Newable, NewableModule } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import AsyncStorageBackend from 'i18next-async-storage-backend2';
 import { getLocales } from 'expo-localization';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import resources from '../locales';
+import { MMKV } from 'react-native-mmkv';
 
 const deviceLanguage = getLocales()[0].languageCode;
 const STORE_LANGUAGE_KEY = 'appLanguage';
+const i18nStorage = new MMKV({ id: 'i18n-storage' });
 
-const languageDetectorPlugin = {
+const languageDetectorPlugin: Module | NewableModule<Module> | Newable<Module> = {
 	type: 'languageDetector',
-	async: true,
+	async: false,
 	init: () => null,
-	detect: async function (callback: (lang: string) => void) {
+	detect: function (callback: (lang: string) => void) {
 		try {
-			await AsyncStorage.getItem(STORE_LANGUAGE_KEY).then((language) => {
-				if (language) {
-					return callback(language);
-				} else {
-					return callback(deviceLanguage);
-				}
-			});
+			const language = i18nStorage.getString(STORE_LANGUAGE_KEY);
+			return callback(language ?? deviceLanguage);
 		} catch (error) {
 			console.log('Error reading language', error);
 		}
 	},
-	cacheUserLanguage: async function (language: string) {
+	cacheUserLanguage: function (language: string) {
 		try {
-			//save a user's language choice in Async storage
-			await AsyncStorage.setItem(STORE_LANGUAGE_KEY, language);
+			i18nStorage.set(STORE_LANGUAGE_KEY, language);
 		} catch (error) {
 			console.log('Error saving language', error);
 		}

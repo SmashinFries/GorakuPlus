@@ -1,5 +1,4 @@
-import { AniMediaQuery, MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
-import { Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { QuickSelector } from '@/components/media/quickSelect';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { MediaTitleView } from '@/components/media/text';
@@ -7,9 +6,10 @@ import { Portal, useTheme } from 'react-native-paper';
 import { router } from 'expo-router';
 import use3dPan from '@/hooks/animations/use3dPan';
 import { GestureDetector } from 'react-native-gesture-handler';
-import Animated from 'react-native-reanimated';
-import { useAppSelector } from '@/store/hooks';
+import Animated, { FadeIn, RollInRight, SlideInDown, SlideInUp } from 'react-native-reanimated';
 import { ImageViewer } from '@/components/imageViewer';
+import { AniMediaQuery, MediaStatus, MediaType } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type FrontCoverProps = {
 	data: AniMediaQuery['Media'];
@@ -18,7 +18,7 @@ type FrontCoverProps = {
 };
 export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 	const { width } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 	const [imageViewerVisible, setImageViewerVisible] = useState(false);
 
@@ -29,8 +29,11 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 		: [data?.bannerImage ?? null];
 
 	return (
-		<Animated.View style={[styles.container, { width: width }]}>
-			<Animated.View
+		<View
+			// exiting={RollOutLeft}
+			style={[styles.container, { width: width }]}
+		>
+			<View
 				style={{
 					flex: 1,
 					width: '100%',
@@ -39,7 +42,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 				}}
 			>
 				{/* Left Icons */}
-				<Animated.View
+				<View
 					style={{
 						justifyContent: 'space-evenly',
 						width: '100%',
@@ -48,7 +51,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 				>
 					<QuickSelector
 						onPress={() => {
-							router.push(`/music/${data?.id}`);
+							router.navigate(`/music/${data?.id}`);
 						}}
 						disabled={
 							data?.type !== MediaType.Anime ||
@@ -60,11 +63,11 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 					<QuickSelector
 						icon="newspaper"
 						onPress={() => {
-							router.push(`/news/${data?.type}/${data?.idMal}`);
+							router.navigate(`/news/${data?.type}/${data?.idMal}`);
 						}}
 						disabled={!data?.idMal}
 					/>
-				</Animated.View>
+				</View>
 
 				{/* Cover Image */}
 				<Animated.View>
@@ -111,7 +114,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 						// }
 					/>
 				</Animated.View>
-			</Animated.View>
+			</View>
 			<MediaTitleView data={data} defaultTitle={defaultTitle} />
 			<Portal>
 				<ImageViewer
@@ -122,7 +125,7 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 					)}
 				/>
 			</Portal>
-		</Animated.View>
+		</View>
 	);
 };
 

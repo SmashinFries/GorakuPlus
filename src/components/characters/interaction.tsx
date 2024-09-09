@@ -1,11 +1,10 @@
-import { useAppTheme } from '@/store/theme/theme';
-import { saveImage } from '@/utils/images';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { Share, View } from 'react-native';
-import { ActivityIndicator, Divider, IconButton, Text } from 'react-native-paper';
+import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
 import { ActionIcon } from '../media/sections/entry';
-import { useAppSelector } from '@/store/hooks';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { useAuthStore } from '@/store/authStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 type CharStaffInteractionBarProps = {
 	isFav: boolean;
@@ -21,7 +20,7 @@ export const CharStaffInteractionBar = ({
 	share_url,
 	toggleFav,
 }: CharStaffInteractionBarProps) => {
-	const { userID } = useAppSelector((state) => state.persistedAniLogin);
+	const { userID } = useAuthStore().anilist;
 	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
 	const containerWidth = width / 3;

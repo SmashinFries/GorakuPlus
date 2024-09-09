@@ -10,7 +10,7 @@ const config: CodegenConfig = {
 				exposeQueryKeys: true,
 				exposeFetcher: true,
 				fetcher: {
-					func: 'configs/anilist/fetcher#useFetchAnilistData',
+					func: 'configs/anilist/fetcher#fetchAnilistData',
 					isReactHook: false,
 				},
 				addInfiniteQuery: true,

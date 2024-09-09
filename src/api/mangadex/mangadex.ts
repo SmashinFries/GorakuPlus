@@ -189,13 +189,13 @@ export const getPing = (
  ): Promise<AxiosResponse<string>> => {
     
     return axios.get(
-      `/ping`,options
+      `https://api.mangadex.org/ping`,options
     );
   }
 
 
 export const getGetPingQueryKey = () => {
-    return [`/ping`] as const;
+    return [`https://api.mangadex.org/ping`] as const;
     }
 
     
@@ -249,7 +249,7 @@ export const getSearchManga = (
  ): Promise<AxiosResponse<MangaList>> => {
     
     return axios.get(
-      `/manga`,{
+      `https://api.mangadex.org/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -257,7 +257,7 @@ export const getSearchManga = (
 
 
 export const getGetSearchMangaQueryKey = (params?: GetSearchMangaParams,) => {
-    return [`/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -311,7 +311,7 @@ export const postManga = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.post(
-      `/manga`,
+      `https://api.mangadex.org/manga`,
       mangaCreate,options
     );
   }
@@ -367,7 +367,7 @@ export const getMangaAggregate = (
  ): Promise<AxiosResponse<GetMangaAggregate200>> => {
     
     return axios.get(
-      `/manga/${id}/aggregate`,{
+      `https://api.mangadex.org/manga/${id}/aggregate`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -376,7 +376,7 @@ export const getMangaAggregate = (
 
 export const getGetMangaAggregateQueryKey = (id: string,
     params?: GetMangaAggregateParams,) => {
-    return [`/manga/${id}/aggregate`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/${id}/aggregate`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -433,7 +433,7 @@ export const getMangaId = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.get(
-      `/manga/${id}`,{
+      `https://api.mangadex.org/manga/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -442,7 +442,7 @@ export const getMangaId = (
 
 export const getGetMangaIdQueryKey = (id: string,
     params?: GetMangaIdParams,) => {
-    return [`/manga/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -498,7 +498,7 @@ export const putMangaId = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.put(
-      `/manga/${id}`,
+      `https://api.mangadex.org/manga/${id}`,
       putMangaIdBody,options
     );
   }
@@ -553,7 +553,7 @@ export const deleteMangaId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/manga/${id}`,options
+      `https://api.mangadex.org/manga/${id}`,options
     );
   }
 
@@ -608,7 +608,7 @@ export const postAuthLogin = (
  ): Promise<AxiosResponse<LoginResponse>> => {
     
     return axios.post(
-      `/auth/login`,
+      `https://api.mangadex.org/auth/login`,
       login,options
     );
   }
@@ -666,13 +666,13 @@ export const getAuthCheck = (
  ): Promise<AxiosResponse<CheckResponse>> => {
     
     return axios.get(
-      `/auth/check`,options
+      `https://api.mangadex.org/auth/check`,options
     );
   }
 
 
 export const getGetAuthCheckQueryKey = () => {
-    return [`/auth/check`] as const;
+    return [`https://api.mangadex.org/auth/check`] as const;
     }
 
     
@@ -726,7 +726,7 @@ export const postAuthLogout = (
  ): Promise<AxiosResponse<LogoutResponse>> => {
     
     return axios.post(
-      `/auth/logout`,undefined,options
+      `https://api.mangadex.org/auth/logout`,undefined,options
     );
   }
 
@@ -782,7 +782,7 @@ export const postAuthRefresh = (
  ): Promise<AxiosResponse<RefreshResponse>> => {
     
     return axios.post(
-      `/auth/refresh`,
+      `https://api.mangadex.org/auth/refresh`,
       refreshToken,options
     );
   }
@@ -838,7 +838,7 @@ export const getListApiclients = (
  ): Promise<AxiosResponse<ApiClientList>> => {
     
     return axios.get(
-      `/client`,{
+      `https://api.mangadex.org/client`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -846,7 +846,7 @@ export const getListApiclients = (
 
 
 export const getGetListApiclientsQueryKey = (params?: GetListApiclientsParams,) => {
-    return [`/client`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/client`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -899,7 +899,7 @@ export const postCreateApiclient = (
  ): Promise<AxiosResponse<ApiClientResponse>> => {
     
     return axios.post(
-      `/client`,
+      `https://api.mangadex.org/client`,
       apiClientCreate,options
     );
   }
@@ -955,7 +955,7 @@ export const getApiclient = (
  ): Promise<AxiosResponse<ApiClientResponse>> => {
     
     return axios.get(
-      `/client/${id}`,{
+      `https://api.mangadex.org/client/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -964,7 +964,7 @@ export const getApiclient = (
 
 export const getGetApiclientQueryKey = (id: string,
     params?: GetApiclientParams,) => {
-    return [`/client/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/client/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1020,7 +1020,7 @@ export const postEditApiclient = (
  ): Promise<AxiosResponse<ApiClientResponse>> => {
     
     return axios.post(
-      `/client/${id}`,
+      `https://api.mangadex.org/client/${id}`,
       apiClientEdit,options
     );
   }
@@ -1076,7 +1076,7 @@ export const deleteApiclient = (
  ): Promise<AxiosResponse<DeleteApiclient200>> => {
     
     return axios.delete(
-      `/client/${id}`,{
+      `https://api.mangadex.org/client/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1132,13 +1132,13 @@ export const getApiclientSecret = (
  ): Promise<AxiosResponse<GetApiclientSecret200>> => {
     
     return axios.get(
-      `/client/${id}/secret`,options
+      `https://api.mangadex.org/client/${id}/secret`,options
     );
   }
 
 
 export const getGetApiclientSecretQueryKey = (id: string,) => {
-    return [`/client/${id}/secret`] as const;
+    return [`https://api.mangadex.org/client/${id}/secret`] as const;
     }
 
     
@@ -1192,7 +1192,7 @@ export const postRegenerateApiclientSecret = (
  ): Promise<AxiosResponse<PostRegenerateApiclientSecret200>> => {
     
     return axios.post(
-      `/client/${id}/secret`,
+      `https://api.mangadex.org/client/${id}/secret`,
       postRegenerateApiclientSecretBody,options
     );
   }
@@ -1247,7 +1247,7 @@ export const getSearchGroup = (
  ): Promise<AxiosResponse<ScanlationGroupList>> => {
     
     return axios.get(
-      `/group`,{
+      `https://api.mangadex.org/group`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1255,7 +1255,7 @@ export const getSearchGroup = (
 
 
 export const getGetSearchGroupQueryKey = (params?: GetSearchGroupParams,) => {
-    return [`/group`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/group`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1308,7 +1308,7 @@ export const postGroup = (
  ): Promise<AxiosResponse<ScanlationGroupResponse>> => {
     
     return axios.post(
-      `/group`,
+      `https://api.mangadex.org/group`,
       createScanlationGroup,options
     );
   }
@@ -1364,7 +1364,7 @@ export const getGroupId = (
  ): Promise<AxiosResponse<ScanlationGroupResponse>> => {
     
     return axios.get(
-      `/group/${id}`,{
+      `https://api.mangadex.org/group/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -1373,7 +1373,7 @@ export const getGroupId = (
 
 export const getGetGroupIdQueryKey = (id: string,
     params?: GetGroupIdParams,) => {
-    return [`/group/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/group/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -1429,7 +1429,7 @@ export const putGroupId = (
  ): Promise<AxiosResponse<ScanlationGroupResponse>> => {
     
     return axios.put(
-      `/group/${id}`,
+      `https://api.mangadex.org/group/${id}`,
       scanlationGroupEdit,options
     );
   }
@@ -1484,7 +1484,7 @@ export const deleteGroupId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/group/${id}`,options
+      `https://api.mangadex.org/group/${id}`,options
     );
   }
 
@@ -1538,7 +1538,7 @@ export const postGroupIdFollow = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/group/${id}/follow`,undefined,options
+      `https://api.mangadex.org/group/${id}/follow`,undefined,options
     );
   }
 
@@ -1592,7 +1592,7 @@ export const deleteGroupIdFollow = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/group/${id}/follow`,options
+      `https://api.mangadex.org/group/${id}/follow`,options
     );
   }
 
@@ -1646,7 +1646,7 @@ export const postList = (
  ): Promise<AxiosResponse<CustomListResponse>> => {
     
     return axios.post(
-      `/list`,
+      `https://api.mangadex.org/list`,
       customListCreate,options
     );
   }
@@ -1701,13 +1701,13 @@ export const getListId = (
  ): Promise<AxiosResponse<CustomListResponse>> => {
     
     return axios.get(
-      `/list/${id}`,options
+      `https://api.mangadex.org/list/${id}`,options
     );
   }
 
 
 export const getGetListIdQueryKey = (id: string,) => {
-    return [`/list/${id}`] as const;
+    return [`https://api.mangadex.org/list/${id}`] as const;
     }
 
     
@@ -1762,7 +1762,7 @@ export const putListId = (
  ): Promise<AxiosResponse<CustomListResponse>> => {
     
     return axios.put(
-      `/list/${id}`,
+      `https://api.mangadex.org/list/${id}`,
       customListEdit,options
     );
   }
@@ -1817,7 +1817,7 @@ export const deleteListId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/list/${id}`,options
+      `https://api.mangadex.org/list/${id}`,options
     );
   }
 
@@ -1873,7 +1873,7 @@ export const followListId = (
  ): Promise<AxiosResponse<FollowListId200>> => {
     
     return axios.post(
-      `/list/${id}/follow`,
+      `https://api.mangadex.org/list/${id}/follow`,
       followListIdBody,options
     );
   }
@@ -1930,7 +1930,7 @@ export const unfollowListId = (
  ): Promise<AxiosResponse<UnfollowListId200>> => {
     
     return axios.delete(
-      `/list/${id}/follow`,{data:
+      `https://api.mangadex.org/list/${id}/follow`,{data:
       unfollowListIdBody, ...options}
     );
   }
@@ -1986,7 +1986,7 @@ export const postMangaIdListListId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/manga/${id}/list/${listId}`,undefined,options
+      `https://api.mangadex.org/manga/${id}/list/${listId}`,undefined,options
     );
   }
 
@@ -2041,7 +2041,7 @@ export const deleteMangaIdListListId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/manga/${id}/list/${listId}`,options
+      `https://api.mangadex.org/manga/${id}/list/${listId}`,options
     );
   }
 
@@ -2096,7 +2096,7 @@ export const getUserList = (
  ): Promise<AxiosResponse<CustomListList>> => {
     
     return axios.get(
-      `/user/list`,{
+      `https://api.mangadex.org/user/list`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2104,7 +2104,7 @@ export const getUserList = (
 
 
 export const getGetUserListQueryKey = (params?: GetUserListParams,) => {
-    return [`/user/list`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/list`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2159,7 +2159,7 @@ export const getUserIdList = (
  ): Promise<AxiosResponse<CustomListList>> => {
     
     return axios.get(
-      `/user/${id}/list`,{
+      `https://api.mangadex.org/user/${id}/list`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2168,7 +2168,7 @@ export const getUserIdList = (
 
 export const getGetUserIdListQueryKey = (id: string,
     params?: GetUserIdListParams,) => {
-    return [`/user/${id}/list`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/${id}/list`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2223,7 +2223,7 @@ export const getUser = (
  ): Promise<AxiosResponse<UserList>> => {
     
     return axios.get(
-      `/user`,{
+      `https://api.mangadex.org/user`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2231,7 +2231,7 @@ export const getUser = (
 
 
 export const getGetUserQueryKey = (params?: GetUserParams,) => {
-    return [`/user`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2284,13 +2284,13 @@ export const getUserId = (
  ): Promise<AxiosResponse<UserResponse>> => {
     
     return axios.get(
-      `/user/${id}`,options
+      `https://api.mangadex.org/user/${id}`,options
     );
   }
 
 
 export const getGetUserIdQueryKey = (id: string,) => {
-    return [`/user/${id}`] as const;
+    return [`https://api.mangadex.org/user/${id}`] as const;
     }
 
     
@@ -2344,7 +2344,7 @@ export const deleteUserId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/user/${id}`,options
+      `https://api.mangadex.org/user/${id}`,options
     );
   }
 
@@ -2400,7 +2400,7 @@ export const postUserDeleteCode = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/user/delete/${code}`,undefined,options
+      `https://api.mangadex.org/user/delete/${code}`,undefined,options
     );
   }
 
@@ -2456,7 +2456,7 @@ export const getChapter = (
  ): Promise<AxiosResponse<ChapterList>> => {
     
     return axios.get(
-      `/chapter`,{
+      `https://api.mangadex.org/chapter`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2464,7 +2464,7 @@ export const getChapter = (
 
 
 export const getGetChapterQueryKey = (params?: GetChapterParams,) => {
-    return [`/chapter`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/chapter`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2518,7 +2518,7 @@ export const getChapterId = (
  ): Promise<AxiosResponse<ChapterResponse>> => {
     
     return axios.get(
-      `/chapter/${id}`,{
+      `https://api.mangadex.org/chapter/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2527,7 +2527,7 @@ export const getChapterId = (
 
 export const getGetChapterIdQueryKey = (id: string,
     params?: GetChapterIdParams,) => {
-    return [`/chapter/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/chapter/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2583,7 +2583,7 @@ export const putChapterId = (
  ): Promise<AxiosResponse<ChapterResponse>> => {
     
     return axios.put(
-      `/chapter/${id}`,
+      `https://api.mangadex.org/chapter/${id}`,
       chapterEdit,options
     );
   }
@@ -2638,7 +2638,7 @@ export const deleteChapterId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/chapter/${id}`,options
+      `https://api.mangadex.org/chapter/${id}`,options
     );
   }
 
@@ -2692,7 +2692,7 @@ export const getUserFollowsMangaFeed = (
  ): Promise<AxiosResponse<ChapterList>> => {
     
     return axios.get(
-      `/user/follows/manga/feed`,{
+      `https://api.mangadex.org/user/follows/manga/feed`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2700,7 +2700,7 @@ export const getUserFollowsMangaFeed = (
 
 
 export const getGetUserFollowsMangaFeedQueryKey = (params?: GetUserFollowsMangaFeedParams,) => {
-    return [`/user/follows/manga/feed`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/follows/manga/feed`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2754,7 +2754,7 @@ export const getListIdFeed = (
  ): Promise<AxiosResponse<ChapterList>> => {
     
     return axios.get(
-      `/list/${id}/feed`,{
+      `https://api.mangadex.org/list/${id}/feed`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2763,7 +2763,7 @@ export const getListIdFeed = (
 
 export const getGetListIdFeedQueryKey = (id: string,
     params?: GetListIdFeedParams,) => {
-    return [`/list/${id}/feed`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/list/${id}/feed`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -2818,7 +2818,7 @@ export const deleteMangaIdFollow = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/manga/${id}/follow`,options
+      `https://api.mangadex.org/manga/${id}/follow`,options
     );
   }
 
@@ -2872,7 +2872,7 @@ export const postMangaIdFollow = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/manga/${id}/follow`,undefined,options
+      `https://api.mangadex.org/manga/${id}/follow`,undefined,options
     );
   }
 
@@ -2926,7 +2926,7 @@ export const getCover = (
  ): Promise<AxiosResponse<CoverList>> => {
     
     return axios.get(
-      `/cover`,{
+      `https://api.mangadex.org/cover`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -2934,7 +2934,7 @@ export const getCover = (
 
 
 export const getGetCoverQueryKey = (params?: GetCoverParams,) => {
-    return [`/cover`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/cover`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3001,7 +3001,7 @@ if(uploadCoverBody.locale !== undefined) {
 
     
     return axios.post(
-      `/cover/${mangaOrCoverId}`,
+      `https://api.mangadex.org/cover/${mangaOrCoverId}`,
       formData,options
     );
   }
@@ -3057,7 +3057,7 @@ export const getCoverId = (
  ): Promise<AxiosResponse<CoverResponse>> => {
     
     return axios.get(
-      `/cover/${mangaOrCoverId}`,{
+      `https://api.mangadex.org/cover/${mangaOrCoverId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3066,7 +3066,7 @@ export const getCoverId = (
 
 export const getGetCoverIdQueryKey = (mangaOrCoverId: string,
     params?: GetCoverIdParams,) => {
-    return [`/cover/${mangaOrCoverId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/cover/${mangaOrCoverId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3122,7 +3122,7 @@ export const editCover = (
  ): Promise<AxiosResponse<CoverResponse>> => {
     
     return axios.put(
-      `/cover/${mangaOrCoverId}`,
+      `https://api.mangadex.org/cover/${mangaOrCoverId}`,
       coverEdit,options
     );
   }
@@ -3177,7 +3177,7 @@ export const deleteCover = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/cover/${mangaOrCoverId}`,options
+      `https://api.mangadex.org/cover/${mangaOrCoverId}`,options
     );
   }
 
@@ -3231,7 +3231,7 @@ export const getAuthor = (
  ): Promise<AxiosResponse<AuthorList>> => {
     
     return axios.get(
-      `/author`,{
+      `https://api.mangadex.org/author`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3239,7 +3239,7 @@ export const getAuthor = (
 
 
 export const getGetAuthorQueryKey = (params?: GetAuthorParams,) => {
-    return [`/author`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/author`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3292,7 +3292,7 @@ export const postAuthor = (
  ): Promise<AxiosResponse<AuthorResponse>> => {
     
     return axios.post(
-      `/author`,
+      `https://api.mangadex.org/author`,
       authorCreate,options
     );
   }
@@ -3348,7 +3348,7 @@ export const getAuthorId = (
  ): Promise<AxiosResponse<AuthorResponse>> => {
     
     return axios.get(
-      `/author/${id}`,{
+      `https://api.mangadex.org/author/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3357,7 +3357,7 @@ export const getAuthorId = (
 
 export const getGetAuthorIdQueryKey = (id: string,
     params?: GetAuthorIdParams,) => {
-    return [`/author/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/author/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3413,7 +3413,7 @@ export const putAuthorId = (
  ): Promise<AxiosResponse<AuthorResponse>> => {
     
     return axios.put(
-      `/author/${id}`,
+      `https://api.mangadex.org/author/${id}`,
       authorEdit,options
     );
   }
@@ -3468,7 +3468,7 @@ export const deleteAuthorId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/author/${id}`,options
+      `https://api.mangadex.org/author/${id}`,options
     );
   }
 
@@ -3522,7 +3522,7 @@ export const postLegacyMapping = (
  ): Promise<AxiosResponse<MappingIdResponse>> => {
     
     return axios.post(
-      `/legacy/mapping`,
+      `https://api.mangadex.org/legacy/mapping`,
       mappingIdBody,options
     );
   }
@@ -3578,7 +3578,7 @@ export const getMangaIdFeed = (
  ): Promise<AxiosResponse<ChapterList>> => {
     
     return axios.get(
-      `/manga/${id}/feed`,{
+      `https://api.mangadex.org/manga/${id}/feed`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3587,7 +3587,7 @@ export const getMangaIdFeed = (
 
 export const getGetMangaIdFeedQueryKey = (id: string,
     params?: GetMangaIdFeedParams,) => {
-    return [`/manga/${id}/feed`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/${id}/feed`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3643,13 +3643,13 @@ export const getMangaChapterReadmarkers = (
  ): Promise<AxiosResponse<GetMangaChapterReadmarkers200>> => {
     
     return axios.get(
-      `/manga/${id}/read`,options
+      `https://api.mangadex.org/manga/${id}/read`,options
     );
   }
 
 
 export const getGetMangaChapterReadmarkersQueryKey = (id: string,) => {
-    return [`/manga/${id}/read`] as const;
+    return [`https://api.mangadex.org/manga/${id}/read`] as const;
     }
 
     
@@ -3705,7 +3705,7 @@ export const postMangaChapterReadmarkers = (
  ): Promise<AxiosResponse<PostMangaChapterReadmarkers200>> => {
     
     return axios.post(
-      `/manga/${id}/read`,
+      `https://api.mangadex.org/manga/${id}/read`,
       chapterReadMarkerBatch,{
     ...options,
         params: {...params, ...options?.params},}
@@ -3763,7 +3763,7 @@ export const getMangaChapterReadmarkers2 = (
  ): Promise<AxiosResponse<GetMangaChapterReadmarkers2200>> => {
     
     return axios.get(
-      `/manga/read`,{
+      `https://api.mangadex.org/manga/read`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3771,7 +3771,7 @@ export const getMangaChapterReadmarkers2 = (
 
 
 export const getGetMangaChapterReadmarkers2QueryKey = (params: GetMangaChapterReadmarkers2Params,) => {
-    return [`/manga/read`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/read`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3824,7 +3824,7 @@ export const getMangaRandom = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.get(
-      `/manga/random`,{
+      `https://api.mangadex.org/manga/random`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3832,7 +3832,7 @@ export const getMangaRandom = (
 
 
 export const getGetMangaRandomQueryKey = (params?: GetMangaRandomParams,) => {
-    return [`/manga/random`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/random`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3886,7 +3886,7 @@ export const getAtHomeServerChapterId = (
  ): Promise<AxiosResponse<GetAtHomeServerChapterId200>> => {
     
     return axios.get(
-      `/at-home/server/${chapterId}`,{
+      `https://api.mangadex.org/at-home/server/${chapterId}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -3895,7 +3895,7 @@ export const getAtHomeServerChapterId = (
 
 export const getGetAtHomeServerChapterIdQueryKey = (chapterId: string,
     params?: GetAtHomeServerChapterIdParams,) => {
-    return [`/at-home/server/${chapterId}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/at-home/server/${chapterId}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -3950,13 +3950,13 @@ export const getMangaTag = (
  ): Promise<AxiosResponse<TagResponse>> => {
     
     return axios.get(
-      `/manga/tag`,options
+      `https://api.mangadex.org/manga/tag`,options
     );
   }
 
 
 export const getGetMangaTagQueryKey = () => {
-    return [`/manga/tag`] as const;
+    return [`https://api.mangadex.org/manga/tag`] as const;
     }
 
     
@@ -4009,13 +4009,13 @@ export const getUserMe = (
  ): Promise<AxiosResponse<UserResponse>> => {
     
     return axios.get(
-      `/user/me`,options
+      `https://api.mangadex.org/user/me`,options
     );
   }
 
 
 export const getGetUserMeQueryKey = () => {
-    return [`/user/me`] as const;
+    return [`https://api.mangadex.org/user/me`] as const;
     }
 
     
@@ -4068,7 +4068,7 @@ export const getUserFollowsGroup = (
  ): Promise<AxiosResponse<ScanlationGroupList>> => {
     
     return axios.get(
-      `/user/follows/group`,{
+      `https://api.mangadex.org/user/follows/group`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4076,7 +4076,7 @@ export const getUserFollowsGroup = (
 
 
 export const getGetUserFollowsGroupQueryKey = (params?: GetUserFollowsGroupParams,) => {
-    return [`/user/follows/group`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/follows/group`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4129,13 +4129,13 @@ export const getUserFollowsGroupId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.get(
-      `/user/follows/group/${id}`,options
+      `https://api.mangadex.org/user/follows/group/${id}`,options
     );
   }
 
 
 export const getGetUserFollowsGroupIdQueryKey = (id: string,) => {
-    return [`/user/follows/group/${id}`] as const;
+    return [`https://api.mangadex.org/user/follows/group/${id}`] as const;
     }
 
     
@@ -4188,7 +4188,7 @@ export const getUserFollowsUser = (
  ): Promise<AxiosResponse<UserList>> => {
     
     return axios.get(
-      `/user/follows/user`,{
+      `https://api.mangadex.org/user/follows/user`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4196,7 +4196,7 @@ export const getUserFollowsUser = (
 
 
 export const getGetUserFollowsUserQueryKey = (params?: GetUserFollowsUserParams,) => {
-    return [`/user/follows/user`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/follows/user`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4249,13 +4249,13 @@ export const getUserFollowsUserId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.get(
-      `/user/follows/user/${id}`,options
+      `https://api.mangadex.org/user/follows/user/${id}`,options
     );
   }
 
 
 export const getGetUserFollowsUserIdQueryKey = (id: string,) => {
-    return [`/user/follows/user/${id}`] as const;
+    return [`https://api.mangadex.org/user/follows/user/${id}`] as const;
     }
 
     
@@ -4308,7 +4308,7 @@ export const getUserFollowsManga = (
  ): Promise<AxiosResponse<MangaList>> => {
     
     return axios.get(
-      `/user/follows/manga`,{
+      `https://api.mangadex.org/user/follows/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4316,7 +4316,7 @@ export const getUserFollowsManga = (
 
 
 export const getGetUserFollowsMangaQueryKey = (params?: GetUserFollowsMangaParams,) => {
-    return [`/user/follows/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/follows/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4369,13 +4369,13 @@ export const getUserFollowsMangaId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.get(
-      `/user/follows/manga/${id}`,options
+      `https://api.mangadex.org/user/follows/manga/${id}`,options
     );
   }
 
 
 export const getGetUserFollowsMangaIdQueryKey = (id: string,) => {
-    return [`/user/follows/manga/${id}`] as const;
+    return [`https://api.mangadex.org/user/follows/manga/${id}`] as const;
     }
 
     
@@ -4428,7 +4428,7 @@ export const getUserFollowsList = (
  ): Promise<AxiosResponse<CustomListList>> => {
     
     return axios.get(
-      `/user/follows/list`,{
+      `https://api.mangadex.org/user/follows/list`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4436,7 +4436,7 @@ export const getUserFollowsList = (
 
 
 export const getGetUserFollowsListQueryKey = (params?: GetUserFollowsListParams,) => {
-    return [`/user/follows/list`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/user/follows/list`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4489,13 +4489,13 @@ export const getUserFollowsListId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.get(
-      `/user/follows/list/${id}`,options
+      `https://api.mangadex.org/user/follows/list/${id}`,options
     );
   }
 
 
 export const getGetUserFollowsListIdQueryKey = (id: string,) => {
-    return [`/user/follows/list/${id}`] as const;
+    return [`https://api.mangadex.org/user/follows/list/${id}`] as const;
     }
 
     
@@ -4548,7 +4548,7 @@ export const getMangaStatus = (
  ): Promise<AxiosResponse<GetMangaStatus200>> => {
     
     return axios.get(
-      `/manga/status`,{
+      `https://api.mangadex.org/manga/status`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4556,7 +4556,7 @@ export const getMangaStatus = (
 
 
 export const getGetMangaStatusQueryKey = (params?: GetMangaStatusParams,) => {
-    return [`/manga/status`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/status`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4609,13 +4609,13 @@ export const getMangaIdStatus = (
  ): Promise<AxiosResponse<GetMangaIdStatus200>> => {
     
     return axios.get(
-      `/manga/${id}/status`,options
+      `https://api.mangadex.org/manga/${id}/status`,options
     );
   }
 
 
 export const getGetMangaIdStatusQueryKey = (id: string,) => {
-    return [`/manga/${id}/status`] as const;
+    return [`https://api.mangadex.org/manga/${id}/status`] as const;
     }
 
     
@@ -4669,7 +4669,7 @@ export const postMangaIdStatus = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/manga/${id}/status`,
+      `https://api.mangadex.org/manga/${id}/status`,
       updateMangaStatus,options
     );
   }
@@ -4725,7 +4725,7 @@ export const getMangaIdDraft = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.get(
-      `/manga/draft/${id}`,{
+      `https://api.mangadex.org/manga/draft/${id}`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4734,7 +4734,7 @@ export const getMangaIdDraft = (
 
 export const getGetMangaIdDraftQueryKey = (id: string,
     params?: GetMangaIdDraftParams,) => {
-    return [`/manga/draft/${id}`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/draft/${id}`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4790,7 +4790,7 @@ export const commitMangaDraft = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.post(
-      `/manga/draft/${id}/commit`,
+      `https://api.mangadex.org/manga/draft/${id}/commit`,
       commitMangaDraftBody,options
     );
   }
@@ -4845,7 +4845,7 @@ export const getMangaDrafts = (
  ): Promise<AxiosResponse<MangaResponse>> => {
     
     return axios.get(
-      `/manga/draft`,{
+      `https://api.mangadex.org/manga/draft`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -4853,7 +4853,7 @@ export const getMangaDrafts = (
 
 
 export const getGetMangaDraftsQueryKey = (params?: GetMangaDraftsParams,) => {
-    return [`/manga/draft`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/draft`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -4909,7 +4909,7 @@ export const postCaptchaSolve = (
  ): Promise<AxiosResponse<PostCaptchaSolve200>> => {
     
     return axios.post(
-      `/captcha/solve`,
+      `https://api.mangadex.org/captcha/solve`,
       postCaptchaSolveBody,options
     );
   }
@@ -4964,13 +4964,13 @@ export const getReportReasonsByCategory = (
  ): Promise<AxiosResponse<GetReportReasonsByCategory200>> => {
     
     return axios.get(
-      `/report/reasons/${category}`,options
+      `https://api.mangadex.org/report/reasons/${category}`,options
     );
   }
 
 
 export const getGetReportReasonsByCategoryQueryKey = (category: 'manga' | 'chapter' | 'scanlation_group' | 'user' | 'author',) => {
-    return [`/report/reasons/${category}`] as const;
+    return [`https://api.mangadex.org/report/reasons/${category}`] as const;
     }
 
     
@@ -5023,7 +5023,7 @@ export const getReports = (
  ): Promise<AxiosResponse<ReportListResponse>> => {
     
     return axios.get(
-      `/report`,{
+      `https://api.mangadex.org/report`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5031,7 +5031,7 @@ export const getReports = (
 
 
 export const getGetReportsQueryKey = (params?: GetReportsParams,) => {
-    return [`/report`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/report`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5084,7 +5084,7 @@ export const postReport = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/report`,
+      `https://api.mangadex.org/report`,
       postReportBody,options
     );
   }
@@ -5139,13 +5139,13 @@ export const getUploadSession = (
  ): Promise<AxiosResponse<UploadSession>> => {
     
     return axios.get(
-      `/upload`,options
+      `https://api.mangadex.org/upload`,options
     );
   }
 
 
 export const getGetUploadSessionQueryKey = () => {
-    return [`/upload`] as const;
+    return [`https://api.mangadex.org/upload`] as const;
     }
 
     
@@ -5198,7 +5198,7 @@ export const beginUploadSession = (
  ): Promise<AxiosResponse<UploadSession>> => {
     
     return axios.post(
-      `/upload/begin`,
+      `https://api.mangadex.org/upload/begin`,
       beginUploadSession,options
     );
   }
@@ -5254,7 +5254,7 @@ export const beginEditSession = (
  ): Promise<AxiosResponse<UploadSession>> => {
     
     return axios.post(
-      `/upload/begin/${chapterId}`,
+      `https://api.mangadex.org/upload/begin/${chapterId}`,
       beginEditSession,options
     );
   }
@@ -5314,7 +5314,7 @@ if(putUploadSessionFileBody.file !== undefined) {
 
     
     return axios.post(
-      `/upload/${uploadSessionId}`,
+      `https://api.mangadex.org/upload/${uploadSessionId}`,
       formData,options
     );
   }
@@ -5369,7 +5369,7 @@ export const abandonUploadSession = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/upload/${uploadSessionId}`,options
+      `https://api.mangadex.org/upload/${uploadSessionId}`,options
     );
   }
 
@@ -5424,7 +5424,7 @@ export const commitUploadSession = (
  ): Promise<AxiosResponse<Chapter>> => {
     
     return axios.post(
-      `/upload/${uploadSessionId}/commit`,
+      `https://api.mangadex.org/upload/${uploadSessionId}/commit`,
       commitUploadSession,options
     );
   }
@@ -5480,7 +5480,7 @@ export const deleteUploadedSessionFile = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/upload/${uploadSessionId}/${uploadSessionFileId}`,options
+      `https://api.mangadex.org/upload/${uploadSessionId}/${uploadSessionFileId}`,options
     );
   }
 
@@ -5535,7 +5535,7 @@ export const deleteUploadedSessionFiles = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/upload/${uploadSessionId}/batch`,{data:
+      `https://api.mangadex.org/upload/${uploadSessionId}/batch`,{data:
       deleteUploadedSessionFilesBody, ...options}
     );
   }
@@ -5590,7 +5590,7 @@ export const uploadCheckApprovalRequired = (
  ): Promise<AxiosResponse<UploadCheckApprovalRequired200>> => {
     
     return axios.post(
-      `/upload/check-approval-required`,
+      `https://api.mangadex.org/upload/check-approval-required`,
       uploadCheckApprovalRequiredBody,options
     );
   }
@@ -5646,7 +5646,7 @@ export const getMangaRelation = (
  ): Promise<AxiosResponse<MangaRelationList>> => {
     
     return axios.get(
-      `/manga/${mangaId}/relation`,{
+      `https://api.mangadex.org/manga/${mangaId}/relation`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5655,7 +5655,7 @@ export const getMangaRelation = (
 
 export const getGetMangaRelationQueryKey = (mangaId: string,
     params?: GetMangaRelationParams,) => {
-    return [`/manga/${mangaId}/relation`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/manga/${mangaId}/relation`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5712,7 +5712,7 @@ export const postMangaRelation = (
  ): Promise<AxiosResponse<MangaRelationResponse>> => {
     
     return axios.post(
-      `/manga/${mangaId}/relation`,
+      `https://api.mangadex.org/manga/${mangaId}/relation`,
       mangaRelationCreate,options
     );
   }
@@ -5768,7 +5768,7 @@ export const deleteMangaRelationId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/manga/${mangaId}/relation/${id}`,options
+      `https://api.mangadex.org/manga/${mangaId}/relation/${id}`,options
     );
   }
 
@@ -5822,7 +5822,7 @@ export const getRating = (
  ): Promise<AxiosResponse<GetRating200>> => {
     
     return axios.get(
-      `/rating`,{
+      `https://api.mangadex.org/rating`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -5830,7 +5830,7 @@ export const getRating = (
 
 
 export const getGetRatingQueryKey = (params: GetRatingParams,) => {
-    return [`/rating`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/rating`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -5884,7 +5884,7 @@ export const postRatingMangaId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.post(
-      `/rating/${mangaId}`,
+      `https://api.mangadex.org/rating/${mangaId}`,
       postRatingMangaIdBody,options
     );
   }
@@ -5939,7 +5939,7 @@ export const deleteRatingMangaId = (
  ): Promise<AxiosResponse<Response>> => {
     
     return axios.delete(
-      `/rating/${mangaId}`,options
+      `https://api.mangadex.org/rating/${mangaId}`,options
     );
   }
 
@@ -5993,13 +5993,13 @@ export const getStatisticsChapterUuid = (
  ): Promise<AxiosResponse<GetStatisticsChapterUuid200>> => {
     
     return axios.get(
-      `/statistics/chapter/${uuid}`,options
+      `https://api.mangadex.org/statistics/chapter/${uuid}`,options
     );
   }
 
 
 export const getGetStatisticsChapterUuidQueryKey = (uuid: string,) => {
-    return [`/statistics/chapter/${uuid}`] as const;
+    return [`https://api.mangadex.org/statistics/chapter/${uuid}`] as const;
     }
 
     
@@ -6052,7 +6052,7 @@ export const getStatisticsChapters = (
  ): Promise<AxiosResponse<GetStatisticsChapters200>> => {
     
     return axios.get(
-      `/statistics/chapter`,{
+      `https://api.mangadex.org/statistics/chapter`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6060,7 +6060,7 @@ export const getStatisticsChapters = (
 
 
 export const getGetStatisticsChaptersQueryKey = (params: GetStatisticsChaptersParams,) => {
-    return [`/statistics/chapter`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/statistics/chapter`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6113,13 +6113,13 @@ export const getStatisticsGroupUuid = (
  ): Promise<AxiosResponse<GetStatisticsGroupUuid200>> => {
     
     return axios.get(
-      `/statistics/group/${uuid}`,options
+      `https://api.mangadex.org/statistics/group/${uuid}`,options
     );
   }
 
 
 export const getGetStatisticsGroupUuidQueryKey = (uuid: string,) => {
-    return [`/statistics/group/${uuid}`] as const;
+    return [`https://api.mangadex.org/statistics/group/${uuid}`] as const;
     }
 
     
@@ -6172,7 +6172,7 @@ export const getStatisticsGroups = (
  ): Promise<AxiosResponse<GetStatisticsGroups200>> => {
     
     return axios.get(
-      `/statistics/group`,{
+      `https://api.mangadex.org/statistics/group`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6180,7 +6180,7 @@ export const getStatisticsGroups = (
 
 
 export const getGetStatisticsGroupsQueryKey = (params: GetStatisticsGroupsParams,) => {
-    return [`/statistics/group`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/statistics/group`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6233,13 +6233,13 @@ export const getStatisticsMangaUuid = (
  ): Promise<AxiosResponse<GetStatisticsMangaUuid200>> => {
     
     return axios.get(
-      `/statistics/manga/${uuid}`,options
+      `https://api.mangadex.org/statistics/manga/${uuid}`,options
     );
   }
 
 
 export const getGetStatisticsMangaUuidQueryKey = (uuid: string,) => {
-    return [`/statistics/manga/${uuid}`] as const;
+    return [`https://api.mangadex.org/statistics/manga/${uuid}`] as const;
     }
 
     
@@ -6292,7 +6292,7 @@ export const getStatisticsManga = (
  ): Promise<AxiosResponse<GetStatisticsManga200>> => {
     
     return axios.get(
-      `/statistics/manga`,{
+      `https://api.mangadex.org/statistics/manga`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -6300,7 +6300,7 @@ export const getStatisticsManga = (
 
 
 export const getGetStatisticsMangaQueryKey = (params: GetStatisticsMangaParams,) => {
-    return [`/statistics/manga`, ...(params ? [params]: [])] as const;
+    return [`https://api.mangadex.org/statistics/manga`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -6353,13 +6353,13 @@ export const getSettingsTemplate = (
  ): Promise<AxiosResponse<GetSettingsTemplate200>> => {
     
     return axios.get(
-      `/settings/template`,options
+      `https://api.mangadex.org/settings/template`,options
     );
   }
 
 
 export const getGetSettingsTemplateQueryKey = () => {
-    return [`/settings/template`] as const;
+    return [`https://api.mangadex.org/settings/template`] as const;
     }
 
     
@@ -6412,7 +6412,7 @@ export const postSettingsTemplate = (
  ): Promise<AxiosResponse<PostSettingsTemplate200>> => {
     
     return axios.post(
-      `/settings/template`,
+      `https://api.mangadex.org/settings/template`,
       postSettingsTemplateBody,options
     );
   }
@@ -6467,13 +6467,13 @@ export const getSettingsTemplateVersion = (
  ): Promise<AxiosResponse<GetSettingsTemplateVersion200>> => {
     
     return axios.get(
-      `/settings/template/${version}`,options
+      `https://api.mangadex.org/settings/template/${version}`,options
     );
   }
 
 
 export const getGetSettingsTemplateVersionQueryKey = (version: string,) => {
-    return [`/settings/template/${version}`] as const;
+    return [`https://api.mangadex.org/settings/template/${version}`] as const;
     }
 
     
@@ -6526,13 +6526,13 @@ export const getSettings = (
  ): Promise<AxiosResponse<GetSettings200>> => {
     
     return axios.get(
-      `/settings`,options
+      `https://api.mangadex.org/settings`,options
     );
   }
 
 
 export const getGetSettingsQueryKey = () => {
-    return [`/settings`] as const;
+    return [`https://api.mangadex.org/settings`] as const;
     }
 
     
@@ -6585,7 +6585,7 @@ export const postSettings = (
  ): Promise<AxiosResponse<PostSettings200>> => {
     
     return axios.post(
-      `/settings`,
+      `https://api.mangadex.org/settings`,
       postSettingsBody,options
     );
   }
@@ -6640,13 +6640,13 @@ export const getReadingHistory = (
  ): Promise<AxiosResponse<GetReadingHistory200>> => {
     
     return axios.get(
-      `/user/history`,options
+      `https://api.mangadex.org/user/history`,options
     );
   }
 
 
 export const getGetReadingHistoryQueryKey = () => {
-    return [`/user/history`] as const;
+    return [`https://api.mangadex.org/user/history`] as const;
     }
 
     
@@ -6702,7 +6702,7 @@ export const forumsThreadCreate = (
  ): Promise<AxiosResponse<ForumsThreadResponse>> => {
     
     return axios.post(
-      `/forums/thread`,
+      `https://api.mangadex.org/forums/thread`,
       forumsThreadCreateBody,options
     );
   }

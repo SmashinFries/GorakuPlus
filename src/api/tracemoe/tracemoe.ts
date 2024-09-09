@@ -44,7 +44,7 @@ export const getSearch = (
  ): Promise<AxiosResponse<SearchResult>> => {
     
     return axios.get(
-      `/search`,{
+      `https://api.trace.moe/search`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -52,7 +52,7 @@ export const getSearch = (
 
 
 export const getGetSearchQueryKey = (params: GetSearchParams,) => {
-    return [`/search`, ...(params ? [params]: [])] as const;
+    return [`https://api.trace.moe/search`, ...(params ? [params]: [])] as const;
     }
 
     
@@ -110,7 +110,7 @@ if(searchBody.image !== undefined) {
 
     
     return axios.post(
-      `/search`,
+      `https://api.trace.moe/search`,
       formData,{
     ...options,
         params: {...params, ...options?.params},}
@@ -167,13 +167,13 @@ export const getMe = (
  ): Promise<AxiosResponse<User>> => {
     
     return axios.get(
-      `/me`,options
+      `https://api.trace.moe/me`,options
     );
   }
 
 
 export const getGetMeQueryKey = () => {
-    return [`/me`] as const;
+    return [`https://api.trace.moe/me`] as const;
     }
 
     

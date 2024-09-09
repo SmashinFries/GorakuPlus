@@ -87,7 +87,7 @@ query UserAnimeListCollection($userId: Int, $userName: String, $sort: [MediaList
 		lists {
 			name
 			isCustomList
-			isCompletedList: isSplitCompletedList
+			isSplitCompletedList
 			entries {
 				...mediaListEntry
 			}
@@ -110,7 +110,7 @@ query UserMangaListCollection($userId: Int, $userName: String, $sort: [MediaList
 		lists {
 			name
 			isCustomList
-			isCompletedList: isSplitCompletedList
+			isSplitCompletedList
 			entries {
 				...mediaListEntry
 			}

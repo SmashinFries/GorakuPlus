@@ -5,12 +5,11 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useMemo } from 'react';
 
-export const useCharactersList = (id: number, type: MediaType) => {
+export const useCharactersList = (id: number) => {
 	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } =
 		useInfiniteCharacterListQuery(
 			{
 				id: id,
-				type: type,
 				page: 1,
 				perPage: 25,
 				sort: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],

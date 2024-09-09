@@ -5,6 +5,7 @@ import {
 import { BanTagHeader } from '@/components/headers';
 import { ListSubheader } from '@/components/titles';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
 import { Stack, router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
@@ -19,8 +20,7 @@ type TagChipProps = {
 };
 
 const TagBlackListPage = () => {
-	const { colors } = useTheme();
-	const { width } = useWindowDimensions();
+	const { colors } = useAppTheme();
 	const { tagBlacklist, showNSFW, setSettings } = useSettingsStore();
 
 	const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);

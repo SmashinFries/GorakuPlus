@@ -18,6 +18,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	jsEngine: 'hermes',
 	experiments: {
 		tsconfigPaths: true,
+		typedRoutes: true,
 	},
 	updates: {
 		url: 'https://u.expo.dev/3a04cf40-e4fd-4885-ae1c-17d23d6df96b',
@@ -27,11 +28,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	splash: {
 		image: './assets/iconsv3/splash.png',
 		resizeMode: 'cover',
-		backgroundColor: '#141414',
+		backgroundColor: '#1E1E1F',
 	},
 	plugins: [
-		'@react-native-firebase/app',
-		'@react-native-firebase/crashlytics',
 		'expo-localization',
 		'expo-router',
 		'expo-font',
@@ -62,20 +61,27 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				isAccessMediaLocationEnabled: true,
 			},
 		],
+		[
+			'@sentry/react-native/expo',
+			{
+				organization: 'kuzulabz',
+				project: 'goraku',
+				// If you are using a self-hosted instance, update the value of the url property
+				// to point towards your self-hosted instance. For example, https://self-hosted.example.com/.
+				// url: 'https://sentry.io/',
+			},
+		],
 	],
 	assetBundlePatterns: ['**/*'],
 	ios: {
-		googleServicesFile: IS_DEV
-			? './GoogleService-Info-dev.plist'
-			: './GoogleService-Info.plist',
 		supportsTablet: false,
 		bundleIdentifier: IS_DEV ? 'com.kuzulabz.gorakuplus.dev' : 'com.kuzulabz.gorakuplus',
 		jsEngine: 'jsc',
 	},
 	android: {
 		package: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
-		googleServicesFile: IS_DEV ? './google-services-dev.json' : './google-services.json',
 		adaptiveIcon: {
+			backgroundColor: '#1E1E1F',
 			foregroundImage: './assets/iconsv3/adaptive-icon.png',
 		},
 		softwareKeyboardLayoutMode: 'pan',
@@ -107,6 +113,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 						scheme: 'https',
 						host: 'anilist.co',
 						pathPattern: '/studio/.*',
+					},
+					{
+						scheme: 'https',
+						host: 'anilist.co',
+						pathPattern: '/user/.*',
 					},
 				],
 				category: ['BROWSABLE', 'DEFAULT'],

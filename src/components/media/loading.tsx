@@ -1,8 +1,6 @@
 import { ActivityIndicator, Button, IconButton, Text, useTheme } from 'react-native-paper';
 import { AnilistIcon, AnimeThemesIcon, MalIcon, MangaUpdatesIcon } from '../svgs';
 import { memo, useEffect, useState } from 'react';
-import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
-import { SerializedError } from '@reduxjs/toolkit';
 import Animated, {
 	Easing,
 	FadeIn,
@@ -12,7 +10,9 @@ import Animated, {
 	withRepeat,
 	withTiming,
 } from 'react-native-reanimated';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { useAppTheme } from '@/store/theme/themes';
+import { useIsFetching } from '@tanstack/react-query';
+import { useMatchStore } from '@/store/matchStore';
 
 export const LoadingIcon = ({
 	icon,
@@ -71,12 +71,12 @@ const LoadingIconMem = memo(LoadingIcon);
 type LoadingItemProps = {
 	loading: boolean;
 	dark?: boolean;
-	error?: FetchBaseQueryError | SerializedError;
+	error?: any;
 	icon: 'ANI' | 'MAL' | 'MU' | 'AT';
 };
 export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) => {
 	const [loadIcon, setLoadIcon] = useState('check');
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	useEffect(() => {
 		if (loading === null) {
 			setLoadIcon('cancel');
@@ -103,12 +103,12 @@ const LoadingItemMem = memo(LoadingItem);
 
 type LoadingProps = {
 	aniLoading: boolean;
-	aniError?: ErrorResponse | SerializedError;
+	aniError?: any;
 	malLoading?: boolean;
-	malError?: ErrorResponse | SerializedError;
+	malError?: any;
 	malUnitialized?: boolean;
 	mangaUpdatesLoading?: boolean;
-	mangaUpdatesError?: ErrorResponse | SerializedError;
+	mangaUpdatesError?: any;
 };
 
 export const MediaLoading = ({
@@ -119,7 +119,11 @@ export const MediaLoading = ({
 	malError,
 	mangaUpdatesError,
 }: LoadingProps) => {
-	const { dark } = useTheme();
+	const { dark } = useAppTheme();
+	const { isMalEnabled, isMangaUpdatesEnabled } = useMatchStore((state) => ({
+		isMalEnabled: state.isMalEnabled,
+		isMangaUpdatesEnabled: state.isMangaDexEnabled,
+	}));
 
 	return (
 		<Animated.View
@@ -136,8 +140,10 @@ export const MediaLoading = ({
 			exiting={FadeOut.duration(500).easing(Easing.ease)}
 		>
 			<LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
-			<LoadingItemMem loading={malLoading} dark={dark} error={malError} icon="MAL" />
-			{mangaUpdatesLoading !== null && (
+			{isMalEnabled && (
+				<LoadingItemMem loading={malLoading} dark={dark} error={malError} icon="MAL" />
+			)}
+			{isMangaUpdatesEnabled && mangaUpdatesLoading !== null && (
 				<LoadingItemMem
 					loading={mangaUpdatesLoading}
 					dark={dark}

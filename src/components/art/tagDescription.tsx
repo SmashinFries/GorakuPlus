@@ -1,7 +1,6 @@
 import { Dialog, Button, Text, useTheme, ActivityIndicator } from 'react-native-paper';
 import { ScrollView, View, useWindowDimensions } from 'react-native';
-import { useGetTagWikiQuery } from '@/store/services/danbooru/danbooruApi';
-import RenderHTML from 'react-native-render-html';
+import { useTagWikiQuery } from '@/api/danbooru/danbooru';
 
 type DanTagDescDialogProps = {
 	tag: string;
@@ -9,7 +8,7 @@ type DanTagDescDialogProps = {
 };
 export const DanTagDescDialog = ({ tag, onDimiss }: DanTagDescDialogProps) => {
 	const { width } = useWindowDimensions();
-	const { data, isLoading, isFetching } = useGetTagWikiQuery(tag, { skip: !tag });
+	const { data, isLoading, isFetching } = useTagWikiQuery(tag);
 
 	const processBody = (body: string) => {
 		const newBody = body

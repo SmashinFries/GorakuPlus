@@ -1,19 +1,15 @@
-import { SerializedError } from '@reduxjs/toolkit';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import { MotiView } from 'moti';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, IconButton, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import { LoadingItem } from '../media/loading';
-import { ErrorResponse } from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes';
+import { useAppTheme } from '@/store/theme/themes';
 
 type LoadingProps = {
 	isLoading: boolean;
-	error?: FetchBaseQueryError | SerializedError;
+	error?: any;
 };
 
 export const MusicLoading = ({ isLoading, error }: LoadingProps) => {
-	const { dark } = useTheme();
+	const { dark } = useAppTheme();
 	return (
 		<Animated.View
 			style={[

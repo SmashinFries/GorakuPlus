@@ -1,0 +1,83 @@
+fragment siteTrend on SiteTrendConnection {
+	nodes {
+		date
+		count
+		change
+	}
+}
+
+query SiteStats {
+	SiteStatistics {
+		users(sort: DATE_DESC) {
+			...siteTrend
+		}
+		anime(sort: DATE_DESC) {
+			...siteTrend
+		}
+		manga(sort: DATE_DESC) {
+			...siteTrend
+		}
+		characters(sort: DATE_DESC) {
+			...siteTrend
+		}
+		staff(sort: DATE_DESC) {
+			...siteTrend
+		}
+		reviews(sort: DATE_DESC) {
+			...siteTrend
+		}
+	}
+}
+
+query MediaTrends($id: Int) {
+	Media(id: $id) {
+		id
+		title {
+			romaji
+			english
+			native
+			userPreferred
+		}
+		coverImage {
+			extraLarge
+			color
+		}
+		type
+		format
+		rankings {
+			id
+			rank
+			type
+			format
+			year
+			season
+			allTime
+			context
+		}
+		trends(sort: ID_DESC) {
+			nodes {
+				averageScore
+				date
+				trending
+				popularity
+			}
+		}
+		airingTrends: trends(releasing: true, sort: EPISODE_DESC) {
+			nodes {
+				averageScore
+				inProgress
+				episode
+			}
+		}
+		distribution: stats {
+			status: statusDistribution {
+				status
+				amount
+			}
+			score: scoreDistribution {
+				score
+				amount
+			}
+		}
+	}
+}

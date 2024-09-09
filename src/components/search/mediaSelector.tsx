@@ -4,6 +4,7 @@ import { MD3Colors, SegmentedButtons, useTheme } from 'react-native-paper';
 import { SearchTypes } from '@/constants/anilist';
 import { useSearchStore } from '@/store/search/searchStore';
 import { MediaType } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type SegButtons = {
 	value: SearchTypes;
@@ -11,7 +12,7 @@ type SegButtons = {
 };
 
 export const MediaSelector = () => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
 	const { searchType, updateSearchType } = useSearchStore();
 	const buttons: SegButtons[] = useMemo(

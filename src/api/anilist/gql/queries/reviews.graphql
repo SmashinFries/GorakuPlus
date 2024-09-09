@@ -4,6 +4,7 @@ query Reviews($mediaId: Int, $page: Int, $perPage: Int) {
 			lastPage
 			total
 			hasNextPage
+			currentPage
 		}
 		reviews(mediaId: $mediaId, sort: [RATING_DESC, ID]) {
 			id
@@ -33,6 +34,13 @@ query ReviewsById($reviewId: Int) {
 		body(asHtml: false)
 		htmlBody: body(asHtml: true)
 		mediaType
+		media {
+			coverImage {
+				extraLarge
+				color
+			}
+			bannerImage
+		}
 		rating
 		ratingAmount
 		score

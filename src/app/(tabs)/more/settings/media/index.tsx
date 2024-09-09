@@ -15,11 +15,10 @@ import { ExploreTabsProps } from '@/types/navigation';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { List, Portal, Text, useTheme } from 'react-native-paper';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { useSearchStore } from '@/store/search/searchStore';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
@@ -27,6 +26,9 @@ import { MediaType, useUpdateViewerMutation } from '@/api/anilist/__genereated__
 import { ScoreVisualType } from '@/store/settings/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { DanbooruRating } from '@/api/danbooru/types';
+import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useMatchStore } from '@/store/matchStore';
 
 const MediaSettingsPage = () => {
 	const {
@@ -43,10 +45,27 @@ const MediaSettingsPage = () => {
 		mediaLanguage,
 		showItemListStatus,
 		setSettings,
-	} = useSettingsStore();
-	const { updateSearchLimit, history } = useSearchStore();
-	const { mode, isDark } = useThemeStore();
-	const { userID } = useAuthStore().anilist;
+	} = useSettingsStore((state) => ({
+		defaultDescription: state.defaultDescription,
+		showNSFW: state.showNSFW,
+		blurNSFW: state.blurNSFW,
+		blurNSFWLevel: state.blurNSFWLevel,
+		tagBlacklist: state.tagBlacklist,
+		exploreTabs: state.exploreTabs,
+		exploreTabOrder: state.exploreTabOrder,
+		scoreColors: state.scoreColors,
+		defaultScore: state.defaultScore,
+		scoreVisualType: state.scoreVisualType,
+		mediaLanguage: state.mediaLanguage,
+		showItemListStatus: state.showItemListStatus,
+		setSettings: state.setSettings,
+	}));
+	const { searchTermLimit, updateSearchLimit } = useSearchHistoryStore((state) => ({
+		searchTermLimit: state.searchTermLimit,
+		updateSearchLimit: state.updateSearchLimit,
+	}));
+	const mode = useThemeStore((state) => state.mode);
+	const userID = useAuthStore((state) => state.anilist.userID);
 	const queryClient = useQueryClient();
 
 	const { colors } = useAppTheme();
@@ -80,7 +99,7 @@ const MediaSettingsPage = () => {
 	);
 
 	return (
-		<>
+		<View>
 			<ScrollView>
 				<ListSubheader title="Tab Order" />
 				<List.Item
@@ -114,9 +133,7 @@ const MediaSettingsPage = () => {
 					title="Search History Limit"
 					onPress={() => setShowSearchHistoryLimit(true)}
 					right={(props) => (
-						<Text style={[props.style, { color: props.color }]}>
-							{history.searchTermLimit}
-						</Text>
+						<Text style={[props.style, { color: props.color }]}>{searchTermLimit}</Text>
 					)}
 				/>
 				<ListSubheader title="NSFW" />
@@ -224,8 +241,6 @@ const MediaSettingsPage = () => {
 				<ScoreColorDialog
 					visible={showScoreColorDialog}
 					onDismiss={() => setShowScoreColorDialog(false)}
-					red={scoreColors.red}
-					yellow={scoreColors.yellow}
 					updateScoreColor={(red: number, yellow: number) =>
 						setSettings({ scoreColors: { red, yellow } })
 					}
@@ -245,7 +260,7 @@ const MediaSettingsPage = () => {
 					onDismiss={() => setShowMTCustomizer(false)}
 				/>
 				<FetchIntervalDialog
-					initialInterval={history.searchTermLimit}
+					initialInterval={searchTermLimit}
 					onDismiss={() => setShowSearchHistoryLimit(false)}
 					title="Search History Limit"
 					visible={showSearchHistoryLimit}
@@ -253,7 +268,7 @@ const MediaSettingsPage = () => {
 					options={['5', '10', '15', '20', '25', '30']}
 				/>
 			</Portal>
-		</>
+		</View>
 	);
 };
 

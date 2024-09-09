@@ -1,19 +1,16 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { FlashList } from '@shopify/flash-list';
-import { MotiView } from 'moti';
-// import { Skeleton } from 'moti/skeleton';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
-
-// const Spacer = ({ width }) => <MotiView style={{ width:width ?? 16 }} />;
 
 export const MediaListsPHs = () => {
 	const placeHolders = new Array(12).fill('');
 
-	const { colors, dark } = useTheme();
+	const { colors, dark } = useAppTheme();
 	return (
-		<MotiView style={{ flexDirection: 'row' }}>
+		<View style={{ flexDirection: 'row' }}>
 			{placeHolders.map((item, index) => (
-				<MotiView key={index}>
+				<View key={index}>
 					{/* <Spacer /> */}
 					{/* <Skeleton
                         show={true}
@@ -23,15 +20,15 @@ export const MediaListsPHs = () => {
                         colorMode={dark ? 'dark' : 'light'}
                     /> */}
 					{/* <Spacer /> */}
-				</MotiView>
+				</View>
 			))}
-		</MotiView>
+		</View>
 	);
 };
 
 export const MediaListsPH = () => {
 	const placeHolders = new Array(12).fill('');
-	const { colors, dark } = useTheme();
+	const { colors, dark } = useAppTheme();
 	return (
 		// <FlashList
 		//     data={placeHolders}
@@ -52,7 +49,7 @@ export const MediaListsPH = () => {
 		//     showsHorizontalScrollIndicator={false}
 		//     style={{ minHeight: 450 }}
 		// />
-		<MotiView
+		<View
 			style={{
 				height: Platform.OS === 'web' ? 400 : 230,
 				width: Platform.OS === 'web' ? 300 : 150,

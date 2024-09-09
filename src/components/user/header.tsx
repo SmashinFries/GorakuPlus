@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { View } from 'react-native';
 import { Avatar, Text } from 'react-native-paper';
 
@@ -7,12 +8,10 @@ type UserHeaderProps = {
 };
 export const UserHeader = ({ avatar, name }: UserHeaderProps) => {
 	return (
-		<View style={{ flexDirection: 'row', marginTop: 140 / 2, alignItems: 'center' }}>
-			<View style={{ marginLeft: 20 }}>
-				<Avatar.Image source={avatar ? { uri: avatar } : undefined} size={100} />
-			</View>
-			<Text variant="titleLarge" style={{ paddingLeft: 20 }}>
-				{name ?? ''}
+		<View style={{ alignItems: 'center' }}>
+			<Image source={{ uri: avatar }} style={{ height: 120, width: 120, borderRadius: 6 }} />
+			<Text variant="headlineMedium" style={{ textAlign: 'center', paddingVertical: 8 }}>
+				{name}
 			</Text>
 		</View>
 	);

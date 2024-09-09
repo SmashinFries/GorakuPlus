@@ -1,8 +1,8 @@
+import { MediaType } from '@/api/anilist/__genereated__/gql';
+import { GetAnimeNewsQueryResult, GetMangaNewsQueryResult } from '@/api/jikan/jikan';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { NewsItem } from '@/components/news/newsItem';
+import { NewsHItem, NewsVItem } from '@/components/news/newsItem';
 import { useNews } from '@/hooks/news/useNews';
-import { MediaType } from '@/store/services/anilist/generated-anilist';
-import { GetAnimeNewsApiResponse, GetMangaNewsApiResponse } from '@/store/services/mal/malApi';
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
@@ -10,7 +10,7 @@ import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 
 type RenderItemProps = {
-	item: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0];
+	item: GetAnimeNewsQueryResult['data']['data'][0] | GetMangaNewsQueryResult['data']['data'][0];
 	index: number;
 };
 
@@ -18,18 +18,14 @@ const NewsPage = () => {
 	const { newsParams } = useLocalSearchParams<{ newsParams: [string, string] }>();
 	const type = newsParams[0] as MediaType;
 	const malId = parseInt(newsParams[1]);
-	const { news } = useNews(type, malId);
+	const { data, isFetching, isFetched } = useNews(type, malId);
 	const { width, height } = useWindowDimensions();
 
 	const RenderItem = useCallback(({ item }: RenderItemProps) => {
-		return <NewsItem news={item} />;
+		return <NewsVItem news={item} />;
 	}, []);
 
-	const keyExtractor = useCallback(
-		(item: GetAnimeNewsApiResponse['data'][0] | GetMangaNewsApiResponse['data'][0], index) =>
-			item.mal_id.toString(),
-		[],
-	);
+	const keyExtractor = useCallback((item: RenderItemProps['item']) => item.mal_id.toString(), []);
 
 	const EmptyList = useCallback(() => {
 		return (
@@ -45,7 +41,7 @@ const NewsPage = () => {
 		);
 	}, []);
 
-	if (news.isLoading) {
+	if (isFetching) {
 		return (
 			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 				<GorakuActivityIndicator />
@@ -53,14 +49,14 @@ const NewsPage = () => {
 		);
 	}
 
-	if (!news.isUninitialized && !news.isLoading && !news.data?.data) {
+	if (isFetched && !data.data?.data) {
 		return <EmptyList />;
 	}
 
 	return (
 		<View style={{ width: width, height: '100%' }}>
 			<FlashList
-				data={news?.data?.data ?? []}
+				data={data?.data?.data ?? []}
 				keyExtractor={keyExtractor}
 				renderItem={RenderItem}
 				centerContent

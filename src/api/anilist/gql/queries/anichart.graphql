@@ -10,52 +10,7 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
 			airingAt
 			timeUntilAiring
 			media {
-				id
-				idMal
-				title {
-					romaji
-					native
-					english
-				}
-				startDate {
-					year
-					month
-					day
-				}
-				endDate {
-					year
-					month
-					day
-				}
-				status
-				season
-				format
-				episodes
-				source(version: 2)
-				averageScore
-				meanScore
-				bannerImage
-				isAdult
-				isFavourite
-				coverImage {
-					extraLarge
-					color
-				}
-				mediaListEntry {
-					id
-					mediaId
-					status
-					score
-					progress
-					progressVolumes
-					repeat
-				}
-				stats {
-					scoreDistribution {
-						score
-						amount
-					}
-				}
+				...AnimeMeta
 			}
 		}
 	}

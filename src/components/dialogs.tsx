@@ -12,12 +12,13 @@ import { NumberPicker, NumberPickerProps } from './picker';
 import { useCameraPermissions, CameraView } from 'expo-camera';
 import { scoreToIndex } from '@/utils/scores';
 import { MediaType, SearchMangaQuery } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type BarcodeScanDialogProps = BasicDialogProps & {
 	onNav: (aniId: number, malId: number, type: MediaType) => void;
 };
 export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDialogProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [permission, requestPermission] = useCameraPermissions();
 	const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
 		useBarcode();

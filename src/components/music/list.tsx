@@ -1,9 +1,9 @@
 import { FlashList } from '@shopify/flash-list';
-import { Animetheme, MainMusic } from '@/store/services/animethemes/types';
 import { View, useWindowDimensions } from 'react-native';
 import { MusicItem } from './video';
 import { useRef, useState } from 'react';
 import { ScrollToTopButton } from '../buttons';
+import { Animetheme, MainMusic } from '@/api/animethemes/types';
 
 type MusicVideoListProps = {
 	music: MainMusic;

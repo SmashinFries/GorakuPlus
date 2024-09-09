@@ -1,9 +1,7 @@
 import { AppState, StyleSheet, useWindowDimensions } from 'react-native';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { AnimeVideos } from '@/store/services/mal/malApi';
 import YoutubePlayer, { YoutubeIframeRef } from 'react-native-youtube-iframe';
-import { Animetheme } from '@/store/services/animethemes/types';
 import {
 	AVPlaybackStatus,
 	ResizeMode,
@@ -26,7 +24,9 @@ import { Accordion } from '../animations';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { AnimeThemesIcon } from '../svgs';
-import Slider from '@react-native-community/slider';
+import { Animetheme } from '@/api/animethemes/types';
+import { AnimeVideos } from '@/api/jikan/models';
+import { useAppTheme } from '@/store/theme/themes';
 
 type MusicVideoProps = {
 	theme: Animetheme;
@@ -136,7 +136,7 @@ const secToMinString = (seconds: number) =>
 		.padStart(2, '0')}:${(Math.round(seconds) % 60).toFixed(0).padStart(2, '0')}`;
 
 export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [sound, setSound] = useState<Audio.Sound>();
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -270,14 +270,14 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 					animatedValue={sound?._loaded ? progress / totalDuration : 0}
 					style={{ marginHorizontal: 20 }}
 				/> */}
-				<Slider
+				{/* <Slider
 					value={progress}
 					maximumValue={totalDuration}
 					onValueChange={(val) => sound.setPositionAsync(val)}
 					thumbTintColor={colors.primary}
 					maximumTrackTintColor={colors.onSurfaceVariant}
 					minimumTrackTintColor={colors.primaryContainer}
-				/>
+				/> */}
 				<View
 					style={{
 						flexDirection: 'row',
@@ -376,90 +376,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 				</View>
 			</Accordion>
 		</>
-	);
-};
-
-type MusicVideoYTProps = {
-	music_video: AnimeVideos['data']['music_videos'][0];
-};
-export const MusicVideoYT = ({ music_video }: MusicVideoYTProps) => {
-	const vidRef = useRef<YoutubeIframeRef>(null);
-	const [totalDuration, setTotalDuration] = useState<number>();
-	const [elapsed, setElapsed] = useState<number>(0);
-	const [play, setPlay] = useState<boolean>(false);
-
-	const { width } = useWindowDimensions();
-
-	// const seek = async (seconds: number) => {
-	//     if (totalDuration) {
-	//         vidRef.current?.seekTo(elapsed + seconds, true);
-	//     }
-	// };
-
-	// useEffect(() => {
-	//     if (music_video) {
-	//         const interval = setInterval(async () => {
-	//             const elapsed_sec = await vidRef.current?.getCurrentTime(); // this is a promise. dont forget to await
-
-	//             // calculations
-	//             // const elapsed_ms = Math.floor(elapsed_sec * 1000);
-	//             // const ms = elapsed_ms % 1000;
-	//             // const min = Math.floor(elapsed_ms / 60000);
-	//             // const seconds = Math.floor((elapsed_ms - min * 60000) / 1000);
-	//             setElapsed(elapsed_sec ?? 0);
-	//             // setElapsed(
-	//             //     min.toString().padStart(2, '0') +
-	//             //         ':' +
-	//             //         seconds.toString().padStart(2, '0') +
-	//             //         ':' +
-	//             //         ms.toString().padStart(3, '0'),
-	//             // );
-	//         }, 100); // 100 ms refresh. increase it if you don't require millisecond precision
-
-	//         return () => {
-	//             clearInterval(interval);
-	//         };
-	//     }
-	// }, []);
-
-	if (AppState.currentState !== 'active' || !music_video) {
-		return null;
-	}
-
-	return (
-		<View style={[styles.container]}>
-			<View style={{ height: styles.player.height, width: width }}>
-				<YoutubePlayer
-					ref={vidRef}
-					videoId={music_video?.video?.youtube_id}
-					height={styles.player.height}
-					width={width}
-					webViewStyle={{ opacity: 0.99 }}
-					// play={play}
-					// initialPlayerParams={{ controls: false, modestbranding: true }}
-					// onReady={() => {
-					//     vidRef.current?.getDuration().then((duration) => {
-					//         setTotalDuration(duration);
-					//     });
-					// }}
-					// onChangeState={(event) => {
-					//     if (event === 'ended' || event === 'paused') {
-					//         setPlay(false);
-					//     } else if (event === 'playing') {
-					//         setPlay(true);
-					//     }
-					// }}
-				/>
-			</View>
-			{/* {totalDuration && (
-                <ProgressBar animatedValue={totalDuration && elapsed / totalDuration} />
-            )}
-            <VideoControlsYT
-                isPlaying={play}
-                seek={seek}
-                togglePlay={() => setPlay((prev) => !prev)}
-            /> */}
-		</View>
 	);
 };
 

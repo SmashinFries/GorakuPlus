@@ -1,28 +1,27 @@
 import { View } from 'react-native';
-import { SegmentedButtons, SegmentedButtonsProps, Text, useTheme } from 'react-native-paper';
-import { AniMediaQuery, MediaTitle } from '@/store/services/anilist/generated-anilist';
+import { SegmentedButtons, SegmentedButtonsProps, Text } from 'react-native-paper';
 import { copyToClipboard } from '@/utils';
-import { TransYUpViewMem } from '@/components/animations';
+import { AnimViewMem } from '@/components/animations';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import useTTS from '@/hooks/useTTS';
-import { useAppSelector } from '@/store/hooks';
+import { AniMediaQuery } from '@/api/anilist/__genereated__/gql';
+import { useTTSStore } from '@/store/tts/ttsStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 type MediaTitleView = {
 	data: AniMediaQuery['Media'];
 	defaultTitle: 'romaji' | 'english' | 'native';
 };
 export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
-	const { enabled, english, japanese, korean, chinese } = useAppSelector(
-		(state) => state.ttsSettings,
-	);
+	const { enabled, english, japanese, korean, chinese } = useTTSStore();
 	const { speak } = useTTS();
 
 	const [title, setTitle] = useState<MediaTitleView['defaultTitle']>(
 		data?.title[defaultTitle] ? defaultTitle : 'romaji',
 	);
 
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const onSpeak = (langType: MediaTitleView['defaultTitle'], text: string) => {
 		if (!enabled) return;
@@ -57,7 +56,7 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
 	];
 
 	return (
-		<TransYUpViewMem
+		<AnimViewMem
 			style={{
 				width: '100%',
 				paddingTop: 15,
@@ -98,7 +97,7 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
 				value={title}
 				style={{ paddingVertical: 10 }}
 			/>
-		</TransYUpViewMem>
+		</AnimViewMem>
 	);
 };
 

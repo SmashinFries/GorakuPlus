@@ -1,17 +1,13 @@
-import notifee, { EventType } from '@notifee/react-native';
+import { useNotificationStore } from '@/store/notifications/notificationStore';
+import notifee from '@notifee/react-native';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as Linking from 'expo-linking';
-import { useEffect, useState } from 'react';
-import { setRegisteredState } from '../store/slices/notifSlice';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useState } from 'react';
 
 const useNotif = () => {
 	const [loading, setLoading] = useState(true);
 
-	const { enabled, isRegistered, fetchInterval } = useAppSelector(
-		(state) => state.persistedNotifs,
-	);
-	const dispatch = useAppDispatch();
+	const { enabled, isRegistered, fetchInterval } = useNotificationStore();
 
 	// Bootstrap sequence function
 	const bootstrap = async () => {

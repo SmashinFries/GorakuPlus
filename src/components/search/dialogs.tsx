@@ -6,7 +6,6 @@ import { BasicDialogProps } from '@/types';
 import { NumberPicker } from '../picker';
 import { FlashList } from '@shopify/flash-list';
 import { FilterTag } from './tags';
-import { useFilter } from '@/hooks/search/useFilter';
 import { ScrollToTopButton } from '../buttons';
 import { GenreTagCollectionQuery, MediaTag } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
@@ -14,7 +13,6 @@ import { useSearchStore } from '@/store/search/searchStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 
 // export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
-// 	const { tagPresets } = useAppSelector((state) => state.persistedPresets);
 // 	return (
 // 		<Dialog visible={visible} onDismiss={onDismiss}>
 // 			<Dialog.Title>Tag Presets</Dialog.Title>
@@ -50,8 +48,6 @@ export const ScoreDialog = ({
 	minValue = 0,
 	maxValue = 100,
 }: ScoreDialogProps) => {
-	const { colors } = useTheme();
-	const [value, setValue] = useState(0);
 	return (
 		<NativeViewGestureHandler disallowInterruption={true}>
 			<Dialog visible={visible} onDismiss={onDismiss}>
@@ -159,9 +155,8 @@ export const FilterTagDialog = ({
 	const [query, setQuery] = useState('');
 	const [showAdultTags, setShowAdultTags] = useState(false);
 
-	const { isTagBlacklistEnabled } = useSearchStore();
+	const { filter, isTagBlacklistEnabled, updateTags } = useSearchStore();
 	const { tagBlacklist, showNSFW } = useSettingsStore();
-	const { filter, updateTag } = useFilter();
 
 	const [scrollVertOffset, setScrollVertOffset] = useState(0);
 
@@ -189,7 +184,7 @@ export const FilterTagDialog = ({
 					name={item.name}
 					description={item.description}
 					state={getTagState(item.name)}
-					onToggle={() => updateTag(item.name)}
+					onToggle={() => updateTags(item.name)}
 					disabled={isTagBlacklistEnabled ? tagBlacklist?.includes(item.name) : false}
 					isAdult={item.isAdult}
 				/>

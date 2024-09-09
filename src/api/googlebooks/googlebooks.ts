@@ -13,3 +13,11 @@ export const useIsbnSearch = (isbn: string) =>
 			return data;
 		},
 	});
+
+useIsbnSearch.options = (isbn?: string) => ({
+	queryKey: ['IsbnSearch'],
+	queryFn: async () => {
+		const { data } = await GBookClient.get<BookResponse>(`/volumes?q=isbn:${isbn}`);
+		return data;
+	},
+});

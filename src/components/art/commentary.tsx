@@ -1,7 +1,6 @@
+import { DanArtistCommentary } from '@/api/danbooru/types';
 import { View, useWindowDimensions } from 'react-native';
-import { DanArtistCommentary } from '@/store/services/danbooru/types';
 import { Text } from 'react-native-paper';
-import RenderHTML from 'react-native-render-html';
 
 type CommentaryProps = {
 	data: DanArtistCommentary;

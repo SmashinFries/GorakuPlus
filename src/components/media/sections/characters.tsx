@@ -1,18 +1,26 @@
 import { FlashList } from '@shopify/flash-list';
-import { AniMediaQuery } from '@/store/services/anilist/generated-anilist';
 import { memo, useCallback } from 'react';
 import { ListHeading } from '../../text';
 import { View } from 'react-native';
 import { CharacterCard } from '../../cards';
 import { router } from 'expo-router';
+import {
+	AniMediaQuery,
+	CharacterMetaDataFragment,
+	StaffMetaDataFragment,
+} from '@/api/anilist/__genereated__/gql';
 
 // router.push(`/characters/info/${item.node.id}`)
 
 type CharacterPrevListProps = {
 	data: AniMediaQuery['Media']['characters'];
+	onLongSelect: (
+		type: 'character' | 'staff',
+		character: CharacterMetaDataFragment | StaffMetaDataFragment,
+	) => void;
 	openMore: () => void;
 };
-export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) => {
+export const CharacterPrevList = ({ data, openMore, onLongSelect }: CharacterPrevListProps) => {
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = useCallback(
 		({ item }: { item: AniMediaQuery['Media']['characters']['edges'][0] }) => (
@@ -26,12 +34,13 @@ export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) =>
 			//     }
 			// />
 			<CharacterCard
-				onPress={() => router.push(`/characters/info/${item.node.id}`)}
+				onPress={() => router.push(`/character/${item.node.id}`)}
 				imgUrl={item.node.image?.large}
 				name={item.node?.name?.full}
 				nativeName={item.node?.name?.native}
 				isFavourite={item?.node?.isFavourite}
 				role={item?.role}
+				onLongSelect={() => onLongSelect('character', item.node)}
 			/>
 		),
 		[],

@@ -6,15 +6,16 @@ import { useCallback } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useReviewsList } from '@/hooks/reviews/useReviews';
 import { ReviewItem } from '@/components/reviews/reviewItem';
-import { ReviewsQuery } from '@/store/services/anilist/generated-anilist';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { ReviewsQuery } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 const ReviewsListScreen = () => {
 	const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
-	const { loadMore, reviewData } = useReviewsList(Number(mediaId));
+	const { reviewData } = useReviewsList(Number(mediaId));
 	const { columns, listKey } = useColumns(180);
 	const { height } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	const RenderItem = useCallback(
 		(props: { item: ReviewsQuery['Page']['reviews'][0]; index: number }) => (

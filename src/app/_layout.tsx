@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { Stack, router } from 'expo-router';
+import { SplashScreen, Stack, router, useNavigationContainerRef } from 'expo-router';
 import * as Linking from 'expo-linking';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
@@ -20,11 +20,36 @@ import useAppUpdates from '@/hooks/useAppUpdates';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { PaperThemeProvider } from '@/providers/themeProvider';
 import { RootProvider } from '@/providers/rootProvider';
+import * as Sentry from '@sentry/react-native';
+import { isRunningInExpoGo } from 'expo';
+import { enGB, registerTranslation } from 'react-native-paper-dates';
+import { useThemeStore } from '@/store/theme/themeStore';
+import { availableThemes, themeOptions } from '@/store/theme/themes';
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore
 	window._frameTimestamp = null;
 }
+
+registerTranslation('en-GB', enGB);
+
+// Construct a new instrumentation instance. This is needed to communicate between the integration and React
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+Sentry.init({
+	dsn: 'https://c3347c2b80f12ce25d6eeede51177fbb@o4507794960547840.ingest.us.sentry.io/4507794962055168',
+	debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+	integrations: [
+		new Sentry.ReactNativeTracing({
+			// Pass instrumentation to be used as `routingInstrumentation`
+			routingInstrumentation,
+			enableNativeFramesTracking: !isRunningInExpoGo(),
+			// ...
+		}),
+	],
+	// enabled: Constants?.executionEnvironment === ExecutionEnvironment.Standalone,
+	enabled: false,
+});
 
 Platform.OS !== 'web' && removeUpdateAPKs();
 Platform.OS !== 'web' && reattachDownloads();
@@ -33,6 +58,7 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 	const { notification, pressAction } = detail;
 	if (type === EventType.PRESS) {
 		const link = Linking.createURL(detail.notification?.data?.url as string);
+		console.log('Link:', link);
 		Linking.openURL(link ?? 'gorakuplus://user');
 		await notifee.cancelNotification(notification.id);
 	}
@@ -45,11 +71,17 @@ TaskManager.defineTask('Notifs', async () => {
 	return BackgroundFetch.BackgroundFetchResult.NewData;
 });
 
+SplashScreen.preventAutoHideAsync();
+
 const RootLayout = () => {
 	const { isFirstLaunch } = useSettingsStore();
 	const updaterBtmSheetRef = useRef<BottomSheetModal>(null);
 	const { updateDetails, checkForUpdates } = useAppUpdates();
 	const url = Linking.useURL();
+	// Capture the NavigationContainer ref and register it with the instrumentation.
+	const ref = useNavigationContainerRef();
+	const isDark = useThemeStore((state) => state.isDark);
+	const mode = useThemeStore((state) => state.mode);
 
 	const runUpdateChecker = async () => {
 		const hasUpdate = await checkForUpdates();
@@ -63,38 +95,49 @@ const RootLayout = () => {
 			router.replace('/setup');
 		} else if (url) {
 			console.log('Initial URL:', url);
-			router.navigate(url);
-		} else {
-			router.replace('/(tabs)/explore');
+			// router.navigate(url);
 		}
+		SplashScreen.hideAsync();
 	}, [isFirstLaunch, url]);
 
 	useEffect(() => {
+		if (ref) {
+			routingInstrumentation.registerNavigationContainer(ref);
+		}
+	}, [ref]);
+
+	useEffect(() => {
 		if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
-			Platform.OS !== 'web' && runUpdateChecker();
+			// Platform.OS !== 'web' && runUpdateChecker();
 		}
 	}, []);
 
 	return (
 		<RootProvider>
-			<PaperThemeProvider>
-				<GestureHandlerRootView
-					style={{
-						flex: 1,
-					}}
-				>
+			<GestureHandlerRootView
+				style={{
+					flex: 1,
+				}}
+			>
+				<PaperThemeProvider>
 					<BottomSheetModalProvider>
 						<AnimatedStack
-							initialRouteName="(tabs)"
-							screenOptions={{ headerShown: false }}
+							screenOptions={{
+								headerShown: false,
+								statusBarStyle: isDark ? 'light' : 'dark',
+								statusBarTranslucent: true,
+								statusBarAnimation: 'fade',
+							}}
 						>
 							<Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-							<Stack.Screen name="(media)/[...media]" />
+							<Stack.Screen name="(anime)/[...media]" />
+							<Stack.Screen name="(manga)/[...media]" />
 							<Stack.Screen name="music" />
-							<Stack.Screen name="characters" />
+							<Stack.Screen name="character" />
 							<Stack.Screen name="staff" />
 							<Stack.Screen name="news" />
 							<Stack.Screen name="art" />
+							<Stack.Screen name="user" />
 							<Stack.Screen
 								name="statistics"
 								options={{
@@ -127,10 +170,10 @@ const RootLayout = () => {
 						)}
 						<Toaster position="bottom-right" />
 					</BottomSheetModalProvider>
-				</GestureHandlerRootView>
-			</PaperThemeProvider>
+				</PaperThemeProvider>
+			</GestureHandlerRootView>
 		</RootProvider>
 	);
 };
 
-export default RootLayout;
+export default Sentry.wrap(RootLayout);

@@ -1,5 +1,4 @@
 import { Image } from 'expo-image';
-import { MotiView } from 'moti';
 import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { View, Text as RNText } from 'react-native';
@@ -9,10 +8,12 @@ import use3dPan from '@/hooks/animations/use3dPan';
 import Animated from 'react-native-reanimated';
 import { GestureDetector } from 'react-native-gesture-handler';
 import { NameViewer } from '../nameSwitch';
-import { CharacterName, MediaEdge } from '@/store/services/anilist/generated-anilist';
-import { useAppSelector } from '@/store/hooks';
 import useTTS from '@/hooks/useTTS';
 import { CharStaffInteractionBar } from './interaction';
+import { CharacterName, MediaEdge } from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useTTSStore } from '@/store/tts/ttsStore';
+import { useAppTheme } from '@/store/theme/themes';
 
 type CharacterFrontProps = {
 	id: number;
@@ -34,10 +35,10 @@ export const CharacterFront = ({
 	mediaEdges,
 	onToggleFavorite,
 }: CharacterFrontProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const [fav, setFav] = useState(isFavorite);
-	const { mediaLanguage } = useAppSelector((state) => state.persistedSettings);
-	const { enabled, english } = useAppSelector((state) => state.ttsSettings);
+	const { mediaLanguage } = useSettingsStore();
+	const { enabled, english } = useTTSStore();
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
 	const { speak } = useTTS();
 

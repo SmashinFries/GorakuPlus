@@ -1,4 +1,4 @@
-import { useAppTheme } from '@/store/theme/theme';
+import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
 import { Pressable, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';

@@ -1,3 +1,4 @@
+import { useAppTheme } from '@/store/theme/themes';
 import { QueryStatus } from '@tanstack/react-query';
 import { StyleSheet, View } from 'react-native';
 import { IconButton, Text, useTheme } from 'react-native-paper';
@@ -9,7 +10,7 @@ export const NetworkError = ({
 	status: QueryStatus;
 	onRefresh: () => void;
 }) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 
 	return (
 		<View style={[styles.container]}>

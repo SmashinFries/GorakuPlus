@@ -165,7 +165,7 @@ const AboutPage = () => {
 					<LinkButton
 						url={'https://trace.moe/'}
 						label="trace.moe"
-						icon={(props) => (
+						icon={() => (
 							<Image
 								source={{ uri: 'https://trace.moe/favicon128.png' }}
 								style={{ height: 46, width: 46 }}
@@ -173,17 +173,17 @@ const AboutPage = () => {
 						)}
 						transparentBg
 					/>
-					{/* <LinkButton
-                        url="https://waifu.it/"
-                        label="Waifu.It"
-                        icon={(props) => (
-                            <Image
-                                source={require('../../../../assets/waifu.it.logo.png')}
-                                style={{ height: 46, width: 46 }}
-                            />
-                        )}
-                        transparentBg
-                    /> */}
+					<LinkButton
+						url={'https://saucenao.com/'}
+						label="SauceNAO"
+						icon={() => (
+							<Image
+								source={require('../../../../assets/saucenao-icon.webp')}
+								style={{ height: 46, width: 46 }}
+							/>
+						)}
+						transparentBg
+					/>
 				</ScrollView>
 			</Accordion>
 			<View

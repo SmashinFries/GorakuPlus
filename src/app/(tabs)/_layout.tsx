@@ -1,4 +1,4 @@
-import { withLayoutContext } from 'expo-router';
+import { SplashScreen, withLayoutContext } from 'expo-router';
 import { Avatar } from 'react-native-paper';
 import {
 	MaterialBottomTabNavigationOptions,
@@ -22,10 +22,10 @@ const RootLayout = () => {
 	const { btmTabLabels, btmTabShifting } = useSettingsStore();
 	const { t, i18n } = useTranslation('tabs');
 
-	useEffect(() => {
-		console.log('Languages:', i18n.languages);
-		console.log('Supported Languages:', i18n.options.supportedLngs);
-	}, []);
+	// useEffect(() => {
+	// 	console.log('Languages:', i18n.languages);
+	// 	console.log('Supported Languages:', i18n.options.supportedLngs);
+	// }, []);
 
 	return (
 		<MaterialBottomTabs
@@ -50,7 +50,7 @@ const RootLayout = () => {
 				redirect={userID ? false : true}
 			/>
 			<MaterialBottomTabs.Screen
-				name="user"
+				name="viewer"
 				options={{
 					title: username && userID ? username : t('Login'),
 					tabBarIcon: avatar

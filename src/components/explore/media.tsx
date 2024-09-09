@@ -1,20 +1,11 @@
-import React, { memo, useCallback, useMemo } from 'react';
-import { MD3DarkTheme, ProgressBar, Text, useTheme } from 'react-native-paper';
-import { Media, MediaStatus, MediaType } from '@/store/services/anilist/generated-anilist';
-import { MotiView, useAnimationState } from 'moti';
-import { MotiPressable } from 'moti/interactions';
-import { StyleSheet, View } from 'react-native';
-import { listColor, rgbToRgba } from '../../utils/colors';
+import React, { memo, useCallback } from 'react';
+import { MD3DarkTheme, Text } from 'react-native-paper';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
-import { AiringBanner } from './episodeBanner';
-import { useAppSelector } from '@/store/hooks';
+import { Media, MediaType } from '@/api/anilist/__genereated__/gql';
 
 const IMAGE_BORDER_RADIUS = 12;
-const AIRING_BANNER_BANS = [MediaStatus.Cancelled, MediaStatus.Finished];
-
-const blurhash =
-	'|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 type MediaItemProps = {
 	item: Media;
@@ -29,8 +20,6 @@ export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => 
 	//     () => (AIRING_BANNER_BANS.includes(item.status) ? false : true),
 	//     [item.status],
 	// );
-	// const { mediaLanguage, scoreColors, scoreGlow, scoreNumber, scoreHealthBar, defaultScore } =
-	//     useAppSelector((state) => state.persistedSettings);
 	// const itemScore = useMemo(
 	//     () =>
 	//         defaultScore === 'average' ? item.averageScore : item.meanScore ?? item.averageScore,
@@ -46,55 +35,24 @@ export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => 
 	//     [colors.primaryContainer],
 	// );
 
-	const fadeIn = useAnimationState({
-		from: {
-			opacity: 0,
-		},
-		hovered: {
-			opacity: 0.5,
-		},
-	});
-
 	const onPress = useCallback(
 		() => navigate(item.id, item.idMal, item.type),
 		[item.id, item.idMal, item.type],
 	);
 
 	return (
-		<MotiPressable
+		<Pressable
 			onPress={navigate && onPress}
-			animate={useMemo(
-				() =>
-					({ hovered, pressed }) => {
-						'worklet';
-						return {
-							opacity: pressed ? 0.5 : hovered ? 0.75 : 1,
-							// transform: [{ translateY: hovered ? -20 : 0 }],
-						};
-					},
-				[],
-			)}
-			containerStyle={{
-				borderRadius: IMAGE_BORDER_RADIUS,
-				// elevation: scoreGlow ? (item.mediaListEntry?.status ? 5 : 2) : 1,
-				// shadowColor: scoreGlow
-				//     ? item.status === MediaStatus.NotYetReleased || !itemScore
-				//         ? '#000'
-				//         : scoreColor
-				//     : undefined,
-				// shadowRadius: scoreGlow ? (item.mediaListEntry?.status ? 20 : 10) : undefined,
-				// shadowOpacity: scoreGlow ? (item.mediaListEntry?.status ? 1 : 0.5) : undefined,
-				// backgroundColor: scoreGlow ? scoreColor : undefined,
-			}}
 			style={[
 				MediaStyles.container,
 				{
+					borderRadius: IMAGE_BORDER_RADIUS,
 					width: width ?? MediaStyles.imgSize.width,
 					height: height ?? MediaStyles.imgSize.height,
 				},
 			]}
 		>
-			<MotiView style={[MediaStyles.imgSize, MediaStyles.innerContainer]}>
+			<View style={[MediaStyles.imgSize, MediaStyles.innerContainer]}>
 				<Image
 					source={{ uri: item.coverImage?.large ?? undefined }}
 					style={[
@@ -109,8 +67,7 @@ export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => 
 					contentFit="cover"
 					cachePolicy="memory-disk"
 				/>
-				<MotiView
-					state={fadeIn}
+				<View
 					style={{
 						...StyleSheet.absoluteFillObject,
 						backgroundColor: '#000',
@@ -191,8 +148,8 @@ export const MediaItem = ({ item, width, height, navigate }: MediaItemProps) => 
                         textColor={MD3DarkTheme.colors.onPrimary}
                     />
                 ) : null} */}
-			</MotiView>
-		</MotiPressable>
+			</View>
+		</Pressable>
 	);
 };
 
@@ -252,15 +209,15 @@ export const RenderMediaItem = ({ item, index, navigate, delay = true }: RenderM
 		//         item.mediaListEntry?.status ?? 'None'
 		//     } | Progress: ${progress}/${total}`}
 		// >
-		<MotiView
+		<View
 			key={index}
-			from={{ opacity: 0, scale: 0 }}
-			animate={{
-				opacity: 1,
-				scale: 1,
-			}}
-			transition={{ type: 'spring', damping: 15 }}
-			exit={{ opacity: 0, scale: 0 }}
+			// from={{ opacity: 0, scale: 0 }}
+			// animate={{
+			// 	opacity: 1,
+			// 	scale: 1,
+			// }}
+			// transition={{ type: 'spring', damping: 15 }}
+			// exit={{ opacity: 0, scale: 0 }}
 			// delay={delay && index * 50}
 			style={{ flex: 1, maxHeight: 280, marginHorizontal: 10 }}
 		>
@@ -317,7 +274,7 @@ export const RenderMediaItem = ({ item, index, navigate, delay = true }: RenderM
                     ) : null}
                 </View>
             ) : null} */}
-		</MotiView>
+		</View>
 		// </Tooltip>
 		// </AnimatePresence>
 	);

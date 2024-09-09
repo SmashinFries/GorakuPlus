@@ -2,9 +2,10 @@ import { ScrollView, useWindowDimensions } from 'react-native';
 import { ContributionGraph } from 'react-native-chart-kit';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { useTheme } from 'react-native-paper';
-import { UserOverviewQuery } from '@/store/services/anilist/generated-anilist';
 import { View } from 'react-native';
 import { rgbToRgba } from '@/utils';
+import { UserOverviewQuery } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 const commitsData = [
 	{ date: '2017-01-02', count: 1 },
@@ -21,10 +22,10 @@ const commitsData = [
 ];
 
 type UserHeatmapProps = {
-	data: UserOverviewQuery['Viewer']['stats']['activityHistory'];
+	data: UserOverviewQuery['user']['stats']['activityHistory'];
 };
 export const UserHeatmap = ({ data }: UserHeatmapProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
 
 	const chartConfig: AbstractChartConfig = {
@@ -56,6 +57,7 @@ export const UserHeatmap = ({ data }: UserHeatmapProps) => {
 					squareSize={12}
 					gutterSize={5}
 					chartConfig={chartConfig}
+					// tooltipDataAttrs={}
 				/>
 			</View>
 		</ScrollView>

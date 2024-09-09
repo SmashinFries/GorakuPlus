@@ -19,6 +19,7 @@ module.exports = {
 			target: '../../src/api/jikan/jikan.ts',
 			schemas: '../../src/api/jikan/models',
 			client: 'react-query',
+			baseUrl: 'https://api.jikan.moe/v4',
 			mock: false,
 			override: {
 				query: {

@@ -10,6 +10,7 @@ import {
 	UserMangaStatsQuery,
 	UserStatusStatistic,
 } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
 type FormatPieProps = {
 	data:
@@ -18,7 +19,7 @@ type FormatPieProps = {
 };
 export const FormatPie = ({ data }: FormatPieProps) => {
 	const { width } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const chartConfig: AbstractChartConfig = {
 		backgroundColor: colors.onSecondaryContainer,
 		backgroundGradientFromOpacity: 0,
@@ -66,7 +67,7 @@ type StatusPieProps = {
 };
 export const StatusPie = ({ data }: StatusPieProps) => {
 	const { width } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const chartConfig: AbstractChartConfig = {
 		backgroundColor: colors.onSecondaryContainer,
 		color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
@@ -111,7 +112,7 @@ type CountryPieProps = {
 };
 export const CountryPie = ({ data }: CountryPieProps) => {
 	const { width } = useWindowDimensions();
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const chartConfig: AbstractChartConfig = {
 		backgroundColor: colors.onSecondaryContainer,
 		color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,

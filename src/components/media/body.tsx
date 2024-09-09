@@ -1,14 +1,13 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView } from 'moti';
+import { useAppTheme } from '@/store/theme/themes';
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTheme } from 'react-native-paper';
 
 type Props = {
 	children: React.ReactNode;
 };
 const BodyContainer = ({ children }: Props) => {
-	const { dark } = useTheme();
+	const { dark } = useAppTheme();
 
 	return (
 		<View

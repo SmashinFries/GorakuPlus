@@ -31,6 +31,16 @@ const SettingsHomePage = () => {
 				left={(props) => <List.Icon {...props} color={colors.primary} icon="television" />}
 			/>
 			<List.Item
+				title={'Services'}
+				description={'Manage additional data APIs'}
+				onPress={() => {
+					router.push('/more/settings/services');
+				}}
+				left={(props) => (
+					<List.Icon {...props} color={colors.primary} icon="server-network" />
+				)}
+			/>
+			<List.Item
 				title={'Language'}
 				description={'App and media title langauge'}
 				onPress={() => {

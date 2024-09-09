@@ -1,7 +1,6 @@
 import { Accordion } from '@/components/animations';
 import { MediaTileCustomizer } from '@/components/more/settings/appearance/dialogs';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
-import { MotiButton } from '@/components/moti';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useSettingsStore } from '@/store/settings/settingsStore';
@@ -11,7 +10,7 @@ import { useThemeStore } from '@/store/theme/themeStore';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
-import { List, Portal, Switch, Text, useTheme } from 'react-native-paper';
+import { Button, List, Portal, Switch, Text, useTheme } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
 
 const STACK_ANIMS_ANDROID: StackAnimationTypes[] = [
@@ -35,7 +34,12 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 ];
 
 const AppearancePage = () => {
-	const { mode, isDark, setTheme } = useThemeStore();
+	const { mode, isDark, isAMOLED } = useThemeStore((state) => ({
+		mode: state.mode,
+		isDark: state.isDark,
+		isAMOLED: state.isAMOLED,
+	}));
+	const setTheme = useThemeStore((state) => state.setTheme);
 	const {
 		btmTabLabels,
 		btmTabShifting,
@@ -47,8 +51,20 @@ const AppearancePage = () => {
 		showItemListStatus,
 		mediaLanguage,
 		scoreColors,
-		setSettings,
-	} = useSettingsStore();
+	} = useSettingsStore((state) => ({
+		btmTabLabels: state.btmTabLabels,
+		btmTabShifting: state.btmTabShifting,
+		navAnimation: state.navAnimation,
+		interaction3D: state.interaction3D,
+		autoRotation: state.autoRotation,
+		allowSensorMotion: state.allowSensorMotion,
+		scoreVisualType: state.scoreVisualType,
+		showItemListStatus: state.showItemListStatus,
+		mediaLanguage: state.mediaLanguage,
+		scoreColors: state.scoreColors,
+	}));
+
+	const setSettings = useSettingsStore((state) => state.setSettings);
 
 	const { colors } = useAppTheme();
 
@@ -58,6 +74,10 @@ const AppearancePage = () => {
 
 	const onDarkChange = () => {
 		setTheme({ isDark: !isDark });
+	};
+
+	const onAmoledChange = () => {
+		setTheme({ isAMOLED: !isAMOLED });
 	};
 
 	const onThemeChange = (theme: ThemeOptions) => {
@@ -97,6 +117,13 @@ const AppearancePage = () => {
 						title={'Dark Mode'}
 						selected={isDark}
 						onPress={onDarkChange}
+						fluid
+					/>
+					<MaterialSwitchListItem
+						title={'AMOLED Pure Black'}
+						selected={isAMOLED}
+						onPress={onAmoledChange}
+						disabled={!isDark}
 						fluid
 					/>
 					<Accordion
@@ -190,7 +217,7 @@ const AppearancePage = () => {
 					>
 						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 							{STACK_ANIMS.map((anim, index) => (
-								<MotiButton
+								<Button
 									key={index}
 									mode="outlined"
 									compact
@@ -201,7 +228,7 @@ const AppearancePage = () => {
 									textColor={anim === navAnimation ? colors.onPrimary : undefined}
 								>
 									{anim.replaceAll('_', ' ')}
-								</MotiButton>
+								</Button>
 							))}
 						</ScrollView>
 					</Accordion>

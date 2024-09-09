@@ -107,7 +107,7 @@ By using the API, you are agreeing to Jikan's [terms of use](https://jikan.moe/t
  */
 import type { PageParameter } from './pageParameter';
 import type { PreliminaryParameter } from './preliminaryParameter';
-import type { SpoilerParameter } from './spoilerParameter';
+import type { SpoilersParameter } from './spoilersParameter';
 
 export type GetAnimeReviewsParams = {
 page?: PageParameter;
@@ -118,5 +118,5 @@ preliminary?: PreliminaryParameter;
 /**
  * Any reviews that are tagged as a spoiler. Spoiler reviews are not returned by default. e.g usage: `?spoiler=true`
  */
-spoiler?: SpoilerParameter;
+spoilers?: SpoilersParameter;
 };

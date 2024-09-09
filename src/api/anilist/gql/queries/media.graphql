@@ -60,7 +60,7 @@ query AniMedia(
 			scoreFormat
 		}
 	}
-	Page(page: 1) {
+	Following: Page(page: 1) {
 		pageInfo {
 			total
 			perPage
@@ -76,13 +76,16 @@ query AniMedia(
 			user {
 				id
 				name
+				aboutHTML: about(asHtml: true)
 				isFollowing
+				isFollower
 				avatar {
 					large
 				}
 				mediaListOptions {
 					scoreFormat
 				}
+				siteUrl
 			}
 		}
 	}
@@ -136,34 +139,9 @@ query AniMedia(
 				id
 				relationType(version: 2)
 				node {
-					id
-					idMal
-					bannerImage
-					type
-					format
-					isFavourite
-					isLicensed
-					bannerImage
-					status(version: 2)
-					title {
-						romaji
-						english
-						native
-						userPreferred
-					}
-					coverImage {
-						extraLarge
-						large
-						color
-					}
-					stats {
-						scoreDistribution {
-							score
-							amount
-						}
-					}
-					averageScore
-					meanScore
+					...AnimeMeta
+					chapters
+					volumes
 				}
 			}
 		}
@@ -228,19 +206,7 @@ query AniMedia(
 					}
 				}
 				node {
-					id
-					isFavourite
-					image {
-						large
-					}
-					name {
-						full
-						userPreferred
-						native
-						first
-						last
-					}
-					favourites
+					...CharacterMetaData
 				}
 			}
 		}
@@ -251,40 +217,9 @@ query AniMedia(
 					rating
 					userRating
 					mediaRecommendation {
-						id
-						idMal
-						bannerImage
-						type
-						format
-						isFavourite
-						isLicensed
-						status(version: 2)
-						title {
-							romaji
-							english
-							native
-							userPreferred
-						}
-						coverImage {
-							extraLarge
-							color
-							large
-						}
-						mediaListEntry {
-							id
-							status
-							score
-							progress
-							progressVolumes
-						}
-						stats {
-							scoreDistribution {
-								score
-								amount
-							}
-						}
-						meanScore
-						averageScore
+						...AnimeMeta
+						chapters
+						volumes
 					}
 				}
 			}
@@ -334,19 +269,7 @@ query AniMedia(
 			edges {
 				role
 				node {
-					id
-					name {
-						full
-						first
-						middle
-						last
-						native
-						userPreferred
-					}
-					image {
-						large
-					}
-					isFavourite
+					...StaffMetaData
 				}
 			}
 		}
@@ -389,7 +312,7 @@ query AniMedia(
 				}
 			}
 		}
-		airingSchedule(page: 1, perPage: 25, notYetAired: true) {
+		airingSchedule(page: 1, perPage: 25) {
 			nodes {
 				id
 				airingAt
@@ -401,7 +324,8 @@ query AniMedia(
 		idMal
 		id
 		bannerImage
-		description(asHtml: true)
+		description(asHtml: false)
+		descriptionHTML: description(asHtml: true)
 		siteUrl
 		updatedAt
 		season
@@ -455,8 +379,8 @@ query MediaFollowing($id: Int, $page: Int, $perPage: Int) {
 	}
 }
 
-query CharacterList($id: Int, $type: MediaType, $page: Int, $perPage: Int, $sort: [CharacterSort]) {
-	Media(id: $id, type: $type) {
+query CharacterList($id: Int, $page: Int, $perPage: Int, $sort: [CharacterSort]) {
+	Media(id: $id) {
 		id
 		characters(sort: $sort, page: $page, perPage: $perPage) {
 			pageInfo {

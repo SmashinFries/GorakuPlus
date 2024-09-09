@@ -1,10 +1,11 @@
-import { AnimatePresence, MotiImage, MotiView } from 'moti';
 import { useTheme } from 'react-native-paper';
-import { AnimeExploreQuery, ExploreMediaQuery } from '@/store/services/anilist/generated-anilist';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import useBackground from '@/hooks/explore/background';
+import { AnimeExploreQuery } from '@/api/anilist/__genereated__/gql';
+import { Image } from 'expo-image';
+import { useAppTheme } from '@/store/theme/themes';
 
 type BackgroundArtProps = {
 	data: AnimeExploreQuery['trending']['media'];
@@ -14,11 +15,11 @@ type BackgroundArtProps = {
 };
 export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
 	// const [bg, setBg] = useState({ id: 0, bg: getBG(data.Page.media[0]) });
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	const { bg, key, visible, updateBG } = useBackground(data);
 
 	return (
-		<MotiView
+		<View
 			// state={bgOpacity}
 			// transition={{ type: 'timing', duration: 350 }}
 			// @ts-ignore
@@ -35,29 +36,22 @@ export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
 						: undefined,
 			}}
 		>
-			<AnimatePresence
-				// exitBeforeEnter
-				onExitComplete={() => {
-					updateBG();
-				}}
-			>
-				{visible && (
-					<MotiImage
-						source={{
-							uri: bg,
-						}}
-						from={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						exitTransition={{ type: 'timing', duration: 2500 }}
-						transition={{ type: 'timing', duration: 2500 }}
-						// key={bg}
-						// source={{ uri: currentBG }}
-						style={{ height: height, width: width }}
-						resizeMode="cover"
-					/>
-				)}
-			</AnimatePresence>
+			{visible && (
+				<Image
+					source={{
+						uri: bg,
+					}}
+					// from={{ opacity: 0 }}
+					// animate={{ opacity: 1 }}
+					// exit={{ opacity: 0 }}
+					// exitTransition={{ type: 'timing', duration: 2500 }}
+					// transition={{ type: 'timing', duration: 2500 }}
+					// key={bg}
+					// source={{ uri: currentBG }}
+					style={{ height: height, width: width }}
+					contentFit="cover"
+				/>
+			)}
 
 			<BlurView
 				intensity={25}
@@ -68,6 +62,6 @@ export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
 				locations={[0, 0.6, 1]}
 				style={{ position: 'absolute', width: '100%', height: '100%' }}
 			/>
-		</MotiView>
+		</View>
 	);
 };

@@ -1,8 +1,9 @@
+import { StaffListQuery } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
-import { StaffListQuery } from '@/store/services/anilist/generated-anilist';
 
 type StaffItemProps = {
 	item: StaffListQuery['Media']['staff']['edges'][0];
@@ -12,7 +13,7 @@ type StaffItemProps = {
 };
 
 export const StaffItem = ({ item, index, subTextColor, onNavigation }: StaffItemProps) => {
-	const { colors } = useTheme();
+	const { colors } = useAppTheme();
 	return (
 		<Pressable style={[styles.container]} onPress={() => onNavigation(item.node?.id)}>
 			<Image
