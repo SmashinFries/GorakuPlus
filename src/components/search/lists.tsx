@@ -1,24 +1,38 @@
 import { FlashList, ListRenderItem, ListRenderItemInfo } from '@shopify/flash-list';
-import { NativeSyntheticEvent, View, useWindowDimensions } from 'react-native';
-import { Text } from 'react-native-paper';
+import {
+	NativeSyntheticEvent,
+	SectionList,
+	SectionListData,
+	SectionListRenderItem,
+	View,
+	useWindowDimensions,
+} from 'react-native';
+import { Button, Text } from 'react-native-paper';
 import { useColumns } from '@/utils';
 import { MutableRefObject, useCallback, useMemo } from 'react';
 import { CharacterCard, MediaCard, MediaProgressBar, StaffCard, StudioCard } from '../cards';
 import { EmptyLoadView } from './loading';
 import Animated, { SharedValue } from 'react-native-reanimated';
 import { NativeScrollEvent } from 'react-native';
-import { ImageSearchItem } from './media';
 import { router } from 'expo-router';
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
-import { useAnimeSearch, useMangaSearch } from '@/hooks/search/useSearch';
 import { useSearchStore } from '@/store/search/searchStore';
 import useDebounce from '@/hooks/useDebounce';
-import { MediaList, MediaSearchQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	AnimeMetaFragment,
+	MediaList,
+	MediaSearchQuery,
+	MediaType,
+	SearchAllQuery,
+	useInfiniteMediaSearchQuery,
+	useInfiniteSearchAllQuery,
+	useSearchAllQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { useSettingsStore } from '@/store/settings/settingsStore';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 export const MediaRenderItem = (
-	props: ListRenderItemInfo<MediaSearchQuery['Page']['media'][0]>,
+	props: Omit<ListRenderItemInfo<MediaSearchQuery['Page']['media'][0]>, 'target'>,
 ) => {
 	return (
 		<View
@@ -34,22 +48,23 @@ export const MediaRenderItem = (
 				coverImg={props.item.coverImage.extraLarge}
 				titles={props.item.title}
 				navigate={() => {
-					router.push(`/(media)/${props.item.type}/${props.item.id}`);
+					router.push(`/${props.item.type}/${props.item.id}`);
 				}}
 				imgBgColor={props.item.coverImage.color}
 				scoreDistributions={props.item.stats?.scoreDistribution}
-				bannerText={props.item.nextAiringEpisode?.timeUntilAiring}
+				bannerText={props.item.nextAiringEpisode?.airingAt}
 				showBanner={props.item.nextAiringEpisode ? true : false}
 				averageScore={props.item.averageScore}
 				meanScore={props.item.meanScore}
+				mediaListEntry={props.item.mediaListEntry}
 				fitToParent
 			/>
-			<MediaProgressBar
+			{/* <MediaProgressBar
 				progress={props.item.mediaListEntry?.progress}
 				mediaListEntry={props.item.mediaListEntry as MediaList}
 				mediaStatus={props.item.status}
 				total={props.item.episodes ?? props.item.chapters ?? props.item.volumes ?? 0}
-			/>
+			/> */}
 		</View>
 	);
 };
@@ -61,6 +76,84 @@ type MediaSearchListProps = {
 		| SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
 	headerHeight: number;
 };
+
+type SearchAllSection = {
+	title: string;
+	type: 'anime' | 'manga' | 'characters' | 'staff' | 'studios' | 'users';
+	data: any;
+};
+
+export const SearchAllList = ({ listRef, headerHeight, onScrollHandler }: MediaSearchListProps) => {
+	const { width } = useWindowDimensions();
+	const query = useSearchStore((state) => state.query);
+	const showNSFW = useSettingsStore((state) => state.showNSFW);
+	const debouncedSearch = useDebounce(query, 600);
+
+	const { data, isFetching } = useSearchAllQuery(
+		{ search: debouncedSearch, perPage: 6, isAdult: showNSFW },
+		{ enabled: debouncedSearch?.length > 0 },
+	);
+
+	const sections: SearchAllSection[] = [
+		{ title: 'Anime', type: 'anime', data: data?.Anime?.media },
+		{ title: 'Manga', type: 'manga', data: data?.Manga?.media },
+		{ title: 'Characters', type: 'characters', data: data?.Characters.characters },
+		{ title: 'Staff', type: 'staff', data: data?.Staff?.staff },
+		{ title: 'Studios', type: 'studios', data: data?.Studios?.studios },
+		{ title: 'Users', type: 'users', data: data?.Users?.users },
+	];
+
+	const renderSectionTitle = (info: { section: SectionListData<any, SearchAllSection> }) => {
+		return (
+			<View style={{ marginBottom: 12 }}>
+				<Text variant="titleLarge">{info.section.title}</Text>
+			</View>
+		);
+	};
+
+	const renderItem: SectionListRenderItem<any, SearchAllSection> = ({ index, item, section }) => {
+		if (section.type === 'anime' || section.type === 'manga') {
+			return <MediaRenderItem index={index} item={item} />;
+		} else if (section.type === 'characters' || section.type === 'staff') {
+			return (
+				<View
+					style={{
+						alignItems: 'center',
+						marginVertical: 15,
+						marginHorizontal: 4,
+					}}
+				>
+					<CharacterCard
+						name={item.name.full}
+						imgUrl={item.image?.large}
+						nativeName={item.name.native}
+						onPress={() => router.push(`/character/${item.id}`)}
+						isFavourite={item.isFavourite}
+					/>
+				</View>
+			);
+		} else if (section.type === 'studios') {
+			return (
+				<StudioCard
+					{...(item as SearchAllQuery['Studios']['studios'][0])}
+					onPress={() => router.push(`/studio/${item.id}`)}
+				/>
+			);
+		}
+	};
+
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			{/* Could / should use flashlist here but... aint feelin it */}
+			<SectionList
+				sections={sections}
+				renderItem={renderItem}
+				renderSectionHeader={renderSectionTitle}
+			/>
+		</View>
+	);
+};
+
 export const AnimeSearchList = ({
 	listRef,
 	onScrollHandler,
@@ -68,25 +161,62 @@ export const AnimeSearchList = ({
 }: MediaSearchListProps) => {
 	const { query, filter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 600);
-	const { data, hasNextPage, fetchNextPage, isFetching } = useAnimeSearch({
-		...filter,
-		search: debouncedSearch,
-	});
+	// const { data, hasNextPage, fetchNextPage, isFetching } = useAnimeSearch({
+	// 	...filter,
+	// 	search: debouncedSearch,
+	// });
+	const { data, isFetching, refetch, hasNextPage, fetchNextPage, isFetchingNextPage } =
+		useInfiniteMediaSearchQuery(
+			{
+				type: MediaType.Anime,
+				...filter,
+				search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+			},
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
+
+	const mergedResults = data?.pages?.flatMap((val) => val.Page?.media);
+
 	const { width } = useWindowDimensions();
 	const { columns, listKey } = useColumns(150);
 
 	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
 
-	const allResults = useMemo(() => data.pages.flatMap((val) => val.Page.media), [data]);
+	// const mergedResults = useMemo(() => data.pages.flatMap((val) => val.Page.media), [data]);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
+			{/* <Button
+				onPress={() =>
+					console.log({
+						type: MediaType.Anime,
+						...filter,
+						search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+					})
+				}
+			>
+				TEST
+			</Button> */}
 			<AnimatedFlashList
 				key={listKey}
 				ref={listRef}
-				data={allResults}
+				data={mergedResults}
 				nestedScrollEnabled
-				renderItem={MediaRenderItem}
+				renderItem={(props) => (
+					<MediaRenderItem
+						{...props}
+						item={props.item as MediaSearchQuery['Page']['media'][0]}
+					/>
+				)}
 				keyExtractor={keyExtract}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
@@ -116,10 +246,20 @@ export const MangaSearchList = ({
 }: MediaSearchListProps) => {
 	const { query, filter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 600);
-	const { data, hasNextPage, fetchNextPage, isFetching } = useMangaSearch({
-		...filter,
-		search: debouncedSearch,
-	});
+	const { data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage } =
+		useInfiniteMediaSearchQuery(
+			{ type: MediaType.Manga, ...filter },
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 	const { width } = useWindowDimensions();
 	const { columns, listKey } = useColumns(150);
 
@@ -134,7 +274,12 @@ export const MangaSearchList = ({
 				ref={listRef}
 				data={allResults}
 				nestedScrollEnabled
-				renderItem={MediaRenderItem}
+				renderItem={(props) => (
+					<MediaRenderItem
+						{...props}
+						item={props.item as MediaSearchQuery['Page']['media'][0]}
+					/>
+				)}
 				keyExtractor={keyExtract}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"

@@ -761,7 +761,6 @@ export const QuickActionUserBottomSheet = React.forwardRef<
 });
 
 export type QuickActionAniTrendzProps = {
-	type: AniTrendzChartTypes;
 	link: string;
 	names: string[];
 	anime?: string;
@@ -771,7 +770,7 @@ export type QuickActionAniTrendzProps = {
 export const QuickActionAniTrendzBottomSheet = React.forwardRef<
 	BottomSheetModalMethods,
 	QuickActionAniTrendzProps
->(({ names, anime, link, type, onAnimeSearch, onCharacterSearch }, ref) => {
+>(({ names, anime, link, onAnimeSearch, onCharacterSearch }, ref) => {
 	const { dismiss } = useBottomSheetModal();
 
 	const searchCharacter = (name: string) => {
@@ -955,6 +954,7 @@ export const MediaSearchBottomSheet = React.forwardRef<BottomSheetModalMethods, 
 						averageScore={item.averageScore}
 						meanScore={item.meanScore}
 						mediaListEntry={item.mediaListEntry}
+						// containerStyle={{ flex: 1 }}
 						// fitToParent
 					/>
 				</View>

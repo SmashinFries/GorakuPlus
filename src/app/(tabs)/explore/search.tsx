@@ -10,7 +10,7 @@ import { SearchHeader } from '@/components/headers';
 import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog, FilterTagDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';
-import { AnimeSearchList, MangaSearchList } from '@/components/search/lists';
+import { AnimeSearchList, MangaSearchList, SearchAllList } from '@/components/search/lists';
 import { MediaSelectorMem } from '@/components/search/mediaSelector';
 import { useStickyHeader } from '@/hooks/animations/useStickyHeader';
 import useFilterSheet from '@/hooks/search/useSheet';
@@ -23,7 +23,7 @@ import { Stack, router } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { Keyboard, ScrollView, TextInput, useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
-import { IconButton, List, Portal } from 'react-native-paper';
+import { Button, IconButton, List, Portal } from 'react-native-paper';
 import Animated, {
 	SlideInDown,
 	SlideInUp,
@@ -66,7 +66,7 @@ const SearchPage = () => {
 
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
-	const { query, searchType, updateQuery, updateSearchType } = useSearchStore();
+	const { query, searchType, updateQuery, updateSearchType, reset } = useSearchStore();
 	const { searchTerms, searchTermLimit, addSearchTerm, removeSearchTerm, updateSearchLimit } =
 		useSearchHistoryStore();
 
@@ -272,6 +272,13 @@ const SearchPage = () => {
 				}}
 			/>
 			<View style={{ flex: 1 }}>
+				{searchType === 'ALL' && (
+					<SearchAllList
+						headerHeight={categoryHeight}
+						listRef={listRef}
+						onScrollHandler={scrollHandler}
+					/>
+				)}
 				{searchType === MediaType.Anime && (
 					<AnimeSearchList
 						headerHeight={categoryHeight}

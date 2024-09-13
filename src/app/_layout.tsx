@@ -81,7 +81,6 @@ const RootLayout = () => {
 	// Capture the NavigationContainer ref and register it with the instrumentation.
 	const ref = useNavigationContainerRef();
 	const isDark = useThemeStore((state) => state.isDark);
-	const mode = useThemeStore((state) => state.mode);
 
 	const runUpdateChecker = async () => {
 		const hasUpdate = await checkForUpdates();

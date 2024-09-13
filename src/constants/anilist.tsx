@@ -2,14 +2,6 @@ import { MediaFormat, MediaStatus, MediaType } from '@/api/anilist/__genereated_
 
 export type MediaSearchSelection = MediaType.Anime | MediaType.Manga | 'NOVEL';
 
-export type SearchTypes =
-	| MediaType.Anime
-	| MediaType.Manga
-	| 'users'
-	| 'characters'
-	| 'staff'
-	| 'studios';
-
 export type CommonSort =
 	| 'Trending'
 	| 'Popularity'

@@ -1,13 +1,12 @@
 import React, { memo, useMemo, useState } from 'react';
 import { SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { MD3Colors, SegmentedButtons, useTheme } from 'react-native-paper';
-import { SearchTypes } from '@/constants/anilist';
-import { useSearchStore } from '@/store/search/searchStore';
+import { SearchType, useSearchStore } from '@/store/search/searchStore';
 import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 
 type SegButtons = {
-	value: SearchTypes;
+	value: SearchType;
 	label: string;
 };
 

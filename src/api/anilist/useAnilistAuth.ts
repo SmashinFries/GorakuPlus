@@ -12,9 +12,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
 	useAniMediaQuery,
 	useAnimeExploreQuery,
+	useInfiniteMediaSearchQuery,
 	useInfiniteSearchAllQuery,
-	useInfiniteSearchAnimeQuery,
-	useInfiniteSearchMangaQuery,
 	useMangaExploreQuery,
 	useManhuaExploreQuery,
 	useManhwaExploreQuery,
@@ -138,8 +137,7 @@ export const useAnilistAuth = (isSetup = false) => {
 	const invalidateQueries = async () => {
 		queryClient.invalidateQueries({ queryKey: useAniMediaQuery.getKey(undefined) });
 		queryClient.invalidateQueries({ queryKey: useInfiniteSearchAllQuery.getKey() });
-		queryClient.invalidateQueries({ queryKey: useInfiniteSearchAnimeQuery.getKey() });
-		queryClient.invalidateQueries({ queryKey: useInfiniteSearchMangaQuery.getKey() });
+		queryClient.invalidateQueries({ queryKey: useInfiniteMediaSearchQuery.getKey() });
 		queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey() });
 		queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey() });
 		queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey() });

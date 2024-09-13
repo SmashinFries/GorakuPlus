@@ -28,6 +28,7 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { DanPost } from '@/api/danbooru/types';
 import Animated, { JumpingTransition } from 'react-native-reanimated';
 import { AnimViewMem } from './animations';
+import { useState } from 'react';
 
 const BORDER_RADIUS = 8;
 
@@ -51,15 +52,18 @@ type MediaCardProps = {
 	fitToParent?: boolean;
 	isFavorite?: boolean;
 	contentAmount?: number;
+	containerStyle?: ViewStyle;
 	onLongPress?: (params: any) => void;
 };
 export const MediaCard = (props: MediaCardProps) => {
 	const card_height = props.height ?? 200;
 	const { colors } = useAppTheme();
 	const { scoreColors, mediaLanguage, defaultScore } = useSettingsStore();
+	const [width, setWidth] = useState(props.width ?? 1);
 	return (
-		<AnimViewMem>
+		<AnimViewMem style={[props.containerStyle]}>
 			<Surface
+				onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
 				style={{
 					marginHorizontal: 10,
 					marginVertical: 10,
@@ -178,13 +182,13 @@ export const MediaCard = (props: MediaCardProps) => {
 				</Pressable>
 			</Surface>
 			{/* <ProgressBar style={{ width: '90%', alignSelf: 'center' }} progress={0.5} /> */}
-			<View>
-				<MediaProgressBar
-					progress={props.mediaListEntry?.progress}
-					mediaListEntry={props.mediaListEntry as MediaList}
-					total={props.contentAmount}
-				/>
-			</View>
+			<MediaProgressBar
+				containerStyle={{ width: width }}
+				progress={props.mediaListEntry?.progress}
+				mediaListEntry={props.mediaListEntry as MediaList}
+				total={props.contentAmount}
+				barStyle={{ width: '90%' }}
+			/>
 		</AnimViewMem>
 	);
 };
@@ -305,7 +309,7 @@ export const MediaProgressBar = ({
 				{
 					alignSelf: 'center',
 					paddingTop: 2,
-					width: '90%',
+					width: '95%',
 				},
 				containerStyle,
 			]}
@@ -336,7 +340,7 @@ export const MediaProgressBar = ({
 					color: colors.onSurfaceVariant,
 					textTransform: 'capitalize',
 				}}
-				variant="labelMedium"
+				variant="labelSmall"
 			>
 				{showListStatus ?? showItemListStatus ? mediaListEntry?.status : null}
 				{mediaListEntry?.progress > 0

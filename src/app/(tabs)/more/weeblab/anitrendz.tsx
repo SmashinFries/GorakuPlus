@@ -84,7 +84,14 @@ const ChartItem = ({
 							padding: 6,
 						}}
 					>
-						<View style={{ flexDirection: 'column', alignItems: 'center' }}>
+						<View
+							style={{
+								flexDirection: 'column',
+								alignItems: 'center',
+								justifyContent: 'center',
+								paddingLeft: 8,
+							}}
+						>
 							<View>
 								<Text
 									variant="headlineLarge"

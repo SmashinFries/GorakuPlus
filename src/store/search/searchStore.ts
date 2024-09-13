@@ -1,9 +1,4 @@
-import {
-	MediaSort,
-	MediaType,
-	SearchAnimeQueryVariables,
-	SearchMangaQueryVariables,
-} from '@/api/anilist/__genereated__/gql';
+import { MediaSearchQueryVariables, MediaType } from '@/api/anilist/__genereated__/gql';
 import { create } from 'zustand';
 import { useSettingsStore } from '../settings/settingsStore';
 import {
@@ -25,7 +20,7 @@ export type SearchType =
 type SearchState = {
 	isTagBlacklistEnabled: boolean;
 	searchType: SearchType;
-	filter: SearchAnimeQueryVariables | SearchMangaQueryVariables;
+	filter: MediaSearchQueryVariables;
 	query: string;
 	sort: { value: AvailableSorts; asc: boolean };
 };
@@ -38,16 +33,17 @@ type SearchActions = {
 	updateTags: (tag: string) => void;
 	updateGenre: (genre: string) => void;
 	updateSort: (sort: AvailableSorts, asc?: boolean) => void;
+	reset: () => void;
 };
 
-export const useSearchStore = create<SearchState & SearchActions>((set, get) => ({
+const initialState: SearchState = {
 	query: '',
 	sort: {
 		asc: false,
 		value: 'TRENDING',
 	},
 	isTagBlacklistEnabled: true,
-	searchType: MediaType.Anime,
+	searchType: 'ALL',
 	filter: {
 		sort: DescSorts.TRENDING,
 		isAdult: false,
@@ -55,6 +51,9 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		perPage: 24,
 		tag_not_in: undefined,
 	},
+};
+export const useSearchStore = create<SearchState & SearchActions>((set, get) => ({
+	...initialState,
 	updateQuery(txt) {
 		set({ query: txt });
 	},
@@ -62,6 +61,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		if (type === MediaType.Anime) {
 			set((state) => ({
 				filter: {
+					...state.filter,
 					format: undefined,
 					format_in: AnimeFormats.includes(state.filter.format)
 						? state.filter.format
@@ -78,6 +78,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		} else if (type === MediaType.Manga) {
 			set((state) => ({
 				filter: {
+					...state.filter,
 					format: undefined,
 					format_in: MangaFormats.includes(state.filter.format)
 						? state.filter.format
@@ -102,6 +103,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			set((state) => ({
 				isTagBlacklistEnabled,
 				filter: {
+					...state.filter,
 					tag_not_in:
 						(state.filter.tag_not_in?.length ?? 0) + (tagBlacklist?.length ?? 0) > 0
 							? [...(state.filter.tag_not_in ?? []), ...tagBlacklist].filter(
@@ -114,6 +116,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			set((state) => ({
 				isTagBlacklistEnabled,
 				filter: {
+					...state.filter,
 					tag_not_in:
 						(state.filter.tag_not_in as string[])?.filter(
 							(tag) => !tagBlacklist.includes(tag),
@@ -135,6 +138,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		if (tag_in?.includes(tag)) {
 			set((state) => ({
 				filter: {
+					...state.filter,
 					tag_in:
 						(tag_in as string[])?.length === 1
 							? undefined
@@ -147,6 +151,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		} else if (tag_not_in?.includes(tag)) {
 			set((state) => ({
 				filter: {
+					...state.filter,
 					tag_not_in:
 						(state.filter.tag_not_in as string[])?.length === 1
 							? undefined
@@ -156,6 +161,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		} else {
 			set((state) => ({
 				filter: {
+					...state.filter,
 					tag_in: state.filter.tag_in ? [...state.filter.tag_in, tag] : [tag],
 				},
 			}));
@@ -166,40 +172,47 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		const genre_not_in = get().filter.genre_not_in;
 		if (genre_in?.includes(genre)) {
 			// moves genre to not include
-			set({
+			set((state) => ({
 				filter: {
+					...state.filter,
 					genre_in:
 						(genre_in as string[])?.length === 1
 							? undefined
 							: (genre_in as string[])?.filter((t) => t !== genre),
 					genre_not_in: genre_not_in ? [...(genre_not_in as string[]), genre] : [genre],
 				},
-			});
+			}));
 		} else if (genre_not_in?.includes(genre)) {
 			// removes genre from all
-			set({
+			set((state) => ({
 				filter: {
+					...state.filter,
 					genre_not_in:
 						(genre_not_in as string[]).length === 1
 							? undefined
 							: (genre_not_in as string[])?.filter((t) => t !== genre),
 				},
-			});
+			}));
 		} else {
 			// adds new genre to be included
-			set({
+			set((state) => ({
 				filter: {
+					...state.filter,
 					genre_in: genre_not_in ? [...(genre_in as string[]), genre] : [genre],
 				},
-			});
+			}));
 		}
 	},
 	updateSort(sort, asc = false) {
-		set({
+		set((state) => ({
 			filter: {
+				...state.filter,
 				sort: asc ? AscSorts[sort] : DescSorts[sort],
 			},
 			sort: { value: sort, asc },
-		});
+		}));
+	},
+	reset() {
+		set(initialState);
 	},
 }));
