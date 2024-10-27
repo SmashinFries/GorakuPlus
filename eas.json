@@ -4,6 +4,7 @@
 	},
 	"build": {
 		"development": {
+			"node": "20.17.0",
 			"android": {
 				"image": "latest"
 			},
