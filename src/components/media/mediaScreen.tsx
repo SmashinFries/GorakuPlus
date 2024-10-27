@@ -1,71 +1,62 @@
-import { StyleSheet, View } from 'react-native';
-import { Button, Portal, Text } from 'react-native-paper';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { View } from 'react-native';
+import { Portal } from 'react-native-paper';
+import { useCallback, useState } from 'react';
+import { router } from 'expo-router';
 import { useMedia } from '@/hooks/media/useMedia';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { MediaLoading, MediaLoadingMem } from '@/components/media/loading';
+import { MediaLoading } from '@/components/media/loading';
 import { FadeHeaderProvider } from '@/components/headers';
 import { MediaBanner } from '@/components/media/banner';
-import { FrontCover, FrontCoverMem } from '@/components/media/sections/frontCover';
+import { FrontCoverMem } from '@/components/media/sections/frontCover';
 import { AnimViewMem } from '@/components/animations';
 import BodyContainer from '@/components/media/body';
 import TagView from '@/components/media/sections/tags';
 import ListEntryView from '@/components/media/sections/entry';
-import { Description, DescriptionMem } from '@/components/media/sections/description';
-import { RelationsMem } from '@/components/media/sections/relations';
+import { Description } from '@/components/media/sections/description';
+import Relations from '@/components/media/sections/relations';
 import { MUData, MetaData } from '@/components/media/sections/meta';
-import { CharacterPrevListMem } from '@/components/media/sections/characters';
-import { StaffPrevListMem } from '@/components/media/sections/staff';
-import { FollowingPrevListMem } from '@/components/media/sections/following';
-import { RecListMem } from '@/components/media/sections/recoms';
+import { CharacterPrevList } from '@/components/media/sections/characters';
+import { StaffPrevList } from '@/components/media/sections/staff';
 import { AnimeTrailer } from '@/components/media/sections/trailer';
 import MediaLinks from '@/components/media/sections/links';
 import { MuSearchDialog, ReleasesDialog } from '@/components/media/dialogs';
-import Animated, { Easing, FadeIn } from 'react-native-reanimated';
-import { getReleaseTime, getTimeUntil } from '@/utils';
+import Animated from 'react-native-reanimated';
 import ReviewsSection from '@/components/media/sections/reviews';
 import { StatSection } from '@/components/media/sections/stats';
 import ScreenshotImages from '@/components/media/sections/screenshots';
 import {
 	ExternalLinkType,
+	MediaFormat,
 	MediaType,
-	ThreadsOverviewQuery,
 	useThreadsOverviewQuery,
 } from '@/api/anilist/__genereated__/gql';
-import { useMatchStore } from '@/store/matchStore';
 import { AnimeFull } from '@/api/jikan/models';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { AniCardPageParams } from '@/types/anicard';
 import { MediaScoresView } from '@/components/media/sections/scores';
 import { ThreadOverview } from '@/components/media/sections/threads';
-import {
-	QuickActionBottomSheet,
-	QuickActionCharStaffBottomSheet,
-	QuickActionUserBottomSheet,
-	ThreadOverviewBottomSheet,
-} from '@/components/bottomsheets';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useQuickActionCS, useQuickActionSheet, useQuickActionUser } from '@/hooks/useQuickAction';
+import { FollowingPrevList } from '@/components/media/sections/following';
+import RecList from '@/components/media/sections/recoms';
+import { AniCardPageParams } from '@/types/anicard';
+import { SheetManager } from 'react-native-actions-sheet';
+import { useReleaseTimes } from '@/hooks/useReleaseTimes';
+import { useShallow } from 'zustand/react/shallow';
+import { ChapterPreview } from './sections/chapterPreview';
 
-const MediaScreen = () => {
-	const { media } = useLocalSearchParams<{ media: [string, string] }>(); // /anime/1234
-	const aniID: number | null = media ? parseInt(media[1]) : null;
-	const type: MediaType | null = media
-		? media[0].toLowerCase() === 'anime'
-			? MediaType.Anime
-			: MediaType.Manga
-		: null;
-
-	const { quickActionRef, selectedMedia, onMediaLongSelect } = useQuickActionSheet();
-	const { quickActionCSRef, selectedCS, onCSLongSelect } = useQuickActionCS();
-	const { quickActionUserRef, selectedUser, onUserLongSelect } = useQuickActionUser();
-
-	const { mediaLanguage, scoreColors } = useSettingsStore();
-	const { userID } = useAuthStore((state) => state.anilist);
-	const { anilist, jikan, muReleases, muSeries, isReady } = useMedia(aniID, type);
-	const threadsQuery = useThreadsOverviewQuery({ id: aniID, page: 1, perPage: 10 });
+const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
+	const { mediaLanguage } = useSettingsStore();
+	const { userID } = useAuthStore(useShallow((state) => state.anilist));
+	const { anilist, jikan, muReleases, muSeries, isReady } = useMedia(aniId, type);
+	const threadsQuery = useThreadsOverviewQuery({ id: aniId, page: 1, perPage: 10 });
+	const releaseText = useReleaseTimes({
+		type,
+		status: anilist?.data?.Media?.status,
+		chapters: anilist?.data?.Media?.chapters,
+		episodes: anilist?.data?.Media?.episodes,
+		volumes: anilist?.data?.Media?.volumes,
+		nextEpisode: anilist?.data?.Media?.nextAiringEpisode,
+		releases: muReleases?.data?.results,
+	});
 
 	const [showReleaseDialog, setShowReleaseDialog] = useState(false);
 	const [showMuDialog, setShowMuDialog] = useState(false);
@@ -78,22 +69,30 @@ const MediaScreen = () => {
 	}, []);
 
 	const openEdit = useCallback(() => {
-		openWebBrowser(`https://anilist.co/edit/${type}/${aniID}`);
+		openWebBrowser(`https://anilist.co/edit/${type}/${aniId}`);
 	}, []);
 
-	const getRelease = useCallback(() => {
-		return getReleaseTime(
-			type,
-			anilist?.data?.Media?.status,
-			anilist?.data?.Media?.nextAiringEpisode,
-			'Chapter Time Test',
-			anilist?.data?.Media?.chapters,
-			anilist?.data?.Media?.episodes,
-			anilist?.data?.Media?.volumes,
-		);
-	}, [type, anilist?.data]);
+	// const getRelease = useCallback(() => {
+	// 	return anilist?.data
+	// 		? getReleaseTime(
+	// 				type,
+	// 				anilist?.data?.Media?.status,
+	// 				anilist?.data?.Media?.nextAiringEpisode,
+	// 				type === MediaType.Manga
+	// 					? getChapterFrequency(
+	// 							muReleases.data.results.map(
+	// 								(release) => release.record?.release_date,
+	// 							),
+	// 						)
+	// 					: '',
+	// 				anilist?.data?.Media?.chapters,
+	// 				anilist?.data?.Media?.episodes,
+	// 				anilist?.data?.Media?.volumes,
+	// 			)
+	// 		: '';
+	// }, [type, muReleases, anilist?.data]);
 
-	if (!media || !aniID) return null;
+	if (!aniId) return null;
 
 	return (
 		<View>
@@ -114,7 +113,7 @@ const MediaScreen = () => {
 				<Animated.View>
 					<FadeHeaderProvider
 						// onBack={() => {
-						// 	dispatch(api.util.invalidateTags([{ id: aniID, type: 'AniMedia' }]));
+						// 	dispatch(api.util.invalidateTags([{ id: aniId, type: 'AniMedia' }]));
 						// }}
 						title={
 							anilist?.data?.Media?.title[mediaLanguage] ??
@@ -147,11 +146,10 @@ const MediaScreen = () => {
 							(link) => link.type === ExternalLinkType.Streaming,
 						)}
 						onAniCard={() => {
-							console.log(anilist?.data?.Media?.idMal);
 							router.push({
 								pathname: '/anicard',
 								params: {
-									id: `${aniID}`,
+									id: `${aniId}`,
 									cardType: 'media',
 									mediaType: type,
 									idMal: `${anilist?.data?.Media?.idMal}`,
@@ -191,21 +189,42 @@ const MediaScreen = () => {
 
 							{userID && (
 								<ListEntryView
-									id={aniID}
+									id={aniId}
 									type={anilist?.data?.Media?.type}
 									status={anilist?.data?.Media?.status}
-									releaseMessage={getRelease()}
-									onShowReleases={() => setShowReleaseDialog(true)}
+									releaseMessage={releaseText}
+									onShowReleases={() =>
+										SheetManager.show('MediaReleasesSheet', {
+											payload: {
+												status: anilist?.data?.Media?.status,
+												animeReleases:
+													anilist?.data?.Media?.airingSchedule?.nodes
+														?.length > 0
+														? anilist?.data?.Media?.airingSchedule
+																?.nodes
+														: undefined,
+												releases:
+													type === MediaType.Manga
+														? muReleases?.data?.results
+														: undefined,
+												streamingEpisodes:
+													anilist?.data?.Media?.streamingEpisodes,
+												streamingSites: (
+													jikan?.data?.data?.data as AnimeFull
+												)?.streaming,
+											},
+										})
+									}
 									data={anilist?.data?.Media?.mediaListEntry}
 									customLists={
 										type === MediaType.Anime
-											? anilist?.data?.User?.mediaListOptions?.animeList
-													?.customLists ?? []
-											: anilist?.data?.User?.mediaListOptions?.mangaList
-													?.customLists ?? []
+											? (anilist?.data?.User?.mediaListOptions?.animeList
+													?.customLists ?? [])
+											: (anilist?.data?.User?.mediaListOptions?.mangaList
+													?.customLists ?? [])
 									}
 									scoreFormat={anilist?.data?.User?.mediaListOptions?.scoreFormat}
-									isFav={anilist?.data?.Media?.isFavourite}
+									media={anilist?.data?.Media}
 									refreshData={anilist.refetch}
 								/>
 							)}
@@ -225,7 +244,7 @@ const MediaScreen = () => {
 									anilist?.data?.Media?.stats?.statusDistribution?.length >
 										0) && (
 									<StatSection
-										id={aniID}
+										id={aniId}
 										rankData={anilist?.data?.Media?.rankings}
 										statData={anilist?.data?.Media?.stats}
 									/>
@@ -238,13 +257,10 @@ const MediaScreen = () => {
 								)}
 							</AnimViewMem>
 							<AnimViewMem delay={800}>
-								<RelationsMem
-									data={anilist?.data?.Media?.relations}
-									onLongSelect={onMediaLongSelect}
-								/>
+								<Relations data={anilist?.data?.Media?.relations} />
 							</AnimViewMem>
 							<AnimViewMem delay={1000}>
-								<CharacterPrevListMem
+								<CharacterPrevList
 									data={anilist?.data?.Media?.characters}
 									openMore={() =>
 										router.push({
@@ -253,45 +269,49 @@ const MediaScreen = () => {
 											params: { mediaId: anilist?.data?.Media?.id },
 										})
 									}
-									onLongSelect={onCSLongSelect}
 								/>
 							</AnimViewMem>
-							<StaffPrevListMem
-								data={anilist?.data?.Media?.staff}
-								openMore={() =>
-									router.push({
-										// @ts-ignore router type gen aint workin
-										pathname: '/staff/staffList',
-										params: { mediaId: anilist?.data?.Media?.id },
-									})
-								}
-								onLongSelect={onCSLongSelect}
-							/>
+							<AnimViewMem delay={1200}>
+								<StaffPrevList
+									data={anilist?.data?.Media?.staff}
+									openMore={() =>
+										router.push({
+											// @ts-ignore router type gen aint workin
+											pathname: '/staff/staffList',
+											params: { mediaId: anilist?.data?.Media?.id },
+										})
+									}
+								/>
+							</AnimViewMem>
 							<ReviewsSection
 								data={anilist?.data?.Media?.reviews}
 								openMore={() => router.push(`/reviews/${anilist?.data?.Media?.id}`)}
 							/>
 							<ThreadOverview
-								aniId={aniID}
+								aniId={aniId}
 								data={threadsQuery?.data}
 								isFetching={threadsQuery?.isFetching}
 							/>
 							{userID && (
-								<FollowingPrevListMem
-									data={anilist?.data?.Following?.mediaList}
-									onLongSelect={onUserLongSelect}
-								/>
+								<FollowingPrevList data={anilist?.data?.Following?.mediaList} />
 							)}
-							<RecListMem
-								data={anilist?.data?.Media?.recommendations}
-								onLongSelect={onMediaLongSelect}
-							/>
+							<RecList data={anilist?.data?.Media?.recommendations} />
 							{type === MediaType.Anime && (
 								<AnimeTrailer video={anilist?.data?.Media?.trailer?.id} />
 							)}
 							{type === MediaType.Anime && (
 								<ScreenshotImages data={anilist?.data?.Media?.streamingEpisodes} />
 							)}
+							{type === MediaType.Manga &&
+								anilist?.data?.Media?.format !== MediaFormat.Novel && (
+									<ChapterPreview
+										aniId={aniId}
+										title={
+											anilist?.data?.Media?.title?.romaji ??
+											anilist?.data?.Media?.title?.native
+										}
+									/>
+								)}
 							<MediaLinks
 								links={anilist?.data?.Media?.externalLinks}
 								aniLink={anilist?.data?.Media?.siteUrl}
@@ -306,9 +326,6 @@ const MediaScreen = () => {
 							/>
 						</BodyContainer>
 					</FadeHeaderProvider>
-					<QuickActionBottomSheet ref={quickActionRef} {...selectedMedia} />
-					<QuickActionCharStaffBottomSheet ref={quickActionCSRef} {...selectedCS} />
-					<QuickActionUserBottomSheet ref={quickActionUserRef} {...selectedUser} />
 					<Portal>
 						{type === MediaType.Manga && (
 							<MuSearchDialog
@@ -322,7 +339,7 @@ const MediaScreen = () => {
 										...(anilist?.data?.Media?.synonyms ?? []),
 									]),
 								]}
-								aniId={aniID}
+								aniId={aniId}
 								visible={showMuDialog}
 								onDismiss={toggleMuDialog}
 								onConfirm={onConfirmMuDialog}
