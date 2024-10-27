@@ -25,32 +25,8 @@ fragment mediaListEntry on MediaList {
 		day
 	}
 	media {
-		id
-		title {
-			userPreferred
-			romaji
-			english
-			native
-		}
-		coverImage {
-			extraLarge
-			large
-			color
-		}
-		type
-		format
-		status(version: 2)
-		episodes
-		volumes
-		chapters
-		averageScore
-		meanScore
-		popularity
-		isAdult
-		countryOfOrigin
-		genres
+		...MainMeta
 		synonyms
-		isFavourite
 		tags {
 			id
 			name
@@ -59,25 +35,6 @@ fragment mediaListEntry on MediaList {
 			isMediaSpoiler
 			isGeneralSpoiler
 			category
-		}
-		bannerImage
-		startDate {
-			year
-			month
-			day
-		}
-		nextAiringEpisode {
-			id
-			airingAt
-			timeUntilAiring
-			episode
-			mediaId
-		}
-		stats {
-			scoreDistribution {
-				score
-				amount
-			}
 		}
 	}
 }

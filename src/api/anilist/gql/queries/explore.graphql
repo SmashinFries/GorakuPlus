@@ -1,3 +1,53 @@
+fragment MediaListEntryMeta on MediaList {
+	id
+	mediaId
+	status
+	score
+	advancedScores
+	progress
+	progressVolumes
+	repeat
+	# media {
+	# 	type
+	# 	format
+	# 	countryOfOrigin
+	# 	status(version: 2)
+	# 	episodes
+	# 	chapters
+	# 	volumes
+	# 	nextAiringEpisode {
+	# 		episode
+	# 	}
+	# }
+	startedAt {
+		year
+		month
+		day
+	}
+	completedAt {
+		year
+		month
+		day
+	}
+	notes
+	private
+	hiddenFromStatusLists
+	customLists(asArray: true)
+	updatedAt
+	createdAt
+	user {
+		mediaListOptions {
+			animeList {
+				customLists
+			}
+			mangaList {
+				customLists
+			}
+			scoreFormat
+		}
+	}
+}
+
 fragment MainMeta on Media {
 	id
 	idMal
@@ -8,7 +58,7 @@ fragment MainMeta on Media {
 	description
 	descriptionHTML: description(asHtml: true)
 	genres
-	status
+	status(version: 2)
 	siteUrl
 	meanScore
 	averageScore
@@ -19,6 +69,7 @@ fragment MainMeta on Media {
 	season
 	isLicensed
 	isAdult
+	synonyms
 	startDate {
 		year
 		month
@@ -42,13 +93,7 @@ fragment MainMeta on Media {
 		color
 	}
 	mediaListEntry {
-		id
-		mediaId
-		status
-		score
-		progress
-		progressVolumes
-		repeat
+		...MediaListEntryMeta
 	}
 	stats {
 		scoreDistribution {
@@ -56,10 +101,8 @@ fragment MainMeta on Media {
 			amount
 		}
 	}
-}
-
-fragment AnimeMeta on Media {
-	...MainMeta
+	chapters
+	volumes
 	episodes
 	nextAiringEpisode {
 		id
@@ -70,13 +113,8 @@ fragment AnimeMeta on Media {
 	}
 }
 
-fragment MangaMeta on Media {
-	...MainMeta
-	chapters
-	volumes
-}
-
 query AnimeExplore(
+	$includeViewer: Boolean!
 	$perPage: Int
 	$season: MediaSeason
 	$seasonYear: Int
@@ -86,6 +124,11 @@ query AnimeExplore(
 	$isAdult: Boolean
 	$tag_not_in: [String]
 ) {
+	Viewer @include(if: $includeViewer) {
+		mediaListOptions {
+			scoreFormat
+		}
+	}
 	trending: Page(page: 1, perPage: $perPage) {
 		pageInfo {
 			hasNextPage
@@ -99,7 +142,7 @@ query AnimeExplore(
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 			tag_not_in: $tag_not_in
 		) {
-			...AnimeMeta
+			...MainMeta
 		}
 	}
 	popular: Page(page: 1, perPage: $perPage) {
@@ -115,7 +158,7 @@ query AnimeExplore(
 			sort: POPULARITY_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...AnimeMeta
+			...MainMeta
 		}
 	}
 	top: Page(page: 1, perPage: $perPage) {
@@ -131,7 +174,7 @@ query AnimeExplore(
 			sort: SCORE_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...AnimeMeta
+			...MainMeta
 		}
 	}
 	thisSeason: Page(page: 1, perPage: $perPage) {
@@ -149,7 +192,7 @@ query AnimeExplore(
 			sort: SCORE_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...AnimeMeta
+			...MainMeta
 		}
 	}
 	nextSeason: Page(page: 1, perPage: $perPage) {
@@ -167,18 +210,24 @@ query AnimeExplore(
 			sort: TRENDING_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...AnimeMeta
+			...MainMeta
 		}
 	}
 }
 
 query MangaExplore(
+	$includeViewer: Boolean!
 	$perPage: Int
 	$startDate_greater: FuzzyDateInt
 	$onList: Boolean
 	$isAdult: Boolean
 	$tag_not_in: [String]
 ) {
+	Viewer @include(if: $includeViewer) {
+		mediaListOptions {
+			scoreFormat
+		}
+	}
 	newReleases: Page(page: 1, perPage: $perPage) {
 		pageInfo {
 			hasNextPage
@@ -196,7 +245,7 @@ query MangaExplore(
 			format_not_in: [NOVEL, ONE_SHOT]
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	trending: Page(page: 1, perPage: $perPage) {
@@ -214,7 +263,7 @@ query MangaExplore(
 			tag_not_in: $tag_not_in
 			format_not_in: NOVEL
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	popular: Page(page: 1, perPage: $perPage) {
@@ -232,7 +281,7 @@ query MangaExplore(
 			tag_not_in: $tag_not_in
 			format_not_in: NOVEL
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	top: Page(page: 1, perPage: $perPage) {
@@ -250,18 +299,24 @@ query MangaExplore(
 			tag_not_in: $tag_not_in
 			format_not_in: NOVEL
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 }
 
 query ManhwaExplore(
+	$includeViewer: Boolean!
 	$perPage: Int
 	$startDate_greater: FuzzyDateInt
 	$onList: Boolean
 	$isAdult: Boolean
 	$tag_not_in: [String]
 ) {
+	Viewer @include(if: $includeViewer) {
+		mediaListOptions {
+			scoreFormat
+		}
+	}
 	newReleases: Page(page: 1, perPage: $perPage) {
 		pageInfo {
 			hasNextPage
@@ -279,7 +334,7 @@ query ManhwaExplore(
 			format_not_in: [NOVEL, ONE_SHOT]
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	trending: Page(page: 1, perPage: $perPage) {
@@ -296,7 +351,7 @@ query ManhwaExplore(
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	popular: Page(page: 1, perPage: $perPage) {
@@ -313,7 +368,7 @@ query ManhwaExplore(
 			sort: POPULARITY_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	top: Page(page: 1, perPage: $perPage) {
@@ -330,18 +385,24 @@ query ManhwaExplore(
 			sort: SCORE_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 }
 
 query ManhuaExplore(
+	$includeViewer: Boolean!
 	$perPage: Int
 	$startDate_greater: FuzzyDateInt
 	$onList: Boolean
 	$isAdult: Boolean
 	$tag_not_in: [String]
 ) {
+	Viewer @include(if: $includeViewer) {
+		mediaListOptions {
+			scoreFormat
+		}
+	}
 	newReleases: Page(page: 1, perPage: $perPage) {
 		pageInfo {
 			hasNextPage
@@ -359,7 +420,7 @@ query ManhuaExplore(
 			format_not_in: [NOVEL, ONE_SHOT]
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	trending: Page(page: 1, perPage: $perPage) {
@@ -376,7 +437,7 @@ query ManhuaExplore(
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	popular: Page(page: 1, perPage: $perPage) {
@@ -393,7 +454,7 @@ query ManhuaExplore(
 			sort: POPULARITY_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	top: Page(page: 1, perPage: $perPage) {
@@ -410,18 +471,24 @@ query ManhuaExplore(
 			sort: SCORE_DESC
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 }
 
 query NovelExplore(
+	$includeViewer: Boolean!
 	$perPage: Int
 	$startDate_greater: FuzzyDateInt
 	$onList: Boolean
 	$isAdult: Boolean
 	$tag_not_in: [String]
 ) {
+	Viewer @include(if: $includeViewer) {
+		mediaListOptions {
+			scoreFormat
+		}
+	}
 	newReleases: Page(page: 1, perPage: $perPage) {
 		pageInfo {
 			hasNextPage
@@ -438,7 +505,7 @@ query NovelExplore(
 			format: NOVEL
 			sort: [TRENDING_DESC, POPULARITY_DESC]
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	trending: Page(page: 1, perPage: $perPage) {
@@ -455,7 +522,7 @@ query NovelExplore(
 			format: NOVEL
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	popular: Page(page: 1, perPage: $perPage) {
@@ -472,7 +539,7 @@ query NovelExplore(
 			format: NOVEL
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 	top: Page(page: 1, perPage: $perPage) {
@@ -489,7 +556,7 @@ query NovelExplore(
 			format: NOVEL
 			tag_not_in: $tag_not_in
 		) {
-			...MangaMeta
+			...MainMeta
 		}
 	}
 }
@@ -612,20 +679,6 @@ query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $o
 	}
 }
 
-query GenreTagCollection {
-	GenreCollection
-	MediaTagCollection {
-		id
-		name
-		description
-		category
-		rank
-		isGeneralSpoiler
-		isMediaSpoiler
-		isAdult
-	}
-}
-
 query StudioList($studioId: Int, $page: Int, $perPage: Int) {
 	Studio(id: $studioId) {
 		id
@@ -642,7 +695,7 @@ query StudioList($studioId: Int, $page: Int, $perPage: Int) {
 				hasNextPage
 			}
 			nodes {
-				...AnimeMeta
+				...MainMeta
 			}
 		}
 	}

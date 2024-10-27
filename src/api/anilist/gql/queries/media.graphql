@@ -74,18 +74,7 @@ query AniMedia(
 			score
 			progress
 			user {
-				id
-				name
-				aboutHTML: about(asHtml: true)
-				isFollowing
-				isFollower
-				avatar {
-					large
-				}
-				mediaListOptions {
-					scoreFormat
-				}
-				siteUrl
+				...UserSearchMeta
 			}
 		}
 	}
@@ -139,9 +128,7 @@ query AniMedia(
 				id
 				relationType(version: 2)
 				node {
-					...AnimeMeta
-					chapters
-					volumes
+					...MainMeta
 				}
 			}
 		}
@@ -217,48 +204,13 @@ query AniMedia(
 					rating
 					userRating
 					mediaRecommendation {
-						...AnimeMeta
-						chapters
-						volumes
+						...MainMeta
 					}
 				}
 			}
 		}
 		mediaListEntry {
-			id
-			mediaId
-			media {
-				status(version: 2)
-				episodes
-				chapters
-				volumes
-				nextAiringEpisode {
-					episode
-				}
-			}
-			status
-			score
-			progress
-			progressVolumes
-			repeat
-			priority
-			private
-			notes
-			hiddenFromStatusLists
-			customLists
-			advancedScores
-			startedAt {
-				year
-				month
-				day
-			}
-			completedAt {
-				year
-				month
-				day
-			}
-			updatedAt
-			createdAt
+			...MediaListEntryMeta
 		}
 		staff(page: 1, perPage: 25, sort: [RELEVANCE, ID]) {
 			pageInfo {
@@ -410,17 +362,7 @@ query CharacterList($id: Int, $page: Int, $perPage: Int, $sort: [CharacterSort])
 					}
 				}
 				node {
-					id
-					image {
-						large
-					}
-					gender
-					isFavourite
-					favourites
-					name {
-						full
-						native
-					}
+					...CharacterMetaData
 				}
 			}
 		}
@@ -456,50 +398,13 @@ query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) 
 				voiceActorRoles(sort: [RELEVANCE, ID]) {
 					roleNotes
 					voiceActor {
-						id
-						name {
-							first
-							middle
-							last
-							full
-							native
-						}
-						image {
-							large
-						}
+						...StaffMetaData
 						language: languageV2
 					}
 				}
 				characterRole
 				node {
-					id
-					idMal
-					title {
-						english
-						native
-						romaji
-					}
-					type
-					format
-					status(version: 2)
-					isLicensed
-					averageScore
-					meanScore
-					isAdult
-					isFavourite
-					bannerImage
-					source
-					countryOfOrigin
-					coverImage {
-						extraLarge
-						color
-					}
-					stats {
-						scoreDistribution {
-							score
-							amount
-						}
-					}
+					...MainMeta
 				}
 			}
 		}
@@ -513,17 +418,7 @@ query StaffList($id: Int, $page: Int, $perPage: Int) {
 			edges {
 				role
 				node {
-					id
-					name {
-						full
-						native
-					}
-					languageV2
-					image {
-						large
-					}
-					isFavourite
-					favourites
+					...StaffMetaData
 				}
 			}
 			pageInfo {
@@ -586,31 +481,7 @@ query StaffDetails(
 			edges {
 				staffRole
 				node {
-					id
-					idMal
-					type
-					status(version: 2)
-					averageScore
-					meanScore
-					format
-					isLicensed
-					isFavourite
-					bannerImage
-					title {
-						romaji
-						english
-						native
-					}
-					coverImage {
-						extraLarge
-						color
-					}
-					stats {
-						scoreDistribution {
-							score
-							amount
-						}
-					}
+					...MainMeta
 				}
 			}
 		}

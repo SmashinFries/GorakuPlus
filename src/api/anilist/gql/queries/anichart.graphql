@@ -10,7 +10,25 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
 			airingAt
 			timeUntilAiring
 			media {
-				...AnimeMeta
+				...MainMeta
+			}
+		}
+	}
+}
+
+query AiringToday($dayStart: Int, $dayEnd: Int) {
+	Page(perPage: 50) {
+		pageInfo {
+			hasNextPage
+			total
+		}
+		airingSchedules(airingAt_greater: $dayStart, airingAt_lesser: $dayEnd) {
+			id
+			episode
+			airingAt
+			timeUntilAiring
+			media {
+				...MainMeta
 			}
 		}
 	}

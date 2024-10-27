@@ -15,6 +15,7 @@ fragment CharacterMetaData on Character {
 	}
 	gender
 	description
+	favourites
 	descriptionHTML: description(asHtml: true)
 	siteUrl
 }
@@ -36,6 +37,8 @@ fragment StaffMetaData on Staff {
 	}
 	description
 	gender
+	favourites
+	language: languageV2
 	descriptionHTML: description(asHtml: true)
 	siteUrl
 }
@@ -190,28 +193,46 @@ query MediaSearch(
 			source_in: $source_in
 			sort: $sort
 		) {
-			...AnimeMeta
-			chapters
-			volumes
+			...MainMeta
 		}
 	}
 }
 
-query UserSearch($search: String) {
+fragment UserSearchMeta on User {
+	id
+	name
+	aboutHTML: about(asHtml: true)
+	isFollowing
+	isFollower
+	avatar {
+		large
+	}
+	mediaListOptions {
+		scoreFormat
+	}
+	siteUrl
+}
+
+query UserSearch($id: Int, $search: String, $sort: [UserSort], $isModerator: Boolean) {
 	Page(page: 1) {
-		users(search: $search) {
-			id
-			name
-			avatar {
-				large
-			}
-			isFollowing
-			isFollower
+		pageInfo {
+			hasNextPage
+			currentPage
+			total
+		}
+		users(id: $id, search: $search, isModerator: $isModerator, sort: $sort) {
+			...UserSearchMeta
 		}
 	}
 }
 
-query CharacterSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [CharacterSort]) {
+query CharacterSearch(
+	$id: Int
+	$search: String
+	$page: Int
+	$isBirthday: Boolean
+	$sort: [CharacterSort]
+) {
 	Page(page: $page, perPage: 50) {
 		pageInfo {
 			total
@@ -220,13 +241,13 @@ query CharacterSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [C
 			lastPage
 			hasNextPage
 		}
-		characters(search: $name, isBirthday: $isBirthday, sort: $sort) {
+		characters(id: $id, search: $search, isBirthday: $isBirthday, sort: $sort) {
 			...CharacterMetaData
 		}
 	}
 }
 
-query StaffSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [StaffSort]) {
+query StaffSearch($id: Int, $search: String, $page: Int, $isBirthday: Boolean, $sort: [StaffSort]) {
 	Page(page: $page, perPage: 50) {
 		pageInfo {
 			total
@@ -235,13 +256,13 @@ query StaffSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [Staff
 			lastPage
 			hasNextPage
 		}
-		staff(search: $name, isBirthday: $isBirthday, sort: $sort) {
+		staff(id: $id, search: $search, isBirthday: $isBirthday, sort: $sort) {
 			...StaffMetaData
 		}
 	}
 }
 
-query StudioSearch($name: String, $page: Int, $sort: [StudioSort]) {
+query StudioSearch($id: Int, $search: String, $page: Int, $sort: [StudioSort]) {
 	Page(page: $page, perPage: 50) {
 		pageInfo {
 			total
@@ -250,16 +271,13 @@ query StudioSearch($name: String, $page: Int, $sort: [StudioSort]) {
 			lastPage
 			hasNextPage
 		}
-		studios(search: $name, sort: $sort) {
+		studios(id: $id, search: $search, sort: $sort) {
 			id
 			name
 			media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
 				edges {
 					node {
-						bannerImage
-						coverImage {
-							extraLarge
-						}
+						...MainMeta
 					}
 				}
 			}
@@ -276,8 +294,8 @@ query SearchAll($search: String, $perPage: Int, $isAdult: Boolean) {
 			currentPage
 			total
 		}
-		media(type: ANIME, search: $search, isAdult: $isAdult, sort: SEARCH_MATCH) {
-			...AnimeMeta
+		media(type: ANIME, search: $search, isAdult: $isAdult) {
+			...MainMeta
 		}
 	}
 	Manga: Page(page: 1, perPage: $perPage) {
@@ -286,8 +304,8 @@ query SearchAll($search: String, $perPage: Int, $isAdult: Boolean) {
 			currentPage
 			total
 		}
-		media(type: MANGA, search: $search, isAdult: $isAdult, sort: SEARCH_MATCH) {
-			...MangaMeta
+		media(type: MANGA, search: $search, isAdult: $isAdult) {
+			...MainMeta
 		}
 	}
 	Characters: Page(page: 1, perPage: $perPage) {
@@ -298,7 +316,7 @@ query SearchAll($search: String, $perPage: Int, $isAdult: Boolean) {
 			lastPage
 			hasNextPage
 		}
-		characters(search: $search, sort: SEARCH_MATCH) {
+		characters(search: $search) {
 			id
 			isFavourite
 			dateOfBirth {
@@ -323,7 +341,7 @@ query SearchAll($search: String, $perPage: Int, $isAdult: Boolean) {
 			lastPage
 			hasNextPage
 		}
-		staff(search: $search, sort: SEARCH_MATCH) {
+		staff(search: $search) {
 			id
 			isFavourite
 			dateOfBirth {
@@ -348,13 +366,13 @@ query SearchAll($search: String, $perPage: Int, $isAdult: Boolean) {
 			lastPage
 			hasNextPage
 		}
-		studios(search: $search, sort: SEARCH_MATCH) {
+		studios(search: $search) {
 			id
 			name
 			media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
 				edges {
 					node {
-						...AnimeMeta
+						...MainMeta
 					}
 				}
 			}

@@ -5,7 +5,7 @@ query MediaAniCardQuery($id: Int) {
 		averageScore
 		meanScore
 		status
-		description
+		descriptionHTML: description(asHtml: true)
 		episodes
 		chapters
 		volumes

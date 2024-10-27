@@ -1,0 +1,83 @@
+query TagCollection {
+	MediaTagCollection {
+		id
+		name
+		description
+		category
+		rank
+		isGeneralSpoiler
+		isMediaSpoiler
+		isAdult
+		userId
+	}
+}
+
+query LinkSourceCollection {
+	AnimeExternalLinkSourceCollection: ExternalLinkSourceCollection(mediaType: ANIME) {
+		id
+		url
+		site
+		siteId
+		type
+		language
+		color
+		icon
+		notes
+		isDisabled
+	}
+	MangaExternalLinkSourceCollection: ExternalLinkSourceCollection(mediaType: MANGA) {
+		id
+		url
+		site
+		siteId
+		type
+		language
+		color
+		icon
+		notes
+		isDisabled
+	}
+}
+
+query GenreCollection {
+	GenreCollection
+}
+
+query AllCollections {
+	GenreCollection
+	MediaTagCollection {
+		id
+		name
+		description
+		category
+		rank
+		isGeneralSpoiler
+		isMediaSpoiler
+		isAdult
+		userId
+	}
+	AnimeExternalLinkSourceCollection: ExternalLinkSourceCollection(mediaType: ANIME) {
+		id
+		url
+		site
+		siteId
+		type
+		language
+		color
+		icon
+		notes
+		isDisabled
+	}
+	MangaExternalLinkSourceCollection: ExternalLinkSourceCollection(mediaType: MANGA) {
+		id
+		url
+		site
+		siteId
+		type
+		language
+		color
+		icon
+		notes
+		isDisabled
+	}
+}

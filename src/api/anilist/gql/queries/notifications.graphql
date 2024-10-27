@@ -63,6 +63,32 @@ query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
 				createdAt
 				type
 			}
+			... on ActivityReplyLikeNotification {
+				id
+				activityId
+				user {
+					...user
+				}
+				activity {
+					...activity
+				}
+				context
+				createdAt
+				type
+			}
+			... on ActivityReplySubscribedNotification {
+				id
+				activityId
+				user {
+					...user
+				}
+				activity {
+					...activity
+				}
+				context
+				createdAt
+				type
+			}
 			... on AiringNotification {
 				id
 				media {
@@ -120,6 +146,189 @@ query GetNotifications($page: Int, $amount: Int, $reset: Boolean) {
 				createdAt
 				type
 			}
+			... on ThreadLikeNotification {
+				id
+				threadId
+				context
+				user {
+					...user
+				}
+				thread {
+					...thread
+				}
+				context
+				createdAt
+				type
+			}
+			... on ThreadCommentLikeNotification {
+				id
+				commentId
+				context
+				user {
+					...user
+				}
+				thread {
+					...thread
+				}
+				comment {
+					comment
+				}
+				context
+				createdAt
+				type
+			}
+			... on ThreadCommentReplyNotification {
+				id
+				commentId
+				context
+				user {
+					...user
+				}
+				thread {
+					...thread
+				}
+				comment {
+					comment
+				}
+				context
+				createdAt
+				type
+			}
+			... on ThreadCommentMentionNotification {
+				id
+				commentId
+				context
+				user {
+					...user
+				}
+				thread {
+					...thread
+				}
+				comment {
+					comment
+				}
+				context
+				createdAt
+				type
+			}
+			... on ThreadCommentSubscribedNotification {
+				id
+				commentId
+				context
+				user {
+					...user
+				}
+				thread {
+					...thread
+				}
+				comment {
+					comment
+				}
+				context
+				createdAt
+				type
+			}
+		}
+	}
+}
+
+query ActivityDetail($id: Int) {
+	Activity(id: $id) {
+		__typename
+		... on TextActivity {
+			id
+			userId
+			type
+			replyCount
+			text(asHtml: true)
+			siteUrl
+			isLocked
+			isSubscribed
+			likeCount
+			isLiked
+			isPinned
+			createdAt
+			user {
+				...user
+			}
+			replies {
+				id
+				userId
+				activityId
+				text(asHtml: true)
+				likeCount
+				isLiked
+				createdAt
+				user {
+					...user
+				}
+			}
+		}
+		... on ListActivity {
+			id
+			userId
+			type
+			replyCount
+			status
+			progress
+			isLocked
+			isSubscribed
+			likeCount
+			isLiked
+			isPinned
+			siteUrl
+			createdAt
+			user {
+				...user
+			}
+			media {
+				...media
+			}
+			replies {
+				id
+				userId
+				activityId
+				text(asHtml: true)
+				likeCount
+				isLiked
+				createdAt
+				user {
+					...user
+				}
+			}
+		}
+		... on MessageActivity {
+			id
+			recipientId
+			messengerId
+			type
+			replyCount
+			message(asHtml: true)
+			isLocked
+			isSubscribed
+			likeCount
+			isLiked
+			isPrivate
+			siteUrl
+			createdAt
+			recipient {
+				...user
+			}
+			messenger {
+				...user
+			}
+			replies {
+				id
+				userId
+				activityId
+				text(asHtml: true)
+				likeCount
+				isLiked
+				createdAt
+				user {
+					...user
+				}
+			}
 		}
 	}
 }
@@ -135,6 +344,9 @@ fragment media on Media {
 		native
 		romaji
 		english
+	}
+	mediaListEntry {
+		status
 	}
 	bannerImage
 	coverImage {
