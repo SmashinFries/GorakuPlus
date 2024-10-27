@@ -1,48 +1,17 @@
 import { useAppTheme } from '@/store/theme/themes';
-import {
-	Platform,
-	StyleProp,
-	StyleSheet,
-	useWindowDimensions,
-	View,
-	ViewStyle,
-} from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { View } from 'react-native';
 import Animated, {
-	clamp,
-	FadeIn,
-	FadeOut,
-	runOnJS,
-	useAnimatedStyle,
-	useDerivedValue,
 	useSharedValue,
-	withSpring,
 	withTiming,
-	ZoomInDown,
 	ZoomInEasyDown,
-	ZoomInUp,
 	ZoomOutEasyDown,
 } from 'react-native-reanimated';
-import { useEffect, useRef, useState } from 'react';
-import * as Haptics from 'expo-haptics';
-import { Text } from 'react-native-paper';
+import { useEffect, useState } from 'react';
+import { Text, TextInput } from 'react-native-paper';
 import { Slider as RNSlider } from '@miblanchard/react-native-slider';
 import { SliderOnChangeCallback } from '@miblanchard/react-native-slider/lib/types';
 
-type OMUISliderProps = {
-	initialValue: number;
-	onValueChange: (value: number) => void;
-	minValue: number;
-	maxValue: number;
-	mode?: 'discrete' | 'continuous';
-	step?: number;
-	snap?: boolean;
-	backgroundColor?: string;
-	isReset?: boolean;
-	resetValue?: number;
-};
-
-const SliderRoundEdge = ({
+const _SliderRoundEdge = ({
 	minColor,
 	maxColor,
 	backgroundColor,
@@ -159,7 +128,7 @@ export const MUISlider = ({
 			? Array.from({ length: maxValue }, (v, i) => i + 1)
 			: [minValue, maxValue];
 	const [isSliding, setIsSliding] = useState(false);
-	const [trackWidth, setTrackWidth] = useState(0);
+	const [trackWidth, _setTrackWidth] = useState(0);
 	// const valueAnim = useSharedValue(value);
 	// const trackWidthAnim = useSharedValue(0);
 	const thumbWidthAnimVal = useSharedValue(4);
@@ -479,57 +448,223 @@ export const MUISlider = ({
 // };
 
 type TestSliderProps = {
-	initialValue: number;
+	title: string;
+	description?: string;
+	initialValue: number | 'ANY';
 	onValueUpdate: (val: number) => void;
 	maxValue: number;
+	allowTextInput?: boolean;
 	minValue?: number;
 	steps?: number;
 };
-export const TestSlider = ({
+export const Slider = ({
+	title,
+	description,
 	initialValue,
 	maxValue,
 	minValue = 0,
 	steps,
+	allowTextInput = false,
 	onValueUpdate,
 }: TestSliderProps) => {
 	const { colors } = useAppTheme();
-	const [value, setValue] = useState(initialValue);
+	const [value, setValue] = useState(initialValue === 'ANY' ? (minValue ?? 0) : initialValue);
+	const [textValue, setTextValue] = useState(`${initialValue}`);
+	// const { shouldHandleKeyboardEvents } = useBottomSheetInternal();
 
 	const trackMarks = !!steps
 		? Array.from({ length: maxValue }, (v, i) => i + 1)
 		: [minValue, maxValue];
 
 	const onSliderComplete: SliderOnChangeCallback = (val) => {
-		onValueUpdate(val[0]);
+		onValueUpdate(Number(val[0].toFixed(0)));
+		setTextValue(`${val[0].toFixed(0)}`);
 	};
 
+	const onTextInput = (txt: string) => {
+		const num = parseInt(txt);
+		setTextValue(txt);
+		if (num && num > minValue && num <= maxValue) {
+			setValue(num);
+			onValueUpdate(Number(num.toFixed(0)));
+		} else if (num && (num < minValue || num > maxValue)) {
+			setValue(minValue);
+			onValueUpdate(undefined);
+		}
+		// if (num) {
+		// 	setValue(num);
+		// 	onValueUpdate(Number(num.toFixed(0)));
+		// }
+	};
+
+	useEffect(() => {
+		setValue(initialValue === 'ANY' ? (minValue ?? 0) : initialValue);
+		setTextValue(`${initialValue === 'ANY' ? '' : initialValue}`);
+	}, [initialValue]);
+
 	return (
-		<View style={{ paddingHorizontal: 10 }}>
-			<RNSlider
-				value={value}
-				onSlidingComplete={onSliderComplete}
-				onValueChange={(vals) => setValue(vals[0])}
-				step={steps}
-				trackMarks={trackMarks}
-				containerStyle={{ width: '100%', flex: 1 }}
-				trackStyle={{ height: 6 }}
-				minimumValue={minValue}
-				maximumValue={maxValue}
-				minimumTrackTintColor={colors.primary}
-				maximumTrackTintColor={colors.primaryContainer}
-				thumbTintColor={colors.primary}
-				thumbStyle={{ width: 20, height: 20 }}
-				renderTrackMarkComponent={() => (
-					<View
-						style={{
-							width: 4,
-							height: 4,
-							borderRadius: 4 / 2,
-							backgroundColor: colors.primary,
-						}}
+		<View style={{ paddingVertical: 8 }}>
+			<View style={{ paddingHorizontal: 16 }}>
+				<Text variant="titleMedium">{title}</Text>
+				{description ? (
+					<Text variant="labelSmall" style={{ color: colors.onSurfaceVariant }}>
+						{description}
+					</Text>
+				) : null}
+			</View>
+			<View
+				style={[
+					{
+						marginHorizontal: 16,
+					},
+					allowTextInput && {
+						flexDirection: 'row',
+						alignItems: 'center',
+					},
+				]}
+			>
+				<RNSlider
+					value={value}
+					onSlidingComplete={onSliderComplete}
+					onValueChange={(vals) => {
+						setValue(vals[0]);
+						setTextValue(`${vals[0].toFixed(0)}`);
+					}}
+					step={steps}
+					trackMarks={trackMarks}
+					trackStyle={{ height: 6 }}
+					minimumValue={minValue}
+					maximumValue={maxValue}
+					minimumTrackTintColor={colors.primary}
+					maximumTrackTintColor={colors.primaryContainer}
+					thumbTintColor={colors.primary}
+					thumbStyle={{ width: 20, height: 20 }}
+					renderTrackMarkComponent={() => (
+						<View
+							style={{
+								width: 4,
+								height: 4,
+								borderRadius: 4 / 2,
+								backgroundColor: colors.primary,
+							}}
+						/>
+					)}
+					containerStyle={allowTextInput ? { flexGrow: 1, marginRight: 12 } : {}}
+				/>
+				{allowTextInput ? (
+					<TextInput
+						value={textValue}
+						mode="outlined"
+						dense
+						onChangeText={onTextInput}
+						placeholder={
+							initialValue === 'ANY' && (value === 0 || value === minValue)
+								? 'Any'
+								: ''
+						}
+						keyboardType="number-pad"
+						// onFocus={handleOnFocus}
+						// onBlur={handleOnBlur}
 					/>
-				)}
-			/>
+				) : null}
+			</View>
+		</View>
+	);
+};
+
+type RangeSliderProps = {
+	title: string;
+	initialValues: [number, number];
+	onValueUpdate: (vals: number[]) => void;
+	maxValue: number;
+	minValue?: number;
+	steps?: number;
+};
+export const RangeSlider = ({
+	title,
+	initialValues,
+	maxValue,
+	minValue = 0,
+	steps,
+	onValueUpdate,
+}: RangeSliderProps) => {
+	const { colors } = useAppTheme();
+	const [values, setValues] = useState<number[]>(initialValues);
+
+	const trackMarks = !!steps
+		? Array.from({ length: maxValue }, (v, i) => i + 1)
+		: [minValue, maxValue];
+
+	const onSliderComplete: SliderOnChangeCallback = (vals) => {
+		onValueUpdate([Number(vals[0].toFixed(0)), Number(vals[1].toFixed(0))]);
+	};
+
+	const reset = () => {
+		onValueUpdate([minValue, maxValue]);
+		setValues([minValue, maxValue]);
+	};
+
+	useEffect(() => {
+		setValues(initialValues);
+	}, [initialValues]);
+
+	return (
+		<View>
+			<View
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					paddingHorizontal: 16,
+					height: 28,
+				}}
+			>
+				<Text variant="titleMedium">{title}</Text>
+				{
+					<Text
+						variant="labelLarge"
+						style={{ color: colors.primary }}
+						onPress={reset}
+						disabled={values[0] > minValue || values[1] < maxValue}
+					>
+						{/* <Icon source={'close'} size={undefined} color={colors.primary} /> */}
+						{`${values[0].toFixed(0)} - ${values[1].toFixed(0)}`}
+						{values[1] === maxValue ? ' +' : ''}{' '}
+					</Text>
+				}
+			</View>
+			<View
+				style={[
+					{
+						marginHorizontal: 16,
+					},
+				]}
+			>
+				<RNSlider
+					value={values}
+					onSlidingComplete={onSliderComplete}
+					onValueChange={(vals) => setValues(vals)}
+					step={steps}
+					trackMarks={trackMarks}
+					trackStyle={{ height: 6 }}
+					minimumValue={minValue}
+					maximumValue={maxValue}
+					minimumTrackTintColor={colors.primary}
+					maximumTrackTintColor={colors.primaryContainer}
+					thumbTintColor={colors.primary}
+					thumbStyle={{ width: 20, height: 20 }}
+					// renderTrackMarkComponent={() => (
+					// 	<View
+					// 		style={{
+					// 			width: 4,
+					// 			height: 4,
+					// 			borderRadius: 4 / 2,
+					// 			backgroundColor: colors.primary,
+					// 		}}
+					// 	/>
+					// )}
+				/>
+			</View>
 		</View>
 	);
 };

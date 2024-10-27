@@ -4,6 +4,8 @@ import { AnilistIcon, DanbooruIcon } from '../svgs';
 import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 import { View } from 'react-native';
 import { useAppTheme } from '@/store/theme/themes';
+import { useMatchStore } from '@/store/matchStore';
+import { useShallow } from 'zustand/react/shallow';
 
 const LoadingIcon = ({ icon, dark }: { icon: 'ani' | 'danbooru'; dark: boolean }) => {
 	return (
@@ -67,6 +69,11 @@ type LoadingProps = {
 
 export const CharacterLoading = ({ aniLoading, artLoading, aniError, artError }: LoadingProps) => {
 	const { dark } = useAppTheme();
+	const { isBooruEnabled } = useMatchStore(
+		useShallow((state) => ({
+			isBooruEnabled: state.isBooruEnabled,
+		})),
+	);
 	return (
 		<Animated.View
 			style={[
@@ -82,7 +89,9 @@ export const CharacterLoading = ({ aniLoading, artLoading, aniError, artError }:
 			exiting={FadeOut.duration(500).easing(Easing.ease)}
 		>
 			<LoadingItem loading={aniLoading} dark={dark} error={aniError} icon="ani" />
-			<LoadingItem loading={artLoading} dark={dark} error={artError} icon="danbooru" />
+			{isBooruEnabled && (
+				<LoadingItem loading={artLoading} dark={dark} error={artError} icon="danbooru" />
+			)}
 		</Animated.View>
 	);
 };

@@ -1,12 +1,12 @@
 import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { QuickSelector } from '@/components/media/quickSelect';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import { MediaTitleView } from '@/components/media/text';
-import { Portal, useTheme } from 'react-native-paper';
+import { Portal } from 'react-native-paper';
 import { router } from 'expo-router';
 import use3dPan from '@/hooks/animations/use3dPan';
 import { GestureDetector } from 'react-native-gesture-handler';
-import Animated, { FadeIn, RollInRight, SlideInDown, SlideInUp } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { ImageViewer } from '@/components/imageViewer';
 import { AniMediaQuery, MediaStatus, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
@@ -99,12 +99,22 @@ export const FrontCover = ({ data, defaultTitle }: FrontCoverProps) => {
 					<QuickSelector
 						icon={'badge-account-outline'}
 						disabled={data?.staff?.edges?.length < 1}
-						onPress={() => router.push(`/staff/${data?.id}`)}
+						onPress={() =>
+							router.push({
+								pathname: '/staff/staffList',
+								params: { mediaId: data?.id },
+							})
+						}
 					/>
 					<QuickSelector
 						icon={'account-group-outline'}
 						disabled={data?.characters?.edges?.length < 1}
-						onPress={() => router.push(`/characters/${data?.type}/${data?.id}`)}
+						onPress={() =>
+							router.navigate({
+								pathname: '/character/characterList',
+								params: { mediaId: data?.id },
+							})
+						}
 						// onPress={() =>
 						//     nav.navigate('characterStack', {
 						//         screen: 'characterList',

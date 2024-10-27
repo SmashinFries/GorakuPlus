@@ -1,22 +1,13 @@
-import { Text as RNText, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
-import {
-	ActivityIndicator,
-	Chip,
-	IconButton,
-	List,
-	MD3DarkTheme,
-	Text,
-	useTheme,
-} from 'react-native-paper';
-import { useCallback, useEffect, useState } from 'react';
+import { Text as RNText, ScrollView, StyleSheet, View } from 'react-native';
+import { Chip, List, MD3DarkTheme, Text } from 'react-native-paper';
+import { useCallback } from 'react';
 import { Image } from 'expo-image';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
 import { FadeHeaderProvider } from '@/components/headers';
 import { convertDate, copyToClipboard } from '@/utils';
-import { openWebBrowser } from '@/utils/webBrowser';
 import { FlashList } from '@shopify/flash-list';
 import { StaffMediaCard } from '@/components/staff/media';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { HTMLText } from '@/components/text';
 import { MediaBanner } from '@/components/media/banner';
 import Animated from 'react-native-reanimated';
@@ -42,7 +33,7 @@ const StafPage = () => {
 	const { enabled, english } = useTTSStore();
 	const { speak } = useTTS();
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
-	const { data, isLoading, isError } = useStaffDetailsQuery(
+	const { data, isLoading } = useStaffDetailsQuery(
 		{
 			id: id,
 			char_page: 1,
@@ -60,12 +51,7 @@ const StafPage = () => {
 
 	const StaffMediaRenderItem = useCallback(
 		({ item }: { item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0] }) => {
-			return (
-				<StaffMediaCard
-					item={item}
-					onNav={() => router.push(`/${item.node?.type}/${item.node?.id}`)}
-				/>
-			);
+			return <StaffMediaCard item={item} />;
 		},
 		[],
 	);
@@ -230,7 +216,7 @@ const StafPage = () => {
 						<List.Item
 							title="Hometown"
 							left={(props) => <List.Icon {...props} icon="home-city-outline" />}
-							right={(props) => (
+							right={() => (
 								<Text
 									numberOfLines={2}
 									style={{ maxWidth: '50%', textAlign: 'right' }}

@@ -13,6 +13,7 @@ import Animated, {
 import { useAppTheme } from '@/store/theme/themes';
 import { useIsFetching } from '@tanstack/react-query';
 import { useMatchStore } from '@/store/matchStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export const LoadingIcon = ({
 	icon,
@@ -120,10 +121,12 @@ export const MediaLoading = ({
 	mangaUpdatesError,
 }: LoadingProps) => {
 	const { dark } = useAppTheme();
-	const { isMalEnabled, isMangaUpdatesEnabled } = useMatchStore((state) => ({
-		isMalEnabled: state.isMalEnabled,
-		isMangaUpdatesEnabled: state.isMangaDexEnabled,
-	}));
+	const { isMalEnabled, isMangaUpdatesEnabled } = useMatchStore(
+		useShallow((state) => ({
+			isMalEnabled: state.isMalEnabled,
+			isMangaUpdatesEnabled: state.isMangaDexEnabled,
+		})),
+	);
 
 	return (
 		<Animated.View

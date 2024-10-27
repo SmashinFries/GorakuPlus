@@ -1,7 +1,5 @@
-import { useSettingsStore } from '@/store/settings/settingsStore';
 import { View } from 'react-native';
-import { AnilistIcon, MalIcon } from '../svgs';
-import { Chip, Icon, MD3LightTheme, Text, TextProps } from 'react-native-paper';
+import { Chip, Icon, Text, TextProps } from 'react-native-paper';
 import { convertDate } from '@/utils';
 import {
 	FuzzyDate,
@@ -13,6 +11,7 @@ import {
 import { Image } from 'expo-image';
 import QRCode from 'react-native-qrcode-svg';
 import { InstagramCardScore } from './score';
+import AniListMarkdownViewer from '../markdown/renderer';
 
 export type MediaAniCardProps = {
 	title: string;
@@ -28,12 +27,13 @@ export type MediaAniCardProps = {
 	tags?: string[];
 	tagLimit?: number;
 	description?: string;
+	isDescriptionHtml?: boolean;
 	descriptionLines?: number | null;
 	status?: MediaStatus;
 	id?: number;
 };
 
-export const MediaAniCard = ({ descriptionLines = 4, ...cardProps }: MediaAniCardProps) => {
+export const MediaAniCard = ({ descriptionLines = 6, ...cardProps }: MediaAniCardProps) => {
 	const subTextColor = '#d6d6d6';
 	return (
 		<View
@@ -155,12 +155,22 @@ export const MediaAniCard = ({ descriptionLines = 4, ...cardProps }: MediaAniCar
 						))}
 				</View>
 				<View style={{ justifyContent: 'center' }}>
-					<Text
-						numberOfLines={descriptionLines}
-						style={{ paddingHorizontal: 10, color: '#FFF' }}
-					>
-						{cardProps.description}
-					</Text>
+					{cardProps.isDescriptionHtml ? (
+						<View style={{ paddingHorizontal: 10 }}>
+							<AniListMarkdownViewer
+								body={cardProps.description}
+								textColor="#FFF"
+								numLines={descriptionLines ?? 5}
+							/>
+						</View>
+					) : (
+						<Text
+							numberOfLines={descriptionLines}
+							style={{ paddingHorizontal: 10, color: '#FFF' }}
+						>
+							{cardProps.description}
+						</Text>
+					)}
 				</View>
 				{/* <View
 					style={{
@@ -175,10 +185,10 @@ export const MediaAniCard = ({ descriptionLines = 4, ...cardProps }: MediaAniCar
 			{cardProps.id && (
 				<View style={{ position: 'absolute', top: 4, right: 4 }}>
 					<QRCode
-						value={`www.anilist.co/${cardProps.type}/${cardProps.id}`}
+						value={`https://www.anilist.co/${cardProps.type.toLowerCase()}/${cardProps.id}`}
 						backgroundColor="transparent"
 						color="#FFF"
-						size={20}
+						size={24}
 					/>
 				</View>
 			)}

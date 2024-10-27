@@ -3,24 +3,17 @@ import { ImageViewer } from '@/components/imageViewer';
 import { ListHeading } from '@/components/text';
 import { useBlur } from '@/hooks/useNSFWBlur';
 import { useAppTheme } from '@/store/theme/themes';
-import { SaveImageDialog } from '@/utils/images';
-import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { useCallback, useRef, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
 import { Portal } from 'react-native-paper';
-import Animated from 'react-native-reanimated';
 
 type ScreenshotItemProps = {
 	item: Media['streamingEpisodes'][0];
 	index: number;
 };
-const ScreenshotItem = ({
-	item,
-	index,
-	onSelect,
-}: ScreenshotItemProps & { onSelect: () => void }) => {
-	const { blurAmount, isBlur, toggleBlur } = useBlur();
+const ScreenshotItem = ({ item, onSelect }: ScreenshotItemProps & { onSelect: () => void }) => {
+	const { blurAmount, toggleBlur } = useBlur();
 
 	const { colors } = useAppTheme();
 	return (
@@ -69,7 +62,7 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 	}
 
 	return (
-		<Animated.View style={{ overflow: 'visible' }}>
+		<View style={{ overflow: 'visible' }}>
 			<ListHeading
 				title="Screenshots"
 				subtitle="Contains spoilers!"
@@ -96,7 +89,7 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 					initialIndex={currentImageIndex.current}
 				/>
 			</Portal>
-		</Animated.View>
+		</View>
 	);
 };
 

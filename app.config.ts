@@ -44,6 +44,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				},
 				android: {
 					useLegacyPackaging: true,
+					newArchEnabled: false, // screen transitions and accordian anims dont work :/
 				},
 			},
 		],
@@ -79,7 +80,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		jsEngine: 'jsc',
 	},
 	android: {
-		package: IS_DEV ? 'com.kuzutech.gorakuplus.dev' : 'com.kuzutech.gorakuplus',
+		package: IS_DEV ? 'com.kuzulabz.gorakuplus.dev' : 'com.kuzulabz.gorakuplus',
 		adaptiveIcon: {
 			backgroundColor: '#1E1E1F',
 			foregroundImage: './assets/iconsv3/adaptive-icon.png',

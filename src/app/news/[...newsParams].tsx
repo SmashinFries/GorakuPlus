@@ -1,13 +1,17 @@
 import { MediaType } from '@/api/anilist/__genereated__/gql';
-import { GetAnimeNewsQueryResult, GetMangaNewsQueryResult } from '@/api/jikan/jikan';
+import {
+	GetAnimeNewsQueryResult,
+	GetMangaNewsQueryResult,
+	useGetAnimeNews,
+	useGetMangaNews,
+} from '@/api/jikan/jikan';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { NewsHItem, NewsVItem } from '@/components/news/newsItem';
-import { useNews } from '@/hooks/news/useNews';
+import { NewsVItem } from '@/components/news/newsItem';
 import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 type RenderItemProps = {
 	item: GetAnimeNewsQueryResult['data']['data'][0] | GetMangaNewsQueryResult['data']['data'][0];
@@ -18,8 +22,18 @@ const NewsPage = () => {
 	const { newsParams } = useLocalSearchParams<{ newsParams: [string, string] }>();
 	const type = newsParams[0] as MediaType;
 	const malId = parseInt(newsParams[1]);
-	const { data, isFetching, isFetched } = useNews(type, malId);
-	const { width, height } = useWindowDimensions();
+	const isAnime = type === MediaType.Anime;
+	const animeNewsQuery = useGetAnimeNews(
+		malId,
+		{ page: 1 },
+		{ query: { enabled: !!malId && !!type && type === MediaType.Anime } },
+	);
+	const mangaNewsQuery = useGetMangaNews(
+		malId,
+		{ page: 1 },
+		{ query: { enabled: !!malId && !!type && type === MediaType.Manga } },
+	);
+	const { width } = useWindowDimensions();
 
 	const RenderItem = useCallback(({ item }: RenderItemProps) => {
 		return <NewsVItem news={item} />;
@@ -41,7 +55,7 @@ const NewsPage = () => {
 		);
 	}, []);
 
-	if (isFetching) {
+	if (animeNewsQuery?.isFetching || mangaNewsQuery?.isFetching) {
 		return (
 			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 				<GorakuActivityIndicator />
@@ -49,14 +63,17 @@ const NewsPage = () => {
 		);
 	}
 
-	if (isFetched && !data.data?.data) {
+	if (
+		(isAnime && animeNewsQuery?.isFetched && animeNewsQuery?.data?.data?.data?.length < 1) ||
+		(!isAnime && mangaNewsQuery?.isFetched && mangaNewsQuery?.data?.data?.data?.length < 1)
+	) {
 		return <EmptyList />;
 	}
 
 	return (
 		<View style={{ width: width, height: '100%' }}>
 			<FlashList
-				data={data?.data?.data ?? []}
+				data={isAnime ? animeNewsQuery?.data?.data?.data : mangaNewsQuery?.data?.data?.data}
 				keyExtractor={keyExtractor}
 				renderItem={RenderItem}
 				centerContent

@@ -1,11 +1,10 @@
-import { SplashScreen, withLayoutContext } from 'expo-router';
+import { withLayoutContext } from 'expo-router';
 import { Avatar } from 'react-native-paper';
 import {
 	MaterialBottomTabNavigationOptions,
 	createMaterialBottomTabNavigator,
 } from '@react-navigation/material-bottom-tabs';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 

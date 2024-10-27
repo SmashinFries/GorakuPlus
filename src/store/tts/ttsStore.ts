@@ -1,8 +1,8 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from '../helpers/mmkv-storage';
 import { TTSLanguages, TTSVoice } from './types';
+import { create } from 'zustand';
 
 const storage = new MMKV({
 	id: 'tts-store',
@@ -48,7 +48,7 @@ const initialState: TTSState = {
 
 export const useTTSStore = create<TTSState & TTSActions>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			...initialState,
 			updateTTS(language, settings) {
 				set((state) => ({ [language]: { ...state[language], ...settings } }));

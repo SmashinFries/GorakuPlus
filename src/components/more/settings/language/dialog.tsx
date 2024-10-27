@@ -82,12 +82,7 @@ export const AppLanguageDialog = ({
 			<Dialog visible={visible} onDismiss={hideDialog}>
 				<Dialog.Title>{t('App Language')}</Dialog.Title>
 				<Dialog.Content>
-					<RadioButton.Group
-						onValueChange={(newLang: MediaLanguageDialogProps['defaultLanguage']) =>
-							setLang(newLang)
-						}
-						value={lang}
-					>
+					<RadioButton.Group onValueChange={(newLang) => setLang(newLang)} value={lang}>
 						{Object.keys(LANGUAGES).map((langOption, idx) => (
 							<RadioButton.Item
 								key={idx}
@@ -100,7 +95,6 @@ export const AppLanguageDialog = ({
 					</RadioButton.Group>
 				</Dialog.Content>
 				<Dialog.Actions>
-					<Button onPress={() => console.log(t('Explore', { ns: 'tabs' }))}>Test</Button>
 					<Button onPress={onCancel}>Cancel</Button>
 					<Button onPress={onDone}>Done</Button>
 				</Dialog.Actions>

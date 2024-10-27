@@ -1,14 +1,47 @@
+import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { useGetPanelGetPanel, useGetPanelGetSimilarPanels } from '@/api/panelsdesu/panelsdesu';
+import { Accordion, AnimViewMem } from '@/components/animations';
+import { InteractionBar } from '@/components/art/interactions';
+import { ImageViewer } from '@/components/imageViewer';
+import { GorakuActivityIndicator } from '@/components/loading';
+import { ListHeading } from '@/components/text';
+import { useAppTheme } from '@/store/theme/themes';
+import { copyToClipboard } from '@/utils';
+import { openWebBrowser } from '@/utils/webBrowser';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
+import { SheetManager } from 'react-native-actions-sheet';
+import PagerView from 'react-native-pager-view';
+import { Chip, Divider, Portal, Text } from 'react-native-paper';
 
 const PanelPage = () => {
 	const { panelId } = useLocalSearchParams<{ panelId: string }>();
-	const { data: panelData, isFetching: isPanelFetching } = useGetPanelGetPanel(panelId, {
+	const pagerRef = useRef<PagerView>(null);
+	const { height } = useWindowDimensions();
+	const {
+		data: panelData,
+		isFetching: isPanelFetching,
+		isFetched: isPanelFetched,
+	} = useGetPanelGetPanel(panelId, {
 		query: { enabled: !!panelId, refetchOnMount: false, refetchOnReconnect: false },
 	});
+	const titles = useMemo(
+		() => [...new Set(panelData?.data?.manga?.all_titles)],
+		[panelData?.data],
+	);
+	const { colors } = useAppTheme();
+	const [imageIndex, setImageIndex] = useState(0);
+	const [isImageViewerVis, setIsImageViewerVis] = useState(false);
+
+	const [titleIndex, setTitleIndex] = useState(0);
+
+	const onImageSelect = (index: number) => {
+		setImageIndex(index);
+		setIsImageViewerVis(true);
+	};
+
 	// const { data: simPanelsData, isFetching: isSimPanelsFetching } = useGetPanelGetSimilarPanels(
 	// 	panelId,
 	// 	{ limit: '20' },
@@ -16,32 +49,153 @@ const PanelPage = () => {
 	// );
 	return (
 		<View>
-			<Stack.Screen options={{ headerTitle: 'Panel Info' }} />
-			<View style={{ height: 480, width: '100%' }}>
-				<Image
-					source={{
-						uri: panelData?.data?.page?.image_url,
-					}}
-					contentFit="contain"
+			{isPanelFetching && (
+				<AnimViewMem
 					style={{
 						height: '100%',
 						width: '100%',
+						alignItems: 'center',
+						justifyContent: 'center',
 					}}
+				>
+					<GorakuActivityIndicator />
+				</AnimViewMem>
+			)}
+			{isPanelFetched && (
+				<AnimViewMem>
+					<ScrollView>
+						<Stack.Screen options={{ headerTitle: 'Panel Info' }} />
+						<PagerView initialPage={0} style={{ height: height * 0.4, width: '100%' }}>
+							<View key={0} style={{ height: '100%', width: '100%' }}>
+								<Pressable onPress={() => onImageSelect(0)}>
+									<Image
+										source={{
+											uri: panelData?.data?.panel?.image_url,
+										}}
+										contentFit="contain"
+										style={{
+											height: '100%',
+											width: '100%',
+										}}
+									/>
+								</Pressable>
+							</View>
+							<View key={1} style={{ height: '100%', width: '100%' }}>
+								<Pressable onPress={() => onImageSelect(1)}>
+									<Image
+										source={{
+											uri: panelData?.data?.page?.image_url,
+										}}
+										contentFit="contain"
+										style={{
+											height: '100%',
+											width: '100%',
+										}}
+									/>
+								</Pressable>
+							</View>
+						</PagerView>
+						<Divider />
+						<View
+							style={{ flexDirection: 'row', paddingHorizontal: 10, paddingTop: 16 }}
+						>
+							<Pressable
+								onPress={() =>
+									SheetManager.show('MediaSearchSheet', {
+										payload: {
+											type: MediaType.Manga,
+											search: panelData?.data?.manga?.title,
+										},
+									})
+								}
+							>
+								<Image
+									source={{ uri: panelData?.data?.manga?.icon_url }}
+									style={{
+										height: 80,
+										width: undefined,
+										aspectRatio: 1 / 1,
+										borderRadius: 8,
+									}}
+								/>
+							</Pressable>
+							<View
+								style={{ flex: 1, paddingHorizontal: 12, alignItems: 'flex-start' }}
+							>
+								<Text
+									variant="titleLarge"
+									onLongPress={() =>
+										copyToClipboard(panelData?.data?.manga?.title)
+									}
+									onPress={() =>
+										setTitleIndex((prev) => (prev + 1) % titles?.length)
+									}
+								>
+									{titles[titleIndex]}
+								</Text>
+								<Text
+									variant="labelMedium"
+									style={{ color: colors.onSurfaceVariant }}
+								>
+									Chapter {panelData?.data?.page?.chapter_number}・Page{' '}
+									{panelData?.data?.page?.number}
+								</Text>
+							</View>
+						</View>
+						<View
+							style={{ paddingVertical: 12, flexDirection: 'row', flexWrap: 'wrap' }}
+						>
+							{panelData?.data?.manga?.tags?.map((tag, idx) => (
+								<Chip
+									key={idx}
+									compact
+									style={{
+										paddingHorizontal: 5,
+										marginHorizontal: 8,
+										marginVertical: 4,
+									}}
+								>
+									{tag}
+								</Chip>
+							))}
+						</View>
+						<View>
+							<ListHeading
+								title={'Panel Description'}
+								icon="content-copy"
+								onIconPress={() =>
+									copyToClipboard(panelData?.data?.panel?.description)
+								}
+							/>
+							<Text
+								selectable
+								style={{ paddingHorizontal: 12, color: colors.onSurfaceVariant }}
+							>
+								{panelData?.data?.panel?.description}
+							</Text>
+							<Accordion title="OCR Text">
+								<Text
+									selectable
+									style={{
+										paddingHorizontal: 12,
+										color: colors.onSurfaceVariant,
+									}}
+								>
+									{panelData?.data?.panel?.ocr_text}
+								</Text>
+							</Accordion>
+						</View>
+					</ScrollView>
+				</AnimViewMem>
+			)}
+			<Portal>
+				<ImageViewer
+					urls={[panelData?.data?.panel?.image_url, panelData?.data?.page?.image_url]}
+					visible={isImageViewerVis}
+					onDismiss={() => setIsImageViewerVis(false)}
+					initialIndex={imageIndex}
 				/>
-				<View
-					style={{
-						position: 'absolute',
-						width: '100%',
-						height: 100,
-						borderRadius: 5 / 2,
-						borderWidth: 1,
-						borderColor: 'red',
-						top: panelData?.data?.panel?.y,
-						left: panelData?.data?.panel?.x,
-					}}
-				></View>
-			</View>
-			<Text>{panelData?.data?.manga?.title}</Text>
+			</Portal>
 		</View>
 	);
 };

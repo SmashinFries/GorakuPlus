@@ -65,7 +65,7 @@ export const COUNTRY_OPTIONS = {
 	},
 };
 
-export const media_format_alt = {
+export const MEDIA_FORMAT_ALT = {
 	[MediaFormat.Manga]: 'Manga',
 	[MediaFormat.OneShot]: 'One Shot',
 	[MediaFormat.Novel]: 'Light Novel',
@@ -76,4 +76,12 @@ export const media_format_alt = {
 	[MediaFormat.Special]: 'Special',
 	[MediaFormat.Tv]: 'TV',
 	[MediaFormat.TvShort]: 'TV Short',
+};
+
+export const MEDIA_STATUS_ALT = {
+	[MediaStatus.Cancelled]: 'Cancelled',
+	[MediaStatus.Finished]: 'Finished',
+	[MediaStatus.Hiatus]: 'Hiatus',
+	[MediaStatus.NotYetReleased]: 'Unreleased',
+	[MediaStatus.Releasing]: 'Releasing',
 };

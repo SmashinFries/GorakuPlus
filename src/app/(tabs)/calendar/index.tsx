@@ -1,18 +1,16 @@
-import { QuickActionBottomSheet } from '@/components/bottomsheets';
-import { CalendarFilterSheet } from '@/components/calendar/bottomsheet';
-import { DayTabMemo as DayTab } from '@/components/calendar/tabs';
+import { DayTab } from '@/components/calendar/tabs';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { GorakuTabBar } from '@/components/tab';
 import { useCalendar } from '@/hooks/calendar/useCalendar';
-import { useQuickActionSheet } from '@/hooks/useQuickAction';
 import { useAuthStore } from '@/store/authStore';
 import { useDisplayStore } from '@/store/displayStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
+import { SheetManager } from 'react-native-actions-sheet';
 import { Appbar } from 'react-native-paper';
 import { TabView, SceneRendererProps } from 'react-native-tab-view';
+import { useShallow } from 'zustand/react/shallow';
 
 type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 const Days: WeekDay[] = [
@@ -32,14 +30,16 @@ type CalendarRenderSceneProps = SceneRendererProps & {
 const CalendarPage = () => {
 	const dayOfWeek = new Date().getDay();
 	const layout = useWindowDimensions();
-	const filterSheetRef = useRef<BottomSheetModalMethods>(null);
-	const { quickActionRef, selectedMedia, onMediaLongSelect } = useQuickActionSheet();
 
 	const { showNSFW } = useSettingsStore();
 	const { userID } = useAuthStore().anilist;
-	const { calendar } = useDisplayStore();
+	const { listOnly } = useDisplayStore(
+		useShallow((state) => ({
+			listOnly: state.calendar.list_only,
+		})),
+	);
 
-	const { data, loading, refetch, week } = useCalendar();
+	const { data, loading } = useCalendar();
 
 	const [index, setIndex] = useState(dayOfWeek);
 
@@ -75,49 +75,42 @@ const CalendarPage = () => {
 				return (
 					<DayTab
 						data={data.sunday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'monday':
 				return (
 					<DayTab
 						data={data.monday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'tuesday':
 				return (
 					<DayTab
 						data={data.tuesday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'wednesday':
 				return (
 					<DayTab
 						data={data.wednesday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'thursday':
 				return (
 					<DayTab
 						data={data.thursday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'friday':
 				return (
 					<DayTab
 						data={data.friday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			case 'saturday':
 				return (
 					<DayTab
 						data={data.saturday.filter((media) => showNSFW || !media.media.isAdult)}
-						onLongSelect={onMediaLongSelect}
 					/>
 				);
 			default:
@@ -144,18 +137,36 @@ const CalendarPage = () => {
 
 	useEffect(() => {
 		if (data) {
-			updateAllTitles(calendar.list_only);
+			updateAllTitles(listOnly);
 		}
 	}, [data, showNSFW]);
 
 	return (
 		<>
 			<Appbar.Header>
-				<Appbar.Content title="Calendar" />
+				<Appbar.Content title="This Week" />
+				<Appbar.Action
+					icon={'view-module'}
+					onPress={() => {
+						SheetManager.show('DisplayConfigSheet', {
+							payload: {
+								type: 'calendar',
+							},
+						});
+					}}
+				/>
 				{userID && (
 					<Appbar.Action
 						icon="filter-outline"
-						onPress={() => filterSheetRef.current.present()}
+						onPress={() =>
+							SheetManager.show('CalendarFilterSheet', {
+								payload: {
+									updateAllTitles(onList) {
+										updateAllTitles(onList);
+									},
+								},
+							})
+						}
 					/>
 				)}
 			</Appbar.Header>
@@ -167,6 +178,7 @@ const CalendarPage = () => {
 					initialLayout={{ width: layout.width }}
 					renderTabBar={renderTabBar}
 					swipeEnabled={true}
+					lazy
 				/>
 			) : (
 				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -174,11 +186,6 @@ const CalendarPage = () => {
 					<GorakuActivityIndicator size="large" />
 				</View>
 			)}
-			<CalendarFilterSheet
-				ref={filterSheetRef}
-				updateAllTitles={(onList: boolean) => updateAllTitles(onList)}
-			/>
-			<QuickActionBottomSheet ref={quickActionRef} {...selectedMedia} />
 		</>
 	);
 };

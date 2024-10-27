@@ -10,6 +10,7 @@ import { AniMediaQuery, MediaFormat, MediaType } from '@/api/anilist/__genereate
 import { AnimeFull, MangaFull } from '@/api/jikan/models';
 import { useAppTheme } from '@/store/theme/themes';
 import { SeriesModelV1 } from '@/api/mangaupdates/models';
+import { SheetManager } from 'react-native-actions-sheet';
 
 type MetaDataProps = {
 	data: AniMediaQuery['Media'];
@@ -23,7 +24,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 	// delay={960}
 
 	return (
-		<Animated.View style={{ marginVertical: 15 }}>
+		<Animated.View>
 			<Accordion title="Details">
 				<List.Item
 					title={'Source'}
@@ -68,7 +69,9 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 						title="Season"
 						right={(props) => (
 							<Text {...props} style={{ textTransform: 'capitalize' }}>
-								{`${data.season} ${data.seasonYear}` ?? 'N/A'}
+								{data.season && data.seasonYear
+									? `${data.season} ${data.seasonYear}`
+									: 'N/A'}
 							</Text>
 						)}
 					/>
@@ -230,15 +233,25 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 														<Button
 															key={idx}
 															mode="elevated"
-															icon={'star'}
+															icon={
+																studio.node?.isFavourite
+																	? 'star'
+																	: undefined
+															}
 															style={{ margin: 5 }}
 															onPress={() =>
 																router.push(
 																	`/studio/${studio.node.id}`,
 																)
 															}
-															onLongPress={() =>
-																copyToClipboard(studio.node.name)
+															onLongPress={
+																() => {
+																	SheetManager.show(
+																		'QuickActionStudioSheet',
+																		{ payload: studio.node },
+																	);
+																}
+																// copyToClipboard(studio.node.name)
 															}
 														>
 															{studio?.node?.name}
@@ -285,9 +298,11 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 												onPress={() =>
 													router.push(`/studio/${studio.node.id}`)
 												}
-												onLongPress={() =>
-													copyToClipboard(studio.node.name)
-												}
+												onLongPress={() => {
+													SheetManager.show('QuickActionStudioSheet', {
+														payload: studio.node,
+													});
+												}}
 											>
 												{studio.node?.name}
 											</Button>

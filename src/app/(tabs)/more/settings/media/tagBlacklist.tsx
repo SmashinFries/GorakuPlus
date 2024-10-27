@@ -149,7 +149,7 @@ const TagBlackListPage = () => {
 						<FlatList
 							scrollEnabled={false}
 							data={
-								search.length > 0 ? searchResults : data?.MediaTagCollection ?? []
+								search.length > 0 ? searchResults : (data?.MediaTagCollection ?? [])
 							}
 							renderItem={RenderNTagItem}
 							numColumns={3}

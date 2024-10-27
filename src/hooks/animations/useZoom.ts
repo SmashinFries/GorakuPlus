@@ -1,5 +1,5 @@
 import { ImageStyle } from 'expo-image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Gesture } from 'react-native-gesture-handler';
 import { clamp, runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
@@ -27,7 +27,7 @@ const useZoom = () => {
 				positionY.value = savedPositionY.value + e.translationY;
 			}
 		})
-		.onEnd((e) => {
+		.onEnd(() => {
 			savedPositionX.value = positionX.value;
 			savedPositionY.value = positionY.value;
 			// if (position.value > width / 2) {

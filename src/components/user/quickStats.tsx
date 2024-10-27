@@ -1,16 +1,15 @@
-import { UserOverviewQuery } from '@/api/anilist/__genereated__/gql';
+import { UserDataQuery } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
-import { BarChart } from 'react-native-gifted-charts';
-import { Button, Surface, Text, useTheme } from 'react-native-paper';
+import { Surface, Text } from 'react-native-paper';
 
-type MediaStatIsland = {
+type MediaStatIslandProps = {
 	icon: string;
 	title: string;
 	value: number;
 };
-export const MediaStatIsland = ({ icon, title, value }: MediaStatIsland) => {
+export const MediaStatIsland = ({ title, value }: MediaStatIslandProps) => {
 	const { colors } = useAppTheme();
 	if (!value) return null;
 	return (
@@ -224,13 +223,11 @@ const StatusCard = ({ data1, data2, data3, isManga }: StatusCardProps) => {
 	);
 };
 
-type StatOverview = {
-	anime: UserOverviewQuery['user']['statistics']['anime'];
-	manga: UserOverviewQuery['user']['statistics']['manga'];
+type StatOverviewProps = {
+	anime: UserDataQuery['User']['statistics']['anime'];
+	manga: UserDataQuery['User']['statistics']['manga'];
 };
-export const StatOverview = ({ anime, manga }: StatOverview) => {
-	const { colors } = useAppTheme();
-
+export const StatOverview = ({ anime, manga }: StatOverviewProps) => {
 	const daysWasted = anime?.minutesWatched ? anime?.minutesWatched / (60 * 24) : 0;
 
 	if (!anime && !manga) return null;

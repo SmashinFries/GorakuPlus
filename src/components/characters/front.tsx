@@ -70,7 +70,7 @@ export const CharacterFront = ({
 				nativeLang={mediaEdges?.[0]?.node?.countryOfOrigin} // kinda hacky ngl
 				defaultTitle={['english', 'romaji'].includes(mediaLanguage) ? 'full' : 'native'}
 			/>
-			{names.alternative && (
+			{names?.alternative && (
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					{names.alternative?.map((name, idx) => (
 						<Chip

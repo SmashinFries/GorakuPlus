@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
 type SlideShowProps = {

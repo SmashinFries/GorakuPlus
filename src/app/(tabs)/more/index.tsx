@@ -1,13 +1,15 @@
+import { ParticleBackground } from '@/components/animations';
 import { useAppTheme } from '@/store/theme/themes';
 import { router } from 'expo-router';
-import { View } from 'react-native';
-import { Divider, List } from 'react-native-paper';
+import { useWindowDimensions, View } from 'react-native';
+import { Button, Divider, List } from 'react-native-paper';
+import * as FileSystem from 'expo-file-system';
 
 const MorePage = () => {
 	const { colors } = useAppTheme();
 
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<Divider />
 			<List.Item
 				title="Weeb Lab"
@@ -43,6 +45,16 @@ const MorePage = () => {
 				)}
 			/>
 			<Divider />
+			{/* <Button
+				onPress={async () => {
+					router.navigate({
+						pathname: `/user/smashinfries/favorites`,
+						params: { type: 'ANIME' },
+					});
+				}}
+			>
+				TEST
+			</Button> */}
 		</View>
 	);
 };

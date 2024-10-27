@@ -1,5 +1,4 @@
 import {
-	MediaList,
 	MediaListStatus,
 	MediaType,
 	UserAnimeListCollectionQuery,
@@ -7,17 +6,17 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
-import { rgbToRgba } from '@/utils';
 import { sortLists, sortListTabs } from '@/utils/sort';
 import { FlashList } from '@shopify/flash-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { MediaCard, MediaProgressBar } from '../cards';
-import { router } from 'expo-router';
+import { MediaCard, MediaCardRow } from '../cards';
 import { ScrollToTopButton } from '../buttons';
 import { compareArrays } from '@/utils/compare';
 import { TabView } from 'react-native-tab-view';
-import { TabBarWithChip } from '../tab';
+import { GorakuTabBar } from '../tab';
+import { useShallow } from 'zustand/react/shallow';
+import { useColumns } from '@/hooks/useColumns';
 
 type ListParams = {
 	data:
@@ -29,10 +28,10 @@ type ListParams = {
 	type?: MediaType;
 };
 
-const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
+const ListScreen = ({ data, updateTitle, onRefresh }: ListParams) => {
 	const [entries, setEntries] = useState(data?.entries);
-	const { colors } = useAppTheme();
 	const { query, sort, updateListFilter } = useListFilterStore();
+	const { columns, itemWidth, displayMode } = useColumns('list');
 
 	const [scrollOffset, setScrollOffset] = useState(0);
 
@@ -75,7 +74,7 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 				| UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0]
 				| UserMangaListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0];
 		}) => {
-			return (
+			return displayMode === 'COMPACT' ? (
 				<View
 					style={{
 						flex: 1,
@@ -86,23 +85,20 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 					}}
 				>
 					<MediaCard
-						coverImg={item.media.coverImage.extraLarge}
-						titles={item.media.title}
-						navigate={() =>
-							router.push(`/${item.media.type.toLowerCase()}/${item.media.id}`)
-						}
-						// scorebgColor={scorebgColor}
-						averageScore={item.media.averageScore}
-						meanScore={item.media.meanScore}
-						// @ts-ignore timeUntilAiring is transformed to string via RTK Query
-						bannerText={item.media.nextAiringEpisode?.airingAt}
-						imgBgColor={item.media.coverImage.color}
-						showBanner={item.media.nextAiringEpisode ? true : false}
-						scoreDistributions={item.media.stats?.scoreDistribution}
+						{...item.media}
 						fitToParent
-						isFavorite={item.media.isFavourite}
+						tempListStatusMode={
+							[
+								MediaListStatus.Current,
+								MediaListStatus.Dropped,
+								MediaListStatus.Paused,
+								MediaListStatus.Repeating,
+							].includes(item.status)
+								? 'bar'
+								: 'dot'
+						}
 					/>
-					{[
+					{/* {[
 						MediaListStatus.Current,
 						MediaListStatus.Repeating,
 						MediaListStatus.Paused,
@@ -119,11 +115,13 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 							}
 							showListStatus={false}
 						/>
-					)}
+					)} */}
 				</View>
+			) : (
+				<MediaCardRow {...item.media} />
 			);
 		},
-		[],
+		[displayMode],
 	);
 
 	useEffect(() => {
@@ -137,23 +135,29 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 	return (
 		<View style={{ flex: 1, height: '100%', width: '100%' }}>
 			<FlashList
-				key={3}
+				key={columns}
 				ref={listRef}
 				data={filteredItems}
 				renderItem={RenderItem}
 				keyExtractor={(item, idx) => item?.media?.id.toString()}
 				estimatedItemSize={238}
-				numColumns={3}
+				numColumns={columns}
 				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				// terrible performance without
 				drawDistance={0}
-				contentContainerStyle={{
-					padding: 10,
-				}}
+				contentContainerStyle={
+					{
+						// padding: 10,
+					}
+				}
 				centerContent
 				removeClippedSubviews
 			/>
-			{scrollOffset > 500 && <ScrollToTopButton listRef={listRef} />}
+			{scrollOffset > 500 && (
+				<ScrollToTopButton
+					onPress={() => listRef.current?.scrollToIndex({ index: 0, animated: true })}
+				/>
+			)}
 		</View>
 	);
 };
@@ -163,13 +167,11 @@ export const ListTabs = ({
 	type,
 	data,
 	routes,
-	loading,
 	isRefreshing,
 	onRefresh,
 }: {
 	isViewer?: boolean;
 	type: MediaType;
-	loading: boolean;
 	routes: { key: string; title: string }[];
 	data:
 		| UserAnimeListCollectionQuery['MediaListCollection']
@@ -177,10 +179,12 @@ export const ListTabs = ({
 	isRefreshing: boolean;
 	onRefresh: () => void;
 }) => {
-	const { animeTabOrder, mangaTabOrder } = useListFilterStore((state) => ({
-		animeTabOrder: state.animeTabOrder,
-		mangaTabOrder: state.mangaTabOrder,
-	}));
+	const { animeTabOrder, mangaTabOrder } = useListFilterStore(
+		useShallow((state) => ({
+			animeTabOrder: state.animeTabOrder,
+			mangaTabOrder: state.mangaTabOrder,
+		})),
+	);
 	const layout = useWindowDimensions();
 	const [index, setIndex] = useState(0);
 	const [tabRoutes, setTabRoutes] = useState<{ key: string; title: string }[]>(routes);
@@ -238,8 +242,9 @@ export const ListTabs = ({
 			renderScene={renderScene}
 			onIndexChange={setIndex}
 			initialLayout={{ width: layout.width }}
-			renderTabBar={TabBarWithChip}
+			renderTabBar={(props) => <GorakuTabBar {...props} enableChip />}
 			swipeEnabled={true}
+			lazy
 		/>
 	) : null;
 };

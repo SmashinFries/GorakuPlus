@@ -1,20 +1,17 @@
 import { useState } from 'react';
-import { getImageB64, selectImage } from '@/utils/images';
+import { selectImage } from '@/utils/images';
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
 import {
-	CharacterSearchQuery,
 	CharacterSearchQueryVariables,
 	StaffSearchQueryVariables,
 	StudioSearchQueryVariables,
-	useCharacterSearchQuery,
 	useInfiniteCharacterSearchQuery,
 	useInfiniteStaffSearchQuery,
 	useInfiniteStudioSearchQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { SearchBody, SearchResult } from '@/api/tracemoe/models';
 import { getGetSearchQueryOptions, usePostSearch } from '@/api/tracemoe/tracemoe';
-import { fetchPredictWaifu } from '@/api/huggingface/hf';
 import { useQueryClient } from '@tanstack/react-query';
 
 export const useCharacterSearch = (
@@ -34,61 +31,6 @@ export const useCharacterSearch = (
 	});
 
 	return { characterSearchQuery };
-};
-
-export const useSearchWaifuImage = () => {
-	const [waifuImageResults, setWaifuImageResults] = useState<
-		CharacterSearchQuery['Page']['characters'] & { confidence: number }[]
-	>([]);
-	// const {} = usePredictWaifu();
-	const queryClient = useQueryClient();
-
-	const searchWaifu = async (url?: string, camera?: boolean) => {
-		setWaifuImageResults([]);
-		const imageBase64 = await getImageB64(camera, url);
-		if (imageBase64) {
-			try {
-				const response = await queryClient.fetchQuery({
-					queryKey: ['WDPredict'],
-					queryFn: async () =>
-						await fetchPredictWaifu({ data: [imageBase64, 'MOAT', 0.35, 0.35] }),
-				});
-				// const response = await searchWaifuImage({
-				// 	data: [imageBase64, 'MOAT', 0.35, 0.35],
-				// }).unwrap();
-				if (response?.data?.[3].confidences) {
-					for (const predictResult of response.data[3].confidences) {
-						if (predictResult.label) {
-							const searchResult: CharacterSearchQuery = await queryClient.fetchQuery(
-								{
-									queryKey: useCharacterSearchQuery.getKey(),
-									queryFn: () =>
-										useCharacterSearchQuery.fetcher({
-											name: predictResult.label
-												.replaceAll('_', ' ')
-												.split('(')[0],
-										}),
-								},
-							);
-							setWaifuImageResults((prev) => [
-								...prev,
-								{
-									...searchResult?.Page?.characters[0],
-									confidence: predictResult.confidence,
-								},
-							]);
-						}
-					}
-				}
-			} catch (e) {
-				Burnt.toast({ title: 'Something went wrong... 😅', duration: TOAST.LONG });
-			}
-		} else {
-			Burnt.toast({ title: 'Could not process image', duration: TOAST.LONG });
-		}
-	};
-
-	return { waifuImageResults, searchWaifu };
 };
 
 export const useStaffSearch = (params: StaffSearchQueryVariables) => {

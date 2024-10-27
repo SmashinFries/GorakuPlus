@@ -12,6 +12,7 @@ import Animated, {
 	useAnimatedStyle,
 	withSpring,
 } from 'react-native-reanimated';
+import { useShallow } from 'zustand/react/shallow';
 
 type Props = {
 	style?: any;
@@ -19,7 +20,7 @@ type Props = {
 };
 export const MediaBanner = ({ urls, style }: Props) => {
 	const { colors } = useAppTheme();
-	const isMotionAllowed = useSettingsStore((state) => state.allowSensorMotion);
+	const isMotionAllowed = useSettingsStore(useShallow((state) => state.allowSensorMotion));
 	const img_src = useImageRotation(urls);
 
 	const { sensor } = useAnimatedSensor(SensorType.ROTATION, { interval: 20 });

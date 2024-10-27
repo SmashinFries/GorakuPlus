@@ -13,29 +13,28 @@ import { useEffect, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import {
 	ActivityIndicator,
+	Button,
 	Divider,
 	IconButton,
 	List,
 	SegmentedButtons,
+	TextInput,
 	TextProps,
 } from 'react-native-paper';
 import ViewShot from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
-import { sendToast } from '@/utils/toast';
+import { sendErrorMessage, sendToast } from '@/utils/toast';
 import * as FileSystem from 'expo-file-system';
 import { ListSubheader } from '@/components/titles';
 import { useAppTheme } from '@/store/theme/themes';
-import { MUISlider, TestSlider } from '@/components/slider';
+import { MUISlider, Slider } from '@/components/slider';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { AniCardHeader } from '@/components/headers';
-import BottomSheet, {
-	BottomSheetScrollView,
-	BottomSheetTextInput,
-	BottomSheetView,
-} from '@gorhom/bottom-sheet';
 import { rgbToRgba } from '@/utils';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { useScreenshot } from '@/hooks/useScreenshot';
+import { BottomSheetParent } from '@/components/sheets/bottomsheets';
+import { ActionSheetRef, ScrollView } from 'react-native-actions-sheet';
 
 const animeParams: MediaAniCardProps = {
 	title: 'Make Heroine ga Oosugiru!',
@@ -103,7 +102,7 @@ const novelParams: MediaAniCardProps = {
 	status: MediaStatus.Finished,
 };
 
-type AniCardConfig = {
+export type AniCardConfig = {
 	titleLang?: keyof MediaTitle;
 	titleNumLines?: number | null;
 	titleSize?: TextProps<any>['variant'];
@@ -126,6 +125,7 @@ const MediaCardGenerator = ({
 	id: number;
 	idMal?: number;
 }) => {
+	const actionsheetRef = useRef<ActionSheetRef>(null);
 	const anilist = useMediaAniCardQueryQuery(
 		{ id },
 		{ enabled: !!id, refetchOnReconnect: false, refetchOnMount: false },
@@ -133,10 +133,8 @@ const MediaCardGenerator = ({
 	const jikan = useMalQuery(idMal, type);
 	const { viewshotRef: anicardRef, onScreenshot } = useScreenshot();
 	const { colors } = useAppTheme();
-	const { height, width } = useWindowDimensions();
-	const bottomSheetRef = useRef<BottomSheet>(null);
-	const headerHeight = useHeaderHeight();
-	const [cardHeight, setCardHeight] = useState(0);
+	const { height } = useWindowDimensions();
+	const [cardHeight, setCardHeight] = useState(1);
 
 	const [config, setConfig] = useState<AniCardConfig>({
 		titleLang: 'english',
@@ -155,11 +153,10 @@ const MediaCardGenerator = ({
 	const [customDescription, setCustomDescription] = useState('');
 
 	const onError = (error: Error) => {
-		sendToast('Error', 'Failed to capture AniCard!');
+		sendErrorMessage('Failed to capture AniCard!');
 	};
 
 	const onConfigUpdate = (props: AniCardConfig) => {
-		console.log(props);
 		setConfig((prev) => ({ ...prev, ...props }));
 	};
 
@@ -171,11 +168,19 @@ const MediaCardGenerator = ({
 
 	useEffect(() => {
 		if (anilist?.data && jikan?.data?.data) {
-			if (!anilist.data.Media?.description && !jikan.data.data.data?.synopsis) {
+			if (!anilist.data.Media?.descriptionHTML && !jikan.data.data.data?.synopsis) {
 				onConfigUpdate({ enabledDescription: false, descriptionType: 'custom' });
 			}
 		}
 	}, [anilist?.data, jikan?.data?.data]);
+
+	useEffect(() => {
+		// actionsheetRef.current?.hide();
+		if (actionsheetRef.current && cardHeight > 1) {
+			actionsheetRef.current?.show();
+		}
+		// height - (width + headerHeight - 20)
+	}, [actionsheetRef.current, cardHeight]);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -191,6 +196,7 @@ const MediaCardGenerator = ({
 					<ViewShot
 						ref={anicardRef}
 						onCaptureFailure={onError}
+						// onCapture={() => sendToast('Anicard Saved')}
 						options={{
 							format: 'png',
 							fileName: `goraku-${type}-${id}-anicard`,
@@ -208,12 +214,13 @@ const MediaCardGenerator = ({
 							description={
 								config.enabledDescription
 									? config.descriptionType === 'anilist'
-										? anilist?.data?.Media?.description
+										? anilist?.data?.Media?.descriptionHTML
 										: config.descriptionType === 'mal'
 											? jikan?.data?.data?.data?.synopsis
 											: customDescription
 									: undefined
 							}
+							isDescriptionHtml={config.descriptionType === 'anilist'}
 							descriptionLines={config.descriptionNumLines}
 							malScore={jikan?.data?.data?.data?.score}
 							startDate={anilist?.data?.Media?.startDate}
@@ -240,16 +247,18 @@ const MediaCardGenerator = ({
 					</ViewShot>
 					{/* <Divider style={{ marginVertical: 10, height: 2 }} /> */}
 					<Divider style={{ height: 3 }} />
-					<BottomSheet
-						ref={bottomSheetRef}
-						snapPoints={[height - (width + headerHeight - 20)]}
-						backgroundStyle={{ backgroundColor: colors.elevation.level1 }}
-						handleIndicatorStyle={{ backgroundColor: colors.onSurfaceVariant }}
-						// containerStyle={{ backgroundColor: rgbToRgba(colors.scrim, 0.4) }}
+					<BottomSheetParent
+						sheetRef={actionsheetRef}
+						closable={false}
+						backgroundInteractionEnabled={true}
+						isModal={false}
+						snapPoints={[((height - cardHeight - 20) / height) * 100, 100]}
+						containerStyle={{ height: height }}
+						disableDragBeyondMinimumSnapPoint
 					>
-						<BottomSheetScrollView
+						<ScrollView
 							contentContainerStyle={{ paddingVertical: 12 }}
-							keyboardDismissMode="interactive"
+							// keyboardDismissMode="on-drag"
 							stickyHeaderIndices={[0, 2, 4, 6, 8]}
 						>
 							<ListSubheader
@@ -269,9 +278,7 @@ const MediaCardGenerator = ({
 										{ value: 'native', label: 'Native' },
 									]}
 									value={config.titleLang}
-									onValueChange={(val) =>
-										setConfig((prev) => ({ ...prev, titleLang: val }))
-									}
+									onValueChange={(val) => onConfigUpdate({ titleLang: val })}
 									style={{ marginHorizontal: 10 }}
 								/>
 								<List.Item title={'Title Size'} />
@@ -286,7 +293,6 @@ const MediaCardGenerator = ({
 									]}
 									style={{ marginHorizontal: 10 }}
 								/>
-								<List.Item title={'Number of Lines'} />
 								{/* <MUISlider
 									// initialValue={}
 									value={config.titleNumLines}
@@ -301,16 +307,19 @@ const MediaCardGenerator = ({
 									showMinMax
 									thumbBackgroundColor={colors.elevation.level1}
 								/> */}
-								<TestSlider
-									initialValue={config.titleNumLines}
-									onValueUpdate={(val) =>
-										onConfigUpdate({
-											titleNumLines: val === 0 ? null : val,
-										})
-									}
-									steps={1}
-									maxValue={6}
-								/>
+								<View style={{ marginVertical: 12 }}>
+									<Slider
+										title="Number of Lines"
+										initialValue={config.titleNumLines}
+										onValueUpdate={(val) =>
+											onConfigUpdate({
+												titleNumLines: val === 0 ? null : val,
+											})
+										}
+										steps={1}
+										maxValue={6}
+									/>
+								</View>
 							</View>
 							<ListSubheader
 								title="Description"
@@ -323,7 +332,7 @@ const MediaCardGenerator = ({
 										{
 											value: 'anilist',
 											label: 'AniList',
-											disabled: !anilist?.data?.Media?.description,
+											disabled: !anilist?.data?.Media?.descriptionHTML,
 										},
 										{
 											value: 'mal',
@@ -342,30 +351,35 @@ const MediaCardGenerator = ({
 									title="Enable"
 									selected={config.enabledDescription}
 									onPress={() =>
-										setConfig((prev) => ({
-											...prev,
-											enabledDescription: !prev.enabledDescription,
-										}))
-									}
-								/>
-								<List.Item title={'Number of Lines'} />
-								<MUISlider
-									value={config.descriptionNumLines}
-									maxValue={8}
-									minValue={0}
-									onValueChange={(val) =>
 										onConfigUpdate({
-											descriptionNumLines: val[0] === 0 ? null : val[0],
+											enabledDescription: !config.enabledDescription,
 										})
 									}
-									showMinMax
-									thumbBackgroundColor={colors.elevation.level1}
+								/>
+								{/* <List.Item title={'Number of Lines'} /> */}
+								<Slider
+									title="Number of Lines"
+									initialValue={config.descriptionNumLines}
+									// value={config.descriptionNumLines}
+									onValueUpdate={(val) =>
+										onConfigUpdate({
+											descriptionNumLines: val === 0 ? null : val,
+										})
+									}
+									steps={1}
+									maxValue={6}
+									minValue={0}
 								/>
 								{config.descriptionType === 'custom' ? (
 									<View>
 										<List.Item title="Custom Description" />
-										<View style={{ flexDirection: 'row' }}>
-											<BottomSheetTextInput
+										<View
+											style={{
+												flexDirection: 'row',
+												alignItems: 'center',
+											}}
+										>
+											<TextInput
 												multiline
 												value={customDescription}
 												clearButtonMode="while-editing"
@@ -374,17 +388,19 @@ const MediaCardGenerator = ({
 													alignSelf: 'stretch',
 													marginHorizontal: 12,
 													marginBottom: 12,
-													padding: 12,
+													padding: 6,
 													borderRadius: 12,
 													backgroundColor: colors.surface,
 													color: colors.onSurface,
 													fontSize: 14,
 													flexGrow: 1,
 												}}
-											/>
-											<IconButton
-												icon="close"
-												onPress={() => setCustomDescription('')}
+												right={
+													<TextInput.Icon
+														icon="close"
+														onPress={() => setCustomDescription('')}
+													/>
+												}
 											/>
 										</View>
 									</View>
@@ -452,22 +468,21 @@ const MediaCardGenerator = ({
 										}))
 									}
 								/>
-								<List.Item title={'Limit'} />
-								<MUISlider
-									value={config.tagLimit}
+								<Slider
+									title="Limit"
+									initialValue={config.tagLimit}
+									steps={1}
 									maxValue={8}
 									minValue={0}
-									onValueChange={(val) =>
+									onValueUpdate={(val) =>
 										onConfigUpdate({
 											tagLimit: val[0],
 										})
 									}
-									showMinMax
-									thumbBackgroundColor={colors.elevation.level1}
 								/>
 							</View>
-						</BottomSheetScrollView>
-					</BottomSheet>
+						</ScrollView>
+					</BottomSheetParent>
 					{/* <Button mode="contained" onPress={() => anicardRef.current?.capture()}>
 							Save
 						</Button> */}

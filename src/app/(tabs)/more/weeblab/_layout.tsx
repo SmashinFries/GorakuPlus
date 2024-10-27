@@ -16,7 +16,12 @@ const WeebLabLayout = () => {
 				}}
 			/>
 			<Stack.Screen name="waifuit" options={{ title: 'WaifuIt' }} />
-			<Stack.Screen name="nekosApi" options={{ title: 'NekosAPI' }} />
+			<Stack.Screen
+				name="nekosapi"
+				options={{
+					headerShown: false,
+				}}
+			/>
 			<Stack.Screen
 				name="panelsdesu"
 				options={{

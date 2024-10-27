@@ -7,8 +7,10 @@ import {
 	ViewStyle,
 	useWindowDimensions,
 	TextStyle,
+	ViewProps,
+	Image as RNImage,
 } from 'react-native';
-import { Icon, IconButton, Text, TouchableRipple } from 'react-native-paper';
+import { Icon, IconButton, Text, TextProps, TouchableRipple } from 'react-native-paper';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler,
@@ -20,18 +22,22 @@ import Animated, {
 	useAnimatedReaction,
 	withTiming,
 	Easing,
-	cancelAnimation,
-	withDelay,
 	withSequence,
-	SlideInUp,
-	SlideInDown,
 	ZoomIn,
+	AnimatedProps,
+	FadeIn,
+	FadeOut,
 } from 'react-native-reanimated';
 import { rgbToRgba } from '@/utils';
-import { BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
 import useImageRotation from '@/hooks/useImageRotation';
+import WebView from 'react-native-webview';
+import gorakuBanner from '../../assets/iconsv3/banner.png';
+import gorakuIcon from '../../assets/iconsv3/adaptive-icon.png';
+import mascot from '../../assets/iconsv3/mascot.png';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useShallow } from 'zustand/react/shallow';
 
 export const useHeaderAnim = (start = 40, end = 110) => {
 	const input_range = [start, end];
@@ -97,13 +103,16 @@ export const useHeaderAnim = (start = 40, end = 110) => {
 type AnimViewProps = {
 	style?: StyleProp<ViewStyle>;
 	delay?: number;
+	entering?: AnimatedProps<ViewProps>['entering'];
+	exiting?: AnimatedProps<ViewProps>['exiting'];
 	children: React.ReactNode;
 };
-export const AnimView = ({ children, style, delay }: AnimViewProps) => {
+export const AnimView = ({ children, style, delay, entering, exiting }: AnimViewProps) => {
 	return (
 		<Animated.View
 			style={style}
-			entering={ZoomIn.delay(delay).duration(600)}
+			entering={entering ?? ZoomIn.delay(delay).duration(600)}
+			exiting={exiting}
 			// from={{ translateY: height }}
 			// animate={{ translateY: 0 }}
 			// delay={delay}
@@ -117,8 +126,6 @@ export const AnimView = ({ children, style, delay }: AnimViewProps) => {
 export const TransXInView = ({
 	children,
 	style,
-	direction,
-	delay,
 }: AnimViewProps & { direction: 'left' | 'right' }) => {
 	// const { width } = useWindowDimensions();
 	return (
@@ -195,7 +202,6 @@ export const ExpandableDescription = ({
 	}, [height, totalHeight]);
 
 	const increaseHeight = useCallback(() => {
-		console.log('Updating Height:', totalHeight);
 		height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
 		setCurrentHeight(totalHeight);
 	}, [height, totalHeight]);
@@ -290,12 +296,12 @@ export const ExpandableDescription = ({
 	);
 };
 
-type AccordionProps = {
+export type AccordionProps = {
 	title: string;
 	titleNumberOfLines?: number;
-	titleFontSize?: number;
+	titleVariant?: TextProps<any>['variant'];
 	titleStyle?: StyleProp<TextStyle>;
-	description?: string;
+	description?: ReactNode;
 	descriptionNumberOfLines?: number;
 	descriptionStyle?: StyleProp<TextStyle>;
 	children: ReactNode;
@@ -306,7 +312,7 @@ type AccordionProps = {
 export const Accordion = ({
 	title,
 	titleNumberOfLines,
-	titleFontSize,
+	titleVariant,
 	titleStyle,
 	left,
 	children,
@@ -319,9 +325,10 @@ export const Accordion = ({
 	const { colors } = useAppTheme();
 	const [isExpanded, setIsExpanded] = useState(initialExpand);
 	const initialHeight = 0;
+	const duration = 200;
 	const height = useSharedValue(0);
 	const [totalHeight, setTotalHeight] = useState<number>(0);
-	const [currentHeight, setCurrentHeight] = useState<number>(initialHeight);
+	// const [currentHeight, setCurrentHeight] = useState<number>(initialHeight);
 	const animatedStyles = useAnimatedStyle(() => {
 		return {
 			height: height.value,
@@ -329,53 +336,58 @@ export const Accordion = ({
 	});
 
 	const toggleHeight = useCallback(() => {
-		height.value = withSpring(
+		height.value = withTiming(
 			height.value === totalHeight
 				? initialHeight
 				: totalHeight - height.value + initialHeight,
-			{ damping: 10, mass: 0.5 },
+			{ duration },
 		);
-		setCurrentHeight(
-			height.value === totalHeight
-				? initialHeight
-				: totalHeight - height.value + initialHeight,
-		);
+		// setCurrentHeight(
+		// 	height.value === totalHeight
+		// 		? initialHeight
+		// 		: totalHeight - height.value + initialHeight,
+		// );
 		setIsExpanded((prev) => !prev);
 	}, [height, initialHeight, totalHeight]);
 
 	useEffect(() => {
 		if (initialExpand && totalHeight) {
-			height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
+			height.value = withTiming(totalHeight, { duration });
 		}
 	}, [totalHeight]);
 
 	useEffect(() => {
 		if (isExpanded && totalHeight) {
-			height.value = withSpring(totalHeight, { damping: 10, mass: 0.5 });
+			height.value = withTiming(totalHeight, { duration });
 		}
 	}, [isExpanded, totalHeight]);
 
+	useEffect(() => {
+		setIsExpanded(initialExpand);
+	}, [initialExpand]);
+
 	return (
 		<View style={[{ overflow: 'visible' }]}>
-			<View style={{ backgroundColor: colors?.background }}>
+			<View style={{ backgroundColor: 'transparent' }}>
 				<TouchableRipple
 					onPress={toggleHeight}
-					rippleColor={colors.background}
+					// rippleColor={colors.background}
+					rippleColor={'transparent'}
 					borderless
 					style={{ paddingVertical: 8, paddingRight: 24 }}
 				>
-					<View style={{ flexDirection: 'row', marginVertical: 6 }}>
+					<View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 6 }}>
 						{left && left}
-						<View style={[{ paddingLeft: 16 }, { flex: 1, justifyContent: 'center' }]}>
+						<View style={[{ flex: 1, paddingLeft: 16, justifyContent: 'center' }]}>
 							<Text
 								selectable={false}
 								numberOfLines={titleNumberOfLines}
-								style={[titleStyle, titleFontSize && { fontSize: titleFontSize }]}
-								variant={titleFontSize ? null : 'titleLarge'}
+								style={[titleStyle]}
+								variant={titleVariant ?? 'titleMedium'}
 							>
 								{title}
 							</Text>
-							{description ? (
+							{description && typeof description === 'string' ? (
 								<Text
 									selectable={false}
 									numberOfLines={descriptionNumberOfLines}
@@ -395,25 +407,17 @@ export const Accordion = ({
 							style={[
 								{
 									marginVertical: 6,
-									marginRight: 8,
-									// backgroundColor: 'red',
 								},
 							]}
 						>
-							{/* <Animated.View>
-                                <MaterialCommunityIcons
-                                    size={24}
-                                    color={colors.onSurfaceVariant}
-                                    name={isExpanded ? 'chevron-up' : 'chevron-down'}
-                                />
-                            </Animated.View> */}
 							<ToggableChevron isExpanded={isExpanded} />
 						</View>
 					</View>
 				</TouchableRipple>
+				{description && typeof description !== 'string' ? description : null}
 			</View>
 			<Animated.View key={containerKey} style={[animatedStyles, { overflow: 'hidden' }]}>
-				<View style={[StyleSheet.absoluteFill, { bottom: 'auto', paddingBottom: 10 }]}>
+				<View style={[StyleSheet.absoluteFill, { bottom: 'auto' }]}>
 					<View
 						onLayout={(e) => {
 							setTotalHeight(e.nativeEvent.layout.height);
@@ -427,38 +431,19 @@ export const Accordion = ({
 						//     margin: 15,
 						// }}
 					>
-						{children}
+						{isExpanded && (
+							<AnimViewMem
+								entering={FadeIn.duration(200)}
+								exiting={FadeOut.duration(800)}
+							>
+								{children}
+							</AnimViewMem>
+						)}
 					</View>
 				</View>
 			</Animated.View>
 		</View>
 	);
-};
-
-export const CustomBackdrop = ({
-	animatedIndex,
-	style,
-	onDismiss,
-}: BottomSheetBackdropProps & { onDismiss: () => void }) => {
-	const { colors } = useAppTheme();
-	// animated variables
-	const containerAnimatedStyle = useAnimatedStyle(() => ({
-		opacity: interpolate(animatedIndex.value, [0.2, 0.5], [0.2, 0.5], Extrapolation.CLAMP),
-	}));
-
-	// styles
-	const containerStyle = useMemo(
-		() => [
-			style,
-			{
-				backgroundColor: 'rgb(0,0,0)',
-			},
-			containerAnimatedStyle,
-		],
-		[style, containerAnimatedStyle],
-	);
-
-	return <Animated.View style={containerStyle} />;
 };
 
 export const FullscreenBackground = ({
@@ -468,7 +453,6 @@ export const FullscreenBackground = ({
 	urls: string[];
 	imgRotationLength?: number;
 }) => {
-	const transition = 1200;
 	const img_src = useImageRotation(urls, imgRotationLength);
 	const { dark, colors } = useAppTheme();
 	const imgScaleVal = useSharedValue(1);
@@ -518,5 +502,173 @@ export const FullscreenBackground = ({
 				locations={[0, 0.1, 0.6, 1]}
 			/>
 		</View>
+	);
+};
+
+const particleOptions2 = {
+	detectRetina: true,
+	fpsLimit: 120,
+	interactivity: {
+		detectsOn: 'canvas',
+		events: {
+			// onClick: {
+			// 	enable: true,
+			// 	mode: 'push',
+			// },
+			// onHover: {
+			// 	enable: true,
+			// 	mode: 'bubble',
+			// },
+			// resize: true,
+		},
+		modes: {
+			bubble: {
+				distance: 400,
+				duration: 2,
+				opacity: 1,
+				size: 40,
+				speed: 3,
+			},
+			push: {
+				quantity: 4,
+			},
+		},
+	},
+	particles: {
+		rotate: {
+			value: 5,
+			random: true,
+			direction: 'clockwise',
+			animation: {
+				enable: true,
+				speed: 5,
+				sync: false,
+			},
+		},
+		move: {
+			enable: true,
+			outMode: 'out',
+			speed: 2,
+		},
+		number: {
+			density: {
+				enable: true,
+				area: 800,
+			},
+			value: 80,
+		},
+		opacity: {
+			value: 0.8,
+		},
+		shape: {
+			type: 'image',
+			options: {
+				image: [
+					{
+						src: RNImage.resolveAssetSource(gorakuBanner).uri,
+						width: 1592,
+						height: 571,
+						particles: {
+							move: {
+								direction: 'top',
+							},
+						},
+					},
+					{
+						src: RNImage.resolveAssetSource(gorakuIcon).uri,
+						width: 1024,
+						height: 1024,
+						particles: {
+							move: {
+								direction: 'bottom',
+							},
+						},
+					},
+					// MAKE IMAGES OPTIONAL?
+					// {
+					// 	src: RNImage.resolveAssetSource(mascot).uri,
+					// 	width: 32,
+					// 	height: 32,
+					// 	particles: {
+					// 		move: {
+					// 			direction: 'bottom',
+					// 		},
+					// 	},
+					// },
+				],
+			},
+		},
+		size: {
+			value: 18,
+		},
+	},
+};
+
+type ParticleBackgroundProps = {
+	backgroundColor: string;
+};
+export const ParticleBackground = ({ backgroundColor = '#000' }: ParticleBackgroundProps) => {
+	const { width } = useWindowDimensions();
+	const isEnabled = useSettingsStore(useShallow((state) => state.allowBgParticles));
+
+	const html1 = `
+	(async () => {
+  await loadAll(tsParticles);
+
+  await tsParticles.load({
+    id: "tsparticles",
+    options: ${JSON.stringify(particleOptions2)},
+  });
+})();
+	`;
+
+	const html2 = `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>tsParticles</title>
+  <style>
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+	height: 100%;
+	width: 100%;
+  }
+
+  body {
+    background-color: rgba(255, 0, 0, 0);
+  }
+</style>
+</head>
+
+<body>
+	<div id="tsparticles"></div>
+	<script
+    src="https://cdn.jsdelivr.net/npm/@tsparticles/all@3.5.0/tsparticles.all.bundle.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+  ${html1}
+</script>
+</body>
+</html>
+	`;
+
+	return (
+		isEnabled && (
+			<View style={{ width, height: '100%', position: 'absolute' }}>
+				<WebView
+					source={{ html: html2 }}
+					javaScriptEnabled
+					style={{ width: '100%', height: '100%', backgroundColor }}
+				/>
+			</View>
+		)
 	);
 };

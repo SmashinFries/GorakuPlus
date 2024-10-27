@@ -361,9 +361,8 @@ const dummyBerserkData: Media = {
 	isFavouriteBlocked: false,
 };
 
-type DummyData = {
-	[k in ThemeOptions]: Media;
-};
+type DummyData = Record<ThemeOptions, Media>;
+
 const dummyData: DummyData = {
 	punpun: dummyPPData,
 	mi_chan: dummyWTCData,

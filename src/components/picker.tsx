@@ -2,7 +2,6 @@ import { ScoreFormat } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { scoreStringToNumber, scoreToIndex, scoreValues } from '@/utils/scores';
 import { useEffect, useMemo, useState } from 'react';
-import { useTheme } from 'react-native-paper';
 import WheelPicker from 'react-native-wheely';
 
 const hours = Array.from(Array(25).keys())

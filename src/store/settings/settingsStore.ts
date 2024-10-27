@@ -1,11 +1,11 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from '../helpers/mmkv-storage';
 import { StackAnimationTypes } from 'react-native-screens';
 import { ExploreTabsProps } from '@/types/navigation';
-import { MediaInfoDisplay, ScoreVisualType } from './types';
+import { MediaInfoDisplay } from './types';
 import { DanbooruRating } from '@/api/danbooru/types';
+import { create } from 'zustand';
 
 const storage = new MMKV({ id: 'settings-storage' });
 const SettingsStorage = getZustandStorage(storage);
@@ -17,6 +17,7 @@ type SettingsState = {
 	allowSensorMotion?: boolean;
 	interaction3D?: boolean;
 	autoRotation?: boolean;
+	allowBgParticles?: boolean;
 	exploreTabs?: (keyof ExploreTabsProps)[];
 	exploreTabOrder?: (keyof ExploreTabsProps)[];
 	mediaInfoDisplay?: MediaInfoDisplay;
@@ -31,8 +32,6 @@ type SettingsState = {
 		red: number;
 		yellow: number;
 	};
-	scoreVisualType?: ScoreVisualType;
-	showItemListStatus?: boolean;
 	defaultScore?: 'average' | 'mean';
 	defaultGenreLayout?: 'list' | 'row';
 	defaultTagLayout?: 'list' | 'row';
@@ -46,13 +45,14 @@ type SettingsAction = {
 
 export const useSettingsStore = create<SettingsState & SettingsAction>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			navAnimation: 'slide_from_bottom',
 			btmTabLabels: true,
 			btmTabShifting: true,
 			allowSensorMotion: false,
 			interaction3D: false,
 			autoRotation: false,
+			allowBgParticles: false,
 			exploreTabs: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
 			exploreTabOrder: ['anime', 'manga', 'manhwa', 'manhua', 'novels'],
 			mediaInfoDisplay: 'list',
@@ -67,14 +67,12 @@ export const useSettingsStore = create<SettingsState & SettingsAction>()(
 				red: 64,
 				yellow: 74,
 			},
-			scoreVisualType: 'healthbar-full',
-			showItemListStatus: true,
 			defaultScore: 'average',
 			defaultGenreLayout: 'row',
 			defaultTagLayout: 'list',
 			tagBlacklist: [],
 			isFirstLaunch: true,
-			setSettings: (entries) => set((state) => entries),
+			setSettings: (entries) => set((_state) => entries),
 		}),
 		{
 			name: 'settings-storage',

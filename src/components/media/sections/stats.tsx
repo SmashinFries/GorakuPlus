@@ -40,14 +40,14 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 	}
 
 	return (
-		<Animated.View style={{ marginVertical: 15 }}>
+		<Animated.View>
 			<Accordion title="Statistics">
 				<Button
 					mode="elevated"
 					onPress={() =>
 						router.navigate({
 							pathname: '/statistics/media/[aniIdStat]',
-							params: { id },
+							params: { aniIdStat: id },
 						})
 					}
 					style={{ margin: 10 }}
@@ -57,7 +57,7 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={{ paddingLeft: 10 }}
+					contentContainerStyle={{ paddingHorizontal: 15 }}
 				>
 					{rankData?.map((ranking, idx) => (
 						<Chip
@@ -92,17 +92,23 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 				{statData?.scoreDistribution?.length > 0 && (
 					<View
 						style={{
-							paddingHorizontal: 15,
 							marginTop: 10,
 							marginBottom: 5,
 							alignItems: 'flex-start',
 						}}
 					>
-						<Text variant="titleLarge" style={{ marginBottom: 5 }}>
+						<Text
+							variant="titleLarge"
+							style={{ marginBottom: 5, paddingHorizontal: 15 }}
+						>
 							Score Distribution
 						</Text>
 						<StatBar data={statData?.scoreDistribution} />
-						<ScrollView horizontal>
+						<ScrollView
+							horizontal
+							showsHorizontalScrollIndicator={false}
+							contentContainerStyle={{ paddingHorizontal: 15 }}
+						>
 							{sortedScores.map((scoreDis, idx) => (
 								<ScoreItem key={idx} score={scoreDis} highestScore={highestScore} />
 							))}

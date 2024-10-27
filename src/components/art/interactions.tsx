@@ -9,10 +9,9 @@ import { useAppTheme } from '@/store/theme/themes';
 type InteractionBarProps = {
 	url: string;
 	share_url: string;
-	name: string;
+	name?: string;
 };
 export const InteractionBar = ({ url, name, share_url }: InteractionBarProps) => {
-	const { colors } = useAppTheme();
 	return (
 		<View style={[styles.container]}>
 			<Divider />

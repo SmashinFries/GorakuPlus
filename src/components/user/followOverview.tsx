@@ -1,6 +1,5 @@
-import { ActivityIndicator, Avatar, Text } from 'react-native-paper';
+import { Avatar, Text } from 'react-native-paper';
 import { Pressable, ScrollView, View } from 'react-native';
-import { openWebBrowser } from '@/utils/webBrowser';
 import { User } from '@/api/anilist/__genereated__/gql';
 import { router } from 'expo-router';
 

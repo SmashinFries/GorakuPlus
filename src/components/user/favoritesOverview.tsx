@@ -6,8 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import useImageRotation from '@/hooks/useImageRotation';
-import { UserFavoritesOverviewQuery } from '@/api/anilist/__genereated__/gql';
-import { useAuthStore } from '@/store/authStore';
+import { MediaType, UserFavoritesOverviewQuery } from '@/api/anilist/__genereated__/gql';
 
 type FavoriteItemProps = {
 	images: string[]; // URLS
@@ -72,9 +71,9 @@ const FavoriteItem = ({ images, title, size, onPress }: FavoriteItemProps) => {
 
 type FavoritesOverviewProps = {
 	data: UserFavoritesOverviewQuery['User']['favourites'];
-	userId: number;
+	username?: string;
 };
-const FavoritesOverview = ({ data, userId }: FavoritesOverviewProps) => {
+const FavoritesOverview = ({ data, username }: FavoritesOverviewProps) => {
 	const { width } = useWindowDimensions();
 	const anime_images = data?.anime?.nodes
 		? data?.anime?.nodes?.map((anime) => anime?.coverImage?.extraLarge)?.slice(0, 10)
@@ -91,9 +90,11 @@ const FavoritesOverview = ({ data, userId }: FavoritesOverviewProps) => {
 
 	const onNav = (type: 'characters' | 'anime' | 'manga' | 'staff') => {
 		router.navigate({
-			pathname: `/favorites/${type}`,
+			// @ts-ignore
+			pathname: `/user/${username}/favorites`,
 			params: {
-				userId: userId,
+				type:
+					type === 'anime' ? MediaType.Anime : type === 'manga' ? MediaType.Manga : type,
 			},
 		});
 	};

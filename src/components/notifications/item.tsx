@@ -64,8 +64,8 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
 									? item?.media?.title?.native
 									: mediaLanguage === 'romaji'
 										? item?.media?.title?.romaji
-										: item?.media?.title?.english ??
-											item?.media?.title?.romaji}{' '}
+										: (item?.media?.title?.english ??
+											item?.media?.title?.romaji)}{' '}
 							</Text>
 							{'\n'}
 							{getNotificationMessage(item, mediaLanguage)}

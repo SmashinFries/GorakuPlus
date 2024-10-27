@@ -10,7 +10,6 @@ const ExploreLayout = () => {
 				name="index"
 				options={{
 					title: 'Explore',
-					header: (props) => <ExploreHeader {...props} />,
 				}}
 			/>
 			<Stack.Screen name="search" options={{ title: 'Search' }} />

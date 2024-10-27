@@ -1,235 +1,327 @@
-import { FlashList, ListRenderItem, ListRenderItemInfo } from '@shopify/flash-list';
-import {
-	NativeSyntheticEvent,
-	SectionList,
-	SectionListData,
-	SectionListRenderItem,
-	View,
-	useWindowDimensions,
-} from 'react-native';
-import { Button, Text } from 'react-native-paper';
-import { useColumns } from '@/utils';
-import { MutableRefObject, useCallback, useMemo } from 'react';
-import { CharacterCard, MediaCard, MediaProgressBar, StaffCard, StudioCard } from '../cards';
-import { EmptyLoadView } from './loading';
-import Animated, { SharedValue } from 'react-native-reanimated';
-import { NativeScrollEvent } from 'react-native';
+import { FlashList, FlashListProps } from '@shopify/flash-list';
+import { FlatList, View, useWindowDimensions } from 'react-native';
+import { Text } from 'react-native-paper';
+import { ReactNode, useCallback, useRef } from 'react';
+import { CharacterCard, MediaCard, MediaCardRow, StudioCard, UserCard } from '../cards';
+import Animated from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useSearchStore } from '@/store/search/searchStore';
 import useDebounce from '@/hooks/useDebounce';
 import {
-	AnimeMetaFragment,
-	MediaList,
+	CharacterSearchQuery,
 	MediaSearchQuery,
 	MediaType,
 	SearchAllQuery,
+	StaffSearchQuery,
+	StudioSearchQuery,
+	useInfiniteCharacterSearchQuery,
 	useInfiniteMediaSearchQuery,
-	useInfiniteSearchAllQuery,
+	useInfiniteStaffSearchQuery,
+	useInfiniteStudioSearchQuery,
+	useInfiniteUserSearchQuery,
+	UserSearchQuery,
 	useSearchAllQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { GorakuActivityIndicator } from '../loading';
+import { useAppTheme } from '@/store/theme/themes';
+import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
+import { ScrollToTopButton } from '../buttons';
+import { useColumns } from '@/hooks/useColumns';
+import { useDisplayStore } from '@/store/displayStore';
+import { SheetManager } from 'react-native-actions-sheet';
+import { LongScrollView } from '../list';
+import { useShallow } from 'zustand/react/shallow';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
-export const MediaRenderItem = (
-	props: Omit<ListRenderItemInfo<MediaSearchQuery['Page']['media'][0]>, 'target'>,
-) => {
+export const MediaRenderItem = (props: MediaSearchQuery['Page']['media'][0]) => {
 	return (
 		<View
 			style={{
-				flex: 1,
+				// flex: 1,
 				alignItems: 'center',
 				justifyContent: 'flex-start',
 				marginVertical: 10,
 				marginHorizontal: 5,
 			}}
 		>
-			<MediaCard
-				coverImg={props.item.coverImage.extraLarge}
-				titles={props.item.title}
-				navigate={() => {
-					router.push(`/${props.item.type}/${props.item.id}`);
-				}}
-				imgBgColor={props.item.coverImage.color}
-				scoreDistributions={props.item.stats?.scoreDistribution}
-				bannerText={props.item.nextAiringEpisode?.airingAt}
-				showBanner={props.item.nextAiringEpisode ? true : false}
-				averageScore={props.item.averageScore}
-				meanScore={props.item.meanScore}
-				mediaListEntry={props.item.mediaListEntry}
-				fitToParent
-			/>
-			{/* <MediaProgressBar
-				progress={props.item.mediaListEntry?.progress}
-				mediaListEntry={props.item.mediaListEntry as MediaList}
-				mediaStatus={props.item.status}
-				total={props.item.episodes ?? props.item.chapters ?? props.item.volumes ?? 0}
-			/> */}
+			<MediaCard {...props} fitToParent />
 		</View>
 	);
 };
 
-type MediaSearchListProps = {
-	listRef: MutableRefObject<FlashList<any>>;
-	onScrollHandler:
-		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-		| SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-	headerHeight: number;
+export const MediaRowRenderItem = (props: MediaSearchQuery['Page']['media'][0]) => {
+	return <MediaCardRow {...props} />;
 };
 
-type SearchAllSection = {
-	title: string;
-	type: 'anime' | 'manga' | 'characters' | 'staff' | 'studios' | 'users';
-	data: any;
-};
+type SearchAllTypes = 'anime' | 'manga' | 'characters' | 'staff' | 'studios' | 'users';
 
-export const SearchAllList = ({ listRef, headerHeight, onScrollHandler }: MediaSearchListProps) => {
+const SearchAllRenderItem = ({
+	item,
+	type,
+	itemWidth,
+}: {
+	item: any;
+	type: SearchAllTypes;
+	itemWidth?: number;
+}) => {
 	const { width } = useWindowDimensions();
-	const query = useSearchStore((state) => state.query);
-	const showNSFW = useSettingsStore((state) => state.showNSFW);
-	const debouncedSearch = useDebounce(query, 600);
-
-	const { data, isFetching } = useSearchAllQuery(
-		{ search: debouncedSearch, perPage: 6, isAdult: showNSFW },
-		{ enabled: debouncedSearch?.length > 0 },
-	);
-
-	const sections: SearchAllSection[] = [
-		{ title: 'Anime', type: 'anime', data: data?.Anime?.media },
-		{ title: 'Manga', type: 'manga', data: data?.Manga?.media },
-		{ title: 'Characters', type: 'characters', data: data?.Characters.characters },
-		{ title: 'Staff', type: 'staff', data: data?.Staff?.staff },
-		{ title: 'Studios', type: 'studios', data: data?.Studios?.studios },
-		{ title: 'Users', type: 'users', data: data?.Users?.users },
-	];
-
-	const renderSectionTitle = (info: { section: SectionListData<any, SearchAllSection> }) => {
-		return (
-			<View style={{ marginBottom: 12 }}>
-				<Text variant="titleLarge">{info.section.title}</Text>
-			</View>
-		);
-	};
-
-	const renderItem: SectionListRenderItem<any, SearchAllSection> = ({ index, item, section }) => {
-		if (section.type === 'anime' || section.type === 'manga') {
-			return <MediaRenderItem index={index} item={item} />;
-		} else if (section.type === 'characters' || section.type === 'staff') {
+	const displayMode = useDisplayStore(useShallow((state) => state.search.mode));
+	switch (type) {
+		case 'anime':
+		case 'manga':
+			return (
+				<View
+					style={{
+						width: displayMode === 'COMPACT' ? (itemWidth ?? `${100 / 3}%`) : width,
+					}}
+				>
+					{displayMode === 'COMPACT' ? (
+						<MediaRenderItem {...item} />
+					) : (
+						<MediaRowRenderItem {...item} />
+					)}
+				</View>
+			);
+		case 'characters':
+		case 'staff':
 			return (
 				<View
 					style={{
 						alignItems: 'center',
 						marginVertical: 15,
-						marginHorizontal: 4,
+						// marginHorizontal: 4,
+						width: itemWidth ?? `${100 / 3}%`,
 					}}
 				>
-					<CharacterCard
-						name={item.name.full}
-						imgUrl={item.image?.large}
-						nativeName={item.name.native}
-						onPress={() => router.push(`/character/${item.id}`)}
-						isFavourite={item.isFavourite}
+					<CharacterCard {...item} isStaff={type === 'staff'} />
+				</View>
+			);
+		case 'studios':
+			return (
+				<View
+					style={{
+						flex: 1,
+						alignItems: 'center',
+						marginHorizontal: 10,
+						marginVertical: 4,
+					}}
+				>
+					<StudioCard
+						onPress={() => router.push(`/studio/${item.id}`)}
+						onLongPress={() =>
+							SheetManager.show('QuickActionStudioSheet', { payload: item })
+						}
+						{...item}
 					/>
 				</View>
 			);
-		} else if (section.type === 'studios') {
+		case 'users':
 			return (
-				<StudioCard
-					{...(item as SearchAllQuery['Studios']['studios'][0])}
-					onPress={() => router.push(`/studio/${item.id}`)}
-				/>
+				<View>
+					<UserCard
+						username={(item as SearchAllQuery['Users']['users'][0]).name}
+						avatarImg={(item as SearchAllQuery['Users']['users'][0]).avatar?.large}
+						{...item}
+					/>
+				</View>
 			);
-		}
-	};
+	}
+};
 
+const SearchAllSection = ({
+	type,
+	data,
+}: {
+	type: SearchAllTypes;
+	data: any[];
+	isFetching?: boolean;
+}) => {
+	const { width } = useWindowDimensions();
+	const { columns, itemWidth } = useColumns('search');
+	if (data && data?.length < 1) return;
 	return (
-		<View style={{ flex: 1, height: '100%', width }}>
-			{/* Could / should use flashlist here but... aint feelin it */}
-			<SectionList
-				sections={sections}
-				renderItem={renderItem}
-				renderSectionHeader={renderSectionTitle}
+		<View style={{ width: width }}>
+			{/* {data?.map((content, idx) => (
+					<SearchAllRenderItem key={idx} item={content} type={type} />
+				))} */}
+			<FlatList
+				key={type === 'studios' ? 1 : columns}
+				data={data}
+				keyExtractor={(item, idx) => idx.toString()}
+				numColumns={type === 'studios' ? 1 : columns}
+				scrollEnabled={false}
+				nestedScrollEnabled
+				centerContent
+				renderItem={({ item }) => (
+					<SearchAllRenderItem item={item} type={type} itemWidth={itemWidth} />
+				)}
 			/>
 		</View>
 	);
 };
 
-export const AnimeSearchList = ({
-	listRef,
-	onScrollHandler,
+const SearchList = ({
+	data,
 	headerHeight,
-}: MediaSearchListProps) => {
-	const { query, filter } = useSearchStore();
-	const debouncedSearch = useDebounce(query, 600);
-	// const { data, hasNextPage, fetchNextPage, isFetching } = useAnimeSearch({
-	// 	...filter,
-	// 	search: debouncedSearch,
-	// });
-	const { data, isFetching, refetch, hasNextPage, fetchNextPage, isFetchingNextPage } =
-		useInfiniteMediaSearchQuery(
-			{
-				type: MediaType.Anime,
-				...filter,
-				search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+	numColumns = 3,
+	...props
+}: FlashListProps<any> & { headerHeight?: number }) => {
+	const listRef = useRef<FlashList<any>>(null);
+	const { width } = useWindowDimensions();
+	const { shouldShowScrollToTop, scrollHandler } = useScrollHandler(
+		headerHeight ?? undefined,
+		150,
+	);
+	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
+
+	return (
+		<View style={{ width: width, height: '100%' }}>
+			<AnimatedFlashList
+				ref={listRef}
+				data={data}
+				keyExtractor={keyExtract}
+				numColumns={numColumns}
+				centerContent
+				onScroll={scrollHandler}
+				{...props}
+			/>
+			{shouldShowScrollToTop && (
+				<ScrollToTopButton
+					onPress={() => listRef.current?.scrollToIndex({ index: 0, animated: true })}
+					// top={110}
+				/>
+			)}
+		</View>
+	);
+};
+
+const SearchAllTitle = ({ children }: { children: ReactNode }) => {
+	const { colors } = useAppTheme();
+	return (
+		<View style={{ backgroundColor: colors.background, padding: 6, paddingLeft: 10 }}>
+			<Text variant="headlineMedium">{children}</Text>
+		</View>
+	);
+};
+
+export const SearchAllList = () => {
+	const { width } = useWindowDimensions();
+
+	const query = useSearchStore(useShallow((state) => state.query));
+	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
+	const debouncedSearch = useDebounce(query, 1000) as string;
+
+	const { data, isFetching } = useSearchAllQuery(
+		{ search: debouncedSearch, perPage: 6, isAdult: showNSFW ? undefined : false },
+		{ enabled: debouncedSearch?.length > 0 },
+	);
+
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			{isFetching && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
+			{!isFetching && data ? (
+				<LongScrollView stickyHeaderIndices={[0, 2, 4, 6, 8, 10]} scrollToTopIconTop={5}>
+					{data?.Anime?.media?.length > 0 && <SearchAllTitle>Anime</SearchAllTitle>}
+					{data?.Anime?.media?.length > 0 && (
+						<SearchAllSection data={data?.Anime?.media} type="anime" />
+					)}
+					{data?.Manga?.media?.length > 0 && <SearchAllTitle>Manga</SearchAllTitle>}
+					{data?.Manga?.media?.length > 0 && (
+						<SearchAllSection data={data?.Manga?.media} type="manga" />
+					)}
+					{data?.Characters?.characters?.length > 0 && (
+						<SearchAllTitle>Characters</SearchAllTitle>
+					)}
+					{data?.Characters?.characters?.length > 0 && (
+						<SearchAllSection data={data?.Characters?.characters} type="characters" />
+					)}
+					{data?.Staff?.staff?.length > 0 && <SearchAllTitle>Staff</SearchAllTitle>}
+					{data?.Staff?.staff?.length > 0 && (
+						<SearchAllSection data={data?.Staff?.staff} type="staff" />
+					)}
+					{data?.Studios?.studios?.length > 0 && <SearchAllTitle>Studios</SearchAllTitle>}
+					{data?.Studios?.studios?.length > 0 && (
+						<SearchAllSection data={data?.Studios?.studios} type="studios" />
+					)}
+					{data?.Users?.users?.length > 0 && <SearchAllTitle>Users</SearchAllTitle>}
+					{data?.Users?.users?.length > 0 && (
+						<SearchAllSection data={data?.Users?.users} type="users" />
+					)}
+				</LongScrollView>
+			) : (
+				<View style={{ paddingVertical: 100, alignItems: 'center', width: '100%' }}>
+					<Text variant="titleLarge">Nothing to see here!</Text>
+				</View>
+			)}
+			{/* {shouldShowScrollToTop && <ScrollToTopButton listRef={listRef} top={80} />} */}
+		</View>
+	);
+};
+
+export const AnimeSearchList = () => {
+	const { width } = useWindowDimensions();
+	const { query, mediaFilter } = useSearchStore(
+		useShallow((state) => ({
+			query: state.query,
+			mediaFilter: state.mediaFilter,
+		})),
+	);
+
+	const { columns, itemWidth, displayMode } = useColumns('search');
+	const debouncedSearch = useDebounce(query, 1000) as string;
+	const { data, hasNextPage, fetchNextPage } = useInfiniteMediaSearchQuery(
+		{
+			type: MediaType.Anime,
+			...mediaFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 
 	const mergedResults = data?.pages?.flatMap((val) => val.Page?.media);
 
-	const { width } = useWindowDimensions();
-	const { columns, listKey } = useColumns(150);
-
-	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
-
-	// const mergedResults = useMemo(() => data.pages.flatMap((val) => val.Page.media), [data]);
-
 	return (
-		<View style={{ flex: 1, height: '100%', width }}>
-			{/* <Button
-				onPress={() =>
-					console.log({
-						type: MediaType.Anime,
-						...filter,
-						search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
-					})
-				}
-			>
-				TEST
-			</Button> */}
-			<AnimatedFlashList
-				key={listKey}
-				ref={listRef}
+		<View style={{ height: '100%', width }}>
+			<SearchList
+				key={columns}
 				data={mergedResults}
+				numColumns={columns}
 				nestedScrollEnabled
-				renderItem={(props) => (
-					<MediaRenderItem
-						{...props}
-						item={props.item as MediaSearchQuery['Page']['media'][0]}
-					/>
-				)}
-				keyExtractor={keyExtract}
+				renderItem={({ item }: { item: MediaSearchQuery['Page']['media'][0] }) =>
+					displayMode === 'COMPACT' ? (
+						<View style={{ width: itemWidth }}>
+							<MediaRenderItem {...item} />
+						</View>
+					) : (
+						<MediaRowRenderItem {...item} />
+					)
+				}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
-				numColumns={3}
 				estimatedItemSize={240}
 				removeClippedSubviews
-				centerContent
-				onScroll={onScrollHandler}
-				contentContainerStyle={{
-					// padding: 10,
-					paddingTop: headerHeight,
-					// paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
-				}}
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -239,60 +331,116 @@ export const AnimeSearchList = ({
 	);
 };
 
-export const MangaSearchList = ({
-	listRef,
-	onScrollHandler,
-	headerHeight,
-}: MediaSearchListProps) => {
-	const { query, filter } = useSearchStore();
-	const debouncedSearch = useDebounce(query, 600);
-	const { data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage } =
-		useInfiniteMediaSearchQuery(
-			{ type: MediaType.Manga, ...filter },
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
+export const MangaSearchList = () => {
+	const { query, mediaFilter } = useSearchStore(
+		useShallow((state) => ({
+			query: state.query,
+			mediaFilter: state.mediaFilter,
+		})),
+	);
+	const { columns, itemWidth, displayMode } = useColumns('search');
+	const debouncedSearch = useDebounce(query, 1000) as string;
+	const { data, hasNextPage, fetchNextPage } = useInfiniteMediaSearchQuery(
+		{
+			type: MediaType.Manga,
+			...mediaFilter,
+			search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-		);
+		},
+	);
 	const { width } = useWindowDimensions();
-	const { columns, listKey } = useColumns(150);
 
-	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
-
-	const allResults = useMemo(() => data.pages.flatMap((val) => val.Page.media), [data]);
+	const allResults = data?.pages?.flatMap((val) => val.Page.media);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
-			<AnimatedFlashList
-				key={listKey}
-				ref={listRef}
+			<SearchList
+				key={columns}
+				data={allResults}
+				numColumns={columns}
+				nestedScrollEnabled
+				renderItem={(props) =>
+					displayMode === 'COMPACT' ? (
+						<View style={{ width: itemWidth }}>
+							<MediaRenderItem {...props.item} />
+						</View>
+					) : (
+						<MediaRowRenderItem {...props.item} />
+					)
+				}
+				keyboardShouldPersistTaps="never"
+				keyboardDismissMode="interactive"
+				estimatedItemSize={240}
+				removeClippedSubviews
+				onEndReachedThreshold={0.4}
+				onEndReached={() => {
+					hasNextPage && fetchNextPage();
+				}}
+			/>
+		</View>
+	);
+};
+
+export const CharacterSearchList = () => {
+	const { query, characterFilter } = useSearchStore(
+		useShallow((state) => ({
+			query: state.query,
+			characterFilter: state.characterFilter,
+		})),
+	);
+	const debouncedSearch = useDebounce(query, 1000) as string;
+	const { data, hasNextPage, fetchNextPage } = useInfiniteCharacterSearchQuery(
+		{
+			...characterFilter,
+			isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter.isBirthday,
+			search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
+			},
+		},
+	);
+	const { width } = useWindowDimensions();
+
+	const allResults: CharacterSearchQuery['Page']['characters'] = data?.pages?.flatMap(
+		(val) => val.Page.characters,
+	);
+
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			<SearchList
 				data={allResults}
 				nestedScrollEnabled
-				renderItem={(props) => (
-					<MediaRenderItem
-						{...props}
-						item={props.item as MediaSearchQuery['Page']['media'][0]}
-					/>
+				renderItem={({ item }) => (
+					<View
+						style={{
+							alignItems: 'center',
+							marginVertical: 15,
+							marginHorizontal: 4,
+						}}
+					>
+						<CharacterCard {...item} />
+					</View>
 				)}
-				keyExtractor={keyExtract}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
-				numColumns={3}
 				estimatedItemSize={240}
 				removeClippedSubviews
-				centerContent
-				onScroll={onScrollHandler}
-				contentContainerStyle={{
-					// padding: 10,
-					paddingTop: headerHeight,
-					// paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
-				}}
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -302,445 +450,172 @@ export const MangaSearchList = ({
 	);
 };
 
-// type AniMangListProps = {
-// 	filter: ExploreMediaQueryVariables;
-// 	results: ExploreMediaQuery;
-// 	searchStatus: any;
-// 	sheetRef: any;
-// 	isLoading: boolean;
-// 	nextPage: (currentPage: number, filter: ExploreMediaQueryVariables) => Promise<void>;
-// 	onItemPress: (aniID: number, type: MediaType) => void;
-// 	onScrollHandler:
-// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-// 	headerHeight: number;
-// 	listRef: MutableRefObject<FlashList<any>>;
-// };
-// export const AniMangList = (props: AniMangListProps) => {
-// 	const { width } = useWindowDimensions();
-// 	const { columns, listKey } = useColumns(150);
-// 	const { dismissAll } = useBottomSheetModal();
+export const StaffSearchList = () => {
+	const { query, staffFilter } = useSearchStore();
+	const debouncedSearch = useDebounce(query, 1000) as string;
+	const { data, hasNextPage, fetchNextPage } = useInfiniteStaffSearchQuery(
+		{
+			...staffFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
+			},
+		},
+	);
+	const { width } = useWindowDimensions();
 
-// 	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
+	const allResults: StaffSearchQuery['Page']['staff'] = data?.pages?.flatMap(
+		(val) => val.Page.staff,
+	);
 
-// 	const RenderItem = useCallback(
-// 		(itemProps) => (
-// 			<View
-// 				style={{
-// 					flex: 1,
-// 					alignItems: 'center',
-// 					justifyContent: 'flex-start',
-// 					marginVertical: 10,
-// 					marginHorizontal: 5,
-// 				}}
-// 			>
-// 				<MediaCard
-// 					coverImg={itemProps.item.coverImage.extraLarge}
-// 					titles={itemProps.item.title}
-// 					navigate={() => {
-// 						dismissAll();
-// 						props.onItemPress(itemProps.item.id, itemProps.item.type);
-// 					}}
-// 					imgBgColor={itemProps.item.coverImage.color}
-// 					scoreDistributions={itemProps.item.stats?.scoreDistribution}
-// 					bannerText={itemProps.item.nextAiringEpisode?.timeUntilAiring}
-// 					showBanner={itemProps.item.nextAiringEpisode ? true : false}
-// 					averageScore={itemProps.item.averageScore}
-// 					meanScore={itemProps.item.meanScore}
-// 					fitToParent
-// 				/>
-// 				<MediaProgressBar
-// 					progress={itemProps.item.mediaListEntry?.progress}
-// 					mediaListEntry={itemProps.item.mediaListEntry}
-// 					mediaStatus={itemProps.item.status}
-// 					total={
-// 						itemProps.item.episodes ??
-// 						itemProps.item.chapters ??
-// 						itemProps.item.volumes ??
-// 						0
-// 					}
-// 				/>
-// 			</View>
-// 		),
-// 		[],
-// 	);
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			<SearchList
+				data={allResults}
+				nestedScrollEnabled
+				renderItem={({ item }) => (
+					<View
+						style={{
+							alignItems: 'center',
+							marginVertical: 15,
+							marginHorizontal: 4,
+						}}
+					>
+						<CharacterCard {...item} isStaff />
+					</View>
+				)}
+				keyboardShouldPersistTaps="never"
+				keyboardDismissMode="interactive"
+				estimatedItemSize={240}
+				removeClippedSubviews
+				onEndReachedThreshold={0.4}
+				onEndReached={() => {
+					hasNextPage && fetchNextPage();
+				}}
+			/>
+		</View>
+	);
+};
 
-// 	return (
-// 		<View style={{ flex: 1, height: '100%', width }}>
-// 			<AnimatedFlashList
-// 				key={listKey}
-// 				ref={props.listRef}
-// 				data={props.results?.Page?.media}
-// 				nestedScrollEnabled
-// 				renderItem={RenderItem}
-// 				keyExtractor={keyExtract}
-// 				keyboardShouldPersistTaps="never"
-// 				keyboardDismissMode="interactive"
-// 				numColumns={3}
-// 				estimatedItemSize={240}
-// 				removeClippedSubviews
-// 				centerContent
-// 				onScroll={props.onScrollHandler}
-// 				contentContainerStyle={{
-// 					// padding: 10,
-// 					paddingTop: props.headerHeight,
-// 					// paddingLeft: props.results?.Page?.media ? 150 / columns / 3 : undefined,
-// 				}}
-// 				onEndReachedThreshold={0.4}
-// 				onEndReached={() => {
-// 					props.results?.Page &&
-// 						props.results?.Page?.pageInfo?.hasNextPage &&
-// 						props.results?.Page?.media?.length > 0 &&
-// 						props.nextPage(props.results?.Page?.pageInfo?.currentPage, props.filter);
-// 				}}
-// 			/>
-// 		</View>
-// 	);
-// };
+export const StudioSearchList = () => {
+	const { query, studioFilter } = useSearchStore();
+	const debouncedSearch = useDebounce(query, 1000) as string;
+	const { data, hasNextPage, fetchNextPage } = useInfiniteStudioSearchQuery(
+		{
+			...studioFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
+			},
+		},
+	);
+	const { width } = useWindowDimensions();
 
-// export const CharacterSearchList = () => {};
+	const allResults: StudioSearchQuery['Page']['studios'] = data?.pages?.flatMap(
+		(val) => val.Page.studios,
+	);
 
-// type CharacterListProps = {
-// 	results: CharacterSearchQuery;
-// 	searchStatus: any;
-// 	isLoading: boolean;
-// 	onScrollHandler:
-// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-// 	headerHeight: number;
-// 	listRef: MutableRefObject<FlashList<any>>;
-// 	onNavigate: (id: number) => void;
-// 	nextPage?: () => Promise<void>;
-// };
-// export const CharacterList = (props: CharacterListProps) => {
-// 	const { width, height } = useWindowDimensions();
-// 	// const { dark, colors } = useTheme();
-// 	const { columns, listKey } = useColumns(110);
-// 	const { dismissAll } = useBottomSheetModal();
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			<SearchList
+				data={allResults}
+				numColumns={1}
+				nestedScrollEnabled
+				renderItem={({ item }: { item: StudioSearchQuery['Page']['studios'][0] }) => (
+					<View
+						style={{
+							flex: 1,
+							alignItems: 'center',
+							marginHorizontal: 10,
+							marginVertical: 4,
+						}}
+					>
+						<StudioCard
+							{...item}
+							onPress={() => router.push(`/studio/${item.id}`)}
+							onLongPress={() =>
+								SheetManager.show('QuickActionStudioSheet', { payload: item })
+							}
+						/>
+					</View>
+				)}
+				keyboardShouldPersistTaps="never"
+				keyboardDismissMode="interactive"
+				estimatedItemSize={240}
+				removeClippedSubviews
+				onEndReachedThreshold={0.4}
+				onEndReached={() => {
+					hasNextPage && fetchNextPage();
+				}}
+			/>
+		</View>
+	);
+};
 
-// 	const keyExtract = useCallback(
-// 		(item, index: number) => item.id.toString() + index.toString(),
-// 		[],
-// 	);
+export const UserSearchList = () => {
+	const { query, userFilter } = useSearchStore();
+	const debouncedSearch = useDebounce(query, 600) as string;
+	const { data, hasNextPage, fetchNextPage } = useInfiniteUserSearchQuery(
+		{
+			...userFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
+			},
+		},
+	);
+	const { width } = useWindowDimensions();
 
-// 	const RenderItem: ListRenderItem<CharacterSearchQuery['Page']['characters'][0]> = useCallback(
-// 		({ item }) => {
-// 			return (
-// 				<View style={{ flex: 1, alignItems: 'center', marginVertical: 15 }}>
-// 					<CharacterCard
-// 						onPress={() => {
-// 							dismissAll();
-// 							props.onNavigate(item.id);
-// 						}}
-// 						imgUrl={item.image?.large}
-// 						name={item.name?.full}
-// 						nativeName={item.name?.native}
-// 						isFavourite={item.isFavourite}
-// 					/>
-// 				</View>
-// 			);
-// 		},
-// 		[],
-// 	);
+	const allResults: UserSearchQuery['Page']['users'] = data?.pages?.flatMap(
+		(val) => val.Page.users,
+	);
 
-// 	if (props.isLoading) return <EmptyLoadView isLoading={true} />;
-
-// 	return (
-// 		<View style={{ flex: 1, height: '100%', width }}>
-// 			<AnimatedFlashList
-// 				key={listKey}
-// 				ref={props.listRef}
-// 				data={props.results?.Page?.characters}
-// 				nestedScrollEnabled
-// 				renderItem={RenderItem}
-// 				keyExtractor={keyExtract}
-// 				numColumns={columns}
-// 				estimatedItemSize={240}
-// 				removeClippedSubviews
-// 				centerContent
-// 				onScroll={props.onScrollHandler}
-// 				contentContainerStyle={{
-// 					// padding: 10,
-// 					paddingTop: props.headerHeight,
-// 					// paddingLeft: props.results?.Page?.characters ? 110 / columns / 3 : undefined,
-// 				}}
-// 				onEndReachedThreshold={0.4}
-// 				onEndReached={() => {
-// 					props.results?.Page &&
-// 						props.results?.Page?.characters?.length > 0 &&
-// 						props.nextPage();
-// 				}}
-// 			/>
-// 		</View>
-// 	);
-// };
-
-// type StaffListProps = {
-// 	results: StaffSearchQuery;
-// 	searchStatus: any;
-// 	isLoading: boolean;
-// 	onScrollHandler:
-// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-// 	headerHeight: number;
-// 	listRef: MutableRefObject<FlashList<any>>;
-// 	onNavigate: (id: number) => void;
-// 	nextPage?: () => Promise<void>;
-// };
-// export const StaffList = (props: StaffListProps) => {
-// 	const { width, height } = useWindowDimensions();
-// 	const { dismissAll } = useBottomSheetModal();
-// 	const { columns, listKey } = useColumns(110);
-
-// 	const keyExtract = useCallback(
-// 		(item, index: number) => item.id.toString() + index.toString(),
-// 		[],
-// 	);
-
-// 	const RenderItem: ListRenderItem<StaffSearchQuery['Page']['staff'][0]> = useCallback(
-// 		({ item }) => {
-// 			return (
-// 				<View style={{ flex: 1, alignItems: 'center', marginVertical: 15 }}>
-// 					<StaffCard
-// 						onPress={() => {
-// 							dismissAll();
-// 							props.onNavigate(item.id);
-// 						}}
-// 						imgUrl={item.image?.large}
-// 						name={item.name?.full}
-// 						nativeName={item.name?.native}
-// 						isFavourite={item.isFavourite}
-// 					/>
-// 				</View>
-// 			);
-// 		},
-// 		[],
-// 	);
-
-// 	if (props.isLoading) return <EmptyLoadView isLoading={true} />;
-
-// 	return (
-// 		<View style={{ flex: 1, height: '100%', width }}>
-// 			<AnimatedFlashList
-// 				key={listKey}
-// 				ref={props.listRef}
-// 				data={props.results?.Page?.staff}
-// 				nestedScrollEnabled
-// 				renderItem={RenderItem}
-// 				keyExtractor={keyExtract}
-// 				numColumns={columns}
-// 				estimatedItemSize={240}
-// 				removeClippedSubviews
-// 				centerContent
-// 				onScroll={props.onScrollHandler}
-// 				contentContainerStyle={{
-// 					paddingTop: props.headerHeight,
-// 				}}
-// 				onEndReachedThreshold={0.4}
-// 				onEndReached={() => {
-// 					props.results?.Page &&
-// 						props.results?.Page?.staff?.length > 0 &&
-// 						props.nextPage();
-// 				}}
-// 			/>
-// 		</View>
-// 	);
-// };
-
-// type StudioListProps = {
-// 	results: StudioSearchQuery;
-// 	searchStatus: any;
-// 	isLoading: boolean;
-// 	onScrollHandler:
-// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-// 	headerHeight: number;
-// 	listRef: MutableRefObject<FlashList<any>>;
-// 	onNavigate: (studioId: number) => void;
-// 	nextPage?: () => Promise<void>;
-// };
-// export const StudioList = (props: StudioListProps) => {
-// 	const { width, height } = useWindowDimensions();
-// 	const { dismissAll } = useBottomSheetModal();
-// 	const { columns, listKey } = useColumns(110);
-
-// 	const keyExtract = useCallback(
-// 		(item, index: number) => item.id.toString() + index.toString(),
-// 		[],
-// 	);
-
-// 	const RenderItem: ListRenderItem<StudioSearchQuery['Page']['studios'][0]> = useCallback(
-// 		({ item }) => {
-// 			return (
-// 				<View
-// 					style={{
-// 						flex: 1,
-// 						width: '100%',
-// 						alignItems: 'center',
-// 						marginVertical: 15,
-// 						paddingHorizontal: 20,
-// 					}}
-// 				>
-// 					<StudioCard
-// 						onPress={() => {
-// 							dismissAll();
-// 							props.onNavigate(item.id);
-// 							// openWebBrowser(item.siteUrl);
-// 						}}
-// 						name={item.name}
-// 						isFavourite={item.isFavourite}
-// 						banners={
-// 							item.media?.edges?.length > 0
-// 								? item.media?.edges?.map((edge) => edge?.node?.bannerImage)
-// 								: undefined
-// 						}
-// 					/>
-// 				</View>
-// 			);
-// 		},
-// 		[],
-// 	);
-
-// 	if (props.isLoading) return <EmptyLoadView isLoading={true} />;
-
-// 	return (
-// 		<View style={{ flex: 1, height: '100%', width }}>
-// 			<AnimatedFlashList
-// 				key={1}
-// 				ref={props.listRef}
-// 				data={props.results?.Page?.studios}
-// 				nestedScrollEnabled
-// 				renderItem={RenderItem}
-// 				keyExtractor={keyExtract}
-// 				numColumns={1}
-// 				estimatedItemSize={240}
-// 				removeClippedSubviews
-// 				centerContent
-// 				onScroll={props.onScrollHandler}
-// 				contentContainerStyle={{
-// 					paddingTop: props.headerHeight,
-// 				}}
-// 				onEndReachedThreshold={0.4}
-// 				onEndReached={() => {
-// 					props.results?.Page &&
-// 						props.results?.Page?.studios?.length > 0 &&
-// 						props.nextPage();
-// 				}}
-// 			/>
-// 		</View>
-// 	);
-// };
-
-// type ImageSearchListProps = {
-// 	results: SearchResult;
-// 	onScrollHandler:
-// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-// 	headerHeight: number;
-// 	isLoading: boolean;
-// 	listRef: MutableRefObject<FlashList<any>>;
-// };
-// export const ImageSearchList = (props: ImageSearchListProps) => {
-// 	const { width, height } = useWindowDimensions();
-
-// 	const keyExtract = useCallback((item, index: number) => index.toString(), []);
-
-// 	const RenderItem: ListRenderItem<Result> = ({ item }) => {
-// 		return <ImageSearchItem item={item} />;
-// 	};
-
-// 	if (props.isLoading) return <EmptyLoadView isLoading={true} />;
-
-// 	return (
-// 		<View style={{ flex: 1, height: '100%', width }}>
-// 			<AnimatedFlashList
-// 				key={1}
-// 				ref={props.listRef}
-// 				data={props.results?.result}
-// 				nestedScrollEnabled
-// 				renderItem={RenderItem}
-// 				keyExtractor={keyExtract}
-// 				numColumns={1}
-// 				estimatedItemSize={240}
-// 				removeClippedSubviews
-// 				centerContent
-// 				onScroll={props.onScrollHandler}
-// 				contentContainerStyle={{
-// 					padding: 10,
-// 					paddingTop: props.headerHeight,
-// 				}}
-// 			/>
-// 		</View>
-// 	);
-// };
-
-// type WaifuSearchListProps = {
-// 	results: CharacterSearchQuery['Page']['characters'];
-// 	isLoading: boolean;
-// 	onScrollHandler:
-// 		| ((event: NativeSyntheticEvent<NativeScrollEvent>) => void)
-// 		| Animated.SharedValue<(event: NativeSyntheticEvent<NativeScrollEvent>) => void>;
-// 	headerHeight: number;
-// 	listRef: MutableRefObject<FlashList<any>>;
-// };
-// export const WaifuSearchList = (props: WaifuSearchListProps) => {
-// 	const { width, height } = useWindowDimensions();
-// 	const { dismissAll } = useBottomSheetModal();
-// 	const { columns, listKey } = useColumns(110);
-
-// 	const keyExtract = useCallback(
-// 		(item, index: number) => item.id.toString() + index.toString(),
-// 		[],
-// 	);
-
-// 	const RenderItem: ListRenderItem<
-// 		CharacterSearchQuery['Page']['characters'][0] & { confidence: number }
-// 	> = useCallback(({ item }) => {
-// 		return (
-// 			<View style={{ alignItems: 'center', marginVertical: 15 }}>
-// 				<CharacterCard
-// 					onPress={() => {
-// 						dismissAll();
-// 						router.push('/characters/info/' + item.id);
-// 					}}
-// 					imgUrl={item.image?.large}
-// 					name={item.name?.full}
-// 					nativeName={item.name?.native}
-// 					isFavourite={item.isFavourite}
-// 					role={`${(item.confidence * 100).toFixed(2)}% Match`}
-// 				/>
-// 			</View>
-// 		);
-// 	}, []);
-
-// 	if (props.isLoading)
-// 		return <EmptyLoadView isLoading={true} message={'May take some time (queuing system)'} />;
-
-// 	return (
-// 		<View style={{ flex: 1, height: '100%', width }}>
-// 			<AnimatedFlashList
-// 				key={listKey}
-// 				ref={props.listRef}
-// 				data={props.results}
-// 				nestedScrollEnabled
-// 				renderItem={RenderItem}
-// 				keyExtractor={keyExtract}
-// 				numColumns={columns}
-// 				estimatedItemSize={240}
-// 				removeClippedSubviews
-// 				centerContent
-// 				onScroll={props.onScrollHandler}
-// 				contentContainerStyle={{
-// 					padding: 10,
-// 					paddingTop: props.headerHeight,
-// 					paddingLeft: props.results ? 110 / columns / 3 : undefined,
-// 				}}
-// 				ListEmptyComponent={() => (
-// 					<View style={{ flex: 1, alignItems: 'center' }}>
-// 						<Text>No Results</Text>
-// 					</View>
-// 				)}
-// 			/>
-// 		</View>
-// 	);
-// };
+	return (
+		<View style={{ flex: 1, height: '100%', width }}>
+			<SearchList
+				data={allResults}
+				nestedScrollEnabled
+				renderItem={({ item }: { item: UserSearchQuery['Page']['users'][0] }) => (
+					<View
+						style={{
+							alignItems: 'center',
+							marginVertical: 15,
+							marginHorizontal: 4,
+						}}
+					>
+						<UserCard {...item} />
+					</View>
+				)}
+				keyboardShouldPersistTaps="never"
+				keyboardDismissMode="interactive"
+				estimatedItemSize={240}
+				removeClippedSubviews
+				onEndReachedThreshold={0.4}
+				onEndReached={() => {
+					hasNextPage && fetchNextPage();
+				}}
+			/>
+		</View>
+	);
+};

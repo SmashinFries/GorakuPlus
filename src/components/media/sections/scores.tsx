@@ -1,16 +1,14 @@
-import { View, useWindowDimensions } from 'react-native';
+import { View } from 'react-native';
 import React from 'react';
-import { ScoreContainer } from '@/components/score';
 import { getScoreColor } from '@/utils';
-import { useMatchStore } from '@/store/matchStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { Divider, Text } from 'react-native-paper';
 
 type ScoreViewProps = {
-	meanScore: number;
-	averageScore: number;
-	malScore: number;
-	userScore: number;
+	meanScore: number | null;
+	averageScore: number | null;
+	malScore: number | null;
+	userScore: number | null;
 	height?: number;
 };
 // export const ScoreCircles = ({
@@ -84,20 +82,23 @@ export const ScoreView = ({
 						overflow: 'hidden',
 					}}
 				>
-					<View
-						style={{
-							position: 'absolute',
-							height: type === 'mal' ? (score / 10) * height : (score / 100) * height, // could just `${score}%` lol
-							width: '100%',
-							backgroundColor: getScoreColor(score, type === 'mal'),
-						}}
-					/>
+					{score && (
+						<View
+							style={{
+								position: 'absolute',
+								height:
+									type === 'mal' ? (score / 10) * height : (score / 100) * height, // could just `${score}%` lol
+								width: '100%',
+								backgroundColor: getScoreColor(score, type === 'mal'),
+							}}
+						/>
+					)}
 				</View>
 			</View>
 			<View style={{ paddingHorizontal: 8, justifyContent: 'center' }}>
 				<Text variant="titleMedium" style={{ textAlign: 'center' }}>
 					{score ?? '-'}
-					{type === 'average' || type === 'mean' ? '%' : type === 'review' ? '/100' : ''}
+					{type === 'review' ? '/100' : ''}
 				</Text>
 				<Divider />
 				<Text

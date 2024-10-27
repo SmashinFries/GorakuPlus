@@ -1,11 +1,9 @@
-import { useSettingsStore } from '@/store/settings/settingsStore';
 import { View } from 'react-native';
 import { AnilistIcon, MalIcon } from '../svgs';
 import { Text } from 'react-native-paper';
 import { getScoreColor } from '@/utils';
 
 export const InstagramCardScore = ({ type, score }: { type: 'anilist' | 'mal'; score: number }) => {
-	const scoreColors = useSettingsStore((state) => state.scoreColors);
 	if (!score) return null;
 	return (
 		<View

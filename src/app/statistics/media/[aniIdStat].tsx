@@ -281,7 +281,7 @@ const MediaStatsPage = () => {
 	const { width } = useWindowDimensions();
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const { data, isFetching } = useMediaTrendsQuery(
-		{ id: parseInt(id) },
+		{ id: id ? parseInt(id) : null },
 		{ enabled: !!id, refetchOnMount: false },
 	);
 

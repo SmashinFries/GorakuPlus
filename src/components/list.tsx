@@ -1,24 +1,10 @@
 import { FlashList, FlashListProps } from '@shopify/flash-list';
-import { useEffect, useRef, useState } from 'react';
-import Animated, {
-	AnimatedScrollViewProps,
-	clamp,
-	Extrapolation,
-	interpolate,
-	runOnJS,
-	useAnimatedReaction,
-	useAnimatedScrollHandler,
-	useAnimatedStyle,
-	useSharedValue,
-} from 'react-native-reanimated';
+import { useRef } from 'react';
+import Animated, { AnimatedScrollViewProps } from 'react-native-reanimated';
 import { ScrollToTopButton } from './buttons';
-import { View } from 'react-native';
+import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
 
-type ScrollCtx = {
-	prevY: number;
-};
-
-const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
+export const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
 type FlashListAnimProps = FlashListProps<any> & {
 	isSticky?: boolean;
@@ -29,58 +15,10 @@ type FlashListAnimProps = FlashListProps<any> & {
 };
 export const FlashListAnim = (props: FlashListAnimProps) => {
 	const listRef = useRef<FlashList<any>>(null);
-	const scrollClamp = useSharedValue(0);
-	const scrollOffset = useSharedValue(0);
-
-	const [shouldShowScrollToTop, setShouldShowScrollToTop] = useState(false);
-
-	const scrollHandler = useAnimatedScrollHandler({
-		onBeginDrag: (e, ctx: ScrollCtx) => {
-			'worklet';
-			ctx.prevY = e.contentOffset.y;
-		},
-		onScroll: (e, ctx: ScrollCtx) => {
-			'worklet';
-			// scrollPos.value = e.contentOffset.y;
-			const diff = e.contentOffset.y - ctx.prevY;
-			props.headerHeight &&
-				(scrollClamp.value = clamp(scrollClamp.value + diff, 0, props.headerHeight));
-			ctx.prevY = e.contentOffset.y;
-			scrollOffset.value = e.contentOffset.y;
-		},
-		onMomentumEnd: () => {
-			'worklet';
-		},
-	});
-
-	const stickyHeaderStyle = useAnimatedStyle(() => {
-		return {
-			transform: [
-				{
-					translateY: interpolate(
-						scrollClamp.value,
-						[0, props.headerHeight],
-						[0, -props.headerHeight],
-						Extrapolation.CLAMP,
-					),
-				},
-			],
-		};
-	}, [props.headerHeight]);
-
-	useAnimatedReaction(
-		() => {
-			return scrollOffset.value > props.scrollToTopTravelDistance ?? 500;
-		},
-		(shouldShow) => {
-			if (shouldShow) runOnJS(setShouldShowScrollToTop)(true);
-			if (!shouldShow) runOnJS(setShouldShowScrollToTop)(false);
-		},
+	const { headerStyle, scrollHandler, shouldShowScrollToTop } = useScrollHandler(
+		props.headerHeight,
+		props.scrollToTopTravelDistance,
 	);
-
-	useEffect(() => {
-		console.log('shouldShow:', shouldShowScrollToTop);
-	}, [shouldShowScrollToTop]);
 
 	return (
 		<>
@@ -88,10 +26,13 @@ export const FlashListAnim = (props: FlashListAnimProps) => {
 				ref={listRef}
 				{...props}
 				onScroll={scrollHandler}
-				style={[props.style, props.isSticky && stickyHeaderStyle]}
+				style={[props.style, props.isSticky && headerStyle]}
 			/>
 			{shouldShowScrollToTop && (
-				<ScrollToTopButton listRef={listRef} top={props.scrollToTopIconTop ?? 110} />
+				<ScrollToTopButton
+					onPress={() => listRef.current.scrollToIndex({ index: 0, animated: true })}
+					top={props.scrollToTopIconTop ?? 110}
+				/>
 			)}
 		</>
 	);
@@ -103,46 +44,9 @@ type LongScrollViewProps = AnimatedScrollViewProps & {
 };
 export const LongScrollView = (props: LongScrollViewProps) => {
 	const listRef = useRef<Animated.ScrollView>(null);
-	const scrollClamp = useSharedValue(0);
-	const scrollOffset = useSharedValue(0);
-	const isScrollingUp = useSharedValue(false);
-
-	const [shouldShowScrollToTop, setShouldShowScrollToTop] = useState(false);
-
-	const scrollHandler = useAnimatedScrollHandler({
-		onBeginDrag: (e, ctx: ScrollCtx) => {
-			'worklet';
-			ctx.prevY = e.contentOffset.y;
-		},
-		onScroll: (e, ctx: ScrollCtx) => {
-			'worklet';
-			ctx.prevY = e.contentOffset.y;
-			scrollOffset.value = e.contentOffset.y;
-			// isScrollingUp.value = e.
-			// console.log(e.contentOffset.y, e.contentSize.height);
-		},
-		onMomentumBegin: (e) => {
-			if (e.velocity.y > 0) {
-				isScrollingUp.value = true;
-			} else if (e.velocity.y < 0) {
-				isScrollingUp.value = false;
-			}
-		},
-		onMomentumEnd: (e) => {
-			'worklet';
-		},
-	});
-
-	useAnimatedReaction(
-		() => {
-			return (
-				scrollOffset.value > (props.scrollToTopTravelDistance ?? 500) && isScrollingUp.value
-			);
-		},
-		(shouldShow) => {
-			if (shouldShow) runOnJS(setShouldShowScrollToTop)(true);
-			if (!shouldShow) runOnJS(setShouldShowScrollToTop)(false);
-		},
+	const { scrollHandler, shouldShowScrollToTop } = useScrollHandler(
+		undefined,
+		props.scrollToTopTravelDistance,
 	);
 
 	return (
@@ -154,7 +58,10 @@ export const LongScrollView = (props: LongScrollViewProps) => {
 				style={[props.style]}
 			/>
 			{shouldShowScrollToTop && (
-				<ScrollToTopButton listRef={listRef} top={props.scrollToTopIconTop ?? 110} />
+				<ScrollToTopButton
+					onPress={() => listRef.current?.scrollTo({ y: 0, animated: true })}
+					top={props.scrollToTopIconTop ?? 110}
+				/>
 			)}
 		</>
 	);

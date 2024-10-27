@@ -1,8 +1,8 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
 import { MediaListSort, MediaTag, MediaType } from '@/api/anilist/__genereated__/gql';
+import { create } from 'zustand';
 
 const storage = new MMKV({
 	id: 'list-filter-storage',
@@ -20,14 +20,14 @@ type ListFilterState = {
 };
 
 type ListFilterActions = {
-	updateListFilter: (filter: ListFilterState) => void;
-	checkListNames: (type: MediaType, newNames: string[]) => void;
+	updateListFilter?: (filter: ListFilterState) => void;
+	checkListNames?: (type: MediaType, newNames: string[]) => void;
 	// clearListFilter: (type: ListFilterState) => void;
 };
 
 export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			query: '',
 			sort: MediaListSort.AddedTimeDesc,
 			genre: [],
@@ -66,13 +66,14 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 					});
 				}
 			},
-			// clearListFilter(type) {
-			// 	set((state) => ({ anilist: { ...state.anilist, ...data } }));
-			// },
 		}),
 		{
 			name: 'list-filter-storage',
 			storage: createJSONStorage(() => ListFilterStorage),
+			partialize: (state) => ({
+				animeTabOrder: state.animeTabOrder,
+				mangaTabOrder: state.mangaTabOrder,
+			}),
 		},
 	),
 );

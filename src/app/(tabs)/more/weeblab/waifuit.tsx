@@ -4,26 +4,21 @@ import { saveImage } from '@/utils/images';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
-import { Stack, router } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Stack } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, Share, View } from 'react-native';
 import {
 	ActivityIndicator,
-	Banner,
 	Button,
 	Chip,
 	Divider,
 	IconButton,
 	Paragraph,
-	SegmentedButtons,
-	Surface,
+	Portal,
 	Text,
 	TextInput,
-	useTheme,
 } from 'react-native-paper';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import * as Burnt from 'burnt';
-import { TOAST } from '@/constants/toast';
 import { FactResponse, QuoteResponse, TextGenOptions, WaifuItEmotions } from '@/api/waifuit/types';
 import { useAppTheme } from '@/store/theme/themes';
 import {
@@ -35,6 +30,11 @@ import {
 	useUwUQuery,
 } from '@/api/waifuit/waifuit';
 import { useAuthStore } from '@/store/authStore';
+import { WaifuItTokenDialog } from '@/components/dialogs';
+import { useShallow } from 'zustand/react/shallow';
+import { useQueryClient } from '@tanstack/react-query';
+import { sendErrorMessage } from '@/utils/toast';
+import { WaifuItHeader } from '@/components/headers';
 
 type TextInputContainerProps = {
 	label: string;
@@ -81,17 +81,40 @@ const TextInputContainer = ({
 	);
 };
 
+const WaifuItLoginPage = ({ onAuthOpen }: { onAuthOpen: () => void }) => {
+	return (
+		<View
+			style={{
+				flex: 1,
+				justifyContent: 'center',
+				alignItems: 'center',
+				paddingHorizontal: 10,
+			}}
+		>
+			<Button mode="elevated" style={{ marginVertical: 20 }} onPress={onAuthOpen}>
+				Setup Waifu.It Token
+			</Button>
+		</View>
+	);
+};
+
 const WeebLabPage = () => {
 	const { colors } = useAppTheme();
-	const { token } = useAuthStore().waifuit;
+	const { token } = useAuthStore(useShallow((state) => state.waifuit));
+	const queryClient = useQueryClient();
+
+	const [vis, setVis] = useState(false);
 
 	const [selectedEmotion, setSelectedEmotion] = useState<WaifuItEmotions>(WaifuItEmotions.Angry);
 	const emotionQuery = useEmotionQuery();
 
-	const quoteQuery = useQuoteQuery();
-	const factQuery = useFactQuery();
+	const [factData, setFactData] = useState<FactResponse>(null);
+	const [factIsFetching, setFactIsFetching] = useState(false);
+	const [quoteData, setQuoteData] = useState<QuoteResponse>(null);
+	const [quoteIsFetching, setQuoteIsFetching] = useState(false);
 
-	const [generatedText, setGeneratedText] = useState<string>('');
+	// const [generatedText, setGeneratedText] = useState<string>('');
+	const [activeTextMod, setActiveTextMod] = useState<'uwu' | 'uvu' | 'owo'>();
 	const [uwuTextQuery, setUwuTextQuery] = useState<string>('');
 	const [uvuTextQuery, setUvuTextQuery] = useState<string>('');
 	const [owoTextQuery, setOwoTextQuery] = useState<string>('');
@@ -100,17 +123,54 @@ const WeebLabPage = () => {
 	const uvuQuery = useUvUQuery(uvuTextQuery);
 	const uwuQuery = useUwUQuery(uwuTextQuery);
 
+	const fetchQuote = async () => {
+		setQuoteIsFetching(true);
+		try {
+			const result = await queryClient.fetchQuery(useQuoteQuery.options());
+			setQuoteData(result.data);
+			setQuoteIsFetching(false);
+		} catch (_e) {
+			setQuoteIsFetching(false);
+			sendErrorMessage('Failed to Fetch. Please check auth token.');
+		}
+	};
+
+	const fetchFact = async () => {
+		setFactIsFetching(true);
+		try {
+			const result = await queryClient.fetchQuery(useFactQuery.options());
+			setFactData(result.data);
+			setFactIsFetching(false);
+		} catch (_e) {
+			setFactIsFetching(false);
+			sendErrorMessage('Failed to Fetch. Please check auth token.');
+		}
+	};
+
+	const generatedText = useMemo(
+		() =>
+			activeTextMod === 'owo'
+				? owoQuery?.data?.data?.text
+				: activeTextMod === 'uvu'
+					? uvuQuery?.data?.data?.text
+					: uwuQuery?.data?.data?.text,
+		[activeTextMod, owoQuery?.data, uvuQuery?.data, uwuQuery?.data],
+	);
+
 	const onTextGen = useCallback(
 		(genType: TextGenOptions) => {
 			switch (genType) {
 				case TextGenOptions.owoify:
 					setOwoTextQuery(text);
+					setActiveTextMod('owo');
 					break;
 				case TextGenOptions.uvuify:
 					setUvuTextQuery(text);
+					setActiveTextMod('uvu');
 					break;
 				case TextGenOptions.uwuify:
 					setUwuTextQuery(text);
+					setActiveTextMod('uwu');
 					break;
 			}
 		},
@@ -119,9 +179,14 @@ const WeebLabPage = () => {
 
 	return (
 		<>
-			<Stack.Screen options={{ title: 'WaifuIt' }} />
+			<Stack.Screen
+				options={{
+					title: 'WaifuIt',
+					header: (props) => <WaifuItHeader {...props} onAuthOpen={() => setVis(true)} />,
+				}}
+			/>
 			<ScrollView>
-				<View style={{ alignItems: 'center' }}>
+				<View style={{ alignItems: 'center', paddingVertical: 20 }}>
 					<Image
 						source={require('../../../../../assets/waifu.it.logo.png')}
 						style={{ aspectRatio: 1, width: '40%', maxHeight: 200 }}
@@ -141,33 +206,14 @@ const WeebLabPage = () => {
 					<View>
 						<Paragraph>
 							Waifu.It is a service that offers random anime waifus, quotes, facts,
-							and more!
+							and more
 							{'\n'}
 						</Paragraph>
 					</View>
 				</View>
 				<Divider />
 				{!token ? (
-					<View
-						style={{
-							flex: 1,
-							justifyContent: 'center',
-							alignItems: 'center',
-							paddingHorizontal: 10,
-						}}
-					>
-						<Text style={{ textAlign: 'center' }}>
-							Currently testing Waifu.It! {'\n\n'} For this lab, you will need a
-							token.
-						</Text>
-						<Button
-							mode="elevated"
-							style={{ marginVertical: 20 }}
-							onPress={() => router.replace('/more/accounts')}
-						>
-							Setup Waifu.It Token
-						</Button>
-					</View>
+					<WaifuItLoginPage onAuthOpen={() => setVis(true)} />
 				) : (
 					<View>
 						<Accordion title="Emotion Gif">
@@ -198,19 +244,19 @@ const WeebLabPage = () => {
 									</Button> */}
 									<IconButton
 										icon={'share-variant-outline'}
-										disabled={!emotionQuery.data.data?.url}
+										disabled={!emotionQuery?.data?.data?.url}
 										onPress={() =>
 											Share.share({
-												title: emotionQuery.data.data?.url,
-												message: emotionQuery.data.data?.url,
-												url: emotionQuery.data.data?.url,
+												title: emotionQuery?.data?.data?.url,
+												message: emotionQuery.data?.data?.url,
+												url: emotionQuery.data?.data?.url,
 											})
 										}
 									/>
 									<IconButton
 										icon={'download-outline'}
-										disabled={!emotionQuery.data.data?.url}
-										onPress={() => saveImage(emotionQuery.data.data?.url)}
+										disabled={!emotionQuery.data?.data?.url}
+										onPress={() => saveImage(emotionQuery?.data?.data?.url)}
 									/>
 								</View>
 								{emotionQuery && (
@@ -233,11 +279,11 @@ const WeebLabPage = () => {
 											<Image
 												cachePolicy="none"
 												source={{
-													uri: emotionQuery.data.data?.url?.includes(
+													uri: emotionQuery?.data?.data?.url?.includes(
 														'gif',
 													)
-														? emotionQuery.data.data?.url
-														: `${emotionQuery.data.data?.url}.gif`,
+														? emotionQuery?.data?.data?.url
+														: `${emotionQuery?.data?.data?.url}.gif`,
 												}}
 												style={{
 													maxHeight: 250,
@@ -256,15 +302,15 @@ const WeebLabPage = () => {
 							<View style={{ marginVertical: 10, paddingHorizontal: 10 }}>
 								<TextInputContainer
 									label="Fact"
-									fact={factQuery.data.data}
-									onGenerate={() => factQuery.refetch()}
-									isFetching={factQuery.isFetching}
+									fact={factData}
+									onGenerate={() => fetchFact()}
+									isFetching={factIsFetching}
 								/>
 								<TextInputContainer
 									label="Quote"
-									quote={quoteQuery.data.data}
-									onGenerate={() => quoteQuery.refetch()}
-									isFetching={quoteQuery.isFetching}
+									quote={quoteData}
+									onGenerate={() => fetchQuote()}
+									isFetching={quoteIsFetching}
 								/>
 							</View>
 						</Accordion>
@@ -354,6 +400,9 @@ const WeebLabPage = () => {
 					</View>
 				)}
 			</ScrollView>
+			<Portal>
+				<WaifuItTokenDialog visible={vis} onDismiss={() => setVis(false)} />
+			</Portal>
 		</>
 	);
 };

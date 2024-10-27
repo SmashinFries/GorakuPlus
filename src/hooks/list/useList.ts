@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { sortListTabs } from '@/utils/sort';
+import { useEffect, useState } from 'react';
 import {
-	MediaListCollection,
 	MediaListGroup,
 	MediaListSort,
 	MediaTag,
@@ -14,6 +12,7 @@ import {
 import { useListFilterStore } from '@/store/listStore';
 import { useAuthStore } from '@/store/authStore';
 import { NavigationState } from 'react-native-tab-view';
+import { useShallow } from 'zustand/react/shallow';
 
 const orderList = (listData: string[], order?: string[], isViewer: boolean = false) => {
 	if (isViewer && order) {
@@ -33,11 +32,13 @@ const useListOrder = (
 ) => {
 	const [animeRoutes, setAnimeRoutes] = useState<NavigationState<any>['routes']>();
 	const [mangaRoutes, setMangaRoutes] = useState<NavigationState<any>['routes']>();
-	const { animeTabOrder, mangaTabOrder, checkListNames } = useListFilterStore((state) => ({
-		animeTabOrder: state.animeTabOrder,
-		mangaTabOrder: state.mangaTabOrder,
-		checkListNames: state.checkListNames,
-	}));
+	const { animeTabOrder, mangaTabOrder, checkListNames } = useListFilterStore(
+		useShallow((state) => ({
+			animeTabOrder: state.animeTabOrder,
+			mangaTabOrder: state.mangaTabOrder,
+			checkListNames: state.checkListNames,
+		})),
+	);
 
 	const getListRoutes = (listData: MediaListGroup[], type: MediaType) => {
 		const count = {};
@@ -48,7 +49,6 @@ const useListOrder = (
 			.filter((list) => list.isSplitCompletedList === false) // remove split lists (like anilist site)
 			.sort((a, b) => Number(a.isCustomList) - Number(b.isCustomList)) // puts customs lists at end
 			.map((list) => list.name);
-		console.log(type, listNames);
 		checkListNames(type, listNames);
 		const listOrder = orderList(
 			listNames,
@@ -139,7 +139,7 @@ const getAllTags = (
 };
 
 export const useList = (userId: number, isViewer = true) => {
-	const viewerId = useAuthStore((state) => state.anilist.userID);
+	const viewerId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const {
 		data: animeList,
 		isLoading: isAnimeListLoading,

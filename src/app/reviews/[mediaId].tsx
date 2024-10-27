@@ -1,7 +1,6 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
 import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
-import { useColumns } from '@/utils';
 import { useCallback } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useReviewsList } from '@/hooks/reviews/useReviews';
@@ -13,7 +12,6 @@ import { useAppTheme } from '@/store/theme/themes';
 const ReviewsListScreen = () => {
 	const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
 	const { reviewData } = useReviewsList(Number(mediaId));
-	const { columns, listKey } = useColumns(180);
 	const { height } = useWindowDimensions();
 	const { colors } = useAppTheme();
 
@@ -30,7 +28,9 @@ const ReviewsListScreen = () => {
 		[],
 	);
 
-	if (reviewData.isUninitialized) {
+	const mergedData = reviewData?.data?.pages?.flatMap((data) => data.Page?.reviews);
+
+	if (reviewData?.isFetching) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 				<GorakuActivityIndicator />
@@ -42,13 +42,13 @@ const ReviewsListScreen = () => {
 		<View style={{ height: '100%', width: '100%' }}>
 			<FlashList
 				key={1}
-				data={reviewData.data?.Page?.reviews}
+				data={mergedData}
 				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={RenderItem}
 				contentContainerStyle={{ padding: 10 }}
 				estimatedItemSize={241}
 				drawDistance={height / 2}
-				onEndReached={() => loadMore()}
+				onEndReached={() => reviewData?.hasNextPage && reviewData.fetchNextPage()}
 			/>
 		</View>
 	);

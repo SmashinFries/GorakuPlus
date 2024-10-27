@@ -1,10 +1,10 @@
 import { MMKV } from 'react-native-mmkv';
 import { Appearance } from 'react-native';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from '../helpers/mmkv-storage';
 import { ThemeOptions } from './themes';
 import switchTheme from 'react-native-theme-switch-animation';
+import { create } from 'zustand';
 
 const storage = new MMKV({ id: 'theme-storage' });
 const ThemeStorage = getZustandStorage(storage);
@@ -20,7 +20,7 @@ type ThemeAction = {
 
 export const useThemeStore = create<ThemeState & ThemeAction>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			mode: 'mi_chan',
 			isDark: Appearance.getColorScheme() === 'dark',
 			isAMOLED: false,

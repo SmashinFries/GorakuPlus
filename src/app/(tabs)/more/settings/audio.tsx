@@ -1,5 +1,4 @@
 import { Accordion } from '@/components/animations';
-import { GorakuSlider } from '@/components/slider';
 import { ListSubheader } from '@/components/titles';
 import { BasicDialogProps } from '@/types';
 import * as Speech from 'expo-speech';
@@ -11,6 +10,7 @@ import { MaterialSwitchListItem } from '@/components/switch';
 import { TTSVoice } from '@/store/tts/types';
 import { useAppTheme } from '@/store/theme/themes';
 import { useTTSStore } from '@/store/tts/ttsStore';
+import { Slider } from '@/components/slider';
 
 type VoiceDialogProps = BasicDialogProps & {
 	title: string;
@@ -40,48 +40,39 @@ const VoiceDialog = ({
 		});
 	};
 
+	useEffect(() => {
+		setNewVoice(currentVoice?.voice);
+	}, [currentVoice]);
+
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>{title}</Dialog.Title>
 			<Dialog.Content>
-				<View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+				{/* <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
 					<ListSubheader title="Pitch" />
-				</View>
-				<View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-					<Text>{newPitch.toFixed(1)}</Text>
-
-					<GorakuSlider
-						value={newPitch}
-						step={0.1}
-						maxValue={5.0}
-						minValue={0.1}
-						updateValue={(val) => setNewPitch(val)}
-						style={{ flexGrow: 1 }}
-					/>
-					<Pressable
-						style={{ justifyContent: 'center' }}
-						onPress={() => {
-							setNewPitch(1.0);
-							Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-						}}
-					>
-						<Icon source="restart" size={22} />
-					</Pressable>
-				</View>
-				<View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+				</View> */}
+				<Slider
+					title="Pitch"
+					description={newPitch.toString()}
+					initialValue={newPitch}
+					onValueUpdate={(val) => setNewPitch(val)}
+					steps={0.1}
+					maxValue={5.0}
+					minValue={0.1}
+				/>
+				{/* <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
 					<ListSubheader title="Rate" />
-				</View>
-				<View style={{ flexDirection: 'row', width: '100%' }}>
-					<Text>{newRate.toFixed(1)}</Text>
-					<GorakuSlider
-						value={newRate}
-						step={0.1}
-						maxValue={5.0}
-						minValue={0.1}
-						updateValue={(val) => setNewRate(val)}
-						style={{ flexGrow: 1 }}
-					/>
-					<Pressable
+				</View> */}
+				<Slider
+					title="Rate"
+					initialValue={newRate}
+					onValueUpdate={(val) => setNewRate(val)}
+					steps={0.1}
+					maxValue={5.0}
+					minValue={0.1}
+					description={newRate.toString()}
+				/>
+				{/* <Pressable
 						style={{ justifyContent: 'center' }}
 						onPress={() => {
 							setNewRate(1.0);
@@ -89,8 +80,7 @@ const VoiceDialog = ({
 						}}
 					>
 						<Icon source="restart" size={22} />
-					</Pressable>
-				</View>
+					</Pressable> */}
 
 				<View
 					style={{
@@ -120,6 +110,7 @@ const VoiceDialog = ({
 							}
 							value={voice.identifier}
 							onPress={() => setNewVoice(voice)}
+							// onPress={() => console.log(newVoice)}
 							status={
 								newVoice?.identifier === voice.identifier ? 'checked' : 'unchecked'
 							}
@@ -147,7 +138,6 @@ const AudioPage = () => {
 
 	const getSpeakers = async () => {
 		const speakers = await Speech.getAvailableVoicesAsync();
-		console.log(speakers);
 		const english_voices = speakers.filter((s) => s.language.includes('en'));
 		const japanese_voices = speakers.filter((s) => s.language.includes('ja'));
 		const korean_voices = speakers.filter((s) => s.language.includes('ko'));

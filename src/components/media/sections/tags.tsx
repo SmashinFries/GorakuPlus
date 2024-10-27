@@ -20,7 +20,6 @@ const TagView = ({ genres, tags }: TagViewProps) => {
 		setVisible(true);
 	};
 
-	const {} = useSettingsStore();
 	const { showNSFW } = useSettingsStore();
 
 	const closeTag = () => setVisible(false);

@@ -1,20 +1,14 @@
-import { Platform, RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
+import { RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
+import { Text } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
-import React, { memo, useCallback, useMemo } from 'react';
-import { MediaCard, MediaProgressBar } from '../cards';
-import { router } from 'expo-router';
+import React, { memo } from 'react';
+import { MediaCard } from '../cards';
 import { GorakuActivityIndicator } from '../loading';
 import {
 	AnimeExploreQuery,
 	MangaExploreQuery,
-	Media,
-	MediaList,
-	MediaType,
-	NovelExploreQuery,
+	ScoreFormat,
 } from '@/api/anilist/__genereated__/gql';
-import { useSettingsStore } from '@/store/settings/settingsStore';
-import { QuickActionProps } from '../bottomsheets';
 
 type RefreshableScrollProps = {
 	children: React.ReactNode;
@@ -41,78 +35,42 @@ export const RefreshableScroll = ({ children, refreshing, onRefresh }: Refreshab
 type SectionScrollProps = {
 	category_title: string;
 	data: AnimeExploreQuery['trending']['media'] | MangaExploreQuery['trending']['media'];
+	viewer: AnimeExploreQuery['Viewer'];
 	isLoading: boolean;
-	onLongSelect: (props: QuickActionProps) => void;
 };
 
 const RenderItem = (props: {
-	item: AnimeExploreQuery['trending']['media'][0] | MangaExploreQuery['trending']['media'][0];
-	onLongPress: (params: QuickActionProps) => void;
+	item: (
+		| AnimeExploreQuery['trending']['media'][0]
+		| MangaExploreQuery['trending']['media'][0]
+	) & { scoreFormat: ScoreFormat };
 }) => (
 	<View
 		style={{
-			// flex: 1,
+			flex: 1,
 			alignItems: 'center',
-			// backgroundColor: 'red',
+			justifyContent: 'center',
 		}}
 	>
-		<MediaCard
-			coverImg={props.item.coverImage.extraLarge}
-			titles={props.item.title}
-			navigate={() => router.navigate(`/${props.item.type.toLowerCase()}/${props.item.id}`)}
-			averageScore={props.item.averageScore}
-			meanScore={props.item.meanScore}
-			bannerText={
-				(props.item as AnimeExploreQuery['trending']['media'][0])?.nextAiringEpisode
-					?.airingAt as unknown as string
-			}
-			imgBgColor={props.item.coverImage?.color}
-			showBanner={
-				(props.item as AnimeExploreQuery['trending']['media'][0])?.nextAiringEpisode
-					? true
-					: false
-			}
-			scoreDistributions={props.item.stats?.scoreDistribution}
-			height={210}
-			isFavorite={props.item.isFavourite}
-			onLongPress={() =>
-				props.onLongPress({
-					...props.item,
-				})
-			}
-			mediaListEntry={props.item.mediaListEntry}
-			contentAmount={
-				(props.item as AnimeExploreQuery['trending']['media'][0]).episodes ??
-				(props.item as MangaExploreQuery['trending']['media'][0]).chapters ??
-				(props.item as NovelExploreQuery['trending']['media'][0]).volumes ??
-				0
-			}
-		/>
+		<MediaCard {...props.item} height={210} scoreFormat={props.item.scoreFormat} />
 	</View>
 );
 
-export const SectionScroll = ({
-	category_title,
-	data,
-	isLoading,
-	onLongSelect,
-}: SectionScrollProps) => {
+export const SectionScroll = ({ category_title, data, viewer, isLoading }: SectionScrollProps) => {
 	const { width } = useWindowDimensions();
 
 	const renderMediaItem = ({
 		item,
 	}: {
 		item: AnimeExploreQuery['trending']['media'][0] | MangaExploreQuery['trending']['media'][0];
-	}) => <RenderItem item={item} onLongPress={onLongSelect} />;
+	}) => <RenderItem item={{ ...item, scoreFormat: viewer?.mediaListOptions?.scoreFormat }} />;
 
 	return (
 		<View
 			style={{
 				flex: 1,
 				width: width,
-				justifyContent: 'center',
-				marginVertical: 0,
-				minHeight: 230,
+				// minHeight: 230,
 			}}
 		>
 			<Text
@@ -131,7 +89,7 @@ export const SectionScroll = ({
 				style={{
 					flex: 1,
 					width: width,
-					maxHeight: 280,
+					// maxHeight: 280,
 				}}
 			>
 				{!isLoading ? (
@@ -140,25 +98,26 @@ export const SectionScroll = ({
 						keyExtractor={(item) => item.id.toString() + category_title}
 						renderItem={renderMediaItem}
 						horizontal={true}
-						estimatedItemSize={170}
+						estimatedItemSize={210}
 						removeClippedSubviews
+						centerContent
 						contentContainerStyle={{
 							// paddingVertical: Platform.OS === 'web' ? 40 : 0,
 							paddingHorizontal: 10,
 						}}
 						showsHorizontalScrollIndicator={false}
-						estimatedListSize={{ height: 280, width: width }}
+						estimatedListSize={{ height: 210, width: width }}
 						// onEndReached={() => {
 						//     fetchMore();
 						// }}
-						drawDistance={width * 2}
+						// drawDistance={width * 2}
 					/>
 				) : (
 					<View
 						style={{
 							justifyContent: 'center',
 							width: '100%',
-							height: 280,
+							height: 210,
 							alignItems: 'center',
 						}}
 					>

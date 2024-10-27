@@ -1,47 +1,25 @@
-import { IconButton, Text, useTheme } from 'react-native-paper';
+import { List, Text } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
-import { memo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { View } from 'react-native';
-import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 import { MediaCard } from '@/components/cards';
-import { Link, router, useNavigation } from 'expo-router';
+import { router } from 'expo-router';
 import { ListHeading } from '@/components/text';
-import { AniMediaQuery, MediaFormat, MediaType } from '@/api/anilist/__genereated__/gql';
+import { AniMediaQuery, MediaFormat } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
-
-type RelationItemProps = {
-	textColor: string;
-	colors?: MD3Colors;
-	onPress?: () => void;
-	navigate: (aniId: number, type: MediaType) => void;
-	item: AniMediaQuery['Media']['relations']['edges'][0];
-	index: number;
-};
+import { SheetManager } from 'react-native-actions-sheet';
 
 type RelationsProps = {
 	data: AniMediaQuery['Media']['relations'];
-	onLongSelect: (media: AniMediaQuery['Media']['relations']['edges'][0]['node']) => void;
 };
-const Relations = ({ data, onLongSelect }: RelationsProps) => {
+const Relations = ({ data }: RelationsProps) => {
 	const { colors } = useAppTheme();
 
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = useCallback(
 		({ item }: { item: AniMediaQuery['Media']['relations']['edges'][0] }) => (
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
-				<MediaCard
-					coverImg={item.node.coverImage.extraLarge}
-					titles={item.node.title}
-					averageScore={item.node.averageScore}
-					meanScore={item.node.meanScore}
-					imgBgColor={item.node.coverImage.color}
-					scoreDistributions={item.node?.stats?.scoreDistribution}
-					navigate={() =>
-						router.push(`/${item.node?.type?.toLowerCase()}/${item.node?.id}`)
-					}
-					isFavorite={item.node?.isFavourite}
-					onLongPress={() => onLongSelect(item.node)}
-				/>
+				<MediaCard {...item.node} />
 				<Text
 					variant="labelLarge"
 					style={{ textTransform: 'capitalize', textAlign: 'center' }}
@@ -89,5 +67,4 @@ const Relations = ({ data, onLongSelect }: RelationsProps) => {
 	);
 };
 
-export const RelationsMem = memo(Relations);
 export default Relations;

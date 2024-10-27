@@ -4,12 +4,17 @@ import { ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useAppTheme } from '@/store/theme/themes';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAuthStore } from '@/store/authStore';
+import { useShallow } from 'zustand/react/shallow';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const SettingsHomePage = () => {
 	const { colors } = useAppTheme();
-	const { setSettings } = useSettingsStore();
+	const { setSettings } = useSettingsStore(
+		useShallow((state) => ({ setSettings: state.setSettings })),
+	);
+	const isAuthed = useAuthStore(useShallow((state) => !!state.anilist.userID));
 	return (
 		<ScrollView>
 			<List.Item
@@ -65,6 +70,7 @@ const SettingsHomePage = () => {
 				left={(props) => (
 					<List.Icon {...props} color={colors.primary} icon="bell-outline" />
 				)}
+				disabled={!isAuthed}
 			/>
 			<List.Item
 				title={'Storage'}

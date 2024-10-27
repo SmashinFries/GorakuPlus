@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { View } from 'react-native';
-import { Avatar, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 type UserHeaderProps = {
 	avatar: string;

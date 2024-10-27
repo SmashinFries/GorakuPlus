@@ -1,5 +1,6 @@
 import {
 	AnimeExploreQuery,
+	AnimeExploreQueryVariables,
 	MangaExploreQuery,
 	ManhuaExploreQuery,
 	ManhwaExploreQuery,
@@ -11,23 +12,26 @@ import {
 	useManhwaExploreQuery,
 	useNovelExploreQuery,
 } from '@/api/anilist/__genereated__/gql';
-import { QuickActionBottomSheet, QuickActionProps } from '@/components/bottomsheets';
+import { ParticleBackground } from '@/components/animations';
+import BarcodeScanner from '@/components/barcodeScanner';
 import { NetworkError } from '@/components/error';
-import { RefreshableScroll, SectionScroll, SectionScrollMem } from '@/components/explore/lists';
+import { RefreshableScroll, SectionScroll } from '@/components/explore/lists';
+import { ExploreHeader } from '@/components/headers';
 import { RenderTabBar } from '@/components/tab';
-import { useQuickActionSheet } from '@/hooks/useQuickAction';
+import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
 import { ExploreTabsProps } from '@/types/navigation';
 import { subtractMonths } from '@/utils';
 import { getSeason } from '@/utils/explore/helpers';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Stack, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, Button, useTheme } from 'react-native-paper';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { BackHandler, View, useWindowDimensions } from 'react-native';
+import { Portal } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
+import { useShallow } from 'zustand/react/shallow';
 
 const perPage = 24;
 const thisSeasonParams = getSeason();
@@ -54,131 +58,64 @@ const ExploreSections = ({
 	isLoading,
 	onRefresh,
 }: ExploreSectionsProps) => {
-	// const quickActionRef = useRef<BottomSheetModal>();
-	const { quickActionRef, selectedMedia, onMediaLongSelect } = useQuickActionSheet();
 	const [t] = useTranslation();
-	// const [selectedMedia, setSelectedMedia] = useState<QuickActionProps>();
-
-	// const onLongSelect = (props: QuickActionProps) => {
-	// 	setSelectedMedia({ ...props });
-	// 	quickActionRef.current?.present();
-	// };
 
 	return (
-		<View style={{ marginVertical: 10 }}>
+		<View style={{ paddingVertical: 10 }}>
 			{isError && <NetworkError status={status} onRefresh={onRefresh} />}
-			<View style={{ gap: 20 }}>
+			<View>
 				{type === MediaType.Manga && (
 					<SectionScroll
 						category_title={t('New Releases')}
 						data={(data as MangaExploreQuery)?.newReleases?.media}
+						viewer={data?.Viewer}
 						isLoading={isLoading}
-						onLongSelect={onMediaLongSelect}
 					/>
 				)}
 				<SectionScroll
 					category_title={t('Trending')}
 					data={data?.trending?.media}
+					viewer={data?.Viewer}
 					isLoading={isLoading}
-					onLongSelect={onMediaLongSelect}
 				/>
 				{type === MediaType.Anime && (
 					<>
 						<SectionScroll
 							category_title={t('Current Season')}
 							data={(data as AnimeExploreQuery)?.thisSeason?.media}
+							viewer={data?.Viewer}
 							isLoading={isLoading}
-							onLongSelect={onMediaLongSelect}
 						/>
 						<SectionScroll
 							category_title={t('Next Season')}
 							data={(data as AnimeExploreQuery)?.nextSeason?.media}
+							viewer={data?.Viewer}
 							isLoading={isLoading}
-							onLongSelect={onMediaLongSelect}
 						/>
 					</>
 				)}
 				<SectionScroll
 					category_title={t('Popular')}
 					data={data?.popular?.media}
+					viewer={data?.Viewer}
 					isLoading={isLoading}
-					onLongSelect={onMediaLongSelect}
 				/>
 				<SectionScroll
 					category_title={t('Top Scored')}
 					data={data?.top?.media}
+					viewer={data?.Viewer}
 					isLoading={isLoading}
-					onLongSelect={onMediaLongSelect}
 				/>
 			</View>
-			<QuickActionBottomSheet ref={quickActionRef} {...selectedMedia} />
 		</View>
 	);
 };
-
-// const AnimeTab = () => {
-// 	const { showNSFW, tagBlacklist } = useSettingsStore();
-// 	const animeQuery = useAnimeExploreQuery(
-// 		{
-// 			perPage: perPage,
-// 			isAdult: showNSFW ? undefined : false,
-// 			tag_not_in: tagBlacklist ?? undefined,
-// 			season: thisSeasonParams.current_season,
-// 			seasonYear: thisSeasonParams.year,
-// 			nextSeason: nextSeasonParams.current_season,
-// 			nextSeasonYear: nextSeasonParams.year,
-// 		},
-// 		{ refetchOnMount: false, refetchOnWindowFocus: false, refetchOnReconnect: false },
-// 	);
-// 	const [t] = useTranslation();
-
-// 	const onRefresh = async () => {
-// 		await animeQuery.refetch();
-// 	};
-
-// 	return (
-// 		<RefreshableScroll onRefresh={onRefresh} refreshing={animeQuery.isRefetching}>
-// 			<View style={{ marginVertical: 10 }}>
-// 				{animeQuery.isError && (
-// 					<NetworkError status={animeQuery?.status} onRefresh={onRefresh} />
-// 				)}
-// 				<View>
-// 					<SectionScroll
-// 						category_title={t('Trending')}
-// 						data={animeQuery.data?.trending?.media}
-// 						isLoading={animeQuery?.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Current Season')}
-// 						data={animeQuery.data?.thisSeason?.media}
-// 						isLoading={animeQuery.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Next Season')}
-// 						data={animeQuery.data?.nextSeason?.media}
-// 						isLoading={animeQuery.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Popular')}
-// 						data={animeQuery.data?.popular?.media}
-// 						isLoading={animeQuery.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Top Scored')}
-// 						data={animeQuery.data?.top?.media}
-// 						isLoading={animeQuery.isLoading}
-// 					/>
-// 				</View>
-// 				{/* )} */}
-// 			</View>
-// 		</RefreshableScroll>
-// 	);
-// };
 
 type ExploreTabProps = {
 	type: keyof ExploreTabsProps;
 };
 const ExploreTab = ({ type }: ExploreTabProps) => {
+	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const { showNSFW, tagBlacklist } = useSettingsStore();
 
 	// ugly but works
@@ -192,7 +129,8 @@ const ExploreTab = ({ type }: ExploreTabProps) => {
 					: type === 'manhua'
 						? 3
 						: 4;
-	const animeConfig = {
+	const animeConfig: AnimeExploreQueryVariables = {
+		includeViewer: !!userId,
 		perPage: perPage,
 		isAdult: showNSFW ? undefined : false,
 		tag_not_in: tagBlacklist ?? undefined,
@@ -202,45 +140,39 @@ const ExploreTab = ({ type }: ExploreTabProps) => {
 		nextSeasonYear: nextSeasonParams.year,
 	};
 	const mangaConfig = {
+		includeViewer: !!userId,
 		perPage: perPage,
 		isAdult: showNSFW ? undefined : false,
 		tag_not_in: tagBlacklist ?? undefined,
 		startDate_greater: subtractMonths(3),
 	};
-	// const mangaQuery = useMangaExploreQuery(
-	// 	{
-	// 		perPage: perPage,
-	// 		isAdult: showNSFW ? undefined : false,
-	// 		tag_not_in: tagBlacklist ?? undefined,
-	// 		startDate_greater: subtractMonths(3),
-	// 	},
-	// 	{ refetchOnMount: false, refetchOnWindowFocus: false, refetchOnReconnect: false },
-	// );
+
+	const exploreKey = { includeViewer: !!userId };
 
 	const queries = useQueries({
 		queries: [
 			{
-				queryKey: useAnimeExploreQuery.getKey(),
+				queryKey: useAnimeExploreQuery.getKey(exploreKey),
 				queryFn: useAnimeExploreQuery.fetcher(animeConfig),
 				enabled: type === 'anime',
 			},
 			{
-				queryKey: useMangaExploreQuery.getKey(),
+				queryKey: useMangaExploreQuery.getKey(exploreKey),
 				queryFn: useMangaExploreQuery.fetcher(mangaConfig),
 				enabled: type === 'manga',
 			},
 			{
-				queryKey: useManhwaExploreQuery.getKey(),
+				queryKey: useManhwaExploreQuery.getKey(exploreKey),
 				queryFn: useManhwaExploreQuery.fetcher(mangaConfig),
 				enabled: type === 'manhwa',
 			},
 			{
-				queryKey: useManhuaExploreQuery.getKey(),
+				queryKey: useManhuaExploreQuery.getKey(exploreKey),
 				queryFn: useManhuaExploreQuery.fetcher(mangaConfig),
 				enabled: type === 'manhua',
 			},
 			{
-				queryKey: useNovelExploreQuery.getKey(),
+				queryKey: useNovelExploreQuery.getKey(exploreKey),
 				queryFn: useNovelExploreQuery.fetcher(mangaConfig),
 				enabled: type === 'novels',
 			},
@@ -267,177 +199,12 @@ const ExploreTab = ({ type }: ExploreTabProps) => {
 	);
 };
 
-// const ManhwaTab = () => {
-// 	const { showNSFW, tagBlacklist } = useSettingsStore();
-// 	const manhwaQuery = useManhwaExploreQuery(
-// 		{
-// 			perPage: perPage,
-// 			isAdult: showNSFW ? undefined : false,
-// 			tag_not_in: tagBlacklist ?? undefined,
-// 			startDate_greater: subtractMonths(3),
-// 		},
-// 		{ refetchOnMount: false, refetchOnWindowFocus: false, refetchOnReconnect: false },
-// 	);
-// 	const [t] = useTranslation();
-
-// 	const onRefresh = async () => {
-// 		await manhwaQuery.refetch();
-// 	};
-
-// 	return (
-// 		<RefreshableScroll onRefresh={onRefresh} refreshing={manhwaQuery.isRefetching}>
-// 			<View style={{ marginVertical: 10 }}>
-// 				{manhwaQuery.isFetching && (
-// 					<Animated.View
-// 						exiting={FadeOut}
-// 						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-// 					>
-// 						<ActivityIndicator size="large" />
-// 					</Animated.View>
-// 				)}
-// 				{manhwaQuery.isError && (
-// 					<NetworkError status={manhwaQuery?.status} onRefresh={onRefresh} />
-// 				)}
-// 				<View>
-// 					<SectionScroll
-// 						category_title={t('New Releases')}
-// 						data={manhwaQuery.data?.newReleases?.media}
-// 						isLoading={manhwaQuery?.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Trending')}
-// 						data={manhwaQuery.data?.trending?.media}
-// 						isLoading={manhwaQuery?.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Popular')}
-// 						data={manhwaQuery.data?.popular?.media}
-// 						isLoading={manhwaQuery.isLoading}
-// 					/>
-// 					<SectionScroll
-// 						category_title={t('Top Scored')}
-// 						data={manhwaQuery.data?.top?.media}
-// 						isLoading={manhwaQuery.isLoading}
-// 					/>
-// 				</View>
-// 			</View>
-// 		</RefreshableScroll>
-// 	);
-// };
-
-// const ManhuaTab = () => {
-// 	const { showNSFW, tagBlacklist } = useSettingsStore();
-// 	const manhuaQuery = useManhuaExploreQuery({
-// 		perPage: 20,
-// 		isAdult: showNSFW ? undefined : false,
-// 		tag_not_in: tagBlacklist ?? undefined,
-// 		startDate_greater: subtractMonths(3),
-// 	});
-// 	const [t] = useTranslation();
-
-// 	const onRefresh = async () => {
-// 		await manhuaQuery.refetch();
-// 	};
-
-// 	return (
-// 		<RefreshableScroll onRefresh={onRefresh} refreshing={manhuaQuery.isRefetching}>
-// 			<View style={{ marginVertical: 10 }}>
-// 				{manhuaQuery.isFetching && (
-// 					<Animated.View
-// 						exiting={FadeOut}
-// 						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-// 					>
-// 						<ActivityIndicator size="large" />
-// 					</Animated.View>
-// 				)}
-// 				{manhuaQuery.isError && (
-// 					<NetworkError status={manhuaQuery?.status} onRefresh={onRefresh} />
-// 				)}
-// 				<View>
-// 					<SectionScrollMem
-// 						category_title={t('New Releases')}
-// 						data={manhuaQuery.data?.newReleases?.media}
-// 						isLoading={manhuaQuery?.isLoading}
-// 					/>
-// 					<SectionScrollMem
-// 						category_title={t('Trending')}
-// 						data={manhuaQuery.data?.trending?.media}
-// 						isLoading={manhuaQuery?.isLoading}
-// 					/>
-// 					<SectionScrollMem
-// 						category_title={t('Popular')}
-// 						data={manhuaQuery.data?.popular?.media}
-// 						isLoading={manhuaQuery.isLoading}
-// 					/>
-// 					<SectionScrollMem
-// 						category_title={t('Top Scored')}
-// 						data={manhuaQuery.data?.top?.media}
-// 						isLoading={manhuaQuery.isLoading}
-// 					/>
-// 				</View>
-// 			</View>
-// 		</RefreshableScroll>
-// 	);
-// };
-
-// const NovelsTab = () => {
-// 	const { showNSFW, tagBlacklist } = useSettingsStore();
-// 	const novelQuery = useNovelExploreQuery({
-// 		perPage: 20,
-// 		isAdult: showNSFW ? undefined : false,
-// 		tag_not_in: tagBlacklist ?? undefined,
-// 		startDate_greater: subtractMonths(3),
-// 	});
-// 	const [t] = useTranslation();
-
-// 	const onRefresh = async () => {
-// 		await novelQuery.refetch();
-// 	};
-
-// 	return (
-// 		<RefreshableScroll onRefresh={onRefresh} refreshing={novelQuery.isRefetching}>
-// 			<View style={{ marginVertical: 10 }}>
-// 				{novelQuery.isFetching && (
-// 					<Animated.View
-// 						exiting={FadeOut}
-// 						style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-// 					>
-// 						<ActivityIndicator size="large" />
-// 					</Animated.View>
-// 				)}
-// 				{novelQuery.isError && (
-// 					<NetworkError status={novelQuery?.status} onRefresh={onRefresh} />
-// 				)}
-// 				<View>
-// 					<SectionScrollMem
-// 						category_title={t('New Releases')}
-// 						data={novelQuery.data?.newReleases?.media}
-// 						isLoading={novelQuery?.isLoading}
-// 					/>
-// 					<SectionScrollMem
-// 						category_title={t('Trending')}
-// 						data={novelQuery.data?.trending?.media}
-// 						isLoading={novelQuery?.isLoading}
-// 					/>
-// 					<SectionScrollMem
-// 						category_title={t('Popular')}
-// 						data={novelQuery.data?.popular?.media}
-// 						isLoading={novelQuery.isLoading}
-// 					/>
-// 					<SectionScrollMem
-// 						category_title={t('Top Scored')}
-// 						data={novelQuery.data?.top?.media}
-// 						isLoading={novelQuery.isLoading}
-// 					/>
-// 				</View>
-// 			</View>
-// 		</RefreshableScroll>
-// 	);
-// };
-
 const ExplorePage = () => {
 	const layout = useWindowDimensions();
 	const { exploreTabOrder, exploreTabs } = useSettingsStore();
+	const { colors } = useAppTheme();
+
+	const [isBCScannerVis, setIsBCScannerVis] = useState(false);
 
 	const [routes, setRoutes] = useState<{ key: string; title: string }[]>(
 		exploreTabOrder
@@ -452,18 +219,6 @@ const ExplorePage = () => {
 	const renderScene = useCallback(
 		({ route }: { route: { key: keyof ExploreTabsProps; title: keyof ExploreTabsProps } }) => {
 			return <ExploreTab type={route.key} />;
-			// switch (route.key) {
-			// 	case 'anime':
-			// 		return <ExploreTab />;
-			// 	case 'manga':
-			// 		return <ExploreTab />;
-			// 	case 'manhwa':
-			// 		return <ExploreTab />;
-			// 	case 'manhua':
-			// 		return <ExploreTab />;
-			// 	case 'novels':
-			// 		return <ExploreTab />;
-			// }
 		},
 		[],
 	);
@@ -478,8 +233,30 @@ const ExplorePage = () => {
 		);
 	}, [exploreTabOrder, exploreTabs]);
 
+	// Allows hardware back to close camera
+	useFocusEffect(
+		useCallback(() => {
+			const backAction = () => {
+				setIsBCScannerVis(false);
+				return true;
+			};
+
+			const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+			return () => backHandler.remove();
+		}, []),
+	);
+
 	return (
 		<>
+			<Stack.Screen
+				options={{
+					header: (props) => (
+						<ExploreHeader {...props} showScanner={() => setIsBCScannerVis(true)} />
+					),
+				}}
+			/>
+			<ParticleBackground backgroundColor={colors.background} />
 			<TabView
 				navigationState={{ index, routes }}
 				// @ts-ignore
@@ -491,8 +268,15 @@ const ExplorePage = () => {
 				)}
 				swipeEnabled={true}
 				lazy={true}
-				renderLazyPlaceholder={(props) => <View />}
+				renderLazyPlaceholder={(_props) => <View />}
 			/>
+			<Portal>
+				<BarcodeScanner
+					visible={isBCScannerVis}
+					onDismiss={() => setIsBCScannerVis(false)}
+					openScanner={() => setIsBCScannerVis(true)}
+				/>
+			</Portal>
 		</>
 	);
 };

@@ -1,17 +1,21 @@
-import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { IconButton, List, Surface, Text } from 'react-native-paper';
+import { Button, IconButton, List, Surface, Text } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { ListSubheader } from '@/components/titles';
 import * as Burnt from 'burnt';
 import { useAppTheme } from '@/store/theme/themes';
 import { useMatchStore } from '@/store/matchStore';
+import { useShallow } from 'zustand/react/shallow';
 
 const StoragePage = () => {
 	const { colors } = useAppTheme();
-	const resetMatches = useMatchStore((state) => state.reset);
-	const mangaupdates = useMatchStore((state) => state.mangaUpdates);
-	const mal = useMatchStore((state) => state.mal);
+	const { resetMatches, mangadexDB } = useMatchStore(
+		useShallow((state) => ({
+			resetMatches: state.reset,
+			mangadexDB: state.mangadex,
+		})),
+	);
+
 	const showToast = (title: string) => {
 		Burnt.toast({ title: title, from: 'bottom', preset: 'done' });
 	};
@@ -54,33 +58,40 @@ const StoragePage = () => {
 					Only reset these if you know what you are doing.
 				</Text>
 			</Surface>
-			<List.Item title={'Test'} onPress={() => console.log(mal)} />
+			<Button onPress={() => console.log(mangadexDB)}>TEST</Button>
 			<List.Item
 				title={'Reset All'}
 				onPress={() => {
-					showToast('All IDs have reset');
 					resetMatches('all');
+					showToast('All IDs have reset');
 				}}
 			/>
 			<List.Item
 				title={'Reset MAL'}
 				onPress={() => {
-					showToast('MAL IDs have reset');
 					resetMatches('mal');
+					showToast('MAL IDs have reset');
 				}}
 			/>
 			<List.Item
 				title={'Reset MangaUpdates'}
 				onPress={() => {
-					showToast('MangaUpdates IDs have reset');
 					resetMatches('mangaUpdates');
+					showToast('MangaUpdates IDs have reset');
+				}}
+			/>
+			<List.Item
+				title={'Reset MangaDex'}
+				onPress={() => {
+					resetMatches('mangadex');
+					showToast('MangaDex IDs have reset');
 				}}
 			/>
 			<List.Item
 				title={'Reset Booru'}
 				onPress={() => {
-					showToast('Booru IDs have reset');
 					resetMatches('booru');
+					showToast('Booru IDs have reset');
 				}}
 			/>
 		</ScrollView>

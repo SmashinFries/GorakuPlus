@@ -3,6 +3,8 @@ import { usePostsSearch, useTagsSearchQuery } from '@/api/danbooru/danbooru';
 import { useMatchStore } from '@/store/matchStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useEffect, useState } from 'react';
+import useDebounce from '../useDebounce';
+import { useShallow } from 'zustand/react/shallow';
 
 const cleanName = (query: string) => {
 	if (!query) return null;
@@ -18,15 +20,20 @@ const cleanName = (query: string) => {
 };
 
 export const useCharDetail = (id: number) => {
-	const { booruDB, addBooruTag } = useMatchStore((state) => ({
-		booruDB: state.booru,
-		addBooruTag: state.addBooruTag,
-	}));
-	const showNSFW = useSettingsStore((state) => state.showNSFW);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isReady, setIsReady] = useState(false);
+	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
+	const { isBooruEnabled, booruDB, addBooruTag } = useMatchStore(
+		useShallow((state) => ({
+			isBooruEnabled: state.isBooruEnabled,
+			booruDB: state.booru,
+			addBooruTag: state.addBooruTag,
+		})),
+	);
 	const [currentArtTag, setCurrentArtTag] = useState<string>(booruDB[id] ?? '');
+	const artTagDebounced = useDebounce(currentArtTag, 1000);
 
 	const { mutateAsync: toggleFav } = useToggleFavMutation();
+
 	const charData = useCharacterDetailsQuery({ id: id }, { enabled: !!id });
 	const tagOptions = useTagsSearchQuery(
 		{
@@ -39,12 +46,14 @@ export const useCharDetail = (id: number) => {
 		!!charData.data?.Character?.name?.full,
 	);
 	const art = usePostsSearch({
-		limit: 24,
-		tags: currentArtTag
-			? showNSFW
-				? `${currentArtTag} solo`
-				: `${currentArtTag} solo rating:g`
-			: '',
+		limit: 20,
+		tags: isBooruEnabled
+			? artTagDebounced
+				? showNSFW
+					? `${artTagDebounced}`
+					: `${artTagDebounced} rating:g`
+				: ''
+			: undefined,
 		page: 1,
 	});
 
@@ -55,22 +64,46 @@ export const useCharDetail = (id: number) => {
 	useEffect(() => {
 		if (tagOptions.data && !booruDB[id]) {
 			setCurrentArtTag(tagOptions?.data[0]?.value);
-			addBooruTag(id, tagOptions?.data[0]?.value);
 		}
-	}, [tagOptions.data, booruDB]);
+	}, [tagOptions.data, booruDB, id]);
 
 	useEffect(() => {
-		if (!charData.isFetching && !tagOptions.isFetching && !art.isFetching) {
-			setIsLoading(false);
+		if (charData?.isFetched && charData?.data) {
+			if (isBooruEnabled) {
+				if (booruDB && booruDB[id]) {
+					if (isBooruEnabled) {
+						art.isFetched && setIsReady(true);
+					}
+				} else if (tagOptions?.isFetched) {
+					if (tagOptions?.data?.length > 0) {
+						addBooruTag(id, tagOptions?.data[0]?.value);
+						setIsReady(true);
+					} else {
+						setIsReady(true);
+					}
+				}
+			} else {
+				setIsReady(true);
+			}
 		}
-	}, [charData.isFetching, tagOptions.isFetching, art.isFetching]);
+	}, [
+		booruDB,
+		charData?.isFetched,
+		tagOptions?.isFetched,
+		art.isFetched,
+		charData?.data,
+		isBooruEnabled,
+		id,
+		tagOptions?.data,
+		addBooruTag,
+	]);
 
 	return {
 		charData,
 		art,
 		tagOptions,
 		currentArtTag,
-		isLoading,
+		isReady,
 		onTagChange,
 		toggleFav,
 	};

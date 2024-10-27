@@ -28,7 +28,8 @@ import * as cheerio from 'cheerio';
 import { ResizeMode, Video } from 'expo-av';
 import { findOne } from 'domutils';
 import { openBrowserAsync } from 'expo-web-browser';
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+import { SheetManager } from 'react-native-actions-sheet';
+import { openWebBrowser } from '@/utils/webBrowser';
 
 // (ITS ACTUALLY JUST HTML)
 
@@ -48,8 +49,8 @@ const preprocessHTML = (html: string) => {
 						.replaceAll(/\*\*+(.*?)\*\*+/g, '<strong>$1</strong>')
 						.replaceAll(/\_\_(.*?)\_\_/g, '<strong>$1</strong>')
 						.replaceAll(/\_{1}(.*?)\_{1}/g, '<em>$1</em>')
-						.replaceAll(/\*(.*?)\*/g, '<em>$1</em>')
-						.replaceAll('\n', '<br>');
+						.replaceAll(/\*(.*?)\*/g, '<em>$1</em>');
+					// .replaceAll('\n', '<br>');
 					$(this).replaceWith(updatedText);
 				});
 		});
@@ -86,7 +87,6 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
 		<View style={{ alignItems: 'center', width: '100%' }}>
 			<Image
 				{...rendererProps}
-				onError={(e) => console.log(e.error, ':', rendererProps?.source?.uri)}
 				placeholder={{ blurhash: colors.blurhash }}
 				style={[
 					rendererProps.style,
@@ -186,9 +186,10 @@ const defaultFontSize = 16;
 type ViewerProps = {
 	body: string;
 	parentWidth?: number;
+	textColor?: string;
+	numLines?: number;
 };
-const AniListMarkdownViewer = ({ body, parentWidth }: ViewerProps) => {
-	const { dismiss } = useBottomSheetModal();
+const AniListMarkdownViewer = ({ body, parentWidth, textColor, numLines }: ViewerProps) => {
 	const { colors, fonts } = useAppTheme();
 	const { width } = useWindowDimensions();
 	const extraLineHeight = 6;
@@ -245,7 +246,7 @@ const AniListMarkdownViewer = ({ body, parentWidth }: ViewerProps) => {
 			textDecorationLine: 'none',
 		},
 		body: {
-			color: colors.onBackground,
+			color: textColor ?? colors.onBackground,
 		},
 		p: {
 			lineHeight: defaultFontSize + extraLineHeight,
@@ -289,8 +290,9 @@ const AniListMarkdownViewer = ({ body, parentWidth }: ViewerProps) => {
 		},
 		a: {
 			onPress(event, url, htmlAttribs, target) {
-				dismiss();
-				openBrowserAsync(url);
+				SheetManager.hideAll();
+				// openBrowserAsync(url);
+				openWebBrowser(url);
 			},
 		},
 	};
@@ -310,7 +312,11 @@ const AniListMarkdownViewer = ({ body, parentWidth }: ViewerProps) => {
 			customHTMLElementModels={customHTMLElementModels}
 			systemFonts={[...defaultSystemFonts]}
 			baseStyle={{ ...fonts.default }}
-			defaultTextProps={{ selectable: false, selectionColor: colors.secondaryContainer }} // selection gets triggered when scrolling so is disabled for now
+			defaultTextProps={{
+				selectable: false,
+				selectionColor: colors.secondaryContainer,
+				numberOfLines: numLines ?? undefined,
+			}} // selection gets triggered when scrolling so is disabled for now
 		/>
 	);
 };

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import { MediaCard, MediaCardRow, MediaProgressBar } from '../cards';
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
+// import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import Animated, {
 	useAnimatedStyle,
 	useSharedValue,
@@ -22,14 +22,12 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useDisplayStore } from '@/store/displayStore';
+import { SheetManager } from 'react-native-actions-sheet';
+import { useColumns } from '@/hooks/useColumns';
+import { useShallow } from 'zustand/react/shallow';
 
 const RenderEmpty = ({ message }: { message: string }) => {
 	const rotate = useSharedValue(0);
-	const animStyle = useAnimatedStyle(() => {
-		return {
-			transform: [{ translateY: rotate.value }],
-		};
-	});
 
 	React.useEffect(() => {
 		rotate.value = withRepeat(
@@ -58,21 +56,18 @@ const RenderEmpty = ({ message }: { message: string }) => {
 
 type DayTabProps = {
 	data: WeeklyAnimeQuery['Page']['airingSchedules'];
-	onLongSelect: (media: AnimeMetaFragment) => void;
 };
-export const DayTab = ({ data, onLongSelect }: DayTabProps) => {
-	const { width } = useWindowDimensions();
-	const { showItemListStatus, showNSFW } = useSettingsStore();
-	const { calendar } = useDisplayStore();
+export const DayTab = ({ data }: DayTabProps) => {
+	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
+	const calendar = useDisplayStore(useShallow((state) => state.calendar));
+	const { columns, itemWidth, displayMode } = useColumns('calendar');
 
-	const { dismissAll: dismissAllModals } = useBottomSheetModal();
+	// const { dismissAll: dismissAllModals } = useBottomSheetModal();
 
 	const RenderItem = React.useCallback(
 		({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
-			const bannerText = item.timeUntilAiring as unknown as string;
-
 			if (!showNSFW && item.media?.isAdult) return null;
-			return (
+			return displayMode === 'COMPACT' ? (
 				<View
 					style={{
 						flex: 1,
@@ -80,93 +75,39 @@ export const DayTab = ({ data, onLongSelect }: DayTabProps) => {
 						justifyContent: 'flex-start',
 						marginVertical: 10,
 						marginHorizontal: 5,
-						maxWidth: width / 3 - 10,
+						width: itemWidth,
 					}}
 				>
 					<MediaCard
-						titles={item.media?.title}
-						coverImg={item.media.coverImage.extraLarge}
-						imgBgColor={item.media.coverImage.color}
-						averageScore={item.media?.averageScore}
-						meanScore={item.media?.meanScore}
-						showBanner
-						bannerText={bannerText}
-						scoreDistributions={item.media.stats?.scoreDistribution}
-						navigate={() => {
-							dismissAllModals();
-							router.push(
-								`/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
-							);
-						}}
+						{...item.media}
+						nextAiringEpisode={{ ...item, mediaId: item.media?.id }}
 						fitToParent
-						isFavorite={item.media.isFavourite}
-						onLongPress={() => onLongSelect(item.media)}
 					/>
-					<MediaProgressBar
+					{/* <MediaProgressBar
 						progress={item.media.mediaListEntry?.progress}
 						mediaListEntry={item.media.mediaListEntry as MediaList}
 						mediaStatus={item.media.status}
 						total={item.media.episodes ?? 0}
-					/>
+					/> */}
 				</View>
+			) : (
+				<MediaCardRow
+					{...item.media}
+					nextAiringEpisode={{ ...item, mediaId: item.media?.id }}
+				/>
 			);
 		},
-		[data, showItemListStatus, showNSFW],
+		[data, itemWidth, showNSFW],
 	);
-
-	// const RenderItemTest = React.useCallback(
-	// 	({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
-	// 		const bannerText = item.timeUntilAiring as unknown as string;
-
-	// 		if (!showNSFW && item.media?.isAdult) return null;
-	// 		return (
-	// 			<View>
-	// 				<MediaCardRow
-	// 					titles={item.media?.title}
-	// 					coverImg={item.media.coverImage.extraLarge}
-	// 					bannerImg={item.media.bannerImage}
-	// 					imgBgColor={item.media.coverImage.color}
-	// 					averageScore={item.media?.averageScore}
-	// 					meanScore={item.media?.meanScore}
-	// 					showBanner
-	// 					bannerText={bannerText}
-	// 					scoreDistributions={item.media.stats?.scoreDistribution}
-	// 					navigate={() => {
-	// 						dismissAllModals();
-	// 						router.push(
-	// 							`/(media)/${MediaType.Anime.toLowerCase()}/${item.media?.id}`,
-	// 						);
-	// 					}}
-	// 					scoreWidth={'20%'}
-	// 				/>
-	// 				{item.media.mediaListEntry?.progress && (
-	// 					<ProgressBar
-	// 						style={{ width: '100%' }}
-	// 						progress={
-	// 							item.media.episodes && item.media.mediaListEntry?.progress
-	// 								? item.media.mediaListEntry?.progress / item.media.episodes
-	// 								: 1
-	// 						}
-	// 					/>
-	// 				)}
-	// 			</View>
-	// 		);
-	// 	},
-	// 	[data, showItemListStatus, showNSFW],
-	// );
 
 	return (
 		<View style={{ width: '100%', height: '100%' }}>
 			<FlashList
-				key={3}
+				key={columns}
 				data={data?.filter((ep) => (calendar.list_only ? ep.media?.mediaListEntry : true))}
 				renderItem={RenderItem}
 				keyExtractor={(item) => item.id.toString()}
-				numColumns={3}
-				// columnWrapperStyle={{
-				//     flex:1,
-				//     justifyContent: 'flex-start',
-				// }}
+				numColumns={displayMode === 'COMPACT' ? columns : 1}
 				estimatedItemSize={211}
 				centerContent
 				contentContainerStyle={{ paddingVertical: 10 }}
@@ -179,5 +120,3 @@ export const DayTab = ({ data, onLongSelect }: DayTabProps) => {
 		</View>
 	);
 };
-
-export const DayTabMemo = React.memo(DayTab);

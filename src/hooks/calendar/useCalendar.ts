@@ -42,7 +42,7 @@ export const useCalendar = () => {
 				} else {
 					fetchMore = false;
 				}
-			} catch (e) {
+			} catch (_e) {
 				fetchMore = false;
 			}
 		}

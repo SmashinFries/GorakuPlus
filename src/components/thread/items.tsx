@@ -12,12 +12,16 @@ import { getTimeUntil } from '@/utils';
 import { router } from 'expo-router';
 import { Pressable, View, ViewStyle } from 'react-native';
 import { Avatar, Button, Chip, Divider, Icon, IconButton, Surface, Text } from 'react-native-paper';
-import { MarkdownViewer } from '../markdown';
 import { useAuthStore } from '@/store/authStore';
-import { useRef, useState } from 'react';
 import AniListMarkdownViewer from '../markdown/renderer';
 import ViewShot from 'react-native-view-shot';
 import { useScreenshot } from '@/hooks/useScreenshot';
+import { SheetManager } from 'react-native-actions-sheet';
+import { Image } from 'expo-image';
+import { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { useDeleteActivityItemInvalidateMutation } from '@/api/anilist/extended';
+import { sendErrorMessage, sendToast } from '@/utils/toast';
 
 type ThreadItemHeaderProps = {
 	createdAt: number;
@@ -80,7 +84,7 @@ export const ThreadItemFooter = ({
 	isReply,
 	replyCount,
 	isMain,
-	onScreenshot,
+	isViewerActivity,
 }: {
 	id: number;
 	categories?: ThreadCategory[];
@@ -91,24 +95,24 @@ export const ThreadItemFooter = ({
 	isReply: boolean;
 	replyCount?: number;
 	isMain?: boolean;
-	onScreenshot: () => Promise<void>;
+	isViewerActivity?: boolean;
 }) => {
 	const { colors } = useAppTheme();
-	const userId = useAuthStore((state) => state.anilist.userID);
+	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const toggleLikeMutation = useToggleLikeMutation();
 	const toggleSubscribeMutation = useToggleThreadSubscriptionMutation();
+	const { mutateAsync: deleteActivity } = useDeleteActivityItemInvalidateMutation();
 	const [isLikedMutated, setIsLikedMutated] = useState<{ isLiked: boolean; likeCount: number }>({
 		isLiked,
 		likeCount,
 	});
 	const [isSubscribedMutated, setIsSubscribedMutated] = useState(isSubscribed);
-	const [isScreenshotting, setIsScreenshotting] = useState(false);
 
 	const onSubscribePress = () => {
 		toggleSubscribeMutation?.mutate(
 			{ subscribe: !isSubscribedMutated, threadId: id },
 			{
-				onSuccess(data, variables, context) {
+				onSuccess(data) {
 					setIsSubscribedMutated(data?.ToggleThreadSubscription?.isSubscribed);
 				},
 			},
@@ -132,6 +136,15 @@ export const ThreadItemFooter = ({
 		);
 	};
 
+	const onActivityDelete = async () => {
+		try {
+			await deleteActivity({ id: id });
+			sendToast('Activity Deleted!');
+		} catch {
+			sendErrorMessage('Failed to delete');
+		}
+	};
+
 	return (
 		<View>
 			{categories && (
@@ -148,6 +161,11 @@ export const ThreadItemFooter = ({
 					paddingHorizontal: 6,
 				}}
 			>
+				{isViewerActivity && (
+					<View style={{ alignItems: 'flex-start', flex: 1, width: '100%' }}>
+						<IconButton icon={'trash-can-outline'} onPress={onActivityDelete} />
+					</View>
+				)}
 				{viewCount ? (
 					<View style={{ justifyContent: 'center' }}>
 						<Text>
@@ -194,25 +212,26 @@ export const ThreadItemFooter = ({
 							selected={isLikedMutated.isLiked}
 							disabled={!userId || toggleLikeMutation.isPending}
 						/>
-						<View
-							style={{
-								position: 'absolute',
-								top: 0,
-								right: 0,
-								backgroundColor: colors.secondaryContainer,
-								paddingHorizontal: 4,
-								borderRadius: 8,
-							}}
-						>
-							<Text
-								variant="labelSmall"
-								style={{ color: colors.onSecondaryContainer }}
+						{isLikedMutated.likeCount ? (
+							<View
+								style={{
+									position: 'absolute',
+									top: 0,
+									right: 0,
+									backgroundColor: colors.secondaryContainer,
+									paddingHorizontal: 4,
+									borderRadius: 8,
+								}}
 							>
-								{isLikedMutated.likeCount}
-							</Text>
-						</View>
+								<Text
+									variant="labelSmall"
+									style={{ color: colors.onSecondaryContainer }}
+								>
+									{isLikedMutated.likeCount}
+								</Text>
+							</View>
+						) : null}
 					</View>
-					<View></View>
 					{/* {!isReply && <IconButton icon={'comment-outline'} />} */}
 				</View>
 			</View>
@@ -221,20 +240,16 @@ export const ThreadItemFooter = ({
 };
 
 type ThreadItemBodyProps = {
-	id: number;
+	isHtml?: boolean;
 	body: string;
-	likeCount: number;
-	categories?: ThreadCategory[];
-	viewCount?: number;
-	isReply: boolean;
+	coverImage?: string;
+	onImagePress?: () => void;
 };
 export const ThreadItemBody = ({
-	id,
 	body,
-	categories,
-	likeCount,
-	viewCount,
-	isReply,
+	coverImage,
+	onImagePress,
+	isHtml = true,
 }: ThreadItemBodyProps) => {
 	const { colors } = useAppTheme();
 	return (
@@ -242,16 +257,21 @@ export const ThreadItemBody = ({
 			mode="elevated"
 			style={{ backgroundColor: colors.elevation.level1, padding: 8, borderRadius: 8 }}
 		>
-			<Pressable
-			// onPress={() =>
-			// 	isReply
-			// 		? router.navigate(`/thread/comment/${id}`)
-			// 		: router.navigate(`/thread/${id}`)
-			// }
-			>
-				{/* <MarkdownViewer markdown={body} /> */}
-				<AniListMarkdownViewer body={body} />
-			</Pressable>
+			{coverImage ? (
+				<View style={{ flex: 1, flexDirection: 'row' }}>
+					<Pressable onPress={onImagePress}>
+						<Image
+							source={{ uri: coverImage }}
+							style={{ width: 80, aspectRatio: 2 / 3, borderRadius: 6 }}
+						/>
+					</Pressable>
+					<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+						<Text style={{ paddingHorizontal: 6 }}>{body}</Text>
+					</View>
+				</View>
+			) : (
+				<View>{isHtml ? <AniListMarkdownViewer body={body} /> : <Text>{body}</Text>}</View>
+			)}
 		</Surface>
 	);
 };
@@ -269,9 +289,14 @@ export const ThreadItem = ({
 	isReply,
 	replyCount,
 	isMain,
+	coverImage,
+	onImagePress,
+	isHtml = true,
+	isViewerActivity = false,
 }: {
 	id: number;
 	body: string;
+	isHtml?: boolean;
 	categories?: ThreadCategory[];
 	likeCount: number;
 	viewCount?: number;
@@ -282,8 +307,11 @@ export const ThreadItem = ({
 	isReply: boolean;
 	replyCount?: number;
 	isMain?: boolean;
+	coverImage?: string;
+	isViewerActivity?: boolean;
+	onImagePress?: () => void;
 }) => {
-	const { viewshotRef, onScreenshot } = useScreenshot();
+	const { viewshotRef } = useScreenshot();
 	const { colors } = useAppTheme();
 
 	return (
@@ -294,12 +322,10 @@ export const ThreadItem = ({
 		>
 			<ThreadItemHeader user={user} createdAt={createdAt} />
 			<ThreadItemBody
-				id={id}
 				body={body}
-				categories={categories}
-				likeCount={likeCount}
-				viewCount={viewCount}
-				isReply={isReply}
+				isHtml={isHtml}
+				coverImage={coverImage}
+				onImagePress={onImagePress}
 			/>
 			<ThreadItemFooter
 				id={id}
@@ -310,8 +336,8 @@ export const ThreadItem = ({
 				isSubscribed={isSubscribed}
 				isReply={isReply}
 				replyCount={replyCount}
+				isViewerActivity={isViewerActivity}
 				isMain={isMain}
-				onScreenshot={onScreenshot}
 			/>
 			{isReply && <Divider style={{ width: '95%', alignSelf: 'center' }} />}
 		</ViewShot>
@@ -321,11 +347,9 @@ export const ThreadItem = ({
 export const ThreadOverviewItem = ({
 	item,
 	containerStyle,
-	onLongSelect,
 	onSelect,
 }: {
 	item: ThreadsOverviewQuery['Page']['threads'][0];
-	onLongSelect: () => void;
 	onSelect: () => void;
 	containerStyle?: ViewStyle;
 }) => {
@@ -342,7 +366,9 @@ export const ThreadOverviewItem = ({
 				style={{ flex: 1, padding: 8 }}
 				android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 				onPress={onSelect}
-				onLongPress={onLongSelect}
+				onLongPress={() =>
+					SheetManager.show('ThreadOverviewSheet', { payload: { data: item } })
+				}
 			>
 				<View
 					style={{

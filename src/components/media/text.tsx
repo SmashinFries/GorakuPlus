@@ -17,26 +17,27 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
 	const { enabled, english, japanese, korean, chinese } = useTTSStore();
 	const { speak } = useTTS();
 
-	const [title, setTitle] = useState<MediaTitleView['defaultTitle']>(
+	const [titleType, setTitleType] = useState<MediaTitleView['defaultTitle']>(
 		data?.title[defaultTitle] ? defaultTitle : 'romaji',
 	);
 
 	const { colors } = useAppTheme();
 
-	const onSpeak = (langType: MediaTitleView['defaultTitle'], text: string) => {
+	const onSpeak = () => {
 		if (!enabled) return;
-		switch (langType) {
+		switch (titleType) {
 			case 'english':
-				speak(text, english);
-				return;
 			case 'romaji':
+				// TTS JP cant read romaji well
+				speak(data?.title[titleType], english);
+				break;
 			case 'native':
 				if (data?.countryOfOrigin === 'JP') {
-					speak(data?.title?.romaji, japanese);
+					speak(data?.title[titleType], japanese);
 				} else if (data?.countryOfOrigin === 'KR') {
-					speak(data?.title?.romaji, korean);
+					speak(data?.title[titleType], korean);
 				} else if (data?.countryOfOrigin === 'CN') {
-					speak(data?.title?.romaji, chinese);
+					speak(data?.title[titleType], chinese);
 				}
 				return;
 			default:
@@ -67,34 +68,34 @@ export const MediaTitleView = ({ data, defaultTitle }: MediaTitleView) => {
 		>
 			<View>
 				<Text
-					onPress={() => onSpeak(title, data?.title[title])}
-					onLongPress={() => copyToClipboard(data?.title[title])}
+					onPress={onSpeak}
+					onLongPress={() => copyToClipboard(data?.title[titleType])}
 					variant="titleLarge"
 					style={[styles.title]}
 				>
-					{data?.title[title]}
+					{data?.title[titleType]}
 				</Text>
 				<Text
-					onLongPress={() => copyToClipboard(data?.title[title])}
+					onLongPress={() => copyToClipboard(data?.title[titleType])}
 					variant="titleSmall"
 					style={[
 						styles.title,
 						{ textTransform: 'capitalize', color: colors.onSurfaceVariant },
 					]}
 				>
-					{data?.isLicensed ? data?.format?.replaceAll('_', ' ') ?? '??' : 'Doujin'} ·{' '}
+					{data?.isLicensed ? (data?.format?.replaceAll('_', ' ') ?? '??') : 'Doujin'} ·{' '}
 					{data?.status?.replaceAll('_', ' ')}
 				</Text>
 			</View>
 			<SegmentedButtons
 				density="high"
-				onValueChange={(value) => setTitle(value)}
+				onValueChange={(value) => setTitleType(value)}
 				buttons={
 					data?.title?.english
 						? [{ value: 'english', label: 'English' }, ...titleButtons]
 						: titleButtons
 				}
-				value={title}
+				value={titleType}
 				style={{ paddingVertical: 10 }}
 			/>
 		</AnimViewMem>

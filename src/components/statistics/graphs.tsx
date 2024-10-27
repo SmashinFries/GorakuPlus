@@ -1,12 +1,9 @@
 import { View } from 'react-native';
 import { ScrollView, useWindowDimensions } from 'react-native';
-// import { BarChart } from 'react-native-chart-kit';
-// import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { Text, useTheme } from 'react-native-paper';
 import { useMemo } from 'react';
 import { rgbToRgba } from '@/utils';
 import { ListHeading } from '../text';
-// import { ChartData } from 'react-native-chart-kit/dist/HelperTypes';
 import { UserAnimeStatsQuery } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { BarChart, barDataItem } from 'react-native-gifted-charts';

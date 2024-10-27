@@ -22,8 +22,7 @@ export const downloadAppUpdate = async (
 ) => {
 	const jobId = `goraku${version.replaceAll('.', '-')}`;
 	const destination = `${FileSystem.documentDirectory}/${jobId}.apk`;
-	console.log('Destination:', destination);
-	const task = download({
+	download({
 		id: jobId,
 		url: url,
 		destination,
@@ -33,16 +32,13 @@ export const downloadAppUpdate = async (
 			destination,
 		},
 	})
-		.begin(({ expectedBytes, headers }) => {
+		.begin(({ expectedBytes }) => {
 			onIsDownloading(true);
-			console.log(`Going to download ${expectedBytes} bytes!`);
 		})
 		.progress(({ bytesDownloaded, bytesTotal }) => {
 			onDownload((bytesDownloaded / bytesTotal) * 100);
-			console.log(`Downloaded: ${(bytesDownloaded / bytesTotal) * 100}%`);
 		})
 		.done(({ bytesDownloaded, bytesTotal }) => {
-			console.log('Download is done!', { bytesDownloaded, bytesTotal });
 			onIsDownloading(false);
 			// PROCESS YOUR STUFF
 			launchAPK(destination);
@@ -51,7 +47,6 @@ export const downloadAppUpdate = async (
 			completeHandler(jobId);
 		})
 		.error(({ error, errorCode }) => {
-			console.log('Download canceled due to error: ', { error, errorCode });
 			onIsDownloading(false);
 		});
 };
@@ -59,7 +54,6 @@ export const downloadAppUpdate = async (
 export const reattachDownloads = async () => {
 	const lostTasks = await RNBackgroundDownloader.checkForExistingDownloads();
 	for (const task of lostTasks) {
-		console.log(`Task ${task.id} was found!`);
 		task.progress(({ bytesDownloaded, bytesTotal }) => {
 			console.log(`Downloaded: ${(bytesDownloaded / bytesTotal) * 100}%`);
 		})

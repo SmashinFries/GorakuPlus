@@ -1,4 +1,4 @@
-import { TTSVoice } from '@/store/slices/ttsSlice';
+import { TTSVoice } from '@/store/tts/types';
 import * as Speech from 'expo-speech';
 
 const useTTS = () => {

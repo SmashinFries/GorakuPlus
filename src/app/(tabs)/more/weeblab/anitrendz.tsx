@@ -6,16 +6,9 @@ import {
 	AniTrendzChartTypes,
 } from '@/api/anitrendz/types';
 import { AnimViewMem } from '@/components/animations';
-import {
-	CharacterSearchBottomSheet,
-	MediaSearchBottomSheet,
-	QuickActionAniTrendzBottomSheet,
-} from '@/components/bottomsheets';
 import PaperHeader from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { GorakuTabBar } from '@/components/tab';
-import { useCharacterSearchBottomSheet, useMediaSearchBottomSheet } from '@/hooks/useBottomSheet';
-import { useQuickActionAniTrendz } from '@/hooks/useQuickAction';
 import { useAppTheme } from '@/store/theme/themes';
 import { sendToast } from '@/utils/toast';
 import { Image } from 'expo-image';
@@ -24,7 +17,8 @@ import { openBrowserAsync } from 'expo-web-browser';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
-import { Appbar, Icon, Surface, Text } from 'react-native-paper';
+import { SheetManager } from 'react-native-actions-sheet';
+import { Icon, Surface, Text } from 'react-native-paper';
 import { SceneRendererProps, TabView } from 'react-native-tab-view';
 
 const ChartIcon = ({
@@ -230,10 +224,6 @@ const AniTrendzChart = ({
 type AniTrendzRoute = { key: AniTrendzChartTypes; title: string };
 const AniTrendzPage = () => {
 	const layout = useWindowDimensions();
-	const { quickActionAniTrendzRef, selectedChoice, onChoiceSelect } = useQuickActionAniTrendz();
-	const { characterSearchSheetRef, selectedName, onNameSelect } = useCharacterSearchBottomSheet();
-	const { mediaSearchSheetRef, selectedMediaTitle, onMediaTitleSelect } =
-		useMediaSearchBottomSheet();
 	// const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 	const [routes, setRoutes] = useState<AniTrendzRoute[]>([
 		{
@@ -255,6 +245,30 @@ const AniTrendzPage = () => {
 	]);
 	const [index, setIndex] = useState(0);
 
+	const onChoiceSelect = (
+		choice: AniTrendzCharChoice,
+		link: string,
+		isAnime: boolean = false,
+	) => {
+		const names = choice.name.split(' x ');
+		// Haptics.selectionAsync();
+		SheetManager.show('QuickActionAniTrendzSheet', {
+			payload: {
+				link,
+				names: isAnime ? [] : names,
+				anime: isAnime ? choice.name : choice.subText,
+				onAnimeSearch(anime) {
+					SheetManager.show('MediaSearchSheet', {
+						payload: { search: anime, type: MediaType.Anime },
+					});
+				},
+				onCharacterSearch(name) {
+					SheetManager.show('CharacterSearchSheet', { payload: { name } });
+				},
+			},
+		});
+	};
+
 	const renderScene = ({
 		route,
 	}: SceneRendererProps & {
@@ -263,7 +277,11 @@ const AniTrendzPage = () => {
 		<AniTrendzChart
 			type={route.key}
 			onSingleSelect={(search: string) =>
-				route.key === 'anime' ? onMediaTitleSelect(search) : onNameSelect(search)
+				route.key === 'anime'
+					? SheetManager.show('MediaSearchSheet', {
+							payload: { search, type: MediaType.Anime },
+						})
+					: SheetManager.show('CharacterSearchSheet', { payload: { name: search } })
 			}
 			onChoiceLongSelect={(choice) =>
 				onChoiceSelect(
@@ -286,7 +304,7 @@ const AniTrendzPage = () => {
 							{...props}
 							actions={[
 								{
-									icon: 'web',
+									icon: 'information-outline',
 									onPress: () =>
 										openBrowserAsync(
 											`https://www.anitrendz.com/charts/${AniTrendzChartPathEnum[routes[index].key]}`,
@@ -305,18 +323,6 @@ const AniTrendzPage = () => {
 				renderTabBar={GorakuTabBar}
 				swipeEnabled={true}
 				lazy
-			/>
-			<QuickActionAniTrendzBottomSheet
-				ref={quickActionAniTrendzRef}
-				{...selectedChoice}
-				onAnimeSearch={onMediaTitleSelect}
-				onCharacterSearch={onNameSelect}
-			/>
-			<CharacterSearchBottomSheet ref={characterSearchSheetRef} name={selectedName} />
-			<MediaSearchBottomSheet
-				ref={mediaSearchSheetRef}
-				search={selectedMediaTitle}
-				type={MediaType.Anime}
 			/>
 		</>
 	);

@@ -1,7 +1,7 @@
-import { Dialog, Button, Text, ActivityIndicator, useTheme } from 'react-native-paper';
+import { Dialog, Button, Text, ActivityIndicator, useTheme, TextInput } from 'react-native-paper';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { BasicDialogProps } from '@/types';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,13 +11,14 @@ import { copyToClipboard } from '@/utils';
 import { NumberPicker, NumberPickerProps } from './picker';
 import { useCameraPermissions, CameraView } from 'expo-camera';
 import { scoreToIndex } from '@/utils/scores';
-import { MediaType, SearchMangaQuery } from '@/api/anilist/__genereated__/gql';
+import { MediaSearchQuery, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
+import { useAuthStore } from '@/store/authStore';
+import { router } from 'expo-router';
+import { openWebBrowser } from '@/utils/webBrowser';
+import { useShallow } from 'zustand/react/shallow';
 
-type BarcodeScanDialogProps = BasicDialogProps & {
-	onNav: (aniId: number, malId: number, type: MediaType) => void;
-};
-export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDialogProps) => {
+export const BarcodeScanDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 	const { colors } = useAppTheme();
 	const [permission, requestPermission] = useCameraPermissions();
 	const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
@@ -31,7 +32,7 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 	};
 
 	const RenderItem = useCallback(
-		({ item }: { item: SearchMangaQuery['Page']['media'][0] }) => {
+		({ item }: { item: MediaSearchQuery['Page']['media'][0] }) => {
 			return (
 				<View
 					style={{
@@ -43,18 +44,12 @@ export const BarcodeScanDialog = ({ visible, onNav, onDismiss }: BarcodeScanDial
 					}}
 				>
 					<MediaCard
-						titles={item.title}
-						coverImg={item.coverImage.extraLarge}
+						{...item}
 						navigate={() => {
 							closeDialog();
-							onNav(item.id, item.idMal, item.type);
+							router.navigate(`/manga/${item.id}`);
 						}}
-						scoreDistributions={item.stats?.scoreDistribution}
-						meanScore={item.meanScore}
-						averageScore={item.averageScore}
-						// height={dialog_width / 2 - 5}
 						fitToParent
-						isFavorite={item.isFavourite}
 					/>
 					<Text
 						variant="labelMedium"
@@ -196,6 +191,98 @@ export const NumberPickDialog = ({
 				>
 					Confirm
 				</Button>
+			</Dialog.Actions>
+		</Dialog>
+	);
+};
+
+export const SauceNaoAuthDialog = ({ visible, onDismiss }: BasicDialogProps) => {
+	const { api_key } = useAuthStore(useShallow((state) => state.sauceNao));
+	const setSauceNaoAuth = useAuthStore(useShallow((state) => state.setSauceNaoAuth));
+	const [tempApiKey, setTempApiKey] = useState(api_key ?? '');
+
+	const onSubmit = () => {
+		setSauceNaoAuth(tempApiKey);
+		onDismiss();
+	};
+
+	useEffect(() => {
+		setTempApiKey(api_key);
+	}, [visible]);
+
+	return (
+		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
+			<Dialog.Title>SauceNao</Dialog.Title>
+			<Dialog.Content>
+				<TextInput
+					label={'API Key'}
+					value={tempApiKey}
+					onChangeText={(txt) => setTempApiKey(txt)}
+					mode="outlined"
+					right={
+						tempApiKey?.length > 0 && (
+							<TextInput.Icon icon={'close'} onPress={() => setTempApiKey('')} />
+						)
+					}
+				/>
+				<Button
+					onPress={() => openWebBrowser('https://saucenao.com/user.php')}
+					style={{ alignSelf: 'flex-end' }}
+				>
+					Get API key
+				</Button>
+			</Dialog.Content>
+			<Dialog.Actions>
+				<Button onPress={onDismiss}>Cancel</Button>
+				<Button onPress={onSubmit}>Save</Button>
+			</Dialog.Actions>
+		</Dialog>
+	);
+};
+
+export const WaifuItTokenDialog = ({ visible, onDismiss }: BasicDialogProps) => {
+	const isWeb = Platform.OS === 'web';
+	const { waifuit, setWaifuit } = useAuthStore();
+	const [inputToken, setInputToken] = useState(waifuit.token);
+
+	const onConfirm = () => {
+		setWaifuit(inputToken);
+		onDismiss();
+	};
+
+	return (
+		<Dialog
+			visible={visible}
+			onDismiss={onDismiss}
+			style={{ maxWidth: isWeb ? '50%' : undefined, alignSelf: isWeb ? 'center' : undefined }}
+		>
+			<Dialog.Title>{'Waifu.It Login'}</Dialog.Title>
+			<Dialog.Content>
+				<Text style={{ paddingBottom: 10, fontWeight: '900' }}>
+					Discord login required!
+				</Text>
+				<Text>
+					To use Waifu.It, you need to claim a token. Once you have a token, enter it
+					below.
+				</Text>
+				<Button
+					mode="elevated"
+					onPress={() => openWebBrowser('https://docs.waifu.it/faq')}
+					style={{ marginVertical: 20 }}
+				>
+					Get Token
+				</Button>
+				<TextInput
+					mode="outlined"
+					label={'Token'}
+					placeholder="Enter token here..."
+					value={inputToken}
+					onChangeText={(txt) => setInputToken(txt)}
+				/>
+			</Dialog.Content>
+			<Dialog.Actions>
+				<Button onPress={onDismiss}>Cancel</Button>
+				<Button onPress={onConfirm}>Save</Button>
 			</Dialog.Actions>
 		</Dialog>
 	);

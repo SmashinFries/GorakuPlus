@@ -3,10 +3,7 @@ import { SplashScreen, Stack, router, useNavigationContainerRef } from 'expo-rou
 import * as Linking from 'expo-linking';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import notifee, { EventType } from '@notifee/react-native';
 import { useEffect, useRef, useState } from 'react';
-import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { UpdaterBottomSheet } from '@/components/updates';
 import PaperHeader from '@/components/headers';
 import { fetchAnilistNotifications } from '@/utils/notifications/backgroundFetch';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
@@ -22,16 +19,20 @@ import { PaperThemeProvider } from '@/providers/themeProvider';
 import { RootProvider } from '@/providers/rootProvider';
 import * as Sentry from '@sentry/react-native';
 import { isRunningInExpoGo } from 'expo';
-import { enGB, registerTranslation } from 'react-native-paper-dates';
+import { en, registerTranslation } from 'react-native-paper-dates';
 import { useThemeStore } from '@/store/theme/themeStore';
-import { availableThemes, themeOptions } from '@/store/theme/themes';
+import { SheetManager, SheetProvider } from 'react-native-actions-sheet';
+import notifee, { EventType } from '@notifee/react-native';
+import '../components/sheets/index';
+import useNotifications from '@/hooks/useNotifications';
+import { ANILIST_NOTIF_BF_ID } from '@/constants/backgroundTasks';
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore
 	window._frameTimestamp = null;
 }
 
-registerTranslation('en-GB', enGB);
+registerTranslation('en', en);
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -55,7 +56,7 @@ Platform.OS !== 'web' && removeUpdateAPKs();
 Platform.OS !== 'web' && reattachDownloads();
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
-	const { notification, pressAction } = detail;
+	const { notification } = detail;
 	if (type === EventType.PRESS) {
 		const link = Linking.createURL(detail.notification?.data?.url as string);
 		console.log('Link:', link);
@@ -64,40 +65,35 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 	}
 });
 
-TaskManager.defineTask('Notifs', async () => {
-	await fetchAnilistNotifications();
-
-	// Be sure to return the successful result type!
-	return BackgroundFetch.BackgroundFetchResult.NewData;
+TaskManager.defineTask(ANILIST_NOTIF_BF_ID, () => {
+	fetchAnilistNotifications();
 });
 
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
+	const { loading } = useNotifications();
 	const { isFirstLaunch } = useSettingsStore();
-	const updaterBtmSheetRef = useRef<BottomSheetModal>(null);
 	const { updateDetails, checkForUpdates } = useAppUpdates();
-	const url = Linking.useURL();
 	// Capture the NavigationContainer ref and register it with the instrumentation.
 	const ref = useNavigationContainerRef();
-	const isDark = useThemeStore((state) => state.isDark);
+	const { isDark } = useThemeStore();
 
 	const runUpdateChecker = async () => {
 		const hasUpdate = await checkForUpdates();
 		if (hasUpdate) {
-			updaterBtmSheetRef.current?.present();
+			SheetManager.show('AppUpdaterSheet', { payload: { updateDetails } });
 		}
 	};
 
 	useEffect(() => {
 		if (isFirstLaunch) {
 			router.replace('/setup');
-		} else if (url) {
-			console.log('Initial URL:', url);
-			// router.navigate(url);
+		} else {
+			router.replace('/(tabs)/explore');
 		}
 		SplashScreen.hideAsync();
-	}, [isFirstLaunch, url]);
+	}, [isFirstLaunch]);
 
 	useEffect(() => {
 		if (ref) {
@@ -119,7 +115,7 @@ const RootLayout = () => {
 				}}
 			>
 				<PaperThemeProvider>
-					<BottomSheetModalProvider>
+					<SheetProvider>
 						<AnimatedStack
 							screenOptions={{
 								headerShown: false,
@@ -129,14 +125,18 @@ const RootLayout = () => {
 							}}
 						>
 							<Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-							<Stack.Screen name="(anime)/[...media]" />
-							<Stack.Screen name="(manga)/[...media]" />
+							<Stack.Screen name="anicard" />
+							<Stack.Screen name="anime/[id]" />
+							<Stack.Screen name="manga/[id]" />
+							{/* <Stack.Screen name="[anime,manga]/[...media]" /> */}
+							{/* <Stack.Screen name="manga/[...media]" /> */}
+
 							<Stack.Screen name="music" />
 							<Stack.Screen name="character" />
 							<Stack.Screen name="staff" />
 							<Stack.Screen name="news" />
 							<Stack.Screen name="art" />
-							<Stack.Screen name="user" />
+							<Stack.Screen name="user/[username]" />
 							<Stack.Screen
 								name="statistics"
 								options={{
@@ -156,19 +156,13 @@ const RootLayout = () => {
 							<Stack.Screen
 								name="setup"
 								options={{
-									headerShown: false,
 									presentation: 'modal',
 								}}
 							/>
+							<Stack.Screen name={'auth'} />
 						</AnimatedStack>
-						{Platform.OS !== 'web' && (
-							<UpdaterBottomSheet
-								ref={updaterBtmSheetRef}
-								updateDetails={updateDetails}
-							/>
-						)}
 						<Toaster position="bottom-right" />
-					</BottomSheetModalProvider>
+					</SheetProvider>
 				</PaperThemeProvider>
 			</GestureHandlerRootView>
 		</RootProvider>

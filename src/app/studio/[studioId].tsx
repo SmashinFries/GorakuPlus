@@ -1,58 +1,39 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, useTheme } from 'react-native-paper';
 import { useCallback } from 'react';
-import { Stack, router, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import useStudioList from '@/hooks/studio/useStudio';
-import { MediaCard, MediaProgressBar } from '@/components/cards';
-import { useColumns } from '@/utils';
+import { MediaCard, MediaCardRow } from '@/components/cards';
 import { StudioHeader } from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { useSettingsStore } from '@/store/settings/settingsStore';
-import { MediaList, StudioListQuery } from '@/api/anilist/__genereated__/gql';
+import { StudioListQuery } from '@/api/anilist/__genereated__/gql';
+import { useColumns } from '@/hooks/useColumns';
 
 const StudioMediaListScreen = () => {
 	const { studioId } = useLocalSearchParams<{ studioId: string }>();
 	const { loadMore, studioData } = useStudioList(Number(studioId));
 	const { height } = useWindowDimensions();
-	const { scoreColors } = useSettingsStore();
+	const { itemWidth, columns, displayMode } = useColumns('search');
 
 	const RenderItem = useCallback(
-		(props: { item: StudioListQuery['Studio']['media']['nodes'][0] }) => (
-			<View
-				style={{
-					flex: 1,
-					alignItems: 'center',
-					justifyContent: 'flex-start',
-					marginVertical: 10,
-					marginHorizontal: 5,
-				}}
-			>
-				<MediaCard
-					coverImg={props.item.coverImage.extraLarge}
-					titles={props.item.title}
-					navigate={() =>
-						router.push(`/${props.item.type.toLowerCase()}/${props.item.id}`)
-					}
-					scoreColors={scoreColors}
-					averageScore={props.item.averageScore}
-					meanScore={props.item.meanScore}
-					bannerText={props.item.nextAiringEpisode?.timeUntilAiring as unknown as string}
-					imgBgColor={props.item.coverImage?.color}
-					showBanner={props.item.nextAiringEpisode ? true : false}
-					scoreDistributions={props.item.stats?.scoreDistribution}
-					fitToParent
-					isFavorite={props.item.isFavourite}
-				/>
-				<MediaProgressBar
-					progress={props.item.mediaListEntry?.progress}
-					mediaListEntry={props.item.mediaListEntry as MediaList}
-					mediaStatus={props.item?.status}
-					total={props.item.episodes ?? 0}
-				/>
-			</View>
-		),
-		[],
+		(props: { item: StudioListQuery['Studio']['media']['nodes'][0] }) =>
+			displayMode === 'COMPACT' ? (
+				<View
+					style={{
+						flex: 1,
+						alignItems: 'center',
+						justifyContent: 'flex-start',
+						marginVertical: 10,
+						marginHorizontal: 5,
+						width: itemWidth,
+					}}
+				>
+					<MediaCard {...props.item} fitToParent />
+				</View>
+			) : (
+				<MediaCardRow {...props.item} />
+			),
+		[displayMode, itemWidth],
 	);
 
 	if (studioData.isLoading) {
@@ -79,8 +60,8 @@ const StudioMediaListScreen = () => {
 				}}
 			/>
 			<FlashList
-				key={3}
-				numColumns={3}
+				key={columns}
+				numColumns={columns}
 				data={studioData.data?.Studio.media?.nodes}
 				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={RenderItem}

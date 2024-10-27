@@ -57,8 +57,8 @@ export const TagDialog = ({ visible, onDismiss, tag }: TagDialogProps) => {
 				<Dialog.Title>{tag?.name}</Dialog.Title>
 				<Dialog.Content>
 					<Section icon="card-text-outline">{tag?.description}</Section>
-					<Section icon="format-list-numbered">{tag?.rank}%</Section>
-					<Section icon="folder-outline">{tag?.category}</Section>
+					{tag?.rank && <Section icon="format-list-numbered">{tag?.rank}%</Section>}
+					{tag?.category && <Section icon="folder-outline">{tag?.category}</Section>}
 				</Dialog.Content>
 				<Dialog.Actions>
 					<Button onPress={onDismiss}>Cool</Button>
@@ -135,7 +135,7 @@ export const MuSearchDialog = ({
 	onDismiss,
 	onConfirm,
 }: MuSearchProps) => {
-	const addMangaUpdatesID = useMatchStore((state) => state.addMangaUpdatesID);
+	const addMangaUpdatesID = useMatchStore(useShallow((state) => state.addMangaUpdatesID));
 	const muDB = useMatchStore(useShallow((state) => state.mangaUpdates));
 	const [query, setQuery] = useState(title?.replace('[', '').replace(']', ''));
 	const [selected, setSelected] = useState(muDB[aniId]);

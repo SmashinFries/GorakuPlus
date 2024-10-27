@@ -1,13 +1,15 @@
 import { ScoreDistribution } from '@/api/anilist/__genereated__/gql';
-import { ScoreColors, StatusColors } from '@/constants/colors';
+import { ScoreColors } from '@/constants/colors';
+import { useCardVisualStore } from '@/store/cardVisualStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisualType } from '@/store/settings/types';
 import { useAppTheme } from '@/store/theme/themes';
 import { rgbToRgba } from '@/utils';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { DimensionValue, View } from 'react-native';
-import { Text, useTheme, Icon } from 'react-native-paper';
+import { Text, Icon } from 'react-native-paper';
+import { useShallow } from 'zustand/react/shallow';
 
 type ScoreHealthBarProps = {
 	score: number;
@@ -20,13 +22,7 @@ type ScoreHealthBarProps = {
 	borderRadius?: number;
 };
 type ScoreIconProps = ScoreHealthBarProps & { textColor: string; showScore?: boolean };
-export const ScoreIconText = ({
-	score,
-	scoreColors,
-	textColor,
-	showScore,
-	borderRadius = 12,
-}: ScoreIconProps) => {
+export const ScoreIconText = ({ score, textColor, borderRadius = 12 }: ScoreIconProps) => {
 	const { colors } = useAppTheme();
 	if (!score) return null;
 	return (
@@ -58,8 +54,6 @@ export const ScoreHealthBar = ({
 	heartColor = 'red',
 	showScore = false,
 	scoreColors,
-	width = '45%',
-	horizontal = false,
 	borderRadius = 12,
 }: ScoreHealthBarProps) => {
 	const { colors } = useAppTheme();
@@ -77,8 +71,6 @@ export const ScoreHealthBar = ({
 				alignItems: 'center',
 				justifyContent: 'space-evenly',
 				borderBottomLeftRadius: borderRadius,
-				borderTopRightRadius: horizontal ? 0 : borderRadius,
-				borderTopLeftRadius: horizontal ? borderRadius : 0,
 				backgroundColor: rgbToRgba(colors.primaryContainer, 0.85),
 				flexDirection: 'row',
 			}}
@@ -211,8 +203,8 @@ export const ScoreVisual = ({
 	borderRadius = 12,
 }: ScoreVisualProps) => {
 	const { colors } = useAppTheme();
-	const savedScoreVisualType = useSettingsStore((state) => state.scoreVisualType);
-	const savedScoreColors = useSettingsStore((state) => state.scoreColors);
+	const savedScoreVisualType = useCardVisualStore(useShallow((state) => state.scoreVisualType));
+	const savedScoreColors = useSettingsStore(useShallow((state) => state.scoreColors));
 
 	switch (scoreVisualType ?? savedScoreVisualType) {
 		case 'healthbar-full':

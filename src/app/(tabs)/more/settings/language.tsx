@@ -1,15 +1,13 @@
-import { AppLanguageDialog, MediaLanguageDialog } from '@/components/more/settings/language/dialog';
+import { MediaLanguageDialog } from '@/components/more/settings/language/dialog';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { LANGUAGES } from 'locales';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { List } from 'react-native-paper';
 
 const LanguagePage = () => {
 	const { mediaLanguage } = useSettingsStore();
 	const [mediaLangVisible, setMediaLangVisible] = useState(false);
-	const [appLangVisible, setAppLangVisible] = useState(false);
 	const [t, i18n] = useTranslation();
 
 	return (

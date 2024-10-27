@@ -1,15 +1,16 @@
-import { Dialog, Text, Button, useTheme, RadioButton, Checkbox, List } from 'react-native-paper';
+import { Dialog, Text, Button, RadioButton, List, Chip } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { ScoreContainer } from '../../../score';
-import { MediaCard, MediaProgressBar } from '../../../cards';
-import { rgbToRgba } from '@/utils';
+import { MediaCard } from '../../../cards';
 import dummyData from '@/constants/dummyData';
 import { useTranslation } from 'react-i18next';
 import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
 import { ThemeOptions, useAppTheme } from '@/store/theme/themes';
 import { MUISlider } from '@/components/slider';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { ListStatusMode, useCardVisualStore } from '@/store/cardVisualStore';
+import { useShallow } from 'zustand/react/shallow';
 
 type SliderViewProps = {
 	title: string;
@@ -19,14 +20,7 @@ type SliderViewProps = {
 	lowerLimit?: number;
 	upperLimit?: number;
 };
-const SliderView = ({
-	score,
-	setScore,
-	title,
-	lowerLimit,
-	upperLimit,
-	trackColor,
-}: SliderViewProps) => {
+const SliderView = ({ title }: SliderViewProps) => {
 	return (
 		<View style={{ paddingVertical: 10 }}>
 			<Text>{title}</Text>
@@ -59,10 +53,12 @@ type DialogProps = {
 	updateScoreColor: (red: number, yellow: number) => any;
 };
 export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: DialogProps) => {
-	const { red, yellow } = useSettingsStore((state) => ({
-		red: state.scoreColors?.red,
-		yellow: state.scoreColors?.yellow,
-	}));
+	const { red, yellow } = useSettingsStore(
+		useShallow((state) => ({
+			red: state.scoreColors?.red,
+			yellow: state.scoreColors?.yellow,
+		})),
+	);
 	const [newRed, setRed] = useState(red);
 	const [newYellow, setYellow] = useState(yellow ?? 74);
 	const { colors } = useAppTheme();
@@ -243,26 +239,25 @@ export const DefaultScoreDialog = ({
 
 type MediaTileCustomizerProps = {
 	visible: boolean;
-	scoreVisualType: ScoreVisualType;
-	scoreColors: { red: number; yellow: number };
 	themeMode: ThemeOptions;
-	showItemListStatus: boolean;
-	mediaLanguage: 'english' | 'romaji' | 'native';
-	onSettingChange: (scoreVisualType: ScoreVisualType, showItemListStatus: boolean) => void;
 	onDismiss: () => void;
 };
 export const MediaTileCustomizer = ({
 	visible,
 	onDismiss,
-	onSettingChange,
-	scoreColors,
-	scoreVisualType,
 	themeMode,
-	showItemListStatus,
-	mediaLanguage,
 }: MediaTileCustomizerProps) => {
-	const [visualPreset, setVisualPreset] = useState<ScoreVisualType>(scoreVisualType);
-	const [showStatus, setShowStatus] = useState(showItemListStatus);
+	const { colors } = useAppTheme();
+	const { scoreVisualType, listStatusMode, setCardVisual } = useCardVisualStore(
+		useShallow((state) => ({
+			listStatusMode: state.listStatusMode,
+			scoreVisualType: state.scoreVisualType,
+			setCardVisual: state.setCardVisual,
+		})),
+	);
+	const [tempScoreVisualType, setTempScoreVisualType] =
+		useState<ScoreVisualType>(scoreVisualType);
+	const [tempListStatusMode, setTempListStatusMode] = useState<ListStatusMode>(listStatusMode);
 	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
@@ -270,14 +265,14 @@ export const MediaTileCustomizer = ({
 	};
 
 	const onDone = () => {
-		onSettingChange(visualPreset, showStatus);
+		setCardVisual({ scoreVisualType: tempScoreVisualType, listStatusMode: tempListStatusMode });
 		onDismiss();
 	};
 
 	useEffect(() => {
 		if (visible) {
-			setVisualPreset(scoreVisualType);
-			setShowStatus(showItemListStatus);
+			setTempScoreVisualType(scoreVisualType);
+			setTempListStatusMode(listStatusMode);
 		}
 	}, [visible]);
 
@@ -292,16 +287,11 @@ export const MediaTileCustomizer = ({
 					}}
 				>
 					<MediaCard
-						coverImg={dummyData[themeMode].coverImage?.extraLarge}
-						titles={dummyData[themeMode].title}
-						meanScore={dummyData[themeMode].meanScore}
-						averageScore={dummyData[themeMode].averageScore}
-						// scorebgColor={rgbToRgba(colors.primaryContainer, 0.75)}
-						scoreVisualType={visualPreset}
-						navigate={() => null}
-						scoreDistributions={dummyData[themeMode].stats?.scoreDistribution}
+						{...dummyData[themeMode]}
+						tempListStatusMode={tempListStatusMode}
+						scoreVisualType={tempScoreVisualType}
 					/>
-					<MediaProgressBar
+					{/* <MediaProgressBar
 						progress={
 							(dummyData[themeMode].episodes ??
 								dummyData[themeMode].mediaListEntry.progress) / 2
@@ -309,38 +299,87 @@ export const MediaTileCustomizer = ({
 						total={dummyData[themeMode].episodes ?? dummyData[themeMode].chapters}
 						mediaStatus={dummyData[themeMode].status}
 						mediaListEntry={dummyData[themeMode].mediaListEntry}
-						showListStatus={showStatus}
-					/>
+					/> */}
 				</View>
 			</Dialog.Content>
 			<Dialog.ScrollArea>
 				<ScrollView showsVerticalScrollIndicator={false}>
 					<List.Section title={t('Score Visual')}>
-						{Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
-							<List.Item
-								key={idx}
-								title={visual}
-								right={(props) => (
-									<RadioButton.Android
-										style={[props.style]}
-										value={ScoreVisualTypeEnum[visual]}
-										status={
-											visualPreset === ScoreVisualTypeEnum[visual]
-												? 'checked'
-												: 'unchecked'
+						<ScrollView
+							horizontal
+							showsHorizontalScrollIndicator={false}
+							style={{ flex: 1 }}
+							contentContainerStyle={{ paddingHorizontal: 10 }}
+						>
+							{Object.keys(ScoreVisualTypeEnum).map(
+								(visual: ScoreVisualType, idx) => (
+									<Chip
+										key={idx}
+										mode="outlined"
+										selected={
+											tempScoreVisualType === ScoreVisualTypeEnum[visual]
 										}
-										onPress={() => setVisualPreset(ScoreVisualTypeEnum[visual])}
-									/>
-								)}
-							/>
-						))}
+										onPress={() =>
+											setTempScoreVisualType(ScoreVisualTypeEnum[visual])
+										}
+										textStyle={{
+											textTransform: 'capitalize',
+											color:
+												tempScoreVisualType === ScoreVisualTypeEnum[visual]
+													? colors.primary
+													: colors.onBackground,
+										}}
+										selectedColor={colors.primary}
+										style={{
+											marginHorizontal: 5,
+											justifyContent: 'center',
+											// borderColor:
+											//     visualPreset === ScoreVisualTypeEnum[visual]
+											//         ? colors.primary
+											//         : undefined,
+										}}
+									>
+										{visual}
+									</Chip>
+								),
+							)}
+						</ScrollView>
 					</List.Section>
 					<List.Section title={t('List Visual')}>
-						<Checkbox.Item
-							label="List status / progress"
-							onPress={() => setShowStatus(!showStatus)}
-							status={showStatus ? 'checked' : 'unchecked'}
-						/>
+						<ScrollView
+							horizontal
+							showsHorizontalScrollIndicator={false}
+							contentContainerStyle={{ paddingHorizontal: 10 }}
+						>
+							{(['dot', 'bar'] as ListStatusMode[]).map(
+								(statusMode: ListStatusMode, idx) => (
+									<Chip
+										key={idx}
+										mode="outlined"
+										selected={tempListStatusMode === statusMode}
+										onPress={() => setTempListStatusMode(statusMode)}
+										textStyle={{
+											textTransform: 'capitalize',
+											color:
+												tempListStatusMode === statusMode
+													? colors.primary
+													: colors.onBackground,
+										}}
+										selectedColor={colors.primary}
+										style={{
+											marginHorizontal: 5,
+											justifyContent: 'center',
+											// borderColor:
+											//     visualPreset === ScoreVisualTypeEnum[visual]
+											//         ? colors.primary
+											//         : undefined,
+										}}
+									>
+										{statusMode}
+									</Chip>
+								),
+							)}
+						</ScrollView>
 					</List.Section>
 				</ScrollView>
 			</Dialog.ScrollArea>

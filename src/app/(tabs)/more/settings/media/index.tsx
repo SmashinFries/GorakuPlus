@@ -9,26 +9,22 @@ import {
 	ListTabsDialog,
 	NSFWLevelDialog,
 } from '@/components/more/settings/media/dialog';
-import { FetchIntervalDialog } from '@/components/more/settings/notifications/dialog';
 import { ListSubheader } from '@/components/titles';
-import { ExploreTabsProps } from '@/types/navigation';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
-import { List, Portal, Text, useTheme } from 'react-native-paper';
+import { List, Portal, Text } from 'react-native-paper';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { MediaType, useUpdateViewerMutation } from '@/api/anilist/__genereated__/gql';
-import { ScoreVisualType } from '@/store/settings/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { DanbooruRating } from '@/api/danbooru/types';
-import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useMatchStore } from '@/store/matchStore';
+import { useShallow } from 'zustand/react/shallow';
 
 const MediaSettingsPage = () => {
 	const {
@@ -41,36 +37,27 @@ const MediaSettingsPage = () => {
 		exploreTabOrder,
 		scoreColors,
 		defaultScore,
-		scoreVisualType,
-		mediaLanguage,
-		showItemListStatus,
 		setSettings,
-	} = useSettingsStore((state) => ({
-		defaultDescription: state.defaultDescription,
-		showNSFW: state.showNSFW,
-		blurNSFW: state.blurNSFW,
-		blurNSFWLevel: state.blurNSFWLevel,
-		tagBlacklist: state.tagBlacklist,
-		exploreTabs: state.exploreTabs,
-		exploreTabOrder: state.exploreTabOrder,
-		scoreColors: state.scoreColors,
-		defaultScore: state.defaultScore,
-		scoreVisualType: state.scoreVisualType,
-		mediaLanguage: state.mediaLanguage,
-		showItemListStatus: state.showItemListStatus,
-		setSettings: state.setSettings,
-	}));
-	const { searchTermLimit, updateSearchLimit } = useSearchHistoryStore((state) => ({
-		searchTermLimit: state.searchTermLimit,
-		updateSearchLimit: state.updateSearchLimit,
-	}));
-	const mode = useThemeStore((state) => state.mode);
-	const userID = useAuthStore((state) => state.anilist.userID);
+	} = useSettingsStore(
+		useShallow((state) => ({
+			defaultDescription: state.defaultDescription,
+			showNSFW: state.showNSFW,
+			blurNSFW: state.blurNSFW,
+			blurNSFWLevel: state.blurNSFWLevel,
+			tagBlacklist: state.tagBlacklist,
+			exploreTabs: state.exploreTabs,
+			exploreTabOrder: state.exploreTabOrder,
+			scoreColors: state.scoreColors,
+			defaultScore: state.defaultScore,
+			setSettings: state.setSettings,
+		})),
+	);
+	const mode = useThemeStore(useShallow((state) => state.mode));
+	const userID = useAuthStore(useShallow((state) => state.anilist.userID));
 	const queryClient = useQueryClient();
 
 	const { colors } = useAppTheme();
 	const [showDefDescDialog, setShowDefDescDialog] = useState(false);
-	const [showSearchHistoryLimit, setShowSearchHistoryLimit] = useState(false);
 
 	const [showScoreColorDialog, setShowScoreColorDialog] = useState(false);
 	const [showDefaultScoreDialog, setShowDefaultScoreDialog] = useState(false);
@@ -86,17 +73,6 @@ const MediaSettingsPage = () => {
 	const toggleMangaListTabOptions = (isVis: boolean) => setMangaListTabVis(isVis);
 
 	const viewerMutation = useUpdateViewerMutation();
-
-	const editExploreTabs = useCallback((tabs: (keyof ExploreTabsProps)[]) => {
-		setSettings({ exploreTabs: tabs });
-	}, []);
-
-	const onSettingChange = useCallback(
-		(scoreVisualType: ScoreVisualType, showItemListStatus: boolean) => {
-			setSettings({ scoreVisualType, showItemListStatus });
-		},
-		[],
-	);
 
 	return (
 		<View>
@@ -127,14 +103,6 @@ const MediaSettingsPage = () => {
 					title="Default Description"
 					description={defaultDescription === 'ani' ? 'AniList' : 'MyAnimeList'}
 					onPress={() => setShowDefDescDialog(true)}
-				/>
-				<ListSubheader title="Search" />
-				<List.Item
-					title="Search History Limit"
-					onPress={() => setShowSearchHistoryLimit(true)}
-					right={(props) => (
-						<Text style={[props.style, { color: props.color }]}>{searchTermLimit}</Text>
-					)}
 				/>
 				<ListSubheader title="NSFW" />
 				<MaterialSwitchListItem
@@ -252,20 +220,7 @@ const MediaSettingsPage = () => {
 				<MediaTileCustomizer
 					themeMode={mode}
 					visible={showMTCustomizer}
-					scoreVisualType={scoreVisualType}
-					showItemListStatus={showItemListStatus}
-					onSettingChange={onSettingChange}
-					mediaLanguage={mediaLanguage}
-					scoreColors={scoreColors}
 					onDismiss={() => setShowMTCustomizer(false)}
-				/>
-				<FetchIntervalDialog
-					initialInterval={searchTermLimit}
-					onDismiss={() => setShowSearchHistoryLimit(false)}
-					title="Search History Limit"
-					visible={showSearchHistoryLimit}
-					updateInterval={(value) => updateSearchLimit(value)}
-					options={['5', '10', '15', '20', '25', '30']}
 				/>
 			</Portal>
 		</View>

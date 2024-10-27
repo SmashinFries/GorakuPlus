@@ -3,8 +3,8 @@ import { useAppTheme } from '@/store/theme/themes';
 import { router } from 'expo-router';
 import { DimensionValue, View } from 'react-native';
 import { Pressable } from 'react-native';
+import { SheetManager } from 'react-native-actions-sheet';
 import { Avatar, Icon, Surface, Text } from 'react-native-paper';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type ReviewItemProps = {
 	backgroundColor?: string;
@@ -12,16 +12,12 @@ type ReviewItemProps = {
 	maxWidth?: DimensionValue;
 	marginVertical?: number;
 	item: AniMediaQuery['Media']['reviews']['edges'][0] | ReviewsQuery['Page']['reviews'][0];
-	onLongPress: (
-		data: AniMediaQuery['Media']['reviews']['edges'][0] | ReviewsQuery['Page']['reviews'][0],
-	) => void;
 	index: number;
 };
 export const ReviewItem = ({
 	item,
 	iconColor,
 	backgroundColor,
-	onLongPress,
 	maxWidth = 320,
 	marginVertical = 0,
 }: ReviewItemProps) => {
@@ -42,7 +38,9 @@ export const ReviewItem = ({
 		>
 			<Pressable
 				onPress={() => router.navigate(`/reviews/full/${review?.id}`)}
-				onLongPress={() => onLongPress(review)}
+				onLongPress={() =>
+					SheetManager.show('ReviewOverviewSheet', { payload: { data: review } })
+				}
 				android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 				style={{
 					// backgroundColor: backgroundColor,
@@ -73,11 +71,11 @@ export const ReviewItem = ({
 					}}
 				>
 					<View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 10 }}>
-						<Icon source="account" color={iconColor} />
+						<Icon source="account" color={iconColor} size={undefined} />
 						<Text style={{ textAlign: 'right' }}> {review?.user?.name}</Text>
 					</View>
 					<View style={{ flexDirection: 'row', marginRight: 10, alignItems: 'center' }}>
-						<Icon source="thumb-up" color={iconColor} />
+						<Icon source="thumb-up" color={iconColor} size={undefined} />
 						<Text style={{ textAlign: 'right' }}> {review?.rating}</Text>
 					</View>
 				</View>

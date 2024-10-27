@@ -162,7 +162,7 @@ export const MediaProgressBar = ({
 				indeterminate={mediaListEntry?.status === MediaListStatus.Current && !total}
 				color={mediaListEntry?.status ? listColor(mediaListEntry?.status) : undefined}
 			/>
-			{showListStatus ?? showItemListStatus ? (
+			{(showListStatus ?? showItemListStatus) ? (
 				<Text
 					style={{
 						textAlign: 'center',

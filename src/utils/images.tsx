@@ -1,23 +1,28 @@
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
 import { impactAsync, ImpactFeedbackStyle } from 'expo-haptics';
-import { Button, Dialog, Text } from 'react-native-paper';
+import { Button, Dialog } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
 
-export const saveImage = async (url: string, name = null) => {
+export const saveImage = async (url: string, name = null, ext?: string) => {
+	console.log('URL:', url);
 	const { status } = await MediaLibrary.requestPermissionsAsync();
-	const formattedTitle = name ?? 'mal_' + url.split('/').pop()?.split('.')[0];
-	const fileUri = FileSystem.documentDirectory + formattedTitle + `.${url.split('.').at(-1)}`;
+	const formattedTitle = name ?? encodeURIComponent('mal_' + url.split('/').pop()?.split('.')[0]);
+	const fileUri =
+		FileSystem.documentDirectory + formattedTitle + `.${ext ?? url.split('.').at(-1)}`;
 	if (status === MediaLibrary.PermissionStatus.GRANTED) {
 		try {
 			const result = await FileSystem.downloadAsync(url, fileUri);
 			await MediaLibrary.saveToLibraryAsync(result.uri);
 			await impactAsync(ImpactFeedbackStyle.Light);
-			Burnt.toast({ title: 'Image Saved', duration: TOAST.SHORT });
+			Burnt.toast({
+				title: `${ext === 'mp4' || ext === 'gif' ? 'Video' : 'Image'} Saved`,
+				duration: TOAST.SHORT,
+			});
 		} catch (e) {
 			Burnt.toast({ title: 'Image failed to save', duration: TOAST.LONG });
 		}
@@ -40,7 +45,7 @@ export const SaveImageDialog = ({
 		await saveImage(img_url, filename ?? prefix + img_url.split('/').pop()?.split('.')[0]).then(
 			() => onDismiss(),
 		);
-	}, [img_url]);
+	}, [img_url, filename, onDismiss, prefix]);
 	return (
 		<Dialog visible={img_url ? true : false} onDismiss={onDismiss}>
 			<Dialog.Title>Save Image</Dialog.Title>
@@ -63,8 +68,10 @@ export const SaveImageDialog = ({
 	);
 };
 
-export const selectImage = async (camera?: boolean): Promise<FormData | null> => {
-	const data = new FormData();
+export const selectImage = async (
+	camera?: boolean,
+	asAsset?: boolean,
+): Promise<ImagePicker.ImagePickerAsset | string> => {
 	const result = camera
 		? await ImagePicker.launchCameraAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -82,14 +89,14 @@ export const selectImage = async (camera?: boolean): Promise<FormData | null> =>
 			});
 
 	if (!result.canceled) {
-		const imageType = result.assets[0].uri.split('.').at(-1);
-		// @ts-ignore | how to type this???
-		data.append('image', {
-			name: 'image',
-			type: `image/${imageType === 'jpg' ? 'jpeg' : imageType}`,
-			uri: result.assets[0].uri,
-		});
-		return data;
+		if (asAsset) {
+			// const response = await fetch(result.assets[0].uri);
+			// const blob = await response.blob();
+			// return blob;
+			return result.assets[0];
+		} else {
+			return result.assets[0].uri;
+		}
 	} else {
 		return null;
 	}
@@ -109,7 +116,7 @@ export const getImageB64 = async (camera?: boolean, url?: string): Promise<strin
 				encoding: 'base64',
 			});
 			return `data:image/${imgType};base64,${base64}`;
-		} catch (e) {
+		} catch (_e) {
 			return null;
 		}
 	} else {

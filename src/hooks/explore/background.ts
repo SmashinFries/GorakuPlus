@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { AnimeExploreQuery } from '@/api/anilist/__genereated__/gql';
 
@@ -9,7 +9,7 @@ const getBG = (media) => {
 
 const useBackground = (data: AnimeExploreQuery['trending']['media']) => {
 	const [bg, setBg] = useState({ id: 0, bg: getBG(data[0]) });
-	const [key, setKey] = useState(bg.bg + Math.floor(Math.random() * 1001).toString());
+	const [key, _setKey] = useState(bg.bg + Math.floor(Math.random() * 1001).toString());
 	const [visible, toggle] = useReducer((s) => !s, true);
 
 	const updateBG = () => {

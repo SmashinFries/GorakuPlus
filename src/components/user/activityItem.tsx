@@ -1,13 +1,5 @@
-import {
-	ActivityIndicator,
-	Avatar,
-	Button,
-	IconButton,
-	Portal,
-	Text,
-	useTheme,
-} from 'react-native-paper';
-import { useCallback, useState } from 'react';
+import { Avatar, Portal, Text } from 'react-native-paper';
+import { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { ListHeading } from '../text';
 import { FlashList } from '@shopify/flash-list';
@@ -15,39 +7,26 @@ import { MediaCard } from '../cards';
 import { getTimeUntil } from '@/utils';
 import { ConfirmActDelDialog } from './dialogs';
 import { router } from 'expo-router';
-import {
-	ListActivity,
-	MediaFormat,
-	UserActivityQuery,
-	UserOverviewQuery,
-} from '@/api/anilist/__genereated__/gql';
+import { ListActivity, MediaFormat, UserActivityQuery } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
+import { useShallow } from 'zustand/react/shallow';
 
 type ActivityItemProps = {
 	item: ListActivity;
-	id: number;
+	userId: number;
 	onTrash: (id: number) => void;
 };
 
-export const ActivityItem = ({ item, id, onTrash }: ActivityItemProps) => {
+export const ActivityItem = ({ item, userId }: ActivityItemProps) => {
 	const { colors } = useAppTheme();
-	const userID = useAuthStore((state) => state.anilist.userID);
+	const userID = useAuthStore(useShallow((state) => state.anilist.userID));
 	return (
 		<View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
 			<MediaCard
-				titles={item.media?.title}
-				coverImg={item.media?.coverImage?.extraLarge}
-				imgBgColor={item.media?.coverImage?.color}
-				navigate={
-					() => router.push(`/${item.media?.type}/${item.media?.id}`)
-					// nav.navigate('media', {
-					//     aniID: item.media?.id,
-					//     malID: item.media?.idMal,
-					//     type: item.media.type,
-					// })
-				}
-				scoreDistributions={item.media?.stats?.scoreDistribution}
+				{...item.media}
+				activityId={item.user.id === userID && item.id}
+				followingUsername={item.user.id !== userID && item.user?.name}
 			/>
 			<Text
 				variant="labelLarge"
@@ -81,24 +60,11 @@ export const ActivityItem = ({ item, id, onTrash }: ActivityItemProps) => {
 			>
 				{getTimeUntil(item.createdAt, 'createdAt')}
 			</Text>
-			{item.user?.id === id && item.user?.id === userID && (
-				<IconButton
-					icon={'trash-can'}
-					iconColor={colors.onPrimaryContainer}
-					style={{
-						position: 'absolute',
-						top: -5,
-						right: -15,
-						backgroundColor: colors.primaryContainer,
-					}}
-					onPress={() => onTrash(item.id)}
-				/>
-			)}
-			{item.user?.id !== id && item.user?.id !== userID && (
+			{item.user?.id !== userId && item.user?.id !== userID && (
 				<Avatar.Image
-					style={{ position: 'absolute', top: 0, right: 0 }}
+					style={{ position: 'absolute', top: 10, left: 5 }}
 					source={{ uri: item.user?.avatar?.large }}
-					size={32}
+					size={28}
 				/>
 			)}
 		</View>
@@ -107,11 +73,12 @@ export const ActivityItem = ({ item, id, onTrash }: ActivityItemProps) => {
 
 export const ActivityOverview = ({
 	userId,
+	username,
 	data,
-	onDelete,
 }: {
 	userId: number;
-	data: UserOverviewQuery['activity']['activities'];
+	username: string;
+	data: UserActivityQuery['Page']['activities'];
 	onDelete?: (id: number) => void;
 }) => {
 	const { width } = useWindowDimensions();
@@ -129,18 +96,30 @@ export const ActivityOverview = ({
 	}
 
 	return (
-		<View style={{ width: width, overflow: 'visible' }}>
+		<View style={{ width: width, overflow: 'visible', paddingTop: 8 }}>
 			<ListHeading
-				title="Activity"
+				title="List Activity"
 				icon={data?.length > 0 ? 'chevron-right' : undefined}
-				onIconPress={data?.length > 0 ? () => router.push('/activity/user') : undefined}
+				// @ts-ignore
+				onIconPress={() =>
+					router.navigate({
+						pathname: `/user/${username}/activity`,
+						params: {
+							userId: userId,
+						},
+					})
+				}
 			/>
 			<View style={{ width: width }}>
 				<FlashList
 					// @ts-ignore - not sure how to handle this type :/
 					data={data}
 					renderItem={({ item }) => (
-						<ActivityItem id={userId} item={item as ListActivity} onTrash={onTrash} />
+						<ActivityItem
+							userId={userId}
+							item={item as ListActivity}
+							onTrash={onTrash}
+						/>
 					)}
 					keyExtractor={(item) =>
 						item.__typename === 'ListActivity' && item.id.toString()

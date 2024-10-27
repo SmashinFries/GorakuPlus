@@ -8,7 +8,7 @@ import { useAppTheme } from '@/store/theme/themes';
 const PIX_IV_URL = 'https://www.pixiv.net/en/artworks/';
 
 type ArtistBarProps = {
-	artist_name: string;
+	artist_name?: string;
 	pixiv_id?: number;
 	source?: string;
 };
@@ -18,16 +18,22 @@ export const ArtistBar = ({ artist_name, pixiv_id, source }: ArtistBarProps) => 
 	const source_link = pixiv_id ? `${PIX_IV_URL}${pixiv_id}` : source;
 	return (
 		<Pressable onPress={() => openWebBrowser(source_link)} style={[styles.container]}>
-			<Avatar.Text
-				size={totalHeight}
-				labelStyle={{ textTransform: 'capitalize' }}
-				label={artist_name?.at(0)}
-			/>
+			{artist_name ? (
+				<Avatar.Text
+					size={totalHeight}
+					labelStyle={{ textTransform: 'capitalize' }}
+					label={artist_name?.at(0)}
+				/>
+			) : (
+				<Avatar.Icon icon={'close'} size={totalHeight} />
+			)}
 			<View
 				onLayout={(e) => setTotalHeight(e.nativeEvent.layout.height)}
 				style={[styles.textBody]}
 			>
-				<Text variant="titleMedium">{artist_name?.length > 0 ? artist_name : '???'}</Text>
+				<Text variant="titleMedium">
+					{artist_name?.length > 0 ? artist_name : 'No Artist'}
+				</Text>
 				<Text
 					numberOfLines={1}
 					style={{ color: colors.onSurfaceVariant }}
@@ -42,7 +48,7 @@ export const ArtistBar = ({ artist_name, pixiv_id, source }: ArtistBarProps) => 
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		// flex: 1,
 		flexDirection: 'row',
 		marginVertical: 20,
 		paddingHorizontal: 10,

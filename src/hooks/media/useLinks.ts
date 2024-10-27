@@ -1,5 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { StreamSites } from '@/types/mal';
+import { useEffect, useState } from 'react';
 import { ExternalLinkType, MediaExternalLink } from '@/api/anilist/__genereated__/gql';
 
 type CustomMediaExternalLink = MediaExternalLink & { iconType: 'ani' | 'mal' | 'mu' };

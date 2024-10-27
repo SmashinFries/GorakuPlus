@@ -1,8 +1,4 @@
-import {
-	CharacterSort,
-	MediaType,
-	useInfiniteCharacterListQuery,
-} from '@/api/anilist/__genereated__/gql';
+import { CharacterSort, useInfiniteCharacterListQuery } from '@/api/anilist/__genereated__/gql';
 import { useMemo } from 'react';
 
 export const useCharactersList = (id: number) => {
@@ -26,13 +22,10 @@ export const useCharactersList = (id: number) => {
 			},
 		);
 
-	const allItems = useMemo(
-		() => data.pages.flatMap((page) => page.Media.characters.edges),
-		[data],
-	);
+	const mergedData = data?.pages?.flatMap((page) => page.Media.characters.edges);
 
 	return {
-		data: allItems,
+		data: mergedData,
 		isLoading,
 		isFetching,
 		hasNextPage,

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useImageRotation = (urls: string[] = [null], duration = 8000) => {
 	const [image_src_idx, setImageSrcIdx] = useState<number>(0);

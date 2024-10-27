@@ -1,27 +1,9 @@
-import {
-	ScrollView,
-	View,
-	useWindowDimensions,
-	Image as RNImage,
-	Text as RNText,
-	DimensionValue,
-} from 'react-native';
-import {
-	ActivityIndicator,
-	Avatar,
-	Badge,
-	Button,
-	Divider,
-	Icon,
-	IconButton,
-	MD3DarkTheme,
-	Text,
-	useTheme,
-} from 'react-native-paper';
+import { View, useWindowDimensions } from 'react-native';
+import { Avatar, Button, Divider, IconButton, Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { ReviewHeader } from '@/components/headers';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { Stack, router, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import * as Burnt from 'burnt';
 import { GorakuActivityIndicator } from '@/components/loading';
 import {
@@ -30,16 +12,14 @@ import {
 	useReviewsByIdQuery,
 	useToggleFollowMutation,
 } from '@/api/anilist/__genereated__/gql';
-import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
 
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 import { LongScrollView } from '@/components/list';
 import { useAuthStore } from '@/store/authStore';
-import { ScoreContainer } from '@/components/score';
-import { MediaScoresView, ScoreView } from '@/components/media/sections/scores';
 import { getScoreColor } from '@/utils';
 import { MediaBanner } from '@/components/media/banner';
+import { useShallow } from 'zustand/react/shallow';
 
 type ScoreProps = {
 	reviewId: number;
@@ -51,7 +31,7 @@ type ScoreProps = {
 const Score = ({ reviewId, score, ratingAmount, rating, userRating }: ScoreProps) => {
 	const { mutateAsync } = useReviewRatingMutation();
 	const { colors } = useAppTheme();
-	const isAuthed = useAuthStore((state) => !!state.anilist.token);
+	const isAuthed = useAuthStore(useShallow((state) => !!state.anilist.token));
 	const [userRatingState, setUserRatingState] = useState<ReviewRating>(
 		userRating ?? ReviewRating.NoVote,
 	);
@@ -143,11 +123,9 @@ const ReviewPage = () => {
 	const { reviewId } = useLocalSearchParams<{ reviewId: string }>();
 	const { width } = useWindowDimensions();
 	const id = Number(reviewId);
-	const { colors } = useAppTheme();
-	const scoreColors = useSettingsStore((state) => state.scoreColors);
-	const isAuthed = useAuthStore((state) => !!state.anilist.userID);
+	const isAuthed = useAuthStore(useShallow((state) => !!state.anilist.userID));
 
-	const { data, isLoading, isError } = useReviewsByIdQuery(
+	const { data, isLoading } = useReviewsByIdQuery(
 		{
 			reviewId: id,
 		},

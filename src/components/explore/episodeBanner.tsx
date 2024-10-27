@@ -6,13 +6,19 @@ import { getTimeUntil } from '@/utils';
 type AiringBannerProps = {
 	containerColor: string;
 	textColor: string;
-	text: string | number;
+	airingAt: number;
+	episode: number;
 };
-export const AiringBanner = ({ containerColor, textColor, text }: AiringBannerProps) => {
+export const AiringBanner = ({
+	containerColor,
+	textColor,
+	airingAt,
+	episode,
+}: AiringBannerProps) => {
 	return (
 		<View style={[Styles.container, { backgroundColor: containerColor }]}>
 			<Text variant="labelSmall" numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
-				{getTimeUntil(Number(text))}
+				EP {episode}: {getTimeUntil(Number(airingAt))}
 			</Text>
 		</View>
 	);

@@ -1,24 +1,23 @@
-import { useRef, useState } from 'react';
-import { Linking, Pressable, ScrollView, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, ScrollView, View } from 'react-native';
 import * as Updates from 'expo-updates';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
-import { ActivityIndicator, Button, List, Portal, Surface, Text } from 'react-native-paper';
+import { ActivityIndicator, List, Surface, Text } from 'react-native-paper';
 import { Accordion } from '@/components/animations';
 import { LinkButton } from '@/components/more/settings/about/buttons';
 import {
 	AnilistIcon,
 	AnimeThemesIcon,
 	DanbooruIcon,
-	GumroadIcon,
 	MalIcon,
+	MangaDexIcon,
 	MangaUpdatesIcon,
 } from '@/components/svgs';
 import { Image } from 'expo-image';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import useAppUpdates from '@/hooks/useAppUpdates';
-import { UpdaterBottomSheet } from '@/components/updates';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { SheetManager } from 'react-native-actions-sheet';
 
 const OtherAppItem = ({
 	title,
@@ -37,13 +36,13 @@ const OtherAppItem = ({
 			style={{ maxWidth: 100, marginHorizontal: 10 }}
 		>
 			<Surface
-				elevation={2}
 				style={{
 					borderRadius: 12,
 					justifyContent: 'center',
 					alignItems: 'center',
 					height: 90,
 					width: 90,
+					overflow: 'hidden',
 				}}
 			>
 				{imgUrl ? (
@@ -66,7 +65,6 @@ const OtherAppItem = ({
 
 const AboutPage = () => {
 	const { showNSFW } = useSettingsStore();
-	const updaterBtmSheetRef = useRef<BottomSheetModal>(null);
 	const { updateDetails, checkForUpdates } = useAppUpdates();
 	const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
 
@@ -74,7 +72,7 @@ const AboutPage = () => {
 		setIsCheckingUpdate(true);
 		const hasUpdate = await checkForUpdates();
 		if (hasUpdate) {
-			updaterBtmSheetRef.current?.present();
+			SheetManager.show('AppUpdaterSheet', { payload: { updateDetails } });
 		}
 		setIsCheckingUpdate(false);
 	};
@@ -98,20 +96,26 @@ const AboutPage = () => {
 					right={(props) => (isCheckingUpdate ? <ActivityIndicator {...props} /> : null)}
 				/>
 			)}
-			<Accordion title="More Apps" titleFontSize={16}>
+			<Accordion title="More Apps" titleStyle={{ fontSize: 16 }}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					<OtherAppItem
 						title={'WaifuTagger'}
 						imgUrl="https://github.com/KuzuLabz/WaifuTagger/blob/master/assets/adaptive-icon.png?raw=true"
 						link="https://github.com/KuzuLabz/WaifuTagger"
 					/>
-					<OtherAppItem title={'AniThemes'} />
-					<OtherAppItem title={'VN Browser'} />
-					<OtherAppItem title={'KuzuChat'} />
-					<OtherAppItem title={'BooruPromptCreator'} status={'Hiatus'} />
+					<OtherAppItem
+						title={'AniThemes Mobile'}
+						imgUrl="https://github.com/SmashinFries/AnimeThemesMobile/blob/master/assets/images/icon.png?raw=true"
+						link="https://github.com/SmashinFries/AnimeThemesMobile"
+					/>
+					<OtherAppItem
+						title={'VN Browser'}
+						imgUrl="https://github.com/SmashinFries/VNBrowser/blob/master/assets/adaptive-icon.png?raw=true"
+						link="https://github.com/SmashinFries/VNBrowser"
+					/>
 				</ScrollView>
 			</Accordion>
-			<Accordion title="Data Sources" titleFontSize={16} initialExpand>
+			<Accordion title="Data Sources" titleStyle={{ fontSize: 16 }} initialExpand>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 					<LinkButton
 						url="https://anilist.co/home"
@@ -121,7 +125,7 @@ const AboutPage = () => {
 					<LinkButton
 						url="https://jikan.moe/"
 						label="Jikan"
-						icon={(props) => (
+						icon={(_props) => (
 							<Image
 								source={require('../../../../assets/jikan.logo.png')}
 								style={{ height: 46, width: 46 }}
@@ -184,6 +188,12 @@ const AboutPage = () => {
 						)}
 						transparentBg
 					/>
+					<LinkButton
+						url={'https://mangadex.org/'}
+						label="MangaDex"
+						icon={() => <MangaDexIcon />}
+						bgColor="#2c2c2c"
+					/>
 				</ScrollView>
 			</Accordion>
 			<View
@@ -233,7 +243,6 @@ const AboutPage = () => {
 					/>
 				</View>
 			</View>
-			<UpdaterBottomSheet ref={updaterBtmSheetRef} updateDetails={updateDetails} />
 		</View>
 	);
 };

@@ -1,10 +1,8 @@
-import { useAppTheme } from '@/store/theme/themes';
 import { router } from 'expo-router';
-import { ScrollView } from 'react-native';
-import { Icon, List, Text } from 'react-native-paper';
+import { ScrollView, View } from 'react-native';
+import { Button, Divider, List, Text } from 'react-native-paper';
 
 const WeebLabPage = () => {
-	const { colors } = useAppTheme();
 	return (
 		<ScrollView>
 			<List.Item
@@ -23,7 +21,8 @@ const WeebLabPage = () => {
 					/>
 				)}
 			/>
-			<List.Item
+			{/* Either remove or explain API Quota */}
+			{/* <List.Item
 				title="WaifuIt"
 				description={'Anime quotes, facts, GIFs, images, and more'}
 				left={(props) => (
@@ -34,15 +33,22 @@ const WeebLabPage = () => {
 				)}
 				right={(props) => <List.Icon {...props} icon={'key-alert'} />}
 				onPress={() => router.navigate('/more/weeblab/waifuit')}
-			/>
+			/> */}
 			<List.Item
 				title="NekosAPI"
 				description={'Anime images'}
 				left={(props) => (
 					<List.Image {...props} source={require('../../../../../assets/nekosapi.png')} />
 				)}
-				onPress={() => router.navigate('/more/weeblab/nekosApi')}
+				onPress={() => router.navigate('/more/weeblab/nekosapi')}
 			/>
+			<Divider />
+			<View style={{ alignItems: 'center' }}>
+				<Text style={{ paddingHorizontal: 20, paddingVertical: 12 }}>
+					Have an API suggestion?
+				</Text>
+				<Button icon={'discord'}>Join our Discord!</Button>
+			</View>
 		</ScrollView>
 	);
 };

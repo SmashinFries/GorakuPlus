@@ -1,8 +1,8 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
 import Constants from 'expo-constants';
+import { create } from 'zustand';
 
 const storage = new MMKV({
 	id: 'auth-storage',
@@ -12,8 +12,8 @@ const AuthStorage = getZustandStorage(storage);
 
 type AuthState = {
 	anilist: {
-		token: string | null;
-		deathDate: string | null;
+		token?: string | null;
+		deathDate?: string | null;
 		username?: string | null;
 		avatar?: string | null;
 		userID?: number | null;
@@ -34,7 +34,7 @@ type AuthAction = {
 
 export const useAuthStore = create<AuthState & AuthAction>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			anilist: {
 				token: null,
 				deathDate: null,

@@ -1,23 +1,18 @@
-import { IconButton, Text, useTheme } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
-import { memo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { MediaCard } from '@/components/cards';
 import { router } from 'expo-router';
 import { ListHeading } from '@/components/text';
-import {
-	AniMediaQuery,
-	AnimeMetaFragment,
-	MangaMetaFragment,
-	MediaFormat,
-} from '@/api/anilist/__genereated__/gql';
+import { AniMediaQuery, MediaFormat } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
+import { SheetManager } from 'react-native-actions-sheet';
 
 type RecProps = {
 	data: AniMediaQuery['Media']['recommendations'];
-	onLongSelect: (media: AnimeMetaFragment | MangaMetaFragment) => void;
 };
-const RecList = ({ data, onLongSelect }: RecProps) => {
+const RecList = ({ data }: RecProps) => {
 	const { colors } = useAppTheme();
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = ({
@@ -29,21 +24,19 @@ const RecList = ({ data, onLongSelect }: RecProps) => {
 		return (
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
 				<MediaCard
-					coverImg={item.node.mediaRecommendation?.coverImage?.extraLarge}
-					titles={item.node.mediaRecommendation?.title}
-					averageScore={item.node.mediaRecommendation?.averageScore}
-					meanScore={item.node.mediaRecommendation?.meanScore}
-					imgBgColor={item.node.mediaRecommendation?.coverImage.color}
-					navigate={() =>
-						router.push(
-							`/${item.node?.mediaRecommendation?.type?.toLowerCase()}/${
-								item.node?.mediaRecommendation?.id
-							}`,
-						)
-					}
-					scoreDistributions={item.node.mediaRecommendation?.stats?.scoreDistribution}
-					isFavorite={item.node.mediaRecommendation?.isFavourite}
-					onLongPress={() => onLongSelect(item.node?.mediaRecommendation)}
+					{...item.node.mediaRecommendation}
+					// navigate={() =>
+					// 	router.push(
+					// 		`/${item.node?.mediaRecommendation?.type?.toLowerCase()}/${
+					// 			item.node?.mediaRecommendation?.id
+					// 		}`,
+					// 	)
+					// }
+					// onLongPress={() =>
+					// 	SheetManager.show('QuickActionSheet', {
+					// 		payload: item.node?.mediaRecommendation,
+					// 	})
+					// }
 				/>
 				<Text
 					variant="labelLarge"
@@ -95,5 +88,4 @@ const RecList = ({ data, onLongSelect }: RecProps) => {
 	);
 };
 
-export const RecListMem = memo(RecList);
 export default RecList;

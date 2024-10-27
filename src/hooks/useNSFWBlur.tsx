@@ -29,7 +29,9 @@ export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
 
 	const toggleBlur = () => setIsBlur((prev) => !prev);
 
-	return { blurAmount, toggleBlur };
+	const resetBlur = () => setIsBlur(blurNSFW);
+
+	return { blurAmount, toggleBlur, resetBlur };
 };
 
 export const useBlur = (blurStrength = 200, initialBlur = true) => {

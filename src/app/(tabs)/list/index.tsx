@@ -1,15 +1,14 @@
 import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { ListHeader } from '@/components/headers';
-import { ListFilterSheet } from '@/components/list/filtersheet';
 import { ListTabs } from '@/components/list/screens';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { TabBarWithChip } from '@/components/tab';
+import { GorakuTabBar } from '@/components/tab';
 import { useList } from '@/hooks/list/useList';
 import { useAuthStore } from '@/store/authStore';
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
+import { SheetManager } from 'react-native-actions-sheet';
 import { Text } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
 
@@ -29,8 +28,6 @@ const ListPage = () => {
 		refreshAnimeList,
 		refreshMangaList,
 	} = useList(userID);
-
-	const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 
 	const [routes, setRoutes] = useState(rootRoutes);
 
@@ -54,7 +51,6 @@ const ListPage = () => {
 						type={MediaType.Anime}
 						data={animeList?.MediaListCollection}
 						routes={animeRoutes}
-						loading={loading}
 						isRefreshing={isRefreshing}
 						onRefresh={refreshAnimeList}
 					/>
@@ -65,7 +61,6 @@ const ListPage = () => {
 						type={MediaType.Manga}
 						data={mangaList?.MediaListCollection}
 						routes={mangaRoutes}
-						loading={loading}
 						isRefreshing={isRefreshing}
 						onRefresh={refreshAnimeList}
 					/>
@@ -84,7 +79,7 @@ const ListPage = () => {
 	return (
 		<>
 			<ListHeader
-				openFilter={() => filterSheetRef.current?.present()}
+				openFilter={() => SheetManager.show('')}
 				onRefresh={index === 0 ? refreshAnimeList : refreshMangaList}
 			/>
 			{!loading && !isRefreshing && routes.length > 0 ? (
@@ -93,8 +88,9 @@ const ListPage = () => {
 					renderScene={renderScene}
 					onIndexChange={setIndex}
 					initialLayout={{ width: layout.width }}
-					renderTabBar={TabBarWithChip}
+					renderTabBar={(props) => <GorakuTabBar {...props} enableChip />}
 					swipeEnabled={false}
+					lazy
 				/>
 			) : (
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

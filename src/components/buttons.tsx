@@ -1,11 +1,11 @@
 import { useAppTheme } from '@/store/theme/themes';
 import { FlashList } from '@shopify/flash-list';
-import { MutableRefObject } from 'react';
+import { MutableRefObject, useEffect } from 'react';
 import { Pressable, Text as RNText, View } from 'react-native';
 import { Button, IconButton, MD3DarkTheme, Text } from 'react-native-paper';
 import Animated, { AnimatedScrollViewProps, FadeIn, FadeOut } from 'react-native-reanimated';
 import { AnilistIcon } from './svgs';
-import { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
+import { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/reanimated2/component/ScrollView';
 
 type FavoriteButtonProps = {
 	isFavorite?: boolean;
@@ -35,33 +35,22 @@ export const FavoriteButton = ({ isFavorite = false, favorites = 200 }: Favorite
 	);
 };
 
-export const ScrollToTopButton = ({
-	listRef,
-	top,
-}: {
-	listRef: MutableRefObject<FlashList<any>> | MutableRefObject<AnimatedScrollView>;
-	top?: number;
-}) => {
+export const ScrollToTopButton = ({ onPress, top }: { onPress: () => void; top?: number }) => {
 	const { colors } = useAppTheme();
+
 	return (
 		<Animated.View
 			entering={FadeIn}
 			exiting={FadeOut}
-			style={{ position: 'absolute', top: top ?? 0, alignSelf: 'center' }}
+			style={{
+				position: 'absolute',
+				top: top ?? 0,
+				alignSelf: 'center',
+			}}
 		>
 			<IconButton
 				icon={'chevron-up'}
-				onPress={() => {
-					(listRef as MutableRefObject<FlashList<any>>).current?.scrollToOffset
-						? (listRef as MutableRefObject<FlashList<any>>).current?.scrollToOffset({
-								offset: 0,
-								animated: true,
-							})
-						: (listRef as MutableRefObject<AnimatedScrollView>).current?.scrollTo({
-								y: 0,
-								animated: true,
-							});
-				}}
+				onPress={onPress}
 				style={{
 					backgroundColor: colors.surfaceVariant,
 				}}

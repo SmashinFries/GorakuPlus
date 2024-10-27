@@ -58,7 +58,6 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 					</Text>
 				);
 			} else if (node.content.match(/<h5.*?>/gm)) {
-				console.log('content:', node.content);
 				return (
 					<View key={node.key} style={{ alignItems: 'center' }}>
 						{children}
@@ -139,7 +138,6 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 			}
 
 			if (alt === 'youtube') {
-				console.log((src as string).split('watch?v=').at(-1));
 				return (
 					<View style={{ width: width, paddingVertical: 8 }}>
 						<YoutubePlayer
@@ -190,9 +188,6 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 			);
 		},
 		text: (node, children, parent, styles, inheritedStyles = {}) => {
-			if (node.content.includes('<center>')) {
-				console.log(node);
-			}
 			return (
 				<Text key={node.key} style={[inheritedStyles, styles.text]}>
 					{node.content}
@@ -242,7 +237,6 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
 				)
 				.replaceAll(/youtube\(.*?\)/g, (t) => {
-					console.log(`![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`);
 					return `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`;
 				})
 				.replaceAll(

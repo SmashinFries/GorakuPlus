@@ -13,9 +13,7 @@ const PanelsDesuLayout = () => {
 				name="index"
 				options={{
 					headerTitle: 'PanelsDesu',
-					header: (props) => (
-						<PaperHeader {...props} mode="center-aligned" elevated back={null} />
-					),
+					header: (props) => <PaperHeader {...props} mode="center-aligned" elevated />,
 				}}
 			/>
 			<Stack.Screen name="[panelId]" />

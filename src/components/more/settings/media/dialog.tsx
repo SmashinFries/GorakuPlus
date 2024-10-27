@@ -13,6 +13,7 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useListFilterStore } from '@/store/listStore';
 import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { DanbooruRating } from '@/api/danbooru/types';
+import { useShallow } from 'zustand/react/shallow';
 
 type DefaultDescDialogProps = BasicDialogProps & {
 	defaultValue: 'ani' | 'mal';
@@ -52,7 +53,13 @@ export const DefaultDescDialog = ({ defaultValue, visible, onDismiss }: DefaultD
 };
 
 export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
-	const { exploreTabs, exploreTabOrder, setSettings } = useSettingsStore();
+	const { exploreTabs, exploreTabOrder, setSettings } = useSettingsStore(
+		useShallow((state) => ({
+			exploreTabs: state.exploreTabs,
+			exploreTabOrder: state.exploreTabOrder,
+			setSettings: state.setSettings,
+		})),
+	);
 
 	const [tabOrder, setTabOrder] = useState<(keyof ExploreTabsProps)[]>(exploreTabOrder);
 	const [validTabs, setValidTabs] = useState<(keyof ExploreTabsProps)[]>(exploreTabs);
@@ -124,16 +131,14 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 		<Dialog visible={visible} onDismiss={onDismiss}>
 			<Dialog.Title>Edit Explore Tabs</Dialog.Title>
 			<Dialog.Content style={{ overflow: 'hidden' }}>
-				<GestureHandlerRootView>
-					<DraggableFlatList
-						data={tabOrder}
-						renderItem={renderItem}
-						keyExtractor={(item, idx) => idx.toString()}
-						onDragEnd={({ data }) => {
-							setTabOrder(data);
-						}}
-					/>
-				</GestureHandlerRootView>
+				<DraggableFlatList
+					data={tabOrder}
+					renderItem={renderItem}
+					keyExtractor={(item, idx) => idx.toString()}
+					onDragEnd={({ data }) => {
+						setTabOrder(data);
+					}}
+				/>
 			</Dialog.Content>
 			<Dialog.Actions>
 				<Button onPress={onDismiss}>Cancel</Button>

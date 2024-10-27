@@ -4,7 +4,7 @@ const convertImages = (text: string) => {
 	const imageRegex = new RegExp('img(.*?)\\((.*?)\\)', 'gi');
 	newText = newText.replaceAll(imageRegex, (match, number: string | number, url) => {
 		const markdown = `![${
-			typeof number === 'string' ? (number.length > 0 ? number : '123') : number ?? '123'
+			typeof number === 'string' ? (number.length > 0 ? number : '123') : (number ?? '123')
 		}](${url})`;
 
 		return markdown;

@@ -1,49 +1,33 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, useTheme } from 'react-native-paper';
-import { useColumns } from '@/utils';
 import { useCallback } from 'react';
-import { StaffItem } from '@/components/staff/card';
 import { useStaffList } from '@/hooks/staff/useStaff';
-import { router, useLocalSearchParams } from 'expo-router';
-import { CharacterItem, CharacterLabel } from '@/components/characters/card';
+import { useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { useAppTheme } from '@/store/theme/themes';
+import { useColumns } from '@/hooks/useColumns';
+import { StaffCard } from '@/components/cards';
 
 const StaffListScreen = () => {
 	const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
-	const { loadMore, staffData } = useStaffList(Number(mediaId));
-	const { columns, listKey } = useColumns(180);
+	const { data, hasNextPage, fetchNextPage, isFetching } = useStaffList(Number(mediaId));
+	const { itemWidth, columns } = useColumns('search');
 	const { height } = useWindowDimensions();
-	const { colors } = useAppTheme();
 
 	const RenderItem = useCallback(
 		(props) => (
 			<View
 				style={{
-					flex: 1,
 					alignItems: 'center',
-					justifyContent: 'flex-start',
-					marginVertical: 10,
-					marginHorizontal: 5,
+					width: itemWidth,
 				}}
 			>
-				<CharacterItem
-					{...props}
-					subTextColor={colors.onSurfaceVariant}
-					onNavigation={(id) => router.push(`/staff/info/${id}`)}
-				/>
-				<CharacterLabel
-					role={props.item.role}
-					favourites={props.item.node?.favourites}
-					fontColor={colors.onSurfaceVariant}
-				/>
+				<StaffCard {...props.item.node} role={props.item.role} />
 			</View>
 		),
-		[],
+		[itemWidth],
 	);
 
-	if (staffData.isLoading) {
+	if (isFetching) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 				<GorakuActivityIndicator />
@@ -54,15 +38,14 @@ const StaffListScreen = () => {
 	return (
 		<View style={{ height: '100%', width: '100%' }}>
 			<FlashList
-				numColumns={3}
-				key={3}
-				data={staffData.data?.Media?.staff?.edges}
+				key={columns}
+				numColumns={columns}
+				data={data}
 				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={RenderItem}
-				contentContainerStyle={{ padding: 10 }}
 				estimatedItemSize={241}
 				drawDistance={height / 2}
-				onEndReached={() => loadMore()}
+				onEndReached={() => hasNextPage && fetchNextPage()}
 			/>
 		</View>
 	);

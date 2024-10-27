@@ -1,16 +1,20 @@
-import { Dialog, Button, Chip, Text, useTheme, IconButton, Searchbar } from 'react-native-paper';
-import { Pressable, View, ScrollView } from 'react-native';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { Dialog, Button, Text, IconButton, Searchbar } from 'react-native-paper';
+import {
+	Pressable,
+	View,
+	NativeSyntheticEvent,
+	TextInputSubmitEditingEventData,
+} from 'react-native';
+import { useState } from 'react';
 import { NativeViewGestureHandler } from 'react-native-gesture-handler';
 import { BasicDialogProps } from '@/types';
 import { NumberPicker } from '../picker';
-import { FlashList } from '@shopify/flash-list';
-import { FilterTag } from './tags';
-import { ScrollToTopButton } from '../buttons';
-import { GenreTagCollectionQuery, MediaTag } from '@/api/anilist/__genereated__/gql';
-import { useAppTheme } from '@/store/theme/themes';
+import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { useSearchStore } from '@/store/search/searchStore';
-import { useSettingsStore } from '@/store/settings/settingsStore';
+import { SheetManager } from 'react-native-actions-sheet';
+import { selectImage } from '@/utils/images';
+import { ImagePickerAsset } from 'expo-image-picker';
+import { useShallow } from 'zustand/react/shallow';
 
 // export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 // 	return (
@@ -45,8 +49,6 @@ export const ScoreDialog = ({
 	onDismiss,
 	initialScore,
 	updateScore,
-	minValue = 0,
-	maxValue = 100,
 }: ScoreDialogProps) => {
 	return (
 		<NativeViewGestureHandler disallowInterruption={true}>
@@ -68,30 +70,98 @@ export const ScoreDialog = ({
 	);
 };
 
-type ImageSearchDialogProps = BasicDialogProps & {
-	searchImage: (imageType: 'camera' | 'upload') => void;
-	searchUrl: (url: string) => void;
-};
-export const ImageSearchDialog = ({
-	visible,
-	onDismiss,
-	searchImage,
-	searchUrl,
-}: ImageSearchDialogProps) => {
+type ImageSearchDialogProps = BasicDialogProps;
+export const ImageSearchDialog = ({ visible, onDismiss }: ImageSearchDialogProps) => {
+	const searchType = useSearchStore(useShallow((state) => state.searchType));
 	const [imageUrl, setImageUrl] = useState('');
+
+	const onUrlSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+		switch (searchType) {
+			case MediaType.Anime:
+				SheetManager.show('TraceMoeSheet', {
+					payload: { url: e.nativeEvent?.text },
+				});
+				break;
+			case MediaType.Manga:
+				SheetManager.show('SauceNaoSheet', {
+					payload: {
+						file: e.nativeEvent.text,
+					},
+				});
+				break;
+			case 'CHARACTER':
+				break;
+			default:
+				break;
+		}
+		onDismiss();
+	};
+
+	const onImageSelect = async (camera?: boolean) => {
+		const asset = (await selectImage(camera, true)) as ImagePickerAsset;
+		switch (searchType) {
+			case MediaType.Anime:
+				SheetManager.show('TraceMoeSheet', {
+					payload: {
+						image: {
+							uri: asset.uri,
+							type: asset.mimeType,
+							name: asset.fileName ?? 'image',
+						},
+					},
+				});
+				break;
+			case MediaType.Manga:
+				SheetManager.show('SauceNaoSheet', {
+					payload: {
+						file: {
+							uri: asset.uri,
+							type: asset.mimeType,
+							name: asset.fileName ?? 'image',
+						},
+					},
+				});
+				break;
+			case 'CHARACTER':
+			// CANT GET GRADIO API TO WORK
+
+			// const response = await fetch(asset.uri);
+			// const imageBlob = await response.blob();
+			// const test = await fetchPredictWaifu({
+			// 	data: [
+			// 		{ path: `data:image/jpeg;base64,${asset.base64}` },
+			// 		'SmilingWolf/wd-swinv2-tagger-v3',
+			// 		1,
+			// 		false,
+			// 		0.85,
+			// 		true,
+			// 	],
+			// });
+			// console.log(test);
+			// SheetManager.show('CharacterSearchSheet', {
+			// 	payload: {
+			// 		image: `data:${asset.mimeType};base64,${asset.base64}`,
+			// 	},
+			// });
+			default:
+				break;
+		}
+		onDismiss();
+	};
+
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>Image Search</Dialog.Title>
+			<Dialog.Title style={{ textTransform: 'capitalize' }}>
+				{searchType} Image Search
+			</Dialog.Title>
 			<Dialog.Content>
 				<View>
 					<Searchbar
 						value={imageUrl}
-						mode="view"
+						mode="bar"
+						elevation={1}
 						onChangeText={(txt) => setImageUrl(txt)}
-						onSubmitEditing={(e) => {
-							searchUrl(e.nativeEvent.text);
-							onDismiss();
-						}}
+						onSubmitEditing={onUrlSubmit}
 					/>
 					<Text style={{ textAlign: 'center', paddingVertical: 12 }}>- Or -</Text>
 					<View
@@ -102,20 +172,14 @@ export const ImageSearchDialog = ({
 						}}
 					>
 						<Pressable
-							onPress={() => {
-								searchImage('camera');
-								onDismiss();
-							}}
+							onPress={() => onImageSelect(true)}
 							style={{ alignItems: 'center', justifyContent: 'center' }}
 						>
 							<IconButton icon="camera" />
 							<Text style={{ textAlign: 'center' }}>Take a photo</Text>
 						</Pressable>
 						<Pressable
-							onPress={() => {
-								searchImage('upload');
-								onDismiss();
-							}}
+							onPress={() => onImageSelect()}
 							style={{ alignItems: 'center', justifyContent: 'center' }}
 						>
 							<IconButton icon="image-outline" />
@@ -141,154 +205,157 @@ export const ImageSearchDialog = ({
 	);
 };
 
-export const FilterTagDialog = ({
-	data,
-	visible,
-	onDismiss,
-	// toggleTag,
-}: BasicDialogProps & {
-	data: GenreTagCollectionQuery['MediaTagCollection'];
-	toggleTag: (name: string) => void;
-}) => {
-	const listRef = useRef<FlashList<any>>(null);
-	const { colors } = useAppTheme();
-	const [query, setQuery] = useState('');
-	const [showAdultTags, setShowAdultTags] = useState(false);
+// export const FilterTagDialog = ({
+// 	data,
+// 	visible,
+// 	onDismiss,
+// 	// toggleTag,
+// }: BasicDialogProps & {
+// 	data: TagCollectionQuery['MediaTagCollection'];
+// 	toggleTag: (name: string) => void;
+// }) => {
+// 	const listRef = useRef<FlashList<any>>(null);
+// 	const { colors } = useAppTheme();
+// 	const [query, setQuery] = useState('');
+// 	const [showAdultTags, setShowAdultTags] = useState(false);
+// 	const { scrollHandler, shouldShowScrollToTop } = useScrollHandler();
 
-	const { filter, isTagBlacklistEnabled, updateTags } = useSearchStore();
-	const { tagBlacklist, showNSFW } = useSettingsStore();
+// 	const { filter, isTagBlacklistEnabled, updateTags } = useSearchStore();
+// 	const { tagBlacklist, showNSFW } = useSettingsStore();
 
-	const [scrollVertOffset, setScrollVertOffset] = useState(0);
+// 	const nsfwTags = useMemo(() => data?.filter((tag) => tag.isAdult), [data]);
+// 	const tagmap = useMemo(() => [...new Set(data?.map((tag) => tag.name[0]))], [data]);
+// 	const tagmapNSFW = useMemo(() => [...new Set(nsfwTags?.map((tag) => tag.name[0]))], [data]);
 
-	const nsfwTags = useMemo(() => data?.filter((tag) => tag.isAdult), [data]);
-	const tagmap = useMemo(() => [...new Set(data?.map((tag) => tag.name[0]))], [data]);
-	const tagmapNSFW = useMemo(() => [...new Set(nsfwTags?.map((tag) => tag.name[0]))], [data]);
+// 	const getTagState = useCallback(
+// 		(name: string) => {
+// 			if (filter.tag_in?.includes(name)) {
+// 				return 'in';
+// 			} else if (filter.tag_not_in?.includes(name)) {
+// 				return 'not_in';
+// 			} else {
+// 				return undefined;
+// 			}
+// 		},
+// 		[filter.tag_in, filter.tag_not_in],
+// 	);
 
-	const getTagState = useCallback(
-		(name: string) => {
-			if (filter.tag_in?.includes(name)) {
-				return 'in';
-			} else if (filter.tag_not_in?.includes(name)) {
-				return 'not_in';
-			} else {
-				return undefined;
-			}
-		},
-		[filter.tag_in, filter.tag_not_in],
-	);
+// 	const TagItem = useCallback(
+// 		({ item }: { item: MediaTag }) => {
+// 			return filter.isAdult === false && item.isAdult ? null : (
+// 				<FilterTag
+// 					name={item.name}
+// 					description={item.description}
+// 					state={getTagState(item.name)}
+// 					onToggle={() => updateTags(item.name)}
+// 					disabled={isTagBlacklistEnabled ? tagBlacklist?.includes(item.name) : false}
+// 					isAdult={item.isAdult}
+// 				/>
+// 			);
+// 		},
+// 		[filter.isAdult, filter.tag_in, filter.tag_not_in, isTagBlacklistEnabled],
+// 	);
 
-	const TagItem = useCallback(
-		({ item }: { item: MediaTag }) => {
-			return filter.isAdult === false && item.isAdult ? null : (
-				<FilterTag
-					name={item.name}
-					description={item.description}
-					state={getTagState(item.name)}
-					onToggle={() => updateTags(item.name)}
-					disabled={isTagBlacklistEnabled ? tagBlacklist?.includes(item.name) : false}
-					isAdult={item.isAdult}
-				/>
-			);
-		},
-		[filter.isAdult, filter.tag_in, filter.tag_not_in, isTagBlacklistEnabled],
-	);
-
-	return (
-		<Dialog style={{ height: '90%' }} visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>Tags</Dialog.Title>
-			<Dialog.Content style={{ paddingBottom: 0 }}>
-				<View>
-					<Searchbar
-						value={query}
-						onChangeText={(txt) => setQuery(txt)}
-						mode="view"
-						placeholder="Search tags"
-					/>
-					<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-						{showNSFW && filter.isAdult && (
-							<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
-								<View style={{ justifyContent: 'center' }}>
-									<IconButton
-										icon={showAdultTags ? 'emoticon-devil' : 'cross'}
-										iconColor={showAdultTags ? '#FF69B4' : undefined}
-										onPress={() => setShowAdultTags((prev) => !prev)}
-									/>
-								</View>
-								<View
-									style={{
-										borderRightWidth: 0.8,
-										borderRightColor: 'black',
-										marginVertical: 20,
-									}}
-								/>
-							</View>
-						)}
-						<ScrollView
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							contentContainerStyle={{ paddingVertical: 10 }}
-						>
-							{showAdultTags
-								? tagmapNSFW.map((letter, idx) => (
-										<Button
-											key={idx}
-											onPress={() =>
-												listRef.current?.scrollToIndex({
-													animated: true,
-													index: nsfwTags?.findIndex((tag) =>
-														tag.name[0].includes(letter),
-													),
-												})
-											}
-											labelStyle={{ fontWeight: '900' }}
-										>
-											{letter}
-										</Button>
-									))
-								: tagmap.map((letter, idx) => (
-										<Button
-											key={idx}
-											onPress={() =>
-												listRef.current?.scrollToIndex({
-													animated: true,
-													index: data?.findIndex((tag) =>
-														tag.name[0].includes(letter),
-													),
-												})
-											}
-											labelStyle={{ fontWeight: '900' }}
-										>
-											{letter}
-										</Button>
-									))}
-						</ScrollView>
-					</View>
-				</View>
-			</Dialog.Content>
-			<Dialog.ScrollArea>
-				<FlashList
-					ref={listRef}
-					key={'test'}
-					data={data
-						?.filter((tag) =>
-							query.length > 0
-								? tag.name.toLowerCase().includes(query.toLowerCase())
-								: true,
-						)
-						.filter((tag) => (showAdultTags ? tag.isAdult : true))}
-					renderItem={TagItem}
-					keyExtractor={(item, idx) => idx.toString()}
-					numColumns={1}
-					estimatedItemSize={44}
-					showsVerticalScrollIndicator={false}
-					onScroll={(e) => setScrollVertOffset(e.nativeEvent.contentOffset.y)}
-					// columnWrapperStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
-				/>
-				{scrollVertOffset > 200 && <ScrollToTopButton listRef={listRef} />}
-			</Dialog.ScrollArea>
-			<Dialog.Actions style={{ flexGrow: 0 }}>
-				<Button onPress={onDismiss}>Done</Button>
-			</Dialog.Actions>
-		</Dialog>
-	);
-};
+// 	return (
+// 		<Dialog style={{ height: '90%' }} visible={visible} onDismiss={onDismiss}>
+// 			<Dialog.Title>Tags</Dialog.Title>
+// 			<Dialog.Content style={{ paddingBottom: 0 }}>
+// 				<View>
+// 					<Searchbar
+// 						value={query}
+// 						onChangeText={(txt) => setQuery(txt)}
+// 						mode="view"
+// 						placeholder="Search tags"
+// 					/>
+// 					<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+// 						{showNSFW && filter.isAdult && (
+// 							<View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+// 								<View style={{ justifyContent: 'center' }}>
+// 									<IconButton
+// 										icon={showAdultTags ? 'emoticon-devil' : 'cross'}
+// 										iconColor={showAdultTags ? '#FF69B4' : undefined}
+// 										onPress={() => setShowAdultTags((prev) => !prev)}
+// 									/>
+// 								</View>
+// 								<View
+// 									style={{
+// 										borderRightWidth: 0.8,
+// 										borderRightColor: 'black',
+// 										marginVertical: 20,
+// 									}}
+// 								/>
+// 							</View>
+// 						)}
+// 						<ScrollView
+// 							horizontal
+// 							showsHorizontalScrollIndicator={false}
+// 							contentContainerStyle={{ paddingVertical: 10 }}
+// 						>
+// 							{showAdultTags
+// 								? tagmapNSFW.map((letter, idx) => (
+// 										<Button
+// 											key={idx}
+// 											onPress={() =>
+// 												listRef.current?.scrollToIndex({
+// 													animated: true,
+// 													index: nsfwTags?.findIndex((tag) =>
+// 														tag.name[0].includes(letter),
+// 													),
+// 												})
+// 											}
+// 											labelStyle={{ fontWeight: '900' }}
+// 										>
+// 											{letter}
+// 										</Button>
+// 									))
+// 								: tagmap.map((letter, idx) => (
+// 										<Button
+// 											key={idx}
+// 											onPress={() =>
+// 												listRef.current?.scrollToIndex({
+// 													animated: true,
+// 													index: data?.findIndex((tag) =>
+// 														tag.name[0].includes(letter),
+// 													),
+// 												})
+// 											}
+// 											labelStyle={{ fontWeight: '900' }}
+// 										>
+// 											{letter}
+// 										</Button>
+// 									))}
+// 						</ScrollView>
+// 					</View>
+// 				</View>
+// 			</Dialog.Content>
+// 			<Dialog.ScrollArea>
+// 				<AnimatedFlashList
+// 					ref={listRef}
+// 					key={'test'}
+// 					data={data
+// 						?.filter((tag) =>
+// 							query.length > 0
+// 								? tag.name.toLowerCase().includes(query.toLowerCase())
+// 								: true,
+// 						)
+// 						.filter((tag) => (showAdultTags ? tag.isAdult : true))}
+// 					renderItem={TagItem}
+// 					keyExtractor={(item, idx) => idx.toString()}
+// 					numColumns={1}
+// 					estimatedItemSize={44}
+// 					showsVerticalScrollIndicator={false}
+// 					onScroll={scrollHandler}
+// 					// columnWrapperStyle={{ flexDirection: 'row', flexWrap: 'wrap' }}
+// 				/>
+// 				{shouldShowScrollToTop && (
+// 					<ScrollToTopButton
+// 						onPress={() => listRef.current?.scrollToIndex({ index: 0, animated: true })}
+// 					/>
+// 				)}
+// 			</Dialog.ScrollArea>
+// 			<Dialog.Actions style={{ flexGrow: 0 }}>
+// 				<Button onPress={onDismiss}>Done</Button>
+// 			</Dialog.Actions>
+// 		</Dialog>
+// 	);
+// };

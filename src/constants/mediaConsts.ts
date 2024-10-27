@@ -1,8 +1,11 @@
 import {
+	CharacterSort,
 	MediaFormat,
+	MediaSearchQueryVariables,
 	MediaSort,
-	SearchAnimeQueryVariables,
-	SearchMangaQueryVariables,
+	StaffSort,
+	StudioSort,
+	UserSort,
 } from '@/api/anilist/__genereated__/gql';
 
 export const ANIME_FORMATS: MediaFormat[] = [
@@ -21,7 +24,7 @@ export const MANGA_FORMATS: MediaFormat[] = [
 ];
 // export const NOVEL_FORMATS: MediaFormat[] = [];
 
-export const ANIME_DANGER: SearchAnimeQueryVariables = {
+export const ANIME_DANGER: MediaSearchQueryVariables = {
 	chapters: undefined,
 	chapters_greater: undefined,
 	chapters_lesser: undefined,
@@ -30,7 +33,7 @@ export const ANIME_DANGER: SearchAnimeQueryVariables = {
 	volumes_lesser: undefined,
 };
 
-export const MANGA_DANGER: SearchMangaQueryVariables = {
+export const MANGA_DANGER: MediaSearchQueryVariables = {
 	episodes: undefined,
 	episodes_greater: undefined,
 	episodes_lesser: undefined,
@@ -74,6 +77,22 @@ export type AvailableSorts =
 	| 'CHAPTERS'
 	| 'VOLUMES';
 
+export type AvailableCharSorts = 'FAVOURITES' | 'RELEVENCE' | 'SEARCH_MATCH' | 'ROLE' | 'ID';
+export type AvailableStaffSorts =
+	| 'FAVOURITES'
+	| 'RELEVENCE'
+	| 'SEARCH_MATCH'
+	| 'ROLE'
+	| 'ID'
+	| 'LANGUAGE';
+export type AvailableStudioSorts = 'FAVOURITES' | 'SEARCH_MATCH' | 'NAME' | 'ID';
+export type AvailableUserSorts =
+	| 'WATCHED_TIME'
+	| 'CHAPTERS_READ'
+	| 'SEARCH_MATCH'
+	| 'USERNAME'
+	| 'ID';
+
 export const AnimeSorts: AvailableSorts[] = [
 	'SEARCH_MATCH',
 	'TRENDING',
@@ -97,6 +116,38 @@ export const MangaSorts: AvailableSorts[] = [
 	'VOLUMES',
 ];
 
+export const CharacterSorts = [
+	CharacterSort.Favourites,
+	CharacterSort.Relevance,
+	CharacterSort.SearchMatch,
+	CharacterSort.Role,
+	CharacterSort.Id,
+];
+
+export const StaffSorts = [
+	StaffSort.Favourites,
+	StaffSort.Relevance,
+	StaffSort.SearchMatch,
+	StaffSort.Role,
+	StaffSort.Language,
+	StaffSort.Id,
+];
+
+export const StudioSorts = [
+	StudioSort.Favourites,
+	StudioSort.SearchMatch,
+	StudioSort.Name,
+	StudioSort.Id,
+];
+
+export const UserSorts = [
+	UserSort.WatchedTime,
+	UserSort.ChaptersRead,
+	UserSort.SearchMatch,
+	UserSort.Username,
+	UserSort.Id,
+];
+
 export const DescSorts = {
 	SEARCH_MATCH: [MediaSort.SearchMatch],
 	TRENDING: [MediaSort.TrendingDesc, MediaSort.PopularityDesc],
@@ -110,6 +161,38 @@ export const DescSorts = {
 	VOLUMES: [MediaSort.VolumesDesc],
 };
 
+export const CharacterDescSorts = {
+	FAVOURITES: [CharacterSort.FavouritesDesc],
+	RELEVENCE: [CharacterSort.Relevance],
+	SEARCH_MATCH: [CharacterSort.SearchMatch],
+	ROLE: [CharacterSort.RoleDesc],
+	ID: [CharacterSort.IdDesc],
+};
+
+export const StaffDescSorts = {
+	FAVOURITES: [CharacterSort.FavouritesDesc],
+	RELEVENCE: [CharacterSort.Relevance],
+	SEARCH_MATCH: [CharacterSort.SearchMatch],
+	ROLE: [CharacterSort.RoleDesc],
+	LANGUAGE: [StaffSort.LanguageDesc],
+	ID: [CharacterSort.IdDesc],
+};
+
+export const StudioDescSorts = {
+	FAVOURITES: [StudioSort.FavouritesDesc],
+	SEARCH_MATCH: [StudioSort.SearchMatch],
+	NAME: [StudioSort.NameDesc],
+	ID: [StudioSort.IdDesc],
+};
+
+export const UserDescSorts = {
+	WATCHED_TIME: [UserSort.WatchedTimeDesc],
+	CHAPTERS_READ: [UserSort.ChaptersReadDesc],
+	SEARCH_MATCH: [UserSort.SearchMatch],
+	USERNAME: [UserSort.UsernameDesc],
+	ID: [UserSort.IdDesc],
+};
+
 export const AscSorts = {
 	SEARCH_MATCH: [MediaSort.SearchMatch],
 	TRENDING: [MediaSort.Trending, MediaSort.Popularity],
@@ -121,6 +204,38 @@ export const AscSorts = {
 	EPISODES: [MediaSort.Episodes],
 	CHAPTERS: [MediaSort.Chapters],
 	VOLUMES: [MediaSort.Volumes],
+};
+
+export const CharacterAscSorts = {
+	FAVOURITES: [CharacterSort.Favourites],
+	RELEVENCE: [CharacterSort.Relevance],
+	SEARCH_MATCH: [CharacterSort.SearchMatch],
+	ROLE: [CharacterSort.Role],
+	ID: [CharacterSort.Id],
+};
+
+export const StaffAscSorts = {
+	FAVOURITES: [CharacterSort.Favourites],
+	RELEVENCE: [CharacterSort.Relevance],
+	SEARCH_MATCH: [CharacterSort.SearchMatch],
+	ROLE: [CharacterSort.Role],
+	LANGUAGE: [StaffSort.Language],
+	ID: [CharacterSort.Id],
+};
+
+export const StudioAscSorts = {
+	FAVOURITES: [StudioSort.Favourites],
+	SEARCH_MATCH: [StudioSort.SearchMatch],
+	NAME: [StudioSort.Name],
+	ID: [StudioSort.Id],
+};
+
+export const UserAscSorts = {
+	WATCHED_TIME: [UserSort.WatchedTime],
+	CHAPTERS_READ: [UserSort.ChaptersRead],
+	SEARCH_MATCH: [UserSort.SearchMatch],
+	USERNAME: [UserSort.Username],
+	ID: [UserSort.Id],
 };
 
 export const AnimeFormats = [

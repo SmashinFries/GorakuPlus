@@ -45,11 +45,11 @@ export const OnListSelector = ({ onList, updateOnList }: DButtonProps) => {
 	}, [listSelect]);
 
 	return (
-		<View style={{ maxWidth: '40%' }}>
+		<View>
 			<Checkbox.Item
 				label={listOptions[listSelect]?.label}
 				status={listOptions[listSelect]?.status}
-				position="leading"
+				position="trailing"
 				onPress={() => setListSelect((listSelect + 1) % 3)}
 			/>
 		</View>

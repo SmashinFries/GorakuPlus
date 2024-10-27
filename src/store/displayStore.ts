@@ -1,8 +1,7 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
-import { MediaListSort, MediaTag } from '@/api/anilist/__genereated__/gql';
+import { create } from 'zustand';
 
 const storage = new MMKV({
 	id: 'display-storage',
@@ -10,15 +9,19 @@ const storage = new MMKV({
 const DisplayStorage = getZustandStorage(storage);
 
 // EXPAND AT SOME POINT!
-type DisplayState = {
+export type DisplayMode = 'COMPACT' | 'LIST';
+export type DisplayState = {
 	calendar: {
 		list_only?: boolean;
+		mode?: DisplayMode;
 		grid_size?: number;
 	};
 	list: {
+		mode?: DisplayMode;
 		grid_size?: number;
 	};
 	search: {
+		mode?: DisplayMode;
 		grid_size?: number;
 	};
 };
@@ -32,19 +35,22 @@ type DisplayActions = {
 const initialState: DisplayState = {
 	calendar: {
 		list_only: false,
-		grid_size: 2,
+		grid_size: 3,
+		mode: 'COMPACT',
 	},
 	list: {
-		grid_size: 2,
+		grid_size: 3,
+		mode: 'COMPACT',
 	},
 	search: {
-		grid_size: 2,
+		grid_size: 3,
+		mode: 'COMPACT',
 	},
 };
 
 export const useDisplayStore = create<DisplayState & DisplayActions>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			...initialState,
 			updateCalendarDisplay(options) {
 				set((state) => ({ calendar: { ...state.calendar, ...options } }));

@@ -1,7 +1,7 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
+import { create } from 'zustand';
 
 const storage = new MMKV({
 	id: 'match-storage',
@@ -18,9 +18,16 @@ type MatchState = {
 	mal: {
 		[aniId: number]: number;
 	};
+	mangadex: {
+		[aniId: number]: {
+			mangaId: string;
+			firstChapterId?: string;
+		};
+	};
 	isMangaUpdatesEnabled: boolean;
 	isMangaDexEnabled: boolean;
 	isMalEnabled: boolean;
+	isBooruEnabled: boolean;
 };
 
 type MatchActions = {
@@ -30,17 +37,21 @@ type MatchActions = {
 	deleteBooruTag: (aniCharId: number) => void;
 	addMalID: (aniId: number, malId: number) => void;
 	deleteMalID: (aniId: number) => void;
-	reset: (type: 'all' | 'booru' | 'mal' | 'mangaUpdates') => void;
-	toggleService: (service: 'mal' | 'mangaUpdates' | 'mangaDex') => void;
+	addMangaDexID: (aniId: number, mangaId: string, firstChapterId?: string) => void;
+	deleteMangaDexID: (aniId: number) => void;
+	reset: (type: 'all' | 'booru' | 'mal' | 'mangaUpdates' | 'mangadex') => void;
+	toggleService: (service: 'mal' | 'mangaUpdates' | 'mangaDex' | 'booru') => void;
 };
 
 const initialData: MatchState = {
 	booru: {},
 	mal: {},
 	mangaUpdates: {},
+	mangadex: {},
 	isMalEnabled: true,
-	isMangaDexEnabled: true,
+	isMangaDexEnabled: false,
 	isMangaUpdatesEnabled: true,
+	isBooruEnabled: true,
 };
 
 /**
@@ -48,7 +59,7 @@ const initialData: MatchState = {
  */
 export const useMatchStore = create<MatchState & MatchActions>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			...initialData,
 			addMangaUpdatesID(aniId, muId) {
 				set((state) => ({ mangaUpdates: { ...state.mangaUpdates, [aniId]: muId } }));
@@ -56,9 +67,6 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 			deleteMangaUpdatesID(aniId) {
 				set((state) => {
 					delete state.mangaUpdates[aniId];
-					console.log(
-						`Deleted ${aniId} muID: ${state.mangaUpdates[aniId] ? 'false' : 'true'}`,
-					);
 					return state;
 				});
 			},
@@ -68,9 +76,6 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 			deleteBooruTag(aniCharId) {
 				set((state) => {
 					delete state.booru[aniCharId];
-					console.log(
-						`Deleted ${aniCharId} boorutag: ${state.booru[aniCharId] ? 'false' : 'true'}`,
-					);
 					return state;
 				});
 			},
@@ -80,9 +85,20 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 			deleteMalID(aniId) {
 				set((state) => {
 					delete state.mal[aniId];
-					console.log(
-						`Deleted ${aniId} mal combo: ${state.mal[aniId] ? 'false' : 'true'}`,
-					);
+					return state;
+				});
+			},
+			addMangaDexID(aniId, mangaId, firstChapterId) {
+				set((state) => ({
+					mangadex: {
+						...state.mangadex,
+						[aniId]: { mangaId, firstChapterId },
+					},
+				}));
+			},
+			deleteMangaDexID(aniId) {
+				set((state) => {
+					delete state.mangadex[aniId];
 					return state;
 				});
 			},
@@ -103,12 +119,21 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 				switch (type) {
 					case 'all':
 						set(initialData);
+						break;
 					case 'booru':
 						set({ booru: {} });
+						break;
 					case 'mal':
 						set({ mal: {} });
+						break;
 					case 'mangaUpdates':
 						set({ mangaUpdates: {} });
+						break;
+					case 'mangadex':
+						set({ mangadex: {} });
+						break;
+					default:
+						break;
 				}
 			},
 		}),

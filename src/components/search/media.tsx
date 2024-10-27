@@ -1,25 +1,36 @@
-import { MediaItem, MediaItemMem, RenderMediaItem } from '../explore/media';
-import { memo, useRef } from 'react';
-import { ResizeMode, Video } from 'expo-av';
-import { Card, Chip, Text, useTheme } from 'react-native-paper';
+import { useRef, useState } from 'react';
+import { AVPlaybackStatus, ResizeMode, Video } from 'expo-av';
+import { Button, Card, Icon, Text } from 'react-native-paper';
 import { Pressable, useWindowDimensions, View } from 'react-native';
 import { router } from 'expo-router';
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import { Anilist, Result } from '@/api/tracemoe/models';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
+import { SheetManager } from 'react-native-actions-sheet';
+import { saveImage } from '@/utils/images';
+import { useShallow } from 'zustand/react/shallow';
 
 type ImageSearchItemProps = {
 	item: Result;
 };
 export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 	const { roundness } = useAppTheme();
-	const { dismissAll } = useBottomSheetModal();
-	const { mediaLanguage, showNSFW } = useSettingsStore();
+	const { mediaLanguage, showNSFW } = useSettingsStore(
+		useShallow((state) => ({
+			mediaLanguage: state.mediaLanguage,
+			showNSFW: state.showNSFW,
+		})),
+	);
 	const { width } = useWindowDimensions();
 	const anilist = item.anilist as Anilist;
 	const similarity = item.similarity * 100;
+	const videoRef = useRef<Video>(null);
+	const [status, setStatus] = useState<AVPlaybackStatus>(null);
+
+	const onView = () => {
+		router.navigate(`/anime/${anilist.id}`);
+		SheetManager.hideAll();
+	};
 
 	if (!showNSFW && anilist.isAdult) return null;
 
@@ -37,13 +48,15 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 			<Card mode="elevated" style={{ width: width - 20 }}>
 				{/* <Card.Cover source={{ uri: item.image }} /> */}
 				<Pressable
-					style={{ height: 195, overflow: 'hidden', borderRadius: roundness * 3 }}
-					onPress={() => {
-						dismissAll();
-						router.push(`/${MediaType.Anime}/${anilist.id}`);
-					}}
+					style={{ height: 180, overflow: 'hidden', borderRadius: roundness * 3 }}
+					onPress={() =>
+						status?.isLoaded && status?.isPlaying
+							? videoRef.current.pauseAsync()
+							: videoRef.current.playAsync()
+					}
 				>
 					<Video
+						ref={videoRef}
 						style={{
 							flex: 1,
 							height: undefined,
@@ -58,20 +71,31 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 						resizeMode={ResizeMode.COVER}
 						isMuted={true}
 						isLooping
-						shouldPlay
+						onPlaybackStatusUpdate={(status) => setStatus(() => status)}
 					/>
 				</Pressable>
-				<Card.Title title={anilist.title[mediaLanguage] ?? anilist.title.romaji} />
+				<Card.Title
+					title={anilist.title[mediaLanguage] ?? anilist.title.romaji}
+					right={(props) =>
+						similarity >= 90 && (
+							<View style={{ paddingRight: 8 }}>
+								<Icon {...props} source={'check-circle-outline'} color="green" />
+							</View>
+						)
+					}
+				/>
 				<Card.Content>
 					<View
-						style={{
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							alignItems: 'center',
-						}}
+						style={
+							{
+								// flexDirection: 'row',
+								// alignItems: 'center',
+							}
+						}
 					>
-						<Text>Episode: {item.episode ?? 'N/A'}</Text>
-						<View style={{ alignItems: 'flex-end' }}>
+						<Text variant="labelSmall">Similarity: ~{similarity.toFixed(2)} %</Text>
+						{item.episode ? <Text variant="labelSmall">EP: {item.episode}</Text> : null}
+						{/* <View style={{ alignItems: 'flex-end' }}>
 							<Chip
 								style={{
 									borderColor:
@@ -85,9 +109,20 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 							>
 								~{similarity.toFixed(2)} %
 							</Chip>
-						</View>
+						</View> */}
 					</View>
 				</Card.Content>
+				<Card.Actions>
+					<Button
+						icon={'download-outline'}
+						onPress={() => saveImage(item.video + '&size=l', null, 'mp4')}
+					>
+						Clip
+					</Button>
+					<Button onPress={onView} disabled={!anilist.id}>
+						View
+					</Button>
+				</Card.Actions>
 			</Card>
 		</View>
 	);

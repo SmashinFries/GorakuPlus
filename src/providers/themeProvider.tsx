@@ -4,12 +4,12 @@ import { ReactNode, useEffect } from 'react';
 import { PaperProvider } from 'react-native-paper';
 import { ThemeProvider } from '@react-navigation/native';
 import { setStatusBarStyle, setStatusBarTranslucent } from 'expo-status-bar';
-import { StatusBar } from 'react-native';
 import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 
 export const PaperThemeProvider = ({ children }: { children: ReactNode }) => {
 	const { isDark, mode, isAMOLED } = useThemeStore();
 	const amoledColors: MD3Colors = {
+		...availableThemes['dark'][mode].colors,
 		background: '#000001',
 		surface: '#000',
 	};

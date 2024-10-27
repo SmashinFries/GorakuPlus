@@ -7,7 +7,6 @@ import useTTS from '@/hooks/useTTS';
 import { useTTSStore } from '@/store/tts/ttsStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
-import { MarkdownViewer } from '@/components/markdown';
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 
 type DescriptionProps = {
@@ -81,9 +80,9 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 			toggleUwuifier={() => setIsUwuified((prev) => !prev)}
 		>
 			<DescView />
-			{enabled && english && defaultDescription === 'mal' && malDescription && (
+			{/* {enabled && english && defaultDescription === 'mal' && malDescription && (
 				<IconButton icon="text-to-speech" style={{ alignSelf: 'flex-end' }} />
-			)}
+			)} */}
 		</ExpandableDescription>
 	);
 };

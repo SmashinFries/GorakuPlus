@@ -5,9 +5,11 @@ import { ListSubheader } from '@/components/titles';
 import { useNotificationStore } from '@/store/notifications/notificationStore';
 import { NotifTypes } from '@/store/notifications/types';
 import { registerBGFetch, unregisterBGFetch } from '@/utils/notifications/backgroundFetch';
+import { ActivityAction, startActivityAsync } from 'expo-intent-launcher';
 import { useCallback, useState } from 'react';
-import { ScrollView } from 'react-native';
+import { Linking, ScrollView } from 'react-native';
 import { Divider, List, Portal, Text } from 'react-native-paper';
+import Constants from 'expo-constants';
 
 type NotifOption = {
 	type: GetNotificationsQuery['Page']['notifications'][0]['__typename'];
@@ -15,10 +17,6 @@ type NotifOption = {
 };
 
 const notifMedia: NotifOption[] = [
-	{
-		type: 'AiringNotification',
-		title: 'Airing',
-	},
 	{
 		type: 'MediaDataChangeNotification',
 		title: 'Media Data Changes',
@@ -40,19 +38,27 @@ const notifMedia: NotifOption[] = [
 const notifActivity: NotifOption[] = [
 	{
 		type: 'ActivityLikeNotification',
-		title: 'Activity Likes',
+		title: 'Likes',
 	},
 	{
 		type: 'ActivityMentionNotification',
-		title: 'Activity Mentions',
+		title: 'Mentions',
 	},
 	{
 		type: 'ActivityMessageNotification',
-		title: 'Activity Messages',
+		title: 'Messages',
 	},
 	{
 		type: 'ActivityReplyNotification',
-		title: 'Activity Replies',
+		title: 'Replies',
+	},
+	{
+		type: 'ActivityReplyLikeNotification',
+		title: 'Reply Likes',
+	},
+	{
+		type: 'ActivityReplySubscribedNotification',
+		title: 'Reply Subscribed',
 	},
 ];
 const notifFollow: NotifOption[] = [
@@ -95,7 +101,6 @@ const NotificationsPage = () => {
 	}, []);
 
 	const updateEnabled = useCallback((type: NotifTypes, add: boolean) => {
-		console.log(add);
 		if (add) {
 			addEnabledNotif(type);
 		} else {
@@ -111,23 +116,11 @@ const NotificationsPage = () => {
 			return (
 				<MaterialSwitchListItem
 					key={idx}
-					fluid
 					title={type.title}
 					selected={enabled?.includes(type.type)}
 					onPress={() => updateEnabled(type.type, !enabled?.includes(type.type))}
 					disabled={!isRegistered}
 				/>
-				// <List.Item
-				// 	key={idx}
-				// 	title={type.title}
-				// 	right={() => (
-				// 		<GorakuSwitch
-				// 			value={enabled?.includes(type.type)}
-				// 			onValueChange={(value) => updateEnabled(type.type, value)}
-				// 			disabled={!isRegistered}
-				// 		/>
-				// 	)}
-				// />
 			);
 		},
 		[enabled, isRegistered],
@@ -137,7 +130,6 @@ const NotificationsPage = () => {
 		<ScrollView>
 			<MaterialSwitchListItem
 				title="Allow Notifications"
-				fluid
 				selected={isRegistered}
 				onPress={toggleNotifications}
 			/>
@@ -153,7 +145,25 @@ const NotificationsPage = () => {
 				onPress={openIntervalDialog}
 				// descriptionStyle={{ textTransform: 'capitalize' }}
 			/>
-			<Divider />
+			<List.Item
+				title={'Open Settings'}
+				right={(props) => <List.Icon icon={'launch'} {...props} />}
+				onPress={
+					async () =>
+						Linking.sendIntent('android.settings.APP_NOTIFICATION_SETTINGS', [
+							{
+								key: 'android.provider.extra.APP_PACKAGE',
+								value: Constants.expoConfig.android?.package,
+							},
+						])
+					// await startActivityAsync(ActivityAction.APP_NOTIFICATION_SETTINGS, {
+					// 	packageName: 'com.kuzutech.goraku',
+					// 	flags: 268435456,
+					// })
+				}
+				// onPress={() => console.log(Constants.expoConfig.android?.package)}
+			/>
+			{/* <Divider />
 			<List.Section>
 				<ListSubheader title={'Follows'} />
 				{notifFollow.map(NotifSwitch)}
@@ -161,7 +171,7 @@ const NotificationsPage = () => {
 				{notifMedia.map(NotifSwitch)}
 				<ListSubheader title={'Activity'} />
 				{notifActivity.map(NotifSwitch)}
-			</List.Section>
+			</List.Section> */}
 			<Portal>
 				<FetchIntervalDialog
 					visible={intervalVis}

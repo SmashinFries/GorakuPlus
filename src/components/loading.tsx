@@ -33,7 +33,7 @@ export const GorakuActivityIndicator = ({ size }: GorakuActivityIndicatorProps) 
 	}, []);
 
 	return (
-		<Animated.View style={[animatedStyle]}>
+		<Animated.View style={[animatedStyle, { paddingVertical: 12 }]}>
 			<Image
 				source={require('../../assets/iconsv3/loadIcon.png')}
 				style={[{ width: SIZES[size ?? 'large'], height: SIZES[size ?? 'large'] }]}

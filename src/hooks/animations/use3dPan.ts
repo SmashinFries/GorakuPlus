@@ -36,7 +36,7 @@ const use3dPan = (config = animConfig) => {
 			);
 			xRotation.value = clamp(e.translationY * -1, config.xLimit[0], config.xLimit[1]);
 		})
-		.onEnd((e) => {
+		.onEnd(() => {
 			yRotation.value = withTiming(0, { duration: 1000 });
 			xRotation.value = withTiming(0, { duration: 1000 });
 		});

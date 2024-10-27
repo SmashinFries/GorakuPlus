@@ -8,40 +8,28 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { CharacterListQuery, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
+import { CharacterCard } from '@/components/cards';
+import { useColumns } from '@/hooks/useColumns';
 
 const CharacterListPage = () => {
 	const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
 	const id = parseInt(mediaId);
 	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } = useCharactersList(id);
-	const { colors } = useAppTheme();
 	const { height } = useWindowDimensions();
-
-	// const { columns, listKey } = useColumns(180);
+	const { columns, itemWidth } = useColumns('search');
 
 	const RenderItem = useCallback(
 		(props: { item: CharacterListQuery['Media']['characters']['edges'][0]; index: number }) => (
 			<View
 				style={{
-					flex: 1,
 					alignItems: 'center',
-					justifyContent: 'flex-start',
-					marginVertical: 10,
-					marginHorizontal: 5,
+					width: itemWidth,
 				}}
 			>
-				<CharacterItem
-					{...props}
-					subTextColor={colors.onSurfaceVariant}
-					onNavigation={(id) => router.push(`/character/${id}`)}
-				/>
-				<CharacterLabel
-					role={props.item.role}
-					favourites={props.item.node?.favourites}
-					fontColor={colors.onSurfaceVariant}
-				/>
+				<CharacterCard {...props.item.node} role={props.item.role} />
 			</View>
 		),
-		[],
+		[itemWidth],
 	);
 
 	if (isLoading) {
@@ -63,12 +51,11 @@ const CharacterListPage = () => {
 		<View style={{ height: '100%', width: '100%' }}>
 			{/* <Button onPress={() => data?.Media?.characters?.edges.length}>Print Length</Button> */}
 			<FlashList
-				numColumns={3}
-				key={3}
+				numColumns={columns}
+				key={columns}
 				data={data}
 				keyExtractor={(item) => item?.node?.id.toString()}
 				renderItem={RenderItem}
-				contentContainerStyle={{ padding: 10 }}
 				ListFooterComponent={() =>
 					isFetching && (
 						<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

@@ -1,13 +1,8 @@
 import { DanbooruRating } from '@/api/danbooru/types';
 import { View } from 'react-native';
 import { Chip, MD3LightTheme } from 'react-native-paper';
+type RatingLevels = Record<DanbooruRating, { text: string; color: string } | null>;
 
-type RatingLevels = {
-	[key in DanbooruRating]: {
-		text: string;
-		color: string;
-	} | null;
-};
 const ratingLevels: RatingLevels = {
 	[DanbooruRating.General]: null,
 	[DanbooruRating.Sensitive]: {
@@ -37,6 +32,7 @@ export const NSFWLabel = ({ level }: NSFWLabelProps) => {
 					borderTopLeftRadius: 12,
 					borderBottomRightRadius: 12,
 				}}
+				compact
 				textStyle={{ fontWeight: '900', color: MD3LightTheme.colors.onBackground }}
 			>
 				{ratingLevels[level]?.text}

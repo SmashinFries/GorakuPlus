@@ -1,10 +1,10 @@
 import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { StyleProp, TextStyle } from 'react-native';
-import { IconButton, Text, useTheme } from 'react-native-paper';
+import { Icon, IconButton, Text, useTheme } from 'react-native-paper';
 import RenderHTML, {
 	CustomTagRendererRecord,
 	CustomTextualRenderer,
@@ -29,12 +29,13 @@ export const ListHeading = ({
 	icon,
 	onIconPress,
 }: ListHeadingProps) => {
+	const { colors } = useAppTheme();
 	return (
 		<View
 			style={[
 				{
-					padding: 15,
-					paddingBottom: 8,
+					paddingRight: 24,
+					paddingVertical: 8,
 					flexDirection: 'row',
 					alignItems: 'center',
 					justifyContent: 'space-between',
@@ -43,29 +44,27 @@ export const ListHeading = ({
 				style,
 			]}
 		>
-			<View>
-				<Text variant="titleLarge">{title}</Text>
-				{subtitle ? (
-					<Text
-						variant="labelLarge"
-						onPress={subtitlePress}
-						style={subtitleStyle ?? undefined}
-					>
-						{subtitle}
-					</Text>
-				) : null}
-			</View>
-			{icon && (
-				<View
-					style={{
-						alignSelf: 'flex-end',
-						alignItems: 'flex-end',
-						justifyContent: 'flex-end',
-					}}
-				>
-					<IconButton icon={icon} onPress={onIconPress} />
+			<View
+				style={{
+					flex: 1,
+					alignItems: 'center',
+					marginVertical: 6,
+					justifyContent: 'center',
+					flexDirection: 'row',
+				}}
+			>
+				<View style={[{ flex: 1, paddingLeft: 16, justifyContent: 'center' }]}>
+					<Text variant="titleMedium">{title}</Text>
+					{subtitle ? (
+						<Text onPress={subtitlePress} style={subtitleStyle ?? undefined}>
+							{subtitle}
+						</Text>
+					) : null}
 				</View>
-			)}
+			</View>
+			<Pressable onPress={onIconPress} style={{ marginVertical: 6 }}>
+				{icon && <Icon size={24} color={colors.onSurfaceVariant} source={icon} />}
+			</Pressable>
 		</View>
 	);
 };
@@ -97,7 +96,9 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
 				) {
 					const type = url.split('/')[3];
 					const id = url.split('/')[4];
-					router.push(`/${type}/${id}`);
+					type === 'anime' ||
+						(type === 'manga' &&
+							router.push(`/${type?.toLowerCase()}/${parseInt(id)}`));
 				} else {
 					openWebBrowser(url);
 				}

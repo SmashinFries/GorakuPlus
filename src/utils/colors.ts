@@ -81,6 +81,16 @@ export const rgbToRgba = (rgb: string, alpha: number) => {
 	}
 };
 
+export const rgbToHex = (rgb: number[]) => {
+	let hexColor = '#';
+	rgb.forEach((value) => {
+		let hex = value.toString(16);
+		hexColor += hex.length === 1 ? '0' + hex : hex;
+	});
+
+	return hexColor;
+};
+
 export const getPieChartColor = (index: number, primaryColor: string) => {
 	switch (index) {
 		case 0:

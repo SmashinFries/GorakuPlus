@@ -6,5 +6,4 @@ export type TTSVoice = {
 	pitch?: number;
 };
 
-type TTSVoiceKeys = keyof TTSVoice;
 export type TTSLanguages = 'english' | 'japanese' | 'korean' | 'chinese';

@@ -1,51 +1,63 @@
-import { FlashList, MasonryFlashList, MasonryFlashListRef } from '@shopify/flash-list';
-import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { MasonryFlashList, MasonryFlashListRef, MasonryListRenderItem } from '@shopify/flash-list';
+import { useRef } from 'react';
+import { View } from 'react-native';
 import { DanbooruImageCard } from '../../components/cards';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ScrollToTopButton } from '@/components/buttons';
 import { DanPost } from '@/api/danbooru/types';
 import { usePostsSearch } from '@/api/danbooru/danbooru';
+import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
+import Animated from 'react-native-reanimated';
+
+const AnimatedMasonryFlashlist = Animated.createAnimatedComponent(MasonryFlashList);
 
 const ArtListPage = () => {
 	const { tag } = useLocalSearchParams<{ tag: string }>();
-	const { width, height } = useWindowDimensions();
-	const { data, hasNextPage, fetchNextPage } = usePostsSearch({ page: 1, limit: 30, tags: tag });
-	const [page, setPage] = useState<number>(1);
-	const [scrollOffset, setScrollOffset] = useState<number>(0);
+	const { data, hasNextPage, fetchNextPage } = usePostsSearch({
+		page: 1,
+		limit: 30,
+		tags: tag + ' solo',
+	});
+	const { scrollHandler, shouldShowScrollToTop } = useScrollHandler();
 
 	const listRef = useRef<MasonryFlashListRef<DanPost>>(null);
 
-	const RenderItem = useCallback(({ item }: { item: DanPost }) => {
+	const RenderItem: MasonryListRenderItem<DanPost> = ({ item }) => {
 		return (
 			<View style={{ flex: 1, margin: 5 }}>
-				<DanbooruImageCard item={item} onNavigate={(id) => router.push(`art/post/${id}`)} />
+				<DanbooruImageCard
+					item={item}
+					onNavigate={(id) => router.push(`/art/post/${id}`)}
+				/>
 			</View>
 		);
-	}, []);
+	};
 
-	const flattenedData = data.pages.flat();
+	const flattenedData = data.pages.flatMap((page) => page);
 
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			{flattenedData.length > 0 ? (
-				<MasonryFlashList
+				<AnimatedMasonryFlashlist
 					ref={listRef}
 					data={flattenedData}
 					numColumns={2}
 					renderItem={RenderItem}
 					estimatedItemSize={200}
 					onEndReachedThreshold={0.7}
-					onEndReached={() => hasNextPage && setPage((prev) => prev + 1)}
-					onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
+					onEndReached={() => hasNextPage && fetchNextPage()}
+					onScroll={scrollHandler}
 				/>
 			) : (
 				<GorakuActivityIndicator />
 			)}
-			{scrollOffset > 500 && (
+			{shouldShowScrollToTop && (
 				// masonryflashlist has some function as Flashlist
-				<ScrollToTopButton listRef={listRef as MutableRefObject<FlashList<any>>} />
+				<ScrollToTopButton
+					onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
+					top={20}
+				/>
 			)}
 			<Stack.Screen options={{ title: tag as string }} />
 		</View>

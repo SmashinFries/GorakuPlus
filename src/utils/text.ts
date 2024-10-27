@@ -12,7 +12,7 @@ export const getCompactNumberForm = (number: number) =>
 
 export const copyToClipboard = async (txt: string) => {
 	await Clipboard.setStringAsync(txt);
-	await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+	await Haptics.selectionAsync();
 };
 
 export const countryFlags = {

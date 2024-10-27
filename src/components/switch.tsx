@@ -2,7 +2,7 @@ import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { useEffect, useState } from 'react';
 import { ColorValue, Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { List, Switch, Icon, useTheme, SwitchProps as PaperSwitchProps } from 'react-native-paper';
+import { List, Switch, Icon, SwitchProps as PaperSwitchProps } from 'react-native-paper';
 import Animated, {
 	Easing,
 	Extrapolate,
@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { TextStyle } from 'react-native';
 import { useAppTheme } from '@/store/theme/themes';
+import * as Haptics from 'expo-haptics';
 
 export const GorakuSwitch = (props: PaperSwitchProps) => {
 	const { colors, dark } = useAppTheme();
@@ -31,6 +32,7 @@ export const GorakuSwitch = (props: PaperSwitchProps) => {
 
 // THIS IS NOT MY CODE
 // IM BORROWING THIS FROM @crystalarcus
+// It is only slightly modified
 // Here is the discussion about it - https://github.com/callstack/react-native-paper/issues/3797
 type SwitchProps = {
 	selected: boolean;
@@ -248,7 +250,7 @@ export const MaterialSwitch = ({
 		}
 	};
 	const onSwitchPress = () => {
-		onPress != null ? onPress() : null;
+		onPress && onPress();
 	};
 	useEffect(() => {
 		if (active !== selected) {
@@ -273,11 +275,12 @@ export const MaterialSwitch = ({
 								width: 52,
 								alignItems: 'center',
 							}}
-							onLongPress={(event) => {
+							onLongPress={() => {
 								handleHeight.value = withTiming(28, { duration: 100 });
 								handleWidth.value = withTiming(28, { duration: 100 });
 							}}
 							onPress={() => {
+								Haptics.selectionAsync();
 								setIsPressed(true);
 								changeSwitch(true);
 							}}
@@ -567,7 +570,7 @@ export const MaterialSwitchListItem = ({
 		}
 	};
 	const onSwitchPress = () => {
-		onPress != null ? onPress() : null;
+		onPress && onPress();
 	};
 	useEffect(() => {
 		if (active !== selected) {
@@ -594,7 +597,11 @@ export const MaterialSwitchListItem = ({
 			descriptionStyle={{ paddingRight: 10 }}
 			style={listStyle}
 			onPress={() => {
-				fluid ? onTap() : changeSwitch(true);
+				if (fluid) {
+					onTap();
+				} else {
+					changeSwitch(true);
+				}
 			}}
 			right={() => (
 				<View style={{ justifyContent: 'center' }}>
@@ -614,12 +621,13 @@ export const MaterialSwitchListItem = ({
 										zIndex: 99,
 									}}
 									delayLongPress={100}
-									onLongPress={(event) => {
+									onLongPress={() => {
 										handleHeight.value = withTiming(28, { duration: 50 });
 										handleWidth.value = withTiming(28, { duration: 50 });
 									}}
 									// onPressIn={() => setIsPressed(true)}
 									onPress={() => {
+										Haptics.impactAsync();
 										setIsPressed(true);
 										changeSwitch(true);
 									}}

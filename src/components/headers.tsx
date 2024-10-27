@@ -6,10 +6,9 @@ import {
 	Icon,
 	IconButton,
 	Menu,
-	Portal,
 	Searchbar,
 	Text,
-	useTheme,
+	TextInput as TextInputPaper,
 } from 'react-native-paper';
 import { getHeaderTitle } from '@react-navigation/elements';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -19,8 +18,8 @@ import {
 	RefreshControlProps,
 	Share,
 	StyleSheet,
-	TextInput,
 	View,
+	TextInput,
 	useWindowDimensions,
 } from 'react-native';
 import { Image, ImageProps } from 'expo-image';
@@ -28,13 +27,8 @@ import Animated, {
 	Easing,
 	FadeIn,
 	FadeOut,
-	SlideInDown,
-	SlideInLeft,
-	SlideInRight,
 	SlideInUp,
 	SlideOutDown,
-	SlideOutLeft,
-	SlideOutRight,
 	useAnimatedStyle,
 	useSharedValue,
 	withRepeat,
@@ -43,20 +37,19 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
-import { BarcodeScanDialog } from './dialogs';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { getStreamingSiteEmoji } from '@/utils/emoji';
-import { useThemeStore } from '@/store/theme/themeStore';
 import { AniMediaQuery, MediaType, useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useFavoritesFilterStore } from '@/store/favoritesStore';
-import { SearchType } from '@/store/search/searchStore';
-import { AniCardPageParams } from '@/types/anicard';
+import { useSearchStore } from '@/store/search/searchStore';
+import { SheetManager } from 'react-native-actions-sheet';
+import { useShallow } from 'zustand/react/shallow';
 
 const PaperHeader = ({
 	navigation,
@@ -72,6 +65,7 @@ const PaperHeader = ({
 	dark?: boolean;
 	elevated?: boolean;
 	actions?: { icon: string; onPress: () => void }[];
+	showBack?: boolean;
 }) => {
 	const title = getHeaderTitle(options, route.name);
 	return (
@@ -87,10 +81,13 @@ const PaperHeader = ({
 	);
 };
 
-export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderProps) => {
+export const ExploreHeader = ({
+	navigation,
+	options,
+	route,
+	showScanner,
+}: NativeStackHeaderProps & { showScanner: () => void }) => {
 	const title = getHeaderTitle(options, route.name);
-
-	const [showBCDialog, setShowBCDialog] = useState(false);
 
 	return (
 		<Appbar.Header mode="small">
@@ -126,27 +123,21 @@ export const ExploreHeader = ({ navigation, options, route }: NativeStackHeaderP
 				</MotiView>
 			)} */}
 			<Appbar.Content title={title} />
-			<Appbar.Action icon="barcode-scan" onPress={() => setShowBCDialog(true)} />
+			<Appbar.Action icon="barcode-scan" onPress={showScanner} />
 			<Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
-			<Portal>
+			{/* <Portal>
 				<BarcodeScanDialog
 					visible={showBCDialog}
 					onDismiss={() => setShowBCDialog(false)}
-					onNav={(aniId: number, malId: number, type: MediaType) =>
-						router.push(`/${type}/${aniId}`)
-					}
 				/>
-			</Portal>
+			</Portal> */}
 		</Appbar.Header>
 	);
 };
 
 type SearchHeaderProps = NativeStackHeaderProps & {
 	openFilter: () => void;
-	currentType: SearchType;
 	searchbarRef: React.RefObject<TextInput>;
-	searchTerm: string;
-	setSearchTerm: (value: string) => void;
 	toggleIsFocused: (value: boolean) => void;
 	openImageSearch: () => void;
 	openWaifuSearch: () => void;
@@ -155,9 +146,6 @@ type SearchHeaderProps = NativeStackHeaderProps & {
 export const SearchHeader = ({
 	navigation,
 	openFilter,
-	currentType,
-	searchTerm,
-	setSearchTerm,
 	searchbarRef,
 	toggleIsFocused,
 	openImageSearch,
@@ -166,11 +154,24 @@ export const SearchHeader = ({
 }: SearchHeaderProps) => {
 	const { colors } = useAppTheme();
 	const { right, left } = useSafeAreaInsets();
-	const [query, setQuery] = useState(searchTerm);
+	const { query, searchType, updateQuery } = useSearchStore(
+		useShallow((state) => ({
+			searchType: state.searchType,
+			query: state.query,
+			updateQuery: state.updateQuery,
+		})),
+	);
+	// const { addSearchTerm } = useSearchHistoryStore();
+
+	const [tempQuery, setTempQuery] = useState(query);
 
 	// temp solution to input lag
 	useEffect(() => {
-		setSearchTerm(query);
+		updateQuery(tempQuery);
+	}, [tempQuery]);
+
+	useEffect(() => {
+		setTempQuery(query);
 	}, [query]);
 
 	useEffect(() => {
@@ -201,14 +202,15 @@ export const SearchHeader = ({
 			>
 				<Searchbar
 					ref={searchbarRef}
-					value={query}
+					value={tempQuery}
 					// onChangeText={setSearchTerm}
-					onChangeText={(txt) => setQuery(txt)}
+					onChangeText={(txt) => setTempQuery(txt)}
 					// onSubmitEditing={searchContent}
+					scrollEnabled
 					returnKeyType="search"
 					autoFocus
 					onFocus={() => {
-						searchbarRef?.current?.focus();
+						// searchbarRef?.current?.focus();
 						toggleIsFocused(true);
 						onFocus();
 					}}
@@ -220,22 +222,20 @@ export const SearchHeader = ({
 					onIconPress={() => navigation.goBack()}
 					selectionColor={colors.primaryContainer}
 					icon={'arrow-left'}
-					// traileringIcon={
-					// 	currentType === MediaType.Anime || currentType === 'imageSearch'
-					// 		? 'image-search-outline'
-					// 		: currentType === 'characters' || currentType === 'waifuSearch'
-					// 			? 'account-search-outline'
-					// 			: undefined
-					// }
-					// onTraileringIconPress={
-					// 	currentType === 'characters' || currentType === 'waifuSearch'
-					// 		? openWaifuSearch
-					// 		: openImageSearch
-					// }
+					traileringIcon={
+						searchType === MediaType.Anime || searchType === MediaType.Manga
+							? 'image-search-outline'
+							: undefined
+					}
+					onTraileringIconPress={
+						searchType === MediaType.Anime || searchType === MediaType.Manga
+							? openImageSearch
+							: undefined
+					}
 					style={{ flex: 1, backgroundColor: 'transparent' }}
 					inputStyle={{ justifyContent: 'center', textAlignVertical: 'center' }}
 					onClearIconPress={() => {
-						setSearchTerm('');
+						setTempQuery('');
 					}}
 				/>
 				{/* <IconButton
@@ -246,13 +246,29 @@ export const SearchHeader = ({
                         ![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
                     }
                 /> */}
+				{(searchType === MediaType.Anime || searchType === MediaType.Manga) && (
+					<IconButton
+						icon={'view-module'}
+						onPress={() =>
+							SheetManager.show('DisplayConfigSheet', {
+								payload: {
+									type: 'search',
+								},
+							})
+						}
+						// onPress={() => setIsFilterOpen((prev) => !prev)}
+						// disabled={
+						// 	![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
+						// }
+					/>
+				)}
 				<IconButton
 					icon={'filter-outline'}
 					onPress={openFilter}
 					// onPress={() => setIsFilterOpen((prev) => !prev)}
-					disabled={
-						![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
-					}
+					// disabled={
+					// 	![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
+					// }
 				/>
 			</Animated.View>
 		</Appbar.Header>
@@ -261,7 +277,7 @@ export const SearchHeader = ({
 
 const AnimatedImage = Animated.createAnimatedComponent<ImageProps>(Image);
 
-export const MoreHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+export const MoreHeader = (_props: NativeStackHeaderProps) => {
 	const { width } = useWindowDimensions();
 	const { top } = useSafeAreaInsets();
 	return (
@@ -469,7 +485,6 @@ export const MediaHeader = ({
 							<Menu.Item
 								leadingIcon={'card-text-outline'}
 								onPress={() => {
-									console.log('Routing!');
 									closeMoreMenu();
 									onAniCard();
 								}}
@@ -739,7 +754,7 @@ export const FadeHeaderProvider = ({
 	);
 };
 
-export const CharStaffHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+export const CharStaffHeader = ({ navigation, back }: NativeStackHeaderProps) => {
 	return (
 		<Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
@@ -867,15 +882,22 @@ export const ListHeader = ({
 				</Animated.View>
 			)}
 			{/* <Appbar.Action icon="refresh" onPress={onRefresh} /> */}
+			<Appbar.Action
+				icon={'view-module'}
+				onPress={() =>
+					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
+				}
+			/>
 			<Appbar.Action icon="filter-variant" onPress={openFilter} />
 			{/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
 		</Appbar.Header>
 	);
 };
 
-export const FavoritesHeader = ({ navigation, options, route, back }: NativeStackHeaderProps) => {
+export const FavoritesHeader = ({ navigation, options, route }: NativeStackHeaderProps) => {
 	const { query, updateFilter } = useFavoritesFilterStore();
 	const [isOpen, setIsOpen] = useState(false);
+	const title = getHeaderTitle(options, route.name);
 
 	useEffect(() => {
 		const backAction = () => {
@@ -899,8 +921,6 @@ export const FavoritesHeader = ({ navigation, options, route, back }: NativeStac
 			<Appbar.BackAction onPress={isOpen ? () => setIsOpen(false) : navigation.goBack} />
 			{isOpen ? (
 				<Animated.View
-					entering={SlideInRight}
-					exiting={SlideOutRight}
 					style={{
 						flexDirection: 'row',
 						alignItems: 'center',
@@ -909,19 +929,28 @@ export const FavoritesHeader = ({ navigation, options, route, back }: NativeStac
 					}}
 				>
 					{/* <Appbar.BackAction onPress={() => setIsOpen(false)} /> */}
-					<Searchbar
+					<TextInputPaper
+						autoFocus
 						value={query}
 						onChangeText={(txt) => {
 							updateFilter({ query: txt });
 						}}
+						style={{ width: '100%', backgroundColor: 'transparent' }}
 						placeholder={'Search favorites...'}
-						mode="bar"
+						underlineColor="transparent"
+						// mode="flat"
 					/>
 				</Animated.View>
 			) : (
-				<Appbar.Content title={'Favorites'} />
+				<Appbar.Content title={title} />
 			)}
 			{!isOpen && <Appbar.Action icon="magnify" onPress={() => setIsOpen(true)} />}
+			<Appbar.Action
+				icon={'view-module'}
+				onPress={() =>
+					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
+				}
+			/>
 		</Appbar.Header>
 	);
 };
@@ -961,6 +990,12 @@ export const StudioHeader = ({
                 onPress={onFavToggle}
             /> */}
 			<Appbar.Action
+				icon={'view-module'}
+				onPress={() =>
+					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
+				}
+			/>
+			<Appbar.Action
 				icon={'share-variant-outline'}
 				onPress={() =>
 					Share.share({
@@ -988,6 +1023,90 @@ export const AniCardHeader = ({
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
 			<Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
 			<Appbar.Action icon={'download-outline'} onPress={onSave} />
+		</Appbar.Header>
+	);
+};
+
+export const NekosAPIHeader = ({
+	navigation,
+	options,
+	route,
+	back,
+	ratings,
+	onRatingSelect,
+}: NativeStackHeaderProps & {
+	ratings: string[];
+	onRatingSelect: (newRatings: string[]) => void;
+}) => {
+	const title = getHeaderTitle(options, route.name);
+
+	return (
+		<Appbar.Header mode="center-aligned" elevated>
+			{back && <Appbar.BackAction onPress={navigation.goBack} />}
+			<Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
+			<Appbar.Action
+				icon={'filter-outline'}
+				onPress={() =>
+					SheetManager.show('NekosApiSheet', {
+						payload: { ratings: ratings, onRatingSelect },
+					})
+				}
+			/>
+			<Appbar.Action
+				icon={'information-outline'}
+				onPress={() => openWebBrowser('https://nekosapi.com/')}
+			/>
+		</Appbar.Header>
+	);
+};
+
+export const WaifuItHeader = ({
+	navigation,
+	options,
+	route,
+	back,
+	onAuthOpen,
+}: NativeStackHeaderProps & { onAuthOpen: () => void }) => {
+	const title = getHeaderTitle(options, route.name);
+
+	return (
+		<Appbar.Header mode="center-aligned" elevated>
+			{back && <Appbar.BackAction onPress={navigation.goBack} />}
+			<Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
+			<Appbar.Action icon="key" onPress={onAuthOpen} />
+			<Appbar.Action
+				icon={'information-outline'}
+				onPress={() => openWebBrowser('https://waifu.it/')}
+			/>
+		</Appbar.Header>
+	);
+};
+
+export const AccountsHeader = ({
+	navigation,
+	options,
+	route,
+	back,
+	mode,
+	dark,
+	elevated,
+	actions,
+}: NativeStackHeaderProps & {
+	mode?: AppbarProps['mode'];
+	dark?: boolean;
+	elevated?: boolean;
+	actions?: { icon: string; onPress: () => void }[];
+	showBack?: boolean;
+}) => {
+	const title = getHeaderTitle(options, route.name);
+	return (
+		<Appbar.Header mode={mode} dark={dark} elevated={elevated}>
+			<Appbar.BackAction onPress={() => router.navigate('/(tabs)/more')} />
+			<Appbar.Content
+				title={title}
+				titleStyle={{ textTransform: 'capitalize' }}
+				// mode={mode}
+			/>
 		</Appbar.Header>
 	);
 };

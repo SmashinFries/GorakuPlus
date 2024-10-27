@@ -1,8 +1,8 @@
 import { MMKV } from 'react-native-mmkv';
-import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from '../helpers/mmkv-storage';
 import { NotifTypes } from './types';
+import { create } from 'zustand';
 
 const storage = new MMKV({ id: 'notification-storage' });
 const NotificationStorage = getZustandStorage(storage);
@@ -36,7 +36,7 @@ const initialEnabled: NotifTypes[] = [
 
 export const useNotificationStore = create<NotificationState & NotificationAction>()(
 	persist(
-		(set, get) => ({
+		(set, _get) => ({
 			isRegistered: false,
 			enabled: initialEnabled,
 			fetchInterval: 6,

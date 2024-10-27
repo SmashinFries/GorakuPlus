@@ -1,4 +1,4 @@
-import { Query, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import {
 	PersistQueryClientOptions,
 	PersistQueryClientProvider,
@@ -7,18 +7,24 @@ import { ReactNode, useEffect } from 'react';
 import notifee, { EventType } from '@notifee/react-native';
 import * as Linking from 'expo-linking';
 import { clientPersister } from '@/store/persister';
+import { useCollectionUpdater } from '@/hooks/useCollections';
 
 const queryClient = new QueryClient();
 
 const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
 	persister: clientPersister,
 	dehydrateOptions: {
-		// type options aint showing :/
-		shouldDehydrateQuery: (query: Query) => query.meta?.persist as boolean,
+		shouldDehydrateQuery: (query) => query.meta?.persist as boolean,
 	},
 };
 
 export const RootProvider = ({ children }: { children: ReactNode }) => {
+	const { fetchAllCollections } = useCollectionUpdater(queryClient);
+
+	useEffect(() => {
+		fetchAllCollections();
+	}, []);
+
 	useEffect(() => {
 		return notifee.onForegroundEvent(({ type, detail }) => {
 			switch (type) {

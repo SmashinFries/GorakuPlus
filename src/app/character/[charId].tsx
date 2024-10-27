@@ -22,10 +22,12 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAuthStore } from '@/store/authStore';
 import { DanPost } from '@/api/danbooru/types';
 import { useAppTheme } from '@/store/theme/themes';
+import { useMatchStore } from '@/store/matchStore';
+import { useShallow } from 'zustand/react/shallow';
 
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
-	const { charData, art, tagOptions, onTagChange, currentArtTag, toggleFav, isLoading } =
+	const { charData, art, tagOptions, onTagChange, currentArtTag, toggleFav, isReady } =
 		useCharDetail(Number(charId));
 	const { width } = useWindowDimensions();
 
@@ -34,20 +36,20 @@ const CharacterScreen = () => {
 		CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles']
 	>([]);
 	const [showTagSearch, toggleShowTagSearch] = useReducer((open) => !open, false);
-	const [expanded, setExpanded] = useState(false);
 	const [fav, setFav] = useState(charData.data?.Character?.isFavourite);
 
 	const { mediaLanguage } = useSettingsStore();
-	const { userID } = useAuthStore().anilist;
+	const isBooruEnabled = useMatchStore(useShallow((state) => state.isBooruEnabled));
+	const { userID } = useAuthStore(useShallow((state) => state.anilist));
 
 	const primaryName =
 		mediaLanguage === 'native'
 			? charData.data?.Character?.name?.native
 			: charData.data?.Character?.name?.full;
-	const secondaryName =
-		mediaLanguage === 'english' || mediaLanguage === 'romaji'
-			? charData.data?.Character?.name?.native
-			: charData.data?.Character?.name?.full;
+	// const secondaryName =
+	// 	mediaLanguage === 'english' || mediaLanguage === 'romaji'
+	// 		? charData.data?.Character?.name?.native
+	// 		: charData.data?.Character?.name?.full;
 
 	const { colors } = useAppTheme();
 
@@ -57,15 +59,7 @@ const CharacterScreen = () => {
 		({ item }: { item: CharacterDetailsQuery['Character']['media']['edges'][0] }) => {
 			return (
 				<View>
-					<MediaCard
-						titles={item.node.title}
-						coverImg={item.node.coverImage.extraLarge}
-						averageScore={item.node.averageScore}
-						meanScore={item.node.meanScore}
-						imgBgColor={item.node.coverImage.color}
-						navigate={() => router.push(`/(media)/${item.node.type}/${item.node.id}`)}
-						scoreDistributions={item.node.stats?.scoreDistribution}
-					/>
+					<MediaCard {...item.node} />
 					<Text
 						variant="labelLarge"
 						style={{ textTransform: 'capitalize', textAlign: 'center' }}
@@ -107,16 +101,7 @@ const CharacterScreen = () => {
 		}: {
 			item: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'][0];
 		}) => {
-			return (
-				<StaffCard
-					imgUrl={item.voiceActor?.image?.large}
-					name={item.voiceActor?.name?.full}
-					nativeName={item.voiceActor?.name?.native}
-					role={item.voiceActor?.language ?? ''}
-					onPress={() => router.push(`/staff/info/${item.voiceActor?.id}`)}
-					isFavourite={false}
-				/>
-			);
+			return <StaffCard {...item.voiceActor} isStaff />;
 		},
 		[],
 	);
@@ -185,7 +170,7 @@ const CharacterScreen = () => {
 
 	return (
 		<View>
-			{isLoading && (
+			{!isReady && (
 				<CharacterLoading
 					key="loading"
 					aniLoading={charData?.isFetching}
@@ -194,11 +179,12 @@ const CharacterScreen = () => {
 					artError={art?.error}
 				/>
 			)}
-			{!isLoading && (
+			{isReady && (
 				<Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
 					<FadeHeaderProvider
 						title={primaryName}
 						loading={charData.isLoading}
+						animationRange={[280, 340]}
 						// shareLink={charData.data?.Character?.siteUrl}
 						// onEdit={() => openWebBrowser(`https://anilist.co/edit/character/${charId}`)}
 						BgImage={({ style }) =>
@@ -343,46 +329,50 @@ const CharacterScreen = () => {
 									</View>
 								)}
 
-								<View style={{ overflow: 'visible', marginBottom: 20 }}>
-									<ListHeading
-										title="Fan Art"
-										subtitle={currentArtTag?.replaceAll('_', ' ') ?? undefined}
-										subtitleStyle={{
-											color: colors.primary,
-											textDecorationLine: 'underline',
-										}}
-										subtitlePress={toggleShowTagSearch}
-										icon="chevron-right"
-										onIconPress={() =>
-											// @ts-ignore
-											router.push(`/art/${currentArtTag}`)
-										}
-									/>
-									{!art?.isFetching ? (
-										<FlashList
-											data={art?.data?.pages[0]}
-											ListEmptyComponent={EmptyArt}
-											renderItem={ArtRenderItem}
-											keyExtractor={keyExtractor}
-											horizontal
-											estimatedItemSize={213}
-											contentContainerStyle={{
-												padding: 15,
+								{isBooruEnabled && (
+									<View style={{ overflow: 'visible', marginBottom: 20 }}>
+										<ListHeading
+											title="Fan Art"
+											subtitle={
+												currentArtTag?.replaceAll('_', ' ') ?? undefined
+											}
+											subtitleStyle={{
+												color: colors.primary,
+												textDecorationLine: 'underline',
 											}}
-											showsHorizontalScrollIndicator={false}
+											subtitlePress={toggleShowTagSearch}
+											icon="chevron-right"
+											onIconPress={() =>
+												// @ts-ignore
+												router.push(`/art/${currentArtTag}`)
+											}
 										/>
-									) : (
-										<View
-											style={{
-												height: 300,
-												justifyContent: 'center',
-												alignItems: 'center',
-											}}
-										>
-											<GorakuActivityIndicator />
-										</View>
-									)}
-								</View>
+										{!art?.isFetching ? (
+											<FlashList
+												data={art?.data?.pages[0]}
+												ListEmptyComponent={EmptyArt}
+												renderItem={ArtRenderItem}
+												keyExtractor={keyExtractor}
+												horizontal
+												estimatedItemSize={213}
+												contentContainerStyle={{
+													padding: 15,
+												}}
+												showsHorizontalScrollIndicator={false}
+											/>
+										) : (
+											<View
+												style={{
+													height: 300,
+													justifyContent: 'center',
+													alignItems: 'center',
+												}}
+											>
+												<GorakuActivityIndicator />
+											</View>
+										)}
+									</View>
+								)}
 							</AnimViewMem>
 						</View>
 					</FadeHeaderProvider>

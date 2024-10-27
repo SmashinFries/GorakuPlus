@@ -1,37 +1,25 @@
-import {
-	GenreTagCollectionQuery,
-	useGenreTagCollectionQuery,
-} from '@/api/anilist/__genereated__/gql';
+import { useTagCollectionQuery } from '@/api/anilist/__genereated__/gql';
 import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
-import { MediaCard, MediaProgressBar } from '@/components/cards';
+import { MediaCard } from '@/components/cards';
 import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { SetupNavBar } from '@/components/setup/nav';
 import { AnilistIcon } from '@/components/svgs';
 import { MaterialSwitchListItem } from '@/components/switch';
 import dummyData from '@/constants/dummyData';
-import useDebounce from '@/hooks/useDebounce';
 import { useAuthStore } from '@/store/authStore';
+import { ListStatusMode, useCardVisualStore } from '@/store/cardVisualStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
+import { ScoreVisualTypeEnum } from '@/store/settings/types';
 import { availableThemes, ThemeOptions, themeOptions, useAppTheme } from '@/store/theme/themes';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { ExploreTabsProps } from '@/types/navigation';
-import { rgbToRgba, useColumns } from '@/utils';
+import { rgbToRgba } from '@/utils';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { BlurView } from 'expo-blur';
-import { Image, ImageStyle } from 'expo-image';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	useWindowDimensions,
-	Pressable,
-	StyleProp,
-	View,
-	ViewStyle,
-	FlatList,
-	DimensionValue,
-} from 'react-native';
+import { useWindowDimensions, Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import DraggableFlatList, {
 	RenderItemParams,
 	ScaleDecorator,
@@ -47,12 +35,10 @@ import {
 	IconButton,
 	List,
 	Searchbar,
-	Switch,
 	Text,
 } from 'react-native-paper';
 import Animated, { AnimatedStyle, FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import switchTheme from 'react-native-theme-switch-animation';
 import { useShallow } from 'zustand/react/shallow';
 
 const SETUP_PAGES = 7;
@@ -84,7 +70,7 @@ type TitleTextProps = {
 };
 const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: TitleTextProps) => {
 	const { top } = useSafeAreaInsets();
-	const { colors, dark } = useAppTheme();
+	const { dark } = useAppTheme();
 	return (
 		<View
 			style={[
@@ -133,8 +119,12 @@ const TitleText = ({ title, description, containerStyle, showLogo, isAnim }: Tit
 };
 
 const IntroPage = () => {
-	const showNSFW = useSettingsStore((state) => state.showNSFW);
-	const setSettings = useSettingsStore((state) => state.setSettings);
+	const { showNSFW, setSettings } = useSettingsStore(
+		useShallow((state) => ({
+			showNSFW: state.showNSFW,
+			setSettings: state.setSettings,
+		})),
+	);
 	return (
 		<View style={{ flex: 1, justifyContent: 'center' }}>
 			{/* <Image source={require('../../assets/iconsv2/icon-trans.png')} style={{width:'70%', aspectRatio:1/1}} /> */}
@@ -163,12 +153,15 @@ const IntroPage = () => {
 
 const ThemeSetup = () => {
 	const { colors } = useAppTheme();
-	const { isDark, mode } = useThemeStore(
-		useShallow((state) => ({ mode: state.mode, isDark: state.isDark })),
+	const { isDark, mode, setTheme } = useThemeStore(
+		useShallow((state) => ({
+			mode: state.mode,
+			isDark: state.isDark,
+			setTheme: state.setTheme,
+		})),
 	);
-	const setTheme = useThemeStore((state) => state.setTheme);
 
-	const [tempConfig, setTempConfig] = useState({ isDark, mode });
+	const [tempConfig, _setTempConfig] = useState({ isDark, mode });
 
 	const onDarkToggle = (toggle: boolean) => {
 		setTheme({ isDark: toggle });
@@ -277,8 +270,14 @@ const ThemeSetup = () => {
 };
 
 const AnilistSetup = () => {
-	const { request, result, promptAsync } = useAnilistAuth(true);
-	const { token, avatar, username } = useAuthStore().anilist;
+	const { promptAsync } = useAnilistAuth(true);
+	const { token, avatar, username } = useAuthStore(
+		useShallow((state) => ({
+			token: state.anilist.token,
+			avatar: state.anilist.avatar,
+			username: state.anilist.username,
+		})),
+	);
 	const { dark } = useAppTheme();
 
 	return (
@@ -325,28 +324,34 @@ const AnilistSetup = () => {
 };
 
 const CardSetup = () => {
-	const setSettings = useSettingsStore((state) => state.setSettings);
-	const scoreVisualType = useSettingsStore(useShallow((state) => state.scoreVisualType));
+	const setSettings = useSettingsStore(useShallow((state) => state.setSettings));
 	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
+	const { listStatusMode, scoreVisualType, setCardVisual } = useCardVisualStore(
+		useShallow((state) => ({
+			listStatusMode: state.listStatusMode,
+			scoreVisualType: state.scoreVisualType,
+			setCardVisual: state.setCardVisual,
+		})),
+	);
 	const mode = useThemeStore(useShallow((state) => state.mode));
 	const { colors } = useAppTheme();
+	const { width } = useWindowDimensions();
 
-	const [tempConfig, setTempConfig] = useState({
-		scoreVisType: scoreVisualType,
-		lang: mediaLanguage,
-	});
+	// const [tempMediaLanguage, setTempMediaLanguage] = useState(mediaLanguage);
+	// const [tempCardVisual, setTempCardVisual] = useState({
+	// 	defaultScore,
+	// 	listStatusMode,
+	// 	scoreVisualType,
+	// });
 
-	const onScoreDesignChange = (preset: ScoreVisualType) => {
-		setTempConfig((prev) => ({ ...prev, scoreVisType: preset }));
+	const onTempMediaLangChange = (lang: 'english' | 'romaji' | 'native') => {
+		// setTempMediaLanguage(lang);
+		setSettings({ mediaLanguage: lang });
 	};
 
-	const onTitleLanguageChange = (lang: typeof mediaLanguage) => {
-		setTempConfig((prev) => ({ ...prev, lang }));
-	};
-
-	useEffect(() => {
-		setSettings({ scoreVisualType: tempConfig.scoreVisType, mediaLanguage: tempConfig.lang });
-	}, [tempConfig]);
+	// useEffect(() => {
+	// 	setSettings({ scoreVisualType: tempConfig.scoreVisType, mediaLanguage: tempConfig.lang });
+	// }, [tempConfig]);
 
 	return (
 		<Body>
@@ -355,20 +360,16 @@ const CardSetup = () => {
 				description={'Customize the look of media cards that are shown throughout the app.'}
 				containerStyle={{ paddingTop: 20 }}
 			/>
-
-			<View style={{ justifyContent: 'center', paddingVertical: 30 }}>
-				<View style={{ width: '35%', alignSelf: 'center' }}>
-					<MediaCard
-						coverImg={dummyData[mode].coverImage?.extraLarge}
-						titles={dummyData[mode].title}
-						meanScore={dummyData[mode].meanScore}
-						averageScore={dummyData[mode].averageScore}
-						scoreDistributions={dummyData[mode].stats?.scoreDistribution}
-						titleLang={tempConfig.lang}
-						scoreVisualType={tempConfig.scoreVisType}
-						fitToParent
-					/>
-					<View>
+			<ScrollView style={{ flex: 1 }}>
+				<View style={{ justifyContent: 'center', paddingVertical: 30 }}>
+					<View style={{ width: '45%', alignSelf: 'center' }}>
+						<MediaCard
+							{...dummyData[mode]}
+							containerStyle={{ alignItems: 'center' }}
+							// fitToParent
+							width={width / 2.5}
+						/>
+						{/* <View>
 						<MediaProgressBar
 							progress={
 								(dummyData[mode].episodes ??
@@ -379,9 +380,9 @@ const CardSetup = () => {
 							mediaListEntry={dummyData[mode].mediaListEntry}
 							showListStatus={true}
 						/>
+					</View> */}
 					</View>
-				</View>
-				<ScrollView style={{ flex: 1 }}>
+
 					<List.Subheader>Score Design</List.Subheader>
 					<ScrollView
 						horizontal
@@ -393,11 +394,13 @@ const CardSetup = () => {
 							<Chip
 								key={idx}
 								mode="outlined"
-								selected={tempConfig.scoreVisType === ScoreVisualTypeEnum[visual]}
-								onPress={() => onScoreDesignChange(ScoreVisualTypeEnum[visual])}
+								selected={scoreVisualType === ScoreVisualTypeEnum[visual]}
+								onPress={() =>
+									setCardVisual({ scoreVisualType: ScoreVisualTypeEnum[visual] })
+								}
 								textStyle={{
 									color:
-										tempConfig.scoreVisType === ScoreVisualTypeEnum[visual]
+										scoreVisualType === ScoreVisualTypeEnum[visual]
 											? colors.primary
 											: colors.onBackground,
 								}}
@@ -415,6 +418,42 @@ const CardSetup = () => {
 							</Chip>
 						))}
 					</ScrollView>
+					<List.Subheader>List Status Design</List.Subheader>
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						style={{ flex: 1 }}
+						contentContainerStyle={{ paddingHorizontal: 10 }}
+					>
+						{(['dot', 'bar'] as ListStatusMode[]).map(
+							(statusMode: ListStatusMode, idx) => (
+								<Chip
+									key={idx}
+									mode="outlined"
+									selected={listStatusMode === statusMode}
+									onPress={() => setCardVisual({ listStatusMode: statusMode })}
+									textStyle={{
+										textTransform: 'capitalize',
+										color:
+											listStatusMode === statusMode
+												? colors.primary
+												: colors.onBackground,
+									}}
+									selectedColor={colors.primary}
+									style={{
+										marginHorizontal: 5,
+										justifyContent: 'center',
+										// borderColor:
+										//     visualPreset === ScoreVisualTypeEnum[visual]
+										//         ? colors.primary
+										//         : undefined,
+									}}
+								>
+									{statusMode}
+								</Chip>
+							),
+						)}
+					</ScrollView>
 					<List.Subheader>Title Language</List.Subheader>
 					<ScrollView
 						horizontal
@@ -426,15 +465,15 @@ const CardSetup = () => {
 							<Chip
 								key={idx}
 								mode="outlined"
-								selected={tempConfig.lang === lang}
+								selected={mediaLanguage === lang}
 								onPress={() =>
-									onTitleLanguageChange(lang as 'english' | 'romaji' | 'native')
+									onTempMediaLangChange(lang as 'english' | 'romaji' | 'native')
 								}
 								style={{ marginHorizontal: 5, justifyContent: 'center' }}
 								textStyle={{
 									textTransform: 'capitalize',
 									color:
-										tempConfig.lang === lang
+										mediaLanguage === lang
 											? colors.primary
 											: colors.onBackground,
 								}}
@@ -444,21 +483,26 @@ const CardSetup = () => {
 							</Chip>
 						))}
 					</ScrollView>
-				</ScrollView>
-			</View>
+				</View>
+			</ScrollView>
 		</Body>
 	);
 };
 
+// NOT BOYS LOVE! ITS BLACKLIST LOL
 const TagBLSetup = () => {
 	const { colors } = useAppTheme();
-	const tagBlacklist = useSettingsStore((state) => state.tagBlacklist);
-	const setSettings = useSettingsStore((state) => state.setSettings);
-	const showNSFW = useSettingsStore((state) => state.showNSFW);
-	const [tags, setTags] = useState<string[]>(tagBlacklist ?? []);
+	const { showNSFW, tagBlacklist, setSettings } = useSettingsStore(
+		useShallow((state) => ({
+			tagBlacklist: state.tagBlacklist,
+			showNSFW: state.showNSFW,
+			setSettings: state.setSettings,
+		})),
+	);
+	const [tags, _setTags] = useState<string[]>(tagBlacklist ?? []);
 	const [search, setSearch] = useState<string>('');
 
-	const { data, isFetching, isError } = useGenreTagCollectionQuery({}, { enabled: true });
+	const { data } = useTagCollectionQuery({}, { enabled: true });
 
 	const TagChip = useCallback(
 		({ name, onPress, icon }) => (
@@ -635,7 +679,7 @@ const TabSetup = () => {
 
 const OutroPage = () => {
 	return (
-		<Body>
+		<Body style={{ flex: 1 }}>
 			<TitleText
 				title="Setup Complete!"
 				description={
@@ -643,15 +687,23 @@ const OutroPage = () => {
 				}
 				showLogo
 			/>
-			<Text style={{ alignSelf: 'flex-start', paddingLeft: 20 }}>
-				{'\n'}Additional Settings:
-			</Text>
-			<Text style={{ alignSelf: 'flex-start', paddingLeft: 20 }}>
-				{'\n'}- 3D effects
-				{'\n'}- Text-to-speech
-				{'\n'}- Score color customization
-				{'\n'}- and much more
-			</Text>
+			<View style={{ flex: 1, alignItems: 'flex-start', alignSelf: 'flex-start' }}>
+				<Text style={{ alignSelf: 'flex-start', paddingLeft: 20 }}>
+					{'\n'}Additional Settings:
+				</Text>
+				<Text
+					style={{
+						flex: 1,
+						alignSelf: 'flex-start',
+						paddingLeft: 20,
+					}}
+				>
+					{'\n'}- 3D effects
+					{'\n'}- Text-to-speech
+					{'\n'}- Score color customization
+					{'\n'}- and much more
+				</Text>
+			</View>
 		</Body>
 	);
 };
@@ -660,7 +712,7 @@ const SetupModal = () => {
 	const pagerRef = useRef<PagerView>(null);
 	const [page, setPage] = useState<number>(0);
 	const { colors } = useAppTheme();
-	const { isFirstLaunch, setSettings } = useSettingsStore();
+	const { setSettings } = useSettingsStore();
 
 	const { top } = useSafeAreaInsets();
 

@@ -1,5 +1,4 @@
-import { useInfiniteReviewsQuery, useReviewsQuery } from '@/api/anilist/__genereated__/gql';
-import { useCallback, useState } from 'react';
+import { useInfiniteReviewsQuery } from '@/api/anilist/__genereated__/gql';
 
 export const useReviewsList = (id: number) => {
 	const reviewData = useInfiniteReviewsQuery(

@@ -64,7 +64,7 @@ export const useTokenTime = ({ death }: TokenTimeProps) => {
 			}, 1000);
 			return () => clearInterval(interval);
 		}
-	}, []);
+	}, [death]);
 
 	return { aniTokenTime };
 };
@@ -75,7 +75,7 @@ export const convertDate = (date: FuzzyDate, bdayFormat?: boolean): string | nul
 
 	if (bdayFormat) {
 		// Jul 11, 1966
-		return month ? `${monthByNumber[month]} ${day ?? '??'}, ${year ?? '????'}` : null;
+		return month ? `${monthByNumber[month]} ${day ?? '??'}${year ? `, ${year}` : ''}` : null;
 	}
 
 	if (!date?.day && !date?.month && !date?.year) return null;
@@ -106,7 +106,7 @@ export const getMovieDuration = (minutes: number) => {
 const getDateDifferences = (dates: Date[]) => {
 	const day_differences: number[] = [];
 	let count = 0;
-	for (const i in dates) {
+	for (const _i in dates) {
 		if (dates.length > 1 && dates.length > count + 1) {
 			const time_diff = dates[count].getTime() - dates[count + 1].getTime();
 			const time_diff_days = Math.round(time_diff / (1000 * 3600 * 24));
@@ -120,6 +120,7 @@ const getDateDifferences = (dates: Date[]) => {
 };
 
 export const getChapterFrequency = (release_dates: string[]) => {
+	if (!release_dates) return null;
 	const dates = release_dates.map((date) => new Date(date));
 	const m = new Map();
 
@@ -133,8 +134,8 @@ export const getChapterFrequency = (release_dates: string[]) => {
 		}
 	}
 	let max = 0;
-	let common_freq;
-	m.forEach((val, key, map) => {
+	let common_freq: number;
+	m.forEach((val, key, _map) => {
 		if (max < val) {
 			max = val;
 			common_freq = key;
@@ -222,7 +223,7 @@ export const useTimeUntil = (time: number) => {
 		return () => {
 			clearInterval(timer);
 		};
-	}, []);
+	}, [time]);
 
 	return { timeUntil };
 };
@@ -259,6 +260,16 @@ export const getFuzzyInttoString = (value: string): string => {
 	const month = value.slice(4, 6);
 	const day = value.slice(6, 8);
 	return `${month}-${day}-${year}`;
+};
+
+export const getDayStartEnd = (date?: number) => {
+	const today = new Date(date);
+	today.setHours(0, 0, 0, 0);
+	const todayStart = Math.round(today.getTime() / 1000);
+	today.setHours(23, 59, 59, 0);
+	const todayEnd = Math.round(Math.round(today.getTime() / 1000));
+
+	return { todayStart, todayEnd };
 };
 
 export const getWeekStartEnd = () => {

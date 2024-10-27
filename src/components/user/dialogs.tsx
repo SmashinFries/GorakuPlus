@@ -1,25 +1,25 @@
-import { Dialog, Text, Button, Searchbar, ActivityIndicator, useTheme } from 'react-native-paper';
+import { Dialog, Text, Button, Searchbar, ActivityIndicator } from 'react-native-paper';
 import { BasicDialogProps } from '../../types';
 import { useCallback, useState } from 'react';
 import { UserCard } from '../cards';
-import { FlatList, Keyboard } from 'react-native';
+import { FlatList } from 'react-native';
 import { View } from 'react-native';
 import {
-	useDeleteActMutation,
+	UserDataQuery,
 	UserOverviewQuery,
 	UserSearchQuery,
 	useToggleFollowMutation,
-	useUserActivityQuery,
 	useUserSearchQuery,
 } from '@/api/anilist/__genereated__/gql';
 import useDebounce from '@/hooks/useDebounce';
-import { useQueryClient } from '@tanstack/react-query';
 import { useAppTheme } from '@/store/theme/themes';
 import { useDeleteActivityItemInvalidateMutation } from '@/api/anilist/extended';
+import { SheetManager } from 'react-native-actions-sheet';
+import { router } from 'expo-router';
 
 type StatDialogProps = BasicDialogProps & {
-	animeStats: UserOverviewQuery['user']['statistics']['anime'];
-	mangaStats: UserOverviewQuery['user']['statistics']['manga'];
+	animeStats: UserDataQuery['User']['statistics']['anime'];
+	mangaStats: UserDataQuery['User']['statistics']['manga'];
 };
 export const StatDialog = ({ animeStats, mangaStats, visible, onDismiss }: StatDialogProps) => {
 	return (
@@ -41,25 +41,26 @@ type AddFriendDialogProps = BasicDialogProps;
 export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) => {
 	const { colors } = useAppTheme();
 	const [query, setQuery] = useState('');
-	const debouncedQuery = useDebounce(query, 600);
-	const { data } = useUserSearchQuery({ search: debouncedQuery });
-	const { data: followResults, mutateAsync: toggleFollow } = useToggleFollowMutation();
+	const debouncedQuery = useDebounce(query, 600) as string;
+	const { data, isFetching } = useUserSearchQuery(
+		{ search: debouncedQuery },
+		{ enabled: !!debouncedQuery },
+	);
+	const { mutateAsync: toggleFollow } = useToggleFollowMutation();
 	const [selectedUser, setSelectedUser] = useState<UserSearchQuery['Page']['users'][0] | null>();
-	const [results, setResults] = useState<UserSearchQuery['Page']['users']>([]);
-	const [isLoading, setIsLoading] = useState(false);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 
 	const onFollowToggle = useCallback(async (id: number) => {
 		setIsFollowLoading(true);
 		const response = await toggleFollow({ userId: id });
 		setSelectedUser((prev) => ({ ...prev, isFollowing: response.ToggleFollow?.isFollowing }));
-		setResults((prev) =>
-			prev.map((user) =>
-				user.id === selectedUser?.id
-					? { ...user, isFollowing: response.ToggleFollow?.isFollowing }
-					: user,
-			),
-		);
+		// setResults((prev) =>
+		// 	prev.map((user) =>
+		// 		user.id === selectedUser?.id
+		// 			? { ...user, isFollowing: response.ToggleFollow?.isFollowing }
+		// 			: user,
+		// 	),
+		// );
 		setIsFollowLoading(false);
 	}, []);
 
@@ -74,20 +75,20 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 				<View
 					style={{
 						// flex: 1,
+						width: '50%',
 						borderRadius: 8,
 						borderWidth: 2,
-						alignItems: 'center',
-						alignSelf: 'center',
 						borderColor: selectedUser?.id === item.id ? colors.primary : 'transparent',
 					}}
 				>
 					<UserCard
-						size={78}
-						avatarImg={item.avatar?.large}
-						username={item.name}
-						isFollower={item.isFollower}
+						{...item}
+						size={100}
 						isFollowing={item.isFollowing}
 						onPress={() => setSelectedUser(item)}
+						onLongPress={() =>
+							SheetManager.show('QuickActionUserSheet', { payload: item })
+						}
 					/>
 				</View>
 			);
@@ -99,31 +100,33 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>Find User</Dialog.Title>
 			<Dialog.Content>
-				<Searchbar value={query} onChangeText={(txt) => setQuery(txt)} />
+				<Searchbar
+					elevation={1}
+					value={query}
+					onChangeText={(txt) => setQuery(txt)}
+					loading={isFetching}
+				/>
 			</Dialog.Content>
-			{results && (
-				<Dialog.ScrollArea style={{ alignItems: 'center' }}>
-					{!isLoading ? (
-						<FlatList
-							key={1}
-							numColumns={2}
-							data={results ?? []}
-							renderItem={RenderItem}
-							keyExtractor={keyExtractor}
-							columnWrapperStyle={{ justifyContent: 'space-evenly' }}
-							removeClippedSubviews
-							showsVerticalScrollIndicator={false}
-							centerContent
-						/>
-					) : (
-						<ActivityIndicator size={'large'} />
-					)}
-				</Dialog.ScrollArea>
-			)}
+			<Dialog.ScrollArea>
+				<FlatList
+					key={1}
+					numColumns={2}
+					data={data?.Page?.users ?? []}
+					renderItem={RenderItem}
+					keyExtractor={keyExtractor}
+					columnWrapperStyle={{ justifyContent: 'space-evenly' }}
+					removeClippedSubviews
+					showsVerticalScrollIndicator={false}
+					// centerContent
+				/>
+			</Dialog.ScrollArea>
 			<Dialog.Actions>
 				<Button
 					icon={'account-eye-outline'}
-					disabled
+					onPress={() => {
+						onDismiss();
+						router.navigate(`/user/${selectedUser?.name}`);
+					}}
 					// disabled={!selectedUser}
 				>
 					View

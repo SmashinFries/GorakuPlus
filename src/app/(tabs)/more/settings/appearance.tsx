@@ -4,14 +4,14 @@ import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { ScoreVisualType } from '@/store/settings/types';
 import { availableThemes, themeOptions, ThemeOptions, useAppTheme } from '@/store/theme/themes';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
-import { Button, List, Portal, Switch, Text, useTheme } from 'react-native-paper';
+import { Button, List, Portal, Text } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
+import { useShallow } from 'zustand/react/shallow';
 
 const STACK_ANIMS_ANDROID: StackAnimationTypes[] = [
 	'none',
@@ -34,12 +34,14 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 ];
 
 const AppearancePage = () => {
-	const { mode, isDark, isAMOLED } = useThemeStore((state) => ({
-		mode: state.mode,
-		isDark: state.isDark,
-		isAMOLED: state.isAMOLED,
-	}));
-	const setTheme = useThemeStore((state) => state.setTheme);
+	const { mode, isDark, isAMOLED, setTheme } = useThemeStore(
+		useShallow((state) => ({
+			mode: state.mode,
+			isDark: state.isDark,
+			isAMOLED: state.isAMOLED,
+			setTheme: state.setTheme,
+		})),
+	);
 	const {
 		btmTabLabels,
 		btmTabShifting,
@@ -47,24 +49,20 @@ const AppearancePage = () => {
 		interaction3D,
 		autoRotation,
 		allowSensorMotion,
-		scoreVisualType,
-		showItemListStatus,
-		mediaLanguage,
-		scoreColors,
-	} = useSettingsStore((state) => ({
-		btmTabLabels: state.btmTabLabels,
-		btmTabShifting: state.btmTabShifting,
-		navAnimation: state.navAnimation,
-		interaction3D: state.interaction3D,
-		autoRotation: state.autoRotation,
-		allowSensorMotion: state.allowSensorMotion,
-		scoreVisualType: state.scoreVisualType,
-		showItemListStatus: state.showItemListStatus,
-		mediaLanguage: state.mediaLanguage,
-		scoreColors: state.scoreColors,
-	}));
-
-	const setSettings = useSettingsStore((state) => state.setSettings);
+		allowBgParticles,
+		setSettings,
+	} = useSettingsStore(
+		useShallow((state) => ({
+			btmTabLabels: state.btmTabLabels,
+			btmTabShifting: state.btmTabShifting,
+			navAnimation: state.navAnimation,
+			interaction3D: state.interaction3D,
+			autoRotation: state.autoRotation,
+			allowSensorMotion: state.allowSensorMotion,
+			allowBgParticles: state.allowBgParticles,
+			setSettings: state.setSettings,
+		})),
+	);
 
 	const { colors } = useAppTheme();
 
@@ -104,10 +102,6 @@ const AppearancePage = () => {
 		setSettings({ allowSensorMotion: !allowSensorMotion });
 	};
 
-	const onMediaCardChange = (scoreVisualType: ScoreVisualType, showItemListStatus: boolean) => {
-		setSettings({ scoreVisualType, showItemListStatus });
-	};
-
 	return (
 		<>
 			<ScrollView>
@@ -131,7 +125,6 @@ const AppearancePage = () => {
 						description={mode.replaceAll('_', ' ')}
 						descriptionStyle={{ textTransform: 'capitalize' }}
 						initialExpand={true}
-						titleFontSize={16}
 						// onPress={() => setExpandThemes((prev) => !prev)}
 					>
 						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -208,10 +201,15 @@ const AppearancePage = () => {
 						selected={btmTabShifting}
 						fluid
 					/>
-
+					<MaterialSwitchListItem
+						title={'Background Particles'}
+						description={'Goraku particles float in the background!'}
+						onPress={() => setSettings({ allowBgParticles: !allowBgParticles })}
+						selected={allowBgParticles}
+						fluid
+					/>
 					<Accordion
 						title={'Screen Transition'}
-						titleFontSize={16}
 						description={navAnimation.replaceAll('_', ' ')}
 						descriptionStyle={{ textTransform: 'capitalize' }}
 					>
@@ -266,11 +264,6 @@ const AppearancePage = () => {
 				<MediaTileCustomizer
 					themeMode={mode}
 					visible={showMTCustomizer}
-					scoreVisualType={scoreVisualType}
-					showItemListStatus={showItemListStatus}
-					onSettingChange={onMediaCardChange}
-					mediaLanguage={mediaLanguage}
-					scoreColors={scoreColors}
 					onDismiss={() => setShowMTCustomizer(false)}
 				/>
 			</Portal>

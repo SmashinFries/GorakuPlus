@@ -4,6 +4,9 @@ import { getLocales } from 'expo-localization';
 import resources from '../locales';
 import { MMKV } from 'react-native-mmkv';
 
+// UNDER CONSTRUCTION!
+// LOOKING INTO USING CROWDIN
+
 const deviceLanguage = getLocales()[0].languageCode;
 const STORE_LANGUAGE_KEY = 'appLanguage';
 const i18nStorage = new MMKV({ id: 'i18n-storage' });
