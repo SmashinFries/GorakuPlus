@@ -17,15 +17,12 @@ export const useMangaUpdatesQuery = (
 	isNovel: boolean = false,
 ) => {
 	const queryClient = useQueryClient();
-	const muDB = useMatchStore((state) => state.mangaUpdates);
-	const addMangaUpdatesID = useMatchStore((state) => state.addMangaUpdatesID);
-	const isMangaUpdatesEnabled = useMatchStore((state) => state.isMangaUpdatesEnabled);
+	const {addMangaUpdatesID, isMangaUpdatesEnabled, muDB} = useMatchStore(useShallow((state) => ({muDB: state.mangaUpdates, isMangaUpdatesEnabled: state.isMangaUpdatesEnabled, addMangaUpdatesID: state.addMangaUpdatesID })));
 	const { mutateAsync: searchSeries } = useSearchSeriesPost();
 
 	useEffect(() => {
 		if (muId && aniId) {
 			if (muDB[aniId] !== muId) {
-				console.log('Updating muID!');
 				addMangaUpdatesID(aniId, muId);
 			}
 		}
@@ -37,7 +34,6 @@ export const useMangaUpdatesQuery = (
 		return useQuery({
 			queryKey: ['MangaUpdates'],
 			queryFn: async () => {
-				console.log('Running MangaUpdates lookup:', title);
 				const searchResults = await searchSeries({
 					data: { search: `${title}${isNovel ? ' (Novel)' : ''}`, stype: 'title' },
 				});
@@ -47,7 +43,6 @@ export const useMangaUpdatesQuery = (
 							?.series_id,
 					),
 				);
-				console.log('Logging muID:', muIdResponse.data.series_id);
 				addMangaUpdatesID(aniId, muIdResponse.data.series_id);
 				return muIdResponse;
 			},

@@ -6,11 +6,7 @@
  * @type file: formdata image file
  */
 export type SauceNaoParams = {
-	output_type: string;
-	numres: string;
-	api_key: string;
-	hide: string;
-	file: { type: string; uri: string; name: string } | string | Blob;
+	file: { type: string; uri: string; name: string } | string;
 };
 
 type HeaderIndexItem = {

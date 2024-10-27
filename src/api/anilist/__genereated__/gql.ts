@@ -4701,7 +4701,7 @@ export type SaveMediaListItemMutationVariables = Exact<{
 }>;
 
 
-export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, repeat?: number | null, mediaId: number, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, countryOfOrigin?: any | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null };
+export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null };
 
 export type DeleteMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4835,7 +4835,7 @@ export type MediaAniCardQueryQueryVariables = Exact<{
 }>;
 
 
-export type MediaAniCardQueryQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, averageScore?: number | null, meanScore?: number | null, status?: MediaStatus | null, description?: string | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, idMal?: number | null, genres?: Array<string | null> | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', name: string } | null> | null } | null };
+export type MediaAniCardQueryQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, averageScore?: number | null, meanScore?: number | null, status?: MediaStatus | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, idMal?: number | null, genres?: Array<string | null> | null, descriptionHTML?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', name: string } | null> | null } | null };
 
 export type WeeklyAnimeQueryVariables = Exact<{
   weekStart?: InputMaybe<Scalars['Int']['input']>;
@@ -4844,15 +4844,42 @@ export type WeeklyAnimeQueryVariables = Exact<{
 }>;
 
 
-export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null };
+export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null };
 
-export type MainMetaFragment = { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
+export type AiringTodayQueryVariables = Exact<{
+  dayStart?: InputMaybe<Scalars['Int']['input']>;
+  dayEnd?: InputMaybe<Scalars['Int']['input']>;
+}>;
 
-export type AnimeMetaFragment = { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
 
-export type MangaMetaFragment = { __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null };
+export type AiringTodayQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null };
+
+export type TagCollectionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TagCollectionQuery = { __typename?: 'Query', MediaTagCollection?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null, userId?: number | null } | null> | null };
+
+export type LinkSourceCollectionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LinkSourceCollectionQuery = { __typename?: 'Query', AnimeExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null, MangaExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null };
+
+export type GenreCollectionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GenreCollectionQuery = { __typename?: 'Query', GenreCollection?: Array<string | null> | null };
+
+export type AllCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllCollectionsQuery = { __typename?: 'Query', GenreCollection?: Array<string | null> | null, MediaTagCollection?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null, userId?: number | null } | null> | null, AnimeExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null, MangaExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null };
+
+export type MediaListEntryMetaFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null };
+
+export type MainMetaFragment = { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null };
 
 export type AnimeExploreQueryVariables = Exact<{
+  includeViewer: Scalars['Boolean']['input'];
   perPage?: InputMaybe<Scalars['Int']['input']>;
   season?: InputMaybe<MediaSeason>;
   seasonYear?: InputMaybe<Scalars['Int']['input']>;
@@ -4864,9 +4891,10 @@ export type AnimeExploreQueryVariables = Exact<{
 }>;
 
 
-export type AnimeExploreQuery = { __typename?: 'Query', trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, thisSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, nextSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type AnimeExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, thisSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, nextSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
 
 export type MangaExploreQueryVariables = Exact<{
+  includeViewer: Scalars['Boolean']['input'];
   perPage?: InputMaybe<Scalars['Int']['input']>;
   startDate_greater?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
   onList?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4875,9 +4903,10 @@ export type MangaExploreQueryVariables = Exact<{
 }>;
 
 
-export type MangaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type MangaExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
 
 export type ManhwaExploreQueryVariables = Exact<{
+  includeViewer: Scalars['Boolean']['input'];
   perPage?: InputMaybe<Scalars['Int']['input']>;
   startDate_greater?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
   onList?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4886,9 +4915,10 @@ export type ManhwaExploreQueryVariables = Exact<{
 }>;
 
 
-export type ManhwaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type ManhwaExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
 
 export type ManhuaExploreQueryVariables = Exact<{
+  includeViewer: Scalars['Boolean']['input'];
   perPage?: InputMaybe<Scalars['Int']['input']>;
   startDate_greater?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
   onList?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4897,9 +4927,10 @@ export type ManhuaExploreQueryVariables = Exact<{
 }>;
 
 
-export type ManhuaExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type ManhuaExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
 
 export type NovelExploreQueryVariables = Exact<{
+  includeViewer: Scalars['Boolean']['input'];
   perPage?: InputMaybe<Scalars['Int']['input']>;
   startDate_greater?: InputMaybe<Scalars['FuzzyDateInt']['input']>;
   onList?: InputMaybe<Scalars['Boolean']['input']>;
@@ -4908,7 +4939,7 @@ export type NovelExploreQueryVariables = Exact<{
 }>;
 
 
-export type NovelExploreQuery = { __typename?: 'Query', newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type NovelExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
 
 export type RecommendationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -4920,11 +4951,6 @@ export type RecommendationsQueryVariables = Exact<{
 
 export type RecommendationsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', currentPage?: number | null, hasNextPage?: boolean | null } | null, recommendations?: Array<{ __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, media?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, createdAt?: number | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null } | null> | null } | null };
 
-export type GenreTagCollectionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GenreTagCollectionQuery = { __typename?: 'Query', GenreCollection?: Array<string | null> | null, MediaTagCollection?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null } | null> | null };
-
 export type StudioListQueryVariables = Exact<{
   studioId?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -4932,9 +4958,9 @@ export type StudioListQueryVariables = Exact<{
 }>;
 
 
-export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null };
+export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null } | null };
 
-export type MediaListEntryFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null };
+export type MediaListEntryFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null };
 
 export type UserAnimeListCollectionQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4943,7 +4969,7 @@ export type UserAnimeListCollectionQueryVariables = Exact<{
 }>;
 
 
-export type UserAnimeListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
+export type UserAnimeListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
 
 export type UserMangaListCollectionQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4952,7 +4978,7 @@ export type UserMangaListCollectionQueryVariables = Exact<{
 }>;
 
 
-export type UserMangaListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, volumes?: number | null, chapters?: number | null, averageScore?: number | null, meanScore?: number | null, popularity?: number | null, isAdult?: boolean | null, countryOfOrigin?: any | null, genres?: Array<string | null> | null, synonyms?: Array<string | null> | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
+export type UserMangaListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
 
 export type UserCustomListsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4986,7 +5012,7 @@ export type AniMediaQueryVariables = Exact<{
 }>;
 
 
-export type AniMediaQuery = { __typename?: 'Query', User?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null, Following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, mediaList?: Array<{ __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null } | null> | null } | null, Media?: { __typename?: 'Media', averageScore?: number | null, meanScore?: number | null, source?: MediaSource | null, idMal?: number | null, id: number, bannerImage?: string | null, description?: string | null, siteUrl?: string | null, updatedAt?: number | null, season?: MediaSeason | null, seasonYear?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, duration?: number | null, chapters?: number | null, volumes?: number | null, isAdult?: boolean | null, genres?: Array<string | null> | null, countryOfOrigin?: any | null, isLicensed?: boolean | null, hashtag?: string | null, synonyms?: Array<string | null> | null, popularity?: number | null, isLocked?: boolean | null, trending?: number | null, favourites?: number | null, isFavourite: boolean, descriptionHTML?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, userId?: number | null } | null> | null, trailer?: { __typename?: 'MediaTrailer', id?: string | null, site?: string | null, thumbnail?: string | null } | null, stats?: { __typename?: 'MediaStats', statusDistribution?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, relations?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', id?: number | null, relationType?: MediaRelation | null, node?: { __typename?: 'Media', chapters?: number | null, volumes?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null, externalLinks?: Array<{ __typename?: 'MediaExternalLink', id: number, site: string, url?: string | null, color?: string | null, icon?: string | null, notes?: string | null, type?: ExternalLinkType | null, language?: string | null } | null> | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, streamingEpisodes?: Array<{ __typename?: 'MediaStreamingEpisode', title?: string | null, thumbnail?: string | null, url?: string | null, site?: string | null } | null> | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', voiceActor?: { __typename?: 'Staff', id: number, language?: string | null, name?: { __typename?: 'StaffName', full?: string | null, userPreferred?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null, recommendations?: { __typename?: 'RecommendationConnection', edges?: Array<{ __typename?: 'RecommendationEdge', node?: { __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, mediaRecommendation?: { __typename?: 'Media', chapters?: number | null, volumes?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null } | null> | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, notes?: string | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, updatedAt?: number | null, createdAt?: number | null, media?: { __typename?: 'Media', status?: MediaStatus | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', episode: number } | null } | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null } | null, staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null } | null, reviews?: { __typename?: 'ReviewConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, edges?: Array<{ __typename?: 'ReviewEdge', node?: { __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, userRating?: ReviewRating | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', isMain: boolean, node?: { __typename?: 'Studio', id: number, name: string, isFavourite: boolean } | null } | null> | null } | null, airingSchedule?: { __typename?: 'AiringScheduleConnection', nodes?: Array<{ __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number } | null> | null } | null } | null };
+export type AniMediaQuery = { __typename?: 'Query', User?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null, Following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, mediaList?: Array<{ __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null } | null> | null } | null, Media?: { __typename?: 'Media', averageScore?: number | null, meanScore?: number | null, source?: MediaSource | null, idMal?: number | null, id: number, bannerImage?: string | null, description?: string | null, siteUrl?: string | null, updatedAt?: number | null, season?: MediaSeason | null, seasonYear?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, duration?: number | null, chapters?: number | null, volumes?: number | null, isAdult?: boolean | null, genres?: Array<string | null> | null, countryOfOrigin?: any | null, isLicensed?: boolean | null, hashtag?: string | null, synonyms?: Array<string | null> | null, popularity?: number | null, isLocked?: boolean | null, trending?: number | null, favourites?: number | null, isFavourite: boolean, descriptionHTML?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, userId?: number | null } | null> | null, trailer?: { __typename?: 'MediaTrailer', id?: string | null, site?: string | null, thumbnail?: string | null } | null, stats?: { __typename?: 'MediaStats', statusDistribution?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, relations?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', id?: number | null, relationType?: MediaRelation | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null, externalLinks?: Array<{ __typename?: 'MediaExternalLink', id: number, site: string, url?: string | null, color?: string | null, icon?: string | null, notes?: string | null, type?: ExternalLinkType | null, language?: string | null } | null> | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, streamingEpisodes?: Array<{ __typename?: 'MediaStreamingEpisode', title?: string | null, thumbnail?: string | null, url?: string | null, site?: string | null } | null> | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', voiceActor?: { __typename?: 'Staff', id: number, language?: string | null, name?: { __typename?: 'StaffName', full?: string | null, userPreferred?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null, recommendations?: { __typename?: 'RecommendationConnection', edges?: Array<{ __typename?: 'RecommendationEdge', node?: { __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null } | null> | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null } | null, reviews?: { __typename?: 'ReviewConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, edges?: Array<{ __typename?: 'ReviewEdge', node?: { __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, userRating?: ReviewRating | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', isMain: boolean, node?: { __typename?: 'Studio', id: number, name: string, isFavourite: boolean } | null } | null> | null } | null, airingSchedule?: { __typename?: 'AiringScheduleConnection', nodes?: Array<{ __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number } | null> | null } | null } | null };
 
 export type MediaFollowingQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5005,7 +5031,7 @@ export type CharacterListQueryVariables = Exact<{
 }>;
 
 
-export type CharacterListQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', roleNotes?: string | null, voiceActor?: { __typename?: 'Staff', id: number, isFavourite: boolean, favourites?: number | null, languageV2?: string | null, name?: { __typename?: 'StaffName', native?: string | null, full?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, favourites?: number | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null } | null } | null> | null } | null } | null };
+export type CharacterListQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', roleNotes?: string | null, voiceActor?: { __typename?: 'Staff', id: number, isFavourite: boolean, favourites?: number | null, languageV2?: string | null, name?: { __typename?: 'StaffName', native?: string | null, full?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
 
 export type CharacterDetailsQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5015,7 +5041,7 @@ export type CharacterDetailsQueryVariables = Exact<{
 }>;
 
 
-export type CharacterDetailsQuery = { __typename?: 'Query', Character?: { __typename?: 'Character', description?: string | null, gender?: string | null, age?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, name?: { __typename?: 'CharacterName', full?: string | null, first?: string | null, last?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', characterRole?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', roleNotes?: string | null, voiceActor?: { __typename?: 'Staff', id: number, language?: string | null, name?: { __typename?: 'StaffName', first?: string | null, middle?: string | null, last?: string | null, full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, isLicensed?: boolean | null, averageScore?: number | null, meanScore?: number | null, isAdult?: boolean | null, isFavourite: boolean, bannerImage?: string | null, source?: MediaSource | null, countryOfOrigin?: any | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null } | null };
+export type CharacterDetailsQuery = { __typename?: 'Query', Character?: { __typename?: 'Character', description?: string | null, gender?: string | null, age?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, name?: { __typename?: 'CharacterName', full?: string | null, first?: string | null, last?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', characterRole?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', roleNotes?: string | null, voiceActor?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null } | null };
 
 export type StaffListQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5024,7 +5050,7 @@ export type StaffListQueryVariables = Exact<{
 }>;
 
 
-export type StaffListQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, staff?: { __typename?: 'StaffConnection', edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, perPage?: number | null, lastPage?: number | null } | null } | null } | null };
+export type StaffListQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, staff?: { __typename?: 'StaffConnection', edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, perPage?: number | null, lastPage?: number | null } | null } | null } | null };
 
 export type StaffDetailsQueryVariables = Exact<{
   staff_media_page?: InputMaybe<Scalars['Int']['input']>;
@@ -5035,7 +5061,7 @@ export type StaffDetailsQueryVariables = Exact<{
 }>;
 
 
-export type StaffDetailsQuery = { __typename?: 'Query', Staff?: { __typename?: 'Staff', languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, dateOfDeath?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, staffMedia?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'MediaEdge', staffRole?: string | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, status?: MediaStatus | null, averageScore?: number | null, meanScore?: number | null, format?: MediaFormat | null, isLicensed?: boolean | null, isFavourite: boolean, bannerImage?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', role?: CharacterRole | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
+export type StaffDetailsQuery = { __typename?: 'Query', Staff?: { __typename?: 'Staff', languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, dateOfDeath?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, staffMedia?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'MediaEdge', staffRole?: string | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', role?: CharacterRole | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
 
 export type GetNotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -5044,9 +5070,16 @@ export type GetNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationsQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, unreadNotificationCount?: number | null } | null, Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null } | null, notifications?: Array<{ __typename: 'ActivityLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityMentionNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityMessageNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, message?: { __typename?: 'MessageActivity', siteUrl?: string | null } | null } | { __typename: 'ActivityReplyLikeNotification' } | { __typename: 'ActivityReplyNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityReplySubscribedNotification' } | { __typename: 'AiringNotification', id: number, episode: number, contexts?: Array<string | null> | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'FollowingNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | { __typename: 'MediaDataChangeNotification', id: number, reason?: string | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'MediaDeletionNotification', id: number, deletedMediaTitle?: string | null, context?: string | null, reason?: string | null, createdAt?: number | null, type?: NotificationType | null } | { __typename: 'MediaMergeNotification', id: number, reason?: string | null, deletedMediaTitles?: Array<string | null> | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'RelatedMediaAdditionNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'ThreadCommentLikeNotification' } | { __typename: 'ThreadCommentMentionNotification' } | { __typename: 'ThreadCommentReplyNotification' } | { __typename: 'ThreadCommentSubscribedNotification' } | { __typename: 'ThreadLikeNotification' } | null> | null } | null };
+export type GetNotificationsQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, unreadNotificationCount?: number | null } | null, Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null } | null, notifications?: Array<{ __typename: 'ActivityLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityMentionNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityMessageNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, message?: { __typename?: 'MessageActivity', siteUrl?: string | null } | null } | { __typename: 'ActivityReplyLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityReplyNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityReplySubscribedNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'AiringNotification', id: number, episode: number, contexts?: Array<string | null> | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'FollowingNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | { __typename: 'MediaDataChangeNotification', id: number, reason?: string | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'MediaDeletionNotification', id: number, deletedMediaTitle?: string | null, context?: string | null, reason?: string | null, createdAt?: number | null, type?: NotificationType | null } | { __typename: 'MediaMergeNotification', id: number, reason?: string | null, deletedMediaTitles?: Array<string | null> | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'RelatedMediaAdditionNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'ThreadCommentLikeNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadCommentMentionNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadCommentReplyNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadCommentSubscribedNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadLikeNotification', id: number, threadId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null } | null> | null } | null };
 
-export type MediaFragment = { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null };
+export type ActivityDetailQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ActivityDetailQuery = { __typename?: 'Query', Activity?: { __typename: 'ListActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, status?: string | null, progress?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, siteUrl?: string | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null, replies?: Array<{ __typename?: 'ActivityReply', id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | { __typename: 'MessageActivity', id: number, recipientId?: number | null, messengerId?: number | null, type?: ActivityType | null, replyCount: number, message?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPrivate?: boolean | null, siteUrl?: string | null, createdAt: number, recipient?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, messenger?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replies?: Array<{ __typename?: 'ActivityReply', id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | { __typename: 'TextActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, text?: string | null, siteUrl?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replies?: Array<{ __typename?: 'ActivityReply', id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+
+export type MediaFragment = { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null };
 
 export type UserFragment = { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null };
 
@@ -5076,9 +5109,9 @@ export type ReviewsByIdQueryVariables = Exact<{
 
 export type ReviewsByIdQuery = { __typename?: 'Query', Review?: { __typename?: 'Review', id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, userRating?: ReviewRating | null, htmlBody?: string | null, media?: { __typename?: 'Media', bannerImage?: string | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null };
 
-export type CharacterMetaDataFragment = { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null };
+export type CharacterMetaDataFragment = { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null };
 
-export type StaffMetaDataFragment = { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null };
+export type StaffMetaDataFragment = { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null };
 
 export type MediaSearchQueryVariables = Exact<{
   type?: InputMaybe<MediaType>;
@@ -5155,43 +5188,51 @@ export type MediaSearchQueryVariables = Exact<{
 }>;
 
 
-export type MediaSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null };
+export type MediaSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+
+export type UserSearchMetaFragment = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null };
 
 export type UserSearchQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<UserSort>> | InputMaybe<UserSort>>;
+  isModerator?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
-export type UserSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null };
+export type UserSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null> | null } | null };
 
 export type CharacterSearchQueryVariables = Exact<{
-  name?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   isBirthday?: InputMaybe<Scalars['Boolean']['input']>;
   sort?: InputMaybe<Array<InputMaybe<CharacterSort>> | InputMaybe<CharacterSort>>;
 }>;
 
 
-export type CharacterSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null };
+export type CharacterSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null };
 
 export type StaffSearchQueryVariables = Exact<{
-  name?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   isBirthday?: InputMaybe<Scalars['Boolean']['input']>;
   sort?: InputMaybe<Array<InputMaybe<StaffSort>> | InputMaybe<StaffSort>>;
 }>;
 
 
-export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
+export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
 
 export type StudioSearchQueryVariables = Exact<{
-  name?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<Array<InputMaybe<StudioSort>> | InputMaybe<StudioSort>>;
 }>;
 
 
-export type StudioSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', bannerImage?: string | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null } | null> | null } | null } | null> | null } | null };
+export type StudioSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null } | null> | null } | null };
 
 export type SearchAllQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -5200,7 +5241,7 @@ export type SearchAllQueryVariables = Exact<{
 }>;
 
 
-export type SearchAllQuery = { __typename?: 'Query', Anime?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, Manga?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', chapters?: number | null, volumes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, Characters?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, Staff?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, Studios?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null } | null> | null } | null, Users?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null };
+export type SearchAllQuery = { __typename?: 'Query', Anime?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, Manga?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, Characters?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, Staff?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, Studios?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null } | null> | null } | null, Users?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null };
 
 export type SiteTrendFragment = { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null };
 
@@ -5258,6 +5299,7 @@ export type AniListCommentDetailsQuery = { __typename?: 'Query', ThreadComment?:
 
 export type UserAnimeStatsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5265,6 +5307,7 @@ export type UserAnimeStatsQuery = { __typename?: 'Query', User?: { __typename?: 
 
 export type UserMangaStatsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5278,33 +5321,33 @@ export type UserActivityQueryVariables = Exact<{
 }>;
 
 
-export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null } | null, activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, format?: MediaFormat | null, isLicensed?: boolean | null, status?: MediaStatus | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, english?: string | null, native?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null };
+export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null } | null, activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, likeCount: number, createdAt: number, replyCount: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | { __typename: 'MessageActivity', id: number, recipientId?: number | null, messengerId?: number | null, type?: ActivityType | null, replyCount: number, message?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPrivate?: boolean | null, siteUrl?: string | null, createdAt: number, recipient?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, messenger?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | { __typename: 'TextActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, text?: string | null, siteUrl?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
 
-export type UserDataQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserMetaDataFragment = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number, meanScore: number, count: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number, meanScore: number, count: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null };
 
-
-export type UserDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', medium?: string | null, large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null };
-
-export type ExtUserDataQueryVariables = Exact<{
+export type UserDataQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
+  favoritesPerPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ExtUserDataQuery = { __typename?: 'Query', User?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null };
+export type UserDataQuery = { __typename?: 'Query', User?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number, meanScore: number, count: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number, meanScore: number, count: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+
+export type ViewerDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ViewerDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, unreadNotificationCount?: number | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null };
 
 export type UserOverviewQueryVariables = Exact<{
   userId: Scalars['Int']['input'];
-  isFollowing?: InputMaybe<Scalars['Boolean']['input']>;
-  activityPerPage?: InputMaybe<Scalars['Int']['input']>;
   followingPerPage?: InputMaybe<Scalars['Int']['input']>;
   followersPerPage?: InputMaybe<Scalars['Int']['input']>;
-  favoritesPerPage?: InputMaybe<Scalars['Int']['input']>;
   reviewsPerPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UserOverviewQuery = { __typename?: 'Query', user?: { __typename?: 'User', name: string, bannerImage?: string | null, about?: string | null, unreadNotificationCount?: number | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number, meanScore: number, count: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number, meanScore: number, count: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, activity?: { __typename?: 'Page', activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, createdAt: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, media?: { __typename?: 'Media', volumes?: number | null, chapters?: number | null, episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | { __typename: 'MessageActivity' } | { __typename: 'TextActivity' } | null> | null } | null, following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, followers?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, reviews?: { __typename?: 'Page', reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number } | null> | null } | null, list?: { __typename?: 'Page', mediaList?: Array<{ __typename?: 'MediaList', media?: { __typename?: 'Media', episodes?: number | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null } | null> | null } | null };
+export type UserOverviewQuery = { __typename?: 'Query', following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, followers?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, reviews?: { __typename?: 'Page', reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number } | null> | null } | null, list?: { __typename?: 'Page', mediaList?: Array<{ __typename?: 'MediaList', media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null };
 
 export type UserFollowingQueryVariables = Exact<{
   userId: Scalars['Int']['input'];
@@ -5324,6 +5367,7 @@ export type UserFollowersQuery = { __typename?: 'Query', Page?: { __typename?: '
 
 export type UserFavoritesOverviewQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -5331,42 +5375,47 @@ export type UserFavoritesOverviewQuery = { __typename?: 'Query', User?: { __type
 
 export type UserAnimeFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UserAnimeFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null } | null> | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null } | null };
+export type UserAnimeFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null } | null> | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null } | null } | null };
 
 export type UserMangaFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UserMangaFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null } | null> | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null } | null } | null };
+export type UserMangaFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null } | null> | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null } | null } | null };
 
 export type UserWaifuFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UserWaifuFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserWaifuFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
 
 export type UserStaffFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type UserStaffFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserStaffFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null } | null } | null };
 
 export type UserStudiosFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
 }>;
@@ -5375,6 +5424,45 @@ export type UserStudiosFavoritesQueryVariables = Exact<{
 export type UserStudiosFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', studios?: { __typename?: 'StudioConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, isFavourite: boolean } | null> | null } | null } | null } | null };
 
 
+export const MediaListEntryMetaFragmentDoc = `
+    fragment MediaListEntryMeta on MediaList {
+  id
+  mediaId
+  status
+  score
+  advancedScores
+  progress
+  progressVolumes
+  repeat
+  startedAt {
+    year
+    month
+    day
+  }
+  completedAt {
+    year
+    month
+    day
+  }
+  notes
+  private
+  hiddenFromStatusLists
+  customLists(asArray: true)
+  updatedAt
+  createdAt
+  user {
+    mediaListOptions {
+      animeList {
+        customLists
+      }
+      mangaList {
+        customLists
+      }
+      scoreFormat
+    }
+  }
+}
+    `;
 export const MainMetaFragmentDoc = `
     fragment MainMeta on Media {
   id
@@ -5386,7 +5474,7 @@ export const MainMetaFragmentDoc = `
   description
   descriptionHTML: description(asHtml: true)
   genres
-  status
+  status(version: 2)
   siteUrl
   meanScore
   averageScore
@@ -5397,6 +5485,7 @@ export const MainMetaFragmentDoc = `
   season
   isLicensed
   isAdult
+  synonyms
   startDate {
     year
     month
@@ -5420,13 +5509,7 @@ export const MainMetaFragmentDoc = `
     color
   }
   mediaListEntry {
-    id
-    mediaId
-    status
-    score
-    progress
-    progressVolumes
-    repeat
+    ...MediaListEntryMeta
   }
   stats {
     scoreDistribution {
@@ -5434,11 +5517,8 @@ export const MainMetaFragmentDoc = `
       amount
     }
   }
-}
-    `;
-export const AnimeMetaFragmentDoc = `
-    fragment AnimeMeta on Media {
-  ...MainMeta
+  chapters
+  volumes
   episodes
   nextAiringEpisode {
     id
@@ -5448,14 +5528,7 @@ export const AnimeMetaFragmentDoc = `
     mediaId
   }
 }
-    ${MainMetaFragmentDoc}`;
-export const MangaMetaFragmentDoc = `
-    fragment MangaMeta on Media {
-  ...MainMeta
-  chapters
-  volumes
-}
-    ${MainMetaFragmentDoc}`;
+    `;
 export const MediaListEntryFragmentDoc = `
     fragment mediaListEntry on MediaList {
   id
@@ -5484,32 +5557,8 @@ export const MediaListEntryFragmentDoc = `
     day
   }
   media {
-    id
-    title {
-      userPreferred
-      romaji
-      english
-      native
-    }
-    coverImage {
-      extraLarge
-      large
-      color
-    }
-    type
-    format
-    status(version: 2)
-    episodes
-    volumes
-    chapters
-    averageScore
-    meanScore
-    popularity
-    isAdult
-    countryOfOrigin
-    genres
+    ...MainMeta
     synonyms
-    isFavourite
     tags {
       id
       name
@@ -5518,25 +5567,6 @@ export const MediaListEntryFragmentDoc = `
       isMediaSpoiler
       isGeneralSpoiler
       category
-    }
-    bannerImage
-    startDate {
-      year
-      month
-      day
-    }
-    nextAiringEpisode {
-      id
-      airingAt
-      timeUntilAiring
-      episode
-      mediaId
-    }
-    stats {
-      scoreDistribution {
-        score
-        amount
-      }
     }
   }
 }
@@ -5553,6 +5583,9 @@ export const MediaFragmentDoc = `
     native
     romaji
     english
+  }
+  mediaListEntry {
+    status
   }
   bannerImage
   coverImage {
@@ -5615,6 +5648,7 @@ export const CharacterMetaDataFragmentDoc = `
   }
   gender
   description
+  favourites
   descriptionHTML: description(asHtml: true)
   siteUrl
 }
@@ -5637,7 +5671,25 @@ export const StaffMetaDataFragmentDoc = `
   }
   description
   gender
+  favourites
+  language: languageV2
   descriptionHTML: description(asHtml: true)
+  siteUrl
+}
+    `;
+export const UserSearchMetaFragmentDoc = `
+    fragment UserSearchMeta on User {
+  id
+  name
+  aboutHTML: about(asHtml: true)
+  isFollowing
+  isFollower
+  avatar {
+    large
+  }
+  mediaListOptions {
+    scoreFormat
+  }
   siteUrl
 }
     `;
@@ -5648,6 +5700,158 @@ export const SiteTrendFragmentDoc = `
     count
     change
   }
+}
+    `;
+export const UserMetaDataFragmentDoc = `
+    fragment UserMetaData on User {
+  id
+  name
+  avatar {
+    large
+  }
+  bannerImage
+  about
+  aboutHTML: about(asHtml: true)
+  stats {
+    favouredGenresOverview {
+      genre
+      amount
+      meanScore
+      timeWatched
+    }
+    activityHistory {
+      date
+      amount
+      level
+    }
+  }
+  statistics {
+    anime {
+      minutesWatched
+      episodesWatched
+      meanScore
+      count
+    }
+    manga {
+      chaptersRead
+      volumesRead
+      meanScore
+      count
+    }
+  }
+  mediaListOptions {
+    scoreFormat
+    animeList {
+      customLists
+    }
+    mangaList {
+      customLists
+    }
+  }
+  favourites {
+    anime(page: 1, perPage: $favoritesPerPage) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        hasNextPage
+        lastPage
+      }
+      nodes {
+        id
+        coverImage {
+          extraLarge
+          color
+        }
+        title {
+          english
+          native
+          romaji
+        }
+        averageScore
+        meanScore
+        bannerImage
+        type
+        format
+        genres
+        episodes
+        status
+        isAdult
+        synonyms
+        isLicensed
+        isFavourite
+        stats {
+          scoreDistribution {
+            score
+            amount
+          }
+        }
+      }
+    }
+    manga(page: 1, perPage: $favoritesPerPage) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        hasNextPage
+        lastPage
+      }
+      nodes {
+        id
+        coverImage {
+          extraLarge
+          color
+        }
+        title {
+          english
+          native
+          romaji
+        }
+        averageScore
+        meanScore
+        bannerImage
+        chapters
+        volumes
+        type
+        format
+        genres
+        status
+        isAdult
+        synonyms
+        isLicensed
+        isFavourite
+        stats {
+          scoreDistribution {
+            score
+            amount
+          }
+        }
+      }
+    }
+    characters(page: 1, perPage: $favoritesPerPage) {
+      pageInfo {
+        total
+        perPage
+        currentPage
+        hasNextPage
+        lastPage
+      }
+      nodes {
+        id
+        name {
+          full
+          native
+        }
+        gender
+        isFavourite
+        image {
+          large
+        }
+      }
+    }
+  }
+  siteUrl
+  unreadNotificationCount
 }
     `;
 export const ToggleFavDocument = `
@@ -5738,33 +5942,10 @@ export const SaveMediaListItemDocument = `
     scoreRaw: $scoreRaw
     customLists: $customLists
   ) {
-    id
-    status
-    score
-    progress
-    repeat
-    mediaId
-    media {
-      type
-      format
-      countryOfOrigin
-    }
-    startedAt {
-      year
-      month
-      day
-    }
-    completedAt {
-      year
-      month
-      day
-    }
-    notes
-    private
-    hiddenFromStatusLists
+    ...MediaListEntryMeta
   }
 }
-    `;
+    ${MediaListEntryMetaFragmentDoc}`;
 
 export const useSaveMediaListItemMutation = <
       TError = unknown,
@@ -6243,7 +6424,7 @@ export const MediaAniCardQueryDocument = `
     averageScore
     meanScore
     status
-    description
+    descriptionHTML: description(asHtml: true)
     episodes
     chapters
     volumes
@@ -6326,12 +6507,13 @@ export const WeeklyAnimeDocument = `
       airingAt
       timeUntilAiring
       media {
-        ...AnimeMeta
+        ...MainMeta
       }
     }
   }
 }
-    ${AnimeMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useWeeklyAnimeQuery = <
       TData = WeeklyAnimeQuery,
@@ -6375,8 +6557,344 @@ useInfiniteWeeklyAnimeQuery.getKey = (variables?: WeeklyAnimeQueryVariables) => 
 
 useWeeklyAnimeQuery.fetcher = (variables?: WeeklyAnimeQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, variables, options);
 
+export const AiringTodayDocument = `
+    query AiringToday($dayStart: Int, $dayEnd: Int) {
+  Page(perPage: 50) {
+    pageInfo {
+      hasNextPage
+      total
+    }
+    airingSchedules(airingAt_greater: $dayStart, airingAt_lesser: $dayEnd) {
+      id
+      episode
+      airingAt
+      timeUntilAiring
+      media {
+        ...MainMeta
+      }
+    }
+  }
+}
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
+
+export const useAiringTodayQuery = <
+      TData = AiringTodayQuery,
+      TError = unknown
+    >(
+      variables?: AiringTodayQueryVariables,
+      options?: Omit<UseQueryOptions<AiringTodayQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AiringTodayQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AiringTodayQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['AiringToday'] : ['AiringToday', variables],
+    queryFn: fetchAnilistData<AiringTodayQuery, AiringTodayQueryVariables>(AiringTodayDocument, variables),
+    ...options
+  }
+    )};
+
+useAiringTodayQuery.getKey = (variables?: AiringTodayQueryVariables) => variables === undefined ? ['AiringToday'] : ['AiringToday', variables];
+
+export const useInfiniteAiringTodayQuery = <
+      TData = InfiniteData<AiringTodayQuery>,
+      TError = unknown
+    >(
+      variables: AiringTodayQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AiringTodayQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AiringTodayQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AiringTodayQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['AiringToday.infinite'] : ['AiringToday.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<AiringTodayQuery, AiringTodayQueryVariables>(AiringTodayDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAiringTodayQuery.getKey = (variables?: AiringTodayQueryVariables) => variables === undefined ? ['AiringToday.infinite'] : ['AiringToday.infinite', variables];
+
+
+useAiringTodayQuery.fetcher = (variables?: AiringTodayQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AiringTodayQuery, AiringTodayQueryVariables>(AiringTodayDocument, variables, options);
+
+export const TagCollectionDocument = `
+    query TagCollection {
+  MediaTagCollection {
+    id
+    name
+    description
+    category
+    rank
+    isGeneralSpoiler
+    isMediaSpoiler
+    isAdult
+    userId
+  }
+}
+    `;
+
+export const useTagCollectionQuery = <
+      TData = TagCollectionQuery,
+      TError = unknown
+    >(
+      variables?: TagCollectionQueryVariables,
+      options?: Omit<UseQueryOptions<TagCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<TagCollectionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<TagCollectionQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['TagCollection'] : ['TagCollection', variables],
+    queryFn: fetchAnilistData<TagCollectionQuery, TagCollectionQueryVariables>(TagCollectionDocument, variables),
+    ...options
+  }
+    )};
+
+useTagCollectionQuery.getKey = (variables?: TagCollectionQueryVariables) => variables === undefined ? ['TagCollection'] : ['TagCollection', variables];
+
+export const useInfiniteTagCollectionQuery = <
+      TData = InfiniteData<TagCollectionQuery>,
+      TError = unknown
+    >(
+      variables: TagCollectionQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<TagCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<TagCollectionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<TagCollectionQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['TagCollection.infinite'] : ['TagCollection.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<TagCollectionQuery, TagCollectionQueryVariables>(TagCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteTagCollectionQuery.getKey = (variables?: TagCollectionQueryVariables) => variables === undefined ? ['TagCollection.infinite'] : ['TagCollection.infinite', variables];
+
+
+useTagCollectionQuery.fetcher = (variables?: TagCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<TagCollectionQuery, TagCollectionQueryVariables>(TagCollectionDocument, variables, options);
+
+export const LinkSourceCollectionDocument = `
+    query LinkSourceCollection {
+  AnimeExternalLinkSourceCollection: ExternalLinkSourceCollection(
+    mediaType: ANIME
+  ) {
+    id
+    url
+    site
+    siteId
+    type
+    language
+    color
+    icon
+    notes
+    isDisabled
+  }
+  MangaExternalLinkSourceCollection: ExternalLinkSourceCollection(
+    mediaType: MANGA
+  ) {
+    id
+    url
+    site
+    siteId
+    type
+    language
+    color
+    icon
+    notes
+    isDisabled
+  }
+}
+    `;
+
+export const useLinkSourceCollectionQuery = <
+      TData = LinkSourceCollectionQuery,
+      TError = unknown
+    >(
+      variables?: LinkSourceCollectionQueryVariables,
+      options?: Omit<UseQueryOptions<LinkSourceCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<LinkSourceCollectionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<LinkSourceCollectionQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['LinkSourceCollection'] : ['LinkSourceCollection', variables],
+    queryFn: fetchAnilistData<LinkSourceCollectionQuery, LinkSourceCollectionQueryVariables>(LinkSourceCollectionDocument, variables),
+    ...options
+  }
+    )};
+
+useLinkSourceCollectionQuery.getKey = (variables?: LinkSourceCollectionQueryVariables) => variables === undefined ? ['LinkSourceCollection'] : ['LinkSourceCollection', variables];
+
+export const useInfiniteLinkSourceCollectionQuery = <
+      TData = InfiniteData<LinkSourceCollectionQuery>,
+      TError = unknown
+    >(
+      variables: LinkSourceCollectionQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<LinkSourceCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<LinkSourceCollectionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<LinkSourceCollectionQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['LinkSourceCollection.infinite'] : ['LinkSourceCollection.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<LinkSourceCollectionQuery, LinkSourceCollectionQueryVariables>(LinkSourceCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteLinkSourceCollectionQuery.getKey = (variables?: LinkSourceCollectionQueryVariables) => variables === undefined ? ['LinkSourceCollection.infinite'] : ['LinkSourceCollection.infinite', variables];
+
+
+useLinkSourceCollectionQuery.fetcher = (variables?: LinkSourceCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<LinkSourceCollectionQuery, LinkSourceCollectionQueryVariables>(LinkSourceCollectionDocument, variables, options);
+
+export const GenreCollectionDocument = `
+    query GenreCollection {
+  GenreCollection
+}
+    `;
+
+export const useGenreCollectionQuery = <
+      TData = GenreCollectionQuery,
+      TError = unknown
+    >(
+      variables?: GenreCollectionQueryVariables,
+      options?: Omit<UseQueryOptions<GenreCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GenreCollectionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<GenreCollectionQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GenreCollection'] : ['GenreCollection', variables],
+    queryFn: fetchAnilistData<GenreCollectionQuery, GenreCollectionQueryVariables>(GenreCollectionDocument, variables),
+    ...options
+  }
+    )};
+
+useGenreCollectionQuery.getKey = (variables?: GenreCollectionQueryVariables) => variables === undefined ? ['GenreCollection'] : ['GenreCollection', variables];
+
+export const useInfiniteGenreCollectionQuery = <
+      TData = InfiniteData<GenreCollectionQuery>,
+      TError = unknown
+    >(
+      variables: GenreCollectionQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<GenreCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<GenreCollectionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<GenreCollectionQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['GenreCollection.infinite'] : ['GenreCollection.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<GenreCollectionQuery, GenreCollectionQueryVariables>(GenreCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteGenreCollectionQuery.getKey = (variables?: GenreCollectionQueryVariables) => variables === undefined ? ['GenreCollection.infinite'] : ['GenreCollection.infinite', variables];
+
+
+useGenreCollectionQuery.fetcher = (variables?: GenreCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<GenreCollectionQuery, GenreCollectionQueryVariables>(GenreCollectionDocument, variables, options);
+
+export const AllCollectionsDocument = `
+    query AllCollections {
+  GenreCollection
+  MediaTagCollection {
+    id
+    name
+    description
+    category
+    rank
+    isGeneralSpoiler
+    isMediaSpoiler
+    isAdult
+    userId
+  }
+  AnimeExternalLinkSourceCollection: ExternalLinkSourceCollection(
+    mediaType: ANIME
+  ) {
+    id
+    url
+    site
+    siteId
+    type
+    language
+    color
+    icon
+    notes
+    isDisabled
+  }
+  MangaExternalLinkSourceCollection: ExternalLinkSourceCollection(
+    mediaType: MANGA
+  ) {
+    id
+    url
+    site
+    siteId
+    type
+    language
+    color
+    icon
+    notes
+    isDisabled
+  }
+}
+    `;
+
+export const useAllCollectionsQuery = <
+      TData = AllCollectionsQuery,
+      TError = unknown
+    >(
+      variables?: AllCollectionsQueryVariables,
+      options?: Omit<UseQueryOptions<AllCollectionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AllCollectionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AllCollectionsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['AllCollections'] : ['AllCollections', variables],
+    queryFn: fetchAnilistData<AllCollectionsQuery, AllCollectionsQueryVariables>(AllCollectionsDocument, variables),
+    ...options
+  }
+    )};
+
+useAllCollectionsQuery.getKey = (variables?: AllCollectionsQueryVariables) => variables === undefined ? ['AllCollections'] : ['AllCollections', variables];
+
+export const useInfiniteAllCollectionsQuery = <
+      TData = InfiniteData<AllCollectionsQuery>,
+      TError = unknown
+    >(
+      variables: AllCollectionsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AllCollectionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AllCollectionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AllCollectionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['AllCollections.infinite'] : ['AllCollections.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<AllCollectionsQuery, AllCollectionsQueryVariables>(AllCollectionsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAllCollectionsQuery.getKey = (variables?: AllCollectionsQueryVariables) => variables === undefined ? ['AllCollections.infinite'] : ['AllCollections.infinite', variables];
+
+
+useAllCollectionsQuery.fetcher = (variables?: AllCollectionsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AllCollectionsQuery, AllCollectionsQueryVariables>(AllCollectionsDocument, variables, options);
+
 export const AnimeExploreDocument = `
-    query AnimeExplore($perPage: Int, $season: MediaSeason, $seasonYear: Int, $nextSeason: MediaSeason, $nextSeasonYear: Int, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+    query AnimeExplore($includeViewer: Boolean!, $perPage: Int, $season: MediaSeason, $seasonYear: Int, $nextSeason: MediaSeason, $nextSeasonYear: Int, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Viewer @include(if: $includeViewer) {
+    mediaListOptions {
+      scoreFormat
+    }
+  }
   trending: Page(page: 1, perPage: $perPage) {
     pageInfo {
       hasNextPage
@@ -6390,7 +6908,7 @@ export const AnimeExploreDocument = `
       sort: [TRENDING_DESC, POPULARITY_DESC]
       tag_not_in: $tag_not_in
     ) {
-      ...AnimeMeta
+      ...MainMeta
     }
   }
   popular: Page(page: 1, perPage: $perPage) {
@@ -6406,7 +6924,7 @@ export const AnimeExploreDocument = `
       sort: POPULARITY_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...AnimeMeta
+      ...MainMeta
     }
   }
   top: Page(page: 1, perPage: $perPage) {
@@ -6422,7 +6940,7 @@ export const AnimeExploreDocument = `
       sort: SCORE_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...AnimeMeta
+      ...MainMeta
     }
   }
   thisSeason: Page(page: 1, perPage: $perPage) {
@@ -6440,7 +6958,7 @@ export const AnimeExploreDocument = `
       sort: SCORE_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...AnimeMeta
+      ...MainMeta
     }
   }
   nextSeason: Page(page: 1, perPage: $perPage) {
@@ -6458,29 +6976,30 @@ export const AnimeExploreDocument = `
       sort: TRENDING_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...AnimeMeta
+      ...MainMeta
     }
   }
 }
-    ${AnimeMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useAnimeExploreQuery = <
       TData = AnimeExploreQuery,
       TError = unknown
     >(
-      variables?: AnimeExploreQueryVariables,
+      variables: AnimeExploreQueryVariables,
       options?: Omit<UseQueryOptions<AnimeExploreQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AnimeExploreQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<AnimeExploreQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['AnimeExplore'] : ['AnimeExplore', variables],
+    queryKey: ['AnimeExplore', variables],
     queryFn: fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables),
     ...options
   }
     )};
 
-useAnimeExploreQuery.getKey = (variables?: AnimeExploreQueryVariables) => variables === undefined ? ['AnimeExplore'] : ['AnimeExplore', variables];
+useAnimeExploreQuery.getKey = (variables: AnimeExploreQueryVariables) => ['AnimeExplore', variables];
 
 export const useInfiniteAnimeExploreQuery = <
       TData = InfiniteData<AnimeExploreQuery>,
@@ -6494,20 +7013,25 @@ export const useInfiniteAnimeExploreQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['AnimeExplore.infinite'] : ['AnimeExplore.infinite', variables],
+      queryKey: optionsQueryKey ?? ['AnimeExplore.infinite', variables],
       queryFn: (metaData) => fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteAnimeExploreQuery.getKey = (variables?: AnimeExploreQueryVariables) => variables === undefined ? ['AnimeExplore.infinite'] : ['AnimeExplore.infinite', variables];
+useInfiniteAnimeExploreQuery.getKey = (variables: AnimeExploreQueryVariables) => ['AnimeExplore.infinite', variables];
 
 
-useAnimeExploreQuery.fetcher = (variables?: AnimeExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables, options);
+useAnimeExploreQuery.fetcher = (variables: AnimeExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AnimeExploreQuery, AnimeExploreQueryVariables>(AnimeExploreDocument, variables, options);
 
 export const MangaExploreDocument = `
-    query MangaExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+    query MangaExplore($includeViewer: Boolean!, $perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Viewer @include(if: $includeViewer) {
+    mediaListOptions {
+      scoreFormat
+    }
+  }
   newReleases: Page(page: 1, perPage: $perPage) {
     pageInfo {
       hasNextPage
@@ -6525,7 +7049,7 @@ export const MangaExploreDocument = `
       format_not_in: [NOVEL, ONE_SHOT]
       sort: [TRENDING_DESC, POPULARITY_DESC]
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   trending: Page(page: 1, perPage: $perPage) {
@@ -6543,7 +7067,7 @@ export const MangaExploreDocument = `
       tag_not_in: $tag_not_in
       format_not_in: NOVEL
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   popular: Page(page: 1, perPage: $perPage) {
@@ -6561,7 +7085,7 @@ export const MangaExploreDocument = `
       tag_not_in: $tag_not_in
       format_not_in: NOVEL
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   top: Page(page: 1, perPage: $perPage) {
@@ -6579,29 +7103,30 @@ export const MangaExploreDocument = `
       tag_not_in: $tag_not_in
       format_not_in: NOVEL
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
 }
-    ${MangaMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useMangaExploreQuery = <
       TData = MangaExploreQuery,
       TError = unknown
     >(
-      variables?: MangaExploreQueryVariables,
+      variables: MangaExploreQueryVariables,
       options?: Omit<UseQueryOptions<MangaExploreQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MangaExploreQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<MangaExploreQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['MangaExplore'] : ['MangaExplore', variables],
+    queryKey: ['MangaExplore', variables],
     queryFn: fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables),
     ...options
   }
     )};
 
-useMangaExploreQuery.getKey = (variables?: MangaExploreQueryVariables) => variables === undefined ? ['MangaExplore'] : ['MangaExplore', variables];
+useMangaExploreQuery.getKey = (variables: MangaExploreQueryVariables) => ['MangaExplore', variables];
 
 export const useInfiniteMangaExploreQuery = <
       TData = InfiniteData<MangaExploreQuery>,
@@ -6615,20 +7140,25 @@ export const useInfiniteMangaExploreQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['MangaExplore.infinite'] : ['MangaExplore.infinite', variables],
+      queryKey: optionsQueryKey ?? ['MangaExplore.infinite', variables],
       queryFn: (metaData) => fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteMangaExploreQuery.getKey = (variables?: MangaExploreQueryVariables) => variables === undefined ? ['MangaExplore.infinite'] : ['MangaExplore.infinite', variables];
+useInfiniteMangaExploreQuery.getKey = (variables: MangaExploreQueryVariables) => ['MangaExplore.infinite', variables];
 
 
-useMangaExploreQuery.fetcher = (variables?: MangaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables, options);
+useMangaExploreQuery.fetcher = (variables: MangaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MangaExploreQuery, MangaExploreQueryVariables>(MangaExploreDocument, variables, options);
 
 export const ManhwaExploreDocument = `
-    query ManhwaExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+    query ManhwaExplore($includeViewer: Boolean!, $perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Viewer @include(if: $includeViewer) {
+    mediaListOptions {
+      scoreFormat
+    }
+  }
   newReleases: Page(page: 1, perPage: $perPage) {
     pageInfo {
       hasNextPage
@@ -6646,7 +7176,7 @@ export const ManhwaExploreDocument = `
       format_not_in: [NOVEL, ONE_SHOT]
       sort: [TRENDING_DESC, POPULARITY_DESC]
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   trending: Page(page: 1, perPage: $perPage) {
@@ -6663,7 +7193,7 @@ export const ManhwaExploreDocument = `
       sort: [TRENDING_DESC, POPULARITY_DESC]
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   popular: Page(page: 1, perPage: $perPage) {
@@ -6680,7 +7210,7 @@ export const ManhwaExploreDocument = `
       sort: POPULARITY_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   top: Page(page: 1, perPage: $perPage) {
@@ -6697,29 +7227,30 @@ export const ManhwaExploreDocument = `
       sort: SCORE_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
 }
-    ${MangaMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useManhwaExploreQuery = <
       TData = ManhwaExploreQuery,
       TError = unknown
     >(
-      variables?: ManhwaExploreQueryVariables,
+      variables: ManhwaExploreQueryVariables,
       options?: Omit<UseQueryOptions<ManhwaExploreQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ManhwaExploreQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<ManhwaExploreQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['ManhwaExplore'] : ['ManhwaExplore', variables],
+    queryKey: ['ManhwaExplore', variables],
     queryFn: fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables),
     ...options
   }
     )};
 
-useManhwaExploreQuery.getKey = (variables?: ManhwaExploreQueryVariables) => variables === undefined ? ['ManhwaExplore'] : ['ManhwaExplore', variables];
+useManhwaExploreQuery.getKey = (variables: ManhwaExploreQueryVariables) => ['ManhwaExplore', variables];
 
 export const useInfiniteManhwaExploreQuery = <
       TData = InfiniteData<ManhwaExploreQuery>,
@@ -6733,20 +7264,25 @@ export const useInfiniteManhwaExploreQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['ManhwaExplore.infinite'] : ['ManhwaExplore.infinite', variables],
+      queryKey: optionsQueryKey ?? ['ManhwaExplore.infinite', variables],
       queryFn: (metaData) => fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteManhwaExploreQuery.getKey = (variables?: ManhwaExploreQueryVariables) => variables === undefined ? ['ManhwaExplore.infinite'] : ['ManhwaExplore.infinite', variables];
+useInfiniteManhwaExploreQuery.getKey = (variables: ManhwaExploreQueryVariables) => ['ManhwaExplore.infinite', variables];
 
 
-useManhwaExploreQuery.fetcher = (variables?: ManhwaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables, options);
+useManhwaExploreQuery.fetcher = (variables: ManhwaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ManhwaExploreQuery, ManhwaExploreQueryVariables>(ManhwaExploreDocument, variables, options);
 
 export const ManhuaExploreDocument = `
-    query ManhuaExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+    query ManhuaExplore($includeViewer: Boolean!, $perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Viewer @include(if: $includeViewer) {
+    mediaListOptions {
+      scoreFormat
+    }
+  }
   newReleases: Page(page: 1, perPage: $perPage) {
     pageInfo {
       hasNextPage
@@ -6764,7 +7300,7 @@ export const ManhuaExploreDocument = `
       format_not_in: [NOVEL, ONE_SHOT]
       sort: [TRENDING_DESC, POPULARITY_DESC]
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   trending: Page(page: 1, perPage: $perPage) {
@@ -6781,7 +7317,7 @@ export const ManhuaExploreDocument = `
       sort: [TRENDING_DESC, POPULARITY_DESC]
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   popular: Page(page: 1, perPage: $perPage) {
@@ -6798,7 +7334,7 @@ export const ManhuaExploreDocument = `
       sort: POPULARITY_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   top: Page(page: 1, perPage: $perPage) {
@@ -6815,29 +7351,30 @@ export const ManhuaExploreDocument = `
       sort: SCORE_DESC
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
 }
-    ${MangaMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useManhuaExploreQuery = <
       TData = ManhuaExploreQuery,
       TError = unknown
     >(
-      variables?: ManhuaExploreQueryVariables,
+      variables: ManhuaExploreQueryVariables,
       options?: Omit<UseQueryOptions<ManhuaExploreQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ManhuaExploreQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<ManhuaExploreQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['ManhuaExplore'] : ['ManhuaExplore', variables],
+    queryKey: ['ManhuaExplore', variables],
     queryFn: fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables),
     ...options
   }
     )};
 
-useManhuaExploreQuery.getKey = (variables?: ManhuaExploreQueryVariables) => variables === undefined ? ['ManhuaExplore'] : ['ManhuaExplore', variables];
+useManhuaExploreQuery.getKey = (variables: ManhuaExploreQueryVariables) => ['ManhuaExplore', variables];
 
 export const useInfiniteManhuaExploreQuery = <
       TData = InfiniteData<ManhuaExploreQuery>,
@@ -6851,20 +7388,25 @@ export const useInfiniteManhuaExploreQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['ManhuaExplore.infinite'] : ['ManhuaExplore.infinite', variables],
+      queryKey: optionsQueryKey ?? ['ManhuaExplore.infinite', variables],
       queryFn: (metaData) => fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteManhuaExploreQuery.getKey = (variables?: ManhuaExploreQueryVariables) => variables === undefined ? ['ManhuaExplore.infinite'] : ['ManhuaExplore.infinite', variables];
+useInfiniteManhuaExploreQuery.getKey = (variables: ManhuaExploreQueryVariables) => ['ManhuaExplore.infinite', variables];
 
 
-useManhuaExploreQuery.fetcher = (variables?: ManhuaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables, options);
+useManhuaExploreQuery.fetcher = (variables: ManhuaExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ManhuaExploreQuery, ManhuaExploreQueryVariables>(ManhuaExploreDocument, variables, options);
 
 export const NovelExploreDocument = `
-    query NovelExplore($perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+    query NovelExplore($includeViewer: Boolean!, $perPage: Int, $startDate_greater: FuzzyDateInt, $onList: Boolean, $isAdult: Boolean, $tag_not_in: [String]) {
+  Viewer @include(if: $includeViewer) {
+    mediaListOptions {
+      scoreFormat
+    }
+  }
   newReleases: Page(page: 1, perPage: $perPage) {
     pageInfo {
       hasNextPage
@@ -6881,7 +7423,7 @@ export const NovelExploreDocument = `
       format: NOVEL
       sort: [TRENDING_DESC, POPULARITY_DESC]
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   trending: Page(page: 1, perPage: $perPage) {
@@ -6898,7 +7440,7 @@ export const NovelExploreDocument = `
       format: NOVEL
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   popular: Page(page: 1, perPage: $perPage) {
@@ -6915,7 +7457,7 @@ export const NovelExploreDocument = `
       format: NOVEL
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
   top: Page(page: 1, perPage: $perPage) {
@@ -6932,29 +7474,30 @@ export const NovelExploreDocument = `
       format: NOVEL
       tag_not_in: $tag_not_in
     ) {
-      ...MangaMeta
+      ...MainMeta
     }
   }
 }
-    ${MangaMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useNovelExploreQuery = <
       TData = NovelExploreQuery,
       TError = unknown
     >(
-      variables?: NovelExploreQueryVariables,
+      variables: NovelExploreQueryVariables,
       options?: Omit<UseQueryOptions<NovelExploreQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<NovelExploreQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<NovelExploreQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['NovelExplore'] : ['NovelExplore', variables],
+    queryKey: ['NovelExplore', variables],
     queryFn: fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables),
     ...options
   }
     )};
 
-useNovelExploreQuery.getKey = (variables?: NovelExploreQueryVariables) => variables === undefined ? ['NovelExplore'] : ['NovelExplore', variables];
+useNovelExploreQuery.getKey = (variables: NovelExploreQueryVariables) => ['NovelExplore', variables];
 
 export const useInfiniteNovelExploreQuery = <
       TData = InfiniteData<NovelExploreQuery>,
@@ -6968,17 +7511,17 @@ export const useInfiniteNovelExploreQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['NovelExplore.infinite'] : ['NovelExplore.infinite', variables],
+      queryKey: optionsQueryKey ?? ['NovelExplore.infinite', variables],
       queryFn: (metaData) => fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteNovelExploreQuery.getKey = (variables?: NovelExploreQueryVariables) => variables === undefined ? ['NovelExplore.infinite'] : ['NovelExplore.infinite', variables];
+useInfiniteNovelExploreQuery.getKey = (variables: NovelExploreQueryVariables) => ['NovelExplore.infinite', variables];
 
 
-useNovelExploreQuery.fetcher = (variables?: NovelExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables, options);
+useNovelExploreQuery.fetcher = (variables: NovelExploreQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<NovelExploreQuery, NovelExploreQueryVariables>(NovelExploreDocument, variables, options);
 
 export const RecommendationsDocument = `
     query Recommendations($page: Int, $perPage: Int, $sort: [RecommendationSort], $onList: Boolean) {
@@ -7142,64 +7685,6 @@ useInfiniteRecommendationsQuery.getKey = (variables?: RecommendationsQueryVariab
 
 useRecommendationsQuery.fetcher = (variables?: RecommendationsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<RecommendationsQuery, RecommendationsQueryVariables>(RecommendationsDocument, variables, options);
 
-export const GenreTagCollectionDocument = `
-    query GenreTagCollection {
-  GenreCollection
-  MediaTagCollection {
-    id
-    name
-    description
-    category
-    rank
-    isGeneralSpoiler
-    isMediaSpoiler
-    isAdult
-  }
-}
-    `;
-
-export const useGenreTagCollectionQuery = <
-      TData = GenreTagCollectionQuery,
-      TError = unknown
-    >(
-      variables?: GenreTagCollectionQueryVariables,
-      options?: Omit<UseQueryOptions<GenreTagCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GenreTagCollectionQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<GenreTagCollectionQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['GenreTagCollection'] : ['GenreTagCollection', variables],
-    queryFn: fetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, variables),
-    ...options
-  }
-    )};
-
-useGenreTagCollectionQuery.getKey = (variables?: GenreTagCollectionQueryVariables) => variables === undefined ? ['GenreTagCollection'] : ['GenreTagCollection', variables];
-
-export const useInfiniteGenreTagCollectionQuery = <
-      TData = InfiniteData<GenreTagCollectionQuery>,
-      TError = unknown
-    >(
-      variables: GenreTagCollectionQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<GenreTagCollectionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<GenreTagCollectionQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<GenreTagCollectionQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['GenreTagCollection.infinite'] : ['GenreTagCollection.infinite', variables],
-      queryFn: (metaData) => fetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteGenreTagCollectionQuery.getKey = (variables?: GenreTagCollectionQueryVariables) => variables === undefined ? ['GenreTagCollection.infinite'] : ['GenreTagCollection.infinite', variables];
-
-
-useGenreTagCollectionQuery.fetcher = (variables?: GenreTagCollectionQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<GenreTagCollectionQuery, GenreTagCollectionQueryVariables>(GenreTagCollectionDocument, variables, options);
-
 export const StudioListDocument = `
     query StudioList($studioId: Int, $page: Int, $perPage: Int) {
   Studio(id: $studioId) {
@@ -7217,12 +7702,13 @@ export const StudioListDocument = `
         hasNextPage
       }
       nodes {
-        ...AnimeMeta
+        ...MainMeta
       }
     }
   }
 }
-    ${AnimeMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useStudioListQuery = <
       TData = StudioListQuery,
@@ -7294,7 +7780,9 @@ export const UserAnimeListCollectionDocument = `
     }
   }
 }
-    ${MediaListEntryFragmentDoc}`;
+    ${MediaListEntryFragmentDoc}
+${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useUserAnimeListCollectionQuery = <
       TData = UserAnimeListCollectionQuery,
@@ -7366,7 +7854,9 @@ export const UserMangaListCollectionDocument = `
     }
   }
 }
-    ${MediaListEntryFragmentDoc}`;
+    ${MediaListEntryFragmentDoc}
+${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useUserMangaListCollectionQuery = <
       TData = UserMangaListCollectionQuery,
@@ -7580,18 +8070,7 @@ export const AniMediaDocument = `
       score
       progress
       user {
-        id
-        name
-        aboutHTML: about(asHtml: true)
-        isFollowing
-        isFollower
-        avatar {
-          large
-        }
-        mediaListOptions {
-          scoreFormat
-        }
-        siteUrl
+        ...UserSearchMeta
       }
     }
   }
@@ -7645,9 +8124,7 @@ export const AniMediaDocument = `
         id
         relationType(version: 2)
         node {
-          ...AnimeMeta
-          chapters
-          volumes
+          ...MainMeta
         }
       }
     }
@@ -7723,48 +8200,13 @@ export const AniMediaDocument = `
           rating
           userRating
           mediaRecommendation {
-            ...AnimeMeta
-            chapters
-            volumes
+            ...MainMeta
           }
         }
       }
     }
     mediaListEntry {
-      id
-      mediaId
-      media {
-        status(version: 2)
-        episodes
-        chapters
-        volumes
-        nextAiringEpisode {
-          episode
-        }
-      }
-      status
-      score
-      progress
-      progressVolumes
-      repeat
-      priority
-      private
-      notes
-      hiddenFromStatusLists
-      customLists
-      advancedScores
-      startedAt {
-        year
-        month
-        day
-      }
-      completedAt {
-        year
-        month
-        day
-      }
-      updatedAt
-      createdAt
+      ...MediaListEntryMeta
     }
     staff(page: 1, perPage: 25, sort: [RELEVANCE, ID]) {
       pageInfo {
@@ -7856,7 +8298,9 @@ export const AniMediaDocument = `
     isFavourite
   }
 }
-    ${AnimeMetaFragmentDoc}
+    ${UserSearchMetaFragmentDoc}
+${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}
 ${CharacterMetaDataFragmentDoc}
 ${StaffMetaDataFragmentDoc}`;
 
@@ -8006,23 +8450,13 @@ export const CharacterListDocument = `
           }
         }
         node {
-          id
-          image {
-            large
-          }
-          gender
-          isFavourite
-          favourites
-          name {
-            full
-            native
-          }
+          ...CharacterMetaData
         }
       }
     }
   }
 }
-    `;
+    ${CharacterMetaDataFragmentDoc}`;
 
 export const useCharacterListQuery = <
       TData = CharacterListQuery,
@@ -8096,56 +8530,21 @@ export const CharacterDetailsDocument = `
         voiceActorRoles(sort: [RELEVANCE, ID]) {
           roleNotes
           voiceActor {
-            id
-            name {
-              first
-              middle
-              last
-              full
-              native
-            }
-            image {
-              large
-            }
+            ...StaffMetaData
             language: languageV2
           }
         }
         characterRole
         node {
-          id
-          idMal
-          title {
-            english
-            native
-            romaji
-          }
-          type
-          format
-          status(version: 2)
-          isLicensed
-          averageScore
-          meanScore
-          isAdult
-          isFavourite
-          bannerImage
-          source
-          countryOfOrigin
-          coverImage {
-            extraLarge
-            color
-          }
-          stats {
-            scoreDistribution {
-              score
-              amount
-            }
-          }
+          ...MainMeta
         }
       }
     }
   }
 }
-    `;
+    ${StaffMetaDataFragmentDoc}
+${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useCharacterDetailsQuery = <
       TData = CharacterDetailsQuery,
@@ -8197,17 +8596,7 @@ export const StaffListDocument = `
       edges {
         role
         node {
-          id
-          name {
-            full
-            native
-          }
-          languageV2
-          image {
-            large
-          }
-          isFavourite
-          favourites
+          ...StaffMetaData
         }
       }
       pageInfo {
@@ -8220,7 +8609,7 @@ export const StaffListDocument = `
     }
   }
 }
-    `;
+    ${StaffMetaDataFragmentDoc}`;
 
 export const useStaffListQuery = <
       TData = StaffListQuery,
@@ -8312,31 +8701,7 @@ export const StaffDetailsDocument = `
       edges {
         staffRole
         node {
-          id
-          idMal
-          type
-          status(version: 2)
-          averageScore
-          meanScore
-          format
-          isLicensed
-          isFavourite
-          bannerImage
-          title {
-            romaji
-            english
-            native
-          }
-          coverImage {
-            extraLarge
-            color
-          }
-          stats {
-            scoreDistribution {
-              score
-              amount
-            }
-          }
+          ...MainMeta
         }
       }
     }
@@ -8365,7 +8730,8 @@ export const StaffDetailsDocument = `
     }
   }
 }
-    `;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useStaffDetailsQuery = <
       TData = StaffDetailsQuery,
@@ -8475,6 +8841,32 @@ export const GetNotificationsDocument = `
         createdAt
         type
       }
+      ... on ActivityReplyLikeNotification {
+        id
+        activityId
+        user {
+          ...user
+        }
+        activity {
+          ...activity
+        }
+        context
+        createdAt
+        type
+      }
+      ... on ActivityReplySubscribedNotification {
+        id
+        activityId
+        user {
+          ...user
+        }
+        activity {
+          ...activity
+        }
+        context
+        createdAt
+        type
+      }
       ... on AiringNotification {
         id
         media {
@@ -8532,12 +8924,95 @@ export const GetNotificationsDocument = `
         createdAt
         type
       }
+      ... on ThreadLikeNotification {
+        id
+        threadId
+        context
+        user {
+          ...user
+        }
+        thread {
+          ...thread
+        }
+        context
+        createdAt
+        type
+      }
+      ... on ThreadCommentLikeNotification {
+        id
+        commentId
+        context
+        user {
+          ...user
+        }
+        thread {
+          ...thread
+        }
+        comment {
+          comment
+        }
+        context
+        createdAt
+        type
+      }
+      ... on ThreadCommentReplyNotification {
+        id
+        commentId
+        context
+        user {
+          ...user
+        }
+        thread {
+          ...thread
+        }
+        comment {
+          comment
+        }
+        context
+        createdAt
+        type
+      }
+      ... on ThreadCommentMentionNotification {
+        id
+        commentId
+        context
+        user {
+          ...user
+        }
+        thread {
+          ...thread
+        }
+        comment {
+          comment
+        }
+        context
+        createdAt
+        type
+      }
+      ... on ThreadCommentSubscribedNotification {
+        id
+        commentId
+        context
+        user {
+          ...user
+        }
+        thread {
+          ...thread
+        }
+        comment {
+          comment
+        }
+        context
+        createdAt
+        type
+      }
     }
   }
 }
     ${UserFragmentDoc}
 ${ActivityFragmentDoc}
-${MediaFragmentDoc}`;
+${MediaFragmentDoc}
+${ThreadFragmentDoc}`;
 
 export const useGetNotificationsQuery = <
       TData = GetNotificationsQuery,
@@ -8580,6 +9055,152 @@ useInfiniteGetNotificationsQuery.getKey = (variables?: GetNotificationsQueryVari
 
 
 useGetNotificationsQuery.fetcher = (variables?: GetNotificationsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<GetNotificationsQuery, GetNotificationsQueryVariables>(GetNotificationsDocument, variables, options);
+
+export const ActivityDetailDocument = `
+    query ActivityDetail($id: Int) {
+  Activity(id: $id) {
+    __typename
+    ... on TextActivity {
+      id
+      userId
+      type
+      replyCount
+      text(asHtml: true)
+      siteUrl
+      isLocked
+      isSubscribed
+      likeCount
+      isLiked
+      isPinned
+      createdAt
+      user {
+        ...user
+      }
+      replies {
+        id
+        userId
+        activityId
+        text(asHtml: true)
+        likeCount
+        isLiked
+        createdAt
+        user {
+          ...user
+        }
+      }
+    }
+    ... on ListActivity {
+      id
+      userId
+      type
+      replyCount
+      status
+      progress
+      isLocked
+      isSubscribed
+      likeCount
+      isLiked
+      isPinned
+      siteUrl
+      createdAt
+      user {
+        ...user
+      }
+      media {
+        ...media
+      }
+      replies {
+        id
+        userId
+        activityId
+        text(asHtml: true)
+        likeCount
+        isLiked
+        createdAt
+        user {
+          ...user
+        }
+      }
+    }
+    ... on MessageActivity {
+      id
+      recipientId
+      messengerId
+      type
+      replyCount
+      message(asHtml: true)
+      isLocked
+      isSubscribed
+      likeCount
+      isLiked
+      isPrivate
+      siteUrl
+      createdAt
+      recipient {
+        ...user
+      }
+      messenger {
+        ...user
+      }
+      replies {
+        id
+        userId
+        activityId
+        text(asHtml: true)
+        likeCount
+        isLiked
+        createdAt
+        user {
+          ...user
+        }
+      }
+    }
+  }
+}
+    ${UserFragmentDoc}
+${MediaFragmentDoc}`;
+
+export const useActivityDetailQuery = <
+      TData = ActivityDetailQuery,
+      TError = unknown
+    >(
+      variables?: ActivityDetailQueryVariables,
+      options?: Omit<UseQueryOptions<ActivityDetailQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ActivityDetailQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ActivityDetailQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ActivityDetail'] : ['ActivityDetail', variables],
+    queryFn: fetchAnilistData<ActivityDetailQuery, ActivityDetailQueryVariables>(ActivityDetailDocument, variables),
+    ...options
+  }
+    )};
+
+useActivityDetailQuery.getKey = (variables?: ActivityDetailQueryVariables) => variables === undefined ? ['ActivityDetail'] : ['ActivityDetail', variables];
+
+export const useInfiniteActivityDetailQuery = <
+      TData = InfiniteData<ActivityDetailQuery>,
+      TError = unknown
+    >(
+      variables: ActivityDetailQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ActivityDetailQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ActivityDetailQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ActivityDetailQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['ActivityDetail.infinite'] : ['ActivityDetail.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<ActivityDetailQuery, ActivityDetailQueryVariables>(ActivityDetailDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteActivityDetailQuery.getKey = (variables?: ActivityDetailQueryVariables) => variables === undefined ? ['ActivityDetail.infinite'] : ['ActivityDetail.infinite', variables];
+
+
+useActivityDetailQuery.fetcher = (variables?: ActivityDetailQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ActivityDetailQuery, ActivityDetailQueryVariables>(ActivityDetailDocument, variables, options);
 
 export const ReviewsDocument = `
     query Reviews($mediaId: Int, $page: Int, $perPage: Int) {
@@ -8811,13 +9432,12 @@ export const MediaSearchDocument = `
       source_in: $source_in
       sort: $sort
     ) {
-      ...AnimeMeta
-      chapters
-      volumes
+      ...MainMeta
     }
   }
 }
-    ${AnimeMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useMediaSearchQuery = <
       TData = MediaSearchQuery,
@@ -8862,20 +9482,19 @@ useInfiniteMediaSearchQuery.getKey = (variables?: MediaSearchQueryVariables) => 
 useMediaSearchQuery.fetcher = (variables?: MediaSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<MediaSearchQuery, MediaSearchQueryVariables>(MediaSearchDocument, variables, options);
 
 export const UserSearchDocument = `
-    query UserSearch($search: String) {
+    query UserSearch($id: Int, $search: String, $sort: [UserSort], $isModerator: Boolean) {
   Page(page: 1) {
-    users(search: $search) {
-      id
-      name
-      avatar {
-        large
-      }
-      isFollowing
-      isFollower
+    pageInfo {
+      hasNextPage
+      currentPage
+      total
+    }
+    users(id: $id, search: $search, isModerator: $isModerator, sort: $sort) {
+      ...UserSearchMeta
     }
   }
 }
-    `;
+    ${UserSearchMetaFragmentDoc}`;
 
 export const useUserSearchQuery = <
       TData = UserSearchQuery,
@@ -8920,7 +9539,7 @@ useInfiniteUserSearchQuery.getKey = (variables?: UserSearchQueryVariables) => va
 useUserSearchQuery.fetcher = (variables?: UserSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserSearchQuery, UserSearchQueryVariables>(UserSearchDocument, variables, options);
 
 export const CharacterSearchDocument = `
-    query CharacterSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [CharacterSort]) {
+    query CharacterSearch($id: Int, $search: String, $page: Int, $isBirthday: Boolean, $sort: [CharacterSort]) {
   Page(page: $page, perPage: 50) {
     pageInfo {
       total
@@ -8929,7 +9548,7 @@ export const CharacterSearchDocument = `
       lastPage
       hasNextPage
     }
-    characters(search: $name, isBirthday: $isBirthday, sort: $sort) {
+    characters(id: $id, search: $search, isBirthday: $isBirthday, sort: $sort) {
       ...CharacterMetaData
     }
   }
@@ -8979,7 +9598,7 @@ useInfiniteCharacterSearchQuery.getKey = (variables?: CharacterSearchQueryVariab
 useCharacterSearchQuery.fetcher = (variables?: CharacterSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<CharacterSearchQuery, CharacterSearchQueryVariables>(CharacterSearchDocument, variables, options);
 
 export const StaffSearchDocument = `
-    query StaffSearch($name: String, $page: Int, $isBirthday: Boolean, $sort: [StaffSort]) {
+    query StaffSearch($id: Int, $search: String, $page: Int, $isBirthday: Boolean, $sort: [StaffSort]) {
   Page(page: $page, perPage: 50) {
     pageInfo {
       total
@@ -8988,7 +9607,7 @@ export const StaffSearchDocument = `
       lastPage
       hasNextPage
     }
-    staff(search: $name, isBirthday: $isBirthday, sort: $sort) {
+    staff(id: $id, search: $search, isBirthday: $isBirthday, sort: $sort) {
       ...StaffMetaData
     }
   }
@@ -9038,7 +9657,7 @@ useInfiniteStaffSearchQuery.getKey = (variables?: StaffSearchQueryVariables) => 
 useStaffSearchQuery.fetcher = (variables?: StaffSearchQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<StaffSearchQuery, StaffSearchQueryVariables>(StaffSearchDocument, variables, options);
 
 export const StudioSearchDocument = `
-    query StudioSearch($name: String, $page: Int, $sort: [StudioSort]) {
+    query StudioSearch($id: Int, $search: String, $page: Int, $sort: [StudioSort]) {
   Page(page: $page, perPage: 50) {
     pageInfo {
       total
@@ -9047,16 +9666,13 @@ export const StudioSearchDocument = `
       lastPage
       hasNextPage
     }
-    studios(search: $name, sort: $sort) {
+    studios(id: $id, search: $search, sort: $sort) {
       id
       name
       media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
         edges {
           node {
-            bannerImage
-            coverImage {
-              extraLarge
-            }
+            ...MainMeta
           }
         }
       }
@@ -9065,7 +9681,8 @@ export const StudioSearchDocument = `
     }
   }
 }
-    `;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useStudioSearchQuery = <
       TData = StudioSearchQuery,
@@ -9117,8 +9734,8 @@ export const SearchAllDocument = `
       currentPage
       total
     }
-    media(type: ANIME, search: $search, isAdult: $isAdult, sort: SEARCH_MATCH) {
-      ...AnimeMeta
+    media(type: ANIME, search: $search, isAdult: $isAdult) {
+      ...MainMeta
     }
   }
   Manga: Page(page: 1, perPage: $perPage) {
@@ -9127,8 +9744,8 @@ export const SearchAllDocument = `
       currentPage
       total
     }
-    media(type: MANGA, search: $search, isAdult: $isAdult, sort: SEARCH_MATCH) {
-      ...MangaMeta
+    media(type: MANGA, search: $search, isAdult: $isAdult) {
+      ...MainMeta
     }
   }
   Characters: Page(page: 1, perPage: $perPage) {
@@ -9139,7 +9756,7 @@ export const SearchAllDocument = `
       lastPage
       hasNextPage
     }
-    characters(search: $search, sort: SEARCH_MATCH) {
+    characters(search: $search) {
       id
       isFavourite
       dateOfBirth {
@@ -9164,7 +9781,7 @@ export const SearchAllDocument = `
       lastPage
       hasNextPage
     }
-    staff(search: $search, sort: SEARCH_MATCH) {
+    staff(search: $search) {
       id
       isFavourite
       dateOfBirth {
@@ -9189,13 +9806,13 @@ export const SearchAllDocument = `
       lastPage
       hasNextPage
     }
-    studios(search: $search, sort: SEARCH_MATCH) {
+    studios(search: $search) {
       id
       name
       media(page: 1, perPage: 5, sort: [TRENDING_DESC, POPULARITY_DESC]) {
         edges {
           node {
-            ...AnimeMeta
+            ...MainMeta
           }
         }
       }
@@ -9222,8 +9839,8 @@ export const SearchAllDocument = `
     }
   }
 }
-    ${AnimeMetaFragmentDoc}
-${MangaMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useSearchAllQuery = <
       TData = SearchAllQuery,
@@ -9846,8 +10463,8 @@ useInfiniteAniListCommentDetailsQuery.getKey = (variables?: AniListCommentDetail
 useAniListCommentDetailsQuery.fetcher = (variables?: AniListCommentDetailsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AniListCommentDetailsQuery, AniListCommentDetailsQueryVariables>(AniListCommentDetailsDocument, variables, options);
 
 export const UserAnimeStatsDocument = `
-    query UserAnimeStats($userId: Int) {
-  User(id: $userId) {
+    query UserAnimeStats($userId: Int, $username: String) {
+  User(id: $userId, name: $username) {
     statistics {
       anime {
         count
@@ -10020,8 +10637,8 @@ useInfiniteUserAnimeStatsQuery.getKey = (variables?: UserAnimeStatsQueryVariable
 useUserAnimeStatsQuery.fetcher = (variables?: UserAnimeStatsQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserAnimeStatsQuery, UserAnimeStatsQueryVariables>(UserAnimeStatsDocument, variables, options);
 
 export const UserMangaStatsDocument = `
-    query UserMangaStats($userId: Int) {
-  User(id: $userId) {
+    query UserMangaStats($userId: Int, $username: String) {
+  User(id: $userId, name: $username) {
     statistics {
       manga {
         count
@@ -10177,7 +10794,9 @@ export const UserActivityDocument = `
         id
         progress
         status
+        likeCount
         createdAt
+        replyCount
         user {
           id
           name
@@ -10232,30 +10851,86 @@ export const UserActivityDocument = `
           siteUrl
         }
         media {
-          id
-          type
-          bannerImage
-          isAdult
-          format
-          isLicensed
-          status
-          title {
-            userPreferred
-            romaji
-            english
-            native
-          }
-          coverImage {
-            color
-            extraLarge
-          }
+          ...MainMeta
         }
         siteUrl
+      }
+      ... on TextActivity {
+        id
+        userId
+        type
+        replyCount
+        text
+        siteUrl
+        isLocked
+        isSubscribed
+        likeCount
+        isLiked
+        isPinned
+        createdAt
+        user {
+          id
+          name
+          about
+          createdAt
+          bannerImage
+          options {
+            profileColor
+          }
+          avatar {
+            large
+          }
+          siteUrl
+        }
+      }
+      ... on MessageActivity {
+        id
+        recipientId
+        messengerId
+        type
+        replyCount
+        message
+        isLocked
+        isSubscribed
+        likeCount
+        isLiked
+        isPrivate
+        siteUrl
+        createdAt
+        recipient {
+          id
+          name
+          about
+          createdAt
+          bannerImage
+          options {
+            profileColor
+          }
+          avatar {
+            large
+          }
+          siteUrl
+        }
+        messenger {
+          id
+          name
+          about
+          createdAt
+          bannerImage
+          options {
+            profileColor
+          }
+          avatar {
+            large
+          }
+          siteUrl
+        }
       }
     }
   }
 }
-    `;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useUserActivityQuery = <
       TData = UserActivityQuery,
@@ -10300,27 +10975,12 @@ useInfiniteUserActivityQuery.getKey = (variables?: UserActivityQueryVariables) =
 useUserActivityQuery.fetcher = (variables?: UserActivityQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserActivityQuery, UserActivityQueryVariables>(UserActivityDocument, variables, options);
 
 export const UserDataDocument = `
-    query UserData {
-  Viewer {
-    id
-    name
-    avatar {
-      medium
-      large
-    }
-    bannerImage
-    mediaListOptions {
-      scoreFormat
-      animeList {
-        customLists
-      }
-      mangaList {
-        customLists
-      }
-    }
+    query UserData($id: Int, $username: String, $favoritesPerPage: Int) {
+  User(id: $id, name: $username) {
+    ...UserMetaData
   }
 }
-    `;
+    ${UserMetaDataFragmentDoc}`;
 
 export const useUserDataQuery = <
       TData = UserDataQuery,
@@ -10364,233 +11024,73 @@ useInfiniteUserDataQuery.getKey = (variables?: UserDataQueryVariables) => variab
 
 useUserDataQuery.fetcher = (variables?: UserDataQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserDataQuery, UserDataQueryVariables>(UserDataDocument, variables, options);
 
-export const ExtUserDataDocument = `
-    query ExtUserData($id: Int, $name: String) {
-  User(id: $id, name: $name) {
+export const ViewerDataDocument = `
+    query ViewerData {
+  Viewer {
     id
     name
     avatar {
       large
     }
     bannerImage
+    unreadNotificationCount
     mediaListOptions {
       scoreFormat
+      animeList {
+        customLists
+      }
+      mangaList {
+        customLists
+      }
     }
   }
 }
     `;
 
-export const useExtUserDataQuery = <
-      TData = ExtUserDataQuery,
+export const useViewerDataQuery = <
+      TData = ViewerDataQuery,
       TError = unknown
     >(
-      variables?: ExtUserDataQueryVariables,
-      options?: Omit<UseQueryOptions<ExtUserDataQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ExtUserDataQuery, TError, TData>['queryKey'] }
+      variables?: ViewerDataQueryVariables,
+      options?: Omit<UseQueryOptions<ViewerDataQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ViewerDataQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<ExtUserDataQuery, TError, TData>(
+    return useQuery<ViewerDataQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['ExtUserData'] : ['ExtUserData', variables],
-    queryFn: fetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, variables),
+    queryKey: variables === undefined ? ['ViewerData'] : ['ViewerData', variables],
+    queryFn: fetchAnilistData<ViewerDataQuery, ViewerDataQueryVariables>(ViewerDataDocument, variables),
     ...options
   }
     )};
 
-useExtUserDataQuery.getKey = (variables?: ExtUserDataQueryVariables) => variables === undefined ? ['ExtUserData'] : ['ExtUserData', variables];
+useViewerDataQuery.getKey = (variables?: ViewerDataQueryVariables) => variables === undefined ? ['ViewerData'] : ['ViewerData', variables];
 
-export const useInfiniteExtUserDataQuery = <
-      TData = InfiniteData<ExtUserDataQuery>,
+export const useInfiniteViewerDataQuery = <
+      TData = InfiniteData<ViewerDataQuery>,
       TError = unknown
     >(
-      variables: ExtUserDataQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<ExtUserDataQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ExtUserDataQuery, TError, TData>['queryKey'] }
+      variables: ViewerDataQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ViewerDataQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ViewerDataQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useInfiniteQuery<ExtUserDataQuery, TError, TData>(
+    return useInfiniteQuery<ViewerDataQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['ExtUserData.infinite'] : ['ExtUserData.infinite', variables],
-      queryFn: (metaData) => fetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryKey: optionsQueryKey ?? variables === undefined ? ['ViewerData.infinite'] : ['ViewerData.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<ViewerDataQuery, ViewerDataQueryVariables>(ViewerDataDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteExtUserDataQuery.getKey = (variables?: ExtUserDataQueryVariables) => variables === undefined ? ['ExtUserData.infinite'] : ['ExtUserData.infinite', variables];
+useInfiniteViewerDataQuery.getKey = (variables?: ViewerDataQueryVariables) => variables === undefined ? ['ViewerData.infinite'] : ['ViewerData.infinite', variables];
 
 
-useExtUserDataQuery.fetcher = (variables?: ExtUserDataQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ExtUserDataQuery, ExtUserDataQueryVariables>(ExtUserDataDocument, variables, options);
+useViewerDataQuery.fetcher = (variables?: ViewerDataQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<ViewerDataQuery, ViewerDataQueryVariables>(ViewerDataDocument, variables, options);
 
 export const UserOverviewDocument = `
-    query UserOverview($userId: Int!, $isFollowing: Boolean, $activityPerPage: Int, $followingPerPage: Int, $followersPerPage: Int, $favoritesPerPage: Int, $reviewsPerPage: Int) {
-  user: User(id: $userId) {
-    name
-    avatar {
-      large
-    }
-    bannerImage
-    about
-    aboutHTML: about(asHtml: true)
-    stats {
-      favouredGenresOverview {
-        genre
-        amount
-        meanScore
-        timeWatched
-      }
-      activityHistory {
-        date
-        amount
-        level
-      }
-    }
-    statistics {
-      anime {
-        minutesWatched
-        episodesWatched
-        meanScore
-        count
-      }
-      manga {
-        chaptersRead
-        volumesRead
-        meanScore
-        count
-      }
-    }
-    mediaListOptions {
-      scoreFormat
-    }
-    favourites {
-      anime(page: 1, perPage: $favoritesPerPage) {
-        pageInfo {
-          total
-          perPage
-          currentPage
-          hasNextPage
-          lastPage
-        }
-        nodes {
-          id
-          coverImage {
-            extraLarge
-            color
-          }
-          title {
-            english
-            native
-            romaji
-          }
-          averageScore
-          meanScore
-          bannerImage
-          type
-          format
-          genres
-          episodes
-          status
-          isAdult
-          synonyms
-          isLicensed
-          isFavourite
-          stats {
-            scoreDistribution {
-              score
-              amount
-            }
-          }
-        }
-      }
-      manga(page: 1, perPage: $favoritesPerPage) {
-        pageInfo {
-          total
-          perPage
-          currentPage
-          hasNextPage
-          lastPage
-        }
-        nodes {
-          id
-          coverImage {
-            extraLarge
-            color
-          }
-          title {
-            english
-            native
-            romaji
-          }
-          averageScore
-          meanScore
-          bannerImage
-          chapters
-          volumes
-          type
-          format
-          genres
-          status
-          isAdult
-          synonyms
-          isLicensed
-          isFavourite
-          stats {
-            scoreDistribution {
-              score
-              amount
-            }
-          }
-        }
-      }
-      characters(page: 1, perPage: $favoritesPerPage) {
-        pageInfo {
-          total
-          perPage
-          currentPage
-          hasNextPage
-          lastPage
-        }
-        nodes {
-          id
-          name {
-            full
-            native
-          }
-          gender
-          isFavourite
-          image {
-            large
-          }
-        }
-      }
-    }
-    unreadNotificationCount
-    siteUrl
-  }
-  activity: Page(page: 1, perPage: $activityPerPage) {
-    activities(sort: ID_DESC, isFollowing: $isFollowing, userId: $userId) {
-      __typename
-      ... on ListActivity {
-        id
-        progress
-        status
-        createdAt
-        user {
-          id
-          name
-          avatar {
-            large
-          }
-        }
-        media {
-          ...AnimeMeta
-          volumes
-          chapters
-        }
-        siteUrl
-      }
-    }
-  }
+    query UserOverview($userId: Int!, $followingPerPage: Int, $followersPerPage: Int, $reviewsPerPage: Int) {
   following: Page(page: 1, perPage: $followingPerPage) {
     pageInfo {
       total
@@ -10643,12 +11143,13 @@ export const UserOverviewDocument = `
   list: Page(page: 1, perPage: 10) {
     mediaList(userId: $userId, status: CURRENT) {
       media {
-        ...AnimeMeta
+        ...MainMeta
       }
     }
   }
 }
-    ${AnimeMetaFragmentDoc}`;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useUserOverviewQuery = <
       TData = UserOverviewQuery,
@@ -10825,8 +11326,8 @@ useInfiniteUserFollowersQuery.getKey = (variables: UserFollowersQueryVariables) 
 useUserFollowersQuery.fetcher = (variables: UserFollowersQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserFollowersQuery, UserFollowersQueryVariables>(UserFollowersDocument, variables, options);
 
 export const UserFavoritesOverviewDocument = `
-    query UserFavoritesOverview($userID: Int) {
-  User(id: $userID) {
+    query UserFavoritesOverview($userID: Int, $username: String) {
+  User(id: $userID, name: $username) {
     favourites {
       anime(perPage: 16) {
         nodes {
@@ -10914,8 +11415,8 @@ useInfiniteUserFavoritesOverviewQuery.getKey = (variables?: UserFavoritesOvervie
 useUserFavoritesOverviewQuery.fetcher = (variables?: UserFavoritesOverviewQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserFavoritesOverviewQuery, UserFavoritesOverviewQueryVariables>(UserFavoritesOverviewDocument, variables, options);
 
 export const UserAnimeFavoritesDocument = `
-    query UserAnimeFavorites($userID: Int, $page: Int, $perPage: Int) {
-  User(id: $userID) {
+    query UserAnimeFavorites($userID: Int, $username: String, $page: Int, $perPage: Int) {
+  User(id: $userID, name: $username) {
     favourites {
       anime(page: $page, perPage: $perPage) {
         pageInfo {
@@ -10926,40 +11427,15 @@ export const UserAnimeFavoritesDocument = `
           lastPage
         }
         nodes {
-          id
-          coverImage {
-            extraLarge
-            color
-          }
-          title {
-            english
-            native
-            romaji
-          }
-          averageScore
-          meanScore
-          bannerImage
-          type
-          format
-          genres
-          episodes
-          status
-          isAdult
-          synonyms
-          isLicensed
-          isFavourite
-          characters(perPage: 50) {
+          ...MainMeta
+          characters {
             nodes {
+              id
               name {
                 full
                 native
+                alternative
               }
-            }
-          }
-          stats {
-            scoreDistribution {
-              score
-              amount
             }
           }
         }
@@ -10967,7 +11443,8 @@ export const UserAnimeFavoritesDocument = `
     }
   }
 }
-    `;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useUserAnimeFavoritesQuery = <
       TData = UserAnimeFavoritesQuery,
@@ -11012,8 +11489,8 @@ useInfiniteUserAnimeFavoritesQuery.getKey = (variables?: UserAnimeFavoritesQuery
 useUserAnimeFavoritesQuery.fetcher = (variables?: UserAnimeFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserAnimeFavoritesQuery, UserAnimeFavoritesQueryVariables>(UserAnimeFavoritesDocument, variables, options);
 
 export const UserMangaFavoritesDocument = `
-    query UserMangaFavorites($userID: Int, $page: Int, $perPage: Int) {
-  User(id: $userID) {
+    query UserMangaFavorites($userID: Int, $username: String, $page: Int, $perPage: Int) {
+  User(id: $userID, name: $username) {
     favourites {
       manga(page: $page, perPage: $perPage) {
         pageInfo {
@@ -11024,41 +11501,15 @@ export const UserMangaFavoritesDocument = `
           lastPage
         }
         nodes {
-          id
-          coverImage {
-            extraLarge
-            color
-          }
-          title {
-            english
-            native
-            romaji
-          }
-          averageScore
-          meanScore
-          bannerImage
-          chapters
-          volumes
-          type
-          format
-          genres
-          status
-          isAdult
-          synonyms
-          isLicensed
-          isFavourite
-          characters(perPage: 50) {
+          ...MainMeta
+          characters {
             nodes {
+              id
               name {
                 full
                 native
+                alternative
               }
-            }
-          }
-          stats {
-            scoreDistribution {
-              score
-              amount
             }
           }
         }
@@ -11066,7 +11517,8 @@ export const UserMangaFavoritesDocument = `
     }
   }
 }
-    `;
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
 
 export const useUserMangaFavoritesQuery = <
       TData = UserMangaFavoritesQuery,
@@ -11111,8 +11563,8 @@ useInfiniteUserMangaFavoritesQuery.getKey = (variables?: UserMangaFavoritesQuery
 useUserMangaFavoritesQuery.fetcher = (variables?: UserMangaFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserMangaFavoritesQuery, UserMangaFavoritesQueryVariables>(UserMangaFavoritesDocument, variables, options);
 
 export const UserWaifuFavoritesDocument = `
-    query UserWaifuFavorites($userID: Int, $page: Int, $perPage: Int) {
-  User(id: $userID) {
+    query UserWaifuFavorites($userID: Int, $username: String, $page: Int, $perPage: Int) {
+  User(id: $userID, name: $username) {
     favourites {
       characters(page: $page, perPage: $perPage) {
         pageInfo {
@@ -11174,8 +11626,8 @@ useInfiniteUserWaifuFavoritesQuery.getKey = (variables?: UserWaifuFavoritesQuery
 useUserWaifuFavoritesQuery.fetcher = (variables?: UserWaifuFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserWaifuFavoritesQuery, UserWaifuFavoritesQueryVariables>(UserWaifuFavoritesDocument, variables, options);
 
 export const UserStaffFavoritesDocument = `
-    query UserStaffFavorites($userID: Int, $page: Int, $perPage: Int) {
-  User(id: $userID) {
+    query UserStaffFavorites($userID: Int, $username: String, $page: Int, $perPage: Int) {
+  User(id: $userID, name: $username) {
     favourites {
       staff(page: $page, perPage: $perPage) {
         pageInfo {
@@ -11237,8 +11689,8 @@ useInfiniteUserStaffFavoritesQuery.getKey = (variables?: UserStaffFavoritesQuery
 useUserStaffFavoritesQuery.fetcher = (variables?: UserStaffFavoritesQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<UserStaffFavoritesQuery, UserStaffFavoritesQueryVariables>(UserStaffFavoritesDocument, variables, options);
 
 export const UserStudiosFavoritesDocument = `
-    query UserStudiosFavorites($userID: Int, $page: Int, $perPage: Int) {
-  User(id: $userID) {
+    query UserStudiosFavorites($userID: Int, $username: String, $page: Int, $perPage: Int) {
+  User(id: $userID, name: $username) {
     favourites {
       studios(page: $page, perPage: $perPage) {
         pageInfo {

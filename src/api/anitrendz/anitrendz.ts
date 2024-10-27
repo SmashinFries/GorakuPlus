@@ -7,7 +7,6 @@ const AniTrendzClient = axios.create({
 });
 
 export const fetchAniTrendzFemaleChart = async () => {
-	console.log('Fetching top waifus!');
 	const result = await AniTrendzClient.get<AniTrendsCharacterResponse>('/female-characters');
 	return result;
 };

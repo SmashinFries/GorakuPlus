@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/store/authStore';
-import { useQuery } from '@tanstack/react-query';
-import axios, { AxiosRequestHeaders, RawAxiosRequestHeaders } from 'axios';
+import { UndefinedInitialDataOptions, useQuery } from '@tanstack/react-query';
+import axios, { AxiosRequestHeaders, AxiosResponse, RawAxiosRequestHeaders } from 'axios';
 import {
 	FactResponse,
 	InteractionParams,
@@ -21,22 +21,27 @@ const getHeader = (): RawAxiosRequestHeaders => {
 	};
 };
 
-export const useQuoteQuery = () => {
-	return useQuery({
-		queryKey: ['WaifuitQuote'],
+const getQuoteOptions = (): UndefinedInitialDataOptions<AxiosResponse<QuoteResponse, any>, Error, AxiosResponse<any>, string[]> => ({
+	queryKey: ['WaifuitQuote'],
 		queryFn: async () => {
 			const response = await WaifuitClient.get<QuoteResponse>('/quote', {
 				headers: getHeader(),
 			});
 			return response;
 		},
-		enabled: false,
+		enabled: true,
+})
+
+export const useQuoteQuery = () => {
+	return useQuery({
+		...getQuoteOptions()
 	});
 };
 
-export const useFactQuery = () => {
-	return useQuery({
-		queryKey: ['WaifuitFact'],
+useQuoteQuery.options = getQuoteOptions;
+
+const getFactOptions = (): UndefinedInitialDataOptions<AxiosResponse<FactResponse, any>, Error, AxiosResponse<any>, string[]> => ({
+	queryKey: ['WaifuitFact'],
 		queryFn: async () => {
 			const response = await WaifuitClient.get<FactResponse>('/fact', {
 				headers: getHeader(),
@@ -44,8 +49,15 @@ export const useFactQuery = () => {
 			return response;
 		},
 		enabled: false,
+})
+
+export const useFactQuery = () => {
+	return useQuery({
+		...getFactOptions()
 	});
 };
+
+useFactQuery.options = getFactOptions;
 
 export const useWaifuQuery = () => {
 	return useQuery({
@@ -70,7 +82,7 @@ export const useEmotionQuery = (emotion?: WaifuItEmotions) => {
 			});
 			return response;
 		},
-		enabled: false,
+		enabled: !!emotion,
 	});
 };
 
@@ -84,7 +96,7 @@ export const useOwOQuery = (text?: string) => {
 			});
 			return response;
 		},
-		enabled: false,
+		enabled: !!text,
 	});
 };
 
@@ -98,7 +110,7 @@ export const useUvUQuery = (text?: string) => {
 			});
 			return response;
 		},
-		enabled: false,
+		enabled: !!text,
 	});
 };
 
@@ -112,6 +124,6 @@ export const useUwUQuery = (text?: string) => {
 			});
 			return response;
 		},
-		enabled: false,
+		enabled: !!text,
 	});
 };

@@ -19,6 +19,7 @@ import {
 	useAnimeExploreQuery,
 	useDeleteActMutation,
 	useDeleteMediaListItemMutation,
+	useInfiniteUserActivityQuery,
 	useMangaExploreQuery,
 	useManhuaExploreQuery,
 	useManhwaExploreQuery,
@@ -48,55 +49,6 @@ import {
 	SeriesSearchResponseV1,
 } from '../mangaupdates/models';
 import { AnimeFull, MangaFull } from '../jikan/models';
-
-// Not sure how to update cache correctly - will come back
-//
-// const updateExploreOldEntriesSave = (
-// 	data:
-// 		| AnimeExploreQuery
-// 		| MangaExploreQuery
-// 		| ManhwaExploreQuery
-// 		| ManhuaExploreQuery
-// 		| NovelExploreQuery,
-// 	newData: SaveMediaListItemMutation,
-// ) => {
-// 	const tempData = { ...data };
-// 	console.log('OldData:', Object.keys(data).join(', '));
-// 	console.log('NewData:', Object.keys(newData).join(', '));
-// 	Object.keys(data).forEach((rootKey) => {
-// 		const foundIdx = tempData[rootKey]?.media?.findIndex(
-// 			(media) => media?.id === newData.SaveMediaListEntry?.mediaId,
-// 		);
-// 		if (foundIdx > -1) {
-// 			tempData[rootKey].media[foundIdx].mediaListEntry = {
-// 				...tempData[rootKey].media[foundIdx].mediaListEntry,
-// 				...newData.SaveMediaListEntry,
-// 			};
-// 		}
-// 	});
-// 	return tempData;
-// };
-
-// const updateExploreOldEntriesDelete = (
-// 	data:
-// 		| AnimeExploreQuery
-// 		| MangaExploreQuery
-// 		| ManhwaExploreQuery
-// 		| ManhuaExploreQuery
-// 		| NovelExploreQuery,
-// 	entryId: number,
-// ) => {
-// 	const tempData = { ...data };
-// 	Object.keys(data).forEach((rootKey) => {
-// 		const foundIdx = data[rootKey]?.media?.findIndex(
-// 			(media) => media.mediaListEntry.id === entryId,
-// 		);
-// 		if (foundIdx > -1) {
-// 			tempData[rootKey].media[foundIdx].mediaListEntry = null;
-// 		}
-// 	});
-// 	return tempData;
-// };
 
 const invalidateExploreQueries = (queryClient: QueryClient) => {
 	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey() });
@@ -335,6 +287,9 @@ export const useDeleteActivityItemInvalidateMutation = (
 					userId: useAuthStore.getState().anilist.userID,
 				}),
 			});
+			queryClient.invalidateQueries({
+				queryKey: useInfiniteUserActivityQuery.getKey(),
+			})
 		},
 	});
 };

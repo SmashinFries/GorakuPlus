@@ -1,20 +1,31 @@
 export type WdTaggerInput = {
 	data: [
-		string, // represents image data as base64 string of 'Input' Image component
-		string, // represents selected choice of 'Model' Radio component
-		number, // represents selected value of 'General Tags Threshold' Slider component
-		number, // represents selected value of 'Character Tags Threshold' Slider component
+		Blob | String | { path: string }, // The input value that is provided in the "Input" Image component.
+		'SmilingWolf/wd-swinv2-tagger-v3', // The input value that is provided in the "Model" Dropdown component.
+		number, // The input value that is provided in the "General Tags Threshold" Slider component.
+		boolean, // The input value that is provided in the "Use MCut threshold" Checkbox component.
+		number, // The input value that is provided in the "Character Tags Threshold" Slider component.
+		boolean, // The input value that is provided in the "Use MCut threshold" Checkbox component.
 	];
 };
 
-export type WdTaggerOutput = {
-	data: [
-		string, // represents text string of 'Output (string)' Textbox component
-		string, // represents text string of 'Output (raw string)' Textbox component
-		{ label: string; confidences?: Array<{ label: string; confidence: number }> }, // represents output label and optional set of confidences per label of 'Rating' Label component
-		{ label: string; confidences?: Array<{ label: string; confidence: number }> }, // represents output label and optional set of confidences per label of 'Output (characters)' Label component
-		{ label: string; confidences?: Array<{ label: string; confidence: number }> }, // represents output label and optional set of confidences per label of 'Output (tags)' Label component
-		string, // represents HTML output of 'output 5' Html component
-	];
-	duration: number; // number of seconds to run function call
-};
+export type WdTaggerInputTest = {
+	image: Blob | File,
+	model_repo: "SmilingWolf/wd-swinv2-tagger-v3",
+	general_thresh: number,
+	general_mcut_enabled: boolean,
+	character_thresh: number,
+	character_mcut_enabled: boolean,
+}
+
+type WDTaggerObject = {
+	label: string;
+	confidences: { label: string, condifence: number }[];
+
+}
+export type WdTaggerOutput = [
+	string,
+	WDTaggerObject, // general tags
+	WDTaggerObject, // character tags
+	WDTaggerObject
+];
