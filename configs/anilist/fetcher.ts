@@ -24,11 +24,10 @@ export const fetchAnilistData = <TData, TVariables>(
 				{ headers: { ...headers, ...options } },
 			);
 			// console.log(res.data);
-			return res.data.data;
+			return res.data.data ?? null;
 		} catch (error) {
 			// console.error(error);
 			if (error instanceof AxiosError) {
-				console.log(error.response?.data);
 				sendErrorMessage(`Error ${error.status}: ${error.message}`);
 			} else {
 				sendErrorMessage(`${error.message}`);

@@ -15,6 +15,7 @@ const config: CodegenConfig = {
 				},
 				addInfiniteQuery: true,
 				reactQueryVersion: 5,
+				dedupeFragments: true,
 			},
 		},
 	},
