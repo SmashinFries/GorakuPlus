@@ -8,14 +8,12 @@ import {
 	Searchbar,
 	Surface,
 	Text,
-	useTheme,
 } from 'react-native-paper';
 import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { ReactNode, useEffect, useState } from 'react';
 import { Image } from 'expo-image';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BasicDialogProps } from '@/types';
-import { openWebBrowser } from '@/utils/webBrowser';
 import { AniMediaQuery, MediaStatus, MediaTag } from '@/api/anilist/__genereated__/gql';
 import {
 	SearchReleasesPostMutationResult,
@@ -169,19 +167,22 @@ export const MuSearchDialog = ({
 					showsHorizontalScrollIndicator={false}
 					contentContainerStyle={{ paddingVertical: 10 }}
 				>
-					{altTitles?.map((title, idx) => (
-						<Chip
-							key={idx}
-							mode="flat"
-							style={{ marginHorizontal: 5 }}
-							onPress={() => {
-								setQuery(title);
-								searchManga(title);
-							}}
-						>
-							{title}
-						</Chip>
-					))}
+					{altTitles?.map(
+						(title, idx) =>
+							title && (
+								<Chip
+									key={idx}
+									mode="flat"
+									style={{ marginHorizontal: 5 }}
+									onPress={() => {
+										setQuery(title);
+										searchManga(title);
+									}}
+								>
+									{title}
+								</Chip>
+							),
+					)}
 				</ScrollView>
 				<Button mode="outlined" onPress={() => searchManga(query)}>
 					Search
@@ -265,7 +266,6 @@ type ReleasesDialogProps = {
 export const ReleasesDialog = ({
 	releases,
 	animeReleases,
-	streamingSites,
 	streamingEpisodes,
 	status,
 	visible,

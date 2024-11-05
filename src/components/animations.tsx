@@ -605,11 +605,41 @@ const particleOptions2 = {
 };
 
 type ParticleBackgroundProps = {
-	backgroundColor: string;
+	backgroundColor?: string;
+	mascotOnly?: boolean;
 };
-export const ParticleBackground = ({ backgroundColor = '#000' }: ParticleBackgroundProps) => {
+export const ParticleBackground = ({
+	backgroundColor = 'transparent',
+	mascotOnly = false,
+}: ParticleBackgroundProps) => {
 	const { width } = useWindowDimensions();
 	const isEnabled = useSettingsStore(useShallow((state) => state.allowBgParticles));
+
+	const options = { ...particleOptions2 };
+	const optionsMascot = {
+		...particleOptions2,
+		particles: {
+			...particleOptions2.particles,
+			shape: {
+				...particleOptions2.particles.shape,
+				options: {
+					...particleOptions2.particles.shape.options,
+					image: [
+						{
+							src: RNImage.resolveAssetSource(mascot).uri,
+							width: 32,
+							height: 32,
+							particles: {
+								move: {
+									direction: 'bottom',
+								},
+							},
+						},
+					],
+				},
+			},
+		},
+	};
 
 	const html1 = `
 	(async () => {
@@ -617,7 +647,7 @@ export const ParticleBackground = ({ backgroundColor = '#000' }: ParticleBackgro
 
   await tsParticles.load({
     id: "tsparticles",
-    options: ${JSON.stringify(particleOptions2)},
+    options: ${JSON.stringify(mascotOnly ? optionsMascot : options)},
   });
 })();
 	`;

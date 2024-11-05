@@ -31,11 +31,6 @@ const AccountsPage = () => {
 
 	return (
 		<View>
-			{/* <View style={{height: '100%', alignItems: 'center', justifyContent: 'center'}}>
-				<Button onPress={() => console.log(dayStart)}>Test</Button>
-				<WidgetPreview renderWidget={() => <AiringWidget data={data?.Page?.airingSchedules} />} width={340}
-        height={250} />
-			</View> */}
 			<List.Section>
 				<ListSubheader title="Main" />
 				<List.Item
@@ -46,7 +41,6 @@ const AccountsPage = () => {
 							? SheetManager.show('AnilistAccountSheet')
 							: aniAuth.promptAsync()
 					}
-					// onPress={() => console.log(anilist)}
 					right={(props) => (anilist.deathDate ? <ActiveIcon {...props} /> : null)}
 					left={(props) => <AnilistIcon style={[props.style]} isDark={dark} />}
 				/>

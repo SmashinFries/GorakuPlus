@@ -1,39 +1,8 @@
 import { useAppTheme } from '@/store/theme/themes';
-import { FlashList } from '@shopify/flash-list';
-import { MutableRefObject, useEffect } from 'react';
-import { Pressable, Text as RNText, View } from 'react-native';
-import { Button, IconButton, MD3DarkTheme, Text } from 'react-native-paper';
-import Animated, { AnimatedScrollViewProps, FadeIn, FadeOut } from 'react-native-reanimated';
+import { Pressable, Text as View } from 'react-native';
+import { IconButton, MD3DarkTheme, Text } from 'react-native-paper';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { AnilistIcon } from './svgs';
-import { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/reanimated2/component/ScrollView';
-
-type FavoriteButtonProps = {
-	isFavorite?: boolean;
-	onToggle?: () => void;
-	favorites?: number;
-};
-export const FavoriteButton = ({ isFavorite = false, favorites = 200 }: FavoriteButtonProps) => {
-	const { colors } = useAppTheme();
-	return (
-		<Button
-			icon={'heart-outline'}
-			textColor="red"
-			style={{
-				borderColor: 'red',
-				borderWidth: 1,
-				flex: 1,
-				maxWidth: '80%',
-				marginTop: 20,
-			}}
-			mode="elevated"
-		>
-			<RNText style={{ color: colors.onBackground, fontWeight: 'bold', fontSize: 15 }}>
-				{' '}
-				{favorites}
-			</RNText>
-		</Button>
-	);
-};
 
 export const ScrollToTopButton = ({ onPress, top }: { onPress: () => void; top?: number }) => {
 	const { colors } = useAppTheme();
@@ -44,7 +13,7 @@ export const ScrollToTopButton = ({ onPress, top }: { onPress: () => void; top?:
 			exiting={FadeOut}
 			style={{
 				position: 'absolute',
-				top: top ?? 0,
+				bottom: top ?? 0,
 				alignSelf: 'center',
 			}}
 		>

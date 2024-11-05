@@ -28,14 +28,17 @@ export const usePostsSearch = (params: DanSearchQuery) => {
 	return useInfiniteQuery({
 		queryKey: ['DanbooruSearch', params.tags, params.rating],
 		queryFn: async (props) => {
+			const rating = showNSFW ? params.rating ? ` rating:${params.rating}` : '' : ' rating:g'
+			const postParams = {
+				...params,
+				page: props.pageParam,
+				tags: params.tags + rating,
+			}
 			const { data } = await DanbooruClient.get<DanPost[]>('/posts.json', {
-				params: {
-					...params,
-					page: props.pageParam,
-					tags: params.tags + ` rating:${showNSFW ? params.rating : 'g'}`,
-				},
+				params: postParams,
 			});
 			if (data) {
+
 				return removeNonImages(data);
 			} else {
 				return data;
@@ -46,7 +49,7 @@ export const usePostsSearch = (params: DanSearchQuery) => {
 			if (lastPage.length === 30) {
 				return lastPageParam + 1;
 			}
-			
+
 		},
 		enabled: !!params.tags && isEnabled,
 	});

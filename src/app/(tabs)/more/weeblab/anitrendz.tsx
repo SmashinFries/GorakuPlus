@@ -11,6 +11,7 @@ import { GorakuActivityIndicator } from '@/components/loading';
 import { GorakuTabBar } from '@/components/tab';
 import { useAppTheme } from '@/store/theme/themes';
 import { sendToast } from '@/utils/toast';
+import { openWebBrowser } from '@/utils/webBrowser';
 import { Image } from 'expo-image';
 import { Stack } from 'expo-router';
 import { openBrowserAsync } from 'expo-web-browser';
@@ -306,7 +307,7 @@ const AniTrendzPage = () => {
 								{
 									icon: 'information-outline',
 									onPress: () =>
-										openBrowserAsync(
+										openWebBrowser(
 											`https://www.anitrendz.com/charts/${AniTrendzChartPathEnum[routes[index].key]}`,
 										),
 								},

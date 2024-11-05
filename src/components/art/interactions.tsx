@@ -1,10 +1,7 @@
 import { Share, StyleSheet } from 'react-native';
 import { View } from 'react-native';
-import { Divider, IconButton, Text, useTheme } from 'react-native-paper';
+import { Divider, IconButton } from 'react-native-paper';
 import { saveImage } from '../../utils/images';
-import { TOAST } from '@/constants/toast';
-import * as Burnt from 'burnt';
-import { useAppTheme } from '@/store/theme/themes';
 
 type InteractionBarProps = {
 	url: string;
@@ -16,16 +13,16 @@ export const InteractionBar = ({ url, name, share_url }: InteractionBarProps) =>
 		<View style={[styles.container]}>
 			<Divider />
 			<View style={[styles.iconsContainer]}>
+				<IconButton
+					icon="share-variant"
+					onPress={() => Share.share({ url: share_url, message: share_url })}
+				/>
 				<IconButton icon="download-outline" onPress={() => saveImage(url, name)} />
 				{/* <IconButton
                     icon="heart-outline"
                     iconColor={colors.onSurfaceVariant}
                     onPress={() => Burnt.toast({ title: 'Coming Soon!', duration: TOAST.SHORT })}
                 /> */}
-				<IconButton
-					icon="share-variant"
-					onPress={() => Share.share({ url: share_url, message: share_url })}
-				/>
 			</View>
 			<Divider />
 		</View>

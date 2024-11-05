@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Portal } from 'react-native-paper';
+import { Button, Portal } from 'react-native-paper';
 import { useCallback, useState } from 'react';
 import { router } from 'expo-router';
 import { useMedia } from '@/hooks/media/useMedia';
@@ -42,10 +42,12 @@ import { SheetManager } from 'react-native-actions-sheet';
 import { useReleaseTimes } from '@/hooks/useReleaseTimes';
 import { useShallow } from 'zustand/react/shallow';
 import { ChapterPreview } from './sections/chapterPreview';
+import { useMatchStore } from '@/store/matchStore';
 
 const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 	const { mediaLanguage } = useSettingsStore();
 	const { userID } = useAuthStore(useShallow((state) => state.anilist));
+	const { mangadex: mangadexDB } = useMatchStore();
 	const { anilist, jikan, muReleases, muSeries, isReady } = useMedia(aniId, type);
 	const threadsQuery = useThreadsOverviewQuery({ id: aniId, page: 1, perPage: 10 });
 	const releaseText = useReleaseTimes({
@@ -106,6 +108,8 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 					}
 					aniError={anilist?.error}
 					malLoading={jikan.isFetching || jikan.isPending}
+					malError={jikan?.error}
+					mangaUpdatesError={muSeries?.error}
 				/>
 			)}
 
@@ -142,9 +146,18 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 							/>
 						)}
 						isMediaScreen
-						streamingLinks={anilist?.data?.Media?.externalLinks?.filter(
-							(link) => link.type === ExternalLinkType.Streaming,
-						)}
+						streamingLinks={[
+							...anilist?.data?.Media?.externalLinks?.filter(
+								(link) => link.type === ExternalLinkType.Streaming,
+							),
+							mangadexDB[aniId]
+								? {
+										id: 1,
+										site: 'MangaDex',
+										url: `https://mangadex.org/title/${mangadexDB[aniId]?.mangaId}`,
+									}
+								: null,
+						]}
 						onAniCard={() => {
 							router.push({
 								pathname: '/anicard',
@@ -249,12 +262,14 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 										statData={anilist?.data?.Media?.stats}
 									/>
 								)}
-								{muSeries && anilist?.data?.Media?.type !== MediaType.Anime && (
-									<MUData
-										data={muSeries?.data?.data}
-										openMuDialog={toggleMuDialog}
-									/>
-								)}
+								{!muSeries?.isError &&
+									muSeries?.data &&
+									anilist?.data?.Media?.type !== MediaType.Anime && (
+										<MUData
+											data={muSeries?.data?.data}
+											openMuDialog={toggleMuDialog}
+										/>
+									)}
 							</AnimViewMem>
 							<AnimViewMem delay={800}>
 								<Relations data={anilist?.data?.Media?.relations} />

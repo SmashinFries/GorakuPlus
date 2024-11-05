@@ -5,9 +5,8 @@ import { GorakuActivityIndicator } from '@/components/loading';
 import { GorakuTabBar } from '@/components/tab';
 import { useList } from '@/hooks/list/useList';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { SheetManager } from 'react-native-actions-sheet';
 import { Text } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
 
@@ -82,7 +81,7 @@ const ListPage = () => {
 			<ListHeader
 				title={username ? `User List` : undefined}
 				isViewer={false}
-				openFilter={() => SheetManager.show('ListFilterSheet')}
+				// openFilter={() => SheetManager.show('ListFilterSheet')}
 				onRefresh={index === 0 ? refreshAnimeList : refreshMangaList}
 			/>
 			{!loading && !isRefreshing && routes.length > 0 ? (

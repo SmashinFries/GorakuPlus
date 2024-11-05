@@ -1,8 +1,7 @@
 import { Image } from 'expo-image';
-import { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { View, Text as RNText } from 'react-native';
-import { Chip, IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
+import { Chip, MD3DarkTheme } from 'react-native-paper';
 import { copyToClipboard } from '../../utils';
 import use3dPan from '@/hooks/animations/use3dPan';
 import Animated from 'react-native-reanimated';
@@ -13,7 +12,6 @@ import { CharStaffInteractionBar } from './interaction';
 import { CharacterName, MediaEdge } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useTTSStore } from '@/store/tts/ttsStore';
-import { useAppTheme } from '@/store/theme/themes';
 
 type CharacterFrontProps = {
 	id: number;
@@ -23,20 +21,15 @@ type CharacterFrontProps = {
 	userID?: number;
 	names: CharacterName;
 	mediaEdges?: MediaEdge[];
-	onToggleFavorite: (id: number) => void;
 };
 export const CharacterFront = ({
 	id,
 	favorites,
 	isFavorite,
 	image_url,
-	userID,
 	names,
 	mediaEdges,
-	onToggleFavorite,
 }: CharacterFrontProps) => {
-	const { colors } = useAppTheme();
-	const [fav, setFav] = useState(isFavorite);
 	const { mediaLanguage } = useSettingsStore();
 	const { enabled, english } = useTTSStore();
 	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
@@ -85,14 +78,10 @@ export const CharacterFront = ({
 				</ScrollView>
 			)}
 			<CharStaffInteractionBar
-				isFav={fav}
+				id={id}
+				isFav={isFavorite}
 				share_url={`https://anilist.co/character/${id}`}
 				edit_url={`https://anilist.co/edit/character/${id}`}
-				favLoading={false}
-				toggleFav={() => {
-					setFav((prev) => !prev);
-					onToggleFavorite(id);
-				}}
 			/>
 			{/* {userID && (
 				<IconButton

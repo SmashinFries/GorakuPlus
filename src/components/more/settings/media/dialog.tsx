@@ -1,12 +1,11 @@
-import { Dialog, Text, RadioButton, Button, Chip, Checkbox, IconButton } from 'react-native-paper';
+import { Dialog, Text, RadioButton, Button, Checkbox, IconButton } from 'react-native-paper';
 import { useCallback, useState } from 'react';
 import DraggableFlatList, {
 	ScaleDecorator,
 	RenderItemParams,
 } from 'react-native-draggable-flatlist';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BasicDialogProps } from '@/types';
 import { ExploreTabsProps } from '@/types/navigation';
 import { useSettingsStore } from '@/store/settings/settingsStore';
@@ -128,7 +127,7 @@ export const ExploreTabsDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 	};
 
 	return (
-		<Dialog visible={visible} onDismiss={onDismiss}>
+		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>Edit Explore Tabs</Dialog.Title>
 			<Dialog.Content style={{ overflow: 'hidden' }}>
 				<DraggableFlatList
@@ -221,19 +220,17 @@ export const ListTabsDialog = ({
 	};
 
 	return (
-		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>Edit Explore Tabs</Dialog.Title>
+		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
+			<Dialog.Title>Edit {type === MediaType.Anime ? 'Anime' : 'Manga'} Tabs</Dialog.Title>
 			<Dialog.Content style={{ overflow: 'hidden' }}>
-				<GestureHandlerRootView>
-					<DraggableFlatList
-						data={tabOrder}
-						renderItem={renderItem}
-						keyExtractor={(item, idx) => idx.toString()}
-						onDragEnd={({ data }) => {
-							setTabOrder(data);
-						}}
-					/>
-				</GestureHandlerRootView>
+				<DraggableFlatList
+					data={tabOrder}
+					renderItem={renderItem}
+					keyExtractor={(item, idx) => idx.toString()}
+					onDragEnd={({ data }) => {
+						setTabOrder(data);
+					}}
+				/>
 			</Dialog.Content>
 			<Dialog.Actions>
 				<Button onPress={onDismiss}>Cancel</Button>

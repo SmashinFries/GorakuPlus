@@ -137,7 +137,6 @@ export const ImageSearchDialog = ({ visible, onDismiss }: ImageSearchDialogProps
 			// 		true,
 			// 	],
 			// });
-			// console.log(test);
 			// SheetManager.show('CharacterSearchSheet', {
 			// 	payload: {
 			// 		image: `data:${asset.mimeType};base64,${asset.base64}`,

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { List } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
@@ -21,8 +21,6 @@ const ListFilterSort = () => {
 	);
 
 	const onSortSelect = (newSort: ListSortOptionsType) => {
-		// console.log('NEW SORT:', newSort);
-		// console.log('SORT:', sort);
 		if (newSort.replace('_DESC', '').includes(sort.replace('_DESC', ''))) {
 			updateListFilter({
 				sort: !sort.includes('DESC') ? newSort : newSort.replace('_DESC', ''),

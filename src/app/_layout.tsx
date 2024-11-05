@@ -1,16 +1,13 @@
 import 'react-native-gesture-handler';
 import { SplashScreen, Stack, router, useNavigationContainerRef } from 'expo-router';
-import * as Linking from 'expo-linking';
-import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import PaperHeader from '@/components/headers';
-import { fetchAnilistNotifications } from '@/utils/notifications/backgroundFetch';
+import { fetchAnilistNotifications, notifNavigate } from '@/utils/notifications/backgroundFetch';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
 import { Toaster } from 'burnt/web';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import i18next from '../i18n';
 import { Platform } from 'react-native';
 import { reattachDownloads, removeUpdateAPKs } from '@/utils/update';
 import useAppUpdates from '@/hooks/useAppUpdates';
@@ -18,13 +15,11 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { PaperThemeProvider } from '@/providers/themeProvider';
 import { RootProvider } from '@/providers/rootProvider';
 import * as Sentry from '@sentry/react-native';
-import { isRunningInExpoGo } from 'expo';
 import { en, registerTranslation } from 'react-native-paper-dates';
 import { useThemeStore } from '@/store/theme/themeStore';
-import { SheetManager, SheetProvider } from 'react-native-actions-sheet';
+import { SheetProvider } from 'react-native-actions-sheet';
 import notifee, { EventType } from '@notifee/react-native';
 import '../components/sheets/index';
-import useNotifications from '@/hooks/useNotifications';
 import { ANILIST_NOTIF_BF_ID } from '@/constants/backgroundTasks';
 
 if (typeof window !== 'undefined') {
@@ -34,22 +29,17 @@ if (typeof window !== 'undefined') {
 
 registerTranslation('en', en);
 
-// Construct a new instrumentation instance. This is needed to communicate between the integration and React
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+const navigationIntegration = Sentry.reactNavigationIntegration({
+	enableTimeToInitialDisplay: Constants.executionEnvironment === ExecutionEnvironment.StoreClient,
+});
 
 Sentry.init({
 	dsn: 'https://c3347c2b80f12ce25d6eeede51177fbb@o4507794960547840.ingest.us.sentry.io/4507794962055168',
 	debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-	integrations: [
-		new Sentry.ReactNativeTracing({
-			// Pass instrumentation to be used as `routingInstrumentation`
-			routingInstrumentation,
-			enableNativeFramesTracking: !isRunningInExpoGo(),
-			// ...
-		}),
-	],
+	tracesSampleRate: 1.0,
+	integrations: [navigationIntegration],
 	// enabled: Constants?.executionEnvironment === ExecutionEnvironment.Standalone,
-	enabled: false,
+	enabled: true,
 });
 
 Platform.OS !== 'web' && removeUpdateAPKs();
@@ -57,10 +47,8 @@ Platform.OS !== 'web' && reattachDownloads();
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
 	const { notification } = detail;
-	if (type === EventType.PRESS) {
-		const link = Linking.createURL(detail.notification?.data?.url as string);
-		console.log('Link:', link);
-		Linking.openURL(link ?? 'gorakuplus://user');
+	if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
+		notifNavigate(detail.notification, detail.pressAction.id as any);
 		await notifee.cancelNotification(notification.id);
 	}
 });
@@ -72,38 +60,38 @@ TaskManager.defineTask(ANILIST_NOTIF_BF_ID, () => {
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-	const { loading } = useNotifications();
+	// const { loading } = useNotifications();
 	const { isFirstLaunch } = useSettingsStore();
-	const { updateDetails, checkForUpdates } = useAppUpdates();
+	const { checkForUpdates } = useAppUpdates();
 	// Capture the NavigationContainer ref and register it with the instrumentation.
 	const ref = useNavigationContainerRef();
 	const { isDark } = useThemeStore();
 
 	const runUpdateChecker = async () => {
-		const hasUpdate = await checkForUpdates();
-		if (hasUpdate) {
-			SheetManager.show('AppUpdaterSheet', { payload: { updateDetails } });
-		}
+		await checkForUpdates();
 	};
 
 	useEffect(() => {
-		if (isFirstLaunch) {
-			router.replace('/setup');
-		} else {
-			router.replace('/(tabs)/explore');
+		const isReady = ref.current?.isReady();
+		if (isReady) {
+			if (isFirstLaunch) {
+				router.replace('/setup');
+			} else {
+				router.replace('/(tabs)/explore');
+			}
+			SplashScreen.hideAsync();
 		}
-		SplashScreen.hideAsync();
-	}, [isFirstLaunch]);
+	}, [isFirstLaunch, ref]);
 
 	useEffect(() => {
 		if (ref) {
-			routingInstrumentation.registerNavigationContainer(ref);
+			navigationIntegration.registerNavigationContainer(ref);
 		}
 	}, [ref]);
 
 	useEffect(() => {
 		if (Constants.executionEnvironment !== ExecutionEnvironment.StoreClient) {
-			// Platform.OS !== 'web' && runUpdateChecker();
+			Platform.OS !== 'web' && runUpdateChecker();
 		}
 	}, []);
 
@@ -140,7 +128,7 @@ const RootLayout = () => {
 							<Stack.Screen
 								name="statistics"
 								options={{
-									title: i18next.t('Statistics', { ns: 'tabs' }),
+									title: 'Statistics',
 									header: (props) => <PaperHeader {...props} />,
 									headerShown: true,
 								}}
@@ -148,7 +136,7 @@ const RootLayout = () => {
 							<Stack.Screen
 								name="notifications"
 								options={{
-									title: i18next.t('Notifications', { ns: 'tabs' }),
+									title: 'Notifications',
 									header: (props) => <PaperHeader {...props} />,
 									headerShown: true,
 								}}

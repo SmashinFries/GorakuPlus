@@ -88,7 +88,6 @@ export const SectionScroll = ({ category_title, data, viewer, isLoading }: Secti
 			<View
 				style={{
 					flex: 1,
-					width: width,
 					// maxHeight: 280,
 				}}
 			>

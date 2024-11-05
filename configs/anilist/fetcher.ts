@@ -23,7 +23,6 @@ export const fetchAnilistData = <TData, TVariables>(
 				{ query, variables },
 				{ headers: { ...headers, ...options } },
 			);
-			// console.log(res.data);
 			return res.data.data ?? null;
 		} catch (error) {
 			// console.error(error);

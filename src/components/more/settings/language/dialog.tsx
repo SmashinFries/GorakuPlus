@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Dialog, RadioButton, Portal, Button } from 'react-native-paper';
-import { useTranslation } from 'react-i18next';
-import { LANGUAGES } from 'locales';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 
 type MediaLanguageDialogProps = {
@@ -11,7 +9,6 @@ type MediaLanguageDialogProps = {
 export const MediaLanguageDialog = ({ visible, hideDialog }: MediaLanguageDialogProps) => {
 	const { mediaLanguage, setSettings } = useSettingsStore();
 	const [lang, setLang] = useState(mediaLanguage);
-	const [t, i18n] = useTranslation('dialogs');
 
 	const langOptions: (typeof mediaLanguage)[] = ['english', 'romaji', 'native'];
 
@@ -28,7 +25,7 @@ export const MediaLanguageDialog = ({ visible, hideDialog }: MediaLanguageDialog
 	return (
 		<Portal>
 			<Dialog visible={visible} onDismiss={hideDialog}>
-				<Dialog.Title>{t('Media Language')}</Dialog.Title>
+				<Dialog.Title>{'Media Language'}</Dialog.Title>
 				<Dialog.Content>
 					<RadioButton.Group
 						onValueChange={(newLang: typeof mediaLanguage) => setLang(newLang)}
@@ -64,13 +61,12 @@ export const AppLanguageDialog = ({
 	defaultLanguage,
 	hideDialog,
 }: AppLanguageDialogProps) => {
-	const [t, i18n] = useTranslation('dialogs');
-	const [lang, setLang] = useState(defaultLanguage);
+	const [_lang, setLang] = useState(defaultLanguage);
 
-	const onDone = () => {
-		i18n.changeLanguage(lang);
-		hideDialog();
-	};
+	// const onDone = () => {
+	// 	i18n.changeLanguage(lang);
+	// 	hideDialog();
+	// };
 
 	const onCancel = () => {
 		setLang(defaultLanguage);
@@ -80,8 +76,8 @@ export const AppLanguageDialog = ({
 	return (
 		<Portal>
 			<Dialog visible={visible} onDismiss={hideDialog}>
-				<Dialog.Title>{t('App Language')}</Dialog.Title>
-				<Dialog.Content>
+				<Dialog.Title>{'App Language'}</Dialog.Title>
+				{/* <Dialog.Content>
 					<RadioButton.Group onValueChange={(newLang) => setLang(newLang)} value={lang}>
 						{Object.keys(LANGUAGES).map((langOption, idx) => (
 							<RadioButton.Item
@@ -93,10 +89,10 @@ export const AppLanguageDialog = ({
 							/>
 						))}
 					</RadioButton.Group>
-				</Dialog.Content>
+				</Dialog.Content> */}
 				<Dialog.Actions>
 					<Button onPress={onCancel}>Cancel</Button>
-					<Button onPress={onDone}>Done</Button>
+					{/* <Button onPress={onDone}>Done</Button> */}
 				</Dialog.Actions>
 			</Dialog>
 		</Portal>

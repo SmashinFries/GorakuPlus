@@ -1,4 +1,5 @@
 import { Media, MediaStreamingEpisode } from '@/api/anilist/__genereated__/gql';
+import { Accordion } from '@/components/animations';
 import { ImageViewer } from '@/components/imageViewer';
 import { ListHeading } from '@/components/text';
 import { useBlur } from '@/hooks/useNSFWBlur';
@@ -63,23 +64,26 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 
 	return (
 		<View style={{ overflow: 'visible' }}>
-			<ListHeading
+			<Accordion title="Screenshots" description={'Contains spoilers!'}>
+				<View style={{ width: '100%', height: 180 }}>
+					<FlatList
+						data={data}
+						renderItem={RenderItem}
+						keyExtractor={(item, index) => index.toString()}
+						// estimatedItemSize={250}
+						horizontal
+						contentContainerStyle={{ padding: 15 }}
+						showsHorizontalScrollIndicator={false}
+						// drawDistance={225 * data?.data?.length}
+					/>
+				</View>
+			</Accordion>
+			{/* <ListHeading
 				title="Screenshots"
 				subtitle="Contains spoilers!"
 				subtitleStyle={{ color: colors.onSurfaceVariant }}
-			/>
-			<View style={{ width: '100%', height: 180 }}>
-				<FlatList
-					data={data}
-					renderItem={RenderItem}
-					keyExtractor={(item, index) => index.toString()}
-					// estimatedItemSize={250}
-					horizontal
-					contentContainerStyle={{ padding: 15 }}
-					showsHorizontalScrollIndicator={false}
-					// drawDistance={225 * data?.data?.length}
-				/>
-			</View>
+			/> */}
+
 			<Portal>
 				<ImageViewer
 					urls={data.map((stream) => stream.thumbnail)}

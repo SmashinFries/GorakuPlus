@@ -447,7 +447,7 @@ export const MUISlider = ({
 // 	);
 // };
 
-type TestSliderProps = {
+type SliderProps = {
 	title: string;
 	description?: string;
 	initialValue: number | 'ANY';
@@ -466,7 +466,7 @@ export const Slider = ({
 	steps,
 	allowTextInput = false,
 	onValueUpdate,
-}: TestSliderProps) => {
+}: SliderProps) => {
 	const { colors } = useAppTheme();
 	const [value, setValue] = useState(initialValue === 'ANY' ? (minValue ?? 0) : initialValue);
 	const [textValue, setTextValue] = useState(`${initialValue}`);
@@ -579,6 +579,8 @@ type RangeSliderProps = {
 	maxValue: number;
 	minValue?: number;
 	steps?: number;
+	minimumTrackTintColor?: string;
+	maximumTrackTintColor?: string;
 };
 export const RangeSlider = ({
 	title,
@@ -586,6 +588,8 @@ export const RangeSlider = ({
 	maxValue,
 	minValue = 0,
 	steps,
+	maximumTrackTintColor,
+	minimumTrackTintColor,
 	onValueUpdate,
 }: RangeSliderProps) => {
 	const { colors } = useAppTheme();
@@ -649,10 +653,11 @@ export const RangeSlider = ({
 					trackStyle={{ height: 6 }}
 					minimumValue={minValue}
 					maximumValue={maxValue}
-					minimumTrackTintColor={colors.primary}
-					maximumTrackTintColor={colors.primaryContainer}
+					minimumTrackTintColor={minimumTrackTintColor ?? colors.primary}
+					maximumTrackTintColor={maximumTrackTintColor ?? colors.primaryContainer}
 					thumbTintColor={colors.primary}
 					thumbStyle={{ width: 20, height: 20 }}
+
 					// renderTrackMarkComponent={() => (
 					// 	<View
 					// 		style={{

@@ -25,12 +25,12 @@ type NSFWLabelProps = {
 export const NSFWLabel = ({ level }: NSFWLabelProps) => {
 	if (!ratingLevels[level]) return null;
 	return (
-		<View style={{ position: 'absolute', borderRadius: 12, top: 0, left: 0 }}>
+		<View style={{ position: 'absolute', borderRadius: 6, top: 0, left: 0 }}>
 			<Chip
 				style={{
 					backgroundColor: ratingLevels[level]?.color ?? undefined,
-					borderTopLeftRadius: 12,
-					borderBottomRightRadius: 12,
+					borderRadius: 0,
+					borderBottomRightRadius: 6,
 				}}
 				compact
 				textStyle={{ fontWeight: '900', color: MD3LightTheme.colors.onBackground }}

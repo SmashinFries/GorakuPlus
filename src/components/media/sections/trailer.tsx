@@ -1,6 +1,6 @@
 import { ListHeading } from '@/components/text';
 import { useState } from 'react';
-import { AppState } from 'react-native';
+import { AppState, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import YoutubePlayer from 'react-native-youtube-iframe';
 
@@ -14,8 +14,17 @@ export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
 		return null;
 	}
 
+	// <Accordion title="Trailer">
+	// 	<YoutubePlayer
+	// 		height={270}
+	// 		webViewStyle={{ opacity: 0.99 }}
+	// 		play={playing}
+	// 		videoId={video}
+	// 	/>
+	// </Accordion>;
+
 	return (
-		<Animated.View style={{ marginVertical: 10 }}>
+		<View style={{ marginVertical: 10 }}>
 			<ListHeading title="Trailer" />
 			<YoutubePlayer
 				height={270}
@@ -23,6 +32,6 @@ export const AnimeTrailer = ({ video }: AnimeTrailerProps) => {
 				play={playing}
 				videoId={video}
 			/>
-		</Animated.View>
+		</View>
 	);
 };

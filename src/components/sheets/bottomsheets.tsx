@@ -37,6 +37,7 @@ import {
 	ViewStyle,
 } from 'react-native';
 import {
+	ActivityIndicator,
 	Avatar,
 	Button,
 	Checkbox,
@@ -94,7 +95,6 @@ import { SauceNaoResponse } from '@/api/saucenao/types';
 import { useSearchStore } from '@/store/search/searchStore';
 import { SearchReleasesPostMutationResult } from '@/api/mangaupdates/mangaupdates';
 import { AnimeFull } from '@/api/jikan/models';
-import { CrunchyRollIcon } from '../svgs';
 import { useShallow } from 'zustand/react/shallow';
 import { compareArrays } from '@/utils/compare';
 import { DatePopup, StatusDropDown } from '../media/entryActions';
@@ -102,6 +102,11 @@ import { ProgressInput, ScoreInput } from '../media/sections/entry';
 import { NumberPickDialog } from '../dialogs';
 import { sendToast } from '@/utils/toast';
 import * as Haptics from 'expo-haptics';
+import { openWebBrowser } from '@/utils/webBrowser';
+import { useGetSearchManga } from '@/api/mangadex/mangadexExtended';
+import { Manga } from '@/api/mangadex/models';
+import { getGetChapterQueryOptions } from '@/api/mangadex/mangadex';
+import { useMatchStore } from '@/store/matchStore';
 
 export const BottomSheetParent = (
 	props: ActionSheetProps & { sheetRef?: LegacyRef<ActionSheetRef> },
@@ -164,19 +169,24 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 	const isAnime = payload.type === MediaType.Anime;
 	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
-	const { mutateAsync: addEntry, data: savedMediaListItemData } =
-		useSaveMediaListItemInvalidatedMutation({
-			meta: { mediaId: payload.id },
-			onSuccess: () => queryClient.invalidateQueries(),
-		});
-	const { mutateAsync: removeEntry } = useDeleteMediaListItemInvalidatedMutation({
+	const {
+		mutateAsync: addEntry,
+		data: savedMediaListItemData,
+		isPending: isAddEntryPending,
+	} = useSaveMediaListItemInvalidatedMutation({
 		meta: { mediaId: payload.id },
 		onSuccess: () => queryClient.invalidateQueries(),
 	});
-	const { mutateAsync: removeActivity } = useDeleteActivityItemInvalidateMutation({
-		onSuccess: () => queryClient.invalidateQueries(),
-	});
-	const { mutateAsync: toggleFav } = useToggleFavMutation({
+	const { mutateAsync: removeEntry, isPending: isRemoveEntryPending } =
+		useDeleteMediaListItemInvalidatedMutation({
+			meta: { mediaId: payload.id },
+			onSuccess: () => queryClient.invalidateQueries(),
+		});
+	const { mutateAsync: removeActivity, isPending: isRemoveActivityPending } =
+		useDeleteActivityItemInvalidateMutation({
+			onSuccess: () => queryClient.invalidateQueries(),
+		});
+	const { mutateAsync: toggleFav, isPending: isFavPending } = useToggleFavMutation({
 		onSuccess: () => queryClient.invalidateQueries(),
 	});
 	const [titleIdx, setTitleIdx] = useState(0);
@@ -210,7 +220,6 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 
 	const onAdd = async (status: MediaListStatus = MediaListStatus.Planning) => {
 		const res = await addEntry({ status: status, mediaId: payload.id });
-		console.log(res);
 		setListEntryState({ ...res?.SaveMediaListEntry });
 	};
 
@@ -287,7 +296,16 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 						<List.Item
 							title={'Delete Activity'}
 							onPress={() => deleteActivity()}
-							left={(props) => <List.Icon {...props} icon={'trash-can-outline'} />}
+							left={(props) => (
+								<List.Icon
+									{...props}
+									icon={
+										isRemoveActivityPending
+											? () => <ActivityIndicator />
+											: 'trash-can-outline'
+									}
+								/>
+							)}
 						/>
 					)}
 					{payload.followingUsername && (
@@ -309,7 +327,13 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 							left={(props) => (
 								<List.Icon
 									{...props}
-									icon={listEntryState ? 'playlist-edit' : 'playlist-plus'}
+									icon={
+										isAddEntryPending
+											? () => <ActivityIndicator />
+											: listEntryState
+												? 'playlist-edit'
+												: 'playlist-plus'
+									}
 								/>
 							)}
 							onLongPress={openEntryEditor}
@@ -319,7 +343,16 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 					{!!userId && listEntryState && (
 						<List.Item
 							title={'Remove from list'}
-							left={(props) => <List.Icon {...props} icon={'playlist-remove'} />}
+							left={(props) => (
+								<List.Icon
+									{...props}
+									icon={
+										isRemoveEntryPending
+											? () => <ActivityIndicator />
+											: 'playlist-remove'
+									}
+								/>
+							)}
 							onPress={onRemove}
 						/>
 					)}
@@ -330,11 +363,13 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 								<List.Icon
 									{...props}
 									icon={
-										payload.allowEntryEdit
-											? !isFav
-												? 'heart-outline'
+										isFavPending
+											? () => <ActivityIndicator />
+											: payload.allowEntryEdit
+												? !isFav
+													? 'heart-outline'
+													: 'heart-remove-outline'
 												: 'heart-remove-outline'
-											: 'heart-remove-outline'
 									}
 								/>
 							)}
@@ -497,11 +532,7 @@ export const ThreadOverviewSheet = ({ payload: { data } }: SheetProps<'ThreadOve
 	const onUserNav = () => {
 		router.navigate({
 			// @ts-ignore it works tho...
-			pathname: `/user/${data?.user?.id}/${data?.user?.name}`,
-			params: {
-				avatar: data?.user?.avatar?.large,
-				banner: data?.user?.bannerImage,
-			},
+			pathname: `/user/${data?.user?.name}`,
 		});
 		ref.current?.hide();
 	};
@@ -590,6 +621,21 @@ export const QuickActionCharStaffSheet = ({
 	const ref = useSheetRef();
 	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const [titleIdx, setTitleIdx] = useState(0);
+	const [isFav, setIsFav] = useState(isFavourite);
+
+	const queryClient = useQueryClient();
+	const { mutateAsync: toggleFav, isPending } = useToggleFavMutation({
+		onSuccess: () => queryClient.invalidateQueries(),
+	});
+
+	const onFavorite = async () => {
+		try {
+			await toggleFav(type === 'character' ? { characterId: id } : { staffId: id });
+			setIsFav((prev) => !prev);
+		} catch (e) {
+			sendToast(e);
+		}
+	};
 
 	const titlesArray: string[] = !!name
 		? [...new Set([name['full'], name['native']])].filter((title) => title !== null)
@@ -614,15 +660,23 @@ export const QuickActionCharStaffSheet = ({
 					{!!userId && (
 						<List.Item
 							title={
-								(isFavourite ? 'Unfavorite' : 'Favorite') +
+								(isFav ? 'Unfavorite' : 'Favorite') +
 								` (${getCompactNumberForm(favourites)})`
 							}
 							left={(props) => (
 								<List.Icon
 									{...props}
-									icon={!isFavourite ? 'heart-outline' : 'heart-remove-outline'}
+									icon={
+										isPending
+											? () => <ActivityIndicator />
+											: !isFav
+												? 'heart-outline'
+												: 'heart-remove'
+									}
+									color={isFav && 'red'}
 								/>
 							)}
+							onPress={onFavorite}
 						/>
 					)}
 					<List.Item
@@ -704,7 +758,7 @@ export const QuickActionUserSheet = ({
 }: SheetProps<'QuickActionUserSheet'>) => {
 	const ref = useSheetRef();
 	const [isFollowingState, setIsFollowingState] = useState(isFollowing);
-	const { mutateAsync } = useToggleFollowMutation();
+	const { mutateAsync, isPending } = useToggleFollowMutation();
 
 	const onToggleFollow = async () => {
 		const res = await mutateAsync({ userId: id });
@@ -731,7 +785,11 @@ export const QuickActionUserSheet = ({
 						<List.Icon
 							{...props}
 							icon={
-								isFollowingState ? 'account-minus-outline' : 'account-plus-outline'
+								isPending
+									? () => <ActivityIndicator />
+									: isFollowingState
+										? 'account-minus-outline'
+										: 'account-plus-outline'
 							}
 						/>
 					)}
@@ -1200,7 +1258,7 @@ export const QuickActionStudioSheet = ({
 
 	const { columns, displayMode, itemWidth } = useColumns('search');
 
-	const { mutateAsync: toggleFav } = useToggleFavMutation();
+	const { mutateAsync: toggleFav, isPending } = useToggleFavMutation();
 
 	const viewStudio = () => {
 		ref.current?.hide();
@@ -1216,30 +1274,30 @@ export const QuickActionStudioSheet = ({
 		await Share.share({ url: siteUrl, message: siteUrl });
 	};
 
-	const viewAnime = (mediaId: number) => {
-		ref.current?.hide();
-		// @ts-ignore
-		router.navigate(`/${type.toLowerCase()}/${mediaId}`);
-	};
-
 	return (
 		<BottomSheetParent>
 			<ScrollView>
 				<View>
-					<List.Item
-						title={`View ${name}`}
-						onPress={viewStudio}
-						left={(props) => <List.Icon {...props} icon={'office-building-outline'} />}
-					/>
 					{isAuthed && (
 						<List.Item
-							title={isFav ? 'Unfavorite' : 'Favorite'}
+							title={
+								isPending
+									? () => <ActivityIndicator />
+									: isFav
+										? 'Unfavorite'
+										: 'Favorite'
+							}
 							onPress={onFavorite}
 							left={(props) => (
 								<List.Icon {...props} icon={isFav ? 'heart' : 'heart-outline'} />
 							)}
 						/>
 					)}
+					<List.Item
+						title={`View ${name}`}
+						onPress={viewStudio}
+						left={(props) => <List.Icon {...props} icon={'office-building-outline'} />}
+					/>
 					<List.Item
 						title={'Share'}
 						left={(props) => <List.Icon {...props} icon="share-variant-outline" />}
@@ -1474,9 +1532,10 @@ export type MediaReleasesSheetProps = {
 	streamingEpisodes: AniMediaQuery['Media']['streamingEpisodes'];
 };
 export const MediaReleasesSheet = ({
-	payload: { releases, animeReleases, status, streamingSites, streamingEpisodes },
+	payload: { releases, animeReleases, status, streamingEpisodes },
 }: SheetProps<'MediaReleasesSheet'>) => {
-	const { colors } = useAppTheme();
+	const sortedStreamingSites = streamingEpisodes?.length > 0 ? streamingEpisodes.sort() : null;
+
 	const MangaRenderItem = ({
 		item,
 	}: ListRenderItemInfo<SearchReleasesPostMutationResult['data']['results'][0]>) => {
@@ -1496,6 +1555,7 @@ export const MediaReleasesSheet = ({
 	}: ListRenderItemInfo<AniMediaQuery['Media']['streamingEpisodes'][0]>) => {
 		return (
 			<Surface
+				elevation={2}
 				style={{
 					flex: 1,
 					borderRadius: 8,
@@ -1509,10 +1569,10 @@ export const MediaReleasesSheet = ({
 						flexDirection: 'row',
 					}}
 				>
+					{/* <CrunchyRollIcon fontColor={colors.onSurface} /> */}
 					<Text variant="titleMedium" style={{ flexShrink: 1 }}>
 						{item.title}
 					</Text>
-					<CrunchyRollIcon fontColor={colors.onSurface} />
 				</View>
 				<Image
 					source={{ uri: item.thumbnail }}
@@ -1524,6 +1584,9 @@ export const MediaReleasesSheet = ({
 						marginTop: 4,
 					}}
 				/>
+				<View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+					<Button onPress={() => openWebBrowser(item.url, true)}>{item.site}</Button>
+				</View>
 			</Surface>
 		);
 	};
@@ -1547,7 +1610,7 @@ export const MediaReleasesSheet = ({
 		<BottomSheetParent>
 			{/* @ts-ignore */}
 			<FlatList
-				data={releases ?? streamingEpisodes ?? animeReleases}
+				data={releases ?? sortedStreamingSites ?? animeReleases}
 				keyExtractor={(item, idx) => idx.toString()}
 				numColumns={1}
 				centerContent
@@ -1580,7 +1643,7 @@ export const MediaReleasesSheet = ({
 				renderItem={
 					releases
 						? MangaRenderItem
-						: animeReleases
+						: sortedStreamingSites
 							? AnilistAnimeRenderItem
 							: MalAnimeRenderItem
 				}
@@ -1721,18 +1784,6 @@ export const ListEntrySheet = ({
 	) => {
 		switch (key) {
 			case 'score':
-				// switch (ScoreFormat) {
-				// 	case ScoreFormat.Point_3:
-				// 		console.log('3 score:', value);
-				// 		setTempParams((prev) => ({ ...prev, [key]: value }));
-				// 		return;
-				// 	case ScoreFormat.Point_5:
-				// 		console.log('5 score:', value);
-				// 		return;
-				// 	default:
-				// 		setTempParams((prev) => ({ ...prev, ['score']: value as number }));
-				// }
-				// break;
 				setTempParams((prev) => ({ ...prev, ['score']: value as number }));
 				return;
 
@@ -1744,12 +1795,6 @@ export const ListEntrySheet = ({
 						: [...prev.customLists, value as string],
 				}));
 				return;
-			// case 'status':
-			//     if (value as MediaListStatus === MediaListStatus.Repeating && tempParams.repeat === 0) {
-			//         setTempParams((prev) => ({ ...prev, repeat: 1 }));
-			//     } else {
-			//         setTempParams((prev) => ({ ...prev, [key]: value }));
-			//     }
 			default:
 				setTempParams((prev) => ({ ...prev, [key]: value }));
 				return;
@@ -2069,7 +2114,6 @@ export const ListEntrySheet = ({
 										labelVariant="labelMedium"
 										mode="android"
 										onPress={() => updateParams('customLists', list)}
-										// onPress={() => console.log(list, customLists)}
 									/>
 								))}
 							</ScrollView>
@@ -2095,6 +2139,128 @@ export const ListEntrySheet = ({
 					</List.Section>
 				</View>
 			</ScrollView>
+		</BottomSheetParent>
+	);
+};
+
+export type MangaDexSearchProps = {
+	aniId: number;
+	search: string;
+};
+export const MangaDexSearchSheet = ({
+	payload: { aniId, search },
+}: SheetProps<'MangaDexSearchSheet'>) => {
+	const ref = useSheetRef();
+	const { addMangaDexID } = useMatchStore(
+		useShallow((state) => ({ addMangaDexID: state.addMangaDexID })),
+	);
+	const queryClient = useQueryClient();
+	const { data, isFetching } = useGetSearchManga(
+		{
+			title: search,
+			limit: 10,
+			'includes[]': ['cover_art'],
+			order: { relevance: 'desc' },
+		},
+		{ enabled: !!search },
+	);
+
+	const { columns, itemWidth } = useColumns('search');
+
+	const onSelection = async (mangaId: string) => {
+		const result = await queryClient.fetchQuery({
+			...getGetChapterQueryOptions({
+				manga: mangaId,
+				'translatedLanguage[]': ['en'],
+				limit: 1,
+				order: { chapter: 'asc' },
+			}),
+		});
+		addMangaDexID(aniId, mangaId, result?.data?.data[0]?.id);
+		ref.current?.hide();
+	};
+
+	const MediaRenderItem = ({ item }: { item: Manga }) => {
+		const englishTitle = item?.attributes?.title?.en;
+		const nativeTitle =
+			item?.attributes?.altTitles?.find(
+				(title) => title?.[item?.attributes?.originalLanguage],
+			)?.[item?.attributes?.originalLanguage] ?? englishTitle;
+		// `${item?.attributes?.originalLanguage}-ro`
+		const romajiTitle =
+			item?.attributes?.altTitles?.find(
+				(title) => title?.[`${item?.attributes?.originalLanguage}-ro`],
+			)?.[`${item?.attributes?.originalLanguage}-ro`] ?? englishTitle;
+
+		const coverFilename = item?.relationships?.find((relation) => relation.type === 'cover_art')
+			?.attributes?.fileName;
+
+		return (
+			<View style={{ width: itemWidth }}>
+				<View
+					style={{
+						// flex: 1,
+						alignItems: 'center',
+						justifyContent: 'flex-start',
+						marginVertical: 10,
+						marginHorizontal: 5,
+					}}
+				>
+					<MediaCard
+						id={item.id as any}
+						type={MediaType.Manga}
+						isFavourite={false}
+						title={{
+							english: englishTitle,
+							romaji: romajiTitle,
+							native: nativeTitle,
+						}}
+						coverImage={{
+							// extraLarge: `https://uploads.mangadex.org/covers/${item?.id}/${coverFilename}`,
+							extraLarge: coverFilename
+								? `https://uploads.mangadex.org/covers/${item?.id}/${coverFilename}`
+								: 'https://mangadex.org/covers/f1aa643f-6921-4eeb-b1c9-a1619e7f07c0/a34a2ff4-309c-4de6-ad42-ef08583ad3e5.jpg',
+						}}
+						fitToParent
+						isMangaDex
+						navigate={() => onSelection(item.id)}
+					/>
+				</View>
+			</View>
+		);
+	};
+
+	return (
+		<BottomSheetParent>
+			{isFetching ? (
+				<View
+					style={{
+						height: 100,
+						width: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			) : (
+				<FlatList
+					key={columns}
+					data={data?.data?.data}
+					keyExtractor={(_item, idx) => idx.toString()}
+					numColumns={columns}
+					centerContent
+					ListHeaderComponent={() => (
+						<View style={{ marginBottom: 10, paddingHorizontal: 10 }}>
+							<Text variant="headlineMedium" style={{ textTransform: 'capitalize' }}>
+								MangaDex Search
+							</Text>
+							<Divider />
+						</View>
+					)}
+					renderItem={(props) => <MediaRenderItem {...props} />}
+				/>
+			)}
 		</BottomSheetParent>
 	);
 };

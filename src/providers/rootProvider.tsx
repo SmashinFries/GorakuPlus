@@ -8,6 +8,7 @@ import notifee, { EventType } from '@notifee/react-native';
 import * as Linking from 'expo-linking';
 import { clientPersister } from '@/store/persister';
 import { useCollectionUpdater } from '@/hooks/useCollections';
+import { NotificationPressActionIds, notifNavigate } from '@/utils/notifications/backgroundFetch';
 
 const queryClient = new QueryClient();
 
@@ -28,9 +29,12 @@ export const RootProvider = ({ children }: { children: ReactNode }) => {
 	useEffect(() => {
 		return notifee.onForegroundEvent(({ type, detail }) => {
 			switch (type) {
+				case EventType.ACTION_PRESS:
 				case EventType.PRESS: {
-					const link = Linking.createURL(detail.notification?.data?.url as string);
-					Linking.openURL(link ?? 'gorakuplus://user');
+					notifNavigate(
+						detail.notification,
+						detail.pressAction.id as NotificationPressActionIds,
+					);
 					break;
 				}
 			}

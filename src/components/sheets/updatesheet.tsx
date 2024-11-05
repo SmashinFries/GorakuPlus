@@ -57,10 +57,9 @@ export const AppUpdaterSheet = ({ payload: { updateDetails } }: SheetProps<'AppU
 							<Text variant="labelLarge">Version {updateDetails?.tag_name}</Text>
 						</View>
 					</View>
-
-					<Divider style={{ height: 2 }} />
 				</View>
 			</View>
+			<Divider />
 			{updateDetails?.body && (
 				<ScrollView>
 					<View style={{ padding: 10 }}>
@@ -71,7 +70,6 @@ export const AppUpdaterSheet = ({ payload: { updateDetails } }: SheetProps<'AppU
 				</ScrollView>
 			)}
 			<View>
-				<Divider style={{ height: 2 }} />
 				<View
 					style={{
 						paddingVertical: 5,
@@ -80,12 +78,12 @@ export const AppUpdaterSheet = ({ payload: { updateDetails } }: SheetProps<'AppU
 					<View>
 						<ProgressBar progress={progress} />
 					</View>
-					<Button mode="contained" style={{ marginVertical: 5 }} onPress={installUpdate}>
+					<Button mode="contained" style={{ margin: 5 }} onPress={installUpdate}>
 						Update
 					</Button>
 					<Button
 						mode="outlined"
-						style={{ marginVertical: 5 }}
+						style={{ margin: 5 }}
 						onPress={() => ref.current?.hide()}
 					>
 						Skip

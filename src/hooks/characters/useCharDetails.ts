@@ -1,7 +1,6 @@
 import { useCharacterDetailsQuery, useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
 import { usePostsSearch, useTagsSearchQuery } from '@/api/danbooru/danbooru';
 import { useMatchStore } from '@/store/matchStore';
-import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useEffect, useState } from 'react';
 import useDebounce from '../useDebounce';
 import { useShallow } from 'zustand/react/shallow';
@@ -21,7 +20,6 @@ const cleanName = (query: string) => {
 
 export const useCharDetail = (id: number) => {
 	const [isReady, setIsReady] = useState(false);
-	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
 	const { isBooruEnabled, booruDB, addBooruTag } = useMatchStore(
 		useShallow((state) => ({
 			isBooruEnabled: state.isBooruEnabled,
@@ -30,7 +28,7 @@ export const useCharDetail = (id: number) => {
 		})),
 	);
 	const [currentArtTag, setCurrentArtTag] = useState<string>(booruDB[id] ?? '');
-	const artTagDebounced = useDebounce(currentArtTag, 1000);
+	const artTagDebounced = useDebounce(currentArtTag, 1000) as string;
 
 	const { mutateAsync: toggleFav } = useToggleFavMutation();
 
@@ -47,13 +45,7 @@ export const useCharDetail = (id: number) => {
 	);
 	const art = usePostsSearch({
 		limit: 20,
-		tags: isBooruEnabled
-			? artTagDebounced
-				? showNSFW
-					? `${artTagDebounced}`
-					: `${artTagDebounced} rating:g`
-				: ''
-			: undefined,
+		tags: isBooruEnabled ? (artTagDebounced ? `${artTagDebounced}` : '') : undefined,
 		page: 1,
 	});
 

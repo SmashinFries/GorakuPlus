@@ -112,13 +112,32 @@ export const UserScreen = ({
 
 	if (isViewer && !viewerId) return <UnauthedPage />;
 
+	if (userDataQuery.isError) {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
+				<Text>User does not exist :O</Text>
+				<Button icon={'arrow-left'} onPress={() => router.back()}>
+					Go Back
+				</Button>
+			</View>
+		);
+	}
+
 	return (
-		<View>
+		<View style={{ height: '100%', width: '100%' }}>
 			{(userDataQuery.isFetching || userOverviewQuery.isFetching) && (
 				<Animated.View
 					exiting={FadeOut}
 					style={{
-						flex: 1,
+						height: '100%',
+						width: '100%',
 						alignItems: 'center',
 						justifyContent: 'center',
 					}}
@@ -153,6 +172,9 @@ export const UserScreen = ({
 								onRefresh={onRefresh}
 							/>
 						}
+						onNotificationIcon={() => router.navigate(`/notifications`)}
+						newNotifs={userDataQuery?.data?.User?.unreadNotificationCount}
+						notificationIcon={isViewer}
 						loading={userDataQuery?.isLoading || userOverviewQuery.isLoading}
 					>
 						<View style={{ paddingTop: 100 }}>

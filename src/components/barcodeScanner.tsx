@@ -26,8 +26,6 @@ const BarcodeScanner = ({
 	// 	useBarcode();
 
 	const onBarcodeScan = async ({ data, type }: BarcodeScanningResult) => {
-		console.log('type:', type);
-		console.log('data:', data);
 		// type can be a number if using the scanFromURLAsync method \0_0/
 		if (type === 'ean13' || (type as unknown as number) === 32) {
 			try {
@@ -50,7 +48,6 @@ const BarcodeScanner = ({
 					sendErrorMessage(isbn_response.statusText ?? 'No Results');
 				}
 			} catch (e) {
-				console.log(e);
 				onDismiss();
 				sendErrorMessage(`${e}`);
 			}

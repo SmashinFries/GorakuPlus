@@ -3,12 +3,10 @@ import { ListSubheader } from '@/components/titles';
 import { BasicDialogProps } from '@/types';
 import * as Speech from 'expo-speech';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
-import { Button, Dialog, Icon, List, Portal, RadioButton, Text } from 'react-native-paper';
-import * as Haptics from 'expo-haptics';
+import { ScrollView, View } from 'react-native';
+import { Button, Dialog, List, Portal, RadioButton } from 'react-native-paper';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { TTSVoice } from '@/store/tts/types';
-import { useAppTheme } from '@/store/theme/themes';
 import { useTTSStore } from '@/store/tts/ttsStore';
 import { Slider } from '@/components/slider';
 
@@ -110,7 +108,6 @@ const VoiceDialog = ({
 							}
 							value={voice.identifier}
 							onPress={() => setNewVoice(voice)}
-							// onPress={() => console.log(newVoice)}
 							status={
 								newVoice?.identifier === voice.identifier ? 'checked' : 'unchecked'
 							}
@@ -127,7 +124,6 @@ const VoiceDialog = ({
 };
 
 const AudioPage = () => {
-	const { colors, dark } = useAppTheme();
 	const { enabled, english, japanese, korean, chinese, enableTTS, updateTTS } = useTTSStore();
 
 	const [availableVoices, setAvailableVoices] = useState<Speech.Voice[]>([]);
@@ -168,13 +164,20 @@ const AudioPage = () => {
 		pitch: number,
 	) => {
 		updateTTS(lang, { voice, rate, pitch });
-		lang === 'english'
-			? setVoiceEngDialogVis(false)
-			: lang === 'japanese'
-				? setVoiceJpnDialogVis(false)
-				: lang === 'korean'
-					? setVoiceKorDialogVis(false)
-					: setVoiceChnDialogVis(false);
+		switch (lang) {
+			case 'english':
+				setVoiceEngDialogVis(false);
+				break;
+			case 'japanese':
+				setVoiceJpnDialogVis(false);
+				break;
+			case 'korean':
+				setVoiceKorDialogVis(false);
+			case 'chinese':
+				setVoiceChnDialogVis(false);
+			default:
+				break;
+		}
 	};
 
 	useEffect(() => {

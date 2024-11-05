@@ -1,67 +1,49 @@
 import { withLayoutContext } from 'expo-router';
 import { Avatar } from 'react-native-paper';
-import {
-	MaterialBottomTabNavigationOptions,
-	createMaterialBottomTabNavigator,
-} from '@react-navigation/material-bottom-tabs';
-import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppTheme } from '@/store/theme/themes';
+import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 
-const { Navigator } = createMaterialBottomTabNavigator();
-
-export const MaterialBottomTabs = withLayoutContext<
-	// @ts-ignore
-	MaterialBottomTabNavigationOptions,
-	typeof Navigator
->(Navigator);
+export const Tabs = withLayoutContext(createMaterialBottomTabNavigator().Navigator);
 
 const RootLayout = () => {
 	const { avatar, username, userID } = useAuthStore().anilist;
 	const { btmTabLabels, btmTabShifting } = useSettingsStore();
-	const { t, i18n } = useTranslation('tabs');
-
-	// useEffect(() => {
-	// 	console.log('Languages:', i18n.languages);
-	// 	console.log('Supported Languages:', i18n.options.supportedLngs);
-	// }, []);
+	const { colors } = useAppTheme();
 
 	return (
-		<MaterialBottomTabs
+		<Tabs
 			initialRouteName="explore"
 			labeled={btmTabLabels}
 			shifting={btmTabShifting}
+			activeColor={colors.onSurface}
+			inactiveColor={colors.onSurfaceVariant}
+			sceneAnimationEnabled
+			sceneAnimationType="opacity"
+			// screenOptions={{}}
 		>
-			<MaterialBottomTabs.Screen
-				name="explore"
-				options={{ title: t('Discover'), tabBarIcon: 'campfire' }}
-			/>
-			<MaterialBottomTabs.Screen
-				name="calendar"
-				options={{ title: t('Calendar'), tabBarIcon: 'calendar' }}
-			/>
-			<MaterialBottomTabs.Screen
+			<Tabs.Screen name="explore" options={{ title: 'Discover', tabBarIcon: 'campfire' }} />
+			<Tabs.Screen name="calendar" options={{ title: 'Calendar', tabBarIcon: 'calendar' }} />
+			<Tabs.Screen
 				name="list"
 				options={{
-					title: t('List'),
+					title: 'List',
 					tabBarIcon: 'bookshelf',
 				}}
-				redirect={userID ? false : true}
+				redirect={!userID}
 			/>
-			<MaterialBottomTabs.Screen
+			<Tabs.Screen
 				name="viewer"
 				options={{
-					title: username && userID ? username : t('Login'),
+					title: username && userID ? 'Profile' : 'Login',
 					tabBarIcon: avatar
 						? () => <Avatar.Image size={24} source={{ uri: avatar }} />
 						: 'login',
 				}}
 			/>
-			<MaterialBottomTabs.Screen
-				name="more"
-				options={{ title: t('More'), tabBarIcon: 'dots-horizontal' }}
-			/>
-		</MaterialBottomTabs>
+			<Tabs.Screen name="more" options={{ title: 'More', tabBarIcon: 'dots-horizontal' }} />
+		</Tabs>
 	);
 };
 

@@ -3,7 +3,7 @@ import { useBlur } from '@/hooks/useNSFWBlur';
 import { BasicDialogProps } from '@/types';
 import { rgbToRgba } from '@/utils';
 import { saveImage } from '@/utils/images';
-import { Image, ImageProps } from 'expo-image';
+import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { Pressable, Image as ImageRN, View } from 'react-native';
 import { GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -183,11 +183,11 @@ export const ImageViewer = ({
 							backgroundColor: colors.surfaceVariant,
 						}}
 					>
-						<IconButton icon={'download'} onPress={() => saveImage(urls[index])} />
 						<IconButton
 							icon={'share-variant-outline'}
 							onPress={async () => await shareImage(urls[index])}
 						/>
+						<IconButton icon={'download'} onPress={() => saveImage(urls[index])} />
 					</Surface>
 				</View>
 				<View style={{ position: 'absolute', right: 10, top: top + 16 }}>

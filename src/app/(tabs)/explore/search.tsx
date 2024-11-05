@@ -24,8 +24,7 @@ import { IconButton, List, Portal } from 'react-native-paper';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 const SearchPage = () => {
-	const { dark, colors } = useAppTheme();
-	const { height } = useWindowDimensions();
+	const { colors } = useAppTheme();
 	const searchbarRef = useRef<TextInput>();
 
 	const [isFocused, setIsFocused] = useState(false);
@@ -34,7 +33,7 @@ const SearchPage = () => {
 
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
-	const { searchType, updateQuery, updateSearchType, reset } = useSearchStore();
+	const { searchType, updateQuery } = useSearchStore();
 	const { searchTerms, removeSearchTerm } = useSearchHistoryStore();
 
 	// Filter Sheet
@@ -45,7 +44,7 @@ const SearchPage = () => {
 			<Stack.Screen
 				options={{
 					header: (props) => (
-						<Animated.View>
+						<View>
 							<SearchHeader
 								{...props}
 								// searchContent={onSearch}
@@ -72,7 +71,7 @@ const SearchPage = () => {
 									// scrollClamp.value = withTiming(-categoryHeight);
 								}}
 							/>
-						</Animated.View>
+						</View>
 					),
 				}}
 			/>
@@ -117,28 +116,6 @@ const SearchPage = () => {
 						</ScrollView>
 					</Animated.View>
 				)}
-				{/* {showCategory && (
-                    <Animated.View
-                        entering={SlideInUp.duration(500)}
-                        exiting={SlideOutDown}
-                        onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
-                        style={[
-                            stickyHeaderStyle,
-                            { maxHeight: 120, position: 'absolute', zIndex: 3 },
-                        ]}
-                    >
-                        <MediaSelectorMem
-                            selection={searchType}
-                            onSelect={(type) => {
-                                dispatch({ type: 'CHANGE_SEARCHTYPE', payload: type });
-                                appDispatch(updateSearchType(type));
-                                if (type !== MediaType.Anime && type !== MediaType.Manga) {
-                                    sheetRef?.current?.close();
-                                }
-                            }}
-                        />
-                    </Animated.View>
-                )} */}
 			</View>
 			<FilterSheetTest sheetRef={sheetRef} />
 			<Portal>

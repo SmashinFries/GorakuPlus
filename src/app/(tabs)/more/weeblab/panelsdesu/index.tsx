@@ -56,13 +56,6 @@ const PanelsDesuPage = () => {
 		},
 		[],
 	);
-	// const data = { data: null };
-
-	// useEffect(() => {
-	// 	if (data) {
-	// 		console.log('Panels:', data?.data?.panels?.length);
-	// 	}
-	// }, [data]);
 
 	return (
 		<View style={{ flex: 1, width: '100%' }}>

@@ -196,11 +196,16 @@ const MediaFilters = ({
 	const { colors } = useAppTheme();
 	const isAnime = mediaType === MediaType.Anime;
 	const isAuthed = useAuthStore(useShallow((state) => !!state.anilist.token));
-	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
-	const { mediaFilter, mediaSort } = useSearchStore(
+	// const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
+	const { showNSFW, tagBlacklist } = useSettingsStore(
+		useShallow((state) => ({ showNSFW: state.showNSFW, tagBlacklist: state.tagBlacklist })),
+	);
+	const { mediaFilter, mediaSort, isTagBlacklistEnabled, toggleTagBlacklist } = useSearchStore(
 		useShallow((state) => ({
 			mediaFilter: state.mediaFilter,
 			mediaSort: state.mediaSort,
+			isTagBlacklistEnabled: state.isTagBlacklistEnabled,
+			toggleTagBlacklist: state.toggleTagBlacklist,
 		})),
 	);
 	const { genreData, tagData, animeSites, mangaSites } = useCollectionStore(
@@ -279,6 +284,14 @@ const MediaFilters = ({
 
 	return (
 		<>
+			<MaterialSwitchListItem
+				title={`Tag Blacklist`}
+				titleStyle={{ textTransform: 'capitalize' }}
+				selected={!!isTagBlacklistEnabled === true}
+				onPress={toggleTagBlacklist}
+				disabled={tagBlacklist?.length < 1}
+				fluid
+			/>
 			<FilterSheetSection title="Sort">
 				{(isAnime ? AnimeSorts : MangaSorts).map((sortType, idx) => (
 					<FilterSortButton
@@ -325,6 +338,7 @@ const MediaFilters = ({
 								onList: prev.onList ? undefined : true,
 							}))
 						}
+						fluid
 						disabled={tempFilter.onList === false}
 					/>
 					<MaterialSwitchListItem
@@ -337,6 +351,7 @@ const MediaFilters = ({
 								onList: prev.onList === false ? undefined : false,
 							}))
 						}
+						fluid
 						disabled={tempFilter.onList === true}
 					/>
 				</FilterSheetSection>
@@ -1349,112 +1364,6 @@ const StudioFilters = ({ tempStudioSort, setTempStudioSort }: StudioFilterProps)
 		</>
 	);
 };
-
-// type FilterSheetProps = {
-// 	sheetRef: React.Ref<BottomSheetModalMethods>;
-// 	openTagDialog: () => void;
-// 	handleSheetChange: (index: number) => void;
-// 	toggleSheet: () => void;
-// };
-// export const FilterSheet = ({
-// 	sheetRef,
-// 	openTagDialog,
-// 	handleSheetChange,
-// 	toggleSheet,
-// }: FilterSheetProps) => {
-// 	const { height } = useWindowDimensions();
-
-// 	// const { searchType, filter, isTagBlacklistEnabled, sort, updateFilter, updateSort } =
-// 	// 	useSearchStore((state) => ({
-// 	// 		searchType: state.searchType,
-// 	// 		filter: state.filter,
-// 	// 		isTagBlacklistEnabled: state.isTagBlacklistEnabled,
-// 	// 		sort: state.sort,
-// 	// 		updateFilter: state.updateFilter,
-// 	// 		updateSort: state.updateSort,
-// 	// 	}));
-
-// 	const { colors } = useAppTheme();
-// 	const snapPoints = useMemo(() => ['60%', height - StatusBar.currentHeight + 5], [height]);
-
-// 	return (
-// 		<BottomSheetModal
-// 			ref={sheetRef}
-// 			backgroundStyle={{ backgroundColor: colors.elevation.level1 }}
-// 			snapPoints={snapPoints}
-// 			onChange={handleSheetChange}
-// 			handleIndicatorStyle={{ backgroundColor: colors.onSurfaceVariant }}
-// 			handleComponent={() => (
-// 				<View style={{ width: '100%' }}>
-// 					<View
-// 						style={{
-// 							padding: 8,
-// 							flexDirection: 'row',
-// 							justifyContent: 'space-between',
-// 						}}
-// 					>
-// 						<Button>Reset</Button>
-// 						<Button mode="contained">Filter</Button>
-// 					</View>
-
-// 					<Divider />
-// 				</View>
-// 			)}
-// 			enableDismissOnClose
-// 			backdropComponent={(props) => (
-// 				<BottomSheetBackdrop
-// 					{...props}
-// 					pressBehavior={'close'}
-// 					disappearsOnIndex={-1}
-// 					opacity={0.4}
-// 				/>
-// 			)}
-// 		>
-// 			<BottomSheetScrollView keyboardDismissMode={'on-drag'}>
-// 				{/* <Button
-// 					mode="contained"
-// 					icon={'magnify'}
-// 					onPress={() => {
-// 						toggleSheet();
-// 						onSearch();
-// 					}}
-// 					style={{ marginHorizontal: 8, marginTop: 20, marginBottom: 10 }}
-// 				>
-// 					Search
-// 				</Button> */}
-// 				{/* <View
-// 					style={[
-// 						styles.dropdownRow,
-// 						{ justifyContent: 'space-evenly', alignItems: 'center' },
-// 					]}
-// 				>
-// 					{isAuthed && (
-// 						<OnListSelector
-// 							onList={filter.onList}
-// 							updateOnList={(onList) => updateFilter({ onList })}
-// 						/>
-// 					)}
-// 					{searchType !== MediaType.Anime && (
-// 						<LicensedSelector
-// 							isLicensed={filter.isLicensed}
-// 							updateOnList={(isLicensed) => updateFilter({ isLicensed })}
-// 						/>
-// 					)}
-// 					{showNSFW && (
-// 						<NSFWSelector
-// 							isAdult={filter.isAdult}
-// 							updateIsAdult={(allowNSFW) => updateFilter({ isAdult: allowNSFW })}
-// 						/>
-// 					)}
-// 				</View> */}
-// 				<MediaFilters mediaType={MediaType.Anime} />
-// 				{/* <SortDropdown sort={} /> */}
-// 				{/* <GenreSelection data={genreTagData?.GenreCollection} />
-// 				<TagSelection openTagDialog={openTagDialog} /> */}
-// 			</BottomSheetScrollView>
-// 		</BottomSheetModal>
-// 	);
-// };
 
 export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetRef> }) => {
 	const { colors } = useAppTheme();

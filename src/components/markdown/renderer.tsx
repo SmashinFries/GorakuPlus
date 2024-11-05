@@ -5,29 +5,21 @@ import { useWindowDimensions, View, Image as RNImage } from 'react-native';
 import { Text } from 'react-native-paper';
 import RenderHTML, {
 	CustomTagRendererRecord,
-	DomVisitorCallbacks,
-	Element,
 	HTMLContentModel,
 	HTMLElementModel,
 	InternalRendererProps,
 	RenderHTMLProps,
 	TBlock,
-	Text as HtmlText,
-	TText,
 	useComputeMaxWidthForTag,
 	useContentWidth,
 	useInternalRenderer,
 	RenderersProps,
 	defaultSystemFonts,
-	defaultHTMLElementModels,
 } from 'react-native-render-html';
-import { prependChild } from 'domutils';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import { textContent } from 'domutils';
 import * as cheerio from 'cheerio';
 import { ResizeMode, Video } from 'expo-av';
 import { findOne } from 'domutils';
-import { openBrowserAsync } from 'expo-web-browser';
 import { SheetManager } from 'react-native-actions-sheet';
 import { openWebBrowser } from '@/utils/webBrowser';
 
@@ -122,7 +114,6 @@ const YoutubeRenderer = (props: InternalRendererProps<TBlock>) => {
 					webViewStyle={{ opacity: 0.99 }}
 					videoId={(src as string).split('watch?v=').at(-1)}
 					mute
-					onError={(e) => console.log(e)}
 				/>
 			</View>
 		);
@@ -150,20 +141,9 @@ const VideoRenderer = (props: InternalRendererProps<TBlock>) => {
 };
 
 const SpoilerRenderer = (props: InternalRendererProps<TBlock>) => {
-	const { Renderer, rendererProps } = useInternalRenderer<'span'>('span', props);
+	const { rendererProps } = useInternalRenderer<'span'>('span', props);
 	const { colors } = useAppTheme();
 	const [visible, setVisible] = useState(false);
-
-	// if (props.tnode.classes.includes('markdown_spoiler')) {
-	// 	return
-	// }
-
-	// <Renderer
-	// 		{...rendererProps}
-	// 		style={{ backgroundColor: 'red' }}
-	// 		onPress={() => console.log(Object.keys(rendererProps.children[0]))}
-	// 	/>
-
 	return (
 		<Text
 			onPress={() => setVisible((prev) => !prev)}
@@ -289,7 +269,7 @@ const AniListMarkdownViewer = ({ body, parentWidth, textColor, numLines }: Viewe
 			enableExperimentalPercentWidth: true,
 		},
 		a: {
-			onPress(event, url, htmlAttribs, target) {
+			onPress(event, url) {
 				SheetManager.hideAll();
 				// openBrowserAsync(url);
 				openWebBrowser(url);

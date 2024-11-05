@@ -11,7 +11,7 @@ type ThreadOverviewProps = {
 	data: ThreadsOverviewQuery;
 	isFetching: boolean;
 };
-export const ThreadOverview = ({ aniId, data, isFetching }: ThreadOverviewProps) => {
+export const ThreadOverview = ({ aniId, data }: ThreadOverviewProps) => {
 	const onSelect = (id: number) => {
 		router.navigate(`/thread/${id}`);
 	};
@@ -30,11 +30,11 @@ export const ThreadOverview = ({ aniId, data, isFetching }: ThreadOverviewProps)
 		<View>
 			<ListHeading
 				title="Threads"
-				icon={data.Page?.pageInfo?.hasNextPage ? 'arrow-right' : undefined}
+				icon={data?.Page?.pageInfo?.hasNextPage ? 'arrow-right' : undefined}
 				onIconPress={() => router.navigate(`/thread/overview/${aniId}`)}
 			/>
 			<FlashList
-				data={data.Page?.threads}
+				data={data?.Page?.threads}
 				keyExtractor={keyExtractor}
 				renderItem={renderItem}
 				estimatedItemSize={327}

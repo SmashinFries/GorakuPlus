@@ -1,29 +1,41 @@
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { Share, View } from 'react-native';
-import { ActivityIndicator, IconButton, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 import { ActionIcon } from '../media/sections/entry';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
+import { useQueryClient } from '@tanstack/react-query';
+import { useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
+import { useState } from 'react';
 
 type CharStaffInteractionBarProps = {
+	id: number;
 	isFav: boolean;
-	favLoading: boolean;
-	toggleFav: () => void;
 	share_url: string;
 	edit_url: string;
 };
 export const CharStaffInteractionBar = ({
+	id,
 	isFav,
-	favLoading,
 	edit_url,
 	share_url,
-	toggleFav,
 }: CharStaffInteractionBarProps) => {
 	const { userID } = useAuthStore().anilist;
 	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
+	const queryClient = useQueryClient();
+	const [isFavorite, setIsFavorite] = useState(isFav);
+	const { isPending, mutateAsync: toggleFav } = useToggleFavMutation({
+		onSuccess: () => queryClient.invalidateQueries(),
+	});
 	const containerWidth = width / 3;
+
+	const onFavoriteToggle = async () => {
+		const isStaff = share_url.includes('/staff/');
+		await toggleFav(isStaff ? { staffId: id } : { characterId: id });
+		setIsFavorite((prev) => !prev);
+	};
 
 	return (
 		<View>
@@ -81,44 +93,26 @@ export const CharStaffInteractionBar = ({
 					</ActionIcon>
 				</View>
 				<View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
-					{favLoading ? (
-						<ActivityIndicator
-							animating
-							size={'small'}
-							style={{ transform: [{ scale: 0.9 }] }}
+					<ActionIcon onPress={onFavoriteToggle}>
+						<IconButton
+							icon={isFavorite ? 'heart' : 'heart-outline'}
+							iconColor={isFavorite ? colors.primary : null}
+							disabled={userID ? false : true}
+							size={24}
+							loading={isPending}
 						/>
-					) : (
-						<ActionIcon onPress={() => toggleFav()}>
-							<IconButton
-								icon={isFav ? 'heart' : 'heart-outline'}
-								iconColor={isFav ? colors.primary : null}
-								disabled={userID ? false : true}
-								size={24}
-							/>
-							<Text
-								style={{
-									textTransform: 'capitalize',
-									color: isFav ? colors.primary : colors.onSurfaceVariant,
-								}}
-								variant="labelMedium"
-							>
-								{isFav ? 'Favorited' : 'Favorite'}
-							</Text>
-						</ActionIcon>
-					)}
+						<Text
+							style={{
+								textTransform: 'capitalize',
+								color: isFavorite ? colors.primary : colors.onSurfaceVariant,
+							}}
+							variant="labelMedium"
+						>
+							{isFavorite ? 'Favorited' : 'Favorite'}
+						</Text>
+					</ActionIcon>
 				</View>
 			</View>
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		marginTop: 20,
-	},
-	iconsContainer: {
-		flexDirection: 'row',
-		marginTop: 5,
-		justifyContent: 'space-evenly',
-	},
-});

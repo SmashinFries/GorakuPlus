@@ -14,7 +14,6 @@ import { CharacterFront } from '@/components/characters/front';
 import { SaveImageDialog } from '@/utils/images';
 import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
-import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 import { MediaBanner } from '@/components/media/banner';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { CharacterDetailsQuery, MediaEdge, MediaFormat } from '@/api/anilist/__genereated__/gql';
@@ -27,8 +26,9 @@ import { useShallow } from 'zustand/react/shallow';
 
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
-	const { charData, art, tagOptions, onTagChange, currentArtTag, toggleFav, isReady } =
-		useCharDetail(Number(charId));
+	const { charData, art, tagOptions, onTagChange, currentArtTag, isReady } = useCharDetail(
+		Number(charId),
+	);
 	const { width } = useWindowDimensions();
 
 	const [selectedImg, setSelectedImg] = useState('');
@@ -36,7 +36,7 @@ const CharacterScreen = () => {
 		CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles']
 	>([]);
 	const [showTagSearch, toggleShowTagSearch] = useReducer((open) => !open, false);
-	const [fav, setFav] = useState(charData.data?.Character?.isFavourite);
+	// const [fav, setFav] = useState(charData.data?.Character?.isFavourite);
 
 	const { mediaLanguage } = useSettingsStore();
 	const isBooruEnabled = useMatchStore(useShallow((state) => state.isBooruEnabled));
@@ -101,7 +101,11 @@ const CharacterScreen = () => {
 		}: {
 			item: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'][0];
 		}) => {
-			return <StaffCard {...item.voiceActor} isStaff />;
+			return (
+				<View style={{ marginRight: 8 }}>
+					<StaffCard {...item.voiceActor} isStaff />
+				</View>
+			);
 		},
 		[],
 	);
@@ -133,13 +137,9 @@ const CharacterScreen = () => {
 		);
 	}, []);
 
-	const onToggleFavorite = () => {
-		toggleFav({ characterId: parseInt(charId) });
-	};
-
-	useEffect(() => {
-		setFav(charData.data?.Character?.isFavourite);
-	}, [charData.data?.Character?.isFavourite]);
+	// useEffect(() => {
+	// 	setFav(charData.data?.Character?.isFavourite);
+	// }, [charData.data?.Character?.isFavourite]);
 
 	useEffect(() => {
 		if (charData.data?.Character?.media?.edges && uniqueVAs.length === 0) {
@@ -180,7 +180,7 @@ const CharacterScreen = () => {
 				/>
 			)}
 			{isReady && (
-				<Animated.View entering={FadeIn.duration(500).easing(Easing.ease)}>
+				<AnimViewMem>
 					<FadeHeaderProvider
 						title={primaryName}
 						loading={charData.isLoading}
@@ -205,7 +205,7 @@ const CharacterScreen = () => {
 						}
 					>
 						<View style={[styles.bodyContainer, { backgroundColor: 'transparent' }]}>
-							<AnimViewMem delay={550}>
+							<AnimViewMem>
 								<CharacterFront
 									id={Number(charId)}
 									favorites={charData?.data?.Character?.favourites}
@@ -215,7 +215,6 @@ const CharacterScreen = () => {
 										charData?.data?.Character?.media?.edges as MediaEdge[]
 									}
 									isFavorite={charData?.data?.Character?.isFavourite}
-									onToggleFavorite={onToggleFavorite}
 									userID={userID}
 								/>
 								{/* Description */}
@@ -400,7 +399,7 @@ const CharacterScreen = () => {
 							// }
 						/>
 					</Portal>
-				</Animated.View>
+				</AnimViewMem>
 			)}
 		</View>
 	);

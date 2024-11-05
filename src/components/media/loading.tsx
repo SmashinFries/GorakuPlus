@@ -1,19 +1,16 @@
-import { ActivityIndicator, Button, IconButton, Text, useTheme } from 'react-native-paper';
+import { ActivityIndicator, IconButton } from 'react-native-paper';
 import { AnilistIcon, AnimeThemesIcon, MalIcon, MangaUpdatesIcon } from '../svgs';
 import { memo, useEffect, useState } from 'react';
 import Animated, {
 	Easing,
 	FadeIn,
 	FadeOut,
-	useAnimatedStyle,
 	useSharedValue,
 	withRepeat,
 	withTiming,
 } from 'react-native-reanimated';
 import { useAppTheme } from '@/store/theme/themes';
-import { useIsFetching } from '@tanstack/react-query';
 import { useMatchStore } from '@/store/matchStore';
-import { useShallow } from 'zustand/react/shallow';
 
 export const LoadingIcon = ({
 	icon,
@@ -79,7 +76,7 @@ export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) =>
 	const [loadIcon, setLoadIcon] = useState('check');
 	const { colors } = useAppTheme();
 	useEffect(() => {
-		if (loading === null) {
+		if (loading === null || error) {
 			setLoadIcon('cancel');
 		} else if (loading === false && !error) {
 			setLoadIcon('check');
@@ -109,7 +106,7 @@ type LoadingProps = {
 	malError?: any;
 	malUnitialized?: boolean;
 	mangaUpdatesLoading?: boolean;
-	mangaUpdatesError?: any;
+	mangaUpdatesError?: Error;
 };
 
 export const MediaLoading = ({
@@ -121,12 +118,7 @@ export const MediaLoading = ({
 	mangaUpdatesError,
 }: LoadingProps) => {
 	const { dark } = useAppTheme();
-	const { isMalEnabled, isMangaUpdatesEnabled } = useMatchStore(
-		useShallow((state) => ({
-			isMalEnabled: state.isMalEnabled,
-			isMangaUpdatesEnabled: state.isMangaDexEnabled,
-		})),
-	);
+	const { isMalEnabled, isMangaUpdatesEnabled } = useMatchStore();
 
 	return (
 		<Animated.View

@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import { Button, IconButton, List, Surface, Text } from 'react-native-paper';
+import { IconButton, List, Surface, Text } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { ListSubheader } from '@/components/titles';
 import * as Burnt from 'burnt';
@@ -9,10 +9,10 @@ import { useShallow } from 'zustand/react/shallow';
 
 const StoragePage = () => {
 	const { colors } = useAppTheme();
-	const { resetMatches, mangadexDB } = useMatchStore(
+	const { resetMatches } = useMatchStore(
 		useShallow((state) => ({
 			resetMatches: state.reset,
-			mangadexDB: state.mangadex,
+			mangaUpdates: state.mangaUpdates,
 		})),
 	);
 
@@ -58,7 +58,6 @@ const StoragePage = () => {
 					Only reset these if you know what you are doing.
 				</Text>
 			</Surface>
-			<Button onPress={() => console.log(mangadexDB)}>TEST</Button>
 			<List.Item
 				title={'Reset All'}
 				onPress={() => {

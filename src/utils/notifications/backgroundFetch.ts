@@ -9,14 +9,15 @@ import notifee, {
 import { useNotificationStore } from '@/store/notifications/notificationStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAuthStore } from '@/store/authStore';
-import axios from 'axios';
 import {
-	GetNotificationsDocument,
 	GetNotificationsQuery,
+	MainMetaFragment,
 	MediaType,
 	NotificationType,
+	useGetNotificationsQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { ANILIST_GROUP_ID, ANILIST_NOTIF_BF_ID } from '@/constants/backgroundTasks';
+import { router } from 'expo-router';
 
 export type TaskNames = 'Bg-Notifs';
 export type NotificationPressActionIds = 'activity-route' | 'media-route' | 'user-route';
@@ -72,11 +73,34 @@ const _ThreadConfig: { [key: string]: Notification } = {
 	},
 };
 
+export const notifNavigate = (notif: Notification, pressActionId: NotificationPressActionIds) => {
+	switch (pressActionId) {
+		case 'activity-route':
+			// @ts-ignore
+			router.navigate(
+				// @ts-ignore
+				`/activity/${(notif.data as GetNotificationsQuery['Page']['notifications'][0])?.activityId ?? notif.data?.id}`,
+			);
+			break;
+		case 'media-route':
+			// @ts-ignore
+			router.navigate(
+				`/${((notif.data.media as MainMetaFragment)?.type as MediaType)?.toLowerCase() as 'anime' | 'manga'}/${(notif.data.media as MainMetaFragment)?.id}`,
+			);
+			break;
+		case 'user-route':
+			// @ts-ignore
+			router.navigate(`/user/${notif.data.user?.id}/${notif.data.user?.name}`);
+		default:
+			break;
+	}
+};
+
 export const parseNotif = (
 	data: GetNotificationsQuery['Page']['notifications'][0],
 ): Notification => {
 	const language = useSettingsStore.getState().mediaLanguage;
-	const channelId = NotificationType[data.__typename];
+	const channelId = NotificationType[data.__typename.replace('Notification', '')];
 	const channelInfo: NotificationAndroid = { channelId, groupId: ANILIST_GROUP_ID };
 	switch (data.__typename) {
 		case 'ActivityLikeNotification':
@@ -96,6 +120,7 @@ export const parseNotif = (
 					...channelInfo,
 					largeIcon: data.user.avatar.large,
 					timestamp: new Date(data.createdAt * 1000).getTime(),
+					pressAction: { id: 'activity-route' },
 					actions: [
 						{
 							title: 'View Activity',
@@ -118,20 +143,16 @@ export const parseNotif = (
 				body: `${data.contexts[0]}${data.episode}${data.contexts[2]}`,
 				data: {
 					...data,
+					contexts: '',
 				},
 				android: {
 					...channelInfo,
+					pressAction: { id: 'media-route' },
 					actions: [
 						{
 							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
 							pressAction: {
 								id: 'media-route',
-							},
-						},
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
 							},
 						},
 					],
@@ -171,27 +192,18 @@ export const parseNotif = (
 		case 'MediaDataChangeNotification':
 			return {
 				title: data.media.title[language] ?? data.media.title.romaji,
-				body: data.reason
-					? `${data.media.title[language] ?? data.media.title.romaji}${
-							data.context
-						}<br/>${data.reason}`
-					: `${data.media.title[language] ?? data.media.title.romaji}${data.context}`,
+				body: `${data.media.title[language] ?? data.media.title.romaji}${data.context}`,
 				data: { ...data },
 				android: {
 					...channelInfo,
 					largeIcon: data.media.coverImage.large,
 					timestamp: new Date(data.createdAt * 1000).getTime(),
+					pressAction: { id: 'media-route' },
 					style: {
-						type: AndroidStyle.BIGPICTURE,
-						picture: data.media.bannerImage ?? data.media.coverImage.large,
+						type: AndroidStyle.BIGTEXT,
+						text: data.reason ?? '',
 					},
 					actions: [
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
-							},
-						},
 						{
 							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
 							pressAction: {
@@ -204,49 +216,41 @@ export const parseNotif = (
 		case 'MediaDeletionNotification':
 			return {
 				title: data.deletedMediaTitle,
-				body: data.reason
-					? `${data.deletedMediaTitle}${data.context}<br/>${data.reason}`
-					: `${data.deletedMediaTitle}${data.context}`,
+				body: `${data.deletedMediaTitle}${data.context}`,
 				data: { ...data },
 				android: {
 					...channelInfo,
+					style: {
+						type: AndroidStyle.BIGTEXT,
+						text: data.reason ?? '',
+					},
 					timestamp: new Date(data.createdAt * 1000).getTime(),
-					actions: [
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
-							},
-						},
-					],
+					// actions: [
+					// 	{
+					// 		title: 'View Activity',
+					// 		pressAction: {
+					// 			id: 'activity-route',
+					// 		},
+					// 	},
+					// ],
 				},
 			};
 		case 'MediaMergeNotification':
 			return {
 				title: data.media.title[language] ?? data.media.title.romaji,
-				body: data.reason
-					? `${data.deletedMediaTitles} merged with ${
-							data.media.title[language] ?? data.media.title.romaji
-						}<br/>${data.reason}`
-					: `${data.deletedMediaTitles} merged with ${
-							data.media.title[language] ?? data.media.title.romaji
-						}`,
+				body: `${data.deletedMediaTitles} merged with ${data.media.title[language] ?? data.media.title.romaji
+					}`,
 				data: { ...data },
 				android: {
 					...channelInfo,
 					timestamp: new Date(data.createdAt * 1000).getTime(),
 					largeIcon: data.media.coverImage.large,
+					pressAction: { id: 'media-route' },
 					style: {
-						type: AndroidStyle.BIGPICTURE,
-						picture: data.media.bannerImage ?? data.media.coverImage.large,
+						type: AndroidStyle.BIGTEXT,
+						text: data.reason,
 					},
 					actions: [
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
-							},
-						},
 						{
 							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
 							pressAction: {
@@ -265,17 +269,12 @@ export const parseNotif = (
 					...channelInfo,
 					largeIcon: data.media.coverImage.large,
 					timestamp: new Date(data.createdAt * 1000).getTime(),
+					pressAction: { id: 'media-route' },
 					style: {
 						type: AndroidStyle.BIGPICTURE,
 						picture: data.media.bannerImage ?? data.media.coverImage.large,
 					},
 					actions: [
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
-							},
-						},
 						{
 							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
 							pressAction: {
@@ -346,25 +345,18 @@ export const displayNotification = async ({ title, body, data, android }: Notifi
 
 export const fetchAnilistNotifications = async () => {
 	const enabled = useNotificationStore.getState().enabled;
-
-	// const fetchNotifs = store.dispatch(
-	// 	api.endpoints.GetNotifications.initiate({ amount: 50, page: 1, reset: true }),
-	// );
 	try {
-		// const response = await fetchNotifs.unwrap();
-		const token = useAuthStore.getState().anilist.token;
-		const { data } = await axios.post<GetNotificationsQuery>(
-			'https://graphql.anilist.co',
-			JSON.stringify({
-				query: GetNotificationsDocument,
-				variables: { amount: 50, page: 1, reset: true },
-			}),
-			{ headers: { Authorization: `Bearer ${token}` } },
+		if (!enabled) return BackgroundFetch.BackgroundFetchResult.NoData;
+		const getNotifications = useGetNotificationsQuery.fetcher({
+			amount: 50,
+			page: 1,
+			reset: true,
+		});
+		const data = await getNotifications();
+		const newNotifs = data.Page?.notifications?.slice(
+			0,
+			data.Viewer?.unreadNotificationCount ?? 0,
 		);
-		const newNotifs = data.Page?.notifications
-			?.slice(0, data.Viewer?.unreadNotificationCount ?? 0)
-			?.filter((notif) => enabled?.includes(notif.__typename));
-
 		if (newNotifs.length > 0) {
 			newNotifs.forEach((notif) => {
 				const parsedData = parseNotif(notif);

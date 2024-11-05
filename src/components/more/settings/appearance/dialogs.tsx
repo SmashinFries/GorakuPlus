@@ -1,51 +1,15 @@
-import { Dialog, Text, Button, RadioButton, List, Chip } from 'react-native-paper';
+import { Dialog, Button, RadioButton, List, Chip } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { ScoreContainer } from '../../../score';
 import { MediaCard } from '../../../cards';
 import dummyData from '@/constants/dummyData';
-import { useTranslation } from 'react-i18next';
 import { ScoreVisualType, ScoreVisualTypeEnum } from '@/store/settings/types';
 import { ThemeOptions, useAppTheme } from '@/store/theme/themes';
-import { MUISlider } from '@/components/slider';
+import { Slider } from '@/components/slider';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ListStatusMode, useCardVisualStore } from '@/store/cardVisualStore';
 import { useShallow } from 'zustand/react/shallow';
-
-type SliderViewProps = {
-	title: string;
-	score: number;
-	setScore: (value: number) => void;
-	trackColor: string;
-	lowerLimit?: number;
-	upperLimit?: number;
-};
-const SliderView = ({ title }: SliderViewProps) => {
-	return (
-		<View style={{ paddingVertical: 10 }}>
-			<Text>{title}</Text>
-			{/* <MUISlider
-				initialValue={score}
-				minValue={0}
-				maxValue={100}
-				onValueChange={(value) => setScore(value)}
-				snap={false}
-			/> */}
-			{/* <Slider
-				value={score}
-				onValueChange={(value) => setScore(value)}
-				minimumTrackTintColor={trackColor}
-				maximumTrackTintColor={trackColor}
-				step={1}
-				minimumValue={0}
-				maximumValue={100}
-				thumbTintColor={trackColor}
-				lowerLimit={lowerLimit ?? null}
-				upperLimit={upperLimit ?? null}
-			/> */}
-		</View>
-	);
-};
+import { ScoreView } from '@/components/media/sections/scores';
 
 type DialogProps = {
 	visible: boolean;
@@ -61,8 +25,6 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 	);
 	const [newRed, setRed] = useState(red);
 	const [newYellow, setYellow] = useState(yellow ?? 74);
-	const { colors } = useAppTheme();
-	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
 		setRed(red);
@@ -77,40 +39,21 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>{t('Score Colors')}</Dialog.Title>
+			<Dialog.Title>{'Score Colors'}</Dialog.Title>
 			<Dialog.Content>
-				<List.Item title={'Max Red Score'} />
-				<MUISlider
-					mode="continuous"
-					value={newRed}
-					onValueChange={(val) => setRed(Math.round(val[0]))}
+				<Slider
+					title="Max Low Score"
+					initialValue={newRed}
+					onValueUpdate={(val) => setRed(Math.round(val))}
 					maxValue={newYellow - 1}
 					minValue={0}
-					thumbBackgroundColor={colors.elevation.level3}
 				/>
-				{/* <SliderView
-					score={newRed}
-					setScore={setRed}
-					title="Max Red Score"
-					upperLimit={newYellow - 1}
-					trackColor={colors.primary}
-				/> */}
-				<List.Item title={'Max Yellow Score'} />
-				{/* <SliderView
-					score={newYellow}
-					setScore={setYellow}
-					title="Max Yellow Score"
-					lowerLimit={newRed + 1}
-					trackColor={colors.primary}
-				/> */}
-				<MUISlider
-					mode="continuous"
-					value={newYellow}
-					onValueChange={(val) => setYellow(Math.round(val[0]))}
-					maxValue={100}
+				<Slider
+					initialValue={newYellow}
+					onValueUpdate={(val) => setYellow(Math.round(val))}
+					maxValue={99}
 					minValue={newRed + 1}
-					thumbBackgroundColor={colors.elevation.level3}
-					startFromZero={false}
+					title="Max Mid Score"
 				/>
 				<View
 					style={{
@@ -119,7 +62,7 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 						alignItems: 'center',
 					}}
 				>
-					<ScoreContainer score={newRed} color="red" opacity={0.35} animate={false} />
+					{/* <ScoreContainer score={newRed} color="red" opacity={0.35} animate={false} />
 					<Button
 						onPress={() => {
 							setRed(red);
@@ -133,11 +76,22 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 						color="yellow"
 						opacity={0.35}
 						animate={false}
-					/>
+					/> */}
+					<ScoreView score={newRed} type="average" barColor="red" />
+					<ScoreView score={newYellow} type="average" barColor="yellow" />
+					<ScoreView score={newYellow + 1} type="average" />
 				</View>
 			</Dialog.Content>
 			<Dialog.Actions>
 				<Button onPress={onCancel}>Cancel</Button>
+				<Button
+					onPress={() => {
+						setRed(red);
+						setYellow(yellow ?? 74);
+					}}
+				>
+					Reset
+				</Button>
 				<Button onPress={onDone}>Done</Button>
 			</Dialog.Actions>
 		</Dialog>
@@ -198,7 +152,6 @@ export const DefaultScoreDialog = ({
 	onDismiss,
 }: ScoreDialogProps) => {
 	const [scoreType, setScoreType] = useState<ScoreDialogProps['defaultScore']>(defaultScore);
-	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
 		setScoreType(defaultScore);
@@ -212,7 +165,7 @@ export const DefaultScoreDialog = ({
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss}>
-			<Dialog.Title>{t('Score Defaults')}</Dialog.Title>
+			<Dialog.Title>{'Score Defaults'}</Dialog.Title>
 			<Dialog.Content>
 				<RadioButton.Group
 					onValueChange={(value: ScoreDialogProps['defaultScore']) => setScoreType(value)}
@@ -258,7 +211,6 @@ export const MediaTileCustomizer = ({
 	const [tempScoreVisualType, setTempScoreVisualType] =
 		useState<ScoreVisualType>(scoreVisualType);
 	const [tempListStatusMode, setTempListStatusMode] = useState<ListStatusMode>(listStatusMode);
-	const [t, i18n] = useTranslation('dialogs');
 
 	const onCancel = () => {
 		onDismiss();
@@ -278,7 +230,7 @@ export const MediaTileCustomizer = ({
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
-			<Dialog.Title>{t('Tile Customization')}</Dialog.Title>
+			<Dialog.Title>{'Tile Customization'}</Dialog.Title>
 			<Dialog.Content>
 				<View
 					style={{
@@ -304,7 +256,7 @@ export const MediaTileCustomizer = ({
 			</Dialog.Content>
 			<Dialog.ScrollArea>
 				<ScrollView showsVerticalScrollIndicator={false}>
-					<List.Section title={t('Score Visual')}>
+					<List.Section title={'Score Visual'}>
 						<ScrollView
 							horizontal
 							showsHorizontalScrollIndicator={false}
@@ -345,7 +297,7 @@ export const MediaTileCustomizer = ({
 							)}
 						</ScrollView>
 					</List.Section>
-					<List.Section title={t('List Visual')}>
+					<List.Section title={'List Visual'}>
 						<ScrollView
 							horizontal
 							showsHorizontalScrollIndicator={false}

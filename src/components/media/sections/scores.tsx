@@ -63,10 +63,12 @@ export const ScoreView = ({
 	type,
 	score,
 	height = 50,
+	barColor,
 }: {
 	type: 'average' | 'mean' | 'review' | 'mal';
 	score: number;
 	height?: number;
+	barColor?: string;
 }) => {
 	const { colors } = useAppTheme();
 	return (
@@ -89,7 +91,7 @@ export const ScoreView = ({
 								height:
 									type === 'mal' ? (score / 10) * height : (score / 100) * height, // could just `${score}%` lol
 								width: '100%',
-								backgroundColor: getScoreColor(score, type === 'mal'),
+								backgroundColor: barColor ?? getScoreColor(score, type === 'mal'),
 							}}
 						/>
 					)}

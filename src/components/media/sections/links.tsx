@@ -17,6 +17,7 @@ import Animated from 'react-native-reanimated';
 import { MediaExternalLink } from '@/api/anilist/__genereated__/gql';
 import { AnimeFull } from '@/api/jikan/models';
 import { useAppTheme } from '@/store/theme/themes';
+import { Accordion } from '@/components/animations';
 
 type LinkIconButtonProps = {
 	index: number;
@@ -96,59 +97,61 @@ const MediaLinks = ({ links, aniLink, malLink, muLink }: MediaLinksProps) => {
 
 	return (
 		<View style={{ marginVertical: 10, marginBottom: 20 }}>
-			<ListHeading title="Links" />
-			<ScrollView
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={{
-					alignItems: 'flex-start',
-					justifyContent: 'center',
-					padding: 15,
-				}}
-			>
-				{dbLinks?.map(
-					(link, index) =>
-						link && (
-							<ExtLinkIconButton
-								key={index}
-								index={0}
-								iconColor={link.color}
-								iconLink={link.icon}
-								language={link.language}
-								notes={link.notes}
-								siteName={link.site}
-								siteUrl={link.url}
-								textColor={colors.onSurfaceVariant}
-								customIcon={({ size, color }) =>
-									link?.iconType === 'ani' ? (
-										<AnilistIcon width={size} height={size} isDark={true} />
-									) : link?.iconType === 'mal' ? (
-										<MalIcon width={size} height={size} />
-									) : (
-										<MangaUpdatesIcon width={size} height={size} />
-									)
-								}
-							/>
-						),
-				)}
+			{/* <ListHeading title="Links" /> */}
+			<Accordion title="Links">
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{
+						alignItems: 'flex-start',
+						justifyContent: 'center',
+						padding: 15,
+					}}
+				>
+					{dbLinks?.map(
+						(link, index) =>
+							link && (
+								<ExtLinkIconButton
+									key={index}
+									index={0}
+									iconColor={link.color}
+									iconLink={link.icon}
+									language={link.language}
+									notes={link.notes}
+									siteName={link.site}
+									siteUrl={link.url}
+									textColor={colors.onSurfaceVariant}
+									customIcon={({ size, color }) =>
+										link?.iconType === 'ani' ? (
+											<AnilistIcon width={size} height={size} isDark={true} />
+										) : link?.iconType === 'mal' ? (
+											<MalIcon width={size} height={size} />
+										) : (
+											<MangaUpdatesIcon width={size} height={size} />
+										)
+									}
+								/>
+							),
+					)}
 
-				{extLinks?.map(
-					(link, index) =>
-						link && (
-							<ExtLinkIconButton
-								key={index}
-								index={index}
-								textColor={colors.onSurfaceVariant}
-								iconColor={link.color}
-								iconLink={link.icon}
-								language={link.language}
-								notes={link.notes}
-								siteName={link.site}
-								siteUrl={link.url}
-							/>
-						),
-				)}
-			</ScrollView>
+					{extLinks?.map(
+						(link, index) =>
+							link && (
+								<ExtLinkIconButton
+									key={index}
+									index={index}
+									textColor={colors.onSurfaceVariant}
+									iconColor={link.color}
+									iconLink={link.icon}
+									language={link.language}
+									notes={link.notes}
+									siteName={link.site}
+									siteUrl={link.url}
+								/>
+							),
+					)}
+				</ScrollView>
+			</Accordion>
 		</View>
 	);
 };

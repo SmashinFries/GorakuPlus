@@ -35,7 +35,7 @@ import Animated, {
 	withSequence,
 	withTiming,
 } from 'react-native-reanimated';
-import { useHeaderAnim } from './animations';
+import { ParticleBackground, useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -149,7 +149,7 @@ export const SearchHeader = ({
 	searchbarRef,
 	toggleIsFocused,
 	openImageSearch,
-	openWaifuSearch,
+	// openWaifuSearch,
 	onFocus,
 }: SearchHeaderProps) => {
 	const { colors } = useAppTheme();
@@ -161,7 +161,6 @@ export const SearchHeader = ({
 			updateQuery: state.updateQuery,
 		})),
 	);
-	// const { addSearchTerm } = useSearchHistoryStore();
 
 	const [tempQuery, setTempQuery] = useState(query);
 
@@ -246,7 +245,7 @@ export const SearchHeader = ({
                         ![MediaType.Anime, MediaType.Manga, 'imageSearch'].includes(currentType)
                     }
                 /> */}
-				{(searchType === MediaType.Anime || searchType === MediaType.Manga) && (
+				{searchType !== 'STUDIO' && (
 					<IconButton
 						icon={'view-module'}
 						onPress={() =>
@@ -282,6 +281,7 @@ export const MoreHeader = (_props: NativeStackHeaderProps) => {
 	const { top } = useSafeAreaInsets();
 	return (
 		<Appbar.Header style={{ height: 150 + top, justifyContent: 'center' }}>
+			<ParticleBackground mascotOnly />
 			<AnimatedImage
 				source={require('../../assets/iconsv3/banner.png')}
 				style={{
@@ -408,33 +408,38 @@ export const MediaHeader = ({
 								/>
 							}
 						>
-							{streamingLinks.map((link, idx) => (
-								<Menu.Item
-									key={idx}
-									leadingIcon={
-										link.language
-											? (props) => (
-													<Text {...props}>
-														{getStreamingSiteEmoji(link.language)}
-													</Text>
-												)
-											: undefined
-									}
-									trailingIcon={
-										link.icon
-											? (props) => (
-													<Icon
-														{...props}
-														source={{ uri: link.icon }}
-														color={link?.color ?? props.color}
-													/>
-												)
-											: undefined
-									}
-									onPress={() => openWebBrowser(link.url)}
-									title={link.site}
-								/>
-							))}
+							{streamingLinks.map(
+								(link, idx) =>
+									link && (
+										<Menu.Item
+											key={idx}
+											leadingIcon={
+												link.language
+													? (props) => (
+															<Text {...props}>
+																{getStreamingSiteEmoji(
+																	link?.language,
+																)}
+															</Text>
+														)
+													: undefined
+											}
+											trailingIcon={
+												link.icon
+													? (props) => (
+															<Icon
+																{...props}
+																source={{ uri: link.icon }}
+																color={link?.color ?? props.color}
+															/>
+														)
+													: undefined
+											}
+											onPress={() => openWebBrowser(link.url, true)}
+											title={link.site}
+										/>
+									),
+							)}
 						</Menu>
 					</Animated.View>
 				)}
@@ -813,12 +818,10 @@ const HeaderStyles = StyleSheet.create({
 export const ListHeader = ({
 	title = 'List',
 	isViewer = true,
-	openFilter,
-	onRefresh,
 }: {
 	title?: string;
 	isViewer?: boolean;
-	openFilter: () => void;
+	openFilter?: () => void;
 	onRefresh: () => void;
 }) => {
 	const { query, updateListFilter } = useListFilterStore();
@@ -888,7 +891,7 @@ export const ListHeader = ({
 					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
 				}
 			/>
-			<Appbar.Action icon="filter-variant" onPress={openFilter} />
+			{/* {!!openFilter && <Appbar.Action icon="filter-variant" onPress={openFilter} />} */}
 			{/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
 		</Appbar.Header>
 	);

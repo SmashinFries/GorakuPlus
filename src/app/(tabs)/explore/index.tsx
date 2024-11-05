@@ -27,7 +27,6 @@ import { getSeason } from '@/utils/explore/helpers';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
 import { Stack, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { BackHandler, View, useWindowDimensions } from 'react-native';
 import { Portal } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
@@ -58,22 +57,20 @@ const ExploreSections = ({
 	isLoading,
 	onRefresh,
 }: ExploreSectionsProps) => {
-	const [t] = useTranslation();
-
 	return (
 		<View style={{ paddingVertical: 10 }}>
 			{isError && <NetworkError status={status} onRefresh={onRefresh} />}
-			<View>
+			<View style={{ gap: 12 }}>
 				{type === MediaType.Manga && (
 					<SectionScroll
-						category_title={t('New Releases')}
+						category_title={'New Releases'}
 						data={(data as MangaExploreQuery)?.newReleases?.media}
 						viewer={data?.Viewer}
 						isLoading={isLoading}
 					/>
 				)}
 				<SectionScroll
-					category_title={t('Trending')}
+					category_title={'Trending'}
 					data={data?.trending?.media}
 					viewer={data?.Viewer}
 					isLoading={isLoading}
@@ -81,13 +78,13 @@ const ExploreSections = ({
 				{type === MediaType.Anime && (
 					<>
 						<SectionScroll
-							category_title={t('Current Season')}
+							category_title={'Current Season'}
 							data={(data as AnimeExploreQuery)?.thisSeason?.media}
 							viewer={data?.Viewer}
 							isLoading={isLoading}
 						/>
 						<SectionScroll
-							category_title={t('Next Season')}
+							category_title={'Next Season'}
 							data={(data as AnimeExploreQuery)?.nextSeason?.media}
 							viewer={data?.Viewer}
 							isLoading={isLoading}
@@ -95,13 +92,13 @@ const ExploreSections = ({
 					</>
 				)}
 				<SectionScroll
-					category_title={t('Popular')}
+					category_title={'Popular'}
 					data={data?.popular?.media}
 					viewer={data?.Viewer}
 					isLoading={isLoading}
 				/>
 				<SectionScroll
-					category_title={t('Top Scored')}
+					category_title={'Top Scored'}
 					data={data?.top?.media}
 					viewer={data?.Viewer}
 					isLoading={isLoading}

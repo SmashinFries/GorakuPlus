@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { MediaCard } from '../cards';
-import { IconButton, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { MediaFormat, StaffDetailsQuery } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 
@@ -10,8 +10,8 @@ type StaffMediaCardProps = {
 export const StaffMediaCard = ({ item }: StaffMediaCardProps) => {
 	const { colors } = useAppTheme();
 	return (
-		<View style={{ marginHorizontal: 10, alignItems: 'center', maxHeight: 300 }}>
-			<MediaCard {...item.node} containerStyle={{ marginVertical: 0 }} />
+		<View style={{ marginHorizontal: 10, alignItems: 'center' }}>
+			<MediaCard {...item.node} />
 			<View style={{ justifyContent: 'flex-start' }}>
 				<Text
 					variant="labelLarge"
@@ -36,15 +36,6 @@ export const StaffMediaCard = ({ item }: StaffMediaCardProps) => {
 					· {item.node?.status?.replaceAll('_', ' ') ?? '??'}
 				</Text>
 			</View>
-			{item.node?.isFavourite && (
-				<IconButton
-					icon="heart"
-					iconColor="red"
-					mode="contained"
-					size={18}
-					style={{ position: 'absolute', top: -15, left: -5 }}
-				/>
-			)}
 		</View>
 	);
 };

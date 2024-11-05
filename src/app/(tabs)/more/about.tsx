@@ -65,15 +65,12 @@ const OtherAppItem = ({
 
 const AboutPage = () => {
 	const { showNSFW } = useSettingsStore();
-	const { updateDetails, checkForUpdates } = useAppUpdates();
+	const { checkForUpdates } = useAppUpdates();
 	const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
 
 	const runUpdateChecker = async () => {
 		setIsCheckingUpdate(true);
-		const hasUpdate = await checkForUpdates();
-		if (hasUpdate) {
-			SheetManager.show('AppUpdaterSheet', { payload: { updateDetails } });
-		}
+		const _hasUpdate = await checkForUpdates();
 		setIsCheckingUpdate(false);
 	};
 

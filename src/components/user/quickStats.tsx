@@ -258,7 +258,6 @@ export const StatOverview = ({ anime, manga }: StatOverviewProps) => {
 			</View>
 			{/* <Button
 				style={{ marginHorizontal: 10 }}
-				onPress={() => console.log(Math.floor(daysWasted / 25) * 25)}
 				mode="elevated"
 			>
 				View Statistics

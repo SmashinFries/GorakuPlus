@@ -1,17 +1,15 @@
 import {
 	MediaRankType,
 	MediaTrendsQuery,
-	MediaType,
 	useMediaTrendsQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { useLocalSearchParams } from 'expo-router';
-import { ScrollView, useWindowDimensions, View } from 'react-native';
-import { ActivityIndicator, Chip, Divider, List, Text } from 'react-native-paper';
+import { ScrollView, View } from 'react-native';
+import { ActivityIndicator, Chip, List, Text } from 'react-native-paper';
 import { LineChart } from 'react-native-gifted-charts';
-import { CurveType, lineDataItem } from 'gifted-charts-core';
+import { lineDataItem } from 'gifted-charts-core';
 import { useAppTheme } from '@/store/theme/themes';
 import { ScoreItem, StatBar, StatusItem } from '@/components/media/statistics';
-import { Image } from 'expo-image';
 
 const CustomLabel = ({ val, marginLeft }: { val: string | number; marginLeft: number }) => {
 	return (
@@ -277,9 +275,7 @@ const AiringWatchersChart = ({
 };
 
 const MediaStatsPage = () => {
-	const { colors } = useAppTheme();
-	const { width } = useWindowDimensions();
-	const { id } = useLocalSearchParams<{ id: string }>();
+	const { aniIdStat: id } = useLocalSearchParams<{ aniIdStat: string }>();
 	const { data, isFetching } = useMediaTrendsQuery(
 		{ id: id ? parseInt(id) : null },
 		{ enabled: !!id, refetchOnMount: false },
@@ -294,7 +290,7 @@ const MediaStatsPage = () => {
 	);
 
 	return (
-		<View>
+		<View style={{ height: '100%', width: '100%' }}>
 			{isFetching && (
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<ActivityIndicator size={'large'} />

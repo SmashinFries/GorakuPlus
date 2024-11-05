@@ -1,9 +1,7 @@
-import { ParticleBackground } from '@/components/animations';
 import { useAppTheme } from '@/store/theme/themes';
 import { router } from 'expo-router';
-import { useWindowDimensions, View } from 'react-native';
-import { Button, Divider, List } from 'react-native-paper';
-import * as FileSystem from 'expo-file-system';
+import { View } from 'react-native';
+import { Divider, List } from 'react-native-paper';
 
 const MorePage = () => {
 	const { colors } = useAppTheme();
@@ -45,16 +43,6 @@ const MorePage = () => {
 				)}
 			/>
 			<Divider />
-			{/* <Button
-				onPress={async () => {
-					router.navigate({
-						pathname: `/user/smashinfries/favorites`,
-						params: { type: 'ANIME' },
-					});
-				}}
-			>
-				TEST
-			</Button> */}
 		</View>
 	);
 };

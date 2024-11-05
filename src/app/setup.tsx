@@ -18,6 +18,7 @@ import { openWebBrowser } from '@/utils/webBrowser';
 import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
+import { maybeCompleteAuthSession } from 'expo-web-browser';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWindowDimensions, Pressable, StyleProp, View, ViewStyle } from 'react-native';
 import DraggableFlatList, {
@@ -42,6 +43,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 
 const SETUP_PAGES = 7;
+
+maybeCompleteAuthSession();
 
 type Page = {
 	page: number;
@@ -270,14 +273,10 @@ const ThemeSetup = () => {
 };
 
 const AnilistSetup = () => {
-	const { promptAsync } = useAnilistAuth(true);
-	const { token, avatar, username } = useAuthStore(
-		useShallow((state) => ({
-			token: state.anilist.token,
-			avatar: state.anilist.avatar,
-			username: state.anilist.username,
-		})),
-	);
+	const { promptAsync } = useAnilistAuth();
+	const {
+		anilist: { token, avatar, username },
+	} = useAuthStore();
 	const { dark } = useAppTheme();
 
 	return (
@@ -292,7 +291,7 @@ const AnilistSetup = () => {
 				{!token && (
 					<Button
 						mode="contained"
-						onPress={() => openWebBrowser('https://anilist.co/signup', true)}
+						onPress={() => openWebBrowser('https://anilist.co/signup')}
 						style={{ marginRight: 10 }}
 					>
 						{'Create Account'}
@@ -314,7 +313,11 @@ const AnilistSetup = () => {
 						</View>
 					</View>
 				) : (
-					<Button mode="elevated" onPress={() => promptAsync()}>
+					<Button
+						mode="elevated"
+						onPress={async () => await promptAsync()}
+						// onPress={() => openWebBrowser('gorakuplus://auth', true)}
+					>
 						{'Login'}
 					</Button>
 				)}
@@ -418,7 +421,7 @@ const CardSetup = () => {
 							</Chip>
 						))}
 					</ScrollView>
-					<List.Subheader>List Status Design</List.Subheader>
+					{/* <List.Subheader>List Status Design</List.Subheader>
 					<ScrollView
 						horizontal
 						showsHorizontalScrollIndicator={false}
@@ -453,7 +456,7 @@ const CardSetup = () => {
 								</Chip>
 							),
 						)}
-					</ScrollView>
+					</ScrollView> */}
 					<List.Subheader>Title Language</List.Subheader>
 					<ScrollView
 						horizontal
@@ -490,7 +493,7 @@ const CardSetup = () => {
 };
 
 // NOT BOYS LOVE! ITS BLACKLIST LOL
-const TagBLSetup = () => {
+export const TagBLSetup = () => {
 	const { colors } = useAppTheme();
 	const { showNSFW, tagBlacklist, setSettings } = useSettingsStore(
 		useShallow((state) => ({

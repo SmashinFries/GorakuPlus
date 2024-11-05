@@ -1,5 +1,6 @@
 import { useGetAtHomeServerChapterId, useGetChapter } from '@/api/mangadex/mangadex';
 import { useGetSearchManga } from '@/api/mangadex/mangadexExtended';
+import { Accordion } from '@/components/animations';
 import { ImageViewer } from '@/components/imageViewer';
 import { ListHeading } from '@/components/text';
 import { useMatchStore } from '@/store/matchStore';
@@ -8,18 +9,13 @@ import { openWebBrowser } from '@/utils/webBrowser';
 import { Image } from 'expo-image';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
-import { Portal } from 'react-native-paper';
+import { SheetManager } from 'react-native-actions-sheet';
+import { Button, List, Portal } from 'react-native-paper';
 import { useShallow } from 'zustand/react/shallow';
 
 export const ChapterPreview = ({ aniId, title }: { aniId: number; title: string }) => {
 	const { colors } = useAppTheme();
-	const { mangadexDB, isMangaDexEnabled, addMangaDexID } = useMatchStore(
-		useShallow((state) => ({
-			mangadexDB: state.mangadex,
-			isMangaDexEnabled: state.isMangaDexEnabled,
-			addMangaDexID: state.addMangaDexID,
-		})),
-	);
+	const { mangadex: mangadexDB, isMangaDexEnabled, addMangaDexID } = useMatchStore();
 
 	const currentImageIndex = useRef(0);
 
@@ -75,58 +71,86 @@ export const ChapterPreview = ({ aniId, title }: { aniId: number; title: string 
 
 	return (
 		<View style={{ overflow: 'visible' }}>
-			<ListHeading
-				title="Preview (beta)"
-				subtitle={'Read more on MangaDex! (RTL)'}
-				subtitleStyle={{ color: colors.onSurfaceVariant }}
-				icon="launch"
-				onIconPress={() =>
-					openWebBrowser('https://mangadex.org/title/' + mangaData?.data?.data[0]?.id)
-				}
-			/>
-			<View style={{ width: '100%', height: 260 }}>
-				<FlatList
-					data={pagesData?.data?.chapter?.data}
-					renderItem={({ item, index }) =>
-						index < 20 && (
-							<Pressable
-								onPress={() => imageSelect(index)}
-								style={{ marginRight: 6 }}
-							>
-								<Image
-									source={{
-										uri: `${pagesData?.data?.baseUrl}/data/${pagesData?.data?.chapter?.hash}/${item}`,
-									}}
-									style={{ width: 180, height: 260 }}
-									contentFit="contain"
-								/>
-							</Pressable>
-						)
+			<Accordion title="Preview (beta)" description={'Read more on MangaDex! (RTL)'}>
+				{/* <List.Item
+					title="MangaDex Link"
+					right={(props) => <List.Icon icon={'launch'} {...props} />}
+					onPress={() =>
+						openWebBrowser('https://mangadex.org/title/' + mangaData?.data?.data[0]?.id)
 					}
-					keyExtractor={(item, index) => index.toString()}
-					inverted
-					horizontal
-					contentContainerStyle={{ padding: 15 }}
-					showsHorizontalScrollIndicator={false}
-					// drawDistance={225 * data?.data?.length}
-				/>
-			</View>
-			{pagesData?.data?.chapter?.data && (
-				<Portal>
-					<ImageViewer
-						rtl
-						urls={pagesData?.data?.chapter?.data
-							.map(
-								(url) =>
-									`${pagesData?.data?.baseUrl}/data/${pagesData?.data?.chapter?.hash}/${url}`,
+				/> */}
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-evenly',
+						alignItems: 'center',
+					}}
+				>
+					<Button
+						icon={'tools'}
+						onPress={() =>
+							SheetManager.show('MangaDexSearchSheet', {
+								payload: { aniId, search: title },
+							})
+						}
+					>
+						Fix Title
+					</Button>
+					<Button
+						icon={'launch'}
+						onPress={() =>
+							openWebBrowser(
+								'https://mangadex.org/title/' + mangadexDB[aniId]['mangaId'],
 							)
-							.filter((url, idx) => (idx > 20 ? false : true))}
-						visible={isImageViewerVisible}
-						onDismiss={() => setImageViewerVisible(false)}
-						initialIndex={currentImageIndex.current}
+						}
+					>
+						MangaDex Link
+					</Button>
+				</View>
+				<View style={{ width: '100%', height: 260 }}>
+					<FlatList
+						data={pagesData?.data?.chapter?.data}
+						renderItem={({ item, index }) =>
+							index < 20 && (
+								<Pressable
+									onPress={() => imageSelect(index)}
+									style={{ marginRight: 6 }}
+								>
+									<Image
+										source={{
+											uri: `${pagesData?.data?.baseUrl}/data/${pagesData?.data?.chapter?.hash}/${item}`,
+										}}
+										style={{ width: 180, height: 260 }}
+										contentFit="contain"
+									/>
+								</Pressable>
+							)
+						}
+						keyExtractor={(item, index) => index.toString()}
+						inverted
+						horizontal
+						contentContainerStyle={{ padding: 15 }}
+						showsHorizontalScrollIndicator={false}
+						// drawDistance={225 * data?.data?.length}
 					/>
-				</Portal>
-			)}
+				</View>
+				{pagesData?.data?.chapter?.data && (
+					<Portal>
+						<ImageViewer
+							rtl
+							urls={pagesData?.data?.chapter?.data
+								.map(
+									(url) =>
+										`${pagesData?.data?.baseUrl}/data/${pagesData?.data?.chapter?.hash}/${url}`,
+								)
+								.filter((url, idx) => (idx > 20 ? false : true))}
+							visible={isImageViewerVisible}
+							onDismiss={() => setImageViewerVisible(false)}
+							initialIndex={currentImageIndex.current}
+						/>
+					</Portal>
+				)}
+			</Accordion>
 		</View>
 	);
 };

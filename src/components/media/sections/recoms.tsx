@@ -8,6 +8,7 @@ import { ListHeading } from '@/components/text';
 import { AniMediaQuery, MediaFormat } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { SheetManager } from 'react-native-actions-sheet';
+import { Accordion } from '@/components/animations';
 
 type RecProps = {
 	data: AniMediaQuery['Media']['recommendations'];
@@ -73,17 +74,18 @@ const RecList = ({ data }: RecProps) => {
 
 	return (
 		<View>
-			<ListHeading title="Recommendations" />
-			<FlashList
-				data={data?.edges}
-				renderItem={renderItem}
-				keyExtractor={keyExtractor}
-				estimatedItemSize={250}
-				removeClippedSubviews
-				horizontal
-				contentContainerStyle={{ padding: 15 }}
-				showsHorizontalScrollIndicator={false}
-			/>
+			<Accordion title="Recommendations">
+				<FlashList
+					data={data?.edges}
+					renderItem={renderItem}
+					keyExtractor={keyExtractor}
+					estimatedItemSize={250}
+					removeClippedSubviews
+					horizontal
+					contentContainerStyle={{ padding: 15 }}
+					showsHorizontalScrollIndicator={false}
+				/>
+			</Accordion>
 		</View>
 	);
 };

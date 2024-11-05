@@ -1,11 +1,10 @@
 import { View } from 'react-native';
-import { SegmentedButtons, SegmentedButtonsProps, Text, useTheme } from 'react-native-paper';
+import { SegmentedButtons, SegmentedButtonsProps, Text } from 'react-native-paper';
 import { copyToClipboard } from '@/utils';
 import { AnimViewMem } from '@/components/animations';
 import { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import useTTS from '@/hooks/useTTS';
-import {} from 'react-i18next';
 import { AnilistLanguages } from '@/types/anilist';
 import { CharacterName, StaffName } from '@/api/anilist/__genereated__/gql';
 import { useTTSStore } from '@/store/tts/ttsStore';

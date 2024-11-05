@@ -252,7 +252,7 @@ const WaifuTab = ({
 		}) => {
 			return (
 				<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
-					<CharacterCard {...item} />
+					<CharacterCard {...item} isFavourite />
 				</View>
 			);
 		},
@@ -349,7 +349,7 @@ const StaffTab = ({
 		}) => {
 			return (
 				<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
-					<StaffCard {...item} isStaff />
+					<StaffCard {...item} isStaff isFavourite />
 				</View>
 			);
 		},

@@ -7,7 +7,12 @@ import { MediaCard } from '../cards';
 import { getTimeUntil } from '@/utils';
 import { ConfirmActDelDialog } from './dialogs';
 import { router } from 'expo-router';
-import { ListActivity, MediaFormat, UserActivityQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	ListActivity,
+	MainMetaFragment,
+	MediaFormat,
+	UserActivityQuery,
+} from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useShallow } from 'zustand/react/shallow';
@@ -24,9 +29,9 @@ export const ActivityItem = ({ item, userId }: ActivityItemProps) => {
 	return (
 		<View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
 			<MediaCard
-				{...item.media}
-				activityId={item.user.id === userID && item.id}
-				followingUsername={item.user.id !== userID && item.user?.name}
+				{...(item.media as MainMetaFragment)}
+				activityId={item?.user?.id === userID && item?.id}
+				followingUsername={item?.user?.id !== userID && item?.user?.name}
 			/>
 			<Text
 				variant="labelLarge"
@@ -103,6 +108,7 @@ export const ActivityOverview = ({
 				// @ts-ignore
 				onIconPress={() =>
 					router.navigate({
+						// @ts-ignore
 						pathname: `/user/${username}/activity`,
 						params: {
 							userId: userId,

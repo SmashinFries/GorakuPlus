@@ -1,4 +1,4 @@
-import { Dialog, Button, Text, useTheme, Searchbar, ActivityIndicator } from 'react-native-paper';
+import { Dialog, Button, Searchbar, ActivityIndicator } from 'react-native-paper';
 import { BasicDialogProps } from '../../types';
 import { useCallback, useState } from 'react';
 import { FlatList } from 'react-native';
@@ -20,7 +20,6 @@ export const TagSearchDialog = ({
 	visible,
 	initialQuery,
 	initialTags,
-	tagsLoading,
 	charId,
 	onDismiss,
 	onTagChange,
@@ -29,14 +28,19 @@ export const TagSearchDialog = ({
 	const { colors } = useAppTheme();
 	const { addBooruTag } = useMatchStore();
 	const [query, setQuery] = useState(initialQuery);
-	const debouncedQuery = useDebounce(query, 600);
-	const [selectedTag, setSelectedTag] = useState<string>(initialTags[0]?.value ?? '');
-	const [results, setResults] = useState<DanTags[]>(initialTags ?? []);
-	const { isFetching } = useTagsSearchQuery({
-		'search[query]': debouncedQuery,
-		'search[type]': 'tag',
-		limit: 15,
-	});
+	const debouncedQuery = useDebounce(query ?? '', 600) as string;
+	const [selectedTag, setSelectedTag] = useState<string>(
+		initialTags ? initialTags[0]?.value : '',
+	);
+	// const [results, setResults] = useState<DanTags[]>(initialTags ?? []);
+	const { data: results, isFetching } = useTagsSearchQuery(
+		{
+			'search[query]': debouncedQuery,
+			'search[type]': 'tag',
+			limit: 15,
+		},
+		!!query,
+	);
 
 	const onConfirm = useCallback(() => {
 		addBooruTag(charId, selectedTag);
@@ -51,14 +55,14 @@ export const TagSearchDialog = ({
 				<Button
 					style={{
 						margin: 8,
-						borderColor: selectedTag === item.value ? colors.primary : 'transparent',
+						borderColor: selectedTag === item?.value ? colors.primary : 'transparent',
 					}}
-					onPress={() => setSelectedTag(item.value)}
+					onPress={() => setSelectedTag(item?.value)}
 					mode="outlined"
-					icon={selectedTag === item.value ? 'check' : undefined}
+					icon={selectedTag === item?.value ? 'check' : undefined}
 					rippleColor={colors.primary}
 				>
-					{item.label}
+					{item?.label}
 				</Button>
 			);
 		},
@@ -69,7 +73,11 @@ export const TagSearchDialog = ({
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
 			<Dialog.Title>Find Character</Dialog.Title>
 			<Dialog.Content>
-				<Searchbar value={query} onChangeText={(txt) => setQuery(txt)} />
+				<Searchbar
+					value={query ?? ''}
+					onChangeText={(txt) => setQuery(txt)}
+					loading={isFetching}
+				/>
 				{/* <Button mode="outlined" onPress={() => onSearch(query)}>
 					Search
 				</Button> */}

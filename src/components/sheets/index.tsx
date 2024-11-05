@@ -31,6 +31,8 @@ import {
 	TraceMoeSheetProps,
 	ListEntrySheet,
 	ListEntrySheetProps,
+	MangaDexSearchSheet,
+	MangaDexSearchProps,
 } from './bottomsheets';
 import { AppUpdaterSheet, AppUpdaterSheetProps } from './updatesheet';
 import { ListFilterProps, ListFilterSheet } from './listsheets';
@@ -55,6 +57,7 @@ registerSheet('SauceNaoSheet', SauceNaoSheet);
 registerSheet('MediaReleasesSheet', MediaReleasesSheet);
 registerSheet('ListEntrySheet', ListEntrySheet);
 registerSheet('NekosApiSheet', NekosApiSheet);
+registerSheet('MangaDexSearchSheet', MangaDexSearchSheet);
 
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
@@ -79,6 +82,7 @@ declare module 'react-native-actions-sheet' {
 		MediaReleasesSheet: SheetDefinition<{ payload: MediaReleasesSheetProps }>;
 		ListEntrySheet: SheetDefinition<{ payload: ListEntrySheetProps }>;
 		NekosApiSheet: SheetDefinition<{ payload: NekosApiSheetProps }>;
+		MangaDexSearchSheet: SheetDefinition<{ payload: MangaDexSearchProps }>;
 	}
 }
 

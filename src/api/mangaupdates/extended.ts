@@ -9,6 +9,7 @@ import {
 import { SeriesSearchResponseV1 } from './models';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
+import { sendErrorMessage } from '@/utils/toast';
 
 export const useMangaUpdatesQuery = (
 	aniId: number | null,
@@ -17,16 +18,16 @@ export const useMangaUpdatesQuery = (
 	isNovel: boolean = false,
 ) => {
 	const queryClient = useQueryClient();
-	const {addMangaUpdatesID, isMangaUpdatesEnabled, muDB} = useMatchStore(useShallow((state) => ({muDB: state.mangaUpdates, isMangaUpdatesEnabled: state.isMangaUpdatesEnabled, addMangaUpdatesID: state.addMangaUpdatesID })));
-	const { mutateAsync: searchSeries } = useSearchSeriesPost();
+	const { addMangaUpdatesID, isMangaUpdatesEnabled, muDB } = useMatchStore(useShallow((state) => ({ muDB: state.mangaUpdates, isMangaUpdatesEnabled: state.isMangaUpdatesEnabled, addMangaUpdatesID: state.addMangaUpdatesID })));
+	const { mutateAsync: searchSeries, isPending, isError } = useSearchSeriesPost();
 
 	useEffect(() => {
 		if (muId && aniId) {
-			if (muDB[aniId] !== muId) {
+			if (muDB[aniId] !== muId && !isError && !isPending) {
 				addMangaUpdatesID(aniId, muId);
 			}
 		}
-	}, []);
+	}, [isError, isPending]);
 
 	if (muId && aniId) {
 		return useRetrieveSeries(muId, {}, { query: { enabled: isMangaUpdatesEnabled } });
@@ -37,14 +38,17 @@ export const useMangaUpdatesQuery = (
 				const searchResults = await searchSeries({
 					data: { search: `${title}${isNovel ? ' (Novel)' : ''}`, stype: 'title' },
 				});
-				const muIdResponse = await queryClient.fetchQuery(
-					getRetrieveSeriesQueryOptions(
-						(searchResults.data as SeriesSearchResponseV1).results[0]?.record
-							?.series_id,
-					),
-				);
-				addMangaUpdatesID(aniId, muIdResponse.data.series_id);
-				return muIdResponse;
+				if (searchResults?.data?.total_hits > 0) {
+					const muIdResponse = await queryClient.fetchQuery(
+						getRetrieveSeriesQueryOptions(
+							(searchResults.data as SeriesSearchResponseV1).results[0]?.record
+								?.series_id,
+						),
+					);
+					addMangaUpdatesID(aniId, muIdResponse.data.series_id);
+					return muIdResponse;
+				}
+				return null;
 			},
 			enabled: isMangaUpdatesEnabled ? !!aniId && !!title : false,
 		});

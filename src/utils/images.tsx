@@ -9,7 +9,6 @@ import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
 
 export const saveImage = async (url: string, name = null, ext?: string) => {
-	console.log('URL:', url);
 	const { status } = await MediaLibrary.requestPermissionsAsync();
 	const formattedTitle = name ?? encodeURIComponent('mal_' + url.split('/').pop()?.split('.')[0]);
 	const fileUri =
@@ -23,7 +22,7 @@ export const saveImage = async (url: string, name = null, ext?: string) => {
 				title: `${ext === 'mp4' || ext === 'gif' ? 'Video' : 'Image'} Saved`,
 				duration: TOAST.SHORT,
 			});
-		} catch (e) {
+		} catch (_e) {
 			Burnt.toast({ title: 'Image failed to save', duration: TOAST.LONG });
 		}
 	}

@@ -1,10 +1,4 @@
-import {
-	ListActivity,
-	MediaType,
-	MessageActivity,
-	TextActivity,
-	useActivityDetailQuery,
-} from '@/api/anilist/__genereated__/gql';
+import { ListActivity, useActivityDetailQuery } from '@/api/anilist/__genereated__/gql';
 import {
 	ListActivityView,
 	MessageActivityView,
@@ -14,11 +8,9 @@ import { AnimView } from '@/components/animations';
 import { FlashListAnim } from '@/components/list';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
-import { useSettingsStore } from '@/store/settings/settingsStore';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
-import { useShallow } from 'zustand/react/shallow';
 
 const ActivityPage = () => {
 	const { activityId } = useLocalSearchParams<{ activityId: string }>();
@@ -56,7 +48,7 @@ const ActivityPage = () => {
 			)}
 			{!isFetching && (
 				<FlashListAnim
-					data={data.Activity?.replies}
+					data={data?.Activity?.replies}
 					estimatedItemSize={100}
 					refreshing={isRefetching}
 					onRefresh={refetch}

@@ -1,37 +1,68 @@
-import { GetNotificationsQuery, useGetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	GetNotificationsQuery,
+	useInfiniteGetNotificationsQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { GorakuActivityIndicator } from '@/components/loading';
 import { NotifItem } from '@/components/notifications/item';
 import { FlashList } from '@shopify/flash-list';
 import { router } from 'expo-router';
-import { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 
 const NotificationPage = () => {
-	const [page, setPage] = useState(1);
-	const { width, height } = useWindowDimensions();
-	const { data, isFetching, isLoading } = useGetNotificationsQuery({
-		amount: 50,
-		page: page,
-		reset: true,
-	});
+	const { width } = useWindowDimensions();
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteGetNotificationsQuery(
+			{
+				amount: 50,
+				page: 1,
+				reset: true,
+			},
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 
 	const RenderItem = ({ item }: { item: GetNotificationsQuery['Page']['notifications'][0] }) => {
 		return (
 			<NotifItem
 				item={item}
-				onNav={() => router.push(`/${item?.media.type}/${item?.media.id}`)}
+				// @ts-ignore
+				onNav={() => router.push(`/${item?.media?.type?.toLowerCase()}/${item?.media.id}`)}
 			/>
 		);
 	};
 
+	const mergedData = data?.pages?.flatMap((page) => page.Page?.notifications);
+
 	return (
 		<View style={{ width: width, height: '100%' }}>
-			{data?.Page && (
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						height: '100%',
+						width: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
+			{mergedData && (
 				<FlashList
-					data={data.Page.notifications}
+					data={mergedData}
 					renderItem={RenderItem}
-					keyExtractor={(item, idx) => item.id.toString()}
+					keyExtractor={(item) => item.id.toString()}
 					estimatedItemSize={20}
 					contentContainerStyle={{ paddingVertical: 10 }}
+					onEndReached={() => hasNextPage && fetchNextPage()}
 				/>
 			)}
 		</View>

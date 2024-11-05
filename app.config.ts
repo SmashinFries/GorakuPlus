@@ -1,4 +1,6 @@
-import { ExpoConfig, ConfigContext } from 'expo/config';
+import { ExpoConfig } from 'expo/config';
+import { withSentry } from '@sentry/react-native/expo';
+
 import dotenv from 'dotenv';
 const IS_DEV = process.env.APP_VARIANT === 'development';
 const IS_STORE = process.env.APP_VARIANT === 'store';
@@ -6,8 +8,7 @@ dotenv.config();
 
 const appName = IS_DEV ? 'Goraku Dev' : 'Goraku';
 
-export default ({ config }: ConfigContext): ExpoConfig => ({
-	...config,
+const config: ExpoConfig = {
 	owner: 'kuzulabz',
 	slug: 'GorakuPlus',
 	name: appName,
@@ -35,6 +36,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		'expo-router',
 		'expo-font',
 		'expo-secure-store',
+		'react-native-bottom-tabs',
 		[
 			'expo-build-properties',
 			{
@@ -60,16 +62,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				//   "photosPermission": `Allow ${appName} to access your photos. This is for `,
 				savePhotosPermission: `Allow ${appName} to save photos.`,
 				isAccessMediaLocationEnabled: true,
-			},
-		],
-		[
-			'@sentry/react-native/expo',
-			{
-				organization: 'kuzulabz',
-				project: 'goraku',
-				// If you are using a self-hosted instance, update the value of the url property
-				// to point towards your self-hosted instance. For example, https://self-hosted.example.com/.
-				// url: 'https://sentry.io/',
 			},
 		],
 	],
@@ -148,6 +140,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			origin: false,
 		},
 		ANI_ID: process.env.ANI_ID,
+		ANI_SECRET: process.env.ANI_SECRET,
+		ANI_DEV_ID: process.env.ANI_DEV_ID,
+		ANI_DEV_SECRET: process.env.ANI_DEV_SECRET,
 		ANI_ID_SETUP: process.env.ANI_ID_SETUP,
 		ANI_WEB_ID: process.env.ANI_WEB_ID,
 		ANI_EXPO_GO: process.env.ANI_EXPO_GO,
@@ -156,4 +151,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		isStore: IS_STORE,
 	},
 	scheme: IS_DEV ? 'gorakuplusDev' : 'gorakuplus',
+};
+
+export default withSentry(config, {
+	organization: 'kuzulabz',
+	project: 'goraku',
 });

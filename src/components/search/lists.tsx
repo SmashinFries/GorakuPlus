@@ -11,7 +11,6 @@ import {
 	CharacterSearchQuery,
 	MediaSearchQuery,
 	MediaType,
-	SearchAllQuery,
 	StaffSearchQuery,
 	StudioSearchQuery,
 	useInfiniteCharacterSearchQuery,
@@ -92,7 +91,7 @@ const SearchAllRenderItem = ({
 						alignItems: 'center',
 						marginVertical: 15,
 						// marginHorizontal: 4,
-						width: itemWidth ?? `${100 / 3}%`,
+						width: itemWidth,
 					}}
 				>
 					<CharacterCard {...item} isStaff={type === 'staff'} />
@@ -119,12 +118,15 @@ const SearchAllRenderItem = ({
 			);
 		case 'users':
 			return (
-				<View>
-					<UserCard
-						username={(item as SearchAllQuery['Users']['users'][0]).name}
-						avatarImg={(item as SearchAllQuery['Users']['users'][0]).avatar?.large}
-						{...item}
-					/>
+				<View
+					style={{
+						alignItems: 'center',
+						marginVertical: 15,
+						// marginHorizontal: 4,
+						width: itemWidth,
+					}}
+				>
+					<UserCard {...item} />
 				</View>
 			);
 	}
@@ -232,7 +234,7 @@ export const SearchAllList = () => {
 					<GorakuActivityIndicator />
 				</View>
 			)}
-			{!isFetching && data ? (
+			{data && (
 				<LongScrollView stickyHeaderIndices={[0, 2, 4, 6, 8, 10]} scrollToTopIconTop={5}>
 					{data?.Anime?.media?.length > 0 && <SearchAllTitle>Anime</SearchAllTitle>}
 					{data?.Anime?.media?.length > 0 && (
@@ -261,10 +263,6 @@ export const SearchAllList = () => {
 						<SearchAllSection data={data?.Users?.users} type="users" />
 					)}
 				</LongScrollView>
-			) : (
-				<View style={{ paddingVertical: 100, alignItems: 'center', width: '100%' }}>
-					<Text variant="titleLarge">Nothing to see here!</Text>
-				</View>
 			)}
 			{/* {shouldShowScrollToTop && <ScrollToTopButton listRef={listRef} top={80} />} */}
 		</View>
@@ -282,28 +280,41 @@ export const AnimeSearchList = () => {
 
 	const { columns, itemWidth, displayMode } = useColumns('search');
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, hasNextPage, fetchNextPage } = useInfiniteMediaSearchQuery(
-		{
-			type: MediaType.Anime,
-			...mediaFilter,
-			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
-		},
-		{
-			initialPageParam: 1,
-			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
-					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
-					};
-				}
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteMediaSearchQuery(
+			{
+				type: MediaType.Anime,
+				...mediaFilter,
+				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
 			},
-		},
-	);
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 
 	const mergedResults = data?.pages?.flatMap((val) => val.Page?.media);
 
 	return (
 		<View style={{ height: '100%', width }}>
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
 			<SearchList
 				key={columns}
 				data={mergedResults}
@@ -340,29 +351,42 @@ export const MangaSearchList = () => {
 	);
 	const { columns, itemWidth, displayMode } = useColumns('search');
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, hasNextPage, fetchNextPage } = useInfiniteMediaSearchQuery(
-		{
-			type: MediaType.Manga,
-			...mediaFilter,
-			search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
-		},
-		{
-			initialPageParam: 1,
-			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
-					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
-					};
-				}
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteMediaSearchQuery(
+			{
+				type: MediaType.Manga,
+				...mediaFilter,
+				search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
 			},
-		},
-	);
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 	const { width } = useWindowDimensions();
 
 	const allResults = data?.pages?.flatMap((val) => val.Page.media);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
 			<SearchList
 				key={columns}
 				data={allResults}
@@ -398,32 +422,49 @@ export const CharacterSearchList = () => {
 		})),
 	);
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, hasNextPage, fetchNextPage } = useInfiniteCharacterSearchQuery(
-		{
-			...characterFilter,
-			isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter.isBirthday,
-			search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
-		},
-		{
-			initialPageParam: 1,
-			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
-					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
-					};
-				}
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteCharacterSearchQuery(
+			{
+				...characterFilter,
+				isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter.isBirthday,
+				search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
 			},
-		},
-	);
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 	const { width } = useWindowDimensions();
 
 	const allResults: CharacterSearchQuery['Page']['characters'] = data?.pages?.flatMap(
 		(val) => val.Page.characters,
 	);
 
+	const { columns, itemWidth } = useColumns('search');
+
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
 			<SearchList
+				key={columns}
+				numColumns={columns}
 				data={allResults}
 				nestedScrollEnabled
 				renderItem={({ item }) => (
@@ -432,6 +473,7 @@ export const CharacterSearchList = () => {
 							alignItems: 'center',
 							marginVertical: 15,
 							marginHorizontal: 4,
+							width: itemWidth,
 						}}
 					>
 						<CharacterCard {...item} />
@@ -453,23 +495,26 @@ export const CharacterSearchList = () => {
 export const StaffSearchList = () => {
 	const { query, staffFilter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, hasNextPage, fetchNextPage } = useInfiniteStaffSearchQuery(
-		{
-			...staffFilter,
-			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
-		},
-		{
-			initialPageParam: 1,
-			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
-					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
-					};
-				}
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteStaffSearchQuery(
+			{
+				...staffFilter,
+				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
 			},
-		},
-	);
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 	const { width } = useWindowDimensions();
+
+	const { columns, itemWidth } = useColumns('search');
 
 	const allResults: StaffSearchQuery['Page']['staff'] = data?.pages?.flatMap(
 		(val) => val.Page.staff,
@@ -477,7 +522,21 @@ export const StaffSearchList = () => {
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
 			<SearchList
+				key={columns}
+				numColumns={columns}
 				data={allResults}
 				nestedScrollEnabled
 				renderItem={({ item }) => (
@@ -486,6 +545,7 @@ export const StaffSearchList = () => {
 							alignItems: 'center',
 							marginVertical: 15,
 							marginHorizontal: 4,
+							width: itemWidth,
 						}}
 					>
 						<CharacterCard {...item} isStaff />
@@ -507,22 +567,23 @@ export const StaffSearchList = () => {
 export const StudioSearchList = () => {
 	const { query, studioFilter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, hasNextPage, fetchNextPage } = useInfiniteStudioSearchQuery(
-		{
-			...studioFilter,
-			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
-		},
-		{
-			initialPageParam: 1,
-			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
-					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
-					};
-				}
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteStudioSearchQuery(
+			{
+				...studioFilter,
+				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
 			},
-		},
-	);
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 	const { width } = useWindowDimensions();
 
 	const allResults: StudioSearchQuery['Page']['studios'] = data?.pages?.flatMap(
@@ -531,6 +592,18 @@ export const StudioSearchList = () => {
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
 			<SearchList
 				data={allResults}
 				numColumns={1}
@@ -569,23 +642,26 @@ export const StudioSearchList = () => {
 export const UserSearchList = () => {
 	const { query, userFilter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 600) as string;
-	const { data, hasNextPage, fetchNextPage } = useInfiniteUserSearchQuery(
-		{
-			...userFilter,
-			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
-		},
-		{
-			initialPageParam: 1,
-			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
-					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
-					};
-				}
+	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfiniteUserSearchQuery(
+			{
+				...userFilter,
+				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
 			},
-		},
-	);
+			{
+				initialPageParam: 1,
+				getNextPageParam(lastPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
+						return {
+							page: lastPage.Page?.pageInfo.currentPage + 1,
+						};
+					}
+				},
+			},
+		);
 	const { width } = useWindowDimensions();
+
+	const { columns, itemWidth } = useColumns('search');
 
 	const allResults: UserSearchQuery['Page']['users'] = data?.pages?.flatMap(
 		(val) => val.Page.users,
@@ -593,7 +669,21 @@ export const UserSearchList = () => {
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
+			{isFetching && !isFetchingNextPage && (
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			)}
 			<SearchList
+				key={columns}
+				numColumns={columns}
 				data={allResults}
 				nestedScrollEnabled
 				renderItem={({ item }: { item: UserSearchQuery['Page']['users'][0] }) => (
@@ -601,7 +691,7 @@ export const UserSearchList = () => {
 						style={{
 							alignItems: 'center',
 							marginVertical: 15,
-							marginHorizontal: 4,
+							width: itemWidth,
 						}}
 					>
 						<UserCard {...item} />

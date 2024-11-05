@@ -26,10 +26,8 @@ export const useCollectionUpdater = (queryClient: QueryClient) => {
 	 * @param forceRefresh ignores refresh date
 	 */
 	const fetchAllCollections = async (forceRefresh: boolean = false) => {
-		console.log('Attempting Collection Refresh');
 		const shouldRefresh = Date.now() >= refreshAt;
 		if (shouldRefresh || forceRefresh) {
-			console.log('Refreshing Collections!');
 			const data = await queryClient.fetchQuery({
 				queryKey: useAllCollectionsQuery.getKey(),
 				queryFn: useAllCollectionsQuery.fetcher(),

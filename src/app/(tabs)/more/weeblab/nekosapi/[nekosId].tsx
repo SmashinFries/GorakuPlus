@@ -11,7 +11,7 @@ import { Image } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
-import { Chip, Divider, Portal, Text } from 'react-native-paper';
+import { Chip, Divider, Portal } from 'react-native-paper';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 const ColorPaletteItem = ({ rgb, itemWidth }: { rgb: number[]; itemWidth: number }) => {

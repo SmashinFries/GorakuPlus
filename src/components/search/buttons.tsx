@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, IconButton, Checkbox, Text, useTheme, Switch } from 'react-native-paper';
-import { GorakuSwitch } from '../switch';
+import { View } from 'react-native';
+import { Button, IconButton, Checkbox, Text, Switch } from 'react-native-paper';
 
 type ListOptions = {
 	label: string;

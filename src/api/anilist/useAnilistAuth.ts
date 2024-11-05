@@ -4,14 +4,12 @@ import {
 	AuthRequest,
 	AuthSessionResult,
 	AuthRequestPromptOptions,
+	useAuthRequest,
 } from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-	UserDataQuery,
-	useUserDataQuery,
 	useViewerDataQuery,
 	ViewerDataQuery,
 } from './__genereated__/gql';
@@ -19,8 +17,8 @@ import { useAuthStore } from '@/store/authStore';
 import { useListFilterStore } from '@/store/listStore';
 import { useShallow } from 'zustand/react/shallow';
 
+const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
 // const ANI_ID = Constants.expoConfig?.extra?.ANI_ID;
-const ANI_ID = 21667;
 const ANI_ID_SETUP = Constants.expoConfig?.extra?.ANI_ID_SETUP;
 const ANI_WEB_ID = Constants.expoConfig?.extra?.ANI_WEB_ID;
 
@@ -30,13 +28,9 @@ const redirectUri = makeRedirectUri({
 	path: 'auth',
 	// queryParams: { rootPath: rootPath },
 });
-const redirectSetupUri = makeRedirectUri({
-	path: 'setup',
-});
 
-export const useAnilistAuth = (isSetup = false) => {
-	const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${Platform.OS === 'web' ? ANI_WEB_ID : isSetup ? ANI_ID_SETUP : ANI_ID
-		}&response_type=token`;
+export const useAnilistAuth = () => {
+	const AniListURL = `https://anilist.co/api/v2/oauth/authorize?client_id=${ANI_ID}&response_type=token`;
 	const [request, setRequest] = useState<AuthRequest | null>(null);
 	const [result, setResult] = useState<AuthSessionResult | null>(null);
 	const queryClient = useQueryClient();
@@ -60,15 +54,9 @@ export const useAnilistAuth = (isSetup = false) => {
 			// Usually returns an error even though we still get the token :/
 			if (result?.type === 'success' || result?.type === 'error') {
 				const accessToken = result.authentication?.accessToken;
-				// console.log('accessToken', accessToken?.length > 0 ? 'true' : 'false');
 				const expiresAt = new Date();
 				expiresAt.setFullYear(expiresAt.getFullYear() + 1);
 				if (accessToken) {
-					// set header
-					// setAnilistAuthTest({
-					// 	token: accessToken,
-					// 	deathDate: expiresAt.toLocaleString(),
-					// });
 					setAnilistAuth({
 						token: accessToken,
 						deathDate: expiresAt.toLocaleString(),
@@ -83,13 +71,6 @@ export const useAnilistAuth = (isSetup = false) => {
 						user.Viewer.avatar?.large ?? null;
 					const userID = user.Viewer.id ?? null;
 					const username = user.Viewer.name ?? null;
-					// setAnilistAuthTest({
-					// 	token: accessToken,
-					// 	deathDate: expiresAt.toLocaleString(),
-					// 	avatar: userAvatar,
-					// 	userID: userID,
-					// 	username: username,
-					// });
 					setAnilistAuth({
 						token: accessToken,
 						deathDate: expiresAt.toLocaleString(),
@@ -128,25 +109,15 @@ export const useAnilistAuth = (isSetup = false) => {
 
 	const invalidateQueries = async () => {
 		queryClient.invalidateQueries();
-		// queryClient.invalidateQueries({ queryKey: useAniMediaQuery.getKey(undefined) });
-		// queryClient.invalidateQueries({ queryKey: useInfiniteSearchAllQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useInfiniteMediaSearchQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useManhuaExploreQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useNovelExploreQuery.getKey() });
-		// queryClient.invalidateQueries({ queryKey: useUserOverviewQuery.getKey(undefined) });
-		// queryClient.invalidateQueries({ queryKey: useWeeklyAnimeQuery.getKey()})
 	};
 
 	useEffect(() => {
 		if (AniListURL) {
 			const request = new AuthRequest({
 				usePKCE: false,
-				redirectUri: isSetup ? redirectSetupUri : redirectUri,
+				redirectUri: redirectUri,
 				scopes: [],
-				clientId: '',
+				clientId: ANI_ID,
 				// responseType: ResponseType.Token,
 			});
 			request.url = AniListURL;

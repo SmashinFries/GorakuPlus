@@ -1,31 +1,14 @@
 import {
-	ThreadCategory,
-	ThreadComment,
-	ThreadDetailQuery,
-	useAniListCommentsQuery,
 	useInfiniteAniListCommentsQuery,
 	useThreadDetailQuery,
 } from '@/api/anilist/__genereated__/gql';
 import PaperHeader from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { MarkdownViewer } from '@/components/markdown';
 import { ThreadItem } from '@/components/thread/items';
-import { useAppTheme } from '@/store/theme/themes';
-import { getTimeUntil } from '@/utils';
 import { FlashList } from '@shopify/flash-list';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { Pressable, ScrollView, View } from 'react-native';
-import {
-	Avatar,
-	Badge,
-	Button,
-	Chip,
-	Divider,
-	Icon,
-	IconButton,
-	Surface,
-	Text,
-} from 'react-native-paper';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import { View } from 'react-native';
+import { Divider, Text } from 'react-native-paper';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 const ThreadPage = () => {
@@ -45,7 +28,6 @@ const ThreadPage = () => {
 					};
 				}
 			},
-			refetchOnMount: false,
 		},
 	);
 
@@ -74,7 +56,7 @@ const ThreadPage = () => {
 				<Animated.View entering={FadeIn} style={{ width: '100%', height: '100%' }}>
 					<FlashList
 						data={flatCommentsData}
-						keyExtractor={(item, idx) => item.id.toString()}
+						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item }) => (
 							<ThreadItem
 								id={item?.id}

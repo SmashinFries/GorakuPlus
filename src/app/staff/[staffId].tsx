@@ -19,11 +19,7 @@ import useTTS from '@/hooks/useTTS';
 import { CharStaffInteractionBar } from '@/components/characters/interaction';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useTTSStore } from '@/store/tts/ttsStore';
-import {
-	StaffDetailsQuery,
-	useStaffDetailsQuery,
-	useToggleFavMutation,
-} from '@/api/anilist/__genereated__/gql';
+import { StaffDetailsQuery, useStaffDetailsQuery } from '@/api/anilist/__genereated__/gql';
 
 const StafPage = () => {
 	const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -43,11 +39,6 @@ const StafPage = () => {
 		},
 		{ enabled: !!staffId },
 	);
-	const { data: fav, mutateAsync: toggleFav } = useToggleFavMutation();
-
-	const onToggleFavorite = useCallback(async () => {
-		await toggleFav({ staffId: id });
-	}, [id]);
 
 	const StaffMediaRenderItem = useCallback(
 		({ item }: { item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0] }) => {
@@ -148,11 +139,10 @@ const StafPage = () => {
 					</ScrollView>
 				)}
 				<CharStaffInteractionBar
-					isFav={fav?.ToggleFavourite?.staff?.edges[0]?.node?.isFavourite}
+					id={id}
+					isFav={data?.Staff?.isFavourite}
 					share_url={`https://anilist.co/staff/${id}`}
 					edit_url={`https://anilist.co/edit/staff/${id}`}
-					favLoading={false}
-					toggleFav={onToggleFavorite}
 				/>
 				{data?.Staff?.description ? (
 					<ExpandableDescription initialHeight={90}>
@@ -161,7 +151,7 @@ const StafPage = () => {
 					</ExpandableDescription>
 				) : null}
 
-				<View style={{ marginVertical: 20, marginTop: 30 }}>
+				<View style={{ paddingVertical: 20, paddingTop: 30 }}>
 					<Accordion title="Information" initialExpand>
 						<List.Item
 							title="Language"
@@ -266,7 +256,7 @@ const StafPage = () => {
 								estimatedItemSize={250}
 								horizontal
 								removeClippedSubviews
-								contentContainerStyle={{ padding: 15 }}
+								// contentContainerStyle={{ padding: 15 }}
 								showsHorizontalScrollIndicator={false}
 								// onEndReached={() => {
 								// 	data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&

@@ -1,5 +1,6 @@
-import PaperHeader, { MoreHeader } from '@/components/headers';
+import PaperHeader from '@/components/headers';
 import AnimatedStack from '@/components/stack';
+import { openWebBrowser } from '@/utils/webBrowser';
 import { Stack } from 'expo-router';
 
 const PanelsDesuLayout = () => {
@@ -13,7 +14,19 @@ const PanelsDesuLayout = () => {
 				name="index"
 				options={{
 					headerTitle: 'PanelsDesu',
-					header: (props) => <PaperHeader {...props} mode="center-aligned" elevated />,
+					header: (props) => (
+						<PaperHeader
+							{...props}
+							mode="center-aligned"
+							elevated
+							actions={[
+								{
+									icon: 'information-outline',
+									onPress: () => openWebBrowser('https://panelsdesu.com/'),
+								},
+							]}
+						/>
+					),
 				}}
 			/>
 			<Stack.Screen name="[panelId]" />

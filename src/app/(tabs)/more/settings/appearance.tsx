@@ -9,7 +9,7 @@ import { useThemeStore } from '@/store/theme/themeStore';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
-import { Button, List, Portal, Text } from 'react-native-paper';
+import { Chip, List, Portal, Text } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -124,7 +124,7 @@ const AppearancePage = () => {
 						title="Themes"
 						description={mode.replaceAll('_', ' ')}
 						descriptionStyle={{ textTransform: 'capitalize' }}
-						initialExpand={true}
+						// initialExpand={true}
 						// onPress={() => setExpandThemes((prev) => !prev)}
 					>
 						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -213,22 +213,40 @@ const AppearancePage = () => {
 						description={navAnimation.replaceAll('_', ' ')}
 						descriptionStyle={{ textTransform: 'capitalize' }}
 					>
-						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+						<View
+							style={{
+								paddingHorizontal: 5,
+								flexDirection: 'row',
+								flexWrap: 'wrap',
+								gap: 6,
+								alignItems: 'center',
+							}}
+						>
 							{STACK_ANIMS.map((anim, index) => (
-								<Button
+								<Chip
 									key={index}
-									mode="outlined"
+									selected={anim === navAnimation}
 									compact
-									labelStyle={{ textTransform: 'capitalize' }}
-									style={{ paddingHorizontal: 5, marginHorizontal: 5 }}
+									mode="outlined"
+									textStyle={{ textTransform: 'capitalize' }}
 									onPress={() => setSettings({ navAnimation: anim })}
-									buttonColor={anim === navAnimation ? colors.primary : undefined}
-									textColor={anim === navAnimation ? colors.onPrimary : undefined}
 								>
 									{anim.replaceAll('_', ' ')}
-								</Button>
+								</Chip>
+								// <Button
+								// 	key={index}
+								// 	mode="outlined"
+								// 	compact
+								// 	labelStyle={{ textTransform: 'capitalize' }}
+								// 	style={{ paddingHorizontal: 5, marginHorizontal: 5 }}
+								// 	onPress={() => setSettings({ navAnimation: anim })}
+								// 	buttonColor={anim === navAnimation ? colors.primary : undefined}
+								// 	textColor={anim === navAnimation ? colors.onPrimary : undefined}
+								// >
+								// 	{anim.replaceAll('_', ' ')}
+								// </Button>
 							))}
-						</ScrollView>
+						</View>
 					</Accordion>
 				</List.Section>
 				<List.Section>
@@ -246,7 +264,8 @@ const AppearancePage = () => {
 						title={'Auto Rotation'}
 						description={'3D Interactions must be enabled for this to take effect.'}
 						onPress={onAutoRotationChange}
-						selected={autoRotation}
+						selected={interaction3D ? autoRotation : false}
+						disabled={!interaction3D}
 						fluid
 					/>
 					<MaterialSwitchListItem

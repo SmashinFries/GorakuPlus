@@ -40,11 +40,11 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 		muDB[aniId],
 		anilist.data?.Media?.type === MediaType.Manga
 			? (anilist.data?.Media?.countryOfOrigin === 'KR'
-					? (anilist.data?.Media?.title?.english ?? anilist.data?.Media?.title?.romaji)
-					: anilist.data?.Media?.title?.romaji
-				)
-					?.replace('[', '')
-					.replace(']', '')
+				? (anilist.data?.Media?.title?.english ?? anilist.data?.Media?.title?.romaji)
+				: anilist.data?.Media?.title?.romaji
+			)
+				?.replace('[', '')
+				.replace(']', '')
 			: anilist.data?.Media?.title?.romaji,
 		anilist.data?.Media?.format === MediaFormat.Novel,
 	);
@@ -58,19 +58,27 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 				} else {
 					if (muDB[aniId]) {
 						(isMalEnabled ? jikan?.isFetched : true) &&
-							(isMangaUpdatesEnabled ? muSeries?.isFetched : true) &&
-							(isMangaUpdatesEnabled ? muReleases?.isFetched : true) &&
+							(isMangaUpdatesEnabled
+								? muSeries?.isFetched || muSeries.isError
+								: true) &&
+							(isMangaUpdatesEnabled
+								? muReleases?.isFetched || muReleases.isError
+								: true) &&
 							setIsReady(true);
+					} else if (muSeries?.isError || muReleases?.isError || !muSeries?.data?.data) {
+						setIsReady(true);
 					}
 				}
 			} else if (anilist?.data?.Media?.idMal) {
 				addMalID(aniId, anilist?.data?.Media?.idMal);
-			} else if (!anilist?.data?.Media?.idMal) {
+			} else if (!anilist?.data?.Media?.idMal || !isMalEnabled) {
 				if (type === MediaType.Anime) {
 					setIsReady(true);
 				} else {
-					(isMangaUpdatesEnabled ? muSeries?.isFetched && muReleases?.isFetched : true) &&
-						setIsReady(true);
+					(isMangaUpdatesEnabled
+						? (muSeries?.isFetched || muSeries?.isError) &&
+						(muReleases?.isFetched || muReleases?.isError)
+						: true) && setIsReady(true);
 				}
 			}
 		}
@@ -81,6 +89,8 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 		jikan?.isFetched,
 		muSeries?.isFetched,
 		muReleases?.isFetched,
+		muReleases?.isError,
+		muSeries?.isError,
 		anilist?.data,
 		aniId,
 		isMalEnabled,

@@ -1,5 +1,5 @@
 import { Accordion } from '@/components/animations';
-import { ScrollView, View, useWindowDimensions } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Button, Chip, Text } from 'react-native-paper';
 import { ScoreItem, StatBar, StatusItem } from '../statistics';
 import Animated from 'react-native-reanimated';
@@ -44,12 +44,7 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 			<Accordion title="Statistics">
 				<Button
 					mode="elevated"
-					onPress={() =>
-						router.navigate({
-							pathname: '/statistics/media/[aniIdStat]',
-							params: { aniIdStat: id },
-						})
-					}
+					onPress={() => router.navigate(`/statistics/media/${id}`)}
 					style={{ margin: 10 }}
 				>
 					View all

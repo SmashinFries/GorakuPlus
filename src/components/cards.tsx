@@ -33,7 +33,6 @@ import { router } from 'expo-router';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useAuthStore } from '@/store/authStore';
 import { useShallow } from 'zustand/react/shallow';
-import * as Haptics from 'expo-haptics';
 
 const BORDER_RADIUS = 8;
 
@@ -51,6 +50,7 @@ type MediaCardProps = MainMetaFragment & {
 	followingUsername?: string;
 	allowEntryEdit?: boolean;
 	onLongPress?: () => void;
+	isMangaDex?: boolean;
 };
 export const MediaCard = ({
 	navigate = () => null,
@@ -100,19 +100,24 @@ export const MediaCard = ({
 			>
 				<Pressable
 					onPress={() => {
-						navigate() ?? onNav();
+						if (props.isMangaDex) {
+							navigate();
+						} else {
+							navigate() ?? onNav();
+						}
 					}}
 					onLongPress={() => {
 						onLongPress() ??
-							SheetManager.show('QuickActionSheet', {
-								payload: {
-									...props,
-									scoreFormat: props.scoreFormat,
-									activityId: props.activityId,
-									followingUsername: props.followingUsername,
-									allowEntryEdit: allowEntryEdit,
-								},
-							});
+							(!props.isMangaDex &&
+								SheetManager.show('QuickActionSheet', {
+									payload: {
+										...props,
+										scoreFormat: props.scoreFormat,
+										activityId: props.activityId,
+										followingUsername: props.followingUsername,
+										allowEntryEdit: allowEntryEdit,
+									},
+								}));
 					}}
 					android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 					style={{ height: '100%', width: '100%' }}
@@ -173,7 +178,7 @@ export const MediaCard = ({
 						]}
 					></LinearGradient>
 					<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-						{(props.meanScore || props.averageScore) && (
+						{!props.isMangaDex && (props.meanScore || props.averageScore) && (
 							<ScoreVisual
 								score={
 									defaultScore === 'average' && props.averageScore
@@ -196,7 +201,7 @@ export const MediaCard = ({
 								color: 'white',
 								alignItems: 'center',
 							}}
-							numberOfLines={2}
+							numberOfLines={props.isMangaDex ? 3 : 2}
 						>
 							{(props.tempListStatusMode ?? listStatusMode) === 'dot' &&
 								props.mediaListEntry?.status && (
@@ -476,7 +481,7 @@ export const UserCard = ({
 		<AnimViewMem>
 			<Pressable
 				android_ripple={{ color: colors.primary, foreground: true }}
-				onPress={() => onPress() ?? onNav}
+				onPress={() => onPress() ?? onNav()}
 				onLongPress={() => {
 					onLongPress() ??
 						(viewerName !== props.name &&
@@ -576,6 +581,7 @@ export const CharacterCard = ({
 						style={{
 							textAlign: 'center',
 							color: props.isFavourite ? colors.primary : colors.onBackground,
+							paddingHorizontal: 4,
 						}}
 					>
 						{mediaLanguage === 'native' ? props.name?.native : props.name?.full}
@@ -623,7 +629,7 @@ export const StudioCard = ({
 			: [],
 	);
 	return (
-		<AnimViewMem>
+		<AnimViewMem style={{ width: '100%' }}>
 			<Surface
 				mode="elevated"
 				style={{
@@ -710,6 +716,7 @@ export const DanbooruImageCard = ({
 				style={{
 					borderRadius: 12,
 					aspectRatio: disableAR ? undefined : preview?.width / preview?.height,
+					overflow: 'hidden',
 				}}
 			>
 				<Image

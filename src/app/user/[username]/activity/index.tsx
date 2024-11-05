@@ -1,9 +1,5 @@
 import {
 	ListActivity,
-	MediaListStatus,
-	MediaType,
-	MessageActivity,
-	TextActivity,
 	useInfiniteUserActivityQuery,
 	UserActivityQuery,
 } from '@/api/anilist/__genereated__/gql';
@@ -14,11 +10,10 @@ import {
 } from '@/components/activity/item';
 import { ScrollToTopButton } from '@/components/buttons';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { ThreadItem } from '@/components/thread/items';
 import { ConfirmActDelDialog } from '@/components/user/dialogs';
-import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAuthStore } from '@/store/authStore';
 import { FlashList } from '@shopify/flash-list';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Divider, Portal } from 'react-native-paper';
@@ -26,17 +21,17 @@ import { useShallow } from 'zustand/react/shallow';
 
 const ActivityListPage = () => {
 	const { userId } = useLocalSearchParams<{ userId: string }>();
-	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
+	const { viewerId } = useAuthStore(useShallow((state) => ({ viewerId: state.anilist.userID })));
+	// const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
 	const { data, isFetching, fetchNextPage, hasNextPage, refetch } = useInfiniteUserActivityQuery(
 		{
 			userId: userId === 'user' ? undefined : parseInt(userId),
 			page: 1,
 			perPage: 24,
-			isFollowing: true,
+			isFollowing: `${viewerId}` !== userId,
 		},
 		{
 			enabled: !!userId,
-			refetchOnMount: true,
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
 				if (lastPage.Page?.pageInfo.hasNextPage) {
@@ -55,10 +50,10 @@ const ActivityListPage = () => {
 	const [showActDelConfirm, setShowActDelConfirm] = useState(false);
 	const [actDelID, setActDelID] = useState<number | null>(null);
 
-	const onTrash = (id: number) => {
-		setActDelID(id);
-		setShowActDelConfirm(true);
-	};
+	// const onTrash = (id: number) => {
+	// 	setActDelID(id);
+	// 	setShowActDelConfirm(true);
+	// };
 
 	const RenderItem = ({ item }: { item: UserActivityQuery['Page']['activities'][0] }) => {
 		switch (item.__typename) {

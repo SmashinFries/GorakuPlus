@@ -91,14 +91,6 @@ const SettingsHomePage = () => {
 					<List.Icon {...props} color={colors.primary} icon="map-marker-path" />
 				)}
 			/>
-			{/* <List.Item
-                title={'Animations'}
-                description={'Adjust navigation animations'}
-                onPress={() => {
-                    navigation.navigate('appearance');
-                }}
-                left={(props) => <List.Icon {...props} icon="animation-outline" />}
-            /> */}
 		</ScrollView>
 	);
 };

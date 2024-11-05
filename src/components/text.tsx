@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { StyleProp, TextStyle } from 'react-native';
-import { Icon, IconButton, Text, useTheme } from 'react-native-paper';
+import { Icon, IconButton, Text } from 'react-native-paper';
 import RenderHTML, {
 	CustomTagRendererRecord,
 	CustomTextualRenderer,
@@ -34,7 +34,7 @@ export const ListHeading = ({
 		<View
 			style={[
 				{
-					paddingRight: 24,
+					paddingRight: 14,
 					paddingVertical: 8,
 					flexDirection: 'row',
 					alignItems: 'center',
@@ -62,9 +62,14 @@ export const ListHeading = ({
 					) : null}
 				</View>
 			</View>
-			<Pressable onPress={onIconPress} style={{ marginVertical: 6 }}>
+			{/* <Pressable
+				onPress={onIconPress}
+				android_ripple={{ foreground: true, color: colors.primary }}
+				style={{ marginVertical: 6, paddingLeft: 4 }}
+			>
 				{icon && <Icon size={24} color={colors.onSurfaceVariant} source={icon} />}
-			</Pressable>
+			</Pressable> */}
+			<IconButton onPress={onIconPress} icon={icon} size={24} />
 		</View>
 	);
 };
@@ -98,7 +103,9 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
 					const id = url.split('/')[4];
 					type === 'anime' ||
 						(type === 'manga' &&
-							router.push(`/${type?.toLowerCase()}/${parseInt(id)}`));
+							router.push(
+								`/${type?.toLowerCase() as 'anime' | 'manga'}/${parseInt(id)}`,
+							));
 				} else {
 					openWebBrowser(url);
 				}
