@@ -7,7 +7,7 @@ import { AnilistIcon } from '@/components/svgs';
 import { MaterialSwitchListItem } from '@/components/switch';
 import dummyData from '@/constants/dummyData';
 import { useAuthStore } from '@/store/authStore';
-import { ListStatusMode, useCardVisualStore } from '@/store/cardVisualStore';
+import { useCardVisualStore } from '@/store/cardVisualStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisualTypeEnum } from '@/store/settings/types';
 import { availableThemes, ThemeOptions, themeOptions, useAppTheme } from '@/store/theme/themes';
@@ -329,7 +329,7 @@ const AnilistSetup = () => {
 const CardSetup = () => {
 	const setSettings = useSettingsStore(useShallow((state) => state.setSettings));
 	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
-	const { listStatusMode, scoreVisualType, setCardVisual } = useCardVisualStore(
+	const { scoreVisualType, setCardVisual } = useCardVisualStore(
 		useShallow((state) => ({
 			listStatusMode: state.listStatusMode,
 			scoreVisualType: state.scoreVisualType,
@@ -702,9 +702,10 @@ const OutroPage = () => {
 					}}
 				>
 					{'\n'}- 3D effects
+					{'\n'}- Service toggles
 					{'\n'}- Text-to-speech
 					{'\n'}- Score color customization
-					{'\n'}- and much more
+					{'\n'}- and more
 				</Text>
 			</View>
 		</Body>
