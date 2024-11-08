@@ -7,11 +7,16 @@ import { startActivityAsync } from 'expo-intent-launcher';
 
 export const launchAPK = async (destination: string) => {
 	const localUri = await FileSystem.getContentUriAsync(destination);
-	await startActivityAsync('android.intent.action.INSTALL_PACKAGE', {
-		// data: destination.replace('///', '//'),
-		data: localUri,
-		flags: 1,
-	});
+	try {
+		// 'android.intent.action.INSTALL_PACKAGE'
+		startActivityAsync('android.intent.action.INSTALL_PACKAGE', {
+			// data: destination.replace('///', '//'),
+			data: localUri,
+			flags: 1,
+		});
+	} catch (e) {
+		console.log(e);
+	}
 };
 
 export const downloadAppUpdate = async (
@@ -47,6 +52,7 @@ export const downloadAppUpdate = async (
 			completeHandler(jobId);
 		})
 		.error(({ error, errorCode }) => {
+			console.log(`Error ${errorCode}:`, error);
 			onIsDownloading(false);
 		});
 };
@@ -75,7 +81,7 @@ export const removeUpdateAPKs = async () => {
 	const dir = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory as string);
 	for (const file of dir) {
 		if (file.includes('goraku') && file.includes('.apk')) {
-			console.log('Found!:', `${FileSystem.documentDirectory as string}/${file}`);
+			// console.log('Found!:', `${FileSystem.documentDirectory as string}/${file}`);
 			await FileSystem.deleteAsync(`${FileSystem.documentDirectory as string}/${file}`);
 		}
 	}

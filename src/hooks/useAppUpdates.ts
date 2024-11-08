@@ -13,7 +13,7 @@ const useAppUpdates = () => {
 		const { data } = await axios.get<GithubReleaseResponse>(REPO_URL + '/releases');
 		const newestVersion = data[0]?.tag_name ?? null;
 
-		if (newestVersion) {
+		if (newestVersion && newestVersion !== Constants?.expoConfig?.version) {
 			setUpdateDetails(data[0]);
 			SheetManager.show('AppUpdaterSheet', { payload: { updateDetails: data[0] } });
 			return true;
