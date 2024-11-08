@@ -15,6 +15,8 @@ import { SheetManager } from 'react-native-actions-sheet';
 import { selectImage } from '@/utils/images';
 import { ImagePickerAsset } from 'expo-image-picker';
 import { useShallow } from 'zustand/react/shallow';
+import { useAuthStore } from '@/store/authStore';
+import { router } from 'expo-router';
 
 // export const PresetDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 // 	return (
@@ -74,6 +76,7 @@ type ImageSearchDialogProps = BasicDialogProps;
 export const ImageSearchDialog = ({ visible, onDismiss }: ImageSearchDialogProps) => {
 	const searchType = useSearchStore(useShallow((state) => state.searchType));
 	const [imageUrl, setImageUrl] = useState('');
+	const isSauceNaoAuth = useAuthStore((state) => !!state.sauceNao.api_key);
 
 	const onUrlSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
 		switch (searchType) {
@@ -154,38 +157,44 @@ export const ImageSearchDialog = ({ visible, onDismiss }: ImageSearchDialogProps
 				{searchType} Image Search
 			</Dialog.Title>
 			<Dialog.Content>
-				<View>
-					<Searchbar
-						value={imageUrl}
-						mode="bar"
-						elevation={1}
-						onChangeText={(txt) => setImageUrl(txt)}
-						onSubmitEditing={onUrlSubmit}
-					/>
-					<Text style={{ textAlign: 'center', paddingVertical: 12 }}>- Or -</Text>
-					<View
-						style={{
-							alignItems: 'center',
-							justifyContent: 'space-evenly',
-							flexDirection: 'row',
-						}}
-					>
-						<Pressable
-							onPress={() => onImageSelect(true)}
-							style={{ alignItems: 'center', justifyContent: 'center' }}
-						>
-							<IconButton icon="camera" />
-							<Text style={{ textAlign: 'center' }}>Take a photo</Text>
-						</Pressable>
-						<Pressable
-							onPress={() => onImageSelect()}
-							style={{ alignItems: 'center', justifyContent: 'center' }}
-						>
-							<IconButton icon="image-outline" />
-							<Text style={{ textAlign: 'center' }}>Upload Image</Text>
-						</Pressable>
+				{searchType === MediaType.Manga && !isSauceNaoAuth ? (
+					<View>
+						<Text>This feature requires a SauceNao account.</Text>
 					</View>
-				</View>
+				) : (
+					<View>
+						<Searchbar
+							value={imageUrl}
+							mode="bar"
+							elevation={1}
+							onChangeText={(txt) => setImageUrl(txt)}
+							onSubmitEditing={onUrlSubmit}
+						/>
+						<Text style={{ textAlign: 'center', paddingVertical: 12 }}>- Or -</Text>
+						<View
+							style={{
+								alignItems: 'center',
+								justifyContent: 'space-evenly',
+								flexDirection: 'row',
+							}}
+						>
+							<Pressable
+								onPress={() => onImageSelect(true)}
+								style={{ alignItems: 'center', justifyContent: 'center' }}
+							>
+								<IconButton icon="camera" />
+								<Text style={{ textAlign: 'center' }}>Take a photo</Text>
+							</Pressable>
+							<Pressable
+								onPress={() => onImageSelect()}
+								style={{ alignItems: 'center', justifyContent: 'center' }}
+							>
+								<IconButton icon="image-outline" />
+								<Text style={{ textAlign: 'center' }}>Upload Image</Text>
+							</Pressable>
+						</View>
+					</View>
+				)}
 				{/* <Dialog.ScrollArea>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                         {tagPresets.map((preset, idx) => (
@@ -198,6 +207,16 @@ export const ImageSearchDialog = ({ visible, onDismiss }: ImageSearchDialogProps
 			</Dialog.Content>
 			<Dialog.Actions>
 				<Button onPress={onDismiss}>Cancel</Button>
+				{searchType === MediaType.Manga && !isSauceNaoAuth && (
+					<Button
+						onPress={() => {
+							onDismiss();
+							router.navigate('/(tabs)/more/accounts');
+						}}
+					>
+						Login
+					</Button>
+				)}
 				{/* <Button onPress={onDismiss}>Search</Button> */}
 			</Dialog.Actions>
 		</Dialog>
