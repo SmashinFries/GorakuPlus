@@ -53,8 +53,8 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
 	}
 });
 
-TaskManager.defineTask(ANILIST_NOTIF_BF_ID, () => {
-	fetchAnilistNotifications();
+TaskManager.defineTask(ANILIST_NOTIF_BF_ID, async () => {
+	await fetchAnilistNotifications();
 });
 
 SplashScreen.preventAutoHideAsync();
