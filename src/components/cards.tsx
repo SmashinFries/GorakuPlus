@@ -78,6 +78,7 @@ export const MediaCard = ({
 	const onNav = () => {
 		router.navigate(`/${props.type === MediaType.Anime ? 'anime' : 'manga'}/${props.id}`);
 		SheetManager.hideAll();
+		SheetManager.hide('QuickActionAniTrendzSheet');
 	};
 
 	return (
@@ -259,6 +260,7 @@ export const MediaCardRow = ({
 
 	const onNav = () => {
 		SheetManager.hideAll();
+		SheetManager.hide('QuickActionAniTrendzSheet');
 		router.push(`/${props.type === MediaType.Anime ? 'anime' : 'manga'}/${props.id}`);
 	};
 	return (
@@ -553,6 +555,7 @@ export const CharacterCard = ({
 	const { mediaLanguage } = useSettingsStore();
 	const onNav = () => {
 		SheetManager.hideAll();
+		SheetManager.hide('QuickActionAniTrendzSheet');
 		router.navigate(props.isStaff ? `/staff/${props.id}` : `/character/${props.id}`);
 	};
 

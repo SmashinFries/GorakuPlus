@@ -854,15 +854,13 @@ export type QuickActionAniTrendzProps = {
 export const QuickActionAniTrendzSheet = ({
 	payload: { names, anime, link, onAnimeSearch, onCharacterSearch },
 }: SheetProps<'QuickActionAniTrendzSheet'>) => {
-	const ref = useSheetRef();
+	const ref = useSheetRef('QuickActionAniTrendzSheet');
 
 	const searchCharacter = (name: string) => {
-		ref.current?.hide();
 		onCharacterSearch(name);
 	};
 
 	const searchAnime = () => {
-		ref.current?.hide();
 		onAnimeSearch(anime);
 	};
 
@@ -990,7 +988,7 @@ export type MediaSearchProps = {
 export const MediaSearchSheet = ({
 	payload: { search, type, isbn, onRescan },
 }: SheetProps<'MediaSearchSheet'>) => {
-	const ref = useSheetRef();
+	const ref = useSheetRef('MediaSearchSheet');
 	const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteMediaSearchQuery(
 		{ search: search, type: type, sort: MediaSort.SearchMatch, page: 1 },
 		{
