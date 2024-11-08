@@ -12,20 +12,29 @@ export type AppUpdaterSheetProps = {
 };
 // eslint-disable-next-line react/display-name
 export const AppUpdaterSheet = ({ payload: { updateDetails } }: SheetProps<'AppUpdaterSheet'>) => {
-	const ref = useSheetRef();
+	const ref = useSheetRef('AppUpdaterSheet');
 	const { colors } = useAppTheme();
 	const [isDownloading, setIsDownloading] = useState(false);
 	const [progress, setProgress] = useState(0);
+
+	const onIsDownloading = (isDownloadActive: boolean) => {
+		setIsDownloading(isDownloadActive);
+		if (!isDownloadActive) {
+			ref.current?.hide();
+		}
+	};
+
+	const onProgress = (progPerc: number) => {
+		setProgress(progPerc);
+	};
 
 	const installUpdate = async () => {
 		if (updateDetails?.assets[0]) {
 			downloadAppUpdate(
 				updateDetails?.assets[0].browser_download_url,
 				updateDetails.tag_name,
-				(progPerc) => {
-					setProgress(progPerc);
-				},
-				(isDownloadActive) => setIsDownloading(isDownloadActive),
+				onProgress,
+				onIsDownloading,
 			);
 		}
 	};
@@ -78,7 +87,12 @@ export const AppUpdaterSheet = ({ payload: { updateDetails } }: SheetProps<'AppU
 					<View>
 						<ProgressBar progress={progress} />
 					</View>
-					<Button mode="contained" style={{ margin: 5 }} onPress={installUpdate}>
+					<Button
+						loading={isDownloading}
+						mode="contained"
+						style={{ margin: 5 }}
+						onPress={installUpdate}
+					>
 						Update
 					</Button>
 					<Button
