@@ -17,7 +17,6 @@ import { Image } from 'expo-image';
 import { openWebBrowser } from '@/utils/webBrowser';
 import useAppUpdates from '@/hooks/useAppUpdates';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { SheetManager } from 'react-native-actions-sheet';
 
 const OtherAppItem = ({
 	title,
