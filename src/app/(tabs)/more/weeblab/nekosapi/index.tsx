@@ -1,4 +1,4 @@
-import { ImageSchema, NekosapiImagesApiRandomImagesParams } from '@/api/nekosapi/models';
+import { ImageSchema } from '@/api/nekosapi/models';
 import {
 	useNekosapiImagesApiRandomImages,
 	useNekosapiImagesApiTags,
@@ -11,7 +11,7 @@ import { useAppTheme } from '@/store/theme/themes';
 import { MasonryFlashList, MasonryListRenderItemInfo } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { router, Stack } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { Chip, List, Searchbar, Surface, Text } from 'react-native-paper';
 import Animated from 'react-native-reanimated';

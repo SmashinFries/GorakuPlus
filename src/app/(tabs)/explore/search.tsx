@@ -13,11 +13,11 @@ import {
 	UserSearchList,
 } from '@/components/search/lists';
 import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
-import { SearchType, useSearchStore } from '@/store/search/searchStore';
+import { useSearchStore } from '@/store/search/searchStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { Stack } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
-import { Keyboard, ScrollView, TextInput, useWindowDimensions } from 'react-native';
+import { Keyboard, ScrollView, TextInput } from 'react-native';
 import { View } from 'react-native';
 import { ActionSheetRef } from 'react-native-actions-sheet';
 import { IconButton, List, Portal } from 'react-native-paper';
