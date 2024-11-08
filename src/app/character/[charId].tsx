@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { Button, IconButton, List, Portal, Text } from 'react-native-paper';
+import { Button, List, Portal, Text } from 'react-native-paper';
 import { FadeHeaderProvider } from '@/components/headers';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
 import { useCallback, useEffect, useReducer, useState } from 'react';
