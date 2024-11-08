@@ -2,6 +2,7 @@ import {
 	useInfiniteAniListCommentsQuery,
 	useThreadDetailQuery,
 } from '@/api/anilist/__genereated__/gql';
+import { AnimViewMem } from '@/components/animations';
 import PaperHeader from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
@@ -9,7 +10,6 @@ import { FlashList } from '@shopify/flash-list';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
-import Animated, { FadeIn } from 'react-native-reanimated';
 
 const ThreadPage = () => {
 	const { threadId } = useLocalSearchParams<{ threadId: string }>();
@@ -44,28 +44,26 @@ const ThreadPage = () => {
 					header: (props) => <PaperHeader {...props} />,
 				}}
 			/>
-			{threadDetailQuery.isFetching ||
-				(threadCommentsQuery.isFetching && (
-					<Animated.View
-						style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-					>
-						<GorakuActivityIndicator />
-					</Animated.View>
-				))}
-			{threadDetailQuery.isFetched && threadCommentsQuery.isFetched && (
-				<Animated.View entering={FadeIn} style={{ width: '100%', height: '100%' }}>
+			{(threadDetailQuery.isFetching || threadCommentsQuery.isFetching) && (
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<GorakuActivityIndicator />
+				</View>
+			)}
+			{!threadDetailQuery.isFetching && !threadCommentsQuery.isFetching && (
+				<AnimViewMem style={{ width: '100%', height: '100%' }}>
 					<FlashList
 						data={flatCommentsData}
 						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item }) => (
 							<ThreadItem
-								id={item?.id}
+								threadId={item?.threadId}
+								commentId={item?.id}
 								body={item?.htmlComment}
 								createdAt={item?.createdAt}
 								likeCount={item?.likeCount}
 								user={item?.user}
 								isReply={true}
-								replyCount={item?.childComments?.length}
+								replies={item?.childComments}
 							/>
 						)}
 						contentContainerStyle={{ paddingVertical: 12 }}
@@ -86,7 +84,7 @@ const ThreadPage = () => {
 									{threadDetailQuery?.data?.Thread?.title}
 								</Text>
 								<ThreadItem
-									id={threadDetailQuery?.data?.Thread?.id}
+									threadId={threadDetailQuery?.data?.Thread?.id}
 									body={threadDetailQuery?.data?.Thread?.htmlBody}
 									createdAt={threadDetailQuery?.data?.Thread?.createdAt}
 									likeCount={threadDetailQuery?.data?.Thread?.likeCount}
@@ -115,7 +113,7 @@ const ThreadPage = () => {
 							}
 							user={threadCommentsQuery?.data?.Page?.threadComments[0]?.user}
 						/> */}
-				</Animated.View>
+				</AnimViewMem>
 			)}
 		</View>
 	);

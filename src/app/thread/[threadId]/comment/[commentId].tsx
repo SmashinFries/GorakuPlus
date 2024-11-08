@@ -8,12 +8,28 @@ import { View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
+const findComment = (childComments: ThreadComment[], commentId: number) => {
+	let result: ThreadComment = null;
+	childComments?.some(
+		(child) =>
+			(child.id === commentId && (result = child)) ||
+			(result = findComment(child.childComments || [], commentId)),
+	);
+	return result;
+};
+
 const ThreadCommentPage = () => {
-	const { commentId } = useLocalSearchParams<{ commentId: string }>();
+	const { commentId } = useLocalSearchParams<{
+		commentId: string;
+	}>();
 	const { data, isFetching, isFetched } = useAniListCommentDetailsQuery(
 		{ id: parseInt(commentId) },
 		{ enabled: !!commentId },
 	);
+
+	const commentData = data?.ThreadComment
+		? findComment(data?.ThreadComment, parseInt(commentId))
+		: null;
 
 	return (
 		<View style={{ width: '100%', height: '100%' }}>
@@ -32,18 +48,19 @@ const ThreadCommentPage = () => {
 			{isFetched && (
 				<Animated.View entering={FadeIn} style={{ width: '100%', height: '100%' }}>
 					<FlashList
-						data={data?.ThreadComment[0]?.childComments as ThreadComment[]}
+						data={commentData?.childComments as ThreadComment[]}
 						keyExtractor={(_, idx) => idx.toString()}
 						renderItem={({ item }) => (
 							<ThreadItem
-								id={item?.id}
+								threadId={item?.threadId}
+								commentId={item?.id}
 								body={item?.comment}
 								createdAt={item?.createdAt}
 								likeCount={item?.likeCount}
 								user={item?.user}
 								isReply={true}
 								isMain={false}
-								replyCount={item?.childComments?.length ?? 0}
+								replies={item?.childComments}
 							/>
 						)}
 						contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 12 }}
@@ -51,22 +68,20 @@ const ThreadCommentPage = () => {
 						ListHeaderComponent={() => (
 							<View style={{ marginBottom: 12 }}>
 								<ThreadItem
-									id={data?.ThreadComment[0]?.id}
-									body={data?.ThreadComment[0]?.comment}
-									createdAt={data?.ThreadComment[0]?.createdAt}
-									likeCount={data?.ThreadComment[0]?.likeCount}
-									user={data?.ThreadComment[0]?.user}
-									isLiked={data?.ThreadComment[0]?.isLiked}
+									threadId={commentData?.id}
+									body={commentData?.comment}
+									createdAt={commentData?.createdAt}
+									likeCount={commentData?.likeCount}
+									user={commentData?.user}
+									isLiked={commentData?.isLiked}
 									isReply={true}
-									replyCount={data?.ThreadComment[0]?.childComments?.length}
+									replies={commentData?.childComments}
 									isMain
 								/>
 								<Divider style={{ marginVertical: 10 }} />
 								<Text variant="titleLarge">
-									{data?.ThreadComment[0]?.childComments?.length}{' '}
-									{data?.ThreadComment[0]?.childComments?.length > 1
-										? `Replies`
-										: `Reply`}
+									{commentData?.childComments?.length}{' '}
+									{commentData?.childComments?.length > 1 ? `Replies` : `Reply`}
 								</Text>
 							</View>
 						)}

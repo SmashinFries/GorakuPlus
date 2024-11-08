@@ -1,4 +1,3 @@
-import PaperHeader, { StudioHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 
@@ -11,8 +10,8 @@ const ThreadLayout = () => {
 			}}
 		>
 			<Stack.Screen name="overview/[threadParam]" options={{ title: 'Threads' }} />
-			<Stack.Screen name="[threadId]" />
-			<Stack.Screen name="comment/[commentId]" />
+			<Stack.Screen name="[threadId]/index" />
+			<Stack.Screen name="[threadId]/comment/[commentId]" />
 		</AnimatedStack>
 	);
 };
