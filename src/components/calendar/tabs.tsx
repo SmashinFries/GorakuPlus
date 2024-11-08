@@ -1,28 +1,18 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import { router } from 'expo-router';
-import { MediaCard, MediaCardRow, MediaProgressBar } from '../cards';
+import { MediaCard, MediaCardRow } from '../cards';
 // import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import Animated, {
-	useAnimatedStyle,
 	useSharedValue,
 	withRepeat,
 	withSequence,
 	withTiming,
 } from 'react-native-reanimated';
-import { ProgressBar, Text } from 'react-native-paper';
-import { useWindowDimensions } from 'react-native';
-import {
-	AnimeMetaFragment,
-	MangaMetaFragment,
-	MediaList,
-	MediaType,
-	WeeklyAnimeQuery,
-} from '@/api/anilist/__genereated__/gql';
+import { Text } from 'react-native-paper';
+import { WeeklyAnimeQuery } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useDisplayStore } from '@/store/displayStore';
-import { SheetManager } from 'react-native-actions-sheet';
 import { useColumns } from '@/hooks/useColumns';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -80,7 +70,7 @@ export const DayTab = ({ data }: DayTabProps) => {
 				>
 					<MediaCard
 						{...item.media}
-						nextAiringEpisode={{ ...item, mediaId: item.media?.id }}
+						nextAiringEpisode={{ ...item.media?.nextAiringEpisode }}
 						fitToParent
 					/>
 					{/* <MediaProgressBar
