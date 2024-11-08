@@ -80,15 +80,6 @@ const CharacterScreen = () => {
 					>
 						{item.node?.status.replaceAll('_', ' ')}
 					</Text>
-					{item.node?.isFavourite && (
-						<IconButton
-							icon="heart"
-							iconColor="red"
-							mode="contained"
-							size={18}
-							style={{ position: 'absolute', top: -15, left: -5 }}
-						/>
-					)}
 				</View>
 			);
 		},
