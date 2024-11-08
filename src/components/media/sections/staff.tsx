@@ -1,11 +1,9 @@
 import { FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
 import { View } from 'react-native';
-import { router } from 'expo-router';
 import { ListHeading } from '@/components/text';
 import { StaffCard } from '@/components/cards';
 import { AniMediaQuery } from '@/api/anilist/__genereated__/gql';
-import { SheetManager } from 'react-native-actions-sheet';
 
 type StaffPrevListProps = {
 	data: AniMediaQuery['Media']['staff'];
@@ -15,7 +13,7 @@ export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
 	const keyExtractor = useCallback((item, index) => index.toString(), []);
 	const renderItem = useCallback(
 		({ item }: { item: AniMediaQuery['Media']['staff']['edges'][0] }) => (
-			<StaffCard {...item.node} role={item.role} />
+			<StaffCard {...item.node} role={item.role} isStaff />
 		),
 		[],
 	);
