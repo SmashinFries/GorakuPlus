@@ -1,15 +1,14 @@
-import { Pressable, View, useWindowDimensions } from 'react-native';
-import { useTheme, Text, ActivityIndicator } from 'react-native-paper';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { TagSection } from '@/components/art/danTag';
-import { FadeHeaderProvider } from '@/components/headers';
+import { ArtHeaderProvider } from '@/components/headers';
 import { Accordion } from '@/components/animations';
 import { ArtistBar } from '@/components/art/artist';
 import { InteractionBar } from '@/components/art/interactions';
 import { StatisticsBar } from '@/components/art/stats';
 import { FileDetails } from '@/components/art/fileDetails';
 import { Commentary } from '@/components/art/commentary';
-import { PostImage } from '@/components/art/image';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GorakuActivityIndicator } from '@/components/loading';
@@ -20,12 +19,10 @@ const DanbooruPostPage = () => {
 	const { postId } = useLocalSearchParams<{ postId: string }>();
 	const id = parseInt(postId);
 	const { colors } = useAppTheme();
-	const { width, height } = useWindowDimensions();
-	const { data, isLoading, isFetching } = usePostQuery(id);
+	const { data, isLoading } = usePostQuery(id);
 	const commentary = useArtistCommentaryQuery({ 'search[post_id]': id });
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
 	const [titleHeight, setTitleHeight] = useState<number>(0);
-	const [imageHeight, setImageHeight] = useState<number>(0);
 
 	const { bottom } = useSafeAreaInsets();
 
@@ -60,27 +57,12 @@ const DanbooruPostPage = () => {
 	return (
 		<View>
 			{/* <PostImage aspectRatio={aspectRatio} img_url={data?.file_url} blurAmount={blurAmount} /> */}
-			<FadeHeaderProvider
-				animationRange={[width / aspectRatio, width / aspectRatio + titleHeight]}
+			<ArtHeaderProvider
+				aspectRatio={aspectRatio}
+				imageUrl={data?.file_url}
+				titleHeight={titleHeight}
 				title={data?.tag_string_character?.split(' ')[0].replaceAll('_', ' ')}
-				BgImage={({ style }) => (
-					<PostImage
-						aspectRatio={aspectRatio}
-						style={style}
-						img_url={data?.file_url}
-						blurAmount={0}
-						setImageHeight={(ht) => setImageHeight(ht)}
-					/>
-				)}
 			>
-				<Pressable
-					// onPress={toggleBlur}
-					style={{
-						// height: aspectRatio ? width / aspectRatio : 0,
-						height: imageHeight + 20,
-						width: width,
-					}}
-				/>
 				<View
 					style={{
 						paddingBottom: bottom,
@@ -151,7 +133,7 @@ const DanbooruPostPage = () => {
 						<TagSection title="Meta" tags={data?.tag_string_meta} color="orange" />
 					</Accordion>
 				</View>
-			</FadeHeaderProvider>
+			</ArtHeaderProvider>
 		</View>
 	);
 };

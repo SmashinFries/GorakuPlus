@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import {
 	Appbar,
 	AppbarProps,
@@ -21,6 +21,7 @@ import {
 	View,
 	TextInput,
 	useWindowDimensions,
+	Pressable,
 } from 'react-native';
 import { Image, ImageProps } from 'expo-image';
 import Animated, {
@@ -50,6 +51,7 @@ import { useFavoritesFilterStore } from '@/store/favoritesStore';
 import { useSearchStore } from '@/store/search/searchStore';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useShallow } from 'zustand/react/shallow';
+import { PostImage } from './art/image';
 
 const PaperHeader = ({
 	navigation,
@@ -756,6 +758,48 @@ export const FadeHeaderProvider = ({
 				{children}
 			</Animated.ScrollView>
 		</View>
+	);
+};
+
+export const ArtHeaderProvider = ({
+	aspectRatio,
+	title,
+	imageUrl,
+	titleHeight = 0,
+	children,
+}: {
+	title?: string;
+	imageUrl: string;
+	aspectRatio: number;
+	titleHeight?: number;
+	children: ReactNode;
+}) => {
+	const { width } = useWindowDimensions();
+	const [imageHeight, setImageHeight] = useState<number>(0);
+	return (
+		<FadeHeaderProvider
+			animationRange={[width / aspectRatio, width / aspectRatio + titleHeight]}
+			title={title}
+			BgImage={({ style }) => (
+				<PostImage
+					aspectRatio={aspectRatio}
+					style={style}
+					img_url={imageUrl}
+					blurAmount={0}
+					setImageHeight={(ht) => setImageHeight(ht)}
+				/>
+			)}
+		>
+			<Pressable
+				// onPress={toggleBlur}
+				style={{
+					// height: aspectRatio ? width / aspectRatio : 0,
+					height: imageHeight + 20,
+					width: width,
+				}}
+			/>
+			{children}
+		</FadeHeaderProvider>
 	);
 };
 
