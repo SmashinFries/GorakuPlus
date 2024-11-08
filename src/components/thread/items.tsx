@@ -57,6 +57,9 @@ export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => 
 						padding: 4,
 					}}
 					onPress={onUserPress}
+					onLongPress={() =>
+						SheetManager.show('QuickActionUserSheet', { payload: { ...user } })
+					}
 					android_ripple={{
 						color: colors.primary,
 						foreground: true,
@@ -75,27 +78,31 @@ export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => 
 };
 
 export const ThreadItemFooter = ({
-	id,
+	threadId,
+	commentId,
 	categories,
 	viewCount,
 	likeCount,
 	isLiked,
 	isSubscribed,
 	isReply,
-	replyCount,
+	replies,
 	isMain,
 	isViewerActivity,
+	onScreenshot,
 }: {
-	id: number;
+	threadId: number;
+	commentId: number;
 	categories?: ThreadCategory[];
 	viewCount?: number;
 	likeCount?: number;
 	isSubscribed?: boolean;
 	isLiked?: boolean;
 	isReply: boolean;
-	replyCount?: number;
+	replies?: ThreadComment[];
 	isMain?: boolean;
 	isViewerActivity?: boolean;
+	onScreenshot: () => Promise<void>;
 }) => {
 	const { colors } = useAppTheme();
 	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
@@ -107,10 +114,13 @@ export const ThreadItemFooter = ({
 		likeCount,
 	});
 	const [isSubscribedMutated, setIsSubscribedMutated] = useState(isSubscribed);
+	// const [isMoreMenuVis, setIsMoreMenuVis] = useState(false);
+
+	const replyCount = replies?.length ?? null;
 
 	const onSubscribePress = () => {
 		toggleSubscribeMutation?.mutate(
-			{ subscribe: !isSubscribedMutated, threadId: id },
+			{ subscribe: !isSubscribedMutated, threadId },
 			{
 				onSuccess(data) {
 					setIsSubscribedMutated(data?.ToggleThreadSubscription?.isSubscribed);
@@ -122,7 +132,7 @@ export const ThreadItemFooter = ({
 	const onLikePress = () => {
 		toggleLikeMutation?.mutate(
 			{
-				id: id,
+				id: isReply ? commentId : threadId,
 				type: isReply ? LikeableType.ThreadComment : LikeableType.Thread,
 			},
 			{
@@ -138,7 +148,7 @@ export const ThreadItemFooter = ({
 
 	const onActivityDelete = async () => {
 		try {
-			await deleteActivity({ id: id });
+			await deleteActivity({ id: threadId });
 			sendToast('Activity Deleted!');
 		} catch {
 			sendErrorMessage('Failed to delete');
@@ -176,7 +186,7 @@ export const ThreadItemFooter = ({
 				) : replyCount && !isMain ? (
 					<View style={{ justifyContent: 'center' }}>
 						<Button
-							onPress={() => router.navigate(`/thread/comment/${id}`)}
+							onPress={() => router.push(`/thread/${threadId}/comment/${commentId}`)}
 						>{`${replyCount} ${replyCount > 1 ? 'replies' : 'reply'}`}</Button>
 						{/* <Text>{`${replyCount} ${replyCount > 1 ? 'replies' : 'reply'}`}</Text> */}
 					</View>
@@ -207,6 +217,14 @@ export const ThreadItemFooter = ({
 					)}
 					<View>
 						<IconButton
+							icon={'download-outline'}
+							onPress={onScreenshot}
+							rippleColor={'transparent'}
+							disabled={!onScreenshot}
+						/>
+					</View>
+					<View>
+						<IconButton
 							icon={isLikedMutated.isLiked ? 'heart' : 'heart-outline'}
 							onPress={onLikePress}
 							selected={isLikedMutated.isLiked}
@@ -232,6 +250,7 @@ export const ThreadItemFooter = ({
 							</View>
 						) : null}
 					</View>
+
 					{/* {!isReply && <IconButton icon={'comment-outline'} />} */}
 				</View>
 			</View>
@@ -252,9 +271,11 @@ export const ThreadItemBody = ({
 	isHtml = true,
 }: ThreadItemBodyProps) => {
 	const { colors } = useAppTheme();
+	const [parentWidth, setParentWidth] = useState(1);
 	return (
 		<Surface
 			mode="elevated"
+			onLayout={(e) => setParentWidth(e.nativeEvent.layout.width)}
 			style={{ backgroundColor: colors.elevation.level1, padding: 8, borderRadius: 8 }}
 		>
 			{coverImage ? (
@@ -270,14 +291,22 @@ export const ThreadItemBody = ({
 					</View>
 				</View>
 			) : (
-				<View>{isHtml ? <AniListMarkdownViewer body={body} /> : <Text>{body}</Text>}</View>
+				<View style={{ width: '100%' }}>
+					{isHtml ? (
+						// Needs to consider surface padding (padding of 8 = 8*2 for both sides)
+						<AniListMarkdownViewer body={body} parentWidth={parentWidth - 16} />
+					) : (
+						<Text>{body}</Text>
+					)}
+				</View>
 			)}
 		</Surface>
 	);
 };
 
 export const ThreadItem = ({
-	id,
+	threadId,
+	commentId,
 	user,
 	body,
 	likeCount,
@@ -287,14 +316,15 @@ export const ThreadItem = ({
 	isLiked,
 	isSubscribed,
 	isReply,
-	replyCount,
+	replies,
 	isMain,
 	coverImage,
 	onImagePress,
 	isHtml = true,
 	isViewerActivity = false,
 }: {
-	id: number;
+	threadId: number;
+	commentId?: number;
 	body: string;
 	isHtml?: boolean;
 	categories?: ThreadCategory[];
@@ -305,20 +335,21 @@ export const ThreadItem = ({
 	isSubscribed?: boolean;
 	isLiked?: boolean;
 	isReply: boolean;
-	replyCount?: number;
+	replies?: ThreadComment[];
 	isMain?: boolean;
 	coverImage?: string;
 	isViewerActivity?: boolean;
 	onImagePress?: () => void;
 }) => {
-	const { viewshotRef } = useScreenshot();
+	const { viewshotRef, onScreenshot } = useScreenshot();
 	const { colors } = useAppTheme();
 
+	// TODO: Hide footer when capturing
 	return (
 		<ViewShot
 			ref={viewshotRef}
 			style={{ backgroundColor: colors.background, paddingHorizontal: 12 }}
-			options={{ fileName: `${user?.name}-${id}`, quality: 1 }}
+			options={{ fileName: `${user?.name}-${commentId ?? threadId}`, quality: 1 }}
 		>
 			<ThreadItemHeader user={user} createdAt={createdAt} />
 			<ThreadItemBody
@@ -328,18 +359,41 @@ export const ThreadItem = ({
 				onImagePress={onImagePress}
 			/>
 			<ThreadItemFooter
-				id={id}
+				threadId={threadId}
+				commentId={commentId}
 				categories={categories}
 				likeCount={likeCount}
 				viewCount={viewCount}
 				isLiked={isLiked}
 				isSubscribed={isSubscribed}
 				isReply={isReply}
-				replyCount={replyCount}
+				replies={replies}
 				isViewerActivity={isViewerActivity}
 				isMain={isMain}
+				onScreenshot={onScreenshot}
 			/>
 			{isReply && <Divider style={{ width: '95%', alignSelf: 'center' }} />}
+			{/* Images dont have enough time to render when capturing :/ */}
+			{/* <ViewShot
+				ref={viewshotRef}
+				style={{
+					backgroundColor: colors.background,
+					paddingHorizontal: 12,
+					position: 'absolute',
+					right: -width - width / 2,
+					display: !isCapturing ? 'none' : undefined,
+				}}
+				options={{ fileName: `${user?.name}-${commentId ?? threadId}`, quality: 1 }}
+			>
+				<ThreadItemHeader user={user} createdAt={createdAt} />
+				<ThreadItemBody
+					body={body}
+					isHtml={isHtml}
+					coverImage={coverImage}
+					onImagePress={onImagePress}
+				/>
+				<View style={{ height: 12 }} />
+			</ViewShot> */}
 		</ViewShot>
 	);
 };
