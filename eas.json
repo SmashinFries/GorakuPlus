@@ -15,8 +15,9 @@
 			"developmentClient": true,
 			"distribution": "internal",
 			"env": {
-				"ANI_ID": "12490",
-				"APP_VARIANT": "development"
+				"ANI_ID": "TEST",
+				"APP_VARIANT": "development",
+				"AUTH_ENCRYPTION_KEY": "TEST"
 			}
 		},
 		"development-simulator": {
@@ -26,16 +27,18 @@
 				"simulator": true
 			},
 			"env": {
-				"ANI_ID": "12490",
-				"APP_VARIANT": "development"
+				"ANI_ID": "TEST",
+				"APP_VARIANT": "development",
+				"AUTH_ENCRYPTION_KEY": "TEST"
 			}
 		},
 		"preview": {
 			"distribution": "internal",
 			"env": {
-				"ANI_ID": "12490",
+				"ANI_ID": "TEST",
 				"APP_VARIANT": "preview",
-				"SENTRY_AUTH_TOKEN": "TestToken"
+				"SENTRY_AUTH_TOKEN": "TEST",
+				"AUTH_ENCRYPTION_KEY": "TEST"
 			},
 			"channel": "preview",
 			"android": {
@@ -45,8 +48,10 @@
 		"production": {
 			"channel": "production",
 			"env": {
-				"ANI_ID": "12490",
-				"APP_VARIANT": "store"
+				"ANI_ID": "TEST",
+				"APP_VARIANT": "store",
+				"AUTH_ENCRYPTION_KEY": "TEST",
+				"SENTRY_AUTH_TOKEN": "TEST" 
 			}
 		}
 	},
