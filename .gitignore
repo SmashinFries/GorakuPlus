@@ -10,6 +10,7 @@ npm-debug.*
 *.orig.*
 web-build/
 .vscode
+changelog.md
 
 # macOS
 .DS_Store
