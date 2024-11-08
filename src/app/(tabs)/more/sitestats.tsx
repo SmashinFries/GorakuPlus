@@ -1,24 +1,17 @@
-import { FlatList, ScrollView, View } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
-import { Button, List, Portal, Text } from 'react-native-paper';
-import { memo, useCallback, useEffect, useState } from 'react';
-import { Style } from 'react-native-paper/lib/typescript/components/List/utils';
-import { AnilistIcon } from '@/components/svgs';
-import { ListSubheader } from '@/components/titles';
+import { FlatList, View } from 'react-native';
+import { List, Text } from 'react-native-paper';
 import { useAppTheme } from '@/store/theme/themes';
-import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
-import { SiteStatistics, SiteTrend, useSiteStatsQuery } from '@/api/anilist/__genereated__/gql';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { SiteTrend, useSiteStatsQuery } from '@/api/anilist/__genereated__/gql';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { lineDataItem } from 'react-native-gifted-charts';
 import { getCompactNumberForm, getOrdinalString } from '@/utils';
 import { GorakuLineChart, GorakuLineChartLabel } from '@/components/statistics/line';
-import { FlashList } from '@shopify/flash-list';
-import { AnimViewMem } from '@/components/animations';
+import { Accordion, AnimViewMem } from '@/components/animations';
+import { GorakuRefreshControl } from '@/components/explore/lists';
 
 const StatChart = ({ data }: { data: SiteTrend[] }) => {
 	const { colors } = useAppTheme();
-	const chartData: lineDataItem[] = data?.toReversed()?.map((trend, idx) => ({
+	const chartData: lineDataItem[] = data?.toReversed()?.map((trend) => ({
 		value: trend.count,
 		dataPointText: `${trend.count.toLocaleString()}`,
 		label: `${getOrdinalString(new Date(trend.date * 1000).getDate())}`,
@@ -53,6 +46,7 @@ type StatSectionProps = {
 	data: SiteTrend[];
 };
 const StatSection = ({ title, data }: StatSectionProps) => {
+	if (!data) return null;
 	return (
 		<View style={{ marginVertical: 12 }}>
 			<List.Item
@@ -73,51 +67,36 @@ const StatSection = ({ title, data }: StatSectionProps) => {
 	);
 };
 
-const StatSectionMemo = memo(StatSection);
-
 // Cant figure out cause of scroll performance drop :/
+// Using accordions as a temp workaround
 const SiteStatsPage = () => {
-	const { data, isFetching } = useSiteStatsQuery({}, { refetchOnMount: true });
-	const renderItem = useCallback(
-		({ item }) =>
-			data?.SiteStatistics[item] && (
-				<StatSectionMemo data={data?.SiteStatistics[item]?.nodes} title={item} />
-			),
-		[],
-	);
-
+	const { data, isFetching, refetch, isRefetching } = useSiteStatsQuery({});
 	return (
-		<View style={{ height: '100%' }}>
+		<AnimViewMem style={{ height: '100%', width: '100%' }}>
 			{isFetching && (
-				<AnimViewMem
-					style={{ height: '100%', justifyContent: 'center', alignItems: 'center' }}
-					entering={FadeIn}
-					exiting={FadeOut}
-				>
+				<View style={{ height: '100%', justifyContent: 'center', alignItems: 'center' }}>
 					<GorakuActivityIndicator />
-				</AnimViewMem>
+				</View>
 			)}
-			{!isFetching && data && (
-				<AnimViewMem entering={FadeIn} style={{ height: '100%', width: '100%' }}>
-					<FlatList
-						data={
-							data.SiteStatistics && [
-								'users',
-								'anime',
-								'manga',
-								'characters',
-								'staff',
-								'reviews',
-							]
-						}
-						renderItem={renderItem}
-						removeClippedSubviews
-						// estimatedItemSize={237}
-						keyExtractor={(item, idx) => idx.toString()}
-					/>
-				</AnimViewMem>
-			)}
-		</View>
+			<FlatList
+				data={['users', 'anime', 'manga', 'characters', 'staff', 'reviews']}
+				renderItem={({ item, index }) => (
+					<Accordion
+						title={item}
+						titleStyle={{ textTransform: 'capitalize' }}
+						initialExpand={index === 0}
+					>
+						<StatSection data={data?.SiteStatistics[item]?.nodes} title={item} />
+					</Accordion>
+				)}
+				// removeClippedSubviews
+				// estimatedItemSize={237}
+				keyExtractor={(item, idx) => idx.toString()}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
+			/>
+		</AnimViewMem>
 	);
 };
 

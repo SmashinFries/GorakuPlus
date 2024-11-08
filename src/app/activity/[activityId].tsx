@@ -5,6 +5,7 @@ import {
 	TextActivityView,
 } from '@/components/activity/item';
 import { AnimView } from '@/components/animations';
+import { GorakuRefreshControl } from '@/components/explore/lists';
 import { FlashListAnim } from '@/components/list';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
@@ -52,6 +53,9 @@ const ActivityPage = () => {
 					estimatedItemSize={100}
 					refreshing={isRefetching}
 					onRefresh={refetch}
+					refreshControl={
+						<GorakuRefreshControl onRefresh={refetch} refreshing={isRefetching} />
+					}
 					renderItem={({ item }) => (
 						<AnimView>
 							<ThreadItem {...item} body={item.text} isReply />

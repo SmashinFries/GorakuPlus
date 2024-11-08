@@ -5,7 +5,6 @@ import {
 	UserMangaListCollectionQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
-import { useAppTheme } from '@/store/theme/themes';
 import { sortLists, sortListTabs } from '@/utils/sort';
 import { FlashList } from '@shopify/flash-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -17,6 +16,7 @@ import { TabView } from 'react-native-tab-view';
 import { GorakuTabBar } from '../tab';
 import { useShallow } from 'zustand/react/shallow';
 import { useColumns } from '@/hooks/useColumns';
+import { GorakuRefreshControl } from '../explore/lists';
 
 type ListParams = {
 	data:
@@ -28,10 +28,10 @@ type ListParams = {
 	type?: MediaType;
 };
 
-const ListScreen = ({ data, updateTitle, onRefresh }: ListParams) => {
+const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
 	const [entries, setEntries] = useState(data?.entries);
-	const { query, sort, updateListFilter } = useListFilterStore();
-	const { columns, itemWidth, displayMode } = useColumns('list');
+	const { query, sort } = useListFilterStore();
+	const { columns, displayMode } = useColumns('list');
 
 	const [scrollOffset, setScrollOffset] = useState(0);
 
@@ -142,6 +142,9 @@ const ListScreen = ({ data, updateTitle, onRefresh }: ListParams) => {
 				keyExtractor={(item, idx) => item?.media?.id.toString()}
 				estimatedItemSize={238}
 				numColumns={columns}
+				refreshControl={
+					<GorakuRefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
+				}
 				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				// terrible performance without
 				drawDistance={0}

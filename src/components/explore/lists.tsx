@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, View, useWindowDimensions } from 'react-native';
+import { RefreshControl, View, useWindowDimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { FlashList } from '@shopify/flash-list';
 import React, { memo } from 'react';
@@ -9,26 +9,25 @@ import {
 	MangaExploreQuery,
 	ScoreFormat,
 } from '@/api/anilist/__genereated__/gql';
+import { useAppTheme } from '@/store/theme/themes';
 
-type RefreshableScrollProps = {
-	children: React.ReactNode;
-	onRefresh: () => void;
+export const GorakuRefreshControl = ({
+	refreshing,
+	onRefresh,
+	...props
+}: {
 	refreshing: boolean;
-};
-export const RefreshableScroll = ({ children, refreshing, onRefresh }: RefreshableScrollProps) => {
+	onRefresh: () => void;
+}) => {
+	const { colors } = useAppTheme();
 	return (
-		<ScrollView
-			refreshControl={
-				<RefreshControl
-					colors={['#FFF']}
-					progressBackgroundColor={'#000'}
-					refreshing={refreshing}
-					onRefresh={onRefresh}
-				/>
-			}
-		>
-			{children}
-		</ScrollView>
+		<RefreshControl
+			colors={[colors?.primary]}
+			progressBackgroundColor={colors.elevation.level2}
+			refreshing={refreshing}
+			onRefresh={onRefresh}
+			{...props}
+		/>
 	);
 };
 

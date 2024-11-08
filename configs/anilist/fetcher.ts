@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/store/authStore';
 import { sendErrorMessage } from '@/utils/toast';
-import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
 const url = 'https://graphql.anilist.co';
 

@@ -1,4 +1,4 @@
-import { RefreshControl, useWindowDimensions, View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { ExpandableDescription, FullscreenBackground } from '../animations';
 import FavoritesOverview from './favoritesOverview';
 import { AddFriendDialog } from '@/components/user/dialogs';
@@ -24,6 +24,7 @@ import { GorakuActivityIndicator } from '../loading';
 import { ActivityOverview } from './activityItem';
 import { useShallow } from 'zustand/react/shallow';
 import { usePostsSearch } from '@/api/danbooru/danbooru';
+import { GorakuRefreshControl } from '../explore/lists';
 
 const UnauthedPage = () => {
 	const { width } = useWindowDimensions();
@@ -165,11 +166,11 @@ export const UserScreen = ({
 								: mutateAsync({ userId: userDataQuery?.data?.User?.id })
 						}
 						RefreshControl={
-							<RefreshControl
+							<GorakuRefreshControl
+								onRefresh={onRefresh}
 								refreshing={
 									userDataQuery.isRefetching || userOverviewQuery.isRefetching
 								}
-								onRefresh={onRefresh}
 							/>
 						}
 						onNotificationIcon={() => router.navigate(`/notifications`)}

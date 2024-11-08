@@ -15,7 +15,7 @@ import {
 import { ParticleBackground } from '@/components/animations';
 import BarcodeScanner from '@/components/barcodeScanner';
 import { NetworkError } from '@/components/error';
-import { RefreshableScroll, SectionScroll } from '@/components/explore/lists';
+import { GorakuRefreshControl, SectionScroll } from '@/components/explore/lists';
 import { ExploreHeader } from '@/components/headers';
 import { RenderTabBar } from '@/components/tab';
 import { useAuthStore } from '@/store/authStore';
@@ -27,7 +27,7 @@ import { getSeason } from '@/utils/explore/helpers';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
 import { Stack, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { BackHandler, View, useWindowDimensions } from 'react-native';
+import { BackHandler, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Portal } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
 import { useShallow } from 'zustand/react/shallow';
@@ -49,17 +49,9 @@ type ExploreSectionsProps = {
 		| ManhuaExploreQuery
 		| NovelExploreQuery;
 };
-const ExploreSections = ({
-	type,
-	data,
-	status,
-	isError,
-	isLoading,
-	onRefresh,
-}: ExploreSectionsProps) => {
+const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 	return (
 		<View style={{ paddingVertical: 10 }}>
-			{isError && <NetworkError status={status} onRefresh={onRefresh} />}
 			<View style={{ gap: 12 }}>
 				{type === MediaType.Manga && (
 					<SectionScroll
@@ -182,16 +174,28 @@ const ExploreTab = ({ type }: ExploreTabProps) => {
 
 	return (
 		<>
-			<RefreshableScroll onRefresh={onRefresh} refreshing={queries[queryIndex].isRefetching}>
-				<ExploreSections
-					type={type === 'anime' ? MediaType.Anime : MediaType.Manga}
-					data={queries[queryIndex].data}
-					onRefresh={onRefresh}
-					isError={queries[queryIndex].isError}
-					isLoading={queries[queryIndex]?.isLoading}
-					status={queries[queryIndex]?.status}
-				/>
-			</RefreshableScroll>
+			<ScrollView
+				refreshControl={
+					<GorakuRefreshControl
+						refreshing={queries[queryIndex].isRefetching}
+						onRefresh={onRefresh}
+					/>
+				}
+			>
+				{queries[queryIndex].isError && (
+					<NetworkError status={queries[queryIndex].status} onRefresh={onRefresh} />
+				)}
+				{!queries[queryIndex].isError && (
+					<ExploreSections
+						type={type === 'anime' ? MediaType.Anime : MediaType.Manga}
+						data={queries[queryIndex].data}
+						onRefresh={onRefresh}
+						isError={queries[queryIndex].isError}
+						isLoading={queries[queryIndex]?.isLoading}
+						status={queries[queryIndex]?.status}
+					/>
+				)}
+			</ScrollView>
 		</>
 	);
 };

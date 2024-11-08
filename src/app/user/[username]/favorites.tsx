@@ -9,6 +9,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { ScrollToTopButton } from '@/components/buttons';
 import { CharacterCard, MediaCard, MediaCardRow, StaffCard } from '@/components/cards';
+import { GorakuRefreshControl } from '@/components/explore/lists';
 import { FavoritesHeader } from '@/components/headers';
 import { EmptyLoadView } from '@/components/search/loading';
 import { useColumns } from '@/hooks/useColumns';
@@ -191,12 +192,17 @@ const MediaTab = ({
 					).fetchNextPage()
 				}
 				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
-				onRefresh={
-					(type === MediaType.Anime ? animeFavoriteQuery : mangaFavoriteQuery).refetch
-				}
-				refreshing={
-					(type === MediaType.Anime ? animeFavoriteQuery : mangaFavoriteQuery)
-						.isRefetching
+				refreshControl={
+					<GorakuRefreshControl
+						onRefresh={
+							(type === MediaType.Anime ? animeFavoriteQuery : mangaFavoriteQuery)
+								.refetch
+						}
+						refreshing={
+							(type === MediaType.Anime ? animeFavoriteQuery : mangaFavoriteQuery)
+								.isRefetching
+						}
+					/>
 				}
 			/>
 			{scrollOffset > 500 && (
@@ -298,8 +304,9 @@ const WaifuTab = ({
 					paddingLeft: mergedResults ? 110 / columns / 3 : undefined,
 				}}
 				onEndReached={() => hasNextPage && fetchNextPage()}
-				onRefresh={refetch}
-				refreshing={isRefetching}
+				refreshControl={
+					<GorakuRefreshControl onRefresh={refetch} refreshing={isRefetching} />
+				}
 			/>
 		</View>
 	);
@@ -395,8 +402,9 @@ const StaffTab = ({
 					paddingLeft: mergedResults ? 110 / columns / 3 : undefined,
 				}}
 				onEndReached={() => hasNextPage && fetchNextPage()}
-				onRefresh={refetch}
-				refreshing={isRefetching}
+				refreshControl={
+					<GorakuRefreshControl onRefresh={refetch} refreshing={isRefetching} />
+				}
 			/>
 		</View>
 	);

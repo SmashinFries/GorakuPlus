@@ -9,6 +9,7 @@ import {
 	TextActivityView,
 } from '@/components/activity/item';
 import { ScrollToTopButton } from '@/components/buttons';
+import { GorakuRefreshControl } from '@/components/explore/lists';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ConfirmActDelDialog } from '@/components/user/dialogs';
 import { useAuthStore } from '@/store/authStore';
@@ -93,8 +94,9 @@ const ActivityListPage = () => {
 				keyExtractor={(item, idx) => idx.toString()}
 				numColumns={1}
 				estimatedItemSize={278}
-				refreshing={isRefreshing}
-				onRefresh={onRefresh}
+				refreshControl={
+					<GorakuRefreshControl onRefresh={refetch} refreshing={isRefreshing} />
+				}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
