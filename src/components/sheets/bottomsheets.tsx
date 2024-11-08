@@ -435,7 +435,7 @@ export const QuickActionSheet = ({ payload }: SheetProps<'QuickActionSheet'>) =>
 							>
 								{titlesArray[titleIdx]}
 							</Text>
-							{payload.nextAiringEpisode ? (
+							{payload.nextAiringEpisode?.airingAt ? (
 								<Text style={{ color: colors.onSurfaceVariant }}>
 									<Icon size={undefined} source={'timer-outline'} />
 									{` EP ${payload.nextAiringEpisode.episode} - ${getTimeUntil(payload.nextAiringEpisode?.airingAt)}`}

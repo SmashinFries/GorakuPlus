@@ -224,7 +224,7 @@ export const MediaCard = ({
 								(mediaLanguage && props?.title[mediaLanguage]) ??
 								props?.title.romaji}
 						</Text>
-						{props.nextAiringEpisode ? (
+						{props.nextAiringEpisode?.airingAt ? (
 							<AiringBanner
 								containerColor={colors.primaryContainer}
 								textColor={colors.onPrimaryContainer}
@@ -235,7 +235,6 @@ export const MediaCard = ({
 					</View>
 				</Pressable>
 			</Surface>
-			{/* <ProgressBar style={{ width: '90%', alignSelf: 'center' }} progress={0.5} /> */}
 			{props.mediaListEntry && (props.tempListStatusMode ?? listStatusMode) === 'bar' && (
 				<MediaProgressBar
 					containerStyle={{ width: width }}
