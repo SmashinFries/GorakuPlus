@@ -11,7 +11,7 @@ const MorePage = () => {
 			<Divider />
 			<List.Item
 				title="Weeb Lab"
-				description="Test new features that may or may not make it in future builds!"
+				description="A collection of extra features!"
 				onPress={() => router.navigate('/more/weeblab')}
 				left={(props) => <List.Icon {...props} color={colors.primary} icon="flask" />}
 			/>
