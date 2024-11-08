@@ -9,6 +9,7 @@ import {
 	TextStyle,
 	ViewProps,
 	Image as RNImage,
+	DimensionValue,
 } from 'react-native';
 import { Icon, IconButton, Text, TextProps, TouchableRipple } from 'react-native-paper';
 import Animated, {
@@ -37,7 +38,6 @@ import gorakuBanner from '../../assets/iconsv3/banner.png';
 import gorakuIcon from '../../assets/iconsv3/adaptive-icon.png';
 import mascot from '../../assets/iconsv3/mascot.png';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { useShallow } from 'zustand/react/shallow';
 
 export const useHeaderAnim = (start = 40, end = 110) => {
 	const input_range = [start, end];
@@ -605,15 +605,17 @@ const particleOptions2 = {
 };
 
 type ParticleBackgroundProps = {
+	height?: DimensionValue;
 	backgroundColor?: string;
 	mascotOnly?: boolean;
 };
 export const ParticleBackground = ({
+	height = '100%',
 	backgroundColor = 'transparent',
 	mascotOnly = false,
 }: ParticleBackgroundProps) => {
 	const { width } = useWindowDimensions();
-	const isEnabled = useSettingsStore(useShallow((state) => state.allowBgParticles));
+	const { allowBgParticles: isEnabled } = useSettingsStore();
 
 	const options = { ...particleOptions2 };
 	const optionsMascot = {
@@ -691,14 +693,17 @@ export const ParticleBackground = ({
 	`;
 
 	return (
-		isEnabled && (
-			<View style={{ width, height: '100%', position: 'absolute' }}>
+		<View style={{ width, height: height, flex: 1, position: 'absolute' }}>
+			{isEnabled && (
 				<WebView
 					source={{ html: html2 }}
 					javaScriptEnabled
-					style={{ width: '100%', height: '100%', backgroundColor }}
+					allowFileAccessFromFileURLs
+					allowFileAccess
+					domStorageEnabled
+					style={{ width: width, height: height, backgroundColor }}
 				/>
-			</View>
-		)
+			)}
+		</View>
 	);
 };
