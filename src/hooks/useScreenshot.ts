@@ -15,7 +15,7 @@ export const useScreenshot = () => {
 		} catch {
 			sendToast('Failed to Save!', 'Failed to Save!');
 		}
-		FileSystem.deleteAsync(uri); // temp files will remove on app close but its better to remove instantly imo
+		FileSystem.deleteAsync(uri); // temp files should remove on app close but its better to remove instantly imo
 	};
 
 	return { viewshotRef, onScreenshot };
