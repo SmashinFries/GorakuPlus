@@ -111,7 +111,7 @@ export const ImageViewer = ({
 				exiting={FadeOut}
 				entering={FadeIn}
 			>
-				<GestureHandlerRootView
+				<View
 					collapsable={false}
 					style={{ position: 'absolute', height: '100%', width: '100%' }}
 				>
@@ -159,7 +159,7 @@ export const ImageViewer = ({
 							) : null,
 						)}
 					</PagerView>
-				</GestureHandlerRootView>
+				</View>
 				<View
 					style={{
 						position: 'absolute',

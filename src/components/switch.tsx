@@ -265,7 +265,7 @@ export const MaterialSwitch = ({
 				<Animated.View style={handleOutlineStyle} key={3}></Animated.View>
 			</View>
 			<Animated.View style={trackStyle} key={1}>
-				<GestureHandlerRootView>
+				<View>
 					<GestureDetector gesture={pan}>
 						<Pressable
 							disabled={disabled}
@@ -286,7 +286,7 @@ export const MaterialSwitch = ({
 							}}
 						></Pressable>
 					</GestureDetector>
-				</GestureHandlerRootView>
+				</View>
 			</Animated.View>
 			<View pointerEvents="none" style={stylesSwitch.stateOuter}>
 				<Animated.View style={handleStyle} key={2}>
@@ -609,7 +609,7 @@ export const MaterialSwitchListItem = ({
 						<Animated.View style={handleOutlineStyle} key={3}></Animated.View>
 					</View>
 					<Animated.View style={trackStyle} key={1}>
-						<GestureHandlerRootView>
+						<View>
 							<GestureDetector gesture={pan}>
 								<Pressable
 									disabled={disabled}
@@ -633,7 +633,7 @@ export const MaterialSwitchListItem = ({
 									}}
 								></Pressable>
 							</GestureDetector>
-						</GestureHandlerRootView>
+						</View>
 					</Animated.View>
 					<View pointerEvents="none" style={stylesSwitchList.stateOuter}>
 						<Animated.View style={handleStyle} key={2}>

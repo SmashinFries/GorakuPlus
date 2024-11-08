@@ -25,7 +25,7 @@ import DraggableFlatList, {
 	RenderItemParams,
 	ScaleDecorator,
 } from 'react-native-draggable-flatlist';
-import { GestureHandlerRootView, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import PagerView from 'react-native-pager-view';
 import {
 	Avatar,
@@ -666,7 +666,7 @@ const TabSetup = () => {
 				description="Select what type of content you want quick access to."
 				containerStyle={{ paddingBottom: 20 }}
 			/>
-			<GestureHandlerRootView style={{ flex: 1, justifyContent: 'center' }}>
+			<View style={{ flex: 1, justifyContent: 'center' }}>
 				<DraggableFlatList
 					data={exploreTabOrder}
 					renderItem={renderItem}
@@ -675,7 +675,7 @@ const TabSetup = () => {
 						updateTabOrder(data);
 					}}
 				/>
-			</GestureHandlerRootView>
+			</View>
 		</Body>
 	);
 };
