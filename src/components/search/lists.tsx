@@ -31,6 +31,7 @@ import { useDisplayStore } from '@/store/displayStore';
 import { SheetManager } from 'react-native-actions-sheet';
 import { LongScrollView } from '../list';
 import { useShallow } from 'zustand/react/shallow';
+import { GorakuRefreshControl } from '../explore/lists';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
@@ -215,7 +216,7 @@ export const SearchAllList = () => {
 	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
 	const debouncedSearch = useDebounce(query, 1000) as string;
 
-	const { data, isFetching } = useSearchAllQuery(
+	const { data, isFetching, isRefetching, refetch } = useSearchAllQuery(
 		{ search: debouncedSearch, perPage: 6, isAdult: showNSFW ? undefined : false },
 		{ enabled: debouncedSearch?.length > 0 },
 	);
@@ -235,7 +236,13 @@ export const SearchAllList = () => {
 				</View>
 			)}
 			{data && (
-				<LongScrollView stickyHeaderIndices={[0, 2, 4, 6, 8, 10]} scrollToTopIconTop={5}>
+				<LongScrollView
+					stickyHeaderIndices={[0, 2, 4, 6, 8, 10]}
+					scrollToTopIconTop={5}
+					refreshControl={
+						<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+					}
+				>
 					{data?.Anime?.media?.length > 0 && <SearchAllTitle>Anime</SearchAllTitle>}
 					{data?.Anime?.media?.length > 0 && (
 						<SearchAllSection data={data?.Anime?.media} type="anime" />
@@ -280,24 +287,31 @@ export const AnimeSearchList = () => {
 
 	const { columns, itemWidth, displayMode } = useColumns('search');
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteMediaSearchQuery(
-			{
-				type: MediaType.Anime,
-				...mediaFilter,
-				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+	const {
+		data,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		isRefetching,
+		refetch,
+		fetchNextPage,
+	} = useInfiniteMediaSearchQuery(
+		{
+			type: MediaType.Anime,
+			...mediaFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 
 	const mergedResults = data?.pages?.flatMap((val) => val.Page?.media);
 
@@ -337,6 +351,9 @@ export const AnimeSearchList = () => {
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
 			/>
 		</View>
 	);
@@ -351,24 +368,31 @@ export const MangaSearchList = () => {
 	);
 	const { columns, itemWidth, displayMode } = useColumns('search');
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteMediaSearchQuery(
-			{
-				type: MediaType.Manga,
-				...mediaFilter,
-				search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+	const {
+		data,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		isRefetching,
+		refetch,
+		fetchNextPage,
+	} = useInfiniteMediaSearchQuery(
+		{
+			type: MediaType.Manga,
+			...mediaFilter,
+			search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 	const { width } = useWindowDimensions();
 
 	const allResults = data?.pages?.flatMap((val) => val.Page.media);
@@ -409,6 +433,9 @@ export const MangaSearchList = () => {
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
 			/>
 		</View>
 	);
@@ -422,24 +449,31 @@ export const CharacterSearchList = () => {
 		})),
 	);
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteCharacterSearchQuery(
-			{
-				...characterFilter,
-				isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter.isBirthday,
-				search: debouncedSearch.length > 1 ? debouncedSearch : undefined,
+	const {
+		data,
+		isRefetching,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		fetchNextPage,
+		refetch,
+	} = useInfiniteCharacterSearchQuery(
+		{
+			...characterFilter,
+			isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter.isBirthday,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 	const { width } = useWindowDimensions();
 
 	const allResults: CharacterSearchQuery['Page']['characters'] = data?.pages?.flatMap(
@@ -487,6 +521,9 @@ export const CharacterSearchList = () => {
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
 			/>
 		</View>
 	);
@@ -495,23 +532,30 @@ export const CharacterSearchList = () => {
 export const StaffSearchList = () => {
 	const { query, staffFilter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteStaffSearchQuery(
-			{
-				...staffFilter,
-				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+	const {
+		data,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		isRefetching,
+		refetch,
+		fetchNextPage,
+	} = useInfiniteStaffSearchQuery(
+		{
+			...staffFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 	const { width } = useWindowDimensions();
 
 	const { columns, itemWidth } = useColumns('search');
@@ -559,6 +603,9 @@ export const StaffSearchList = () => {
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
 			/>
 		</View>
 	);
@@ -567,23 +614,30 @@ export const StaffSearchList = () => {
 export const StudioSearchList = () => {
 	const { query, studioFilter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 1000) as string;
-	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteStudioSearchQuery(
-			{
-				...studioFilter,
-				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+	const {
+		data,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		isRefetching,
+		refetch,
+		fetchNextPage,
+	} = useInfiniteStudioSearchQuery(
+		{
+			...studioFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 	const { width } = useWindowDimensions();
 
 	const allResults: StudioSearchQuery['Page']['studios'] = data?.pages?.flatMap(
@@ -634,6 +688,9 @@ export const StudioSearchList = () => {
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
 			/>
 		</View>
 	);
@@ -642,23 +699,30 @@ export const StudioSearchList = () => {
 export const UserSearchList = () => {
 	const { query, userFilter } = useSearchStore();
 	const debouncedSearch = useDebounce(query, 600) as string;
-	const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
-		useInfiniteUserSearchQuery(
-			{
-				...userFilter,
-				search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+	const {
+		data,
+		isFetching,
+		isFetchingNextPage,
+		hasNextPage,
+		isRefetching,
+		refetch,
+		fetchNextPage,
+	} = useInfiniteUserSearchQuery(
+		{
+			...userFilter,
+			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+		},
+		{
+			initialPageParam: 1,
+			getNextPageParam(lastPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
+					return {
+						page: lastPage.Page?.pageInfo.currentPage + 1,
+					};
+				}
 			},
-			{
-				initialPageParam: 1,
-				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo?.hasNextPage) {
-						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
-						};
-					}
-				},
-			},
-		);
+		},
+	);
 	const { width } = useWindowDimensions();
 
 	const { columns, itemWidth } = useColumns('search');
@@ -705,6 +769,9 @@ export const UserSearchList = () => {
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
 				}}
+				refreshControl={
+					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
 			/>
 		</View>
 	);
