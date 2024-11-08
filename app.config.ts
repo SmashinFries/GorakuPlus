@@ -126,6 +126,7 @@ const config: ExpoConfig = {
 				category: ['BROWSABLE', 'DEFAULT'],
 			},
 		],
+		permissions: ['android.permission.REQUEST_INSTALL_PACKAGES'],
 	},
 	web: {
 		favicon: './assets/iconsv3/favicon.png',
