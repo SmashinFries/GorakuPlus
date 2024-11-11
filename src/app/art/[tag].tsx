@@ -34,7 +34,7 @@ const ArtListPage = () => {
 		);
 	};
 
-	const flattenedData = data.pages.flatMap((page) => page);
+	const flattenedData = data?.pages?.flatMap((page) => page);
 
 	return (
 		<View style={{ width: '100%', flex: 1 }}>

@@ -68,9 +68,9 @@ export const useAnilistAuth = () => {
 					});
 					// const user = await fetchUser().unwrap();
 					const userAvatar =
-						user.Viewer.avatar?.large ?? null;
-					const userID = user.Viewer.id ?? null;
-					const username = user.Viewer.name ?? null;
+						user?.Viewer?.avatar?.large ?? null;
+					const userID = user?.Viewer?.id ?? null;
+					const username = user?.Viewer?.name ?? null;
 					setAnilistAuth({
 						token: accessToken,
 						deathDate: expiresAt.toLocaleString(),
@@ -86,7 +86,7 @@ export const useAnilistAuth = () => {
 							'Rewatching',
 							'Paused',
 							'Dropped',
-							...(user.Viewer.mediaListOptions?.animeList?.customLists ?? []),
+							...(user?.Viewer?.mediaListOptions?.animeList?.customLists ?? []),
 						],
 						mangaTabOrder: [
 							'Reading',
@@ -95,7 +95,7 @@ export const useAnilistAuth = () => {
 							'Rereading',
 							'Paused',
 							'Dropped',
-							...(user.Viewer.mediaListOptions?.mangaList?.customLists ?? []),
+							...(user?.Viewer?.mediaListOptions?.mangaList?.customLists ?? []),
 						],
 					});
 					await invalidateQueries();
