@@ -38,7 +38,7 @@ const ArtListPage = () => {
 
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
-			{flattenedData.length > 0 ? (
+			{flattenedData?.length > 0 ? (
 				<AnimatedMasonryFlashlist
 					ref={listRef}
 					data={flattenedData}
