@@ -39,7 +39,7 @@ export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) =>
 		<View>
 			<ListHeading title="Characters" icon={'arrow-right'} onIconPress={openMore} />
 			<FlashList
-				data={data.edges}
+				data={data?.edges}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
 				horizontal
