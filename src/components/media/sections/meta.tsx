@@ -13,7 +13,7 @@ import { SeriesModelV1 } from '@/api/mangaupdates/models';
 import { SheetManager } from 'react-native-actions-sheet';
 
 type MetaDataProps = {
-	data: AniMediaQuery['Media'];
+	data: AniMediaQuery['Media'] | undefined;
 	malData?: AnimeFull | MangaFull;
 };
 export const MetaData = ({ data, malData }: MetaDataProps) => {
@@ -30,21 +30,21 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					title={'Source'}
 					right={(props) => (
 						<Text {...props} style={{ textTransform: 'capitalize' }}>
-							{data.source?.replaceAll('_', ' ') ?? '??'}
+							{data?.source?.replaceAll('_', ' ') ?? '??'}
 						</Text>
 					)}
 				/>
 				<List.Item
 					title={
-						data.type === 'ANIME'
+						data?.type === 'ANIME'
 							? 'Episodes'
-							: data.format === MediaFormat.Novel
+							: data?.format === MediaFormat.Novel
 								? 'Volumes'
 								: 'Chapters'
 					}
 					right={(props) => (
 						<Text {...props}>
-							{data.chapters ?? data.volumes ?? data.episodes ?? 'N/A'}
+							{data?.chapters ?? data?.volumes ?? data?.episodes ?? 'N/A'}
 						</Text>
 					)}
 				/>
@@ -52,25 +52,25 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					title="Origin"
 					right={(props) => (
 						<Text {...props}>
-							{data.countryOfOrigin
-								? COUNTRY_OPTIONS[data.countryOfOrigin]['name']
+							{data?.countryOfOrigin
+								? COUNTRY_OPTIONS[data?.countryOfOrigin]['name']
 								: 'N/A'}
 						</Text>
 					)}
 				/>
-				{data.type === MediaType.Anime && (
+				{data?.type === MediaType.Anime && (
 					<List.Item
 						title="Duration"
-						right={(props) => <Text {...props}>{data.duration ?? 'N/A'}</Text>}
+						right={(props) => <Text {...props}>{data?.duration ?? 'N/A'}</Text>}
 					/>
 				)}
-				{data.season && (
+				{data?.season && (
 					<List.Item
 						title="Season"
 						right={(props) => (
 							<Text {...props} style={{ textTransform: 'capitalize' }}>
-								{data.season && data.seasonYear
-									? `${data.season} ${data.seasonYear}`
+								{data?.season && data?.seasonYear
+									? `${data?.season} ${data?.seasonYear}`
 									: 'N/A'}
 							</Text>
 						)}
@@ -102,7 +102,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					title="Format"
 					right={(props) => (
 						<Text {...props} style={{ textTransform: 'capitalize' }}>
-							{data.format?.replaceAll('_', ' ') ?? 'N/A'}
+							{data?.format?.replaceAll('_', ' ') ?? 'N/A'}
 						</Text>
 					)}
 				/>

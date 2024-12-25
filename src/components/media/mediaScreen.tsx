@@ -43,6 +43,7 @@ import { useReleaseTimes } from '@/hooks/useReleaseTimes';
 import { useShallow } from 'zustand/react/shallow';
 import { ChapterPreview } from './sections/chapterPreview';
 import { useMatchStore } from '@/store/matchStore';
+import { getChapterFrequency, getReleaseTime } from '@/utils';
 
 const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 	const { mediaLanguage } = useSettingsStore();
@@ -82,7 +83,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 	// 				anilist?.data?.Media?.nextAiringEpisode,
 	// 				type === MediaType.Manga
 	// 					? getChapterFrequency(
-	// 							muReleases.data.results.map(
+	// 							muReleases?.data?.results?.map(
 	// 								(release) => release.record?.release_date,
 	// 							),
 	// 						)
@@ -238,7 +239,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 									}
 									scoreFormat={anilist?.data?.User?.mediaListOptions?.scoreFormat}
 									media={anilist?.data?.Media}
-									refreshData={anilist.refetch}
+									refreshData={anilist?.refetch}
 								/>
 							)}
 							<AnimViewMem delay={400}>
@@ -332,7 +333,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 								aniLink={anilist?.data?.Media?.siteUrl}
 								malLink={
 									anilist?.data?.Media?.idMal
-										? `https://myanimelist.net/${anilist?.data?.Media?.type.toLowerCase()}/${
+										? `https://myanimelist.net/${anilist?.data?.Media?.type?.toLowerCase()}/${
 												anilist?.data?.Media?.idMal
 											}`
 										: null

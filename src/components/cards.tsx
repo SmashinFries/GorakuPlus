@@ -76,7 +76,7 @@ export const MediaCard = ({
 	const [width, setWidth] = useState(props.width ?? 1);
 
 	const onNav = () => {
-		router.navigate(`/${props.type === MediaType.Anime ? 'anime' : 'manga'}/${props.id}`);
+		router.push(`/${props.type === MediaType.Anime ? 'anime' : 'manga'}/${props.id}`);
 		SheetManager.hideAll();
 		SheetManager.hide('QuickActionAniTrendzSheet');
 	};
