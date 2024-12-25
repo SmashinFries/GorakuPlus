@@ -9,7 +9,6 @@ import {
 import { SeriesSearchResponseV1 } from './models';
 import { useShallow } from 'zustand/react/shallow';
 import { useEffect } from 'react';
-import { sendErrorMessage } from '@/utils/toast';
 
 export const useMangaUpdatesQuery = (
 	aniId: number | null,
