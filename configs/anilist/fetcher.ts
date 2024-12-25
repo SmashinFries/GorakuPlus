@@ -26,11 +26,7 @@ export const fetchAnilistData = <TData, TVariables>(
 			return res.data.data ?? null;
 		} catch (error) {
 			// console.error(error);
-			if (error instanceof AxiosError) {
-				sendErrorMessage(`Error ${error.status}: ${error.message}`);
-			} else {
-				sendErrorMessage(`${error.message}`);
-			}
+			sendErrorMessage(`${error.message}`);
 		}
 	};
 
