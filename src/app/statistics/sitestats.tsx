@@ -1,7 +1,11 @@
 import { FlatList, View } from 'react-native';
-import { List, Text } from 'react-native-paper';
+import { List, Surface, Text } from 'react-native-paper';
 import { useAppTheme } from '@/store/theme/themes';
-import { SiteTrend, useSiteStatsQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	SiteStatsQuery_SiteStatistics_SiteStatistics,
+	SiteTrend,
+	useSiteStatsQuery,
+} from '@/api/anilist/__genereated__/gql';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { lineDataItem } from 'react-native-gifted-charts';
 import { getCompactNumberForm, getOrdinalString } from '@/utils';
@@ -67,6 +71,24 @@ const StatSection = ({ title, data }: StatSectionProps) => {
 	);
 };
 
+const StatOverviewBox = ({ title, count }: { title: string; count: number | undefined }) => {
+	const { colors } = useAppTheme();
+	return (
+		<Surface
+			style={{
+				alignItems: 'center',
+				padding: 12,
+				borderRadius: 12,
+				borderWidth: 1,
+				borderColor: colors.primary,
+			}}
+		>
+			<Text variant="labelMedium">{title}</Text>
+			<Text variant="titleLarge">{count?.toLocaleString()}</Text>
+		</Surface>
+	);
+};
+
 // Cant figure out cause of scroll performance drop :/
 // Using accordions as a temp workaround
 const SiteStatsPage = () => {
@@ -79,14 +101,21 @@ const SiteStatsPage = () => {
 				</View>
 			)}
 			<FlatList
-				data={['users', 'anime', 'manga', 'characters', 'staff', 'reviews']}
+				data={['anime', 'manga', 'characters', 'staff', 'users', 'reviews']}
 				renderItem={({ item, index }) => (
 					<Accordion
 						title={item}
 						titleStyle={{ textTransform: 'capitalize' }}
 						initialExpand={index === 0}
 					>
-						<StatSection data={data?.SiteStatistics[item]?.nodes} title={item} />
+						<StatSection
+							data={
+								data?.SiteStatistics?.[
+									item as keyof SiteStatsQuery_SiteStatistics_SiteStatistics
+								]?.nodes?.filter((node): node is SiteTrend => node !== null) ?? []
+							}
+							title={item}
+						/>
 					</Accordion>
 				)}
 				// removeClippedSubviews
@@ -94,6 +123,28 @@ const SiteStatsPage = () => {
 				keyExtractor={(item, idx) => idx.toString()}
 				refreshControl={
 					<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				}
+				ListHeaderComponent={
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-evenly',
+							paddingVertical: 12,
+						}}
+					>
+						<StatOverviewBox
+							title="Anime"
+							count={data?.SiteStatistics?.anime?.nodes?.[0]?.count}
+						/>
+						<StatOverviewBox
+							title="Manga"
+							count={data?.SiteStatistics?.manga?.nodes?.[0]?.count}
+						/>
+						<StatOverviewBox
+							title="Users"
+							count={data?.SiteStatistics?.users?.nodes?.[0]?.count}
+						/>
+					</View>
 				}
 			/>
 		</AnimViewMem>
