@@ -1,11 +1,9 @@
 export type WdTaggerInput = {
 	data: [
 		Blob | String | { path: string }, // The input value that is provided in the "Input" Image component.
-		'SmilingWolf/wd-swinv2-tagger-v3', // The input value that is provided in the "Model" Dropdown component.
 		number, // The input value that is provided in the "General Tags Threshold" Slider component.
-		boolean, // The input value that is provided in the "Use MCut threshold" Checkbox component.
 		number, // The input value that is provided in the "Character Tags Threshold" Slider component.
-		boolean, // The input value that is provided in the "Use MCut threshold" Checkbox component.
+		'danbooru'
 	];
 };
 

@@ -395,7 +395,7 @@ query CharacterDetails($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) 
 		favourites
 		media(sort: $sort, page: $page, perPage: $perPage) {
 			edges {
-				voiceActorRoles(sort: [RELEVANCE, ID]) {
+				voiceActorRoles(sort: [LANGUAGE, RELEVANCE]) {
 					roleNotes
 					voiceActor {
 						...StaffMetaData
@@ -485,7 +485,7 @@ query StaffDetails(
 				}
 			}
 		}
-		characters(page: $char_page, perPage: $char_perPage, sort: RELEVANCE) {
+		characters(page: $char_page, perPage: $char_perPage, sort: FAVOURITES_DESC) {
 			pageInfo {
 				total
 				perPage
@@ -504,6 +504,7 @@ query StaffDetails(
 					image {
 						large
 					}
+					favourites
 					isFavourite
 				}
 			}

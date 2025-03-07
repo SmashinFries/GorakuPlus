@@ -1,5 +1,7 @@
 import { QueryClient, UseMutationOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+	AiringRangeQuery,
+	AiringRangeQueryVariables,
 	AniMediaQuery,
 	AnimeExploreQuery,
 	CharacterSort,
@@ -11,10 +13,13 @@ import {
 	ManhuaExploreQuery,
 	ManhwaExploreQuery,
 	MediaFormat,
+	MediaSeason,
 	MediaType,
 	NovelExploreQuery,
 	SaveMediaListItemMutation,
 	SaveMediaListItemMutationVariables,
+	SeasonalAnimeQuery,
+	useAiringRangeQuery,
 	useAniMediaQuery,
 	useAnimeExploreQuery,
 	useDeleteActMutation,
@@ -25,6 +30,7 @@ import {
 	useManhwaExploreQuery,
 	useNovelExploreQuery,
 	useSaveMediaListItemMutation,
+	useSeasonalAnimeQuery,
 	useUserOverviewQuery,
 } from './__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
@@ -51,11 +57,11 @@ import {
 import { AnimeFull, MangaFull } from '../jikan/models';
 
 const invalidateExploreQueries = (queryClient: QueryClient) => {
-	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey() });
-	queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey() });
-	queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey() });
-	queryClient.invalidateQueries({ queryKey: useManhuaExploreQuery.getKey() });
-	queryClient.invalidateQueries({ queryKey: useNovelExploreQuery.getKey() });
+	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey({ includeViewer: true }) });
+	queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey({ includeViewer: true }) });
+	queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey({ includeViewer: true }) });
+	queryClient.invalidateQueries({ queryKey: useManhuaExploreQuery.getKey({ includeViewer: true }) });
+	queryClient.invalidateQueries({ queryKey: useNovelExploreQuery.getKey({ includeViewer: true }) });
 };
 
 export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
@@ -117,7 +123,7 @@ export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 	};
 
 	return useQuery({
-		queryKey: ['AniMedia'],
+		queryKey: ['AniMedia', aniId, type],
 		queryFn: async () => {
 			const results: {
 				aniResults: AniMediaQuery | null;
@@ -140,24 +146,24 @@ export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 			]);
 
 			allResponses[0] && (results.aniResults = allResponses[0]);
-			if (allResponses[1].data) {
+			if (allResponses[1]?.data) {
 				type === MediaType.Anime
 					? (results.malAnimeResults = allResponses[1].data.data as AnimeFull)
 					: (results.malMangaResults = allResponses[1].data.data as MangaFull);
 			} else {
-				const response = await fetchMalData(allResponses[0].Media.idMal);
+				const response = await fetchMalData(allResponses[0]?.Media?.idMal ?? undefined);
 				type === MediaType.Anime
-					? (results.malAnimeResults = response.data.data as AnimeFull)
-					: (results.malMangaResults = response.data.data as MangaFull);
+					? (results.malAnimeResults = response?.data.data as AnimeFull)
+					: (results.malMangaResults = response?.data.data as MangaFull);
 			}
-			if (allResponses[2].data) {
+			if (allResponses[2]?.data) {
 				results.mangaUpdatesResults = allResponses[2].data as SeriesModelV1;
 			} else {
 				const title = (
 					allResponses[0].Media?.countryOfOrigin === 'KR'
 						? allResponses[0].Media?.title?.english ??
-							allResponses[0].Media?.title?.romaji
-						: allResponses[0].Media?.title.romaji
+						allResponses[0].Media?.title?.romaji
+						: allResponses[0].Media?.title?.romaji
 				)
 					?.replace('[', '')
 					.replace(']', '');
@@ -166,7 +172,7 @@ export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 					title,
 					allResponses[0].Media?.format === MediaFormat['Novel'],
 				);
-				if ((response.data as SeriesSearchResponseV1).results?.length > 0) {
+				if (((response?.data as SeriesSearchResponseV1).results?.length ?? 0) > 0) {
 					const muIdResponse = await queryClient.fetchQuery(
 						getRetrieveSeriesQueryOptions(
 							(response.data as SeriesSearchResponseV1).results[0]?.record?.series_id,
@@ -174,16 +180,16 @@ export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 					);
 					results.mangaUpdatesResults = muIdResponse.data;
 				}
-				if (allResponses[3].data) {
-					results.mangaReleases = allResponses[3].data.results;
+				if (allResponses[3]?.data) {
+					results.mangaReleases = allResponses[3].data.results ?? null;
 				} else {
 					const response = await searchReleases({
 						data: {
 							search_type: 'series',
-							search: `${results.mangaUpdatesResults.series_id}`,
+							search: `${results.mangaUpdatesResults?.series_id}`,
 						},
 					});
-					results.mangaReleases = response.data.results;
+					results.mangaReleases = response.data.results ?? null;
 				}
 			}
 			return results;
@@ -246,7 +252,7 @@ export const useDeleteMediaListItemInvalidatedMutation = (
 			invalidateExploreQueries(queryClient);
 			queryClient.invalidateQueries({
 				queryKey: useAniMediaQuery.getKey({
-					id: options.meta?.mediaId as number,
+					id: options?.meta?.mediaId as number,
 					skipUser: false,
 				}),
 			});
@@ -291,5 +297,76 @@ export const useDeleteActivityItemInvalidateMutation = (
 				queryKey: useInfiniteUserActivityQuery.getKey(),
 			})
 		},
+	});
+};
+
+export const useAiringRangeMonthQuery = (params: Omit<AiringRangeQueryVariables, 'page'>) => {
+	const queryClient = useQueryClient();
+	return useQuery({
+		queryKey: ['AiringRangeMonth', params.end, params.start],
+		queryFn: async () => {
+			const tempData: NonNullable<AiringRangeQuery['Page']>['airingSchedules'] = [];
+			let page = 1;
+			let fetchMore = true;
+			while (fetchMore === true && !!params.start && !!params.end) {
+				try {
+
+					const resp = await queryClient.fetchQuery<AiringRangeQuery>({
+						queryKey: ['AiringRangeMonthPage'],
+						queryFn: useAiringRangeQuery.fetcher({ ...params, page }),
+					});
+					if (resp?.Page?.airingSchedules) tempData.push(...resp?.Page?.airingSchedules);
+					// setData((prev) => [...prev, ...resp.Page?.airingSchedules]);
+
+					if (resp.Page?.pageInfo?.hasNextPage) {
+						page = page + 1;
+					} else {
+						fetchMore = false;
+					}
+				} catch (e) {
+					console.log(e);
+					fetchMore = false;
+				}
+			}
+			return tempData;
+		},
+		enabled: !!params.start && !!params.end
+	});
+};
+
+export const useSeasonalAnimeAllQuery = ({ season, year }: { season: MediaSeason, year: number }) => {
+	const queryClient = useQueryClient();
+	return useQuery({
+		queryKey: ['SeasonalAnimeAll', season, year],
+		queryFn: async () => {
+			const tempData: NonNullable<SeasonalAnimeQuery['Page']>['media'] = [];
+			let page = 1;
+			let fetchMore = true;
+			while (fetchMore === true) {
+				try {
+					const resp = await queryClient.fetchQuery<SeasonalAnimeQuery>({
+						queryKey: ['SeasonalAnimeAllPage'],
+						queryFn: useSeasonalAnimeQuery.fetcher({
+							season,
+							seasonYear: year,
+							page,
+							onList: true,
+						}),
+					});
+					if (resp?.Page?.media) tempData.push(...resp?.Page?.media);
+
+					if (resp.Page?.pageInfo?.hasNextPage) {
+						page = page + 1;
+					} else {
+						fetchMore = false;
+					}
+				} catch (e) {
+					console.log(e);
+					fetchMore = false;
+				}
+			}
+			return tempData;
+		},
+		enabled: !!season && !!year
 	});
 };

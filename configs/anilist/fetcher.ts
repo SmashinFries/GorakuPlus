@@ -1,6 +1,5 @@
 import { useAuthStore } from '@/store/authStore';
-import { sendErrorMessage } from '@/utils/toast';
-import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
 const url = 'https://graphql.anilist.co';
 
@@ -25,31 +24,7 @@ export const fetchAnilistData = <TData, TVariables>(
 			);
 			return res.data.data ?? null;
 		} catch (error) {
-			// console.error(error);
-			sendErrorMessage(`${error.message}`);
+			console.error(error);
 		}
 	};
-
-	// return async () => {
-	// 	const res = await fetch(url, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			...headers,
-	// 			...options,
-	// 		},
-	// 		body: JSON.stringify({
-	// 			query,
-	// 			variables,
-	// 		}),
-	// 	});
-
-	// 	const json = await res.json();
-
-	// 	if (json.errors) {
-	// 		const { message } = json.errors[0] || {};
-	// 		throw new Error(message || 'Error…');
-	// 	}
-
-	// 	return json.data;
-	// };
 };

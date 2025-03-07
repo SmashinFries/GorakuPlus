@@ -16,19 +16,43 @@ query WeeklyAnime($weekStart: Int, $weekEnd: Int, $page: Int) {
 	}
 }
 
-query AiringToday($dayStart: Int, $dayEnd: Int) {
-	Page(perPage: 50) {
+query AiringRange($start: Int, $end: Int, $page: Int) {
+	Page(page:$page, perPage: 50) {
 		pageInfo {
 			hasNextPage
 			total
 		}
-		airingSchedules(airingAt_greater: $dayStart, airingAt_lesser: $dayEnd) {
+		airingSchedules(airingAt_greater: $start, airingAt_lesser: $end) {
 			id
 			episode
 			airingAt
 			timeUntilAiring
 			media {
 				...MainMeta
+			}
+		}
+	}
+}
+
+query SeasonalAnime($season: MediaSeason, $seasonYear: Int, $onList: Boolean, $page: Int) {
+	Page (page: $page) {
+		pageInfo {
+			total
+			perPage
+			hasNextPage
+			total
+		}
+		media(
+			type: ANIME
+			onList: $onList
+			season: $season
+			seasonYear: $seasonYear
+		) {
+			...MainMeta
+			airingSchedule {
+				nodes {
+					airingAt
+				}
 			}
 		}
 	}

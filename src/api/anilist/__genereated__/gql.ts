@@ -21,7 +21,6 @@ export type Scalars = {
 
 /** Notification for when a activity is liked */
 export type ActivityLikeNotification = {
-  __typename?: 'ActivityLikeNotification';
   /** The liked activity */
   activity?: Maybe<ActivityUnion>;
   /** The id of the activity which was liked */
@@ -42,7 +41,6 @@ export type ActivityLikeNotification = {
 
 /** Notification for when authenticated user is @ mentioned in activity or reply */
 export type ActivityMentionNotification = {
-  __typename?: 'ActivityMentionNotification';
   /** The liked activity */
   activity?: Maybe<ActivityUnion>;
   /** The id of the activity where mentioned */
@@ -63,7 +61,6 @@ export type ActivityMentionNotification = {
 
 /** Notification for when a user is send an activity message */
 export type ActivityMessageNotification = {
-  __typename?: 'ActivityMessageNotification';
   /** The id of the activity message */
   activityId: Scalars['Int']['output'];
   /** The notification context text */
@@ -84,7 +81,6 @@ export type ActivityMessageNotification = {
 
 /** Replay to an activity item */
 export type ActivityReply = {
-  __typename?: 'ActivityReply';
   /** The id of the parent activity */
   activityId?: Maybe<Scalars['Int']['output']>;
   /** The time the reply was created at */
@@ -113,7 +109,6 @@ export type ActivityReplyTextArgs = {
 
 /** Notification for when a activity reply is liked */
 export type ActivityReplyLikeNotification = {
-  __typename?: 'ActivityReplyLikeNotification';
   /** The liked activity */
   activity?: Maybe<ActivityUnion>;
   /** The id of the activity where the reply which was liked */
@@ -134,7 +129,6 @@ export type ActivityReplyLikeNotification = {
 
 /** Notification for when a user replies to the authenticated users activity */
 export type ActivityReplyNotification = {
-  __typename?: 'ActivityReplyNotification';
   /** The liked activity */
   activity?: Maybe<ActivityUnion>;
   /** The id of the activity which was replied too */
@@ -155,7 +149,6 @@ export type ActivityReplyNotification = {
 
 /** Notification for when a user replies to activity the authenticated user has replied to */
 export type ActivityReplySubscribedNotification = {
-  __typename?: 'ActivityReplySubscribedNotification';
   /** The liked activity */
   activity?: Maybe<ActivityUnion>;
   /** The id of the activity which was replied too */
@@ -200,7 +193,6 @@ export type ActivityUnion = ListActivity | MessageActivity | TextActivity;
 
 /** Notification for when an episode of anime airs */
 export type AiringNotification = {
-  __typename?: 'AiringNotification';
   /** The id of the aired anime */
   animeId: Scalars['Int']['output'];
   /** The notification context text */
@@ -219,7 +211,6 @@ export type AiringNotification = {
 
 /** Score & Watcher stats for airing anime by episode and mid-week */
 export type AiringProgression = {
-  __typename?: 'AiringProgression';
   /** The episode the stats were recorded at. .5 is the mid point between 2 episodes airing dates. */
   episode?: Maybe<Scalars['Float']['output']>;
   /** The average score for the media */
@@ -230,7 +221,6 @@ export type AiringProgression = {
 
 /** Media Airing Schedule. NOTE: We only aim to guarantee that FUTURE airing data is present and accurate. */
 export type AiringSchedule = {
-  __typename?: 'AiringSchedule';
   /** The time the episode airs at */
   airingAt: Scalars['Int']['output'];
   /** The airing episode number */
@@ -246,7 +236,6 @@ export type AiringSchedule = {
 };
 
 export type AiringScheduleConnection = {
-  __typename?: 'AiringScheduleConnection';
   edges?: Maybe<Array<Maybe<AiringScheduleEdge>>>;
   nodes?: Maybe<Array<Maybe<AiringSchedule>>>;
   /** The pagination information */
@@ -255,7 +244,6 @@ export type AiringScheduleConnection = {
 
 /** AiringSchedule connection edge */
 export type AiringScheduleEdge = {
-  __typename?: 'AiringScheduleEdge';
   /** The id of the connection */
   id?: Maybe<Scalars['Int']['output']>;
   node?: Maybe<AiringSchedule>;
@@ -285,7 +273,6 @@ export type AniChartHighlightInput = {
 };
 
 export type AniChartUser = {
-  __typename?: 'AniChartUser';
   highlights?: Maybe<Scalars['Json']['output']>;
   settings?: Maybe<Scalars['Json']['output']>;
   user?: Maybe<User>;
@@ -293,7 +280,6 @@ export type AniChartUser = {
 
 /** A character that features in an anime or manga */
 export type Character = {
-  __typename?: 'Character';
   /** The character's age. Note this is a string, not an int, it may contain further text and additional ages. */
   age?: Maybe<Scalars['String']['output']>;
   /** The characters blood type */
@@ -343,7 +329,6 @@ export type CharacterMediaArgs = {
 };
 
 export type CharacterConnection = {
-  __typename?: 'CharacterConnection';
   edges?: Maybe<Array<Maybe<CharacterEdge>>>;
   nodes?: Maybe<Array<Maybe<Character>>>;
   /** The pagination information */
@@ -352,7 +337,6 @@ export type CharacterConnection = {
 
 /** Character connection edge */
 export type CharacterEdge = {
-  __typename?: 'CharacterEdge';
   /** The order the character should be displayed from the users favourites */
   favouriteOrder?: Maybe<Scalars['Int']['output']>;
   /** The id of the connection */
@@ -385,7 +369,6 @@ export type CharacterEdgeVoiceActorsArgs = {
 };
 
 export type CharacterImage = {
-  __typename?: 'CharacterImage';
   /** The character's image of media at its largest size */
   large?: Maybe<Scalars['String']['output']>;
   /** The character's image of media at medium size */
@@ -394,7 +377,6 @@ export type CharacterImage = {
 
 /** The names of the character */
 export type CharacterName = {
-  __typename?: 'CharacterName';
   /** Other names the character might be referred to as */
   alternative?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   /** Other names the character might be referred to as but are spoilers */
@@ -454,7 +436,6 @@ export enum CharacterSort {
 
 /** A submission for a character that features in an anime or manga */
 export type CharacterSubmission = {
-  __typename?: 'CharacterSubmission';
   /** Data Mod assigned to handle the submission */
   assignee?: Maybe<User>;
   /** Character that the submission is referencing */
@@ -476,7 +457,6 @@ export type CharacterSubmission = {
 };
 
 export type CharacterSubmissionConnection = {
-  __typename?: 'CharacterSubmissionConnection';
   edges?: Maybe<Array<Maybe<CharacterSubmissionEdge>>>;
   nodes?: Maybe<Array<Maybe<CharacterSubmission>>>;
   /** The pagination information */
@@ -485,7 +465,6 @@ export type CharacterSubmissionConnection = {
 
 /** CharacterSubmission connection edge */
 export type CharacterSubmissionEdge = {
-  __typename?: 'CharacterSubmissionEdge';
   node?: Maybe<CharacterSubmission>;
   /** The characters role in the media */
   role?: Maybe<CharacterRole>;
@@ -497,7 +476,6 @@ export type CharacterSubmissionEdge = {
 
 /** Deleted data type */
 export type Deleted = {
-  __typename?: 'Deleted';
   /** If an item has been successfully deleted */
   deleted?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -516,7 +494,6 @@ export enum ExternalLinkType {
 
 /** User's favourite anime, manga, characters, staff & studios */
 export type Favourites = {
-  __typename?: 'Favourites';
   /** Favourite anime */
   anime?: Maybe<MediaConnection>;
   /** Favourite characters */
@@ -566,7 +543,6 @@ export type FavouritesStudiosArgs = {
 
 /** Notification for when the authenticated user is followed by another user */
 export type FollowingNotification = {
-  __typename?: 'FollowingNotification';
   /** The notification context text */
   context?: Maybe<Scalars['String']['output']>;
   /** The time the notification was created at */
@@ -583,14 +559,12 @@ export type FollowingNotification = {
 
 /** User's format statistics */
 export type FormatStats = {
-  __typename?: 'FormatStats';
   amount?: Maybe<Scalars['Int']['output']>;
   format?: Maybe<MediaFormat>;
 };
 
 /** Date object that allows for incomplete date values (fuzzy) */
 export type FuzzyDate = {
-  __typename?: 'FuzzyDate';
   /** Numeric Day (24) */
   day?: Maybe<Scalars['Int']['output']>;
   /** Numeric Month (3) */
@@ -611,7 +585,6 @@ export type FuzzyDateInput = {
 
 /** User's genre statistics */
 export type GenreStats = {
-  __typename?: 'GenreStats';
   amount?: Maybe<Scalars['Int']['output']>;
   genre?: Maybe<Scalars['String']['output']>;
   meanScore?: Maybe<Scalars['Int']['output']>;
@@ -621,7 +594,6 @@ export type GenreStats = {
 
 /** Page of data (Used for internal use only) */
 export type InternalPage = {
-  __typename?: 'InternalPage';
   activities?: Maybe<Array<Maybe<ActivityUnion>>>;
   activityReplies?: Maybe<Array<Maybe<ActivityReply>>>;
   airingSchedules?: Maybe<Array<Maybe<AiringSchedule>>>;
@@ -1044,7 +1016,6 @@ export type LikeableUnion = ActivityReply | ListActivity | MessageActivity | Tex
 
 /** User list activity (anime & manga updates) */
 export type ListActivity = {
-  __typename?: 'ListActivity';
   /** The time the activity was created at */
   createdAt: Scalars['Int']['output'];
   /** The id of the activity */
@@ -1082,7 +1053,6 @@ export type ListActivity = {
 };
 
 export type ListActivityOption = {
-  __typename?: 'ListActivityOption';
   disabled?: Maybe<Scalars['Boolean']['output']>;
   type?: Maybe<MediaListStatus>;
 };
@@ -1094,14 +1064,12 @@ export type ListActivityOptionInput = {
 
 /** User's list score statistics */
 export type ListScoreStats = {
-  __typename?: 'ListScoreStats';
   meanScore?: Maybe<Scalars['Int']['output']>;
   standardDeviation?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Anime or Manga */
 export type Media = {
-  __typename?: 'Media';
   /** The media's entire airing schedule */
   airingSchedule?: Maybe<AiringScheduleConnection>;
   /** If the media should have forum thread automatically created for it on airing episode release */
@@ -1294,7 +1262,6 @@ export type MediaTrendsArgs = {
 
 /** Internal - Media characters separated */
 export type MediaCharacter = {
-  __typename?: 'MediaCharacter';
   /** The characters in the media voiced by the parent actor */
   character?: Maybe<Character>;
   /** Media specific character name */
@@ -1310,7 +1277,6 @@ export type MediaCharacter = {
 };
 
 export type MediaConnection = {
-  __typename?: 'MediaConnection';
   edges?: Maybe<Array<Maybe<MediaEdge>>>;
   nodes?: Maybe<Array<Maybe<Media>>>;
   /** The pagination information */
@@ -1318,7 +1284,6 @@ export type MediaConnection = {
 };
 
 export type MediaCoverImage = {
-  __typename?: 'MediaCoverImage';
   /** Average #hex color of cover image */
   color?: Maybe<Scalars['String']['output']>;
   /** The cover image url of the media at its largest size. If this size isn't available, large will be provided instead. */
@@ -1331,7 +1296,6 @@ export type MediaCoverImage = {
 
 /** Notification for when a media entry's data was changed in a significant way impacting users' list tracking */
 export type MediaDataChangeNotification = {
-  __typename?: 'MediaDataChangeNotification';
   /** The reason for the media data change */
   context?: Maybe<Scalars['String']['output']>;
   /** The time the notification was created at */
@@ -1350,7 +1314,6 @@ export type MediaDataChangeNotification = {
 
 /** Notification for when a media tracked in a user's list is deleted from the site */
 export type MediaDeletionNotification = {
-  __typename?: 'MediaDeletionNotification';
   /** The reason for the media deletion */
   context?: Maybe<Scalars['String']['output']>;
   /** The time the notification was created at */
@@ -1367,7 +1330,6 @@ export type MediaDeletionNotification = {
 
 /** Media connection edge */
 export type MediaEdge = {
-  __typename?: 'MediaEdge';
   /** Media specific character name */
   characterName?: Maybe<Scalars['String']['output']>;
   /** The characters role in the media */
@@ -1417,7 +1379,6 @@ export type MediaEdgeVoiceActorsArgs = {
 
 /** An external link to another site related to the media or staff member */
 export type MediaExternalLink = {
-  __typename?: 'MediaExternalLink';
   color?: Maybe<Scalars['String']['output']>;
   /** The icon image url of the site. Not available for all links. Transparent PNG 64x64 */
   icon?: Maybe<Scalars['String']['output']>;
@@ -1472,7 +1433,6 @@ export enum MediaFormat {
 
 /** List of anime or manga */
 export type MediaList = {
-  __typename?: 'MediaList';
   /** Map of advanced scores with name keys */
   advancedScores?: Maybe<Scalars['Json']['output']>;
   /** When the entry was completed by the user */
@@ -1527,7 +1487,6 @@ export type MediaListScoreArgs = {
 
 /** List of anime or manga */
 export type MediaListCollection = {
-  __typename?: 'MediaListCollection';
   /**
    * A map of media list entry arrays grouped by custom lists
    * @deprecated Not GraphQL spec compliant, use lists field instead.
@@ -1560,7 +1519,6 @@ export type MediaListCollectionStatusListsArgs = {
 
 /** List group of anime or manga entries */
 export type MediaListGroup = {
-  __typename?: 'MediaListGroup';
   /** Media list entries */
   entries?: Maybe<Array<Maybe<MediaList>>>;
   isCustomList?: Maybe<Scalars['Boolean']['output']>;
@@ -1571,7 +1529,6 @@ export type MediaListGroup = {
 
 /** A user's list options */
 export type MediaListOptions = {
-  __typename?: 'MediaListOptions';
   /** The user's anime list options */
   animeList?: Maybe<MediaListTypeOptions>;
   /** The user's manga list options */
@@ -1662,7 +1619,6 @@ export enum MediaListStatus {
 
 /** A user's list options for anime or manga lists */
 export type MediaListTypeOptions = {
-  __typename?: 'MediaListTypeOptions';
   /** The names of the user's advanced scoring sections */
   advancedScoring?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   /** If advanced scoring is enabled */
@@ -1682,7 +1638,6 @@ export type MediaListTypeOptions = {
 
 /** Notification for when a media entry is merged into another for a user who had it on their list */
 export type MediaMergeNotification = {
-  __typename?: 'MediaMergeNotification';
   /** The reason for the media data change */
   context?: Maybe<Scalars['String']['output']>;
   /** The time the notification was created at */
@@ -1703,7 +1658,6 @@ export type MediaMergeNotification = {
 
 /** The ranking of a media in a particular time span and format compared to other media */
 export type MediaRank = {
-  __typename?: 'MediaRank';
   /** If the ranking is based on all time instead of a season/year */
   allTime?: Maybe<Scalars['Boolean']['output']>;
   /** String that gives context to the ranking type and time span */
@@ -1848,7 +1802,6 @@ export enum MediaSource {
 
 /** A media's statistics */
 export type MediaStats = {
-  __typename?: 'MediaStats';
   /** @deprecated Replaced by MediaTrends */
   airingProgression?: Maybe<Array<Maybe<AiringProgression>>>;
   scoreDistribution?: Maybe<Array<Maybe<ScoreDistribution>>>;
@@ -1871,7 +1824,6 @@ export enum MediaStatus {
 
 /** Data and links to legal streaming episodes on external sites */
 export type MediaStreamingEpisode = {
-  __typename?: 'MediaStreamingEpisode';
   /** The site location of the streaming episodes */
   site?: Maybe<Scalars['String']['output']>;
   /** Url of episode image thumbnail */
@@ -1884,7 +1836,6 @@ export type MediaStreamingEpisode = {
 
 /** Media submission */
 export type MediaSubmission = {
-  __typename?: 'MediaSubmission';
   /** Data Mod assigned to handle the submission */
   assignee?: Maybe<User>;
   changes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -1911,7 +1862,6 @@ export type MediaSubmission = {
 
 /** Media submission with comparison to current data */
 export type MediaSubmissionComparison = {
-  __typename?: 'MediaSubmissionComparison';
   character?: Maybe<MediaCharacter>;
   externalLink?: Maybe<MediaExternalLink>;
   staff?: Maybe<StaffEdge>;
@@ -1920,7 +1870,6 @@ export type MediaSubmissionComparison = {
 };
 
 export type MediaSubmissionEdge = {
-  __typename?: 'MediaSubmissionEdge';
   character?: Maybe<Character>;
   characterName?: Maybe<Scalars['String']['output']>;
   characterRole?: Maybe<CharacterRole>;
@@ -1942,7 +1891,6 @@ export type MediaSubmissionEdge = {
 
 /** A tag that describes a theme or element of the media */
 export type MediaTag = {
-  __typename?: 'MediaTag';
   /** The categories of tags this tag belongs to */
   category?: Maybe<Scalars['String']['output']>;
   /** A general description of the tag */
@@ -1965,7 +1913,6 @@ export type MediaTag = {
 
 /** The official titles of the media in various languages */
 export type MediaTitle = {
-  __typename?: 'MediaTitle';
   /** The official english title */
   english?: Maybe<Scalars['String']['output']>;
   /** Official title in it's native language */
@@ -2006,7 +1953,6 @@ export type MediaTitleInput = {
 
 /** Media trailer or advertisement */
 export type MediaTrailer = {
-  __typename?: 'MediaTrailer';
   /** The trailer video id */
   id?: Maybe<Scalars['String']['output']>;
   /** The site the video is hosted by (Currently either youtube or dailymotion) */
@@ -2017,7 +1963,6 @@ export type MediaTrailer = {
 
 /** Daily media statistics */
 export type MediaTrend = {
-  __typename?: 'MediaTrend';
   /** A weighted average score of all the user's scores of the media */
   averageScore?: Maybe<Scalars['Int']['output']>;
   /** The day the data was recorded (timestamp) */
@@ -2039,7 +1984,6 @@ export type MediaTrend = {
 };
 
 export type MediaTrendConnection = {
-  __typename?: 'MediaTrendConnection';
   edges?: Maybe<Array<Maybe<MediaTrendEdge>>>;
   nodes?: Maybe<Array<Maybe<MediaTrend>>>;
   /** The pagination information */
@@ -2048,7 +1992,6 @@ export type MediaTrendConnection = {
 
 /** Media trend connection edge */
 export type MediaTrendEdge = {
-  __typename?: 'MediaTrendEdge';
   node?: Maybe<MediaTrend>;
 };
 
@@ -2080,7 +2023,6 @@ export enum MediaType {
 
 /** User message activity */
 export type MessageActivity = {
-  __typename?: 'MessageActivity';
   /** The time the activity was created at */
   createdAt: Scalars['Int']['output'];
   /** The id of the activity */
@@ -2124,7 +2066,6 @@ export type MessageActivityMessageArgs = {
 };
 
 export type ModAction = {
-  __typename?: 'ModAction';
   createdAt: Scalars['Int']['output'];
   data?: Maybe<Scalars['String']['output']>;
   /** The id of the action */
@@ -2182,7 +2123,6 @@ export enum ModRole {
 }
 
 export type Mutation = {
-  __typename?: 'Mutation';
   /** Delete an activity item of the authenticated users */
   DeleteActivity?: Maybe<Deleted>;
   /** Delete an activity reply of the authenticated users */
@@ -2484,7 +2424,6 @@ export type MutationUpdateUserArgs = {
 
 /** Notification option */
 export type NotificationOption = {
-  __typename?: 'NotificationOption';
   /** Whether this type of notification is enabled */
   enabled?: Maybe<Scalars['Boolean']['output']>;
   /** The type of notification */
@@ -2542,7 +2481,6 @@ export type NotificationUnion = ActivityLikeNotification | ActivityMentionNotifi
 
 /** Page of data */
 export type Page = {
-  __typename?: 'Page';
   activities?: Maybe<Array<Maybe<ActivityUnion>>>;
   activityReplies?: Maybe<Array<Maybe<ActivityReply>>>;
   airingSchedules?: Maybe<Array<Maybe<AiringSchedule>>>;
@@ -2884,7 +2822,6 @@ export type PageUsersArgs = {
 };
 
 export type PageInfo = {
-  __typename?: 'PageInfo';
   /** The current page */
   currentPage?: Maybe<Scalars['Int']['output']>;
   /** If there is another page */
@@ -2899,13 +2836,11 @@ export type PageInfo = {
 
 /** Provides the parsed markdown as html */
 export type ParsedMarkdown = {
-  __typename?: 'ParsedMarkdown';
   /** The parsed markdown as html */
   html?: Maybe<Scalars['String']['output']>;
 };
 
 export type Query = {
-  __typename?: 'Query';
   /** Activity query */
   Activity?: Maybe<ActivityUnion>;
   /** Activity reply query */
@@ -3310,7 +3245,6 @@ export type QueryUserArgs = {
 
 /** Media recommendation */
 export type Recommendation = {
-  __typename?: 'Recommendation';
   /** The id of the recommendation */
   id: Scalars['Int']['output'];
   /** The media the recommendation is from */
@@ -3326,7 +3260,6 @@ export type Recommendation = {
 };
 
 export type RecommendationConnection = {
-  __typename?: 'RecommendationConnection';
   edges?: Maybe<Array<Maybe<RecommendationEdge>>>;
   nodes?: Maybe<Array<Maybe<Recommendation>>>;
   /** The pagination information */
@@ -3335,7 +3268,6 @@ export type RecommendationConnection = {
 
 /** Recommendation connection edge */
 export type RecommendationEdge = {
-  __typename?: 'RecommendationEdge';
   node?: Maybe<Recommendation>;
 };
 
@@ -3356,7 +3288,6 @@ export enum RecommendationSort {
 
 /** Notification for when new media is added to the site */
 export type RelatedMediaAdditionNotification = {
-  __typename?: 'RelatedMediaAdditionNotification';
   /** The notification context text */
   context?: Maybe<Scalars['String']['output']>;
   /** The time the notification was created at */
@@ -3372,7 +3303,6 @@ export type RelatedMediaAdditionNotification = {
 };
 
 export type Report = {
-  __typename?: 'Report';
   cleared?: Maybe<Scalars['Boolean']['output']>;
   /** When the entry data was created */
   createdAt?: Maybe<Scalars['Int']['output']>;
@@ -3384,7 +3314,6 @@ export type Report = {
 
 /** A Review that features in an anime or manga */
 export type Review = {
-  __typename?: 'Review';
   /** The main review body text */
   body?: Maybe<Scalars['String']['output']>;
   /** The time of the thread creation */
@@ -3426,7 +3355,6 @@ export type ReviewBodyArgs = {
 };
 
 export type ReviewConnection = {
-  __typename?: 'ReviewConnection';
   edges?: Maybe<Array<Maybe<ReviewEdge>>>;
   nodes?: Maybe<Array<Maybe<Review>>>;
   /** The pagination information */
@@ -3435,7 +3363,6 @@ export type ReviewConnection = {
 
 /** Review connection edge */
 export type ReviewEdge = {
-  __typename?: 'ReviewEdge';
   node?: Maybe<Review>;
 };
 
@@ -3462,7 +3389,6 @@ export enum ReviewSort {
 
 /** Feed of mod edit activity */
 export type RevisionHistory = {
-  __typename?: 'RevisionHistory';
   /** The action taken on the objects */
   action?: Maybe<RevisionHistoryAction>;
   /** A JSON object of the fields that changed */
@@ -3493,7 +3419,6 @@ export enum RevisionHistoryAction {
 
 /** A user's list score distribution. */
 export type ScoreDistribution = {
-  __typename?: 'ScoreDistribution';
   /** The amount of list entries with this score */
   amount?: Maybe<Scalars['Int']['output']>;
   score?: Maybe<Scalars['Int']['output']>;
@@ -3514,7 +3439,6 @@ export enum ScoreFormat {
 }
 
 export type SiteStatistics = {
-  __typename?: 'SiteStatistics';
   anime?: Maybe<SiteTrendConnection>;
   characters?: Maybe<SiteTrendConnection>;
   manga?: Maybe<SiteTrendConnection>;
@@ -3575,7 +3499,6 @@ export type SiteStatisticsUsersArgs = {
 
 /** Daily site statistics */
 export type SiteTrend = {
-  __typename?: 'SiteTrend';
   /** The change from yesterday */
   change: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
@@ -3584,7 +3507,6 @@ export type SiteTrend = {
 };
 
 export type SiteTrendConnection = {
-  __typename?: 'SiteTrendConnection';
   edges?: Maybe<Array<Maybe<SiteTrendEdge>>>;
   nodes?: Maybe<Array<Maybe<SiteTrend>>>;
   /** The pagination information */
@@ -3593,7 +3515,6 @@ export type SiteTrendConnection = {
 
 /** Site trend connection edge */
 export type SiteTrendEdge = {
-  __typename?: 'SiteTrendEdge';
   node?: Maybe<SiteTrend>;
 };
 
@@ -3609,7 +3530,6 @@ export enum SiteTrendSort {
 
 /** Voice actors or production staff */
 export type Staff = {
-  __typename?: 'Staff';
   /** The person's age in years */
   age?: Maybe<Scalars['Int']['output']>;
   /** The persons blood type */
@@ -3701,7 +3621,6 @@ export type StaffStaffMediaArgs = {
 };
 
 export type StaffConnection = {
-  __typename?: 'StaffConnection';
   edges?: Maybe<Array<Maybe<StaffEdge>>>;
   nodes?: Maybe<Array<Maybe<Staff>>>;
   /** The pagination information */
@@ -3710,7 +3629,6 @@ export type StaffConnection = {
 
 /** Staff connection edge */
 export type StaffEdge = {
-  __typename?: 'StaffEdge';
   /** The order the staff should be displayed from the users favourites */
   favouriteOrder?: Maybe<Scalars['Int']['output']>;
   /** The id of the connection */
@@ -3721,7 +3639,6 @@ export type StaffEdge = {
 };
 
 export type StaffImage = {
-  __typename?: 'StaffImage';
   /** The person's image of media at its largest size */
   large?: Maybe<Scalars['String']['output']>;
   /** The person's image of media at medium size */
@@ -3754,7 +3671,6 @@ export enum StaffLanguage {
 
 /** The names of the staff member */
 export type StaffName = {
-  __typename?: 'StaffName';
   /** Other names the staff member might be referred to as (pen names) */
   alternative?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   /** The person's given name */
@@ -3787,7 +3703,6 @@ export type StaffNameInput = {
 
 /** Voice actor role for a character */
 export type StaffRoleType = {
-  __typename?: 'StaffRoleType';
   /** Used for grouping roles where multiple dubs exist for the same language. Either dubbing company name or language variant. */
   dubGroup?: Maybe<Scalars['String']['output']>;
   /** Notes regarding the VA's role for the character */
@@ -3813,7 +3728,6 @@ export enum StaffSort {
 
 /** User's staff statistics */
 export type StaffStats = {
-  __typename?: 'StaffStats';
   amount?: Maybe<Scalars['Int']['output']>;
   meanScore?: Maybe<Scalars['Int']['output']>;
   staff?: Maybe<Staff>;
@@ -3823,7 +3737,6 @@ export type StaffStats = {
 
 /** A submission for a staff that features in an anime or manga */
 export type StaffSubmission = {
-  __typename?: 'StaffSubmission';
   /** Data Mod assigned to handle the submission */
   assignee?: Maybe<User>;
   createdAt?: Maybe<Scalars['Int']['output']>;
@@ -3846,7 +3759,6 @@ export type StaffSubmission = {
 
 /** The distribution of the watching/reading status of media or a user's list */
 export type StatusDistribution = {
-  __typename?: 'StatusDistribution';
   /** The amount of entries with this status */
   amount?: Maybe<Scalars['Int']['output']>;
   /** The day the activity took place (Unix timestamp) */
@@ -3855,7 +3767,6 @@ export type StatusDistribution = {
 
 /** Animation or production company */
 export type Studio = {
-  __typename?: 'Studio';
   /** The amount of user's who have favourited the studio */
   favourites?: Maybe<Scalars['Int']['output']>;
   /** The id of the studio */
@@ -3883,7 +3794,6 @@ export type StudioMediaArgs = {
 };
 
 export type StudioConnection = {
-  __typename?: 'StudioConnection';
   edges?: Maybe<Array<Maybe<StudioEdge>>>;
   nodes?: Maybe<Array<Maybe<Studio>>>;
   /** The pagination information */
@@ -3892,7 +3802,6 @@ export type StudioConnection = {
 
 /** Studio connection edge */
 export type StudioEdge = {
-  __typename?: 'StudioEdge';
   /** The order the character should be displayed from the users favourites */
   favouriteOrder?: Maybe<Scalars['Int']['output']>;
   /** The id of the connection */
@@ -3915,7 +3824,6 @@ export enum StudioSort {
 
 /** User's studio statistics */
 export type StudioStats = {
-  __typename?: 'StudioStats';
   amount?: Maybe<Scalars['Int']['output']>;
   meanScore?: Maybe<Scalars['Int']['output']>;
   studio?: Maybe<Studio>;
@@ -3939,7 +3847,6 @@ export enum SubmissionStatus {
 
 /** User's tag statistics */
 export type TagStats = {
-  __typename?: 'TagStats';
   amount?: Maybe<Scalars['Int']['output']>;
   meanScore?: Maybe<Scalars['Int']['output']>;
   tag?: Maybe<MediaTag>;
@@ -3949,7 +3856,6 @@ export type TagStats = {
 
 /** User text activity */
 export type TextActivity = {
-  __typename?: 'TextActivity';
   /** The time the activity was created at */
   createdAt: Scalars['Int']['output'];
   /** The id of the activity */
@@ -3990,7 +3896,6 @@ export type TextActivityTextArgs = {
 
 /** Forum Thread */
 export type Thread = {
-  __typename?: 'Thread';
   /** The text body of the thread (Markdown) */
   body?: Maybe<Scalars['String']['output']>;
   /** The categories of the thread */
@@ -4045,7 +3950,6 @@ export type ThreadBodyArgs = {
 
 /** A forum thread category */
 export type ThreadCategory = {
-  __typename?: 'ThreadCategory';
   /** The id of the category */
   id: Scalars['Int']['output'];
   /** The name of the category */
@@ -4054,7 +3958,6 @@ export type ThreadCategory = {
 
 /** Forum Thread Comment */
 export type ThreadComment = {
-  __typename?: 'ThreadComment';
   /** The comment's child reply comments */
   childComments?: Maybe<Scalars['Json']['output']>;
   /** The text content of the comment (Markdown) */
@@ -4093,7 +3996,6 @@ export type ThreadCommentCommentArgs = {
 
 /** Notification for when a thread comment is liked */
 export type ThreadCommentLikeNotification = {
-  __typename?: 'ThreadCommentLikeNotification';
   /** The thread comment that was liked */
   comment?: Maybe<ThreadComment>;
   /** The id of the activity which was liked */
@@ -4116,7 +4018,6 @@ export type ThreadCommentLikeNotification = {
 
 /** Notification for when authenticated user is @ mentioned in a forum thread comment */
 export type ThreadCommentMentionNotification = {
-  __typename?: 'ThreadCommentMentionNotification';
   /** The thread comment that included the @ mention */
   comment?: Maybe<ThreadComment>;
   /** The id of the comment where mentioned */
@@ -4139,7 +4040,6 @@ export type ThreadCommentMentionNotification = {
 
 /** Notification for when a user replies to your forum thread comment */
 export type ThreadCommentReplyNotification = {
-  __typename?: 'ThreadCommentReplyNotification';
   /** The reply thread comment */
   comment?: Maybe<ThreadComment>;
   /** The id of the reply comment */
@@ -4168,7 +4068,6 @@ export enum ThreadCommentSort {
 
 /** Notification for when a user replies to a subscribed forum thread */
 export type ThreadCommentSubscribedNotification = {
-  __typename?: 'ThreadCommentSubscribedNotification';
   /** The reply thread comment */
   comment?: Maybe<ThreadComment>;
   /** The id of the new comment in the subscribed thread */
@@ -4191,7 +4090,6 @@ export type ThreadCommentSubscribedNotification = {
 
 /** Notification for when a thread is liked */
 export type ThreadLikeNotification = {
-  __typename?: 'ThreadLikeNotification';
   /** The liked thread comment */
   comment?: Maybe<ThreadComment>;
   /** The notification context text */
@@ -4234,7 +4132,6 @@ export enum ThreadSort {
 
 /** A user */
 export type User = {
-  __typename?: 'User';
   /** The bio written by user (Markdown) */
   about?: Maybe<Scalars['String']['output']>;
   /** The user's avatar images */
@@ -4302,7 +4199,6 @@ export type UserFavouritesArgs = {
 
 /** A user's activity history stats. */
 export type UserActivityHistory = {
-  __typename?: 'UserActivityHistory';
   /** The amount of activity on the day */
   amount?: Maybe<Scalars['Int']['output']>;
   /** The day the activity took place (Unix timestamp) */
@@ -4313,7 +4209,6 @@ export type UserActivityHistory = {
 
 /** A user's avatars */
 export type UserAvatar = {
-  __typename?: 'UserAvatar';
   /** The avatar of user at its largest size */
   large?: Maybe<Scalars['String']['output']>;
   /** The avatar of user at medium size */
@@ -4321,7 +4216,6 @@ export type UserAvatar = {
 };
 
 export type UserCountryStatistic = {
-  __typename?: 'UserCountryStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   country?: Maybe<Scalars['CountryCode']['output']>;
@@ -4331,7 +4225,6 @@ export type UserCountryStatistic = {
 };
 
 export type UserFormatStatistic = {
-  __typename?: 'UserFormatStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   format?: Maybe<MediaFormat>;
@@ -4341,7 +4234,6 @@ export type UserFormatStatistic = {
 };
 
 export type UserGenreStatistic = {
-  __typename?: 'UserGenreStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   genre?: Maybe<Scalars['String']['output']>;
@@ -4351,7 +4243,6 @@ export type UserGenreStatistic = {
 };
 
 export type UserLengthStatistic = {
-  __typename?: 'UserLengthStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   length?: Maybe<Scalars['String']['output']>;
@@ -4362,7 +4253,6 @@ export type UserLengthStatistic = {
 
 /** User data for moderators */
 export type UserModData = {
-  __typename?: 'UserModData';
   alts?: Maybe<Array<Maybe<User>>>;
   bans?: Maybe<Scalars['Json']['output']>;
   counts?: Maybe<Scalars['Json']['output']>;
@@ -4373,7 +4263,6 @@ export type UserModData = {
 
 /** A user's general options */
 export type UserOptions = {
-  __typename?: 'UserOptions';
   /** Minutes between activity for them to be merged together. 0 is Never, Above 2 weeks (20160 mins) is Always. */
   activityMergeTime?: Maybe<Scalars['Int']['output']>;
   /** Whether the user receives notifications when a show they are watching aires */
@@ -4398,7 +4287,6 @@ export type UserOptions = {
 
 /** A user's previous name */
 export type UserPreviousName = {
-  __typename?: 'UserPreviousName';
   /** When the user first changed from this name. */
   createdAt?: Maybe<Scalars['Int']['output']>;
   /** A previous name of the user. */
@@ -4408,7 +4296,6 @@ export type UserPreviousName = {
 };
 
 export type UserReleaseYearStatistic = {
-  __typename?: 'UserReleaseYearStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4418,7 +4305,6 @@ export type UserReleaseYearStatistic = {
 };
 
 export type UserScoreStatistic = {
-  __typename?: 'UserScoreStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4451,7 +4337,6 @@ export enum UserStaffNameLanguage {
 }
 
 export type UserStaffStatistic = {
-  __typename?: 'UserStaffStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4461,7 +4346,6 @@ export type UserStaffStatistic = {
 };
 
 export type UserStartYearStatistic = {
-  __typename?: 'UserStartYearStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4471,13 +4355,11 @@ export type UserStartYearStatistic = {
 };
 
 export type UserStatisticTypes = {
-  __typename?: 'UserStatisticTypes';
   anime?: Maybe<UserStatistics>;
   manga?: Maybe<UserStatistics>;
 };
 
 export type UserStatistics = {
-  __typename?: 'UserStatistics';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   countries?: Maybe<Array<Maybe<UserCountryStatistic>>>;
@@ -4585,7 +4467,6 @@ export enum UserStatisticsSort {
 
 /** A user's statistics */
 export type UserStats = {
-  __typename?: 'UserStats';
   activityHistory?: Maybe<Array<Maybe<UserActivityHistory>>>;
   animeListScores?: Maybe<ListScoreStats>;
   animeScoreDistribution?: Maybe<Array<Maybe<ScoreDistribution>>>;
@@ -4608,7 +4489,6 @@ export type UserStats = {
 };
 
 export type UserStatusStatistic = {
-  __typename?: 'UserStatusStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4618,7 +4498,6 @@ export type UserStatusStatistic = {
 };
 
 export type UserStudioStatistic = {
-  __typename?: 'UserStudioStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4628,7 +4507,6 @@ export type UserStudioStatistic = {
 };
 
 export type UserTagStatistic = {
-  __typename?: 'UserTagStatistic';
   chaptersRead: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   meanScore: Scalars['Float']['output'];
@@ -4654,7 +4532,6 @@ export enum UserTitleLanguage {
 }
 
 export type UserVoiceActorStatistic = {
-  __typename?: 'UserVoiceActorStatistic';
   chaptersRead: Scalars['Int']['output'];
   characterIds: Array<Maybe<Scalars['Int']['output']>>;
   count: Scalars['Int']['output'];
@@ -4666,11 +4543,45 @@ export type UserVoiceActorStatistic = {
 
 /** User's year statistics */
 export type YearStats = {
-  __typename?: 'YearStats';
   amount?: Maybe<Scalars['Int']['output']>;
   meanScore?: Maybe<Scalars['Int']['output']>;
   year?: Maybe<Scalars['Int']['output']>;
 };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_anime_MediaConnection_edges_MediaEdge_node_Media = { id: number, isFavourite: boolean };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_anime_MediaConnection_edges_MediaEdge = { node?: ToggleFavMutation_ToggleFavourite_Favourites_anime_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_anime_MediaConnection = { edges?: Array<ToggleFavMutation_ToggleFavourite_Favourites_anime_MediaConnection_edges_MediaEdge | null> | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_manga_MediaConnection_edges_MediaEdge_node_Media = { id: number, isFavourite: boolean };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_manga_MediaConnection_edges_MediaEdge = { node?: ToggleFavMutation_ToggleFavourite_Favourites_manga_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_manga_MediaConnection = { edges?: Array<ToggleFavMutation_ToggleFavourite_Favourites_manga_MediaConnection_edges_MediaEdge | null> | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_characters_CharacterConnection_edges_CharacterEdge_node_Character = { id: number, isFavourite: boolean };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_characters_CharacterConnection_edges_CharacterEdge = { node?: ToggleFavMutation_ToggleFavourite_Favourites_characters_CharacterConnection_edges_CharacterEdge_node_Character | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_characters_CharacterConnection = { edges?: Array<ToggleFavMutation_ToggleFavourite_Favourites_characters_CharacterConnection_edges_CharacterEdge | null> | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_staff_StaffConnection_edges_StaffEdge_node_Staff = { id: number, isFavourite: boolean };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_staff_StaffConnection_edges_StaffEdge = { node?: ToggleFavMutation_ToggleFavourite_Favourites_staff_StaffConnection_edges_StaffEdge_node_Staff | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_staff_StaffConnection = { edges?: Array<ToggleFavMutation_ToggleFavourite_Favourites_staff_StaffConnection_edges_StaffEdge | null> | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_studios_StudioConnection_edges_StudioEdge_node_Studio = { id: number, isFavourite: boolean };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_studios_StudioConnection_edges_StudioEdge = { node?: ToggleFavMutation_ToggleFavourite_Favourites_studios_StudioConnection_edges_StudioEdge_node_Studio | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites_studios_StudioConnection = { edges?: Array<ToggleFavMutation_ToggleFavourite_Favourites_studios_StudioConnection_edges_StudioEdge | null> | null };
+
+export type ToggleFavMutation_ToggleFavourite_Favourites = { __typename: 'Favourites', anime?: ToggleFavMutation_ToggleFavourite_Favourites_anime_MediaConnection | null, manga?: ToggleFavMutation_ToggleFavourite_Favourites_manga_MediaConnection | null, characters?: ToggleFavMutation_ToggleFavourite_Favourites_characters_CharacterConnection | null, staff?: ToggleFavMutation_ToggleFavourite_Favourites_staff_StaffConnection | null, studios?: ToggleFavMutation_ToggleFavourite_Favourites_studios_StudioConnection | null };
+
+export type ToggleFavMutation_Mutation = { ToggleFavourite?: ToggleFavMutation_ToggleFavourite_Favourites | null };
+
 
 export type ToggleFavMutationVariables = Exact<{
   animeId?: InputMaybe<Scalars['Int']['input']>;
@@ -4681,7 +4592,24 @@ export type ToggleFavMutationVariables = Exact<{
 }>;
 
 
-export type ToggleFavMutation = { __typename?: 'Mutation', ToggleFavourite?: { __typename: 'Favourites', anime?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, isFavourite: boolean } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, isFavourite: boolean } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', edges?: Array<{ __typename?: 'CharacterEdge', node?: { __typename?: 'Character', id: number, isFavourite: boolean } | null } | null> | null } | null, staff?: { __typename?: 'StaffConnection', edges?: Array<{ __typename?: 'StaffEdge', node?: { __typename?: 'Staff', id: number, isFavourite: boolean } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', node?: { __typename?: 'Studio', id: number, isFavourite: boolean } | null } | null> | null } | null } | null };
+export type ToggleFavMutation = ToggleFavMutation_Mutation;
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList_startedAt_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList_completedAt_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null, animeList?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions | null, mangaList?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions | null };
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User = { mediaListOptions?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+
+export type SaveMediaListItemMutation_SaveMediaListEntry_MediaList = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_startedAt_FuzzyDate | null, completedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_completedAt_FuzzyDate | null, user?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User | null };
+
+export type SaveMediaListItemMutation_Mutation = { SaveMediaListEntry?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList | null };
+
 
 export type SaveMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4701,14 +4629,24 @@ export type SaveMediaListItemMutationVariables = Exact<{
 }>;
 
 
-export type SaveMediaListItemMutation = { __typename?: 'Mutation', SaveMediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null };
+export type SaveMediaListItemMutation = SaveMediaListItemMutation_Mutation;
+
+export type DeleteMediaListItemMutation_DeleteMediaListEntry_Deleted = { deleted?: boolean | null };
+
+export type DeleteMediaListItemMutation_Mutation = { DeleteMediaListEntry?: DeleteMediaListItemMutation_DeleteMediaListEntry_Deleted | null };
+
 
 export type DeleteMediaListItemMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type DeleteMediaListItemMutation = { __typename?: 'Mutation', DeleteMediaListEntry?: { __typename?: 'Deleted', deleted?: boolean | null } | null };
+export type DeleteMediaListItemMutation = DeleteMediaListItemMutation_Mutation;
+
+export type ChangeLanguageMutation_UpdateUser_User = { id: number };
+
+export type ChangeLanguageMutation_Mutation = { UpdateUser?: ChangeLanguageMutation_UpdateUser_User | null };
+
 
 export type ChangeLanguageMutationVariables = Exact<{
   titleLanguage?: InputMaybe<UserTitleLanguage>;
@@ -4716,7 +4654,12 @@ export type ChangeLanguageMutationVariables = Exact<{
 }>;
 
 
-export type ChangeLanguageMutation = { __typename?: 'Mutation', UpdateUser?: { __typename?: 'User', id: number } | null };
+export type ChangeLanguageMutation = ChangeLanguageMutation_Mutation;
+
+export type UpdateViewerMutation_UpdateUser_User = { id: number };
+
+export type UpdateViewerMutation_Mutation = { UpdateUser?: UpdateViewerMutation_UpdateUser_User | null };
+
 
 export type UpdateViewerMutationVariables = Exact<{
   notificationOptions?: InputMaybe<Array<InputMaybe<NotificationOptionInput>> | InputMaybe<NotificationOptionInput>>;
@@ -4724,7 +4667,12 @@ export type UpdateViewerMutationVariables = Exact<{
 }>;
 
 
-export type UpdateViewerMutation = { __typename?: 'Mutation', UpdateUser?: { __typename?: 'User', id: number } | null };
+export type UpdateViewerMutation = UpdateViewerMutation_Mutation;
+
+export type SaveRecomMutation_SaveRecommendation_Recommendation = { rating?: number | null, userRating?: RecommendationRating | null };
+
+export type SaveRecomMutation_Mutation = { SaveRecommendation?: SaveRecomMutation_SaveRecommendation_Recommendation | null };
+
 
 export type SaveRecomMutationVariables = Exact<{
   mediaId?: InputMaybe<Scalars['Int']['input']>;
@@ -4733,14 +4681,24 @@ export type SaveRecomMutationVariables = Exact<{
 }>;
 
 
-export type SaveRecomMutation = { __typename?: 'Mutation', SaveRecommendation?: { __typename?: 'Recommendation', rating?: number | null, userRating?: RecommendationRating | null } | null };
+export type SaveRecomMutation = SaveRecomMutation_Mutation;
+
+export type DeleteActMutation_DeleteActivity_Deleted = { deleted?: boolean | null };
+
+export type DeleteActMutation_Mutation = { DeleteActivity?: DeleteActMutation_DeleteActivity_Deleted | null };
+
 
 export type DeleteActMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type DeleteActMutation = { __typename?: 'Mutation', DeleteActivity?: { __typename?: 'Deleted', deleted?: boolean | null } | null };
+export type DeleteActMutation = DeleteActMutation_Mutation;
+
+export type ReviewRatingMutation_RateReview_Review = { id: number, userRating?: ReviewRating | null, rating?: number | null, ratingAmount?: number | null };
+
+export type ReviewRatingMutation_Mutation = { RateReview?: ReviewRatingMutation_RateReview_Review | null };
+
 
 export type ReviewRatingMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4748,7 +4706,26 @@ export type ReviewRatingMutationVariables = Exact<{
 }>;
 
 
-export type ReviewRatingMutation = { __typename?: 'Mutation', RateReview?: { __typename?: 'Review', id: number, userRating?: ReviewRating | null, rating?: number | null, ratingAmount?: number | null } | null };
+export type ReviewRatingMutation = ReviewRatingMutation_Mutation;
+
+export type UpdateUserMutation_UpdateUser_User_avatar_UserAvatar = { large?: string | null };
+
+export type UpdateUserMutation_UpdateUser_User_options_UserOptions_notificationOptions_NotificationOption = { type?: NotificationType | null, enabled?: boolean | null };
+
+export type UpdateUserMutation_UpdateUser_User_options_UserOptions_disabledListActivity_ListActivityOption = { type?: MediaListStatus | null, disabled?: boolean | null };
+
+export type UpdateUserMutation_UpdateUser_User_options_UserOptions = { titleLanguage?: UserTitleLanguage | null, staffNameLanguage?: UserStaffNameLanguage | null, restrictMessagesToFollowing?: boolean | null, airingNotifications?: boolean | null, displayAdultContent?: boolean | null, profileColor?: string | null, timezone?: string | null, activityMergeTime?: number | null, notificationOptions?: Array<UpdateUserMutation_UpdateUser_User_options_UserOptions_notificationOptions_NotificationOption | null> | null, disabledListActivity?: Array<UpdateUserMutation_UpdateUser_User_options_UserOptions_disabledListActivity_ListActivityOption | null> | null };
+
+export type UpdateUserMutation_UpdateUser_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions = { customLists?: Array<string | null> | null, sectionOrder?: Array<string | null> | null, splitCompletedSectionByFormat?: boolean | null, advancedScoring?: Array<string | null> | null, advancedScoringEnabled?: boolean | null };
+
+export type UpdateUserMutation_UpdateUser_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions = { customLists?: Array<string | null> | null, sectionOrder?: Array<string | null> | null, splitCompletedSectionByFormat?: boolean | null, advancedScoring?: Array<string | null> | null, advancedScoringEnabled?: boolean | null };
+
+export type UpdateUserMutation_UpdateUser_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null, rowOrder?: string | null, animeList?: UpdateUserMutation_UpdateUser_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions | null, mangaList?: UpdateUserMutation_UpdateUser_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions | null };
+
+export type UpdateUserMutation_UpdateUser_User = { id: number, name: string, about?: string | null, bannerImage?: string | null, unreadNotificationCount?: number | null, donatorTier?: number | null, donatorBadge?: string | null, moderatorRoles?: Array<ModRole | null> | null, avatar?: UpdateUserMutation_UpdateUser_User_avatar_UserAvatar | null, options?: UpdateUserMutation_UpdateUser_User_options_UserOptions | null, mediaListOptions?: UpdateUserMutation_UpdateUser_User_mediaListOptions_MediaListOptions | null };
+
+export type UpdateUserMutation_Mutation = { UpdateUser?: UpdateUserMutation_UpdateUser_User | null };
+
 
 export type UpdateUserMutationVariables = Exact<{
   about?: InputMaybe<Scalars['String']['input']>;
@@ -4770,14 +4747,36 @@ export type UpdateUserMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', UpdateUser?: { __typename?: 'User', id: number, name: string, about?: string | null, bannerImage?: string | null, unreadNotificationCount?: number | null, donatorTier?: number | null, donatorBadge?: string | null, moderatorRoles?: Array<ModRole | null> | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, options?: { __typename?: 'UserOptions', titleLanguage?: UserTitleLanguage | null, staffNameLanguage?: UserStaffNameLanguage | null, restrictMessagesToFollowing?: boolean | null, airingNotifications?: boolean | null, displayAdultContent?: boolean | null, profileColor?: string | null, timezone?: string | null, activityMergeTime?: number | null, notificationOptions?: Array<{ __typename?: 'NotificationOption', type?: NotificationType | null, enabled?: boolean | null } | null> | null, disabledListActivity?: Array<{ __typename?: 'ListActivityOption', type?: MediaListStatus | null, disabled?: boolean | null } | null> | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, rowOrder?: string | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null, sectionOrder?: Array<string | null> | null, splitCompletedSectionByFormat?: boolean | null, advancedScoring?: Array<string | null> | null, advancedScoringEnabled?: boolean | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null, sectionOrder?: Array<string | null> | null, splitCompletedSectionByFormat?: boolean | null, advancedScoring?: Array<string | null> | null, advancedScoringEnabled?: boolean | null } | null } | null } | null };
+export type UpdateUserMutation = UpdateUserMutation_Mutation;
+
+export type ToggleFollowMutation_ToggleFollow_User = { id: number, isFollowing?: boolean | null };
+
+export type ToggleFollowMutation_Mutation = { ToggleFollow?: ToggleFollowMutation_ToggleFollow_User | null };
+
 
 export type ToggleFollowMutationVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ToggleFollowMutation = { __typename?: 'Mutation', ToggleFollow?: { __typename?: 'User', id: number, isFollowing?: boolean | null } | null };
+export type ToggleFollowMutation = ToggleFollowMutation_Mutation;
+
+export type ToggleLikeMutation_ToggleLikeV2_ActivityReply = { __typename: 'ActivityReply', id: number, isLiked?: boolean | null, likeCount: number };
+
+export type ToggleLikeMutation_ToggleLikeV2_ListActivity = { __typename: 'ListActivity', id: number, isLiked?: boolean | null, likeCount: number };
+
+export type ToggleLikeMutation_ToggleLikeV2_MessageActivity = { __typename: 'MessageActivity', id: number, isLiked?: boolean | null, likeCount: number };
+
+export type ToggleLikeMutation_ToggleLikeV2_TextActivity = { __typename: 'TextActivity', id: number, isLiked?: boolean | null, likeCount: number };
+
+export type ToggleLikeMutation_ToggleLikeV2_Thread = { __typename: 'Thread', id: number, isLiked?: boolean | null, likeCount: number };
+
+export type ToggleLikeMutation_ToggleLikeV2_ThreadComment = { __typename: 'ThreadComment', id: number, isLiked?: boolean | null, likeCount: number };
+
+export type ToggleLikeMutation_ToggleLikeV2 = ToggleLikeMutation_ToggleLikeV2_ActivityReply | ToggleLikeMutation_ToggleLikeV2_ListActivity | ToggleLikeMutation_ToggleLikeV2_MessageActivity | ToggleLikeMutation_ToggleLikeV2_TextActivity | ToggleLikeMutation_ToggleLikeV2_Thread | ToggleLikeMutation_ToggleLikeV2_ThreadComment;
+
+export type ToggleLikeMutation_Mutation = { ToggleLikeV2?: ToggleLikeMutation_ToggleLikeV2 | null };
+
 
 export type ToggleLikeMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4785,7 +4784,12 @@ export type ToggleLikeMutationVariables = Exact<{
 }>;
 
 
-export type ToggleLikeMutation = { __typename?: 'Mutation', ToggleLikeV2?: { __typename: 'ActivityReply', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'ListActivity', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'MessageActivity', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'TextActivity', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'Thread', id: number, isLiked?: boolean | null, likeCount: number } | { __typename: 'ThreadComment', id: number, isLiked?: boolean | null, likeCount: number } | null };
+export type ToggleLikeMutation = ToggleLikeMutation_Mutation;
+
+export type ToggleThreadSubscriptionMutation_ToggleThreadSubscription_Thread = { id: number, isSubscribed?: boolean | null };
+
+export type ToggleThreadSubscriptionMutation_Mutation = { ToggleThreadSubscription?: ToggleThreadSubscriptionMutation_ToggleThreadSubscription_Thread | null };
+
 
 export type ToggleThreadSubscriptionMutationVariables = Exact<{
   threadId?: InputMaybe<Scalars['Int']['input']>;
@@ -4793,7 +4797,12 @@ export type ToggleThreadSubscriptionMutationVariables = Exact<{
 }>;
 
 
-export type ToggleThreadSubscriptionMutation = { __typename?: 'Mutation', ToggleThreadSubscription?: { __typename?: 'Thread', id: number, isSubscribed?: boolean | null } | null };
+export type ToggleThreadSubscriptionMutation = ToggleThreadSubscriptionMutation_Mutation;
+
+export type SaveThreadCommentMutation_SaveThreadComment_ThreadComment = { id: number };
+
+export type SaveThreadCommentMutation_Mutation = { SaveThreadComment?: SaveThreadCommentMutation_SaveThreadComment_ThreadComment | null };
+
 
 export type SaveThreadCommentMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4803,14 +4812,24 @@ export type SaveThreadCommentMutationVariables = Exact<{
 }>;
 
 
-export type SaveThreadCommentMutation = { __typename?: 'Mutation', SaveThreadComment?: { __typename?: 'ThreadComment', id: number } | null };
+export type SaveThreadCommentMutation = SaveThreadCommentMutation_Mutation;
+
+export type DeleteThreadCommentMutation_DeleteThreadComment_Deleted = { deleted?: boolean | null };
+
+export type DeleteThreadCommentMutation_Mutation = { DeleteThreadComment?: DeleteThreadCommentMutation_DeleteThreadComment_Deleted | null };
+
 
 export type DeleteThreadCommentMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type DeleteThreadCommentMutation = { __typename?: 'Mutation', DeleteThreadComment?: { __typename?: 'Deleted', deleted?: boolean | null } | null };
+export type DeleteThreadCommentMutation = DeleteThreadCommentMutation_Mutation;
+
+export type SaveThreadMutation_SaveThread_Thread = { id: number };
+
+export type SaveThreadMutation_Mutation = { SaveThread?: SaveThreadMutation_SaveThread_Thread | null };
+
 
 export type SaveThreadMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -4821,21 +4840,66 @@ export type SaveThreadMutationVariables = Exact<{
 }>;
 
 
-export type SaveThreadMutation = { __typename?: 'Mutation', SaveThread?: { __typename?: 'Thread', id: number } | null };
+export type SaveThreadMutation = SaveThreadMutation_Mutation;
+
+export type DeleteThreadMutation_DeleteThread_Deleted = { deleted?: boolean | null };
+
+export type DeleteThreadMutation_Mutation = { DeleteThread?: DeleteThreadMutation_DeleteThread_Deleted | null };
+
 
 export type DeleteThreadMutationVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type DeleteThreadMutation = { __typename?: 'Mutation', DeleteThread?: { __typename?: 'Deleted', deleted?: boolean | null } | null };
+export type DeleteThreadMutation = DeleteThreadMutation_Mutation;
+
+export type MediaAniCardQueryQuery_Media_Media_title_MediaTitle = { romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null };
+
+export type MediaAniCardQueryQuery_Media_Media_coverImage_MediaCoverImage = { color?: string | null, extraLarge?: string | null };
+
+export type MediaAniCardQueryQuery_Media_Media_startDate_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type MediaAniCardQueryQuery_Media_Media_tags_MediaTag = { name: string };
+
+export type MediaAniCardQueryQuery_Media_Media = { type?: MediaType | null, format?: MediaFormat | null, averageScore?: number | null, meanScore?: number | null, status?: MediaStatus | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, idMal?: number | null, genres?: Array<string | null> | null, descriptionHTML?: string | null, title?: MediaAniCardQueryQuery_Media_Media_title_MediaTitle | null, coverImage?: MediaAniCardQueryQuery_Media_Media_coverImage_MediaCoverImage | null, startDate?: MediaAniCardQueryQuery_Media_Media_startDate_FuzzyDate | null, tags?: Array<MediaAniCardQueryQuery_Media_Media_tags_MediaTag | null> | null };
+
+export type MediaAniCardQueryQuery_Query = { Media?: MediaAniCardQueryQuery_Media_Media | null };
+
 
 export type MediaAniCardQueryQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type MediaAniCardQueryQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', type?: MediaType | null, format?: MediaFormat | null, averageScore?: number | null, meanScore?: number | null, status?: MediaStatus | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, idMal?: number | null, genres?: Array<string | null> | null, descriptionHTML?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', name: string } | null> | null } | null };
+export type MediaAniCardQueryQuery = MediaAniCardQueryQuery_Query;
+
+export type WeeklyAnimeQuery_Page_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, total?: number | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle = { english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage = { medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_startedAt_FuzzyDate | null, completedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_completedAt_FuzzyDate | null, user?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats = { scoreDistribution?: Array<WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution | null> | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule = { id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule = { id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media | null };
+
+export type WeeklyAnimeQuery_Page_Page = { pageInfo?: WeeklyAnimeQuery_Page_Page_pageInfo_PageInfo | null, airingSchedules?: Array<WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule | null> | null };
+
+export type WeeklyAnimeQuery_Query = { Page?: WeeklyAnimeQuery_Page_Page | null };
+
 
 export type WeeklyAnimeQueryVariables = Exact<{
   weekStart?: InputMaybe<Scalars['Int']['input']>;
@@ -4844,39 +4908,135 @@ export type WeeklyAnimeQueryVariables = Exact<{
 }>;
 
 
-export type WeeklyAnimeQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null };
+export type WeeklyAnimeQuery = WeeklyAnimeQuery_Query;
 
-export type AiringTodayQueryVariables = Exact<{
-  dayStart?: InputMaybe<Scalars['Int']['input']>;
-  dayEnd?: InputMaybe<Scalars['Int']['input']>;
+export type AiringRangeQuery_Page_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, total?: number | null };
+
+export type AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule = { id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media | null };
+
+export type AiringRangeQuery_Page_Page = { pageInfo?: AiringRangeQuery_Page_Page_pageInfo_PageInfo | null, airingSchedules?: Array<AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule | null> | null };
+
+export type AiringRangeQuery_Query = { Page?: AiringRangeQuery_Page_Page | null };
+
+
+export type AiringRangeQueryVariables = Exact<{
+  start?: InputMaybe<Scalars['Int']['input']>;
+  end?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type AiringTodayQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, total?: number | null } | null, airingSchedules?: Array<{ __typename?: 'AiringSchedule', id: number, episode: number, airingAt: number, timeUntilAiring: number, media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null };
+export type AiringRangeQuery = AiringRangeQuery_Query;
+
+export type SeasonalAnimeQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, hasNextPage?: boolean | null };
+
+export type SeasonalAnimeQuery_Page_Page_media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule = { airingAt: number };
+
+export type SeasonalAnimeQuery_Page_Page_media_Media_airingSchedule_AiringScheduleConnection = { nodes?: Array<SeasonalAnimeQuery_Page_Page_media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule | null> | null };
+
+export type SeasonalAnimeQuery_Page_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, airingSchedule?: SeasonalAnimeQuery_Page_Page_media_Media_airingSchedule_AiringScheduleConnection | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type SeasonalAnimeQuery_Page_Page = { pageInfo?: SeasonalAnimeQuery_Page_Page_pageInfo_PageInfo | null, media?: Array<SeasonalAnimeQuery_Page_Page_media_Media | null> | null };
+
+export type SeasonalAnimeQuery_Query = { Page?: SeasonalAnimeQuery_Page_Page | null };
+
+
+export type SeasonalAnimeQueryVariables = Exact<{
+  season?: InputMaybe<MediaSeason>;
+  seasonYear?: InputMaybe<Scalars['Int']['input']>;
+  onList?: InputMaybe<Scalars['Boolean']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type SeasonalAnimeQuery = SeasonalAnimeQuery_Query;
+
+export type TagCollectionQuery_MediaTagCollection_MediaTag = { id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null, userId?: number | null };
+
+export type TagCollectionQuery_Query = { MediaTagCollection?: Array<TagCollectionQuery_MediaTagCollection_MediaTag | null> | null };
+
 
 export type TagCollectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TagCollectionQuery = { __typename?: 'Query', MediaTagCollection?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null, userId?: number | null } | null> | null };
+export type TagCollectionQuery = TagCollectionQuery_Query;
+
+export type LinkSourceCollectionQuery_AnimeExternalLinkSourceCollection_MediaExternalLink = { id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null };
+
+export type LinkSourceCollectionQuery_MangaExternalLinkSourceCollection_MediaExternalLink = { id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null };
+
+export type LinkSourceCollectionQuery_Query = { AnimeExternalLinkSourceCollection?: Array<LinkSourceCollectionQuery_AnimeExternalLinkSourceCollection_MediaExternalLink | null> | null, MangaExternalLinkSourceCollection?: Array<LinkSourceCollectionQuery_MangaExternalLinkSourceCollection_MediaExternalLink | null> | null };
+
 
 export type LinkSourceCollectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LinkSourceCollectionQuery = { __typename?: 'Query', AnimeExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null, MangaExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null };
+export type LinkSourceCollectionQuery = LinkSourceCollectionQuery_Query;
+
+export type GenreCollectionQuery_Query = { GenreCollection?: Array<string | null> | null };
+
 
 export type GenreCollectionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GenreCollectionQuery = { __typename?: 'Query', GenreCollection?: Array<string | null> | null };
+export type GenreCollectionQuery = GenreCollectionQuery_Query;
+
+export type AllCollectionsQuery_MediaTagCollection_MediaTag = { id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null, userId?: number | null };
+
+export type AllCollectionsQuery_AnimeExternalLinkSourceCollection_MediaExternalLink = { id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null };
+
+export type AllCollectionsQuery_MangaExternalLinkSourceCollection_MediaExternalLink = { id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null };
+
+export type AllCollectionsQuery_Query = { GenreCollection?: Array<string | null> | null, MediaTagCollection?: Array<AllCollectionsQuery_MediaTagCollection_MediaTag | null> | null, AnimeExternalLinkSourceCollection?: Array<AllCollectionsQuery_AnimeExternalLinkSourceCollection_MediaExternalLink | null> | null, MangaExternalLinkSourceCollection?: Array<AllCollectionsQuery_MangaExternalLinkSourceCollection_MediaExternalLink | null> | null };
+
 
 export type AllCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllCollectionsQuery = { __typename?: 'Query', GenreCollection?: Array<string | null> | null, MediaTagCollection?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null, rank?: number | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, isAdult?: boolean | null, userId?: number | null } | null> | null, AnimeExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null, MangaExternalLinkSourceCollection?: Array<{ __typename?: 'MediaExternalLink', id: number, url?: string | null, site: string, siteId?: number | null, type?: ExternalLinkType | null, language?: string | null, color?: string | null, icon?: string | null, notes?: string | null, isDisabled?: boolean | null } | null> | null };
+export type AllCollectionsQuery = AllCollectionsQuery_Query;
 
-export type MediaListEntryMetaFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null };
+export type MediaListEntryMetaFragment = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_startedAt_FuzzyDate | null, completedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_completedAt_FuzzyDate | null, user?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User | null };
 
-export type MainMetaFragment = { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null };
+export type MainMetaFragment = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AnimeExploreQuery_Viewer_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type AnimeExploreQuery_Viewer_User = { mediaListOptions?: AnimeExploreQuery_Viewer_User_mediaListOptions_MediaListOptions | null };
+
+export type AnimeExploreQuery_trending_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type AnimeExploreQuery_trending_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AnimeExploreQuery_trending_Page = { pageInfo?: AnimeExploreQuery_trending_Page_pageInfo_PageInfo | null, media?: Array<AnimeExploreQuery_trending_Page_media_Media | null> | null };
+
+export type AnimeExploreQuery_popular_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type AnimeExploreQuery_popular_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AnimeExploreQuery_popular_Page = { pageInfo?: AnimeExploreQuery_popular_Page_pageInfo_PageInfo | null, media?: Array<AnimeExploreQuery_popular_Page_media_Media | null> | null };
+
+export type AnimeExploreQuery_top_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type AnimeExploreQuery_top_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AnimeExploreQuery_top_Page = { pageInfo?: AnimeExploreQuery_top_Page_pageInfo_PageInfo | null, media?: Array<AnimeExploreQuery_top_Page_media_Media | null> | null };
+
+export type AnimeExploreQuery_thisSeason_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type AnimeExploreQuery_thisSeason_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AnimeExploreQuery_thisSeason_Page = { pageInfo?: AnimeExploreQuery_thisSeason_Page_pageInfo_PageInfo | null, media?: Array<AnimeExploreQuery_thisSeason_Page_media_Media | null> | null };
+
+export type AnimeExploreQuery_nextSeason_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type AnimeExploreQuery_nextSeason_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AnimeExploreQuery_nextSeason_Page = { pageInfo?: AnimeExploreQuery_nextSeason_Page_pageInfo_PageInfo | null, media?: Array<AnimeExploreQuery_nextSeason_Page_media_Media | null> | null };
+
+export type AnimeExploreQuery_Query = { Viewer?: AnimeExploreQuery_Viewer_User | null, trending?: AnimeExploreQuery_trending_Page | null, popular?: AnimeExploreQuery_popular_Page | null, top?: AnimeExploreQuery_top_Page | null, thisSeason?: AnimeExploreQuery_thisSeason_Page | null, nextSeason?: AnimeExploreQuery_nextSeason_Page | null };
+
 
 export type AnimeExploreQueryVariables = Exact<{
   includeViewer: Scalars['Boolean']['input'];
@@ -4891,7 +5051,38 @@ export type AnimeExploreQueryVariables = Exact<{
 }>;
 
 
-export type AnimeExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, thisSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, nextSeason?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+export type AnimeExploreQuery = AnimeExploreQuery_Query;
+
+export type MangaExploreQuery_Viewer_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type MangaExploreQuery_Viewer_User = { mediaListOptions?: MangaExploreQuery_Viewer_User_mediaListOptions_MediaListOptions | null };
+
+export type MangaExploreQuery_newReleases_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type MangaExploreQuery_newReleases_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type MangaExploreQuery_newReleases_Page = { pageInfo?: MangaExploreQuery_newReleases_Page_pageInfo_PageInfo | null, media?: Array<MangaExploreQuery_newReleases_Page_media_Media | null> | null };
+
+export type MangaExploreQuery_trending_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type MangaExploreQuery_trending_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type MangaExploreQuery_trending_Page = { pageInfo?: MangaExploreQuery_trending_Page_pageInfo_PageInfo | null, media?: Array<MangaExploreQuery_trending_Page_media_Media | null> | null };
+
+export type MangaExploreQuery_popular_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type MangaExploreQuery_popular_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type MangaExploreQuery_popular_Page = { pageInfo?: MangaExploreQuery_popular_Page_pageInfo_PageInfo | null, media?: Array<MangaExploreQuery_popular_Page_media_Media | null> | null };
+
+export type MangaExploreQuery_top_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type MangaExploreQuery_top_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type MangaExploreQuery_top_Page = { pageInfo?: MangaExploreQuery_top_Page_pageInfo_PageInfo | null, media?: Array<MangaExploreQuery_top_Page_media_Media | null> | null };
+
+export type MangaExploreQuery_Query = { Viewer?: MangaExploreQuery_Viewer_User | null, newReleases?: MangaExploreQuery_newReleases_Page | null, trending?: MangaExploreQuery_trending_Page | null, popular?: MangaExploreQuery_popular_Page | null, top?: MangaExploreQuery_top_Page | null };
+
 
 export type MangaExploreQueryVariables = Exact<{
   includeViewer: Scalars['Boolean']['input'];
@@ -4903,7 +5094,38 @@ export type MangaExploreQueryVariables = Exact<{
 }>;
 
 
-export type MangaExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+export type MangaExploreQuery = MangaExploreQuery_Query;
+
+export type ManhwaExploreQuery_Viewer_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type ManhwaExploreQuery_Viewer_User = { mediaListOptions?: ManhwaExploreQuery_Viewer_User_mediaListOptions_MediaListOptions | null };
+
+export type ManhwaExploreQuery_newReleases_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhwaExploreQuery_newReleases_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhwaExploreQuery_newReleases_Page = { pageInfo?: ManhwaExploreQuery_newReleases_Page_pageInfo_PageInfo | null, media?: Array<ManhwaExploreQuery_newReleases_Page_media_Media | null> | null };
+
+export type ManhwaExploreQuery_trending_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhwaExploreQuery_trending_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhwaExploreQuery_trending_Page = { pageInfo?: ManhwaExploreQuery_trending_Page_pageInfo_PageInfo | null, media?: Array<ManhwaExploreQuery_trending_Page_media_Media | null> | null };
+
+export type ManhwaExploreQuery_popular_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhwaExploreQuery_popular_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhwaExploreQuery_popular_Page = { pageInfo?: ManhwaExploreQuery_popular_Page_pageInfo_PageInfo | null, media?: Array<ManhwaExploreQuery_popular_Page_media_Media | null> | null };
+
+export type ManhwaExploreQuery_top_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhwaExploreQuery_top_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhwaExploreQuery_top_Page = { pageInfo?: ManhwaExploreQuery_top_Page_pageInfo_PageInfo | null, media?: Array<ManhwaExploreQuery_top_Page_media_Media | null> | null };
+
+export type ManhwaExploreQuery_Query = { Viewer?: ManhwaExploreQuery_Viewer_User | null, newReleases?: ManhwaExploreQuery_newReleases_Page | null, trending?: ManhwaExploreQuery_trending_Page | null, popular?: ManhwaExploreQuery_popular_Page | null, top?: ManhwaExploreQuery_top_Page | null };
+
 
 export type ManhwaExploreQueryVariables = Exact<{
   includeViewer: Scalars['Boolean']['input'];
@@ -4915,7 +5137,38 @@ export type ManhwaExploreQueryVariables = Exact<{
 }>;
 
 
-export type ManhwaExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+export type ManhwaExploreQuery = ManhwaExploreQuery_Query;
+
+export type ManhuaExploreQuery_Viewer_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type ManhuaExploreQuery_Viewer_User = { mediaListOptions?: ManhuaExploreQuery_Viewer_User_mediaListOptions_MediaListOptions | null };
+
+export type ManhuaExploreQuery_newReleases_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhuaExploreQuery_newReleases_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhuaExploreQuery_newReleases_Page = { pageInfo?: ManhuaExploreQuery_newReleases_Page_pageInfo_PageInfo | null, media?: Array<ManhuaExploreQuery_newReleases_Page_media_Media | null> | null };
+
+export type ManhuaExploreQuery_trending_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhuaExploreQuery_trending_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhuaExploreQuery_trending_Page = { pageInfo?: ManhuaExploreQuery_trending_Page_pageInfo_PageInfo | null, media?: Array<ManhuaExploreQuery_trending_Page_media_Media | null> | null };
+
+export type ManhuaExploreQuery_popular_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhuaExploreQuery_popular_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhuaExploreQuery_popular_Page = { pageInfo?: ManhuaExploreQuery_popular_Page_pageInfo_PageInfo | null, media?: Array<ManhuaExploreQuery_popular_Page_media_Media | null> | null };
+
+export type ManhuaExploreQuery_top_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type ManhuaExploreQuery_top_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type ManhuaExploreQuery_top_Page = { pageInfo?: ManhuaExploreQuery_top_Page_pageInfo_PageInfo | null, media?: Array<ManhuaExploreQuery_top_Page_media_Media | null> | null };
+
+export type ManhuaExploreQuery_Query = { Viewer?: ManhuaExploreQuery_Viewer_User | null, newReleases?: ManhuaExploreQuery_newReleases_Page | null, trending?: ManhuaExploreQuery_trending_Page | null, popular?: ManhuaExploreQuery_popular_Page | null, top?: ManhuaExploreQuery_top_Page | null };
+
 
 export type ManhuaExploreQueryVariables = Exact<{
   includeViewer: Scalars['Boolean']['input'];
@@ -4927,7 +5180,38 @@ export type ManhuaExploreQueryVariables = Exact<{
 }>;
 
 
-export type ManhuaExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+export type ManhuaExploreQuery = ManhuaExploreQuery_Query;
+
+export type NovelExploreQuery_Viewer_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type NovelExploreQuery_Viewer_User = { mediaListOptions?: NovelExploreQuery_Viewer_User_mediaListOptions_MediaListOptions | null };
+
+export type NovelExploreQuery_newReleases_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type NovelExploreQuery_newReleases_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type NovelExploreQuery_newReleases_Page = { pageInfo?: NovelExploreQuery_newReleases_Page_pageInfo_PageInfo | null, media?: Array<NovelExploreQuery_newReleases_Page_media_Media | null> | null };
+
+export type NovelExploreQuery_trending_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type NovelExploreQuery_trending_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type NovelExploreQuery_trending_Page = { pageInfo?: NovelExploreQuery_trending_Page_pageInfo_PageInfo | null, media?: Array<NovelExploreQuery_trending_Page_media_Media | null> | null };
+
+export type NovelExploreQuery_popular_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type NovelExploreQuery_popular_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type NovelExploreQuery_popular_Page = { pageInfo?: NovelExploreQuery_popular_Page_pageInfo_PageInfo | null, media?: Array<NovelExploreQuery_popular_Page_media_Media | null> | null };
+
+export type NovelExploreQuery_top_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type NovelExploreQuery_top_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type NovelExploreQuery_top_Page = { pageInfo?: NovelExploreQuery_top_Page_pageInfo_PageInfo | null, media?: Array<NovelExploreQuery_top_Page_media_Media | null> | null };
+
+export type NovelExploreQuery_Query = { Viewer?: NovelExploreQuery_Viewer_User | null, newReleases?: NovelExploreQuery_newReleases_Page | null, trending?: NovelExploreQuery_trending_Page | null, popular?: NovelExploreQuery_popular_Page | null, top?: NovelExploreQuery_top_Page | null };
+
 
 export type NovelExploreQueryVariables = Exact<{
   includeViewer: Scalars['Boolean']['input'];
@@ -4939,7 +5223,68 @@ export type NovelExploreQueryVariables = Exact<{
 }>;
 
 
-export type NovelExploreQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null, newReleases?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, trending?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, popular?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, top?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+export type NovelExploreQuery = NovelExploreQuery_Query;
+
+export type RecommendationsQuery_Page_Page_pageInfo_PageInfo = { currentPage?: number | null, hasNextPage?: boolean | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_title_MediaTitle = { userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_coverImage_MediaCoverImage = { color?: string | null, extraLarge?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_stats_MediaStats = { scoreDistribution?: Array<RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution | null> | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media = { id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, meanScore?: number | null, averageScore?: number | null, title?: RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_title_MediaTitle | null, coverImage?: RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_coverImage_MediaCoverImage | null, stats?: RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media_stats_MediaStats | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_title_MediaTitle = { userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_coverImage_MediaCoverImage = { color?: string | null, extraLarge?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_stats_MediaStats_scoreDistribution_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_stats_MediaStats = { scoreDistribution?: Array<RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_stats_MediaStats_scoreDistribution_ScoreDistribution | null> | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media = { id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, title?: RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_title_MediaTitle | null, coverImage?: RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_coverImage_MediaCoverImage | null, stats?: RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media_stats_MediaStats | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_options_UserOptions = { profileColor?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_title_MediaTitle = { userPreferred?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { color?: string | null, extraLarge?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media = { id: number, siteUrl?: string | null, title?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_title_MediaTitle | null, coverImage?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection = { nodes?: Array<RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media | null> | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_title_MediaTitle = { userPreferred?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { color?: string | null, extraLarge?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media = { id: number, siteUrl?: string | null, title?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_title_MediaTitle | null, coverImage?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection = { nodes?: Array<RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media | null> | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_name_CharacterName = { userPreferred?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage = { large?: string | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character = { id: number, gender?: string | null, siteUrl?: string | null, name?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_name_CharacterName | null, image?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection = { nodes?: Array<RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites = { anime?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_anime_MediaConnection | null, manga?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_manga_MediaConnection | null, characters?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites_characters_CharacterConnection | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User = { id: number, name: string, bannerImage?: string | null, about?: string | null, createdAt?: number | null, siteUrl?: string | null, options?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_options_UserOptions | null, avatar?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_avatar_UserAvatar | null, favourites?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User_favourites_Favourites | null };
+
+export type RecommendationsQuery_Page_Page_recommendations_Recommendation = { id: number, rating?: number | null, userRating?: RecommendationRating | null, media?: RecommendationsQuery_Page_Page_recommendations_Recommendation_media_Media | null, mediaRecommendation?: RecommendationsQuery_Page_Page_recommendations_Recommendation_mediaRecommendation_Media | null, user?: RecommendationsQuery_Page_Page_recommendations_Recommendation_user_User | null };
+
+export type RecommendationsQuery_Page_Page = { pageInfo?: RecommendationsQuery_Page_Page_pageInfo_PageInfo | null, recommendations?: Array<RecommendationsQuery_Page_Page_recommendations_Recommendation | null> | null };
+
+export type RecommendationsQuery_Query = { Page?: RecommendationsQuery_Page_Page | null };
+
 
 export type RecommendationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -4949,7 +5294,18 @@ export type RecommendationsQueryVariables = Exact<{
 }>;
 
 
-export type RecommendationsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', currentPage?: number | null, hasNextPage?: boolean | null } | null, recommendations?: Array<{ __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, media?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, isAdult?: boolean | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, createdAt?: number | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null } | null> | null } | null };
+export type RecommendationsQuery = RecommendationsQuery_Query;
+
+export type StudioListQuery_Studio_Studio_media_MediaConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type StudioListQuery_Studio_Studio_media_MediaConnection_nodes_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type StudioListQuery_Studio_Studio_media_MediaConnection = { pageInfo?: StudioListQuery_Studio_Studio_media_MediaConnection_pageInfo_PageInfo | null, nodes?: Array<StudioListQuery_Studio_Studio_media_MediaConnection_nodes_Media | null> | null };
+
+export type StudioListQuery_Studio_Studio = { id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: StudioListQuery_Studio_Studio_media_MediaConnection | null };
+
+export type StudioListQuery_Query = { Studio?: StudioListQuery_Studio_Studio | null };
+
 
 export type StudioListQueryVariables = Exact<{
   studioId?: InputMaybe<Scalars['Int']['input']>;
@@ -4958,9 +5314,34 @@ export type StudioListQueryVariables = Exact<{
 }>;
 
 
-export type StudioListQuery = { __typename?: 'Query', Studio?: { __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, siteUrl?: string | null, isFavourite: boolean, media?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null } | null };
+export type StudioListQuery = StudioListQuery_Query;
 
-export type MediaListEntryFragment = { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null };
+export type MediaListEntryFragment_MediaList_startedAt_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type MediaListEntryFragment_MediaList_completedAt_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type MediaListEntryFragment_MediaList_media_Media_tags_MediaTag = { id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null };
+
+export type MediaListEntryFragment_MediaList_media_Media = { synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<MediaListEntryFragment_MediaList_media_Media_tags_MediaTag | null> | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type MediaListEntryFragment = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: MediaListEntryFragment_MediaList_startedAt_FuzzyDate | null, completedAt?: MediaListEntryFragment_MediaList_completedAt_FuzzyDate | null, media?: MediaListEntryFragment_MediaList_media_Media | null };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup_entries_MediaList = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: MediaListEntryFragment_MediaList_startedAt_FuzzyDate | null, completedAt?: MediaListEntryFragment_MediaList_completedAt_FuzzyDate | null, media?: MediaListEntryFragment_MediaList_media_Media | null };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup = { name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup_entries_MediaList | null> | null };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_anime_UserStatistics = { count: number };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_manga_UserStatistics = { count: number };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes = { anime?: UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_anime_UserStatistics | null, manga?: UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_manga_UserStatistics | null };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User = { statistics?: UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes | null };
+
+export type UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection = { lists?: Array<UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup | null> | null, user?: UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_user_User | null };
+
+export type UserAnimeListCollectionQuery_Query = { MediaListCollection?: UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection | null };
+
 
 export type UserAnimeListCollectionQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4969,7 +5350,24 @@ export type UserAnimeListCollectionQueryVariables = Exact<{
 }>;
 
 
-export type UserAnimeListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
+export type UserAnimeListCollectionQuery = UserAnimeListCollectionQuery_Query;
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup_entries_MediaList = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: MediaListEntryFragment_MediaList_startedAt_FuzzyDate | null, completedAt?: MediaListEntryFragment_MediaList_completedAt_FuzzyDate | null, media?: MediaListEntryFragment_MediaList_media_Media | null };
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup = { name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup_entries_MediaList | null> | null };
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_anime_UserStatistics = { count: number };
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_manga_UserStatistics = { count: number };
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes = { anime?: UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_anime_UserStatistics | null, manga?: UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes_manga_UserStatistics | null };
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User = { statistics?: UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User_statistics_UserStatisticTypes | null };
+
+export type UserMangaListCollectionQuery_MediaListCollection_MediaListCollection = { lists?: Array<UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup | null> | null, user?: UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_user_User | null };
+
+export type UserMangaListCollectionQuery_Query = { MediaListCollection?: UserMangaListCollectionQuery_MediaListCollection_MediaListCollection | null };
+
 
 export type UserMangaListCollectionQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4978,7 +5376,20 @@ export type UserMangaListCollectionQueryVariables = Exact<{
 }>;
 
 
-export type UserMangaListCollectionQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', lists?: Array<{ __typename?: 'MediaListGroup', name?: string | null, isCustomList?: boolean | null, isSplitCompletedList?: boolean | null, entries?: Array<{ __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, priority?: number | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, advancedScores?: any | null, createdAt?: number | null, notes?: string | null, updatedAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'Media', synonyms?: Array<string | null> | null, id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, descriptionHTML?: string | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, isAdult?: boolean | null, isMediaSpoiler?: boolean | null, isGeneralSpoiler?: boolean | null, category?: string | null } | null> | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null> | null, user?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number } | null, manga?: { __typename?: 'UserStatistics', count: number } | null } | null } | null } | null };
+export type UserMangaListCollectionQuery = UserMangaListCollectionQuery_Query;
+
+export type UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User_mediaListOptions_MediaListOptions = { animeList?: UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions | null, mangaList?: UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions | null };
+
+export type UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User = { mediaListOptions?: UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User_mediaListOptions_MediaListOptions | null };
+
+export type UserCustomListsQuery_MediaListCollection_MediaListCollection = { user?: UserCustomListsQuery_MediaListCollection_MediaListCollection_user_User | null };
+
+export type UserCustomListsQuery_Query = { MediaListCollection?: UserCustomListsQuery_MediaListCollection_MediaListCollection | null };
+
 
 export type UserCustomListsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -4987,7 +5398,22 @@ export type UserCustomListsQueryVariables = Exact<{
 }>;
 
 
-export type UserCustomListsQuery = { __typename?: 'Query', MediaListCollection?: { __typename?: 'MediaListCollection', user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null };
+export type UserCustomListsQuery = UserCustomListsQuery_Query;
+
+export type RandomMediaQuery_Page_Page_pageInfo_PageInfo = { total?: number | null };
+
+export type RandomMediaQuery_Page_Page_media_Media_tags_MediaTag = { id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null };
+
+export type RandomMediaQuery_Page_Page_media_Media_title_MediaTitle = { userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null };
+
+export type RandomMediaQuery_Page_Page_media_Media_coverImage_MediaCoverImage = { extraLarge?: string | null };
+
+export type RandomMediaQuery_Page_Page_media_Media = { id: number, idMal?: number | null, type?: MediaType | null, format?: MediaFormat | null, isAdult?: boolean | null, genres?: Array<string | null> | null, description?: string | null, status?: MediaStatus | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, tags?: Array<RandomMediaQuery_Page_Page_media_Media_tags_MediaTag | null> | null, title?: RandomMediaQuery_Page_Page_media_Media_title_MediaTitle | null, coverImage?: RandomMediaQuery_Page_Page_media_Media_coverImage_MediaCoverImage | null };
+
+export type RandomMediaQuery_Page_Page = { pageInfo?: RandomMediaQuery_Page_Page_pageInfo_PageInfo | null, media?: Array<RandomMediaQuery_Page_Page_media_Media | null> | null };
+
+export type RandomMediaQuery_Query = { Page?: RandomMediaQuery_Page_Page | null };
+
 
 export type RandomMediaQueryVariables = Exact<{
   random?: InputMaybe<Scalars['Int']['input']>;
@@ -4997,7 +5423,132 @@ export type RandomMediaQueryVariables = Exact<{
 }>;
 
 
-export type RandomMediaQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, type?: MediaType | null, format?: MediaFormat | null, isAdult?: boolean | null, genres?: Array<string | null> | null, description?: string | null, status?: MediaStatus | null, bannerImage?: string | null, meanScore?: number | null, averageScore?: number | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null } | null> | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, romaji?: string | null, native?: string | null, english?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null };
+export type RandomMediaQuery = RandomMediaQuery_Query;
+
+export type AniMediaQuery_User_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type AniMediaQuery_User_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type AniMediaQuery_User_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null, animeList?: AniMediaQuery_User_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions | null, mangaList?: AniMediaQuery_User_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions | null };
+
+export type AniMediaQuery_User_User = { mediaListOptions?: AniMediaQuery_User_User_mediaListOptions_MediaListOptions | null };
+
+export type AniMediaQuery_Following_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User = { id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+
+export type AniMediaQuery_Following_Page_mediaList_MediaList = { id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User | null };
+
+export type AniMediaQuery_Following_Page = { pageInfo?: AniMediaQuery_Following_Page_pageInfo_PageInfo | null, mediaList?: Array<AniMediaQuery_Following_Page_mediaList_MediaList | null> | null };
+
+export type AniMediaQuery_Media_Media_title_MediaTitle = { romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null };
+
+export type AniMediaQuery_Media_Media_startDate_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type AniMediaQuery_Media_Media_endDate_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type AniMediaQuery_Media_Media_tags_MediaTag = { id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, userId?: number | null };
+
+export type AniMediaQuery_Media_Media_trailer_MediaTrailer = { id?: string | null, site?: string | null, thumbnail?: string | null };
+
+export type AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution = { status?: MediaListStatus | null, amount?: number | null };
+
+export type AniMediaQuery_Media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type AniMediaQuery_Media_Media_stats_MediaStats = { statusDistribution?: Array<AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution | null> | null, scoreDistribution?: Array<AniMediaQuery_Media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution | null> | null };
+
+export type AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge_node_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge = { id?: number | null, relationType?: MediaRelation | null, node?: AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type AniMediaQuery_Media_Media_relations_MediaConnection = { edges?: Array<AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge | null> | null };
+
+export type AniMediaQuery_Media_Media_externalLinks_MediaExternalLink = { id: number, site: string, url?: string | null, color?: string | null, icon?: string | null, notes?: string | null, type?: ExternalLinkType | null, language?: string | null };
+
+export type AniMediaQuery_Media_Media_rankings_MediaRank = { id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string };
+
+export type AniMediaQuery_Media_Media_streamingEpisodes_MediaStreamingEpisode = { title?: string | null, thumbnail?: string | null, url?: string | null, site?: string | null };
+
+export type AniMediaQuery_Media_Media_nextAiringEpisode_AiringSchedule = { id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number };
+
+export type AniMediaQuery_Media_Media_coverImage_MediaCoverImage = { color?: string | null, extraLarge?: string | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_pageInfo_PageInfo = { total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_name_StaffName = { full?: string | null, userPreferred?: string | null, native?: string | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_image_StaffImage = { large?: string | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff = { id: number, language?: string | null, name?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_image_StaffImage | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType = { voiceActor?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_dateOfBirth_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName = { full?: string | null, native?: string | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage = { large?: string | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character = { id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName | null, image?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge = { id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType | null> | null, node?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character | null };
+
+export type AniMediaQuery_Media_Media_characters_CharacterConnection = { pageInfo?: AniMediaQuery_Media_Media_characters_CharacterConnection_pageInfo_PageInfo | null, edges?: Array<AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge | null> | null };
+
+export type AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge_node_Recommendation_mediaRecommendation_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge_node_Recommendation = { id: number, rating?: number | null, userRating?: RecommendationRating | null, mediaRecommendation?: AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge_node_Recommendation_mediaRecommendation_Media | null };
+
+export type AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge = { node?: AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge_node_Recommendation | null };
+
+export type AniMediaQuery_Media_Media_recommendations_RecommendationConnection = { edges?: Array<AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge | null> | null };
+
+export type AniMediaQuery_Media_Media_mediaListEntry_MediaList = { id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_startedAt_FuzzyDate | null, completedAt?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_completedAt_FuzzyDate | null, user?: SaveMediaListItemMutation_SaveMediaListEntry_MediaList_user_User | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection_pageInfo_PageInfo = { total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName = { full?: string | null, native?: string | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage = { large?: string | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff = { id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge = { role?: string | null, node?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff | null };
+
+export type AniMediaQuery_Media_Media_staff_StaffConnection = { pageInfo?: AniMediaQuery_Media_Media_staff_StaffConnection_pageInfo_PageInfo | null, edges?: Array<AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge | null> | null };
+
+export type AniMediaQuery_Media_Media_reviews_ReviewConnection_pageInfo_PageInfo = { total?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review_user_User_avatar_UserAvatar | null };
+
+export type AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review = { id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, userRating?: ReviewRating | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, user?: AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review_user_User | null };
+
+export type AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge = { node?: AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review | null };
+
+export type AniMediaQuery_Media_Media_reviews_ReviewConnection = { pageInfo?: AniMediaQuery_Media_Media_reviews_ReviewConnection_pageInfo_PageInfo | null, edges?: Array<AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge | null> | null };
+
+export type AniMediaQuery_Media_Media_studios_StudioConnection_edges_StudioEdge_node_Studio = { id: number, name: string, isFavourite: boolean };
+
+export type AniMediaQuery_Media_Media_studios_StudioConnection_edges_StudioEdge = { isMain: boolean, node?: AniMediaQuery_Media_Media_studios_StudioConnection_edges_StudioEdge_node_Studio | null };
+
+export type AniMediaQuery_Media_Media_studios_StudioConnection = { edges?: Array<AniMediaQuery_Media_Media_studios_StudioConnection_edges_StudioEdge | null> | null };
+
+export type AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule = { id: number, airingAt: number, timeUntilAiring: number, episode: number };
+
+export type AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection = { nodes?: Array<AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule | null> | null };
+
+export type AniMediaQuery_Media_Media = { averageScore?: number | null, meanScore?: number | null, source?: MediaSource | null, idMal?: number | null, id: number, bannerImage?: string | null, description?: string | null, siteUrl?: string | null, updatedAt?: number | null, season?: MediaSeason | null, seasonYear?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, duration?: number | null, chapters?: number | null, volumes?: number | null, isAdult?: boolean | null, genres?: Array<string | null> | null, countryOfOrigin?: any | null, isLicensed?: boolean | null, hashtag?: string | null, synonyms?: Array<string | null> | null, popularity?: number | null, isLocked?: boolean | null, trending?: number | null, favourites?: number | null, isFavourite: boolean, descriptionHTML?: string | null, title?: AniMediaQuery_Media_Media_title_MediaTitle | null, startDate?: AniMediaQuery_Media_Media_startDate_FuzzyDate | null, endDate?: AniMediaQuery_Media_Media_endDate_FuzzyDate | null, tags?: Array<AniMediaQuery_Media_Media_tags_MediaTag | null> | null, trailer?: AniMediaQuery_Media_Media_trailer_MediaTrailer | null, stats?: AniMediaQuery_Media_Media_stats_MediaStats | null, relations?: AniMediaQuery_Media_Media_relations_MediaConnection | null, externalLinks?: Array<AniMediaQuery_Media_Media_externalLinks_MediaExternalLink | null> | null, rankings?: Array<AniMediaQuery_Media_Media_rankings_MediaRank | null> | null, streamingEpisodes?: Array<AniMediaQuery_Media_Media_streamingEpisodes_MediaStreamingEpisode | null> | null, nextAiringEpisode?: AniMediaQuery_Media_Media_nextAiringEpisode_AiringSchedule | null, coverImage?: AniMediaQuery_Media_Media_coverImage_MediaCoverImage | null, characters?: AniMediaQuery_Media_Media_characters_CharacterConnection | null, recommendations?: AniMediaQuery_Media_Media_recommendations_RecommendationConnection | null, mediaListEntry?: AniMediaQuery_Media_Media_mediaListEntry_MediaList | null, staff?: AniMediaQuery_Media_Media_staff_StaffConnection | null, reviews?: AniMediaQuery_Media_Media_reviews_ReviewConnection | null, studios?: AniMediaQuery_Media_Media_studios_StudioConnection | null, airingSchedule?: AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection | null };
+
+export type AniMediaQuery_Query = { User?: AniMediaQuery_User_User | null, Following?: AniMediaQuery_Following_Page | null, Media?: AniMediaQuery_Media_Media | null };
+
 
 export type AniMediaQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5012,7 +5563,22 @@ export type AniMediaQueryVariables = Exact<{
 }>;
 
 
-export type AniMediaQuery = { __typename?: 'Query', User?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null, Following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, mediaList?: Array<{ __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null } | null> | null } | null, Media?: { __typename?: 'Media', averageScore?: number | null, meanScore?: number | null, source?: MediaSource | null, idMal?: number | null, id: number, bannerImage?: string | null, description?: string | null, siteUrl?: string | null, updatedAt?: number | null, season?: MediaSeason | null, seasonYear?: number | null, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, episodes?: number | null, duration?: number | null, chapters?: number | null, volumes?: number | null, isAdult?: boolean | null, genres?: Array<string | null> | null, countryOfOrigin?: any | null, isLicensed?: boolean | null, hashtag?: string | null, synonyms?: Array<string | null> | null, popularity?: number | null, isLocked?: boolean | null, trending?: number | null, favourites?: number | null, isFavourite: boolean, descriptionHTML?: string | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, tags?: Array<{ __typename?: 'MediaTag', id: number, name: string, description?: string | null, rank?: number | null, category?: string | null, isAdult?: boolean | null, isGeneralSpoiler?: boolean | null, isMediaSpoiler?: boolean | null, userId?: number | null } | null> | null, trailer?: { __typename?: 'MediaTrailer', id?: string | null, site?: string | null, thumbnail?: string | null } | null, stats?: { __typename?: 'MediaStats', statusDistribution?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, relations?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', id?: number | null, relationType?: MediaRelation | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null, externalLinks?: Array<{ __typename?: 'MediaExternalLink', id: number, site: string, url?: string | null, color?: string | null, icon?: string | null, notes?: string | null, type?: ExternalLinkType | null, language?: string | null } | null> | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, streamingEpisodes?: Array<{ __typename?: 'MediaStreamingEpisode', title?: string | null, thumbnail?: string | null, url?: string | null, site?: string | null } | null> | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null, coverImage?: { __typename?: 'MediaCoverImage', color?: string | null, extraLarge?: string | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', voiceActor?: { __typename?: 'Staff', id: number, language?: string | null, name?: { __typename?: 'StaffName', full?: string | null, userPreferred?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null, recommendations?: { __typename?: 'RecommendationConnection', edges?: Array<{ __typename?: 'RecommendationEdge', node?: { __typename?: 'Recommendation', id: number, rating?: number | null, userRating?: RecommendationRating | null, mediaRecommendation?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null } | null> | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null } | null, reviews?: { __typename?: 'ReviewConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, edges?: Array<{ __typename?: 'ReviewEdge', node?: { __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, userRating?: ReviewRating | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', edges?: Array<{ __typename?: 'StudioEdge', isMain: boolean, node?: { __typename?: 'Studio', id: number, name: string, isFavourite: boolean } | null } | null> | null } | null, airingSchedule?: { __typename?: 'AiringScheduleConnection', nodes?: Array<{ __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number } | null> | null } | null } | null };
+export type AniMediaQuery = AniMediaQuery_Query;
+
+export type MediaFollowingQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type MediaFollowingQuery_Page_Page_mediaList_MediaList_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type MediaFollowingQuery_Page_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null };
+
+export type MediaFollowingQuery_Page_Page_mediaList_MediaList_user_User = { id: number, name: string, avatar?: MediaFollowingQuery_Page_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: MediaFollowingQuery_Page_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+
+export type MediaFollowingQuery_Page_Page_mediaList_MediaList = { id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: MediaFollowingQuery_Page_Page_mediaList_MediaList_user_User | null };
+
+export type MediaFollowingQuery_Page_Page = { pageInfo?: MediaFollowingQuery_Page_Page_pageInfo_PageInfo | null, mediaList?: Array<MediaFollowingQuery_Page_Page_mediaList_MediaList | null> | null };
+
+export type MediaFollowingQuery_Query = { Page?: MediaFollowingQuery_Page_Page | null };
+
 
 export type MediaFollowingQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5021,7 +5587,28 @@ export type MediaFollowingQueryVariables = Exact<{
 }>;
 
 
-export type MediaFollowingQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, mediaList?: Array<{ __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null } | null> | null } | null };
+export type MediaFollowingQuery = MediaFollowingQuery_Query;
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_name_StaffName = { native?: string | null, full?: string | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_image_StaffImage = { large?: string | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff = { id: number, isFavourite: boolean, favourites?: number | null, languageV2?: string | null, name?: CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_name_StaffName | null, image?: CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff_image_StaffImage | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType = { roleNotes?: string | null, voiceActor?: CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character = { id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName | null, image?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge = { id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_voiceActorRoles_StaffRoleType | null> | null, node?: CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character | null };
+
+export type CharacterListQuery_Media_Media_characters_CharacterConnection = { pageInfo?: CharacterListQuery_Media_Media_characters_CharacterConnection_pageInfo_PageInfo | null, edges?: Array<CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge | null> | null };
+
+export type CharacterListQuery_Media_Media = { id: number, characters?: CharacterListQuery_Media_Media_characters_CharacterConnection | null };
+
+export type CharacterListQuery_Query = { Media?: CharacterListQuery_Media_Media | null };
+
 
 export type CharacterListQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5031,7 +5618,28 @@ export type CharacterListQueryVariables = Exact<{
 }>;
 
 
-export type CharacterListQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', id?: number | null, role?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', roleNotes?: string | null, voiceActor?: { __typename?: 'Staff', id: number, isFavourite: boolean, favourites?: number | null, languageV2?: string | null, name?: { __typename?: 'StaffName', native?: string | null, full?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
+export type CharacterListQuery = CharacterListQuery_Query;
+
+export type CharacterDetailsQuery_Character_Character_name_CharacterName = { full?: string | null, first?: string | null, last?: string | null, native?: string | null, alternative?: Array<string | null> | null };
+
+export type CharacterDetailsQuery_Character_Character_image_CharacterImage = { large?: string | null };
+
+export type CharacterDetailsQuery_Character_Character_dateOfBirth_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff = { id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage | null };
+
+export type CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType = { roleNotes?: string | null, voiceActor?: CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType_voiceActor_Staff | null };
+
+export type CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_node_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge = { characterRole?: CharacterRole | null, voiceActorRoles?: Array<CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType | null> | null, node?: CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type CharacterDetailsQuery_Character_Character_media_MediaConnection = { edges?: Array<CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge | null> | null };
+
+export type CharacterDetailsQuery_Character_Character = { description?: string | null, gender?: string | null, age?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, name?: CharacterDetailsQuery_Character_Character_name_CharacterName | null, image?: CharacterDetailsQuery_Character_Character_image_CharacterImage | null, dateOfBirth?: CharacterDetailsQuery_Character_Character_dateOfBirth_FuzzyDate | null, media?: CharacterDetailsQuery_Character_Character_media_MediaConnection | null };
+
+export type CharacterDetailsQuery_Query = { Character?: CharacterDetailsQuery_Character_Character | null };
+
 
 export type CharacterDetailsQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5041,7 +5649,20 @@ export type CharacterDetailsQueryVariables = Exact<{
 }>;
 
 
-export type CharacterDetailsQuery = { __typename?: 'Query', Character?: { __typename?: 'Character', description?: string | null, gender?: string | null, age?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, name?: { __typename?: 'CharacterName', full?: string | null, first?: string | null, last?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', characterRole?: CharacterRole | null, voiceActorRoles?: Array<{ __typename?: 'StaffRoleType', roleNotes?: string | null, voiceActor?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null } | null };
+export type CharacterDetailsQuery = CharacterDetailsQuery_Query;
+
+export type StaffListQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff = { id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage | null };
+
+export type StaffListQuery_Media_Media_staff_StaffConnection_edges_StaffEdge = { role?: string | null, node?: StaffListQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff | null };
+
+export type StaffListQuery_Media_Media_staff_StaffConnection_pageInfo_PageInfo = { total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, perPage?: number | null, lastPage?: number | null };
+
+export type StaffListQuery_Media_Media_staff_StaffConnection = { edges?: Array<StaffListQuery_Media_Media_staff_StaffConnection_edges_StaffEdge | null> | null, pageInfo?: StaffListQuery_Media_Media_staff_StaffConnection_pageInfo_PageInfo | null };
+
+export type StaffListQuery_Media_Media = { id: number, staff?: StaffListQuery_Media_Media_staff_StaffConnection | null };
+
+export type StaffListQuery_Query = { Media?: StaffListQuery_Media_Media | null };
+
 
 export type StaffListQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5050,7 +5671,40 @@ export type StaffListQueryVariables = Exact<{
 }>;
 
 
-export type StaffListQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, staff?: { __typename?: 'StaffConnection', edges?: Array<{ __typename?: 'StaffEdge', role?: string | null, node?: { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null } | null> | null, pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, perPage?: number | null, lastPage?: number | null } | null } | null } | null };
+export type StaffListQuery = StaffListQuery_Query;
+
+export type StaffDetailsQuery_Staff_Staff_name_StaffName = { full?: string | null, native?: string | null, alternative?: Array<string | null> | null };
+
+export type StaffDetailsQuery_Staff_Staff_image_StaffImage = { large?: string | null };
+
+export type StaffDetailsQuery_Staff_Staff_dateOfBirth_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type StaffDetailsQuery_Staff_Staff_dateOfDeath_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge_node_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge = { staffRole?: string | null, node?: StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection = { pageInfo?: StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_pageInfo_PageInfo | null, edges?: Array<StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge | null> | null };
+
+export type StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName = { full?: string | null, native?: string | null };
+
+export type StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage = { large?: string | null };
+
+export type StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge_node_Character = { id: number, favourites?: number | null, isFavourite: boolean, name?: StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName | null, image?: StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage | null };
+
+export type StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge = { role?: CharacterRole | null, node?: StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge_node_Character | null };
+
+export type StaffDetailsQuery_Staff_Staff_characters_CharacterConnection = { pageInfo?: StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_pageInfo_PageInfo | null, edges?: Array<StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge | null> | null };
+
+export type StaffDetailsQuery_Staff_Staff = { languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: StaffDetailsQuery_Staff_Staff_name_StaffName | null, image?: StaffDetailsQuery_Staff_Staff_image_StaffImage | null, dateOfBirth?: StaffDetailsQuery_Staff_Staff_dateOfBirth_FuzzyDate | null, dateOfDeath?: StaffDetailsQuery_Staff_Staff_dateOfDeath_FuzzyDate | null, staffMedia?: StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection | null, characters?: StaffDetailsQuery_Staff_Staff_characters_CharacterConnection | null };
+
+export type StaffDetailsQuery_Query = { Staff?: StaffDetailsQuery_Staff_Staff | null };
+
 
 export type StaffDetailsQueryVariables = Exact<{
   staff_media_page?: InputMaybe<Scalars['Int']['input']>;
@@ -5061,7 +5715,152 @@ export type StaffDetailsQueryVariables = Exact<{
 }>;
 
 
-export type StaffDetailsQuery = { __typename?: 'Query', Staff?: { __typename?: 'Staff', languageV2?: string | null, description?: string | null, primaryOccupations?: Array<string | null> | null, gender?: string | null, age?: number | null, yearsActive?: Array<number | null> | null, homeTown?: string | null, bloodType?: string | null, isFavourite: boolean, siteUrl?: string | null, favourites?: number | null, modNotes?: string | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, dateOfDeath?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, staffMedia?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'MediaEdge', staffRole?: string | null, node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, edges?: Array<{ __typename?: 'CharacterEdge', role?: CharacterRole | null, node?: { __typename?: 'Character', id: number, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null } | null> | null } | null } | null };
+export type StaffDetailsQuery = StaffDetailsQuery_Query;
+
+export type GetNotificationsQuery_Viewer_User = { id: number, unreadNotificationCount?: number | null };
+
+export type GetNotificationsQuery_Page_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity_ListActivity = { __typename: 'ListActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity_MessageActivity = { __typename: 'MessageActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity_TextActivity = { __typename: 'TextActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity = GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity_ListActivity | GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity_MessageActivity | GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity_TextActivity;
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity_ListActivity = { __typename: 'ListActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity_MessageActivity = { __typename: 'MessageActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity_TextActivity = { __typename: 'TextActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity = GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity_ListActivity | GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity_MessageActivity | GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity_TextActivity;
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMessageNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMessageNotification_message_MessageActivity = { siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity_ListActivity = { __typename: 'ListActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity_MessageActivity = { __typename: 'MessageActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity_TextActivity = { __typename: 'TextActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity = GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity_ListActivity | GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity_MessageActivity | GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity_TextActivity;
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity_ListActivity = { __typename: 'ListActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity_MessageActivity = { __typename: 'MessageActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity_TextActivity = { __typename: 'TextActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity = GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity_ListActivity | GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity_MessageActivity | GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity_TextActivity;
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity_ListActivity = { __typename: 'ListActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity_MessageActivity = { __typename: 'MessageActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity_TextActivity = { __typename: 'TextActivity', id: number, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity = GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity_ListActivity | GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity_MessageActivity | GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity_TextActivity;
+
+export type GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle = { userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList = { status?: MediaListStatus | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage = { extraLarge?: string | null, large?: string | null, color?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle | null, mediaListEntry?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList | null, coverImage?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_FollowingNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_MediaDataChangeNotification_media_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle | null, mediaListEntry?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList | null, coverImage?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_MediaMergeNotification_media_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle | null, mediaListEntry?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList | null, coverImage?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_RelatedMediaAdditionNotification_media_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle | null, mediaListEntry?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList | null, coverImage?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification_thread_Thread = { id: number, title?: string | null, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification_comment_ThreadComment = { comment?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification_thread_Thread = { id: number, title?: string | null, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification_comment_ThreadComment = { comment?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification_thread_Thread = { id: number, title?: string | null, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification_comment_ThreadComment = { comment?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification_thread_Thread = { id: number, title?: string | null, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification_comment_ThreadComment = { comment?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadLikeNotification_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadLikeNotification_thread_Thread = { id: number, title?: string | null, siteUrl?: string | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification = { __typename: 'ActivityLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User | null, activity?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_activity | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification = { __typename: 'ActivityMentionNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_user_User | null, activity?: GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification_activity | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityMessageNotification = { __typename: 'ActivityMessageNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ActivityMessageNotification_user_User | null, message?: GetNotificationsQuery_Page_Page_notifications_ActivityMessageNotification_message_MessageActivity | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification = { __typename: 'ActivityReplyLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_user_User | null, activity?: GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification_activity | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification = { __typename: 'ActivityReplyNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_user_User | null, activity?: GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification_activity | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification = { __typename: 'ActivityReplySubscribedNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_user_User | null, activity?: GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification_activity | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_AiringNotification = { __typename: 'AiringNotification', id: number, episode: number, contexts?: Array<string | null> | null, createdAt?: number | null, type?: NotificationType | null, media?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_FollowingNotification = { __typename: 'FollowingNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_FollowingNotification_user_User | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_MediaDataChangeNotification = { __typename: 'MediaDataChangeNotification', id: number, reason?: string | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: GetNotificationsQuery_Page_Page_notifications_MediaDataChangeNotification_media_Media | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_MediaDeletionNotification = { __typename: 'MediaDeletionNotification', id: number, deletedMediaTitle?: string | null, context?: string | null, reason?: string | null, createdAt?: number | null, type?: NotificationType | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_MediaMergeNotification = { __typename: 'MediaMergeNotification', id: number, reason?: string | null, deletedMediaTitles?: Array<string | null> | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: GetNotificationsQuery_Page_Page_notifications_MediaMergeNotification_media_Media | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_RelatedMediaAdditionNotification = { __typename: 'RelatedMediaAdditionNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: GetNotificationsQuery_Page_Page_notifications_RelatedMediaAdditionNotification_media_Media | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification = { __typename: 'ThreadCommentLikeNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification_user_User | null, thread?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification_thread_Thread | null, comment?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification_comment_ThreadComment | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification = { __typename: 'ThreadCommentMentionNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification_user_User | null, thread?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification_thread_Thread | null, comment?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification_comment_ThreadComment | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification = { __typename: 'ThreadCommentReplyNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification_user_User | null, thread?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification_thread_Thread | null, comment?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification_comment_ThreadComment | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification = { __typename: 'ThreadCommentSubscribedNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification_user_User | null, thread?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification_thread_Thread | null, comment?: GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification_comment_ThreadComment | null };
+
+export type GetNotificationsQuery_Page_Page_notifications_ThreadLikeNotification = { __typename: 'ThreadLikeNotification', id: number, threadId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: GetNotificationsQuery_Page_Page_notifications_ThreadLikeNotification_user_User | null, thread?: GetNotificationsQuery_Page_Page_notifications_ThreadLikeNotification_thread_Thread | null };
+
+export type GetNotificationsQuery_Page_Page_notifications = GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification | GetNotificationsQuery_Page_Page_notifications_ActivityMentionNotification | GetNotificationsQuery_Page_Page_notifications_ActivityMessageNotification | GetNotificationsQuery_Page_Page_notifications_ActivityReplyLikeNotification | GetNotificationsQuery_Page_Page_notifications_ActivityReplyNotification | GetNotificationsQuery_Page_Page_notifications_ActivityReplySubscribedNotification | GetNotificationsQuery_Page_Page_notifications_AiringNotification | GetNotificationsQuery_Page_Page_notifications_FollowingNotification | GetNotificationsQuery_Page_Page_notifications_MediaDataChangeNotification | GetNotificationsQuery_Page_Page_notifications_MediaDeletionNotification | GetNotificationsQuery_Page_Page_notifications_MediaMergeNotification | GetNotificationsQuery_Page_Page_notifications_RelatedMediaAdditionNotification | GetNotificationsQuery_Page_Page_notifications_ThreadCommentLikeNotification | GetNotificationsQuery_Page_Page_notifications_ThreadCommentMentionNotification | GetNotificationsQuery_Page_Page_notifications_ThreadCommentReplyNotification | GetNotificationsQuery_Page_Page_notifications_ThreadCommentSubscribedNotification | GetNotificationsQuery_Page_Page_notifications_ThreadLikeNotification;
+
+export type GetNotificationsQuery_Page_Page = { pageInfo?: GetNotificationsQuery_Page_Page_pageInfo_PageInfo | null, notifications?: Array<GetNotificationsQuery_Page_Page_notifications | null> | null };
+
+export type GetNotificationsQuery_Query = { Viewer?: GetNotificationsQuery_Viewer_User | null, Page?: GetNotificationsQuery_Page_Page | null };
+
 
 export type GetNotificationsQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -5070,20 +5869,53 @@ export type GetNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationsQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, unreadNotificationCount?: number | null } | null, Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null } | null, notifications?: Array<{ __typename: 'ActivityLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityMentionNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityMessageNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, message?: { __typename?: 'MessageActivity', siteUrl?: string | null } | null } | { __typename: 'ActivityReplyLikeNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityReplyNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'ActivityReplySubscribedNotification', id: number, activityId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, activity?: { __typename: 'ListActivity', id: number, siteUrl?: string | null } | { __typename: 'MessageActivity', id: number, siteUrl?: string | null } | { __typename: 'TextActivity', id: number, siteUrl?: string | null } | null } | { __typename: 'AiringNotification', id: number, episode: number, contexts?: Array<string | null> | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'FollowingNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | { __typename: 'MediaDataChangeNotification', id: number, reason?: string | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'MediaDeletionNotification', id: number, deletedMediaTitle?: string | null, context?: string | null, reason?: string | null, createdAt?: number | null, type?: NotificationType | null } | { __typename: 'MediaMergeNotification', id: number, reason?: string | null, deletedMediaTitles?: Array<string | null> | null, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'RelatedMediaAdditionNotification', id: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null } | { __typename: 'ThreadCommentLikeNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadCommentMentionNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadCommentReplyNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadCommentSubscribedNotification', id: number, commentId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null, comment?: { __typename?: 'ThreadComment', comment?: string | null } | null } | { __typename: 'ThreadLikeNotification', id: number, threadId: number, context?: string | null, createdAt?: number | null, type?: NotificationType | null, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, thread?: { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null } | null } | null> | null } | null };
+export type GetNotificationsQuery = GetNotificationsQuery_Query;
+
+export type ActivityDetailQuery_Activity_ListActivity_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_ListActivity_media_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle | null, mediaListEntry?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList | null, coverImage?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage | null };
+
+export type ActivityDetailQuery_Activity_ListActivity_replies_ActivityReply_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_ListActivity_replies_ActivityReply = { id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: ActivityDetailQuery_Activity_ListActivity_replies_ActivityReply_user_User | null };
+
+export type ActivityDetailQuery_Activity_MessageActivity_recipient_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_MessageActivity_messenger_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_MessageActivity_replies_ActivityReply_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_MessageActivity_replies_ActivityReply = { id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: ActivityDetailQuery_Activity_MessageActivity_replies_ActivityReply_user_User | null };
+
+export type ActivityDetailQuery_Activity_TextActivity_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_TextActivity_replies_ActivityReply_user_User = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
+
+export type ActivityDetailQuery_Activity_TextActivity_replies_ActivityReply = { id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: ActivityDetailQuery_Activity_TextActivity_replies_ActivityReply_user_User | null };
+
+export type ActivityDetailQuery_Activity_ListActivity = { __typename: 'ListActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, status?: string | null, progress?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, siteUrl?: string | null, createdAt: number, user?: ActivityDetailQuery_Activity_ListActivity_user_User | null, media?: ActivityDetailQuery_Activity_ListActivity_media_Media | null, replies?: Array<ActivityDetailQuery_Activity_ListActivity_replies_ActivityReply | null> | null };
+
+export type ActivityDetailQuery_Activity_MessageActivity = { __typename: 'MessageActivity', id: number, recipientId?: number | null, messengerId?: number | null, type?: ActivityType | null, replyCount: number, message?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPrivate?: boolean | null, siteUrl?: string | null, createdAt: number, recipient?: ActivityDetailQuery_Activity_MessageActivity_recipient_User | null, messenger?: ActivityDetailQuery_Activity_MessageActivity_messenger_User | null, replies?: Array<ActivityDetailQuery_Activity_MessageActivity_replies_ActivityReply | null> | null };
+
+export type ActivityDetailQuery_Activity_TextActivity = { __typename: 'TextActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, text?: string | null, siteUrl?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, createdAt: number, user?: ActivityDetailQuery_Activity_TextActivity_user_User | null, replies?: Array<ActivityDetailQuery_Activity_TextActivity_replies_ActivityReply | null> | null };
+
+export type ActivityDetailQuery_Activity = ActivityDetailQuery_Activity_ListActivity | ActivityDetailQuery_Activity_MessageActivity | ActivityDetailQuery_Activity_TextActivity;
+
+export type ActivityDetailQuery_Query = { Activity?: ActivityDetailQuery_Activity | null };
+
 
 export type ActivityDetailQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ActivityDetailQuery = { __typename?: 'Query', Activity?: { __typename: 'ListActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, status?: string | null, progress?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, siteUrl?: string | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null } | null, replies?: Array<{ __typename?: 'ActivityReply', id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | { __typename: 'MessageActivity', id: number, recipientId?: number | null, messengerId?: number | null, type?: ActivityType | null, replyCount: number, message?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPrivate?: boolean | null, siteUrl?: string | null, createdAt: number, recipient?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, messenger?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replies?: Array<{ __typename?: 'ActivityReply', id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | { __typename: 'TextActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, text?: string | null, siteUrl?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replies?: Array<{ __typename?: 'ActivityReply', id: number, userId?: number | null, activityId?: number | null, text?: string | null, likeCount: number, isLiked?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type ActivityDetailQuery = ActivityDetailQuery_Query;
 
-export type MediaFragment = { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null, native?: string | null, romaji?: string | null, english?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', status?: MediaListStatus | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, large?: string | null, color?: string | null } | null };
+export type MediaFragment = { id: number, type?: MediaType | null, format?: MediaFormat | null, status?: MediaStatus | null, idMal?: number | null, bannerImage?: string | null, siteUrl?: string | null, title?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_title_MediaTitle | null, mediaListEntry?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_mediaListEntry_MediaList | null, coverImage?: GetNotificationsQuery_Page_Page_notifications_AiringNotification_media_Media_coverImage_MediaCoverImage | null };
 
-export type UserFragment = { __typename?: 'User', id: number, name: string, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null };
+export type UserFragment = { id: number, name: string, siteUrl?: string | null, avatar?: GetNotificationsQuery_Page_Page_notifications_ActivityLikeNotification_user_User_avatar_UserAvatar | null };
 
-export type ThreadFragment = { __typename?: 'Thread', id: number, title?: string | null, siteUrl?: string | null };
+export type ThreadFragment = { id: number, title?: string | null, siteUrl?: string | null };
 
 type Activity_ListActivity_Fragment = { __typename: 'ListActivity', id: number, siteUrl?: string | null };
 
@@ -5093,6 +5925,19 @@ type Activity_TextActivity_Fragment = { __typename: 'TextActivity', id: number, 
 
 export type ActivityFragment = Activity_ListActivity_Fragment | Activity_MessageActivity_Fragment | Activity_TextActivity_Fragment;
 
+export type ReviewsQuery_Page_Page_pageInfo_PageInfo = { lastPage?: number | null, total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null };
+
+export type ReviewsQuery_Page_Page_reviews_Review_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type ReviewsQuery_Page_Page_reviews_Review_user_User = { id: number, name: string, bannerImage?: string | null, siteUrl?: string | null, avatar?: ReviewsQuery_Page_Page_reviews_Review_user_User_avatar_UserAvatar | null };
+
+export type ReviewsQuery_Page_Page_reviews_Review = { id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number, user?: ReviewsQuery_Page_Page_reviews_Review_user_User | null };
+
+export type ReviewsQuery_Page_Page = { pageInfo?: ReviewsQuery_Page_Page_pageInfo_PageInfo | null, reviews?: Array<ReviewsQuery_Page_Page_reviews_Review | null> | null };
+
+export type ReviewsQuery_Query = { Page?: ReviewsQuery_Page_Page | null };
+
+
 export type ReviewsQueryVariables = Exact<{
   mediaId?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -5100,18 +5945,40 @@ export type ReviewsQueryVariables = Exact<{
 }>;
 
 
-export type ReviewsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', lastPage?: number | null, total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null } | null, reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type ReviewsQuery = ReviewsQuery_Query;
+
+export type ReviewsByIdQuery_Review_Review_media_Media_coverImage_MediaCoverImage = { extraLarge?: string | null, color?: string | null };
+
+export type ReviewsByIdQuery_Review_Review_media_Media = { bannerImage?: string | null, coverImage?: ReviewsByIdQuery_Review_Review_media_Media_coverImage_MediaCoverImage | null };
+
+export type ReviewsByIdQuery_Review_Review_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type ReviewsByIdQuery_Review_Review_user_User = { id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: ReviewsByIdQuery_Review_Review_user_User_avatar_UserAvatar | null };
+
+export type ReviewsByIdQuery_Review_Review = { id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, userRating?: ReviewRating | null, htmlBody?: string | null, media?: ReviewsByIdQuery_Review_Review_media_Media | null, user?: ReviewsByIdQuery_Review_Review_user_User | null };
+
+export type ReviewsByIdQuery_Query = { Review?: ReviewsByIdQuery_Review_Review | null };
+
 
 export type ReviewsByIdQueryVariables = Exact<{
   reviewId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ReviewsByIdQuery = { __typename?: 'Query', Review?: { __typename?: 'Review', id: number, summary?: string | null, body?: string | null, mediaType?: MediaType | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, siteUrl?: string | null, createdAt: number, updatedAt: number, userRating?: ReviewRating | null, htmlBody?: string | null, media?: { __typename?: 'Media', bannerImage?: string | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null } | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null };
+export type ReviewsByIdQuery = ReviewsByIdQuery_Query;
 
-export type CharacterMetaDataFragment = { __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null };
+export type CharacterMetaDataFragment = { id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName | null, image?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage | null };
 
-export type StaffMetaDataFragment = { __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null };
+export type StaffMetaDataFragment = { id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage | null };
+
+export type MediaSearchQuery_Page_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type MediaSearchQuery_Page_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type MediaSearchQuery_Page_Page = { pageInfo?: MediaSearchQuery_Page_Page_pageInfo_PageInfo | null, media?: Array<MediaSearchQuery_Page_Page_media_Media | null> | null };
+
+export type MediaSearchQuery_Query = { Page?: MediaSearchQuery_Page_Page | null };
+
 
 export type MediaSearchQueryVariables = Exact<{
   type?: InputMaybe<MediaType>;
@@ -5188,9 +6055,18 @@ export type MediaSearchQueryVariables = Exact<{
 }>;
 
 
-export type MediaSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null };
+export type MediaSearchQuery = MediaSearchQuery_Query;
 
-export type UserSearchMetaFragment = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null };
+export type UserSearchMetaFragment = { id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+
+export type UserSearchQuery_Page_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type UserSearchQuery_Page_Page_users_User = { id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+
+export type UserSearchQuery_Page_Page = { pageInfo?: UserSearchQuery_Page_Page_pageInfo_PageInfo | null, users?: Array<UserSearchQuery_Page_Page_users_User | null> | null };
+
+export type UserSearchQuery_Query = { Page?: UserSearchQuery_Page_Page | null };
+
 
 export type UserSearchQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5200,7 +6076,16 @@ export type UserSearchQueryVariables = Exact<{
 }>;
 
 
-export type UserSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null } | null } | null> | null } | null };
+export type UserSearchQuery = UserSearchQuery_Query;
+
+export type CharacterSearchQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type CharacterSearchQuery_Page_Page_characters_Character = { id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName | null, image?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage | null };
+
+export type CharacterSearchQuery_Page_Page = { pageInfo?: CharacterSearchQuery_Page_Page_pageInfo_PageInfo | null, characters?: Array<CharacterSearchQuery_Page_Page_characters_Character | null> | null };
+
+export type CharacterSearchQuery_Query = { Page?: CharacterSearchQuery_Page_Page | null };
+
 
 export type CharacterSearchQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5211,7 +6096,16 @@ export type CharacterSearchQueryVariables = Exact<{
 }>;
 
 
-export type CharacterSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null };
+export type CharacterSearchQuery = CharacterSearchQuery_Query;
+
+export type StaffSearchQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type StaffSearchQuery_Page_Page_staff_Staff = { id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage | null };
+
+export type StaffSearchQuery_Page_Page = { pageInfo?: StaffSearchQuery_Page_Page_pageInfo_PageInfo | null, staff?: Array<StaffSearchQuery_Page_Page_staff_Staff | null> | null };
+
+export type StaffSearchQuery_Query = { Page?: StaffSearchQuery_Page_Page | null };
+
 
 export type StaffSearchQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5222,7 +6116,22 @@ export type StaffSearchQueryVariables = Exact<{
 }>;
 
 
-export type StaffSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null };
+export type StaffSearchQuery = StaffSearchQuery_Query;
+
+export type StudioSearchQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type StudioSearchQuery_Page_Page_studios_Studio_media_MediaConnection_edges_MediaEdge_node_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type StudioSearchQuery_Page_Page_studios_Studio_media_MediaConnection_edges_MediaEdge = { node?: StudioSearchQuery_Page_Page_studios_Studio_media_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type StudioSearchQuery_Page_Page_studios_Studio_media_MediaConnection = { edges?: Array<StudioSearchQuery_Page_Page_studios_Studio_media_MediaConnection_edges_MediaEdge | null> | null };
+
+export type StudioSearchQuery_Page_Page_studios_Studio = { id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: StudioSearchQuery_Page_Page_studios_Studio_media_MediaConnection | null };
+
+export type StudioSearchQuery_Page_Page = { pageInfo?: StudioSearchQuery_Page_Page_pageInfo_PageInfo | null, studios?: Array<StudioSearchQuery_Page_Page_studios_Studio | null> | null };
+
+export type StudioSearchQuery_Query = { Page?: StudioSearchQuery_Page_Page | null };
+
 
 export type StudioSearchQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5232,7 +6141,66 @@ export type StudioSearchQueryVariables = Exact<{
 }>;
 
 
-export type StudioSearchQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null } | null> | null } | null };
+export type StudioSearchQuery = StudioSearchQuery_Query;
+
+export type SearchAllQuery_Anime_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type SearchAllQuery_Anime_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type SearchAllQuery_Anime_Page = { pageInfo?: SearchAllQuery_Anime_Page_pageInfo_PageInfo | null, media?: Array<SearchAllQuery_Anime_Page_media_Media | null> | null };
+
+export type SearchAllQuery_Manga_Page_pageInfo_PageInfo = { hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
+
+export type SearchAllQuery_Manga_Page_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type SearchAllQuery_Manga_Page = { pageInfo?: SearchAllQuery_Manga_Page_pageInfo_PageInfo | null, media?: Array<SearchAllQuery_Manga_Page_media_Media | null> | null };
+
+export type SearchAllQuery_Characters_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type SearchAllQuery_Characters_Page_characters_Character_dateOfBirth_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type SearchAllQuery_Characters_Page_characters_Character_name_CharacterName = { full?: string | null, native?: string | null };
+
+export type SearchAllQuery_Characters_Page_characters_Character_image_CharacterImage = { large?: string | null };
+
+export type SearchAllQuery_Characters_Page_characters_Character = { id: number, isFavourite: boolean, dateOfBirth?: SearchAllQuery_Characters_Page_characters_Character_dateOfBirth_FuzzyDate | null, name?: SearchAllQuery_Characters_Page_characters_Character_name_CharacterName | null, image?: SearchAllQuery_Characters_Page_characters_Character_image_CharacterImage | null };
+
+export type SearchAllQuery_Characters_Page = { pageInfo?: SearchAllQuery_Characters_Page_pageInfo_PageInfo | null, characters?: Array<SearchAllQuery_Characters_Page_characters_Character | null> | null };
+
+export type SearchAllQuery_Staff_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type SearchAllQuery_Staff_Page_staff_Staff_dateOfBirth_FuzzyDate = { year?: number | null, month?: number | null, day?: number | null };
+
+export type SearchAllQuery_Staff_Page_staff_Staff_name_StaffName = { full?: string | null, native?: string | null };
+
+export type SearchAllQuery_Staff_Page_staff_Staff_image_StaffImage = { large?: string | null };
+
+export type SearchAllQuery_Staff_Page_staff_Staff = { id: number, isFavourite: boolean, dateOfBirth?: SearchAllQuery_Staff_Page_staff_Staff_dateOfBirth_FuzzyDate | null, name?: SearchAllQuery_Staff_Page_staff_Staff_name_StaffName | null, image?: SearchAllQuery_Staff_Page_staff_Staff_image_StaffImage | null };
+
+export type SearchAllQuery_Staff_Page = { pageInfo?: SearchAllQuery_Staff_Page_pageInfo_PageInfo | null, staff?: Array<SearchAllQuery_Staff_Page_staff_Staff | null> | null };
+
+export type SearchAllQuery_Studios_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type SearchAllQuery_Studios_Page_studios_Studio_media_MediaConnection_edges_MediaEdge_node_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type SearchAllQuery_Studios_Page_studios_Studio_media_MediaConnection_edges_MediaEdge = { node?: SearchAllQuery_Studios_Page_studios_Studio_media_MediaConnection_edges_MediaEdge_node_Media | null };
+
+export type SearchAllQuery_Studios_Page_studios_Studio_media_MediaConnection = { edges?: Array<SearchAllQuery_Studios_Page_studios_Studio_media_MediaConnection_edges_MediaEdge | null> | null };
+
+export type SearchAllQuery_Studios_Page_studios_Studio = { id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: SearchAllQuery_Studios_Page_studios_Studio_media_MediaConnection | null };
+
+export type SearchAllQuery_Studios_Page = { pageInfo?: SearchAllQuery_Studios_Page_pageInfo_PageInfo | null, studios?: Array<SearchAllQuery_Studios_Page_studios_Studio | null> | null };
+
+export type SearchAllQuery_Users_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type SearchAllQuery_Users_Page_users_User_avatar_UserAvatar = { large?: string | null };
+
+export type SearchAllQuery_Users_Page_users_User = { id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, avatar?: SearchAllQuery_Users_Page_users_User_avatar_UserAvatar | null };
+
+export type SearchAllQuery_Users_Page = { pageInfo?: SearchAllQuery_Users_Page_pageInfo_PageInfo | null, users?: Array<SearchAllQuery_Users_Page_users_User | null> | null };
+
+export type SearchAllQuery_Query = { Anime?: SearchAllQuery_Anime_Page | null, Manga?: SearchAllQuery_Manga_Page | null, Characters?: SearchAllQuery_Characters_Page | null, Staff?: SearchAllQuery_Staff_Page | null, Studios?: SearchAllQuery_Studios_Page | null, Users?: SearchAllQuery_Users_Page | null };
+
 
 export type SearchAllQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -5241,21 +6209,84 @@ export type SearchAllQueryVariables = Exact<{
 }>;
 
 
-export type SearchAllQuery = { __typename?: 'Query', Anime?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, Manga?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null } | null, media?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null, Characters?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, characters?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, Staff?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, staff?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, Studios?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, studios?: Array<{ __typename?: 'Studio', id: number, name: string, isFavourite: boolean, siteUrl?: string | null, media?: { __typename?: 'MediaConnection', edges?: Array<{ __typename?: 'MediaEdge', node?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null } | null> | null } | null, Users?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, users?: Array<{ __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null };
+export type SearchAllQuery = SearchAllQuery_Query;
 
-export type SiteTrendFragment = { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null };
+export type SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend = { date: number, count: number, change: number };
+
+export type SiteTrendFragment = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics_users_SiteTrendConnection = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics_anime_SiteTrendConnection = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics_manga_SiteTrendConnection = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics_characters_SiteTrendConnection = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics_staff_SiteTrendConnection = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics_reviews_SiteTrendConnection = { nodes?: Array<SiteTrendFragment_SiteTrendConnection_nodes_SiteTrend | null> | null };
+
+export type SiteStatsQuery_SiteStatistics_SiteStatistics = { users?: SiteStatsQuery_SiteStatistics_SiteStatistics_users_SiteTrendConnection | null, anime?: SiteStatsQuery_SiteStatistics_SiteStatistics_anime_SiteTrendConnection | null, manga?: SiteStatsQuery_SiteStatistics_SiteStatistics_manga_SiteTrendConnection | null, characters?: SiteStatsQuery_SiteStatistics_SiteStatistics_characters_SiteTrendConnection | null, staff?: SiteStatsQuery_SiteStatistics_SiteStatistics_staff_SiteTrendConnection | null, reviews?: SiteStatsQuery_SiteStatistics_SiteStatistics_reviews_SiteTrendConnection | null };
+
+export type SiteStatsQuery_Query = { SiteStatistics?: SiteStatsQuery_SiteStatistics_SiteStatistics | null };
+
 
 export type SiteStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SiteStatsQuery = { __typename?: 'Query', SiteStatistics?: { __typename?: 'SiteStatistics', users?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, anime?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, manga?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, characters?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, staff?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null, reviews?: { __typename?: 'SiteTrendConnection', nodes?: Array<{ __typename?: 'SiteTrend', date: number, count: number, change: number } | null> | null } | null } | null };
+export type SiteStatsQuery = SiteStatsQuery_Query;
+
+export type MediaTrendsQuery_Media_Media_title_MediaTitle = { romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null };
+
+export type MediaTrendsQuery_Media_Media_coverImage_MediaCoverImage = { extraLarge?: string | null, color?: string | null };
+
+export type MediaTrendsQuery_Media_Media_rankings_MediaRank = { id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string };
+
+export type MediaTrendsQuery_Media_Media_trends_MediaTrendConnection_nodes_MediaTrend = { averageScore?: number | null, date: number, trending: number, popularity?: number | null };
+
+export type MediaTrendsQuery_Media_Media_trends_MediaTrendConnection = { nodes?: Array<MediaTrendsQuery_Media_Media_trends_MediaTrendConnection_nodes_MediaTrend | null> | null };
+
+export type MediaTrendsQuery_Media_Media_airingTrends_MediaTrendConnection_nodes_MediaTrend = { averageScore?: number | null, inProgress?: number | null, episode?: number | null };
+
+export type MediaTrendsQuery_Media_Media_airingTrends_MediaTrendConnection = { nodes?: Array<MediaTrendsQuery_Media_Media_airingTrends_MediaTrendConnection_nodes_MediaTrend | null> | null };
+
+export type MediaTrendsQuery_Media_Media_distribution_MediaStats_status_StatusDistribution = { status?: MediaListStatus | null, amount?: number | null };
+
+export type MediaTrendsQuery_Media_Media_distribution_MediaStats_score_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type MediaTrendsQuery_Media_Media_distribution_MediaStats = { status?: Array<MediaTrendsQuery_Media_Media_distribution_MediaStats_status_StatusDistribution | null> | null, score?: Array<MediaTrendsQuery_Media_Media_distribution_MediaStats_score_ScoreDistribution | null> | null };
+
+export type MediaTrendsQuery_Media_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, title?: MediaTrendsQuery_Media_Media_title_MediaTitle | null, coverImage?: MediaTrendsQuery_Media_Media_coverImage_MediaCoverImage | null, rankings?: Array<MediaTrendsQuery_Media_Media_rankings_MediaRank | null> | null, trends?: MediaTrendsQuery_Media_Media_trends_MediaTrendConnection | null, airingTrends?: MediaTrendsQuery_Media_Media_airingTrends_MediaTrendConnection | null, distribution?: MediaTrendsQuery_Media_Media_distribution_MediaStats | null };
+
+export type MediaTrendsQuery_Query = { Media?: MediaTrendsQuery_Media_Media | null };
+
 
 export type MediaTrendsQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type MediaTrendsQuery = { __typename?: 'Query', Media?: { __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, title?: { __typename?: 'MediaTitle', romaji?: string | null, english?: string | null, native?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, rankings?: Array<{ __typename?: 'MediaRank', id: number, rank: number, type: MediaRankType, format: MediaFormat, year?: number | null, season?: MediaSeason | null, allTime?: boolean | null, context: string } | null> | null, trends?: { __typename?: 'MediaTrendConnection', nodes?: Array<{ __typename?: 'MediaTrend', averageScore?: number | null, date: number, trending: number, popularity?: number | null } | null> | null } | null, airingTrends?: { __typename?: 'MediaTrendConnection', nodes?: Array<{ __typename?: 'MediaTrend', averageScore?: number | null, inProgress?: number | null, episode?: number | null } | null> | null } | null, distribution?: { __typename?: 'MediaStats', status?: Array<{ __typename?: 'StatusDistribution', status?: MediaListStatus | null, amount?: number | null } | null> | null, score?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null };
+export type MediaTrendsQuery = MediaTrendsQuery_Query;
+
+export type ThreadsOverviewQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type ThreadsOverviewQuery_Page_Page_threads_Thread_categories_ThreadCategory = { id: number, name: string };
+
+export type ThreadsOverviewQuery_Page_Page_threads_Thread_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type ThreadsOverviewQuery_Page_Page_threads_Thread_user_User = { id: number, name: string, bannerImage?: string | null, avatar?: ThreadsOverviewQuery_Page_Page_threads_Thread_user_User_avatar_UserAvatar | null };
+
+export type ThreadsOverviewQuery_Page_Page_threads_Thread_replyUser_User_avatar_UserAvatar = { large?: string | null };
+
+export type ThreadsOverviewQuery_Page_Page_threads_Thread_replyUser_User = { id: number, name: string, avatar?: ThreadsOverviewQuery_Page_Page_threads_Thread_replyUser_User_avatar_UserAvatar | null };
+
+export type ThreadsOverviewQuery_Page_Page_threads_Thread = { id: number, title?: string | null, replyCount?: number | null, viewCount?: number | null, replyCommentId?: number | null, repliedAt?: number | null, createdAt: number, categories?: Array<ThreadsOverviewQuery_Page_Page_threads_Thread_categories_ThreadCategory | null> | null, user?: ThreadsOverviewQuery_Page_Page_threads_Thread_user_User | null, replyUser?: ThreadsOverviewQuery_Page_Page_threads_Thread_replyUser_User | null };
+
+export type ThreadsOverviewQuery_Page_Page = { pageInfo?: ThreadsOverviewQuery_Page_Page_pageInfo_PageInfo | null, threads?: Array<ThreadsOverviewQuery_Page_Page_threads_Thread | null> | null };
+
+export type ThreadsOverviewQuery_Query = { Page?: ThreadsOverviewQuery_Page_Page | null };
+
 
 export type ThreadsOverviewQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5264,7 +6295,26 @@ export type ThreadsOverviewQueryVariables = Exact<{
 }>;
 
 
-export type ThreadsOverviewQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, threads?: Array<{ __typename?: 'Thread', id: number, title?: string | null, replyCount?: number | null, viewCount?: number | null, replyCommentId?: number | null, repliedAt?: number | null, createdAt: number, categories?: Array<{ __typename?: 'ThreadCategory', id: number, name: string } | null> | null, user?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replyUser?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type ThreadsOverviewQuery = ThreadsOverviewQuery_Query;
+
+export type ThreadsQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type ThreadsQuery_Page_Page_threads_Thread_categories_ThreadCategory = { id: number, name: string };
+
+export type ThreadsQuery_Page_Page_threads_Thread_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type ThreadsQuery_Page_Page_threads_Thread_user_User = { id: number, name: string, avatar?: ThreadsQuery_Page_Page_threads_Thread_user_User_avatar_UserAvatar | null };
+
+export type ThreadsQuery_Page_Page_threads_Thread_replyUser_User_avatar_UserAvatar = { large?: string | null };
+
+export type ThreadsQuery_Page_Page_threads_Thread_replyUser_User = { id: number, name: string, avatar?: ThreadsQuery_Page_Page_threads_Thread_replyUser_User_avatar_UserAvatar | null };
+
+export type ThreadsQuery_Page_Page_threads_Thread = { id: number, title?: string | null, replyCount?: number | null, viewCount?: number | null, replyCommentId?: number | null, repliedAt?: number | null, createdAt: number, categories?: Array<ThreadsQuery_Page_Page_threads_Thread_categories_ThreadCategory | null> | null, user?: ThreadsQuery_Page_Page_threads_Thread_user_User | null, replyUser?: ThreadsQuery_Page_Page_threads_Thread_replyUser_User | null };
+
+export type ThreadsQuery_Page_Page = { pageInfo?: ThreadsQuery_Page_Page_pageInfo_PageInfo | null, threads?: Array<ThreadsQuery_Page_Page_threads_Thread | null> | null };
+
+export type ThreadsQuery_Query = { Page?: ThreadsQuery_Page_Page | null };
+
 
 export type ThreadsQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5273,14 +6323,48 @@ export type ThreadsQueryVariables = Exact<{
 }>;
 
 
-export type ThreadsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, threads?: Array<{ __typename?: 'Thread', id: number, title?: string | null, replyCount?: number | null, viewCount?: number | null, replyCommentId?: number | null, repliedAt?: number | null, createdAt: number, categories?: Array<{ __typename?: 'ThreadCategory', id: number, name: string } | null> | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, replyUser?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type ThreadsQuery = ThreadsQuery_Query;
+
+export type ThreadDetailQuery_Thread_Thread_likes_User_avatar_UserAvatar = { large?: string | null };
+
+export type ThreadDetailQuery_Thread_Thread_likes_User = { id: number, name: string, avatar?: ThreadDetailQuery_Thread_Thread_likes_User_avatar_UserAvatar | null };
+
+export type ThreadDetailQuery_Thread_Thread_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type ThreadDetailQuery_Thread_Thread_user_User = { id: number, name: string, avatar?: ThreadDetailQuery_Thread_Thread_user_User_avatar_UserAvatar | null };
+
+export type ThreadDetailQuery_Thread_Thread_categories_ThreadCategory = { id: number, name: string };
+
+export type ThreadDetailQuery_Thread_Thread_mediaCategories_Media_title_MediaTitle = { userPreferred?: string | null };
+
+export type ThreadDetailQuery_Thread_Thread_mediaCategories_Media_coverImage_MediaCoverImage = { large?: string | null };
+
+export type ThreadDetailQuery_Thread_Thread_mediaCategories_Media = { id: number, type?: MediaType | null, format?: MediaFormat | null, title?: ThreadDetailQuery_Thread_Thread_mediaCategories_Media_title_MediaTitle | null, coverImage?: ThreadDetailQuery_Thread_Thread_mediaCategories_Media_coverImage_MediaCoverImage | null };
+
+export type ThreadDetailQuery_Thread_Thread = { id: number, title?: string | null, body?: string | null, userId: number, replyCount?: number | null, viewCount?: number | null, isLocked?: boolean | null, isSticky?: boolean | null, isSubscribed?: boolean | null, isLiked?: boolean | null, likeCount: number, repliedAt?: number | null, createdAt: number, htmlBody?: string | null, likes?: Array<ThreadDetailQuery_Thread_Thread_likes_User | null> | null, user?: ThreadDetailQuery_Thread_Thread_user_User | null, categories?: Array<ThreadDetailQuery_Thread_Thread_categories_ThreadCategory | null> | null, mediaCategories?: Array<ThreadDetailQuery_Thread_Thread_mediaCategories_Media | null> | null };
+
+export type ThreadDetailQuery_Query = { Thread?: ThreadDetailQuery_Thread_Thread | null };
+
 
 export type ThreadDetailQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ThreadDetailQuery = { __typename?: 'Query', Thread?: { __typename?: 'Thread', id: number, title?: string | null, body?: string | null, userId: number, replyCount?: number | null, viewCount?: number | null, isLocked?: boolean | null, isSticky?: boolean | null, isSubscribed?: boolean | null, isLiked?: boolean | null, likeCount: number, repliedAt?: number | null, createdAt: number, htmlBody?: string | null, likes?: Array<{ __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null, user?: { __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, categories?: Array<{ __typename?: 'ThreadCategory', id: number, name: string } | null> | null, mediaCategories?: Array<{ __typename?: 'Media', id: number, type?: MediaType | null, format?: MediaFormat | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', large?: string | null } | null } | null> | null } | null };
+export type ThreadDetailQuery = ThreadDetailQuery_Query;
+
+export type AniListCommentsQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null };
+
+export type AniListCommentsQuery_Page_Page_threadComments_ThreadComment_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type AniListCommentsQuery_Page_Page_threadComments_ThreadComment_user_User = { id: number, name: string, donatorTier?: number | null, donatorBadge?: string | null, moderatorRoles?: Array<ModRole | null> | null, avatar?: AniListCommentsQuery_Page_Page_threadComments_ThreadComment_user_User_avatar_UserAvatar | null };
+
+export type AniListCommentsQuery_Page_Page_threadComments_ThreadComment = { id: number, threadId?: number | null, comment?: string | null, isLiked?: boolean | null, likeCount: number, createdAt: number, childComments?: any | null, isLocked?: boolean | null, htmlComment?: string | null, user?: AniListCommentsQuery_Page_Page_threadComments_ThreadComment_user_User | null };
+
+export type AniListCommentsQuery_Page_Page = { pageInfo?: AniListCommentsQuery_Page_Page_pageInfo_PageInfo | null, threadComments?: Array<AniListCommentsQuery_Page_Page_threadComments_ThreadComment | null> | null };
+
+export type AniListCommentsQuery_Query = { Page?: AniListCommentsQuery_Page_Page | null };
+
 
 export type AniListCommentsQueryVariables = Exact<{
   threadId?: InputMaybe<Scalars['Int']['input']>;
@@ -5288,14 +6372,76 @@ export type AniListCommentsQueryVariables = Exact<{
 }>;
 
 
-export type AniListCommentsQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, lastPage?: number | null, hasNextPage?: boolean | null } | null, threadComments?: Array<{ __typename?: 'ThreadComment', id: number, threadId?: number | null, comment?: string | null, isLiked?: boolean | null, likeCount: number, createdAt: number, childComments?: any | null, isLocked?: boolean | null, htmlComment?: string | null, user?: { __typename?: 'User', id: number, name: string, donatorTier?: number | null, donatorBadge?: string | null, moderatorRoles?: Array<ModRole | null> | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type AniListCommentsQuery = AniListCommentsQuery_Query;
+
+export type AniListCommentDetailsQuery_ThreadComment_ThreadComment_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type AniListCommentDetailsQuery_ThreadComment_ThreadComment_user_User = { id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, avatar?: AniListCommentDetailsQuery_ThreadComment_ThreadComment_user_User_avatar_UserAvatar | null };
+
+export type AniListCommentDetailsQuery_ThreadComment_ThreadComment_likes_User_avatar_UserAvatar = { large?: string | null };
+
+export type AniListCommentDetailsQuery_ThreadComment_ThreadComment_likes_User = { id: number, name: string, avatar?: AniListCommentDetailsQuery_ThreadComment_ThreadComment_likes_User_avatar_UserAvatar | null };
+
+export type AniListCommentDetailsQuery_ThreadComment_ThreadComment = { id: number, comment?: string | null, userId?: number | null, threadId?: number | null, likeCount: number, isLiked?: boolean | null, siteUrl?: string | null, createdAt: number, updatedAt: number, childComments?: any | null, isLocked?: boolean | null, htmlComment?: string | null, user?: AniListCommentDetailsQuery_ThreadComment_ThreadComment_user_User | null, likes?: Array<AniListCommentDetailsQuery_ThreadComment_ThreadComment_likes_User | null> | null };
+
+export type AniListCommentDetailsQuery_Query = { ThreadComment?: Array<AniListCommentDetailsQuery_ThreadComment_ThreadComment | null> | null };
+
 
 export type AniListCommentDetailsQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type AniListCommentDetailsQuery = { __typename?: 'Query', ThreadComment?: Array<{ __typename?: 'ThreadComment', id: number, comment?: string | null, userId?: number | null, threadId?: number | null, likeCount: number, isLiked?: boolean | null, siteUrl?: string | null, createdAt: number, updatedAt: number, childComments?: any | null, isLocked?: boolean | null, htmlComment?: string | null, user?: { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, likes?: Array<{ __typename?: 'User', id: number, name: string, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null> | null } | null> | null };
+export type AniListCommentDetailsQuery = AniListCommentDetailsQuery_Query;
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_formats_UserFormatStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, format?: MediaFormat | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_statuses_UserStatusStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, status?: MediaListStatus | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_scores_UserScoreStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, score?: number | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_lengths_UserLengthStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, length?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_releaseYears_UserReleaseYearStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, releaseYear?: number | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_startYears_UserStartYearStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, startYear?: number | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_genres_UserGenreStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, genre?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_tags_UserTagStatistic_tag_MediaTag = { id: number, name: string, description?: string | null, category?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_tags_UserTagStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, tag?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_tags_UserTagStatistic_tag_MediaTag | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_countries_UserCountryStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, country?: any | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic_voiceActor_Staff_image_StaffImage = { large?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic_voiceActor_Staff_name_StaffName = { userPreferred?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic_voiceActor_Staff = { id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, image?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic_voiceActor_Staff_image_StaffImage | null, name?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic_voiceActor_Staff_name_StaffName | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, voiceActor?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic_voiceActor_Staff | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic_staff_Staff_image_StaffImage = { large?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic_staff_Staff_name_StaffName = { userPreferred?: string | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic_staff_Staff = { id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, image?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic_staff_Staff_image_StaffImage | null, name?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic_staff_Staff_name_StaffName | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, staff?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic_staff_Staff | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_studios_UserStudioStatistic_studio_Studio = { id: number, name: string, favourites?: number | null, isFavourite: boolean };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_studios_UserStudioStatistic = { count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, studio?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_studios_UserStudioStatistic_studio_Studio | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics = { count: number, meanScore: number, standardDeviation: number, minutesWatched: number, episodesWatched: number, formats?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_formats_UserFormatStatistic | null> | null, statuses?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_statuses_UserStatusStatistic | null> | null, scores?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_scores_UserScoreStatistic | null> | null, lengths?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_lengths_UserLengthStatistic | null> | null, releaseYears?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_releaseYears_UserReleaseYearStatistic | null> | null, startYears?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_startYears_UserStartYearStatistic | null> | null, genres?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_genres_UserGenreStatistic | null> | null, tags?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_tags_UserTagStatistic | null> | null, countries?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_countries_UserCountryStatistic | null> | null, voiceActors?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_voiceActors_UserVoiceActorStatistic | null> | null, staff?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_staff_UserStaffStatistic | null> | null, studios?: Array<UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics_studios_UserStudioStatistic | null> | null };
+
+export type UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes = { anime?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes_anime_UserStatistics | null };
+
+export type UserAnimeStatsQuery_User_User = { statistics?: UserAnimeStatsQuery_User_User_statistics_UserStatisticTypes | null };
+
+export type UserAnimeStatsQuery_Query = { User?: UserAnimeStatsQuery_User_User | null };
+
 
 export type UserAnimeStatsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -5303,7 +6449,44 @@ export type UserAnimeStatsQueryVariables = Exact<{
 }>;
 
 
-export type UserAnimeStatsQuery = { __typename?: 'Query', User?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', count: number, meanScore: number, standardDeviation: number, minutesWatched: number, episodesWatched: number, formats?: Array<{ __typename?: 'UserFormatStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, format?: MediaFormat | null } | null> | null, statuses?: Array<{ __typename?: 'UserStatusStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, status?: MediaListStatus | null } | null> | null, scores?: Array<{ __typename?: 'UserScoreStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, score?: number | null } | null> | null, lengths?: Array<{ __typename?: 'UserLengthStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, length?: string | null } | null> | null, releaseYears?: Array<{ __typename?: 'UserReleaseYearStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, releaseYear?: number | null } | null> | null, startYears?: Array<{ __typename?: 'UserStartYearStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, startYear?: number | null } | null> | null, genres?: Array<{ __typename?: 'UserGenreStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, genre?: string | null } | null> | null, tags?: Array<{ __typename?: 'UserTagStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, tag?: { __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null } | null } | null> | null, countries?: Array<{ __typename?: 'UserCountryStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, country?: any | null } | null> | null, voiceActors?: Array<{ __typename?: 'UserVoiceActorStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, voiceActor?: { __typename?: 'Staff', id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, name?: { __typename?: 'StaffName', userPreferred?: string | null } | null } | null } | null> | null, staff?: Array<{ __typename?: 'UserStaffStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, staff?: { __typename?: 'Staff', id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, name?: { __typename?: 'StaffName', userPreferred?: string | null } | null } | null } | null> | null, studios?: Array<{ __typename?: 'UserStudioStatistic', count: number, meanScore: number, minutesWatched: number, mediaIds: Array<number | null>, studio?: { __typename?: 'Studio', id: number, name: string, favourites?: number | null, isFavourite: boolean } | null } | null> | null } | null } | null } | null };
+export type UserAnimeStatsQuery = UserAnimeStatsQuery_Query;
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_formats_UserFormatStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, format?: MediaFormat | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_statuses_UserStatusStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, status?: MediaListStatus | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_scores_UserScoreStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, score?: number | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_lengths_UserLengthStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, length?: string | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_releaseYears_UserReleaseYearStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, releaseYear?: number | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_startYears_UserStartYearStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, startYear?: number | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_genres_UserGenreStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, genre?: string | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_tags_UserTagStatistic_tag_MediaTag = { id: number, name: string, description?: string | null, category?: string | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_tags_UserTagStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, tag?: UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_tags_UserTagStatistic_tag_MediaTag | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_countries_UserCountryStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, country?: any | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic_staff_Staff_image_StaffImage = { large?: string | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic_staff_Staff_name_StaffName = { userPreferred?: string | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic_staff_Staff = { id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, image?: UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic_staff_Staff_image_StaffImage | null, name?: UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic_staff_Staff_name_StaffName | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic = { count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, staff?: UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic_staff_Staff | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics = { count: number, meanScore: number, standardDeviation: number, chaptersRead: number, volumesRead: number, formats?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_formats_UserFormatStatistic | null> | null, statuses?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_statuses_UserStatusStatistic | null> | null, scores?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_scores_UserScoreStatistic | null> | null, lengths?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_lengths_UserLengthStatistic | null> | null, releaseYears?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_releaseYears_UserReleaseYearStatistic | null> | null, startYears?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_startYears_UserStartYearStatistic | null> | null, genres?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_genres_UserGenreStatistic | null> | null, tags?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_tags_UserTagStatistic | null> | null, countries?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_countries_UserCountryStatistic | null> | null, staff?: Array<UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics_staff_UserStaffStatistic | null> | null };
+
+export type UserMangaStatsQuery_User_User_statistics_UserStatisticTypes = { manga?: UserMangaStatsQuery_User_User_statistics_UserStatisticTypes_manga_UserStatistics | null };
+
+export type UserMangaStatsQuery_User_User = { statistics?: UserMangaStatsQuery_User_User_statistics_UserStatisticTypes | null };
+
+export type UserMangaStatsQuery_Query = { User?: UserMangaStatsQuery_User_User | null };
+
 
 export type UserMangaStatsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['Int']['input']>;
@@ -5311,7 +6494,74 @@ export type UserMangaStatsQueryVariables = Exact<{
 }>;
 
 
-export type UserMangaStatsQuery = { __typename?: 'Query', User?: { __typename?: 'User', statistics?: { __typename?: 'UserStatisticTypes', manga?: { __typename?: 'UserStatistics', count: number, meanScore: number, standardDeviation: number, chaptersRead: number, volumesRead: number, formats?: Array<{ __typename?: 'UserFormatStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, format?: MediaFormat | null } | null> | null, statuses?: Array<{ __typename?: 'UserStatusStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, status?: MediaListStatus | null } | null> | null, scores?: Array<{ __typename?: 'UserScoreStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, score?: number | null } | null> | null, lengths?: Array<{ __typename?: 'UserLengthStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, length?: string | null } | null> | null, releaseYears?: Array<{ __typename?: 'UserReleaseYearStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, releaseYear?: number | null } | null> | null, startYears?: Array<{ __typename?: 'UserStartYearStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, startYear?: number | null } | null> | null, genres?: Array<{ __typename?: 'UserGenreStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, genre?: string | null } | null> | null, tags?: Array<{ __typename?: 'UserTagStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, tag?: { __typename?: 'MediaTag', id: number, name: string, description?: string | null, category?: string | null } | null } | null> | null, countries?: Array<{ __typename?: 'UserCountryStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, country?: any | null } | null> | null, staff?: Array<{ __typename?: 'UserStaffStatistic', count: number, meanScore: number, chaptersRead: number, mediaIds: Array<number | null>, staff?: { __typename?: 'Staff', id: number, languageV2?: string | null, isFavourite: boolean, favourites?: number | null, image?: { __typename?: 'StaffImage', large?: string | null } | null, name?: { __typename?: 'StaffName', userPreferred?: string | null } | null } | null } | null> | null } | null } | null } | null };
+export type UserMangaStatsQuery = UserMangaStatsQuery_Query;
+
+export type UserActivityQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_options_UserOptions = { profileColor?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_title_MediaTitle = { userPreferred?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { extraLarge?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media = { id: number, siteUrl?: string | null, title?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_title_MediaTitle | null, coverImage?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection = { nodes?: Array<UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection_nodes_Media | null> | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_title_MediaTitle = { userPreferred?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { extraLarge?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media = { id: number, siteUrl?: string | null, title?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_title_MediaTitle | null, coverImage?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection = { nodes?: Array<UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection_nodes_Media | null> | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_name_CharacterName = { userPreferred?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage = { large?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character = { id: number, gender?: string | null, siteUrl?: string | null, name?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_name_CharacterName | null, image?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection = { nodes?: Array<UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites = { anime?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_anime_MediaConnection | null, manga?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_manga_MediaConnection | null, characters?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites_characters_CharacterConnection | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_user_User = { id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_options_UserOptions | null, avatar?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_avatar_UserAvatar | null, favourites?: UserActivityQuery_Page_Page_activities_ListActivity_user_User_favourites_Favourites | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity_recipient_User_options_UserOptions = { profileColor?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity_recipient_User_avatar_UserAvatar = { large?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity_recipient_User = { id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: UserActivityQuery_Page_Page_activities_MessageActivity_recipient_User_options_UserOptions | null, avatar?: UserActivityQuery_Page_Page_activities_MessageActivity_recipient_User_avatar_UserAvatar | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity_messenger_User_options_UserOptions = { profileColor?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity_messenger_User_avatar_UserAvatar = { large?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity_messenger_User = { id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: UserActivityQuery_Page_Page_activities_MessageActivity_messenger_User_options_UserOptions | null, avatar?: UserActivityQuery_Page_Page_activities_MessageActivity_messenger_User_avatar_UserAvatar | null };
+
+export type UserActivityQuery_Page_Page_activities_TextActivity_user_User_options_UserOptions = { profileColor?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_TextActivity_user_User_avatar_UserAvatar = { large?: string | null };
+
+export type UserActivityQuery_Page_Page_activities_TextActivity_user_User = { id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: UserActivityQuery_Page_Page_activities_TextActivity_user_User_options_UserOptions | null, avatar?: UserActivityQuery_Page_Page_activities_TextActivity_user_User_avatar_UserAvatar | null };
+
+export type UserActivityQuery_Page_Page_activities_ListActivity = { __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, likeCount: number, createdAt: number, replyCount: number, siteUrl?: string | null, user?: UserActivityQuery_Page_Page_activities_ListActivity_user_User | null, media?: UserActivityQuery_Page_Page_activities_ListActivity_media_Media | null };
+
+export type UserActivityQuery_Page_Page_activities_MessageActivity = { __typename: 'MessageActivity', id: number, recipientId?: number | null, messengerId?: number | null, type?: ActivityType | null, replyCount: number, message?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPrivate?: boolean | null, siteUrl?: string | null, createdAt: number, recipient?: UserActivityQuery_Page_Page_activities_MessageActivity_recipient_User | null, messenger?: UserActivityQuery_Page_Page_activities_MessageActivity_messenger_User | null };
+
+export type UserActivityQuery_Page_Page_activities_TextActivity = { __typename: 'TextActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, text?: string | null, siteUrl?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, createdAt: number, user?: UserActivityQuery_Page_Page_activities_TextActivity_user_User | null };
+
+export type UserActivityQuery_Page_Page_activities = UserActivityQuery_Page_Page_activities_ListActivity | UserActivityQuery_Page_Page_activities_MessageActivity | UserActivityQuery_Page_Page_activities_TextActivity;
+
+export type UserActivityQuery_Page_Page = { pageInfo?: UserActivityQuery_Page_Page_pageInfo_PageInfo | null, activities?: Array<UserActivityQuery_Page_Page_activities | null> | null };
+
+export type UserActivityQuery_Query = { Page?: UserActivityQuery_Page_Page | null };
+
 
 export type UserActivityQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -5321,9 +6571,74 @@ export type UserActivityQueryVariables = Exact<{
 }>;
 
 
-export type UserActivityQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, currentPage?: number | null, hasNextPage?: boolean | null } | null, activities?: Array<{ __typename: 'ListActivity', id: number, progress?: string | null, status?: string | null, likeCount: number, createdAt: number, replyCount: number, siteUrl?: string | null, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, siteUrl?: string | null, title?: { __typename?: 'MediaTitle', userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, siteUrl?: string | null, name?: { __typename?: 'CharacterName', userPreferred?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null, media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | { __typename: 'MessageActivity', id: number, recipientId?: number | null, messengerId?: number | null, type?: ActivityType | null, replyCount: number, message?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPrivate?: boolean | null, siteUrl?: string | null, createdAt: number, recipient?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null, messenger?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | { __typename: 'TextActivity', id: number, userId?: number | null, type?: ActivityType | null, replyCount: number, text?: string | null, siteUrl?: string | null, isLocked?: boolean | null, isSubscribed?: boolean | null, likeCount: number, isLiked?: boolean | null, isPinned?: boolean | null, createdAt: number, user?: { __typename?: 'User', id: number, name: string, about?: string | null, createdAt?: number | null, bannerImage?: string | null, siteUrl?: string | null, options?: { __typename?: 'UserOptions', profileColor?: string | null } | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null } | null } | null> | null } | null };
+export type UserActivityQuery = UserActivityQuery_Query;
 
-export type UserMetaDataFragment = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number, meanScore: number, count: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number, meanScore: number, count: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null };
+export type UserMetaDataFragment_User_avatar_UserAvatar = { large?: string | null };
+
+export type UserMetaDataFragment_User_stats_UserStats_favouredGenresOverview_GenreStats = { genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null };
+
+export type UserMetaDataFragment_User_stats_UserStats_activityHistory_UserActivityHistory = { date?: number | null, amount?: number | null, level?: number | null };
+
+export type UserMetaDataFragment_User_stats_UserStats = { favouredGenresOverview?: Array<UserMetaDataFragment_User_stats_UserStats_favouredGenresOverview_GenreStats | null> | null, activityHistory?: Array<UserMetaDataFragment_User_stats_UserStats_activityHistory_UserActivityHistory | null> | null };
+
+export type UserMetaDataFragment_User_statistics_UserStatisticTypes_anime_UserStatistics = { minutesWatched: number, episodesWatched: number, meanScore: number, count: number };
+
+export type UserMetaDataFragment_User_statistics_UserStatisticTypes_manga_UserStatistics = { chaptersRead: number, volumesRead: number, meanScore: number, count: number };
+
+export type UserMetaDataFragment_User_statistics_UserStatisticTypes = { anime?: UserMetaDataFragment_User_statistics_UserStatisticTypes_anime_UserStatistics | null, manga?: UserMetaDataFragment_User_statistics_UserStatisticTypes_manga_UserStatistics | null };
+
+export type UserMetaDataFragment_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type UserMetaDataFragment_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type UserMetaDataFragment_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null, animeList?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions | null, mangaList?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { extraLarge?: string | null, color?: string | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_title_MediaTitle = { english?: string | null, native?: string | null, romaji?: string | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_stats_MediaStats_scoreDistribution_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_stats_MediaStats = { scoreDistribution?: Array<UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_stats_MediaStats_scoreDistribution_ScoreDistribution | null> | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media = { id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null, title?: UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_title_MediaTitle | null, stats?: UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media_stats_MediaStats | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection = { pageInfo?: UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_pageInfo_PageInfo | null, nodes?: Array<UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection_nodes_Media | null> | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { extraLarge?: string | null, color?: string | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_title_MediaTitle = { english?: string | null, native?: string | null, romaji?: string | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_stats_MediaStats_scoreDistribution_ScoreDistribution = { score?: number | null, amount?: number | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_stats_MediaStats = { scoreDistribution?: Array<UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_stats_MediaStats_scoreDistribution_ScoreDistribution | null> | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media = { id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null, title?: UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_title_MediaTitle | null, stats?: UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media_stats_MediaStats | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection = { pageInfo?: UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_pageInfo_PageInfo | null, nodes?: Array<UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection_nodes_Media | null> | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_name_CharacterName = { full?: string | null, native?: string | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage = { large?: string | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_nodes_Character = { id: number, gender?: string | null, isFavourite: boolean, name?: UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_name_CharacterName | null, image?: UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection = { pageInfo?: UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_pageInfo_PageInfo | null, nodes?: Array<UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type UserMetaDataFragment_User_favourites_Favourites = { anime?: UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection | null, manga?: UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection | null, characters?: UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection | null };
+
+export type UserMetaDataFragment = { id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: UserMetaDataFragment_User_avatar_UserAvatar | null, stats?: UserMetaDataFragment_User_stats_UserStats | null, statistics?: UserMetaDataFragment_User_statistics_UserStatisticTypes | null, mediaListOptions?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions | null, favourites?: UserMetaDataFragment_User_favourites_Favourites | null };
+
+export type UserDataQuery_User_User = { id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: UserMetaDataFragment_User_avatar_UserAvatar | null, stats?: UserMetaDataFragment_User_stats_UserStats | null, statistics?: UserMetaDataFragment_User_statistics_UserStatisticTypes | null, mediaListOptions?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions | null, favourites?: UserMetaDataFragment_User_favourites_Favourites | null };
+
+export type UserDataQuery_Query = { User?: UserDataQuery_User_User | null };
+
 
 export type UserDataQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5332,12 +6647,54 @@ export type UserDataQueryVariables = Exact<{
 }>;
 
 
-export type UserDataQuery = { __typename?: 'Query', User?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, stats?: { __typename?: 'UserStats', favouredGenresOverview?: Array<{ __typename?: 'GenreStats', genre?: string | null, amount?: number | null, meanScore?: number | null, timeWatched?: number | null } | null> | null, activityHistory?: Array<{ __typename?: 'UserActivityHistory', date?: number | null, amount?: number | null, level?: number | null } | null> | null } | null, statistics?: { __typename?: 'UserStatisticTypes', anime?: { __typename?: 'UserStatistics', minutesWatched: number, episodesWatched: number, meanScore: number, count: number } | null, manga?: { __typename?: 'UserStatistics', chaptersRead: number, volumesRead: number, meanScore: number, count: number } | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null, favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, episodes?: number | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, averageScore?: number | null, meanScore?: number | null, bannerImage?: string | null, chapters?: number | null, volumes?: number | null, type?: MediaType | null, format?: MediaFormat | null, genres?: Array<string | null> | null, status?: MediaStatus | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, isLicensed?: boolean | null, isFavourite: boolean, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null, color?: string | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, gender?: string | null, isFavourite: boolean, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserDataQuery = UserDataQuery_Query;
+
+export type ViewerDataQuery_Viewer_User_avatar_UserAvatar = { large?: string | null };
+
+export type ViewerDataQuery_Viewer_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type ViewerDataQuery_Viewer_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions = { customLists?: Array<string | null> | null };
+
+export type ViewerDataQuery_Viewer_User_mediaListOptions_MediaListOptions = { scoreFormat?: ScoreFormat | null, animeList?: ViewerDataQuery_Viewer_User_mediaListOptions_MediaListOptions_animeList_MediaListTypeOptions | null, mangaList?: ViewerDataQuery_Viewer_User_mediaListOptions_MediaListOptions_mangaList_MediaListTypeOptions | null };
+
+export type ViewerDataQuery_Viewer_User = { id: number, name: string, bannerImage?: string | null, unreadNotificationCount?: number | null, avatar?: ViewerDataQuery_Viewer_User_avatar_UserAvatar | null, mediaListOptions?: ViewerDataQuery_Viewer_User_mediaListOptions_MediaListOptions | null };
+
+export type ViewerDataQuery_Query = { Viewer?: ViewerDataQuery_Viewer_User | null };
+
 
 export type ViewerDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ViewerDataQuery = { __typename?: 'Query', Viewer?: { __typename?: 'User', id: number, name: string, bannerImage?: string | null, unreadNotificationCount?: number | null, avatar?: { __typename?: 'UserAvatar', large?: string | null } | null, mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null };
+export type ViewerDataQuery = ViewerDataQuery_Query;
+
+export type UserOverviewQuery_following_Page_pageInfo_PageInfo = { total?: number | null, hasNextPage?: boolean | null };
+
+export type UserOverviewQuery_following_Page_following_User_avatar_UserAvatar = { large?: string | null, medium?: string | null };
+
+export type UserOverviewQuery_following_Page_following_User = { id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserOverviewQuery_following_Page_following_User_avatar_UserAvatar | null };
+
+export type UserOverviewQuery_following_Page = { pageInfo?: UserOverviewQuery_following_Page_pageInfo_PageInfo | null, following?: Array<UserOverviewQuery_following_Page_following_User | null> | null };
+
+export type UserOverviewQuery_followers_Page_pageInfo_PageInfo = { total?: number | null, hasNextPage?: boolean | null };
+
+export type UserOverviewQuery_followers_Page_followers_User_avatar_UserAvatar = { large?: string | null, medium?: string | null };
+
+export type UserOverviewQuery_followers_Page_followers_User = { id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserOverviewQuery_followers_Page_followers_User_avatar_UserAvatar | null };
+
+export type UserOverviewQuery_followers_Page = { pageInfo?: UserOverviewQuery_followers_Page_pageInfo_PageInfo | null, followers?: Array<UserOverviewQuery_followers_Page_followers_User | null> | null };
+
+export type UserOverviewQuery_reviews_Page_reviews_Review = { id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number };
+
+export type UserOverviewQuery_reviews_Page = { reviews?: Array<UserOverviewQuery_reviews_Page_reviews_Review | null> | null };
+
+export type UserOverviewQuery_list_Page_mediaList_MediaList_media_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type UserOverviewQuery_list_Page_mediaList_MediaList = { media?: UserOverviewQuery_list_Page_mediaList_MediaList_media_Media | null };
+
+export type UserOverviewQuery_list_Page = { mediaList?: Array<UserOverviewQuery_list_Page_mediaList_MediaList | null> | null };
+
+export type UserOverviewQuery_Query = { following?: UserOverviewQuery_following_Page | null, followers?: UserOverviewQuery_followers_Page | null, reviews?: UserOverviewQuery_reviews_Page | null, list?: UserOverviewQuery_list_Page | null };
+
 
 export type UserOverviewQueryVariables = Exact<{
   userId: Scalars['Int']['input'];
@@ -5347,7 +6704,18 @@ export type UserOverviewQueryVariables = Exact<{
 }>;
 
 
-export type UserOverviewQuery = { __typename?: 'Query', following?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, followers?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null, reviews?: { __typename?: 'Page', reviews?: Array<{ __typename?: 'Review', id: number, summary?: string | null, rating?: number | null, ratingAmount?: number | null, score?: number | null, createdAt: number, updatedAt: number } | null> | null } | null, list?: { __typename?: 'Page', mediaList?: Array<{ __typename?: 'MediaList', media?: { __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null } | null> | null } | null };
+export type UserOverviewQuery = UserOverviewQuery_Query;
+
+export type UserFollowingQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, hasNextPage?: boolean | null };
+
+export type UserFollowingQuery_Page_Page_following_User_avatar_UserAvatar = { large?: string | null, medium?: string | null };
+
+export type UserFollowingQuery_Page_Page_following_User = { id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserFollowingQuery_Page_Page_following_User_avatar_UserAvatar | null };
+
+export type UserFollowingQuery_Page_Page = { pageInfo?: UserFollowingQuery_Page_Page_pageInfo_PageInfo | null, following?: Array<UserFollowingQuery_Page_Page_following_User | null> | null };
+
+export type UserFollowingQuery_Query = { Page?: UserFollowingQuery_Page_Page | null };
+
 
 export type UserFollowingQueryVariables = Exact<{
   userId: Scalars['Int']['input'];
@@ -5355,7 +6723,18 @@ export type UserFollowingQueryVariables = Exact<{
 }>;
 
 
-export type UserFollowingQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, following?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null };
+export type UserFollowingQuery = UserFollowingQuery_Query;
+
+export type UserFollowersQuery_Page_Page_pageInfo_PageInfo = { total?: number | null, hasNextPage?: boolean | null };
+
+export type UserFollowersQuery_Page_Page_followers_User_avatar_UserAvatar = { large?: string | null, medium?: string | null };
+
+export type UserFollowersQuery_Page_Page_followers_User = { id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserFollowersQuery_Page_Page_followers_User_avatar_UserAvatar | null };
+
+export type UserFollowersQuery_Page_Page = { pageInfo?: UserFollowersQuery_Page_Page_pageInfo_PageInfo | null, followers?: Array<UserFollowersQuery_Page_Page_followers_User | null> | null };
+
+export type UserFollowersQuery_Query = { Page?: UserFollowersQuery_Page_Page | null };
+
 
 export type UserFollowersQueryVariables = Exact<{
   userId: Scalars['Int']['input'];
@@ -5363,7 +6742,42 @@ export type UserFollowersQueryVariables = Exact<{
 }>;
 
 
-export type UserFollowersQuery = { __typename?: 'Query', Page?: { __typename?: 'Page', pageInfo?: { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null } | null, followers?: Array<{ __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: { __typename?: 'UserAvatar', large?: string | null, medium?: string | null } | null } | null> | null } | null };
+export type UserFollowersQuery = UserFollowersQuery_Query;
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { extraLarge?: string | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media = { id: number, coverImage?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_anime_MediaConnection = { nodes?: Array<UserFavoritesOverviewQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media | null> | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage = { extraLarge?: string | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media = { id: number, coverImage?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_coverImage_MediaCoverImage | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_manga_MediaConnection = { nodes?: Array<UserFavoritesOverviewQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media | null> | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage = { large?: string | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character = { id: number, image?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character_image_CharacterImage | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_characters_CharacterConnection = { nodes?: Array<UserFavoritesOverviewQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff_image_StaffImage = { large?: string | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff = { id: number, image?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff_image_StaffImage | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_staff_StaffConnection = { nodes?: Array<UserFavoritesOverviewQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff | null> | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_studios_StudioConnection_nodes_Studio = { id: number, name: string };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites_studios_StudioConnection = { nodes?: Array<UserFavoritesOverviewQuery_User_User_favourites_Favourites_studios_StudioConnection_nodes_Studio | null> | null };
+
+export type UserFavoritesOverviewQuery_User_User_favourites_Favourites = { anime?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_anime_MediaConnection | null, manga?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_manga_MediaConnection | null, characters?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_characters_CharacterConnection | null, staff?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_staff_StaffConnection | null, studios?: UserFavoritesOverviewQuery_User_User_favourites_Favourites_studios_StudioConnection | null };
+
+export type UserFavoritesOverviewQuery_User_User = { favourites?: UserFavoritesOverviewQuery_User_User_favourites_Favourites | null };
+
+export type UserFavoritesOverviewQuery_Query = { User?: UserFavoritesOverviewQuery_User_User | null };
+
 
 export type UserFavoritesOverviewQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5371,7 +6785,26 @@ export type UserFavoritesOverviewQueryVariables = Exact<{
 }>;
 
 
-export type UserFavoritesOverviewQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, manga?: { __typename?: 'MediaConnection', nodes?: Array<{ __typename?: 'Media', id: number, coverImage?: { __typename?: 'MediaCoverImage', extraLarge?: string | null } | null } | null> | null } | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null, staff?: { __typename?: 'StaffConnection', nodes?: Array<{ __typename?: 'Staff', id: number, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null, studios?: { __typename?: 'StudioConnection', nodes?: Array<{ __typename?: 'Studio', id: number, name: string } | null> | null } | null } | null } | null };
+export type UserFavoritesOverviewQuery = UserFavoritesOverviewQuery_Query;
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character_name_CharacterName = { full?: string | null, native?: string | null, alternative?: Array<string | null> | null };
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character = { id: number, name?: UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character_name_CharacterName | null };
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_characters_CharacterConnection = { nodes?: Array<UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, characters?: UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media_characters_CharacterConnection | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection = { pageInfo?: UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_pageInfo_PageInfo | null, nodes?: Array<UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection_nodes_Media | null> | null };
+
+export type UserAnimeFavoritesQuery_User_User_favourites_Favourites = { anime?: UserAnimeFavoritesQuery_User_User_favourites_Favourites_anime_MediaConnection | null };
+
+export type UserAnimeFavoritesQuery_User_User = { favourites?: UserAnimeFavoritesQuery_User_User_favourites_Favourites | null };
+
+export type UserAnimeFavoritesQuery_Query = { User?: UserAnimeFavoritesQuery_User_User | null };
+
 
 export type UserAnimeFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5381,7 +6814,26 @@ export type UserAnimeFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserAnimeFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', anime?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null } | null> | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null } | null } | null };
+export type UserAnimeFavoritesQuery = UserAnimeFavoritesQuery_Query;
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character_name_CharacterName = { full?: string | null, native?: string | null, alternative?: Array<string | null> | null };
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character = { id: number, name?: UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character_name_CharacterName | null };
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_characters_CharacterConnection = { nodes?: Array<UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media = { id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, characters?: UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media_characters_CharacterConnection | null, startDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_startDate_FuzzyDate | null, endDate?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_endDate_FuzzyDate | null, title?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_title_MediaTitle | null, coverImage?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_coverImage_MediaCoverImage | null, mediaListEntry?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_mediaListEntry_MediaList | null, stats?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_stats_MediaStats | null, nextAiringEpisode?: WeeklyAnimeQuery_Page_Page_airingSchedules_AiringSchedule_media_Media_nextAiringEpisode_AiringSchedule | null };
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection = { pageInfo?: UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_pageInfo_PageInfo | null, nodes?: Array<UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media | null> | null };
+
+export type UserMangaFavoritesQuery_User_User_favourites_Favourites = { manga?: UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection | null };
+
+export type UserMangaFavoritesQuery_User_User = { favourites?: UserMangaFavoritesQuery_User_User_favourites_Favourites | null };
+
+export type UserMangaFavoritesQuery_Query = { User?: UserMangaFavoritesQuery_User_User | null };
+
 
 export type UserMangaFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5391,7 +6843,20 @@ export type UserMangaFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserMangaFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', manga?: { __typename?: 'MediaConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Media', id: number, idMal?: number | null, bannerImage?: string | null, type?: MediaType | null, format?: MediaFormat | null, isFavourite: boolean, description?: string | null, genres?: Array<string | null> | null, status?: MediaStatus | null, siteUrl?: string | null, meanScore?: number | null, averageScore?: number | null, episodes?: number | null, chapters?: number | null, volumes?: number | null, duration?: number | null, season?: MediaSeason | null, isLicensed?: boolean | null, isAdult?: boolean | null, synonyms?: Array<string | null> | null, descriptionHTML?: string | null, characters?: { __typename?: 'CharacterConnection', nodes?: Array<{ __typename?: 'Character', id: number, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null, alternative?: Array<string | null> | null } | null } | null> | null } | null, startDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, endDate?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, title?: { __typename?: 'MediaTitle', english?: string | null, native?: string | null, romaji?: string | null, userPreferred?: string | null } | null, coverImage?: { __typename?: 'MediaCoverImage', medium?: string | null, large?: string | null, extraLarge?: string | null, color?: string | null } | null, mediaListEntry?: { __typename?: 'MediaList', id: number, mediaId: number, status?: MediaListStatus | null, score?: number | null, advancedScores?: any | null, progress?: number | null, progressVolumes?: number | null, repeat?: number | null, notes?: string | null, private?: boolean | null, hiddenFromStatusLists?: boolean | null, customLists?: any | null, updatedAt?: number | null, createdAt?: number | null, startedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, completedAt?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, user?: { __typename?: 'User', mediaListOptions?: { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null, animeList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null, mangaList?: { __typename?: 'MediaListTypeOptions', customLists?: Array<string | null> | null } | null } | null } | null } | null, stats?: { __typename?: 'MediaStats', scoreDistribution?: Array<{ __typename?: 'ScoreDistribution', score?: number | null, amount?: number | null } | null> | null } | null, nextAiringEpisode?: { __typename?: 'AiringSchedule', id: number, airingAt: number, timeUntilAiring: number, episode: number, mediaId: number } | null } | null> | null } | null } | null } | null };
+export type UserMangaFavoritesQuery = UserMangaFavoritesQuery_Query;
+
+export type UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character = { id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_name_CharacterName | null, image?: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge_node_Character_image_CharacterImage | null };
+
+export type UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection = { pageInfo?: UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_pageInfo_PageInfo | null, nodes?: Array<UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character | null> | null };
+
+export type UserWaifuFavoritesQuery_User_User_favourites_Favourites = { characters?: UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection | null };
+
+export type UserWaifuFavoritesQuery_User_User = { favourites?: UserWaifuFavoritesQuery_User_User_favourites_Favourites | null };
+
+export type UserWaifuFavoritesQuery_Query = { User?: UserWaifuFavoritesQuery_User_User | null };
+
 
 export type UserWaifuFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5401,7 +6866,20 @@ export type UserWaifuFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserWaifuFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', characters?: { __typename?: 'CharacterConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Character', id: number, isFavourite: boolean, gender?: string | null, description?: string | null, favourites?: number | null, siteUrl?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'CharacterName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'CharacterImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserWaifuFavoritesQuery = UserWaifuFavoritesQuery_Query;
+
+export type UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff = { id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_dateOfBirth_FuzzyDate | null, name?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_name_StaffName | null, image?: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge_node_Staff_image_StaffImage | null };
+
+export type UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection = { pageInfo?: UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection_pageInfo_PageInfo | null, nodes?: Array<UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff | null> | null };
+
+export type UserStaffFavoritesQuery_User_User_favourites_Favourites = { staff?: UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection | null };
+
+export type UserStaffFavoritesQuery_User_User = { favourites?: UserStaffFavoritesQuery_User_User_favourites_Favourites | null };
+
+export type UserStaffFavoritesQuery_Query = { User?: UserStaffFavoritesQuery_User_User | null };
+
 
 export type UserStaffFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5411,7 +6889,20 @@ export type UserStaffFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserStaffFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', staff?: { __typename?: 'StaffConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Staff', id: number, isFavourite: boolean, description?: string | null, gender?: string | null, favourites?: number | null, siteUrl?: string | null, language?: string | null, descriptionHTML?: string | null, dateOfBirth?: { __typename?: 'FuzzyDate', year?: number | null, month?: number | null, day?: number | null } | null, name?: { __typename?: 'StaffName', full?: string | null, native?: string | null } | null, image?: { __typename?: 'StaffImage', large?: string | null } | null } | null> | null } | null } | null } | null };
+export type UserStaffFavoritesQuery = UserStaffFavoritesQuery_Query;
+
+export type UserStudiosFavoritesQuery_User_User_favourites_Favourites_studios_StudioConnection_pageInfo_PageInfo = { total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null };
+
+export type UserStudiosFavoritesQuery_User_User_favourites_Favourites_studios_StudioConnection_nodes_Studio = { id: number, name: string, isAnimationStudio: boolean, isFavourite: boolean };
+
+export type UserStudiosFavoritesQuery_User_User_favourites_Favourites_studios_StudioConnection = { pageInfo?: UserStudiosFavoritesQuery_User_User_favourites_Favourites_studios_StudioConnection_pageInfo_PageInfo | null, nodes?: Array<UserStudiosFavoritesQuery_User_User_favourites_Favourites_studios_StudioConnection_nodes_Studio | null> | null };
+
+export type UserStudiosFavoritesQuery_User_User_favourites_Favourites = { studios?: UserStudiosFavoritesQuery_User_User_favourites_Favourites_studios_StudioConnection | null };
+
+export type UserStudiosFavoritesQuery_User_User = { favourites?: UserStudiosFavoritesQuery_User_User_favourites_Favourites | null };
+
+export type UserStudiosFavoritesQuery_Query = { User?: UserStudiosFavoritesQuery_User_User | null };
+
 
 export type UserStudiosFavoritesQueryVariables = Exact<{
   userID?: InputMaybe<Scalars['Int']['input']>;
@@ -5421,7 +6912,7 @@ export type UserStudiosFavoritesQueryVariables = Exact<{
 }>;
 
 
-export type UserStudiosFavoritesQuery = { __typename?: 'Query', User?: { __typename?: 'User', favourites?: { __typename?: 'Favourites', studios?: { __typename?: 'StudioConnection', pageInfo?: { __typename?: 'PageInfo', total?: number | null, perPage?: number | null, currentPage?: number | null, hasNextPage?: boolean | null, lastPage?: number | null } | null, nodes?: Array<{ __typename?: 'Studio', id: number, name: string, isAnimationStudio: boolean, isFavourite: boolean } | null> | null } | null } | null } | null };
+export type UserStudiosFavoritesQuery = UserStudiosFavoritesQuery_Query;
 
 
 export const MediaListEntryMetaFragmentDoc = `
@@ -6557,14 +8048,14 @@ useInfiniteWeeklyAnimeQuery.getKey = (variables?: WeeklyAnimeQueryVariables) => 
 
 useWeeklyAnimeQuery.fetcher = (variables?: WeeklyAnimeQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<WeeklyAnimeQuery, WeeklyAnimeQueryVariables>(WeeklyAnimeDocument, variables, options);
 
-export const AiringTodayDocument = `
-    query AiringToday($dayStart: Int, $dayEnd: Int) {
-  Page(perPage: 50) {
+export const AiringRangeDocument = `
+    query AiringRange($start: Int, $end: Int, $page: Int) {
+  Page(page: $page, perPage: 50) {
     pageInfo {
       hasNextPage
       total
     }
-    airingSchedules(airingAt_greater: $dayStart, airingAt_lesser: $dayEnd) {
+    airingSchedules(airingAt_greater: $start, airingAt_lesser: $end) {
       id
       episode
       airingAt
@@ -6578,47 +8069,111 @@ export const AiringTodayDocument = `
     ${MainMetaFragmentDoc}
 ${MediaListEntryMetaFragmentDoc}`;
 
-export const useAiringTodayQuery = <
-      TData = AiringTodayQuery,
+export const useAiringRangeQuery = <
+      TData = AiringRangeQuery,
       TError = unknown
     >(
-      variables?: AiringTodayQueryVariables,
-      options?: Omit<UseQueryOptions<AiringTodayQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AiringTodayQuery, TError, TData>['queryKey'] }
+      variables?: AiringRangeQueryVariables,
+      options?: Omit<UseQueryOptions<AiringRangeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AiringRangeQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<AiringTodayQuery, TError, TData>(
+    return useQuery<AiringRangeQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['AiringToday'] : ['AiringToday', variables],
-    queryFn: fetchAnilistData<AiringTodayQuery, AiringTodayQueryVariables>(AiringTodayDocument, variables),
+    queryKey: variables === undefined ? ['AiringRange'] : ['AiringRange', variables],
+    queryFn: fetchAnilistData<AiringRangeQuery, AiringRangeQueryVariables>(AiringRangeDocument, variables),
     ...options
   }
     )};
 
-useAiringTodayQuery.getKey = (variables?: AiringTodayQueryVariables) => variables === undefined ? ['AiringToday'] : ['AiringToday', variables];
+useAiringRangeQuery.getKey = (variables?: AiringRangeQueryVariables) => variables === undefined ? ['AiringRange'] : ['AiringRange', variables];
 
-export const useInfiniteAiringTodayQuery = <
-      TData = InfiniteData<AiringTodayQuery>,
+export const useInfiniteAiringRangeQuery = <
+      TData = InfiniteData<AiringRangeQuery>,
       TError = unknown
     >(
-      variables: AiringTodayQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<AiringTodayQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AiringTodayQuery, TError, TData>['queryKey'] }
+      variables: AiringRangeQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AiringRangeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AiringRangeQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useInfiniteQuery<AiringTodayQuery, TError, TData>(
+    return useInfiniteQuery<AiringRangeQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['AiringToday.infinite'] : ['AiringToday.infinite', variables],
-      queryFn: (metaData) => fetchAnilistData<AiringTodayQuery, AiringTodayQueryVariables>(AiringTodayDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryKey: optionsQueryKey ?? variables === undefined ? ['AiringRange.infinite'] : ['AiringRange.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<AiringRangeQuery, AiringRangeQueryVariables>(AiringRangeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteAiringTodayQuery.getKey = (variables?: AiringTodayQueryVariables) => variables === undefined ? ['AiringToday.infinite'] : ['AiringToday.infinite', variables];
+useInfiniteAiringRangeQuery.getKey = (variables?: AiringRangeQueryVariables) => variables === undefined ? ['AiringRange.infinite'] : ['AiringRange.infinite', variables];
 
 
-useAiringTodayQuery.fetcher = (variables?: AiringTodayQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AiringTodayQuery, AiringTodayQueryVariables>(AiringTodayDocument, variables, options);
+useAiringRangeQuery.fetcher = (variables?: AiringRangeQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<AiringRangeQuery, AiringRangeQueryVariables>(AiringRangeDocument, variables, options);
+
+export const SeasonalAnimeDocument = `
+    query SeasonalAnime($season: MediaSeason, $seasonYear: Int, $onList: Boolean, $page: Int) {
+  Page(page: $page) {
+    pageInfo {
+      total
+      perPage
+      hasNextPage
+      total
+    }
+    media(type: ANIME, onList: $onList, season: $season, seasonYear: $seasonYear) {
+      ...MainMeta
+      airingSchedule {
+        nodes {
+          airingAt
+        }
+      }
+    }
+  }
+}
+    ${MainMetaFragmentDoc}
+${MediaListEntryMetaFragmentDoc}`;
+
+export const useSeasonalAnimeQuery = <
+      TData = SeasonalAnimeQuery,
+      TError = unknown
+    >(
+      variables?: SeasonalAnimeQueryVariables,
+      options?: Omit<UseQueryOptions<SeasonalAnimeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<SeasonalAnimeQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<SeasonalAnimeQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['SeasonalAnime'] : ['SeasonalAnime', variables],
+    queryFn: fetchAnilistData<SeasonalAnimeQuery, SeasonalAnimeQueryVariables>(SeasonalAnimeDocument, variables),
+    ...options
+  }
+    )};
+
+useSeasonalAnimeQuery.getKey = (variables?: SeasonalAnimeQueryVariables) => variables === undefined ? ['SeasonalAnime'] : ['SeasonalAnime', variables];
+
+export const useInfiniteSeasonalAnimeQuery = <
+      TData = InfiniteData<SeasonalAnimeQuery>,
+      TError = unknown
+    >(
+      variables: SeasonalAnimeQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<SeasonalAnimeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<SeasonalAnimeQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<SeasonalAnimeQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['SeasonalAnime.infinite'] : ['SeasonalAnime.infinite', variables],
+      queryFn: (metaData) => fetchAnilistData<SeasonalAnimeQuery, SeasonalAnimeQueryVariables>(SeasonalAnimeDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteSeasonalAnimeQuery.getKey = (variables?: SeasonalAnimeQueryVariables) => variables === undefined ? ['SeasonalAnime.infinite'] : ['SeasonalAnime.infinite', variables];
+
+
+useSeasonalAnimeQuery.fetcher = (variables?: SeasonalAnimeQueryVariables, options?: RequestInit['headers']) => fetchAnilistData<SeasonalAnimeQuery, SeasonalAnimeQueryVariables>(SeasonalAnimeDocument, variables, options);
 
 export const TagCollectionDocument = `
     query TagCollection {
@@ -8527,7 +10082,7 @@ export const CharacterDetailsDocument = `
     favourites
     media(sort: $sort, page: $page, perPage: $perPage) {
       edges {
-        voiceActorRoles(sort: [RELEVANCE, ID]) {
+        voiceActorRoles(sort: [LANGUAGE, RELEVANCE]) {
           roleNotes
           voiceActor {
             ...StaffMetaData
@@ -8705,7 +10260,7 @@ export const StaffDetailsDocument = `
         }
       }
     }
-    characters(page: $char_page, perPage: $char_perPage, sort: RELEVANCE) {
+    characters(page: $char_page, perPage: $char_perPage, sort: FAVOURITES_DESC) {
       pageInfo {
         total
         perPage
@@ -8724,6 +10279,7 @@ export const StaffDetailsDocument = `
           image {
             large
           }
+          favourites
           isFavourite
         }
       }

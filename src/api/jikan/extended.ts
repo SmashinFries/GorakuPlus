@@ -3,11 +3,11 @@ import { MediaType } from '../anilist/__genereated__/gql';
 import { useGetAnimeFullById, useGetMangaFullById } from './jikan';
 import { useShallow } from 'zustand/react/shallow';
 
-export const useMalQuery = (malId: number, type: MediaType) => {
+export const useMalQuery = (malId: number | undefined, type: MediaType | undefined) => {
 	const isMalEnabled = useMatchStore(useShallow((state) => state.isMalEnabled));
 	if (type === MediaType.Anime) {
-		return useGetAnimeFullById(malId, { query: { enabled: isMalEnabled ? !!malId : false } });
+		return useGetAnimeFullById(malId as number, { query: { enabled: isMalEnabled ? !!malId : false } });
 	} else {
-		return useGetMangaFullById(malId, { query: { enabled: isMalEnabled ? !!malId : false } });
+		return useGetMangaFullById(malId as number, { query: { enabled: isMalEnabled ? !!malId : false } });
 	}
 };

@@ -35,7 +35,6 @@ export const useAnilistAuth = () => {
 	const [result, setResult] = useState<AuthSessionResult | null>(null);
 	const queryClient = useQueryClient();
 	const setAnilistAuth = useAuthStore(useShallow((state) => state.setAnilistAuth));
-	// const setAnilistAuthTest = useAnilistAuthStore((state) => state.setAnilistAuthTest);
 	const { updateListFilter } = useListFilterStore();
 
 	const promptAsync = useCallback(
