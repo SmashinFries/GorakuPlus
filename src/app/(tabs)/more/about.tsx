@@ -15,8 +15,8 @@ import {
 } from '@/components/svgs';
 import { Image } from 'expo-image';
 import { openWebBrowser } from '@/utils/webBrowser';
-import useAppUpdates from '@/hooks/useAppUpdates';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { useAppUpdaterStore } from '@/store/appUpdateStore';
 
 const OtherAppItem = ({
 	title,
@@ -64,12 +64,12 @@ const OtherAppItem = ({
 
 const AboutPage = () => {
 	const { showNSFW } = useSettingsStore();
-	const { checkForUpdates } = useAppUpdates();
+	const { checkForUpdate } = useAppUpdaterStore();
 	const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
 
 	const runUpdateChecker = async () => {
 		setIsCheckingUpdate(true);
-		const _hasUpdate = await checkForUpdates();
+		await checkForUpdate();
 		setIsCheckingUpdate(false);
 	};
 
@@ -93,7 +93,7 @@ const AboutPage = () => {
 				/>
 			)}
 			<Accordion title="More Apps" titleStyle={{ fontSize: 16 }}>
-				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				<ScrollView horizontal showsHorizontalScrollIndicator={false} fadingEdgeLength={6}>
 					<OtherAppItem
 						title={'WaifuTagger'}
 						imgUrl="https://github.com/KuzuLabz/WaifuTagger/blob/master/assets/adaptive-icon.png?raw=true"
