@@ -1,16 +1,17 @@
 import { View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { List, Portal } from 'react-native-paper';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Style } from 'react-native-paper/lib/typescript/components/List/utils';
 import { AnilistIcon } from '@/components/svgs';
 import { ListSubheader } from '@/components/titles';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
-import { SheetManager } from 'react-native-actions-sheet';
 import { SauceNaoAuthDialog } from '@/components/dialogs';
 import { useShallow } from 'zustand/react/shallow';
+import { AnilistAccountSheet } from '@/components/sheets/bottomsheets';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -20,6 +21,7 @@ const AccountsPage = () => {
 	const { dark } = useAppTheme();
 	const aniAuth = useAnilistAuth();
 	const [isSauceNaoVis, setIsSauceNaoVis] = useState(false);
+	const sheetRef = useRef<TrueSheet>(null);
 	// const dayStart = Math.round(new Date(new Date().setUTCHours(0, 0, 0, 0)).getTime() / 1000);
 	// const dayEnd = Math.round(new Date(new Date().setUTCHours(23, 59, 59, 999)).getTime() / 1000);
 	// const { data } = useAiringTodayQuery({ dayStart, dayEnd }, { enabled: !!dayStart && !!dayEnd });
@@ -37,9 +39,7 @@ const AccountsPage = () => {
 					title="Anilist"
 					description={anilist.deathDate && `Expires: ${anilist.deathDate}`}
 					onPress={() =>
-						anilist.deathDate
-							? SheetManager.show('AnilistAccountSheet')
-							: aniAuth.promptAsync()
+						anilist.deathDate ? sheetRef.current?.present() : aniAuth.promptAsync()
 					}
 					right={(props) => (anilist.deathDate ? <ActiveIcon {...props} /> : null)}
 					left={(props) => <AnilistIcon style={[props.style]} isDark={dark} />}
@@ -58,6 +58,7 @@ const AccountsPage = () => {
 					)}
 				/>
 			</List.Section>
+			<AnilistAccountSheet sheetRef={sheetRef} />
 			<Portal>
 				<SauceNaoAuthDialog
 					visible={isSauceNaoVis}
