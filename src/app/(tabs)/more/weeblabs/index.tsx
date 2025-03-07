@@ -8,12 +8,12 @@ const WeebLabPage = () => {
 			<List.Item
 				title="PanelsDesu"
 				description={'Search manga panels'}
-				onPress={() => router.navigate('/more/weeblab/panelsdesu')}
+				onPress={() => router.navigate('/weeblab/panelsdesu')}
 			/>
 			<List.Item
 				title="AniTrendz"
 				description={'Anime related polls'}
-				onPress={() => router.navigate('/more/weeblab/anitrendz')}
+				onPress={() => router.navigate('/weeblab/anitrendz')}
 				left={(props) => (
 					<List.Image
 						{...props}
@@ -40,7 +40,7 @@ const WeebLabPage = () => {
 				left={(props) => (
 					<List.Image {...props} source={require('../../../../../assets/nekosapi.png')} />
 				)}
-				onPress={() => router.navigate('/more/weeblab/nekosapi')}
+				onPress={() => router.navigate('/weeblab/nekosapi')}
 			/>
 			<Divider />
 			<View style={{ alignItems: 'center' }}>

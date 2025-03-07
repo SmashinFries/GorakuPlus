@@ -9,12 +9,6 @@ const WeebLabLayout = () => {
 				header: (props) => <PaperHeader {...props} />,
 			}}
 		>
-			<Stack.Screen
-				name="index"
-				options={{
-					title: 'WeebLab',
-				}}
-			/>
 			<Stack.Screen name="waifuit" options={{ title: 'WaifuIt' }} />
 			<Stack.Screen
 				name="nekosapi"

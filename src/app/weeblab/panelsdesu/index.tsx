@@ -14,9 +14,11 @@ import Animated from 'react-native-reanimated';
 const AnimatedMasonryFlashList = Animated.createAnimatedComponent(MasonryFlashList);
 
 const PanelItem = ({ item }: { item: GetSearchSearchMedia200PanelsItem }) => {
+	const { colors } = useAppTheme();
 	return (
 		<Pressable
-			onPress={() => router.navigate(`/(tabs)/more/weeblab/panelsdesu/${item.id}`)}
+			onPress={() => router.navigate(`/weeblab/panelsdesu/${item.id}`)}
+			android_ripple={{ color: colors.primary, borderless: false, foreground: true }}
 			style={{
 				flex: 1,
 				aspectRatio: item?.width / item?.height,
@@ -62,12 +64,13 @@ const PanelsDesuPage = () => {
 			<AnimatedMasonryFlashList
 				data={data?.data?.panels}
 				ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
-				contentContainerStyle={{ paddingHorizontal: 8, paddingTop: searchbarHeight }}
+				contentContainerStyle={{ paddingTop: searchbarHeight }}
 				renderItem={renderItem}
 				onScroll={scrollHandler}
 				estimatedItemSize={268}
 				numColumns={2}
 				keyboardDismissMode={'on-drag'}
+				showsVerticalScrollIndicator
 				// ListHeaderComponent={() => (
 
 				// )}

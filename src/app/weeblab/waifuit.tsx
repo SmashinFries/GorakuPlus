@@ -35,6 +35,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useQueryClient } from '@tanstack/react-query';
 import { sendErrorMessage } from '@/utils/toast';
 import { WaifuItHeader } from '@/components/headers';
+import React from 'react';
 
 type TextInputContainerProps = {
 	label: string;
@@ -172,6 +173,8 @@ const WeebLabPage = () => {
 					setUwuTextQuery(text);
 					setActiveTextMod('uwu');
 					break;
+				default:
+					break;
 			}
 		},
 		[text],
@@ -188,7 +191,7 @@ const WeebLabPage = () => {
 			<ScrollView>
 				<View style={{ alignItems: 'center', paddingVertical: 20 }}>
 					<Image
-						source={require('../../../../../assets/waifu.it.logo.png')}
+						source={require('../../../assets/waifu.it.logo.png')}
 						style={{ aspectRatio: 1, width: '40%', maxHeight: 200 }}
 						contentFit="contain"
 					/>

@@ -8,17 +8,21 @@ import {
 import { AnimViewMem } from '@/components/animations';
 import PaperHeader from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
+import {
+	AniTrendzQuickActionProps,
+	AniTrendzQuickActionSheet,
+} from '@/components/sheets/bottomsheets';
 import { GorakuTabBar } from '@/components/tab';
 import { useAppTheme } from '@/store/theme/themes';
 import { sendToast } from '@/utils/toast';
 import { openWebBrowser } from '@/utils/webBrowser';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { Image } from 'expo-image';
-import { Stack } from 'expo-router';
-import { openBrowserAsync } from 'expo-web-browser';
+import { router, Stack } from 'expo-router';
+import React, { useRef } from 'react';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
-import { SheetManager } from 'react-native-actions-sheet';
 import { Icon, Surface, Text } from 'react-native-paper';
 import { SceneRendererProps, TabView } from 'react-native-tab-view';
 
@@ -34,7 +38,7 @@ const ChartIcon = ({
 	return (
 		<Pressable
 			style={{ flexDirection: 'row', alignItems: 'center' }}
-			onPress={() => sendToast(message)}
+			onPress={() => message && sendToast(message)}
 		>
 			<Icon source={icon} size={24} />
 			<Text>{value}</Text>
@@ -52,7 +56,7 @@ const ChartItem = ({
 	stagnation,
 	total,
 	name,
-	nameAlt,
+	// nameAlt,
 	subText,
 	onLongPress,
 	onPress,
@@ -194,7 +198,7 @@ const AniTrendzChart = ({
 }: {
 	type: AniTrendzChartTypes;
 	onChoiceLongSelect: (choice: AniTrendzCharChoice) => void;
-	onSingleSelect: (search: string) => void;
+	onSingleSelect: (search?: string) => void;
 }) => {
 	const { data, isFetching } = useAniTrendzCharts(type);
 
@@ -225,8 +229,16 @@ const AniTrendzChart = ({
 type AniTrendzRoute = { key: AniTrendzChartTypes; title: string };
 const AniTrendzPage = () => {
 	const layout = useWindowDimensions();
+	const sheetRef = useRef<TrueSheet>(null);
+	const [actionSheetParams, setActionSheetParams] = useState<
+		Omit<AniTrendzQuickActionProps, 'onAnimeSearch' | 'onCharacterSearch' | 'sheetRef'>
+	>({
+		link: null,
+		names: [],
+		anime: null,
+	});
 	// const filterSheetRef = useRef<BottomSheetModalMethods>(null);
-	const [routes, setRoutes] = useState<AniTrendzRoute[]>([
+	const [routes, _setRoutes] = useState<AniTrendzRoute[]>([
 		{
 			key: 'female',
 			title: 'Waifus',
@@ -253,19 +265,29 @@ const AniTrendzPage = () => {
 	) => {
 		const names = choice.name.split(' x ');
 		// Haptics.selectionAsync();
-		SheetManager.show('QuickActionAniTrendzSheet', {
-			payload: {
-				link,
-				names: isAnime ? [] : names,
-				anime: isAnime ? choice.name : choice.subText,
-				onAnimeSearch(anime) {
-					SheetManager.show('MediaSearchSheet', {
-						payload: { search: anime, type: MediaType.Anime },
-					});
-				},
-				onCharacterSearch(name) {
-					SheetManager.show('CharacterSearchSheet', { payload: { name } });
-				},
+		setActionSheetParams({
+			link,
+			names: isAnime ? [] : names,
+			anime: isAnime ? choice.name : choice.subText,
+		});
+		sheetRef.current?.present();
+	};
+
+	const openMediaSearchSheet = (search: string) => {
+		router.push({
+			pathname: '/(sheets)/mediaSearchSheet',
+			params: {
+				search,
+				type: MediaType.Anime,
+			},
+		});
+	};
+
+	const openCharacterSearchSheet = (name: string) => {
+		router.push({
+			pathname: '/(sheets)/characterSearchSheet',
+			params: {
+				name,
 			},
 		});
 	};
@@ -277,12 +299,19 @@ const AniTrendzPage = () => {
 	}) => (
 		<AniTrendzChart
 			type={route.key}
-			onSingleSelect={(search: string) =>
-				route.key === 'anime'
-					? SheetManager.show('MediaSearchSheet', {
-							payload: { search, type: MediaType.Anime },
-						})
-					: SheetManager.show('CharacterSearchSheet', { payload: { name: search } })
+			onSingleSelect={
+				(search?: string) => {
+					if (search) {
+						if (route.key === 'anime') {
+							openMediaSearchSheet(search);
+						} else {
+							openCharacterSearchSheet(search);
+						}
+					}
+				}
+
+				// ? openMediaSearchSheet({ search, type: MediaType.Anime })
+				// : openCharacterSearchSheet({ name: search })
 			}
 			onChoiceLongSelect={(choice) =>
 				onChoiceSelect(
@@ -324,6 +353,16 @@ const AniTrendzPage = () => {
 				renderTabBar={GorakuTabBar}
 				swipeEnabled={true}
 				lazy
+			/>
+			<AniTrendzQuickActionSheet
+				sheetRef={sheetRef}
+				{...actionSheetParams}
+				onAnimeSearch={(anime) => {
+					openMediaSearchSheet(anime);
+				}}
+				onCharacterSearch={(name) => {
+					openCharacterSearchSheet(name);
+				}}
 			/>
 		</>
 	);

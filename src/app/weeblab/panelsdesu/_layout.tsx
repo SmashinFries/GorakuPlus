@@ -29,7 +29,7 @@ const PanelsDesuLayout = () => {
 					),
 				}}
 			/>
-			<Stack.Screen name="[panelId]" />
+			<Stack.Screen name="[panelId]" options={{ title: 'Panel Info' }} />
 		</AnimatedStack>
 	);
 };

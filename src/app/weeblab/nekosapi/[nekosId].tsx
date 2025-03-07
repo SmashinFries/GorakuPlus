@@ -1,17 +1,16 @@
-import { MediaTag } from '@/api/anilist/__genereated__/gql';
-import { useNekosapiImagesApiImage } from '@/api/nekosapi/nekosapi';
+import { useNekosApiImageIdQuery } from '@/api/nekosapi/nekosapi';
 import { Accordion, AnimViewMem } from '@/components/animations';
 import { ArtistBar } from '@/components/art/artist';
 import { InteractionBar } from '@/components/art/interactions';
 import { ImageViewer } from '@/components/imageViewer';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { TagDialog } from '@/components/media/dialogs';
 import { copyToClipboard, rgbToHex } from '@/utils';
-import { Image } from 'expo-image';
+import { Image, useImage } from 'expo-image';
 import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
 import { useState } from 'react';
 import { Pressable, ScrollView, useWindowDimensions, View } from 'react-native';
-import { Chip, Divider, Portal } from 'react-native-paper';
+import { ActivityIndicator, Chip, Divider, Portal } from 'react-native-paper';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 const ColorPaletteItem = ({ rgb, itemWidth }: { rgb: number[]; itemWidth: number }) => {
@@ -44,15 +43,35 @@ const ColorPaletteItem = ({ rgb, itemWidth }: { rgb: number[]; itemWidth: number
 const NekoImagePage = () => {
 	const { height, width } = useWindowDimensions();
 	const { nekosId: idStr } = useLocalSearchParams<{ nekosId: string }>();
-	const nekosId = idStr ? parseInt(idStr) : null;
-	const { data, isFetching, isFetched } = useNekosapiImagesApiImage(nekosId, {
-		query: { enabled: !!nekosId, refetchOnMount: false },
-	});
+	const { data, isFetching, isFetched } = useNekosApiImageIdQuery(idStr);
 
-	const [tagDialogVis, setTagDialogVis] = useState(false);
-	const [selectedTag, setSelectedTag] = useState<MediaTag>(null);
+	const image = useImage(
+		data?.data?.url ?? '',
+		{
+			maxWidth: height * 0.45,
+		},
+		[data?.data?.url],
+	);
+
+	// const [tagDialogVis, setTagDialogVis] = useState(false);
+	// const [selectedTag, setSelectedTag] = useState<MediaTag>(null);
 
 	const [imageViewerVis, setImageViewerVis] = useState(false);
+
+	if (!image) {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
+				<ActivityIndicator />
+			</View>
+		);
+	}
 
 	return (
 		<>
@@ -71,14 +90,15 @@ const NekoImagePage = () => {
 			<ScrollView>
 				{isFetched && data?.data && (
 					<AnimViewMem>
-						<Pressable onPress={() => setImageViewerVis(true)}>
+						<Pressable style={{ flex: 1 }} onPress={() => setImageViewerVis(true)}>
 							<Image
-								source={{ uri: data.data.image_url }}
+								source={image}
 								style={{
-									maxHeight: height * 0.45,
+									// flex: 1,
+									// maxHeight: '100%',
+									aspectRatio: image.width / image.height,
 									width: '100%',
 									alignSelf: 'center',
-									aspectRatio: data.data.image_width / data.data.image_height,
 								}}
 								contentFit="contain"
 							/>
@@ -103,27 +123,24 @@ const NekoImagePage = () => {
 										compact
 										mode={'outlined'}
 										style={{ margin: 4 }}
-										onLongPress={() => copyToClipboard(tag.name)}
-										onPress={() => {
-											setSelectedTag({
-												...tag,
-												category: tag.sub,
-												isAdult: tag.is_nsfw,
-											});
-											setTagDialogVis(true);
-										}}
+										onLongPress={() => copyToClipboard(tag.replaceAll('_', ''))}
+										// onPress={() => {
+										// 	setSelectedTag({
+										// 		...tag,
+										// 		category: tag.sub,
+										// 		isAdult: tag.is_nsfw,
+										// 	});
+										// 	setTagDialogVis(true);
+										// }}
 									>
-										{tag.name}
+										{tag.replaceAll('_', '')}
 									</Chip>
 								))}
 							</View>
-							<InteractionBar
-								share_url={data.data.image_url}
-								url={data.data.image_url}
-							/>
+							<InteractionBar share_url={data.data.url} url={data.data.url} />
 							<ArtistBar
-								artist_name={data.data.artist?.name ?? undefined}
-								source={data.data.artist?.links[0]}
+								artist_name={data.data.artist_name ?? undefined}
+								source={data.data.source_url}
 							/>
 							<Divider />
 							<Accordion
@@ -158,13 +175,13 @@ const NekoImagePage = () => {
 					</AnimViewMem>
 				)}
 				<Portal>
-					<TagDialog
+					{/* <TagDialog
 						tag={selectedTag}
 						visible={tagDialogVis}
 						onDismiss={() => setTagDialogVis(false)}
-					/>
+					/> */}
 					<ImageViewer
-						urls={[data?.data?.image_url, data?.data?.sample_url]}
+						urls={data?.data?.url ? [data.data.url] : []}
 						visible={imageViewerVis}
 						onDismiss={() => setImageViewerVis(false)}
 					/>
