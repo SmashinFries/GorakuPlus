@@ -5,12 +5,20 @@ import {
 } from '@tanstack/react-query-persist-client';
 import { ReactNode, useEffect } from 'react';
 import notifee, { EventType } from '@notifee/react-native';
-import * as Linking from 'expo-linking';
 import { clientPersister } from '@/store/persister';
 import { useCollectionUpdater } from '@/hooks/useCollections';
 import { NotificationPressActionIds, notifNavigate } from '@/utils/notifications/backgroundFetch';
+import { sendErrorMessage } from '@/utils/toast';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+	defaultOptions: {
+		mutations: {
+			onError(error) {
+				sendErrorMessage(error.name, error.message);
+			},
+		},
+	},
+});
 
 const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
 	persister: clientPersister,
@@ -31,15 +39,20 @@ export const RootProvider = ({ children }: { children: ReactNode }) => {
 			switch (type) {
 				case EventType.ACTION_PRESS:
 				case EventType.PRESS: {
-					notifNavigate(
-						detail.notification,
-						detail.pressAction.id as NotificationPressActionIds,
-					);
+					detail.notification &&
+						detail.pressAction &&
+						notifNavigate(
+							detail.notification,
+							detail.pressAction.id as NotificationPressActionIds,
+						);
 					break;
 				}
+				default:
+					break;
 			}
 		});
 	}, []);
+
 	return (
 		<PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
 			{children}
