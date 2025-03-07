@@ -5,9 +5,8 @@ import { rgbToRgba } from '@/utils';
 import { saveImage } from '@/utils/images';
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Pressable, Image as ImageRN, View } from 'react-native';
-import { GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
-import PagerView from 'react-native-pager-view';
+import { Pressable, Image as ImageRN, View, FlatList, useWindowDimensions } from 'react-native';
+import { GestureDetector } from 'react-native-gesture-handler';
 import { IconButton, Surface } from 'react-native-paper';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -87,14 +86,17 @@ export const ImageViewer = ({
 	rtl = false,
 }: ImageViewerProps) => {
 	const { colors, roundness } = useAppTheme();
-	const [index, setIndex] = useState(initialIndex);
+	const [index, _setIndex] = useState(initialIndex);
 
 	const { top } = useSafeAreaInsets();
+	const { width } = useWindowDimensions();
 
 	const shareImage = async (url: string) => {
 		const [{ localUri }] = await Asset.loadAsync(url);
-		await Sharing.shareAsync(localUri, { mimeType: 'image/*', dialogTitle: 'Image share' });
-		await FileSystem.deleteAsync(localUri);
+		if (localUri) {
+			await Sharing.shareAsync(localUri, { mimeType: 'image/*', dialogTitle: 'Image share' });
+			await FileSystem.deleteAsync(localUri);
+		}
 	};
 
 	return (
@@ -115,7 +117,54 @@ export const ImageViewer = ({
 					collapsable={false}
 					style={{ position: 'absolute', height: '100%', width: '100%' }}
 				>
-					<PagerView
+					<FlatList
+						data={urls}
+						renderItem={({ item }) =>
+							item ? (
+								<View
+									collapsable={false}
+									style={[
+										{
+											height: '100%',
+											width: width,
+											alignItems: 'center',
+											justifyContent: 'center',
+										},
+										// rtl && { transform: [{ scaleX: -1 }] },
+									]}
+								>
+									<Pressable
+										style={{
+											position: 'absolute',
+											opacity: 0.4,
+											height: '100%',
+											width: '100%',
+										}}
+										collapsable={false}
+										onPress={onDismiss}
+									/>
+									<ImageItem
+										url={item}
+										shouldReset={visible ? false : true}
+										isSpoiler={isSpoiler}
+									/>
+								</View>
+							) : null
+						}
+						keyExtractor={(item, idx) => idx.toString()}
+						pagingEnabled
+						// snapToAlignment="center"
+						horizontal
+						inverted={rtl}
+						showsHorizontalScrollIndicator={false}
+						initialScrollIndex={initialIndex}
+						getItemLayout={(data, index) => ({
+							length: width,
+							offset: width * index,
+							index,
+						})}
+					/>
+					{/* <PagerView
 						style={[
 							{ height: '100%', width: '100%' },
 							rtl && { transform: [{ scaleX: -1 }] },
@@ -158,7 +207,7 @@ export const ImageViewer = ({
 								</View>
 							) : null,
 						)}
-					</PagerView>
+					</PagerView> */}
 				</View>
 				<View
 					style={{
