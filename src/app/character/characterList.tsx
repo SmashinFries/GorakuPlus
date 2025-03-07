@@ -1,14 +1,10 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { CharacterItem, CharacterLabel } from '@/components/characters/card';
-import { useCallback } from 'react';
 import { useCharactersList } from '@/hooks/characters/useCharacters';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { CharacterListQuery, MediaType } from '@/api/anilist/__genereated__/gql';
-import { useAppTheme } from '@/store/theme/themes';
-import { CharacterCard } from '@/components/cards';
+import { CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge } from '@/api/anilist/__genereated__/gql';
+import { CharacterCard, CharacterRowCard } from '@/components/cards';
 import { useColumns } from '@/hooks/useColumns';
 
 const CharacterListPage = () => {
@@ -16,21 +12,26 @@ const CharacterListPage = () => {
 	const id = parseInt(mediaId);
 	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } = useCharactersList(id);
 	const { height } = useWindowDimensions();
-	const { columns, itemWidth } = useColumns('search');
+	const { columns, displayMode, itemWidth } = useColumns('search');
 
-	const RenderItem = useCallback(
-		(props: { item: CharacterListQuery['Media']['characters']['edges'][0]; index: number }) => (
-			<View
-				style={{
-					alignItems: 'center',
-					width: itemWidth,
-				}}
-			>
-				<CharacterCard {...props.item.node} role={props.item.role} />
-			</View>
-		),
-		[itemWidth],
-	);
+	const RenderItem = (props: {
+		item: CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge;
+		index: number;
+	}) =>
+		props.item.node?.id ? (
+			displayMode === 'COMPACT' ? (
+				<View
+					style={{
+						alignItems: 'center',
+						width: itemWidth,
+					}}
+				>
+					<CharacterCard {...props.item.node} role={props.item.role ?? undefined} />
+				</View>
+			) : (
+				<CharacterRowCard {...props.item.node} role={props.item.role ?? undefined} />
+			)
+		) : null;
 
 	if (isLoading) {
 		return (
@@ -49,12 +50,16 @@ const CharacterListPage = () => {
 
 	return (
 		<View style={{ height: '100%', width: '100%' }}>
-			{/* <Button onPress={() => data?.Media?.characters?.edges.length}>Print Length</Button> */}
 			<FlashList
 				numColumns={columns}
 				key={columns}
-				data={data}
-				keyExtractor={(item) => item?.node?.id.toString()}
+				data={data?.filter(
+					(
+						item,
+					): item is CharacterListQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge =>
+						item != null,
+				)}
+				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={RenderItem}
 				ListFooterComponent={() =>
 					isFetching && (

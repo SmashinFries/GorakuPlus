@@ -2,16 +2,26 @@ import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { FlatList, View, useWindowDimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 import { ReactNode, useCallback, useRef } from 'react';
-import { CharacterCard, MediaCard, MediaCardRow, StudioCard, UserCard } from '../cards';
+import {
+	CharacterCard,
+	CharacterRowCard,
+	MediaCard,
+	MediaCardRow,
+	StudioCard,
+	UserCard,
+} from '../cards';
 import Animated from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useSearchStore } from '@/store/search/searchStore';
 import useDebounce from '@/hooks/useDebounce';
 import {
 	CharacterSearchQuery,
+	CharacterSearchQuery_Page_Page_characters_Character,
 	MediaSearchQuery,
+	MediaSearchQuery_Page_Page_media_Media,
 	MediaType,
 	StaffSearchQuery,
+	StaffSearchQuery_Page_Page_staff_Staff,
 	StudioSearchQuery,
 	useInfiniteCharacterSearchQuery,
 	useInfiniteMediaSearchQuery,
@@ -28,14 +38,13 @@ import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
 import { ScrollToTopButton } from '../buttons';
 import { useColumns } from '@/hooks/useColumns';
 import { useDisplayStore } from '@/store/displayStore';
-import { SheetManager } from 'react-native-actions-sheet';
 import { LongScrollView } from '../list';
 import { useShallow } from 'zustand/react/shallow';
 import { GorakuRefreshControl } from '../explore/lists';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
-export const MediaRenderItem = (props: MediaSearchQuery['Page']['media'][0]) => {
+export const MediaRenderItem = (props: MediaSearchQuery_Page_Page_media_Media) => {
 	return (
 		<View
 			style={{
@@ -51,7 +60,7 @@ export const MediaRenderItem = (props: MediaSearchQuery['Page']['media'][0]) => 
 	);
 };
 
-export const MediaRowRenderItem = (props: MediaSearchQuery['Page']['media'][0]) => {
+export const MediaRowRenderItem = (props: MediaSearchQuery_Page_Page_media_Media) => {
 	return <MediaCardRow {...props} />;
 };
 
@@ -110,9 +119,12 @@ const SearchAllRenderItem = ({
 				>
 					<StudioCard
 						onPress={() => router.push(`/studio/${item.id}`)}
-						onLongPress={() =>
-							SheetManager.show('QuickActionStudioSheet', { payload: item })
-						}
+						// onLongPress={() => router.push({
+						// 	pathname: '/(sheets)/studioActions',
+						// 	params: {
+						// 		params: JSON.stringify(item),
+						// 	}
+						// })}
 						{...item}
 					/>
 				</View>
@@ -130,6 +142,8 @@ const SearchAllRenderItem = ({
 					<UserCard {...item} />
 				</View>
 			);
+		default:
+			return null;
 	}
 };
 
@@ -138,7 +152,7 @@ const SearchAllSection = ({
 	data,
 }: {
 	type: SearchAllTypes;
-	data: any[];
+	data: any[] | undefined;
 	isFetching?: boolean;
 }) => {
 	const { width } = useWindowDimensions();
@@ -177,7 +191,10 @@ const SearchList = ({
 		headerHeight ?? undefined,
 		150,
 	);
-	const keyExtract = useCallback((item, index) => item.id.toString() + index.toString(), []);
+	const keyExtract = useCallback(
+		(item: any, index: number) => (item?.id?.toString() ?? '0') + index.toString(),
+		[],
+	);
 
 	return (
 		<View style={{ width: width, height: '100%' }}>
@@ -243,31 +260,47 @@ export const SearchAllList = () => {
 						<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
 					}
 				>
-					{data?.Anime?.media?.length > 0 && <SearchAllTitle>Anime</SearchAllTitle>}
-					{data?.Anime?.media?.length > 0 && (
-						<SearchAllSection data={data?.Anime?.media} type="anime" />
+					{(data?.Anime?.media?.length ?? 0) > 0 && (
+						<SearchAllTitle>Anime</SearchAllTitle>
 					)}
-					{data?.Manga?.media?.length > 0 && <SearchAllTitle>Manga</SearchAllTitle>}
-					{data?.Manga?.media?.length > 0 && (
-						<SearchAllSection data={data?.Manga?.media} type="manga" />
+					{(data?.Anime?.media?.length ?? 0) > 0 && (
+						<SearchAllSection data={data?.Anime?.media ?? undefined} type="anime" />
 					)}
-					{data?.Characters?.characters?.length > 0 && (
+					{(data?.Manga?.media?.length ?? 0) > 0 && (
+						<SearchAllTitle>Manga</SearchAllTitle>
+					)}
+					{(data?.Manga?.media?.length ?? 0) > 0 && (
+						<SearchAllSection data={data?.Manga?.media ?? undefined} type="manga" />
+					)}
+					{(data?.Characters?.characters?.length ?? 0) > 0 && (
 						<SearchAllTitle>Characters</SearchAllTitle>
 					)}
-					{data?.Characters?.characters?.length > 0 && (
-						<SearchAllSection data={data?.Characters?.characters} type="characters" />
+					{(data?.Characters?.characters?.length ?? 0) > 0 && (
+						<SearchAllSection
+							data={data?.Characters?.characters ?? undefined}
+							type="characters"
+						/>
 					)}
-					{data?.Staff?.staff?.length > 0 && <SearchAllTitle>Staff</SearchAllTitle>}
-					{data?.Staff?.staff?.length > 0 && (
-						<SearchAllSection data={data?.Staff?.staff} type="staff" />
+					{(data?.Staff?.staff?.length ?? 0) > 0 && (
+						<SearchAllTitle>Staff</SearchAllTitle>
 					)}
-					{data?.Studios?.studios?.length > 0 && <SearchAllTitle>Studios</SearchAllTitle>}
-					{data?.Studios?.studios?.length > 0 && (
-						<SearchAllSection data={data?.Studios?.studios} type="studios" />
+					{(data?.Staff?.staff?.length ?? 0) > 0 && (
+						<SearchAllSection data={data?.Staff?.staff ?? undefined} type="staff" />
 					)}
-					{data?.Users?.users?.length > 0 && <SearchAllTitle>Users</SearchAllTitle>}
-					{data?.Users?.users?.length > 0 && (
-						<SearchAllSection data={data?.Users?.users} type="users" />
+					{(data?.Studios?.studios?.length ?? 0) > 0 && (
+						<SearchAllTitle>Studios</SearchAllTitle>
+					)}
+					{(data?.Studios?.studios?.length ?? 0) > 0 && (
+						<SearchAllSection
+							data={data?.Studios?.studios ?? undefined}
+							type="studios"
+						/>
+					)}
+					{(data?.Users?.users?.length ?? 0) > 0 && (
+						<SearchAllTitle>Users</SearchAllTitle>
+					)}
+					{(data?.Users?.users?.length ?? 0) > 0 && (
+						<SearchAllSection data={data?.Users?.users ?? undefined} type="users" />
 					)}
 				</LongScrollView>
 			)}
@@ -306,7 +339,7 @@ export const AnimeSearchList = () => {
 			getNextPageParam(lastPage) {
 				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -334,7 +367,7 @@ export const AnimeSearchList = () => {
 				data={mergedResults}
 				numColumns={columns}
 				nestedScrollEnabled
-				renderItem={({ item }: { item: MediaSearchQuery['Page']['media'][0] }) =>
+				renderItem={({ item }: { item: MediaSearchQuery_Page_Page_media_Media }) =>
 					displayMode === 'COMPACT' ? (
 						<View style={{ width: itemWidth }}>
 							<MediaRenderItem {...item} />
@@ -387,7 +420,7 @@ export const MangaSearchList = () => {
 			getNextPageParam(lastPage) {
 				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -395,7 +428,7 @@ export const MangaSearchList = () => {
 	);
 	const { width } = useWindowDimensions();
 
-	const allResults = data?.pages?.flatMap((val) => val.Page.media);
+	const allResults = data?.pages?.flatMap((val) => val.Page?.media);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -460,15 +493,15 @@ export const CharacterSearchList = () => {
 	} = useInfiniteCharacterSearchQuery(
 		{
 			...characterFilter,
-			isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter.isBirthday,
-			search: debouncedSearch.length > 0 ? debouncedSearch : undefined,
+			isBirthday: debouncedSearch?.length > 0 ? undefined : characterFilter?.isBirthday,
+			search: debouncedSearch?.length > 0 ? debouncedSearch : undefined,
 		},
 		{
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo?.hasNextPage) {
+				if (lastPage?.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage?.Page?.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -476,11 +509,14 @@ export const CharacterSearchList = () => {
 	);
 	const { width } = useWindowDimensions();
 
-	const allResults: CharacterSearchQuery['Page']['characters'] = data?.pages?.flatMap(
-		(val) => val.Page.characters,
-	);
+	const allResults: CharacterSearchQuery_Page_Page_characters_Character[] =
+		data?.pages
+			?.flatMap((val) => val?.Page?.characters ?? [])
+			.filter(
+				(char): char is CharacterSearchQuery_Page_Page_characters_Character => char != null,
+			) ?? [];
 
-	const { columns, itemWidth } = useColumns('search');
+	const { columns, itemWidth, displayMode } = useColumns('search');
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -501,18 +537,22 @@ export const CharacterSearchList = () => {
 				numColumns={columns}
 				data={allResults}
 				nestedScrollEnabled
-				renderItem={({ item }) => (
-					<View
-						style={{
-							alignItems: 'center',
-							marginVertical: 15,
-							marginHorizontal: 4,
-							width: itemWidth,
-						}}
-					>
-						<CharacterCard {...item} />
-					</View>
-				)}
+				renderItem={({ item }) =>
+					displayMode === 'COMPACT' ? (
+						<View
+							style={{
+								alignItems: 'center',
+								marginVertical: 15,
+								marginHorizontal: 4,
+								width: itemWidth,
+							}}
+						>
+							<CharacterCard {...item} />
+						</View>
+					) : (
+						<CharacterRowCard {...item} />
+					)
+				}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
@@ -550,7 +590,7 @@ export const StaffSearchList = () => {
 			getNextPageParam(lastPage) {
 				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -558,11 +598,13 @@ export const StaffSearchList = () => {
 	);
 	const { width } = useWindowDimensions();
 
-	const { columns, itemWidth } = useColumns('search');
+	const { columns, itemWidth, displayMode } = useColumns('search');
 
-	const allResults: StaffSearchQuery['Page']['staff'] = data?.pages?.flatMap(
-		(val) => val.Page.staff,
-	);
+	const allResults: NonNullable<StaffSearchQuery['Page']>['staff'] =
+		data?.pages
+			?.flatMap((val) => val.Page?.staff ?? [])
+			.filter((staff): staff is StaffSearchQuery_Page_Page_staff_Staff => staff != null) ??
+		[];
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -583,18 +625,22 @@ export const StaffSearchList = () => {
 				numColumns={columns}
 				data={allResults}
 				nestedScrollEnabled
-				renderItem={({ item }) => (
-					<View
-						style={{
-							alignItems: 'center',
-							marginVertical: 15,
-							marginHorizontal: 4,
-							width: itemWidth,
-						}}
-					>
-						<CharacterCard {...item} isStaff />
-					</View>
-				)}
+				renderItem={({ item }) =>
+					displayMode === 'COMPACT' ? (
+						<View
+							style={{
+								alignItems: 'center',
+								marginVertical: 15,
+								marginHorizontal: 4,
+								width: itemWidth,
+							}}
+						>
+							<CharacterCard {...item} isStaff />
+						</View>
+					) : (
+						<CharacterRowCard {...item} isStaff />
+					)
+				}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
@@ -632,7 +678,7 @@ export const StudioSearchList = () => {
 			getNextPageParam(lastPage) {
 				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -640,9 +686,9 @@ export const StudioSearchList = () => {
 	);
 	const { width } = useWindowDimensions();
 
-	const allResults: StudioSearchQuery['Page']['studios'] = data?.pages?.flatMap(
-		(val) => val.Page.studios,
-	);
+	const allResults: NonNullable<StudioSearchQuery['Page']>['studios'] = data?.pages
+		?.flatMap((val) => val.Page?.studios ?? [])
+		.filter((studio): studio is typeof studio & {} => studio !== undefined);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -662,24 +708,28 @@ export const StudioSearchList = () => {
 				data={allResults}
 				numColumns={1}
 				nestedScrollEnabled
-				renderItem={({ item }: { item: StudioSearchQuery['Page']['studios'][0] }) => (
-					<View
-						style={{
-							flex: 1,
-							alignItems: 'center',
-							marginHorizontal: 10,
-							marginVertical: 4,
-						}}
-					>
-						<StudioCard
-							{...item}
-							onPress={() => router.push(`/studio/${item.id}`)}
-							onLongPress={() =>
-								SheetManager.show('QuickActionStudioSheet', { payload: item })
-							}
-						/>
-					</View>
-				)}
+				renderItem={({
+					item,
+				}: {
+					item: NonNullable<NonNullable<StudioSearchQuery['Page']>['studios']>[0];
+				}) =>
+					item?.id ? (
+						<View
+							style={{
+								flex: 1,
+								alignItems: 'center',
+								marginHorizontal: 10,
+								marginVertical: 4,
+							}}
+						>
+							<StudioCard
+								{...item}
+								onPress={() => router.push(`/studio/${item?.id}`)}
+								// onLongPress={() => openStudioQuickSheet(item)}
+							/>
+						</View>
+					) : null
+				}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
@@ -717,7 +767,7 @@ export const UserSearchList = () => {
 			getNextPageParam(lastPage) {
 				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -727,9 +777,9 @@ export const UserSearchList = () => {
 
 	const { columns, itemWidth } = useColumns('search');
 
-	const allResults: UserSearchQuery['Page']['users'] = data?.pages?.flatMap(
-		(val) => val.Page.users,
-	);
+	const allResults: NonNullable<UserSearchQuery['Page']>['users'] = data?.pages
+		?.flatMap((val) => val.Page?.users ?? [])
+		.filter((user): user is typeof user & {} => user !== undefined);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -750,17 +800,23 @@ export const UserSearchList = () => {
 				numColumns={columns}
 				data={allResults}
 				nestedScrollEnabled
-				renderItem={({ item }: { item: UserSearchQuery['Page']['users'][0] }) => (
-					<View
-						style={{
-							alignItems: 'center',
-							marginVertical: 15,
-							width: itemWidth,
-						}}
-					>
-						<UserCard {...item} />
-					</View>
-				)}
+				renderItem={({
+					item,
+				}: {
+					item: NonNullable<NonNullable<UserSearchQuery['Page']>['users']>[0];
+				}) =>
+					item?.id ? (
+						<View
+							style={{
+								alignItems: 'center',
+								marginVertical: 15,
+								width: itemWidth,
+							}}
+						>
+							<UserCard {...item} />
+						</View>
+					) : null
+				}
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
