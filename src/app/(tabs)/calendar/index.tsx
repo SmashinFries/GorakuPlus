@@ -1,192 +1,279 @@
-import { DayTab } from '@/components/calendar/tabs';
-import { GorakuActivityIndicator } from '@/components/loading';
-import { GorakuTabBar } from '@/components/tab';
-import { useCalendar } from '@/hooks/calendar/useCalendar';
+import { useCalendarData } from '@/hooks/calendar/useCalendarData';
 import { useAuthStore } from '@/store/authStore';
-import { useDisplayStore } from '@/store/displayStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
-import { useEffect, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
-import { SheetManager } from 'react-native-actions-sheet';
-import { Appbar } from 'react-native-paper';
-import { TabView, SceneRendererProps } from 'react-native-tab-view';
-import { useShallow } from 'zustand/react/shallow';
-
-type WeekDay = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
-const Days: WeekDay[] = [
-	'sunday',
-	'monday',
-	'tuesday',
-	'wednesday',
-	'thursday',
-	'friday',
-	'saturday',
-];
-
-type CalendarRenderSceneProps = SceneRendererProps & {
-	route: { key: WeekDay; title: WeekDay | string };
-};
+import { useMemo, useRef, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { ActivityIndicator, Appbar, Text } from 'react-native-paper';
+import { toDateId } from '@marceloterreiro/flash-calendar';
+import React from 'react';
+import { useAppTheme } from '@/store/theme/themes';
+import { MediaCard, MediaCardRow } from '@/components/cards';
+import { GorakuCalendar } from '@/components/calendar/calendar';
+import { getCalendarDisplayDate, rgbToRgba } from '@/utils';
+import { GorakuRefreshControl } from '@/components/explore/lists';
+import { useColumns } from '@/hooks/useColumns';
+import { AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule } from '@/api/anilist/__genereated__/gql';
+import { CalendarFilterSheet } from '@/components/sheets/bottomsheets';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import { router } from 'expo-router';
+import { DatePickerModal } from 'react-native-paper-dates';
+import { SingleChange } from 'react-native-paper-dates/lib/typescript/Date/Calendar';
 
 const CalendarPage = () => {
-	const dayOfWeek = new Date().getDay();
-	const layout = useWindowDimensions();
+	const { colors } = useAppTheme();
 
 	const { showNSFW } = useSettingsStore();
 	const { userID } = useAuthStore().anilist;
-	const { listOnly } = useDisplayStore(
-		useShallow((state) => ({
-			listOnly: state.calendar.list_only,
-		})),
+
+	const { columns, itemWidth, displayMode } = useColumns('calendar');
+	const sheetRef = useRef<TrueSheet>(null);
+
+	const {
+		seasonQuery,
+		airingQuery,
+		selectedDate,
+		selectedMonth,
+		listOnly,
+		selectedMonthAnimeDates,
+		selectedSeason,
+		onDateChange,
+		onMonthChange,
+	} = useCalendarData();
+
+	const [isDateSelectOpen, setIsDateSelectOpen] = useState(false);
+
+	const activityColors = useMemo(
+		() => [rgbToRgba(colors.primary, 0.2), rgbToRgba(colors.primary, 0.5), colors.primary],
+		[],
 	);
 
-	const { data, loading } = useCalendar();
+	const onDismissSingle = React.useCallback(() => {
+		setIsDateSelectOpen(false);
+	}, [setIsDateSelectOpen]);
 
-	const [index, setIndex] = useState(dayOfWeek);
-
-	const [routes, setRoutes] = useState<{ key: string; title: string }[]>(
-		Days.map((day) => {
-			return { key: day, title: day };
-		}),
+	const onConfirmSingle: SingleChange = React.useCallback(
+		(params) => {
+			setIsDateSelectOpen(false);
+			onDateChange(toDateId(params.date as Date));
+		},
+		[setIsDateSelectOpen],
 	);
 
-	const updateAllTitles = (listOnly = false) => {
-		const newRouteTitles = [];
-		if (listOnly) {
-			for (const day of Days) {
-				newRouteTitles.push({
-					key: day,
-					title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).filter((ep) => ep.media?.mediaListEntry).length})`,
-				});
-			}
-		} else {
-			for (const day of Days) {
-				newRouteTitles.push({
-					key: day,
-					title: `${day} (${data[day].filter((media) => showNSFW || !media.media.isAdult).length})`,
-				});
-			}
-		}
-		setRoutes(newRouteTitles);
+	const renderItem = ({
+		item,
+	}: {
+		item: AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule;
+	}) => {
+		if (!showNSFW && item?.media?.isAdult) return null;
+		if (!item?.media?.id) return null;
+		return displayMode === 'COMPACT' ? (
+			<View
+				style={{
+					alignItems: 'center',
+					justifyContent: 'flex-start',
+					marginVertical: 10,
+					marginHorizontal: 5,
+					width: itemWidth - 10,
+				}}
+			>
+				<MediaCard
+					{...item?.media}
+					nextAiringEpisode={item?.media?.nextAiringEpisode ?? undefined}
+					customEPText={
+						item.timeUntilAiring <= 0 ? `EP ${item.episode} aired` : undefined
+					}
+					fitToParent
+				/>
+				{/* <MediaProgressBar
+						progress={item.media.mediaListEntry?.progress}
+						mediaListEntry={item.media.mediaListEntry as MediaList}
+						mediaStatus={item.media.status}
+						total={item.media.episodes ?? 0}
+					/> */}
+			</View>
+		) : (
+			<MediaCardRow
+				{...item?.media}
+				nextAiringEpisode={{ ...item, mediaId: item.media?.id }}
+				customEPText={item.timeUntilAiring <= 0 ? `EP ${item.episode}` : undefined}
+			/>
+		);
 	};
-
-	const renderScene = ({ route }: CalendarRenderSceneProps) => {
-		switch (route.key) {
-			case 'sunday':
-				return (
-					<DayTab
-						data={data.sunday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			case 'monday':
-				return (
-					<DayTab
-						data={data.monday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			case 'tuesday':
-				return (
-					<DayTab
-						data={data.tuesday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			case 'wednesday':
-				return (
-					<DayTab
-						data={data.wednesday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			case 'thursday':
-				return (
-					<DayTab
-						data={data.thursday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			case 'friday':
-				return (
-					<DayTab
-						data={data.friday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			case 'saturday':
-				return (
-					<DayTab
-						data={data.saturday.filter((media) => showNSFW || !media.media.isAdult)}
-					/>
-				);
-			default:
-				return null;
-		}
-	};
-
-	const renderTabBar = (props) => {
-		return <GorakuTabBar {...props} enableChip />;
-	};
-
-	// const Tabs = useCallback(() => {
-	//     return (
-	//         <TabView
-	//             navigationState={{ index, routes }}
-	//             renderScene={renderScene}
-	//             onIndexChange={setIndex}
-	//             initialLayout={{ width: layout.width }}
-	//             renderTabBar={RenderTabBar}
-	//             swipeEnabled={true}
-	//         />
-	//     );
-	// }, [colors, data]);
-
-	useEffect(() => {
-		if (data) {
-			updateAllTitles(listOnly);
-		}
-	}, [data, showNSFW]);
 
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<Appbar.Header>
-				<Appbar.Content title="This Week" />
+				<Appbar.Content title="Calendar" />
 				<Appbar.Action
 					icon={'view-module'}
 					onPress={() => {
-						SheetManager.show('DisplayConfigSheet', {
-							payload: {
-								type: 'calendar',
-							},
+						router.push({
+							pathname: '/(sheets)/displayConfig',
+							params: { type: 'calendar' },
 						});
 					}}
 				/>
 				{userID && (
 					<Appbar.Action
 						icon="filter-outline"
-						onPress={() =>
-							SheetManager.show('CalendarFilterSheet', {
-								payload: {
-									updateAllTitles(onList) {
-										updateAllTitles(onList);
-									},
-								},
-							})
-						}
+						onPress={() => sheetRef.current?.present()}
 					/>
 				)}
 			</Appbar.Header>
-			{!loading ? (
-				<TabView
-					navigationState={{ index, routes }}
-					renderScene={renderScene}
-					onIndexChange={setIndex}
-					initialLayout={{ width: layout.width }}
-					renderTabBar={renderTabBar}
-					swipeEnabled={true}
-					lazy
-				/>
-			) : (
-				<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-					{/* <ActivityIndicator size={'small'} /> */}
-					<GorakuActivityIndicator size="large" />
-				</View>
-			)}
-		</>
+			<FlatList
+				key={columns}
+				numColumns={columns}
+				data={
+					airingQuery?.data?.Page?.airingSchedules?.filter(
+						(as): as is AiringRangeQuery_Page_Page_airingSchedules_AiringSchedule =>
+							as !== null && (listOnly ? !!as?.media?.mediaListEntry : true),
+					) ?? []
+				}
+				renderItem={renderItem}
+				ListEmptyComponent={
+					airingQuery?.isFetching && !airingQuery?.isRefetching ? (
+						<View
+							style={{
+								width: '100%',
+								height: '100%',
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<ActivityIndicator />
+						</View>
+					) : undefined
+				}
+				showsVerticalScrollIndicator={false}
+				keyExtractor={(item, idx) => idx.toString()}
+				ListHeaderComponent={
+					<View>
+						<GorakuCalendar
+							season={selectedSeason}
+							animeDates={selectedMonthAnimeDates}
+							calendarActiveDateRanges={[
+								{
+									startId: selectedDate.id,
+									endId: selectedDate.id,
+								},
+							]}
+							calendarMonthId={toDateId(selectedMonth?.start)}
+							onCalendarDayPress={onDateChange}
+							onPreviousMonthPress={() => onMonthChange('prev')}
+							onNextMonthPress={() => onMonthChange('next')}
+							calendarDayHeight={50}
+							theme={{
+								itemDay: {
+									active: () => ({
+										container: { backgroundColor: colors.primaryContainer },
+										content: { color: colors.onPrimaryContainer },
+									}),
+									idle: ({ isDifferentMonth }) => ({
+										content: {
+											color: isDifferentMonth
+												? colors.surfaceDisabled
+												: colors.onBackground,
+										},
+									}),
+									today: () => ({
+										container: {
+											borderColor: colors.outline,
+										},
+									}),
+									base: ({ isPressed, isHovered }) => ({
+										container: {
+											borderTopRightRadius: 25,
+											borderBottomRightRadius: 25,
+											borderTopLeftRadius: 25,
+											borderBottomLeftRadius: 25,
+											backgroundColor:
+												isPressed || isHovered
+													? colors.elevation.level3
+													: 'transparent',
+										},
+										content: {
+											color: colors.onBackground,
+										},
+									}),
+								},
+								itemWeekName: {
+									content: {
+										color: colors.onBackground,
+									},
+								},
+								rowMonth: {
+									content: {
+										color: colors.onBackground,
+										justifyContent: 'center',
+										alignItems: 'center',
+									},
+									container: {
+										alignItems: 'center',
+										justifyContent: 'center',
+									},
+								},
+							}}
+							activityColors={activityColors}
+							openDateSelect={() => setIsDateSelectOpen(true)}
+						/>
+						<View
+							style={{
+								flex: 1,
+								flexDirection: 'row',
+								gap: 6,
+								padding: 12,
+								alignItems: 'center',
+							}}
+						>
+							<Text style={{ color: colors.onSurfaceVariant }}>
+								{getCalendarDisplayDate(selectedDate.date)}
+							</Text>
+							<View
+								style={{
+									justifyContent: 'center',
+								}}
+							>
+								<View
+									style={{
+										backgroundColor: colors.primaryContainer,
+										padding: 2,
+										paddingHorizontal: 5,
+										borderRadius: 16,
+									}}
+								>
+									<Text
+										variant="labelSmall"
+										style={{ color: colors.onPrimaryContainer }}
+									>
+										{airingQuery?.data?.Page?.airingSchedules?.filter((as) =>
+											listOnly ? !!as?.media?.mediaListEntry : true,
+										)?.length ?? 0}
+									</Text>
+								</View>
+							</View>
+						</View>
+					</View>
+				}
+				refreshControl={
+					<GorakuRefreshControl
+						refreshing={seasonQuery?.isRefetching}
+						onRefresh={() => {
+							seasonQuery?.refetch();
+							airingQuery?.refetch();
+						}}
+					/>
+				}
+			/>
+			<CalendarFilterSheet sheetRef={sheetRef} />
+			<DatePickerModal
+				locale="en"
+				mode="single"
+				visible={isDateSelectOpen}
+				onDismiss={onDismissSingle}
+				date={selectedDate?.date}
+				onConfirm={onConfirmSingle}
+			/>
+		</View>
 	);
 };
 
