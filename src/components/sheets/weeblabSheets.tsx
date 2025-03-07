@@ -1,24 +1,23 @@
-import { router } from 'expo-router';
-import { SheetProps, useSheetRef } from 'react-native-actions-sheet';
 import { BottomSheetAccordion, BottomSheetParent } from './bottomsheets';
-import { Button, Checkbox, Divider, List } from 'react-native-paper';
+import { Button, Checkbox, Divider } from 'react-native-paper';
 import { View } from 'react-native';
-import { useState } from 'react';
+import { MutableRefObject, RefObject, useState } from 'react';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 
 export type NekosApiSheetProps = {
+	sheetRef: RefObject<TrueSheet>;
 	ratings: string[];
 	onRatingSelect: (newRatings: string[]) => void;
 };
-export const NekosApiSheet = ({
-	payload: { ratings, onRatingSelect },
-}: SheetProps<'NekosApiSheet'>) => {
-	const ref = useSheetRef();
+export const NekosApiSheet = ({ sheetRef, ratings, onRatingSelect }: NekosApiSheetProps) => {
 	const availableRatings = ['safe', 'suggestive', 'borderline', 'explicit'];
 	const [selectedRatings, setSelectedRatings] = useState(ratings);
 
 	return (
 		<BottomSheetParent
-			CustomHeaderComponent={
+			sheetRef={sheetRef}
+			grabber={false}
+			header={
 				<View style={{ width: '100%' }}>
 					<View
 						style={{
@@ -31,7 +30,7 @@ export const NekosApiSheet = ({
 							mode="contained"
 							onPress={() => {
 								onRatingSelect(selectedRatings);
-								ref.current?.hide();
+								sheetRef.current?.dismiss();
 							}}
 						>
 							Filter

@@ -2,7 +2,7 @@ import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { SearchHeader } from '@/components/headers';
 import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog } from '@/components/search/dialogs';
-import { FilterSheetTest } from '@/components/search/filtersheet';
+import { FilterSheet } from '@/components/search/filtersheet';
 import {
 	AnimeSearchList,
 	CharacterSearchList,
@@ -12,20 +12,27 @@ import {
 	StudioSearchList,
 	UserSearchList,
 } from '@/components/search/lists';
+import {
+	SauceNaoSheet,
+	SauceNaoSheetProps,
+	TraceMoeSheet,
+	TraceMoeSheetProps,
+} from '@/components/sheets/bottomsheets';
 import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
 import { useSearchStore } from '@/store/search/searchStore';
 import { useAppTheme } from '@/store/theme/themes';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { Stack } from 'expo-router';
+import React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { Keyboard, ScrollView, TextInput } from 'react-native';
 import { View } from 'react-native';
-import { ActionSheetRef } from 'react-native-actions-sheet';
 import { IconButton, List, Portal } from 'react-native-paper';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 const SearchPage = () => {
 	const { colors } = useAppTheme();
-	const searchbarRef = useRef<TextInput>();
+	const searchbarRef = useRef<TextInput>(null);
 
 	const [isFocused, setIsFocused] = useState(false);
 
@@ -36,8 +43,18 @@ const SearchPage = () => {
 	const { searchType, updateQuery } = useSearchStore();
 	const { searchTerms, removeSearchTerm } = useSearchHistoryStore();
 
+	const [traceMoeParams, setTraceMoeParams] = useState<Omit<TraceMoeSheetProps, 'sheetRef'>>({
+		image: undefined,
+		url: undefined,
+	});
+	const [sauceNaoParams, setSauceNaoParams] = useState<SauceNaoSheetProps['file'] | undefined>(
+		undefined,
+	);
+
 	// Filter Sheet
-	const sheetRef = useRef<ActionSheetRef>(null);
+	const sheetRef = useRef<TrueSheet>(null);
+	const traceMoeSheetRef = useRef<TrueSheet>(null);
+	const sauceNaoSheetRef = useRef<TrueSheet>(null);
 
 	return (
 		<>
@@ -52,7 +69,7 @@ const SearchPage = () => {
 									Keyboard.dismiss();
 									// onSearchTypeChange
 									// openSheet();
-									sheetRef.current?.show();
+									sheetRef.current?.present();
 									// router.push('/filter');
 								}}
 								toggleIsFocused={toggleIsFocused}
@@ -83,7 +100,7 @@ const SearchPage = () => {
 				{searchType === 'STAFF' && <StaffSearchList />}
 				{searchType === 'STUDIO' && <StudioSearchList />}
 				{searchType === 'USER' && <UserSearchList />}
-				{isFocused && searchTerms.length > 0 && (
+				{isFocused && (searchTerms?.length ?? 0) > 0 && (
 					<Animated.View
 						style={{
 							position: 'absolute',
@@ -96,7 +113,7 @@ const SearchPage = () => {
 						entering={SlideInDown}
 					>
 						<ScrollView keyboardShouldPersistTaps={'always'}>
-							{searchTerms.map((term, idx) => (
+							{searchTerms?.map((term, idx) => (
 								<List.Item
 									key={idx}
 									title={term}
@@ -117,11 +134,21 @@ const SearchPage = () => {
 					</Animated.View>
 				)}
 			</View>
-			<FilterSheetTest sheetRef={sheetRef} />
+			<FilterSheet sheetRef={sheetRef} />
+			<TraceMoeSheet sheetRef={traceMoeSheetRef} {...traceMoeParams} />
+			<SauceNaoSheet sheetRef={sauceNaoSheetRef} file={sauceNaoParams} />
 			<Portal>
 				<ImageSearchDialog
 					visible={showImageSearchDialog}
 					onDismiss={() => setShowImageSearchDialog(false)}
+					openTraceMoeSheet={(url, image) => {
+						setTraceMoeParams({ url, image });
+						traceMoeSheetRef.current?.present();
+					}}
+					openSauceNaoSheet={(file) => {
+						setSauceNaoParams(file);
+						sauceNaoSheetRef.current?.present();
+					}}
 				/>
 			</Portal>
 		</>

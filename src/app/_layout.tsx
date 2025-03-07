@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { SplashScreen, Stack, router, useNavigationContainerRef } from 'expo-router';
+import { Stack, router, useNavigationContainerRef } from 'expo-router';
 import * as TaskManager from 'expo-task-manager';
 import { useEffect } from 'react';
 import PaperHeader from '@/components/headers';
@@ -10,17 +10,17 @@ import { Toaster } from 'burnt/web';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Platform } from 'react-native';
 import { reattachDownloads, removeUpdateAPKs } from '@/utils/update';
-import useAppUpdates from '@/hooks/useAppUpdates';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { PaperThemeProvider } from '@/providers/themeProvider';
 import { RootProvider } from '@/providers/rootProvider';
 import * as Sentry from '@sentry/react-native';
 import { en, registerTranslation } from 'react-native-paper-dates';
 import { useThemeStore } from '@/store/theme/themeStore';
-import { SheetProvider } from 'react-native-actions-sheet';
 import notifee, { EventType } from '@notifee/react-native';
-import '../components/sheets/index';
 import { ANILIST_NOTIF_BF_ID } from '@/constants/backgroundTasks';
+import { useQuickActionRouting } from 'expo-quick-actions/router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useAppUpdaterStore } from '@/store/appUpdateStore';
 
 if (typeof window !== 'undefined') {
 	// @ts-ignore
@@ -47,9 +47,9 @@ Platform.OS !== 'web' && reattachDownloads();
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
 	const { notification } = detail;
-	if (type === EventType.PRESS || type === EventType.ACTION_PRESS) {
-		notifNavigate(detail.notification, detail.pressAction.id as any);
-		await notifee.cancelNotification(notification.id);
+	if ((type === EventType.PRESS || type === EventType.ACTION_PRESS) && detail.notification) {
+		notifNavigate(detail.notification, detail.pressAction?.id as any);
+		!!notification?.id && (await notifee.cancelNotification(notification.id));
 	}
 });
 
@@ -57,18 +57,23 @@ TaskManager.defineTask(ANILIST_NOTIF_BF_ID, async () => {
 	await fetchAnilistNotifications();
 });
 
+SplashScreen.setOptions({
+	duration: 1000,
+	fade: true,
+});
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
+	useQuickActionRouting();
 	// const { loading } = useNotifications();
 	const { isFirstLaunch } = useSettingsStore();
-	const { checkForUpdates } = useAppUpdates();
+	const { checkForUpdate } = useAppUpdaterStore();
 	// Capture the NavigationContainer ref and register it with the instrumentation.
 	const ref = useNavigationContainerRef();
 	const { isDark } = useThemeStore();
 
 	const runUpdateChecker = async () => {
-		await checkForUpdates();
+		await checkForUpdate();
 	};
 
 	useEffect(() => {
@@ -77,7 +82,7 @@ const RootLayout = () => {
 			if (isFirstLaunch) {
 				router.replace('/setup');
 			} else {
-				router.replace('/(tabs)/explore');
+				router.replace('/(tabs)/explore/(home)');
 			}
 			SplashScreen.hideAsync();
 		}
@@ -103,54 +108,57 @@ const RootLayout = () => {
 				}}
 			>
 				<PaperThemeProvider>
-					<SheetProvider>
-						<AnimatedStack
-							screenOptions={{
-								headerShown: false,
-								statusBarStyle: isDark ? 'light' : 'dark',
-								statusBarTranslucent: true,
-								statusBarAnimation: 'fade',
+					<AnimatedStack
+						screenOptions={{
+							headerShown: false,
+							statusBarStyle: isDark ? 'light' : 'dark',
+							statusBarTranslucent: true,
+							statusBarAnimation: 'fade',
+							statusBarBackgroundColor: 'transparent',
+						}}
+					>
+						<Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+						<Stack.Screen name="anicard" />
+						<Stack.Screen name="anime/[id]" getId={({ params }) => params?.id} />
+						<Stack.Screen name="manga/[id]" getId={({ params }) => params?.id} />
+						<Stack.Screen name="music" />
+						<Stack.Screen name="character" />
+						<Stack.Screen name="staff" />
+						<Stack.Screen name="news" />
+						<Stack.Screen name="art" />
+						<Stack.Screen name="user/[username]" />
+						<Stack.Screen
+							name="statistics"
+							options={{
+								title: 'Statistics',
+								header: (props) => <PaperHeader {...props} />,
+								headerShown: true,
 							}}
-						>
-							<Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
-							<Stack.Screen name="anicard" />
-							<Stack.Screen name="anime/[id]" />
-							<Stack.Screen name="manga/[id]" />
-							{/* <Stack.Screen name="[anime,manga]/[...media]" /> */}
-							{/* <Stack.Screen name="manga/[...media]" /> */}
-
-							<Stack.Screen name="music" />
-							<Stack.Screen name="character" />
-							<Stack.Screen name="staff" />
-							<Stack.Screen name="news" />
-							<Stack.Screen name="art" />
-							<Stack.Screen name="user/[username]" />
-							<Stack.Screen
-								name="statistics"
-								options={{
-									title: 'Statistics',
-									header: (props) => <PaperHeader {...props} />,
-									headerShown: true,
-								}}
-							/>
-							<Stack.Screen
-								name="notifications"
-								options={{
-									title: 'Notifications',
-									header: (props) => <PaperHeader {...props} />,
-									headerShown: true,
-								}}
-							/>
-							<Stack.Screen
-								name="setup"
-								options={{
-									presentation: 'modal',
-								}}
-							/>
-							<Stack.Screen name={'auth'} />
-						</AnimatedStack>
-						<Toaster position="bottom-right" />
-					</SheetProvider>
+						/>
+						<Stack.Screen
+							name="notifications"
+							options={{
+								title: 'Notifications',
+								header: (props) => <PaperHeader {...props} />,
+								headerShown: true,
+							}}
+						/>
+						<Stack.Screen
+							name="setup"
+							options={{
+								presentation: 'modal',
+							}}
+						/>
+						<Stack.Screen
+							name={'(sheets)'}
+							options={{
+								contentStyle: { backgroundColor: 'transparent' },
+								presentation: 'transparentModal',
+							}}
+						/>
+						<Stack.Screen name={'auth'} />
+					</AnimatedStack>
+					<Toaster position="bottom-right" />
 				</PaperThemeProvider>
 			</GestureHandlerRootView>
 		</RootProvider>

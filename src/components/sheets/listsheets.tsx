@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { List } from 'react-native-paper';
-import { TabView } from 'react-native-tab-view';
+import { SceneRendererProps, TabView } from 'react-native-tab-view';
 import { RenderTabBar } from '../tab';
 import { ListSortOptions, ListSortOptionsType } from '@/types/anilist';
 import { MediaListSort, MediaTag, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { BottomSheetParent } from './bottomsheets';
-import { SheetProps } from 'react-native-actions-sheet';
 import { useShallow } from 'zustand/react/shallow';
 
 const ListFilterSort = () => {
@@ -21,12 +20,14 @@ const ListFilterSort = () => {
 	);
 
 	const onSortSelect = (newSort: ListSortOptionsType) => {
-		if (newSort.replace('_DESC', '').includes(sort.replace('_DESC', ''))) {
-			updateListFilter({
-				sort: !sort.includes('DESC') ? newSort : newSort.replace('_DESC', ''),
+		if (sort && newSort.replace('_DESC', '').includes(sort.replace('_DESC', ''))) {
+			updateListFilter?.({
+				sort: !sort?.includes('DESC')
+					? (newSort as MediaListSort)
+					: (newSort.replace('_DESC', '') as MediaListSort),
 			});
 		} else {
-			updateListFilter({ sort: newSort });
+			updateListFilter?.({ sort: newSort as MediaListSort });
 		}
 	};
 
@@ -39,9 +40,9 @@ const ListFilterSort = () => {
 				left={(props) => (
 					<List.Icon
 						{...props}
-						icon={sort.includes('DESC') ? 'sort-descending' : 'sort-ascending'}
+						icon={sort?.includes('DESC') ? 'sort-descending' : 'sort-ascending'}
 						color={
-							sort.replace('_DESC', '') === value.replace('_DESC', '')
+							sort?.replace('_DESC', '') === value.replace('_DESC', '')
 								? colors.primary
 								: 'transparent'
 						}
@@ -80,19 +81,11 @@ const ListFilterSort = () => {
 	);
 };
 
-const ListFilterTabs = ({
-	mediaType,
-	genres,
-	tags,
-}: {
-	mediaType: MediaType;
-	genres: string[];
-	tags: MediaTag[];
-}) => {
+const ListFilterTabs = () => {
 	const { colors } = useAppTheme();
 	const layout = useWindowDimensions();
 	const [index, setIndex] = useState(0);
-	const [routes, setRoutes] = useState<{ key: string; title: string }[]>([
+	const [routes, _setRoutes] = useState<{ key: string; title: string }[]>([
 		{
 			key: 'sort',
 			title: 'sort',
@@ -103,7 +96,14 @@ const ListFilterTabs = ({
 		// },
 	]);
 
-	const renderScene = ({ route }) => {
+	const renderScene = ({
+		route,
+	}: SceneRendererProps & {
+		route: {
+			key: string;
+			title: string;
+		};
+	}) => {
 		switch (route.key) {
 			case 'sort':
 				return <ListFilterSort />;
@@ -132,12 +132,10 @@ export type ListFilterProps = {
 	tags: MediaTag[];
 };
 
-export const ListFilterSheet = ({
-	payload: { genres, mediaType, tags },
-}: SheetProps<'ListFilterSheet'>) => {
+export const ListFilterSheet = ({ genres, mediaType, tags }: ListFilterProps) => {
 	return (
 		<BottomSheetParent>
-			<ListFilterTabs mediaType={mediaType} genres={genres} tags={tags} />
+			<ListFilterTabs />
 		</BottomSheetParent>
 	);
 };

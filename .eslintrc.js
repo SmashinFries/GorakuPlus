@@ -4,8 +4,8 @@ module.exports = {
 	plugins: ['prettier'],
 	rules: {
 		'prettier/prettier': 'warn',
-		'import/namespace': 'off',
-		'import/resolver': 'off',
+		// 'import/namespace': 'off',
+		// 'import/resolver': 'off',
 		'react-hooks/exhaustive-deps': 'off',
 		'@typescript-eslint/no-unused-vars': [
 			'warn',

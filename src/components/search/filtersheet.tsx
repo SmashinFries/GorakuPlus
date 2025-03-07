@@ -1,22 +1,19 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import {
 	Button,
 	Checkbox,
 	CheckboxItemProps,
 	Chip,
 	Divider,
-	IconButton,
 	List,
 	RadioButton,
 	RadioButtonItemProps,
 	Searchbar,
-	Text,
 } from 'react-native-paper';
 import { DialogSelectDate } from './dropdown';
-import { Pressable, View } from 'react-native';
+import { FlatList, ScrollView, View } from 'react-native';
 import {
 	CharacterSearchQueryVariables,
-	ExternalLinkType,
 	MediaExternalLink,
 	MediaFormat,
 	MediaSearchQueryVariables,
@@ -25,7 +22,6 @@ import {
 	MediaStatus,
 	MediaType,
 	StaffSearchQueryVariables,
-	UserSort,
 } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAuthStore } from '@/store/authStore';
@@ -42,6 +38,7 @@ import { COUNTRY_OPTIONS, MEDIA_FORMAT_ALT, mediaStatusOptions } from '@/constan
 import {
 	ANIME_FORMATS,
 	AnimeSorts,
+	AvailableSorts,
 	AvailableStudioSorts,
 	AvailableUserSorts,
 	CharacterSorts,
@@ -55,15 +52,11 @@ import { updateMultiSelectFilters } from '@/utils/search/filtering';
 import { RangeSlider, Slider } from '../slider';
 import { MaterialSwitchListItem } from '../switch';
 import { useCollectionStore } from '@/store/useCollectionStore';
-import ActionSheet, {
-	ActionSheetRef,
-	FlatList,
-	ScrollView,
-	useSheetRef,
-} from 'react-native-actions-sheet';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { MediaSelector } from './mediaSelector';
 import { getStreamingSiteEmoji } from '@/utils/emoji';
 import { useShallow } from 'zustand/react/shallow';
+import { BottomSheetParent } from '../sheets/bottomsheets';
 
 type FilterSheetSectionProps = {
 	title: string;
@@ -81,8 +74,6 @@ const FilterSheetSection = ({
 }: FilterSheetSectionProps) => {
 	const { colors } = useAppTheme();
 	return (
-		// <List.Accordion title={title} description={description}>{children}</List.Accordion>
-		// <AccordionTest title={title} isExpanded={false}>{children}</AccordionTest>
 		<Accordion
 			title={title}
 			titleVariant="titleSmall"
@@ -184,7 +175,12 @@ type MediaFiltersProps = {
 	tempSort: SearchSortType;
 	mediaType: MediaType;
 	setTempFilter: React.Dispatch<React.SetStateAction<MediaSearchQueryVariables>>;
-	setTempSort: React.Dispatch<React.SetStateAction<SearchSortType>>;
+	setTempSort: React.Dispatch<
+		React.SetStateAction<{
+			value: AvailableSorts;
+			asc: boolean;
+		}>
+	>;
 };
 const MediaFilters = ({
 	mediaType,
@@ -218,21 +214,24 @@ const MediaFilters = ({
 	);
 
 	const streamSites: { [key in string]: MediaExternalLink[] } = {};
-	const sortedSites = (isAnime ? animeSites : mangaSites)
-		.sort((a, b) => {
-			if (a.site < b.site) {
-				return -1;
-			}
-			if (a.site > b.site) {
-				return 1;
-			}
-			return 0;
-		})
-		.forEach((site) =>
-			streamSites[site.language]
-				? streamSites[site.language].push(site)
-				: (streamSites[site.language] = [site]),
-		);
+	// const sortedSites = (isAnime ? (animeSites ?? []) : (mangaSites ?? []))
+	// 	.sort((a, b) => {
+	// 		if (!a || !b) return 0;
+	// 		if (a.site < b.site) {
+	// 			return -1;
+	// 		}
+	// 		if (a.site > b.site) {
+	// 			return 1;
+	// 		}
+	// 		return 0;
+	// 	})
+	// 	.forEach(
+	// 		(site) =>
+	// 			site?.language &&
+	// 			(streamSites[site.language]
+	// 				? streamSites[site.language].push(site)
+	// 				: (streamSites[site.language] = [site])),
+	// 	);
 
 	const [tagSearch, setTagSearch] = useState('');
 
@@ -248,16 +247,26 @@ const MediaFilters = ({
 		const { in_values, not_in_values } = updateMultiSelectFilters(
 			newVal,
 			tempFilter[in_key] ?? (enableBlankArray ? [] : undefined),
-			tempFilter[not_in_key] ?? (enableBlankArray ? [] : undefined),
+			(not_in_key && tempFilter[not_in_key]) ?? (enableBlankArray ? [] : undefined),
 		);
-		setTempFilter((prev) => ({ ...prev, [in_key]: in_values, [not_in_key]: not_in_values }));
+		setTempFilter((prev) => {
+			if (not_in_key) {
+				return { ...prev, [in_key]: in_values, [not_in_key]: not_in_values };
+			} else {
+				return { ...prev, [in_key]: in_values };
+			}
+		});
 	};
 
 	const renderCountryOptions = () =>
 		Object.keys(COUNTRY_OPTIONS).map((c_code, idx) => (
 			<FilterRadioButton
 				key={idx}
-				label={c_code === 'ANY' ? 'Any' : COUNTRY_OPTIONS[c_code]['name']}
+				label={
+					c_code === 'ANY'
+						? 'Any'
+						: COUNTRY_OPTIONS[c_code as keyof typeof COUNTRY_OPTIONS]['name']
+				}
 				value={c_code}
 			/>
 		));
@@ -289,7 +298,7 @@ const MediaFilters = ({
 				titleStyle={{ textTransform: 'capitalize' }}
 				selected={!!isTagBlacklistEnabled === true}
 				onPress={toggleTagBlacklist}
-				disabled={tagBlacklist?.length < 1}
+				disabled={(tagBlacklist?.length ?? 0) < 1}
 				fluid
 			/>
 			<FilterSheetSection title="Sort">
@@ -544,7 +553,7 @@ const MediaFilters = ({
 				/>
 			</FilterSheetSection>
 			<FilterSheetSection
-				title={`Genre${tempFilter.genre_in?.length > 0 || tempFilter.genre_not_in?.length > 0 ? ` (${(tempFilter.genre_in?.length ?? 0) + (tempFilter.genre_not_in?.length ?? 0)})` : ''}`}
+				title={`Genre${(tempFilter.genre_in?.length ?? 0) > 0 || (tempFilter.genre_not_in?.length ?? 0) > 0 ? ` (${(tempFilter.genre_in?.length ?? 0) + (tempFilter.genre_not_in?.length ?? 0)})` : ''}`}
 				description={
 					(tempFilter.genre_in || tempFilter.genre_not_in) && (
 						<QuickActionParent>
@@ -597,7 +606,7 @@ const MediaFilters = ({
 				))}
 			</FilterSheetSection>
 			<FilterSheetSection
-				title={`Status${tempFilter.status_in?.length > 0 || tempFilter.status_not_in?.length > 0 ? ` (${(tempFilter.status_in?.length ?? 0) + (tempFilter.status_not_in?.length ?? 0)})` : ''}`}
+				title={`Status${(tempFilter.status_in?.length ?? 0) > 0 || (tempFilter.status_not_in?.length ?? 0) > 0 ? ` (${(tempFilter.status_in?.length ?? 0) + (tempFilter.status_not_in?.length ?? 0)})` : ''}`}
 				description={
 					(tempFilter.status_in || tempFilter.status_not_in) && (
 						<QuickActionParent>
@@ -739,7 +748,7 @@ const MediaFilters = ({
 				{Object.keys(MediaSource).map((source, idx) => (
 					<FilterCheckbox
 						key={idx}
-						label={MediaSource[source].replaceAll('_', ' ')}
+						label={MediaSource[source as keyof typeof MediaSource].replaceAll('_', ' ')}
 						labelStyle={{ textTransform: 'capitalize' }}
 						onPress={() => updateTempMultiSelect(source, 'source_in')}
 						status={
@@ -835,7 +844,11 @@ const MediaFilters = ({
 								mode="outlined"
 								onPress={() => updateTempFilter({ countryOfOrigin: undefined })}
 							>
-								{COUNTRY_OPTIONS[tempFilter.countryOfOrigin]['name']}
+								{
+									COUNTRY_OPTIONS[
+										tempFilter.countryOfOrigin as keyof typeof COUNTRY_OPTIONS
+									]['name']
+								}
 							</Chip>
 						</View>
 					)
@@ -892,8 +905,10 @@ const MediaFilters = ({
 					/>
 					<RadioButton.Group
 						value={tempFilter.season ?? 'ANY'}
-						onValueChange={(val: MediaSeason | 'ANY') =>
-							updateTempFilter({ season: val === 'ANY' ? undefined : val })
+						onValueChange={(val) =>
+							updateTempFilter({
+								season: val === 'ANY' ? undefined : (val as MediaSeason),
+							})
 						}
 					>
 						<FilterRadioButton label={'Any'} value={'ANY'} />
@@ -908,6 +923,7 @@ const MediaFilters = ({
 					/> */}
 				</FilterSheetSection>
 			)}
+
 			<FilterSheetSection
 				title="Dates"
 				description={
@@ -1061,19 +1077,18 @@ const MediaFilters = ({
 					onChangeText={(txt) => setTagSearch(txt)}
 					style={{ marginHorizontal: 10, marginVertical: 6 }}
 					mode="view"
-					blurOnSubmit
 				/>
 				{tagData
 					?.filter((val) =>
 						val.subCategories &&
 						val.subCategories.some((subCat) =>
-							subCat.tags.some((subCatTag) =>
-								subCatTag.name.toLowerCase().includes(tagSearch.toLowerCase()),
+							subCat?.tags?.some((subCatTag) =>
+								subCatTag?.name.toLowerCase().includes(tagSearch.toLowerCase()),
 							),
 						)
 							? true
 							: val.tags?.some((data) =>
-									data.name.toLowerCase().includes(tagSearch.toLowerCase()),
+									data?.name.toLowerCase().includes(tagSearch.toLowerCase()),
 								),
 					)
 					.map((tagSection, idx) =>
@@ -1088,40 +1103,42 @@ const MediaFilters = ({
 								{tagSection.tags &&
 									tagSection.tags
 										?.filter((val) =>
-											val.name
+											val?.name
 												.toLowerCase()
 												.includes(tagSearch.toLowerCase()),
 										)
-										.map((tag, idx) =>
-											tag.name === 'Sexual Content' ? null : (
-												<FilterCheckbox
-													key={idx}
-													label={tag.name}
-													status={
-														tempFilter?.tag_in?.includes(tag.name)
-															? 'checked'
-															: tempFilter?.tag_not_in?.includes(
-																		tag.name,
-																  )
-																? 'indeterminate'
-																: 'unchecked'
-													}
-													onPress={() =>
-														updateTempMultiSelect(
-															tag.name,
-															'tag_in',
-															'tag_not_in',
-															true,
-														)
-													}
-												/>
-											),
+										.map(
+											(tag, idx) =>
+												tag &&
+												(tag.name === 'Sexual Content' ? null : (
+													<FilterCheckbox
+														key={idx}
+														label={tag.name}
+														status={
+															tempFilter?.tag_in?.includes(tag.name)
+																? 'checked'
+																: tempFilter?.tag_not_in?.includes(
+																			tag.name,
+																	  )
+																	? 'indeterminate'
+																	: 'unchecked'
+														}
+														onPress={() =>
+															updateTempMultiSelect(
+																tag.name,
+																'tag_in',
+																'tag_not_in',
+																true,
+															)
+														}
+													/>
+												)),
 										)}
 								{tagSection.subCategories &&
 									tagSection.subCategories
 										?.filter((val) =>
 											val.tags?.some((data) =>
-												data.name
+												data?.name
 													.toLowerCase()
 													.includes(tagSearch.toLowerCase()),
 											),
@@ -1136,35 +1153,38 @@ const MediaFilters = ({
 												{subTagSection.tags &&
 													subTagSection.tags
 														?.filter((val) =>
-															val.name
+															val?.name
 																.toLowerCase()
 																.includes(tagSearch.toLowerCase()),
 														)
-														.map((tag, idx) => (
-															<FilterCheckbox
-																key={idx}
-																label={tag.name}
-																status={
-																	tempFilter?.tag_in?.includes(
-																		tag.name,
-																	)
-																		? 'checked'
-																		: tempFilter?.tag_not_in?.includes(
-																					tag.name,
-																			  )
-																			? 'indeterminate'
-																			: 'unchecked'
-																}
-																onPress={() =>
-																	updateTempMultiSelect(
-																		tag.name,
-																		'tag_in',
-																		'tag_not_in',
-																		true,
-																	)
-																}
-															/>
-														))}
+														.map(
+															(tag, idx) =>
+																tag && (
+																	<FilterCheckbox
+																		key={idx}
+																		label={tag.name}
+																		status={
+																			tempFilter?.tag_in?.includes(
+																				tag.name,
+																			)
+																				? 'checked'
+																				: tempFilter?.tag_not_in?.includes(
+																							tag.name,
+																					  )
+																					? 'indeterminate'
+																					: 'unchecked'
+																		}
+																		onPress={() =>
+																			updateTempMultiSelect(
+																				tag.name,
+																				'tag_in',
+																				'tag_not_in',
+																				true,
+																			)
+																		}
+																	/>
+																),
+														)}
 											</FilterSheetSection>
 										))}
 							</FilterSheetSection>
@@ -1365,10 +1385,9 @@ const StudioFilters = ({ tempStudioSort, setTempStudioSort }: StudioFilterProps)
 	);
 };
 
-export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetRef> }) => {
-	const { colors } = useAppTheme();
+export const FilterSheet = ({ sheetRef }: { sheetRef: React.RefObject<TrueSheet> }) => {
 	const searchType = useSearchStore(useShallow((state) => state.searchType));
-	const ref = useSheetRef();
+	const scrollSheet = useRef<ScrollView>(null);
 
 	// Anime / Manga
 	const { mediaFilter, mediaSort } = useSearchStore(
@@ -1431,7 +1450,7 @@ export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetR
 			case MediaType.Anime:
 			case MediaType.Manga:
 				updateMediaFilter(tempMediaFilter, tempMediaSort);
-
+				break;
 			case 'CHARACTER':
 			case 'STAFF':
 				updateCharStaffFilter(
@@ -1439,12 +1458,17 @@ export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetR
 					searchType === 'CHARACTER' ? tempCharFilter : tempStaffFilter,
 					searchType === 'CHARACTER' ? tempCharSort : tempStaffSort,
 				);
+				break;
 			case 'STUDIO':
 				updateStudioFilter({}, tempStudioSort);
+				break;
 			case 'USER':
 				updateUserFilter(tempUserFilter, tempUserSort);
+				break;
+			default:
+				break;
 		}
-		ref.current?.hide();
+		sheetRef.current?.dismiss();
 	};
 
 	const onReset = () => {
@@ -1454,32 +1478,40 @@ export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetR
 			case MediaType.Manga:
 				setTempMediaSort(mediaSort);
 				setTempMediaFilter(mediaFilter);
+				break;
 			case 'CHARACTER':
 				setTempCharSort(characterSort);
 				setTempCharFilter(characterFilter);
+				break;
 			case 'STAFF':
 				setTempStaffSort(staffSort);
 				setTempStaffFilter(staffFilter);
+				break;
 			case 'STUDIO':
 				setTempStudioSort(studioSort);
-			// setTempStudioFilter(studioFilter);
+				// setTempStudioFilter(studioFilter);
+				break;
 			case 'USER':
 				setTempUserSort(userSort);
 				setTempUserFilter(userFilter);
+				break;
+			default:
+				break;
 		}
 		// ref.current?.hide();
 	};
 
 	return (
-		<ActionSheet
-			ref={sheetRef}
-			gestureEnabled
-			backgroundInteractionEnabled={false}
-			CustomHeaderComponent={
+		<BottomSheetParent
+			sheetRef={sheetRef}
+			sizes={['auto', 'large']}
+			grabber={searchType === 'ALL'}
+			header={
 				searchType !== 'ALL' && (
-					<View style={{ width: '100%' }}>
+					<>
 						<View
 							style={{
+								width: '100%',
 								padding: 8,
 								flexDirection: 'row',
 								justifyContent: 'space-between',
@@ -1491,31 +1523,15 @@ export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetR
 							</Button>
 						</View>
 						<Divider />
-					</View>
+					</>
 				)
 			}
-			indicatorStyle={
-				searchType === 'ALL' && {
-					backgroundColor: colors.onSurfaceVariant,
-					marginVertical: 22,
-					width: 32,
-					height: 4,
-				}
-			}
-			// keyboardHandlerEnabled={false}
-			containerStyle={{
-				backgroundColor: colors.elevation.level1,
-				zIndex: 999,
-				overflow: 'hidden',
-			}}
+			scrollRef={scrollSheet}
+			// scrollable
 		>
 			{/* Keyboard causes sheet to reopen; ruining UX. This temp fix isn't great but better than without imo. */}
 			{/* <KeyboardAvoidingView behavior="padding"  keyboardVerticalOffset={100}> */}
-			<ScrollView
-				keyboardShouldPersistTaps="handled"
-				automaticallyAdjustKeyboardInsets
-				contentContainerStyle={{ paddingBottom: 12, overflow: 'hidden' }}
-			>
+			<ScrollView ref={scrollSheet} nestedScrollEnabled>
 				<MediaSelector />
 				{(searchType === MediaType.Anime || searchType === MediaType.Manga) && (
 					<MediaFilters
@@ -1555,6 +1571,6 @@ export const FilterSheetTest = ({ sheetRef }: { sheetRef: React.Ref<ActionSheetR
 				)}
 			</ScrollView>
 			{/* </KeyboardAvoidingView> */}
-		</ActionSheet>
+		</BottomSheetParent>
 	);
 };
