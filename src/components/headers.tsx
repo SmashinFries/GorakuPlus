@@ -3,6 +3,7 @@ import {
 	Appbar,
 	AppbarProps,
 	Badge,
+	Chip,
 	Icon,
 	IconButton,
 	Menu,
@@ -25,33 +26,36 @@ import {
 } from 'react-native';
 import { Image, ImageProps } from 'expo-image';
 import Animated, {
-	Easing,
+	cancelAnimation,
 	FadeIn,
 	FadeOut,
+	runOnJS,
 	SlideInUp,
 	SlideOutDown,
 	useAnimatedStyle,
 	useSharedValue,
-	withRepeat,
-	withSequence,
+	withSpring,
 	withTiming,
 } from 'react-native-reanimated';
-import { ParticleBackground, useHeaderAnim } from './animations';
+import { useHeaderAnim } from './animations';
 import { useNavigation } from '@react-navigation/native';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { getStreamingSiteEmoji } from '@/utils/emoji';
-import { AniMediaQuery, MediaType, useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
+import { AniMediaQuery, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useFavoritesFilterStore } from '@/store/favoritesStore';
 import { useSearchStore } from '@/store/search/searchStore';
-import { SheetManager } from 'react-native-actions-sheet';
 import { useShallow } from 'zustand/react/shallow';
 import { PostImage } from './art/image';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Audio } from 'expo-av';
+import ParticleBackground from './particles';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
 const PaperHeader = ({
 	navigation,
@@ -88,7 +92,8 @@ export const ExploreHeader = ({
 	options,
 	route,
 	showScanner,
-}: NativeStackHeaderProps & { showScanner: () => void }) => {
+	// toggleDrawer,
+}: NativeStackHeaderProps & { toggleDrawer: () => void; showScanner: () => void }) => {
 	const title = getHeaderTitle(options, route.name);
 
 	return (
@@ -124,6 +129,10 @@ export const ExploreHeader = ({
 					/>
 				</MotiView>
 			)} */}
+
+			{/* @ts-ignore */}
+			<Appbar.Action icon="menu" onPress={() => navigation.toggleDrawer()} />
+
 			<Appbar.Content title={title} />
 			<Appbar.Action icon="barcode-scan" onPress={showScanner} />
 			<Appbar.Action icon="magnify" onPress={() => navigation.navigate('search')} />
@@ -224,12 +233,16 @@ export const SearchHeader = ({
 					selectionColor={colors.primaryContainer}
 					icon={'arrow-left'}
 					traileringIcon={
-						searchType === MediaType.Anime || searchType === MediaType.Manga
+						searchType === MediaType.Anime ||
+						searchType === MediaType.Manga ||
+						searchType === 'CHARACTER'
 							? 'image-search-outline'
 							: undefined
 					}
 					onTraileringIconPress={
-						searchType === MediaType.Anime || searchType === MediaType.Manga
+						searchType === MediaType.Anime ||
+						searchType === MediaType.Manga ||
+						searchType === 'CHARACTER'
 							? openImageSearch
 							: undefined
 					}
@@ -251,10 +264,9 @@ export const SearchHeader = ({
 					<IconButton
 						icon={'view-module'}
 						onPress={() =>
-							SheetManager.show('DisplayConfigSheet', {
-								payload: {
-									type: 'search',
-								},
+							router.push({
+								pathname: '/(sheets)/displayConfig',
+								params: { type: 'search' },
 							})
 						}
 						// onPress={() => setIsFilterOpen((prev) => !prev)}
@@ -278,26 +290,103 @@ export const SearchHeader = ({
 
 const AnimatedImage = Animated.createAnimatedComponent<ImageProps>(Image);
 
-export const MoreHeader = (_props: NativeStackHeaderProps) => {
+const MoveableBanner = () => {
 	const { width } = useWindowDimensions();
-	const { top } = useSafeAreaInsets();
+	const pressed = useSharedValue<boolean>(false);
+	const offsetX = useSharedValue<number>(0);
+	const offsetY = useSharedValue<number>(0);
+	const pulseScale = useSharedValue<number>(1);
+
+	const playVoice = async () => {
+		const { sound } = await Audio.Sound.createAsync(
+			require('../../assets/audio/goraku-voice.mp3'),
+		);
+		await sound.playAsync();
+	};
+
+	// const startIdleAnimation = () => {
+	// 	pulseScale.value = withRepeat(
+	// 		withTiming(0.8, {
+	// 			duration: 1500,
+	// 		}),
+	// 		-1,
+	// 		true,
+	// 	);
+	// };
+
+	const pan = Gesture.Pan()
+		.onStart(() => {
+			cancelAnimation(pulseScale);
+			pulseScale.value = 1;
+		})
+		.onBegin(() => {
+			pressed.value = true;
+		})
+		.onChange((event) => {
+			offsetX.value = event.translationX;
+			offsetY.value = event.translationY;
+		})
+		.onFinalize(() => {
+			offsetX.value = withSpring(0);
+			offsetY.value = withSpring(0);
+			pressed.value = false;
+			// runOnJS(startIdleAnimation)();
+		});
+
+	const longPress = Gesture.LongPress().onStart((_e) => {
+		// console.log(e.state);
+		runOnJS(playVoice)();
+	});
+
+	const gestures = Gesture.Race(pan, longPress);
+
+	const animatedGestureStyle = useAnimatedStyle<any>(() => ({
+		transform: [
+			{ translateX: offsetX.value },
+			{ translateY: offsetY.value },
+			{ scale: withTiming(pressed.value ? 0.8 : 1) },
+		],
+	}));
+
+	const animatedIdleStyle = useAnimatedStyle(() => ({
+		transform: [{ scale: pulseScale.value }],
+	}));
+
+	// useEffect(() => {
+	// 	startIdleAnimation();
+	// });
+
 	return (
-		<Appbar.Header style={{ height: 150 + top, justifyContent: 'center' }}>
-			<ParticleBackground mascotOnly />
+		<GestureDetector gesture={gestures}>
 			<AnimatedImage
 				source={require('../../assets/iconsv3/banner.png')}
-				style={{
-					width: width - 100,
-					height: 150,
-					overflow: 'visible',
-					alignSelf: 'center',
-					position: 'absolute',
-					// top: -25,
-					bottom: 0,
-				}}
+				style={[
+					animatedGestureStyle,
+					animatedIdleStyle,
+					{
+						width: width - 100,
+						height: 150,
+						overflow: 'visible',
+						alignSelf: 'center',
+						position: 'absolute',
+						// top: -25,
+						bottom: 0,
+					},
+				]}
 				// contentFit="contain"
 				contentFit="contain"
 			/>
+		</GestureDetector>
+	);
+};
+
+export const MoreHeader = (_props: NativeStackHeaderProps) => {
+	const { top } = useSafeAreaInsets();
+
+	return (
+		<Appbar.Header style={{ height: 150 + top, justifyContent: 'center' }}>
+			<ParticleBackground mascotOnly />
+			<MoveableBanner />
 		</Appbar.Header>
 	);
 };
@@ -311,8 +400,6 @@ export const BanTagHeader = ({
 	onSave,
 }: NativeStackHeaderProps & { onSave: () => void; iconColor: string }) => {
 	const title = getHeaderTitle(options, route.name);
-	const { colors } = useAppTheme();
-	const { width } = useWindowDimensions();
 	return (
 		<Appbar.Header>
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
@@ -328,9 +415,9 @@ type MediaHeaderProps = {
 	headerTitleStyle?: any;
 	headerActionStyle?: any;
 	headerStyle?: any;
-	shareLink: string;
-	streamingLinks?: AniMediaQuery['Media']['externalLinks'];
-	onBack: () => void;
+	shareLink?: string;
+	streamingLinks?: NonNullable<AniMediaQuery['Media']>['externalLinks'];
+	onBack?: () => void;
 	onEdit: () => void;
 	onAniCard?: () => void;
 };
@@ -342,9 +429,9 @@ export const MediaHeader = ({
 	headerStyle,
 	headerTitleStyle,
 	streamingLinks,
-	onBack,
+	onBack = () => null,
 	onEdit,
-	onAniCard,
+	onAniCard = () => null,
 }: MediaHeaderProps) => {
 	const [streamVisible, setStreamVisible] = useState(false);
 	const [moreVisible, setMoreVisible] = useState(false);
@@ -374,7 +461,7 @@ export const MediaHeader = ({
 					<Appbar.BackAction
 						onPress={() => {
 							navigation.goBack();
-							onBack ? onBack() : null;
+							onBack();
 						}}
 					/>
 				</Animated.View>
@@ -393,7 +480,7 @@ export const MediaHeader = ({
 						titleStyle={{ textTransform: 'capitalize' }}
 					/>
 				</Animated.View>
-				{streamingLinks?.length > 0 && (
+				{(streamingLinks?.length ?? 0) > 0 && (
 					<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
 						<Menu
 							visible={streamVisible}
@@ -410,20 +497,21 @@ export const MediaHeader = ({
 								/>
 							}
 						>
-							{streamingLinks.map(
+							{streamingLinks?.map(
 								(link, idx) =>
 									link && (
 										<Menu.Item
 											key={idx}
 											leadingIcon={
 												link.language
-													? (props) => (
-															<Text {...props}>
-																{getStreamingSiteEmoji(
-																	link?.language,
-																)}
-															</Text>
-														)
+													? (props) =>
+															link?.language && (
+																<Text {...props}>
+																	{getStreamingSiteEmoji(
+																		link?.language,
+																	)}
+																</Text>
+															)
 													: undefined
 											}
 											trailingIcon={
@@ -445,12 +533,12 @@ export const MediaHeader = ({
 						</Menu>
 					</Animated.View>
 				)}
-				{onEdit !== undefined && (!shareLink || streamingLinks?.length < 1) && (
+				{onEdit !== undefined && (!shareLink || (streamingLinks?.length ?? 0) < 1) && (
 					<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
 						<Appbar.Action icon="file-document-edit-outline" onPress={onEdit} />
 					</Animated.View>
 				)}
-				{shareLink && (onEdit === undefined || streamingLinks?.length < 1) && (
+				{!!shareLink && (onEdit === undefined || (streamingLinks?.length ?? 0) < 1) && (
 					<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
 						<Appbar.Action
 							icon="share-variant-outline"
@@ -465,7 +553,7 @@ export const MediaHeader = ({
 						/>
 					</Animated.View>
 				)}
-				{shareLink && onEdit && (streamingLinks?.length > 0 || onAniCard) && (
+				{!!shareLink && onEdit && (streamingLinks?.length ?? 0) > 0 && (
 					<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
 						<Menu
 							visible={moreVisible}
@@ -505,16 +593,12 @@ export const MediaHeader = ({
 	);
 };
 
-const ANGLE = 10;
-const TIME = 100;
-const EASING = Easing.elastic(1.5);
-
 type FadeHeaderProps = {
 	children: React.ReactNode;
 	title: string;
 	shareLink?: string;
 	favorite?: boolean;
-	streamingLinks?: AniMediaQuery['Media']['externalLinks'];
+	streamingLinks?: NonNullable<AniMediaQuery['Media']>['externalLinks'];
 	onFavorite?: () => void;
 	onEdit?: () => void;
 	loading?: boolean;
@@ -532,7 +616,7 @@ type FadeHeaderProps = {
 	>;
 	animationRange?: number[];
 	isMediaScreen?: boolean;
-	BgImage?: ({ style }: { style?: any }) => React.JSX.Element;
+	BgImage?: ({ style }: { style?: any }) => React.JSX.Element | undefined;
 	onBack?: () => void;
 	onAniCard?: () => void;
 };
@@ -542,22 +626,22 @@ export const FadeHeaderProvider = ({
 	shareLink,
 	streamingLinks,
 	favorite,
-	onFavorite,
-	onEdit,
+	onFavorite = () => null,
+	onEdit = () => null,
 	loading,
 	addFriendIcon,
 	isFriend,
-	onAddFriend,
+	onAddFriend = () => null,
 	notificationIcon,
 	newNotifs,
-	onNotificationIcon,
+	onNotificationIcon = () => null,
 	RefreshControl,
 	disableBack = false,
 	animationRange = [40, 110],
 	isMediaScreen = false,
 	BgImage,
-	onBack,
-	onAniCard,
+	onBack = () => null,
+	onAniCard = () => null,
 }: FadeHeaderProps) => {
 	const navigation = useNavigation<NativeStackNavigationProp<any>>();
 	const { colors } = useAppTheme();
@@ -566,45 +650,16 @@ export const FadeHeaderProvider = ({
 	const { userID } = useAuthStore().anilist;
 	const { navAnimation } = useSettingsStore();
 
-	const notifRotation = useSharedValue(0);
-
-	const animatedNotifStyle = useAnimatedStyle(() => ({
-		transform: [{ rotateZ: `${notifRotation.value}deg` }],
-	}));
-
 	const handleNotifPress = () => {
-		notifRotation.value = 0;
 		onNotificationIcon();
 	};
 
-	useEffect(() => {
-		if (newNotifs && notificationIcon) {
-			notifRotation.value = withRepeat(
-				withSequence(
-					// deviate left to start from -ANGLE
-					withTiming(-ANGLE, { duration: TIME / 2, easing: EASING }),
-					// wobble between -ANGLE and ANGLE 7 times
-					withRepeat(
-						withTiming(ANGLE, {
-							duration: TIME,
-							easing: EASING,
-						}),
-						7,
-						true,
-					),
-					// go back to 0 at the end
-					withTiming(0, { duration: TIME / 2, easing: EASING }),
-				),
-				-1,
-			);
-		}
-	}, [newNotifs, notificationIcon]);
-
 	const Header = () => {
+		const canGoBack = navigation.canGoBack();
 		return (
 			<Animated.View style={[headerStyle]}>
 				<Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
-					{navigation.canGoBack && !disableBack && (
+					{canGoBack && !disableBack && (
 						<Animated.View
 							style={[
 								{
@@ -621,7 +676,7 @@ export const FadeHeaderProvider = ({
 							<Appbar.BackAction
 								onPress={() => {
 									navigation.goBack();
-									onBack ? onBack() : null;
+									onBack();
 								}}
 							/>
 						</Animated.View>
@@ -647,7 +702,7 @@ export const FadeHeaderProvider = ({
 							<Appbar.Action icon="file-document-edit-outline" onPress={onEdit} />
 						</Animated.View>
 					)}
-					{shareLink && (
+					{!!shareLink && (
 						<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
 							<Appbar.Action
 								icon="share-variant-outline"
@@ -693,7 +748,7 @@ export const FadeHeaderProvider = ({
 					)}
 					{userID && notificationIcon && (
 						<Animated.View style={[HeaderStyles.icon, headerActionStyle]}>
-							<Animated.View style={[animatedNotifStyle]}>
+							<Animated.View>
 								<Appbar.Action icon={'bell-outline'} onPress={handleNotifPress} />
 							</Animated.View>
 							{newNotifs ? (
@@ -717,7 +772,7 @@ export const FadeHeaderProvider = ({
 	};
 
 	const BackgroundImage = useCallback(() => {
-		return <BgImage style={bgImageStyle} />;
+		return BgImage ? <BgImage style={bgImageStyle} /> : null;
 	}, []);
 
 	useEffect(() => {
@@ -769,7 +824,7 @@ export const ArtHeaderProvider = ({
 	children,
 }: {
 	title?: string;
-	imageUrl: string;
+	imageUrl?: string;
 	aspectRatio: number;
 	titleHeight?: number;
 	children: ReactNode;
@@ -779,7 +834,7 @@ export const ArtHeaderProvider = ({
 	return (
 		<FadeHeaderProvider
 			animationRange={[width / aspectRatio, width / aspectRatio + titleHeight]}
-			title={title}
+			title={title ?? ''}
 			BgImage={({ style }) => (
 				<PostImage
 					aspectRatio={aspectRatio}
@@ -830,7 +885,7 @@ export const ReviewHeader = ({
 		<Appbar.Header>
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
 			<Appbar.Content title={title} />
-			<Appbar.Action icon={render_switch_icon} onPress={onRenderSwitch} />
+			<Appbar.Action icon={render_switch_icon as IconSource} onPress={onRenderSwitch} />
 			<Appbar.Action
 				icon={'earth'}
 				onPress={() => {
@@ -877,9 +932,9 @@ export const ListHeader = ({
 			setIsOpen((prev) => {
 				if (prev === false) {
 					router.back();
-				} else {
 					return false;
 				}
+				return false;
 			});
 			return true;
 		};
@@ -909,9 +964,9 @@ export const ListHeader = ({
 				>
 					{/* <Appbar.BackAction onPress={() => setIsOpen(false)} /> */}
 					<Searchbar
-						value={query}
+						value={query ?? ''}
 						onChangeText={(txt) => {
-							updateListFilter({ query: txt });
+							updateListFilter?.({ query: txt });
 						}}
 						icon={'arrow-left'}
 						onIconPress={() => setIsOpen(false)}
@@ -932,7 +987,10 @@ export const ListHeader = ({
 			<Appbar.Action
 				icon={'view-module'}
 				onPress={() =>
-					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
+					router.push({
+						pathname: '/(sheets)/displayConfig',
+						params: { type: 'list' },
+					})
 				}
 			/>
 			{/* {!!openFilter && <Appbar.Action icon="filter-variant" onPress={openFilter} />} */}
@@ -995,7 +1053,10 @@ export const FavoritesHeader = ({ navigation, options, route }: NativeStackHeade
 			<Appbar.Action
 				icon={'view-module'}
 				onPress={() =>
-					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
+					router.push({
+						pathname: '/(sheets)/displayConfig',
+						params: { type: 'list' },
+					})
 				}
 			/>
 		</Appbar.Header>
@@ -1006,26 +1067,19 @@ type StudioHeaderProps = NativeStackHeaderProps & {
 	isFav: boolean;
 	id: number;
 };
-export const StudioHeader = ({
-	navigation,
-	options,
-	route,
-	back,
-	isFav,
-	id,
-}: StudioHeaderProps) => {
+export const StudioHeader = ({ navigation, options, route, back, id }: StudioHeaderProps) => {
 	const shareLink = 'https://anilist.co/studio/' + id;
 	const title = getHeaderTitle(options, route.name);
-	const { mutateAsync } = useToggleFavMutation();
+	// const { mutateAsync } = useToggleFavMutation();
 	// const [fav, setFav] = useState(isFav);
 
-	const onFavToggle = async () => {
-		const res = await mutateAsync({ studioId: id });
-		// setFav(
-		// 	res.ToggleFavourite.studios?.edges.find((s) => s?.node?.id === id)?.node?.isFavourite ??
-		// 		false,
-		// );
-	};
+	// const onFavToggle = async () => {
+	// 	const res = await mutateAsync({ studioId: id });
+	// 	// setFav(
+	// 	// 	res.ToggleFavourite.studios?.edges.find((s) => s?.node?.id === id)?.node?.isFavourite ??
+	// 	// 		false,
+	// 	// );
+	// };
 
 	return (
 		<Appbar.Header>
@@ -1039,7 +1093,10 @@ export const StudioHeader = ({
 			<Appbar.Action
 				icon={'view-module'}
 				onPress={() =>
-					SheetManager.show('DisplayConfigSheet', { payload: { type: 'list' } })
+					router.push({
+						pathname: '/(sheets)/displayConfig',
+						params: { type: 'list' },
+					})
 				}
 			/>
 			<Appbar.Action
@@ -1079,11 +1136,9 @@ export const NekosAPIHeader = ({
 	options,
 	route,
 	back,
-	ratings,
-	onRatingSelect,
+	onOpenFilter,
 }: NativeStackHeaderProps & {
-	ratings: string[];
-	onRatingSelect: (newRatings: string[]) => void;
+	onOpenFilter: () => void;
 }) => {
 	const title = getHeaderTitle(options, route.name);
 
@@ -1091,14 +1146,7 @@ export const NekosAPIHeader = ({
 		<Appbar.Header mode="center-aligned" elevated>
 			{back && <Appbar.BackAction onPress={navigation.goBack} />}
 			<Appbar.Content title={title} titleStyle={{ textTransform: 'capitalize' }} />
-			<Appbar.Action
-				icon={'filter-outline'}
-				onPress={() =>
-					SheetManager.show('NekosApiSheet', {
-						payload: { ratings: ratings, onRatingSelect },
-					})
-				}
-			/>
+			<Appbar.Action icon={'filter-outline'} onPress={onOpenFilter} />
 			<Appbar.Action
 				icon={'information-outline'}
 				onPress={() => openWebBrowser('https://nekosapi.com/')}
@@ -1130,14 +1178,11 @@ export const WaifuItHeader = ({
 };
 
 export const AccountsHeader = ({
-	navigation,
 	options,
 	route,
-	back,
 	mode,
 	dark,
 	elevated,
-	actions,
 }: NativeStackHeaderProps & {
 	mode?: AppbarProps['mode'];
 	dark?: boolean;
