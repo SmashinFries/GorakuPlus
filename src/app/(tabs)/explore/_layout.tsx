@@ -1,15 +1,14 @@
-import { ExploreHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
-import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { Stack } from 'expo-router';
 
 const ExploreLayout = () => {
 	return (
 		<AnimatedStack>
 			<Stack.Screen
-				name="index"
+				name="(home)"
 				options={{
 					title: 'Explore',
+					headerShown: false,
 				}}
 			/>
 			<Stack.Screen name="search" options={{ title: 'Search' }} />

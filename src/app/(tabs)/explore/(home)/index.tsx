@@ -12,7 +12,6 @@ import {
 	useManhwaExploreQuery,
 	useNovelExploreQuery,
 } from '@/api/anilist/__genereated__/gql';
-import { ParticleBackground } from '@/components/animations';
 import BarcodeScanner from '@/components/barcodeScanner';
 import { NetworkError } from '@/components/error';
 import { GorakuRefreshControl, SectionScroll } from '@/components/explore/lists';
@@ -31,10 +30,12 @@ import { BackHandler, ScrollView, View, useWindowDimensions } from 'react-native
 import { Portal } from 'react-native-paper';
 import { TabView } from 'react-native-tab-view';
 import { useShallow } from 'zustand/react/shallow';
+import React from 'react';
+import ParticleBackground from '@/components/particles';
 
 const perPage = 24;
 const thisSeasonParams = getSeason();
-const nextSeasonParams = getSeason(true);
+const nextSeasonParams = getSeason(new Date(), true);
 
 type ExploreSectionsProps = {
 	type: MediaType;
@@ -58,14 +59,14 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 						category_title={'New Releases'}
 						data={(data as MangaExploreQuery)?.newReleases?.media}
 						viewer={data?.Viewer}
-						isLoading={isLoading}
+						isLoading={!!isLoading}
 					/>
 				)}
 				<SectionScroll
 					category_title={'Trending'}
 					data={data?.trending?.media}
 					viewer={data?.Viewer}
-					isLoading={isLoading}
+					isLoading={!!isLoading}
 				/>
 				{type === MediaType.Anime && (
 					<>
@@ -73,13 +74,13 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 							category_title={'Current Season'}
 							data={(data as AnimeExploreQuery)?.thisSeason?.media}
 							viewer={data?.Viewer}
-							isLoading={isLoading}
+							isLoading={!!isLoading}
 						/>
 						<SectionScroll
 							category_title={'Next Season'}
 							data={(data as AnimeExploreQuery)?.nextSeason?.media}
 							viewer={data?.Viewer}
-							isLoading={isLoading}
+							isLoading={!!isLoading}
 						/>
 					</>
 				)}
@@ -87,13 +88,13 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 					category_title={'Popular'}
 					data={data?.popular?.media}
 					viewer={data?.Viewer}
-					isLoading={isLoading}
+					isLoading={!!isLoading}
 				/>
 				<SectionScroll
 					category_title={'Top Scored'}
 					data={data?.top?.media}
 					viewer={data?.Viewer}
-					isLoading={isLoading}
+					isLoading={!!isLoading}
 				/>
 			</View>
 		</View>
@@ -173,30 +174,28 @@ const ExploreTab = ({ type }: ExploreTabProps) => {
 	};
 
 	return (
-		<>
-			<ScrollView
-				refreshControl={
-					<GorakuRefreshControl
-						refreshing={queries[queryIndex].isRefetching}
-						onRefresh={onRefresh}
-					/>
-				}
-			>
-				{queries[queryIndex].isError && (
-					<NetworkError status={queries[queryIndex].status} onRefresh={onRefresh} />
-				)}
-				{!queries[queryIndex].isError && (
-					<ExploreSections
-						type={type === 'anime' ? MediaType.Anime : MediaType.Manga}
-						data={queries[queryIndex].data}
-						onRefresh={onRefresh}
-						isError={queries[queryIndex].isError}
-						isLoading={queries[queryIndex]?.isLoading}
-						status={queries[queryIndex]?.status}
-					/>
-				)}
-			</ScrollView>
-		</>
+		<ScrollView
+			refreshControl={
+				<GorakuRefreshControl
+					refreshing={queries[queryIndex].isRefetching}
+					onRefresh={onRefresh}
+				/>
+			}
+		>
+			{queries[queryIndex].isError && (
+				<NetworkError status={queries[queryIndex].status} onRefresh={onRefresh} />
+			)}
+			{!queries[queryIndex].isError && (
+				<ExploreSections
+					type={type === 'anime' ? MediaType.Anime : MediaType.Manga}
+					data={queries[queryIndex].data ?? ({} as AnimeExploreQuery)}
+					onRefresh={onRefresh}
+					isError={queries[queryIndex].isError}
+					isLoading={queries[queryIndex]?.isLoading}
+					status={queries[queryIndex]?.status}
+				/>
+			)}
+		</ScrollView>
 	);
 };
 
@@ -209,13 +208,14 @@ const ExplorePage = () => {
 
 	const [routes, setRoutes] = useState<{ key: string; title: string }[]>(
 		exploreTabOrder
-			.filter((tabName) => exploreTabs.includes(tabName))
-			.map((tab) => {
+			?.filter((tabName) => exploreTabs?.includes(tabName))
+			?.map((tab) => {
 				return { key: tab, title: tab };
-			}),
+			}) ?? [],
 	);
 
 	const [index, setIndex] = useState(0);
+	const [_isDrawerOpen, setIsDrawerOpen] = useState(false);
 
 	const renderScene = useCallback(
 		({ route }: { route: { key: keyof ExploreTabsProps; title: keyof ExploreTabsProps } }) => {
@@ -227,10 +227,10 @@ const ExplorePage = () => {
 	useEffect(() => {
 		setRoutes(
 			exploreTabOrder
-				.filter((tabName) => exploreTabs.includes(tabName))
-				.map((tab) => {
+				?.filter((tabName) => exploreTabs?.includes(tabName))
+				?.map((tab) => {
 					return { key: tab, title: tab };
-				}),
+				}) ?? [],
 		);
 	}, [exploreTabOrder, exploreTabs]);
 
@@ -249,11 +249,15 @@ const ExplorePage = () => {
 	);
 
 	return (
-		<>
+		<View style={{ backgroundColor: colors.background, flex: 1 }}>
 			<Stack.Screen
 				options={{
 					header: (props) => (
-						<ExploreHeader {...props} showScanner={() => setIsBCScannerVis(true)} />
+						<ExploreHeader
+							{...props}
+							toggleDrawer={() => setIsDrawerOpen((isOpen) => !isOpen)}
+							showScanner={() => setIsBCScannerVis(true)}
+						/>
 					),
 				}}
 			/>
@@ -271,6 +275,7 @@ const ExplorePage = () => {
 				lazy={true}
 				renderLazyPlaceholder={(_props) => <View />}
 			/>
+			{/* </Drawer> */}
 			<Portal>
 				<BarcodeScanner
 					visible={isBCScannerVis}
@@ -278,7 +283,7 @@ const ExplorePage = () => {
 					openScanner={() => setIsBCScannerVis(true)}
 				/>
 			</Portal>
-		</>
+		</View>
 	);
 };
 
