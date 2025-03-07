@@ -1,11 +1,16 @@
-import { Text as RNText, ScrollView, StyleSheet, View } from 'react-native';
+import {
+	FlatList,
+	ListRenderItemInfo,
+	Text as RNText,
+	ScrollView,
+	StyleSheet,
+	View,
+} from 'react-native';
 import { Chip, List, MD3DarkTheme, Text } from 'react-native-paper';
-import { useCallback } from 'react';
 import { Image } from 'expo-image';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
 import { FadeHeaderProvider } from '@/components/headers';
 import { convertDate, copyToClipboard } from '@/utils';
-import { FlashList } from '@shopify/flash-list';
 import { StaffMediaCard } from '@/components/staff/media';
 import { useLocalSearchParams } from 'expo-router';
 import { HTMLText } from '@/components/text';
@@ -19,7 +24,12 @@ import useTTS from '@/hooks/useTTS';
 import { CharStaffInteractionBar } from '@/components/characters/interaction';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useTTSStore } from '@/store/tts/ttsStore';
-import { StaffDetailsQuery, useStaffDetailsQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge,
+	StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge,
+	useStaffDetailsQuery,
+} from '@/api/anilist/__genereated__/gql';
+import { CharacterCard } from '@/components/cards';
 
 const StafPage = () => {
 	const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -28,7 +38,11 @@ const StafPage = () => {
 	const { mediaLanguage } = useSettingsStore();
 	const { enabled, english } = useTTSStore();
 	const { speak } = useTTS();
-	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
+	const { animatedStyle, panGesture } = use3dPan({
+		xLimit: [-25, 25],
+		yLimit: [-25, 25],
+		disableAutoRotation: true,
+	});
 	const { data, isLoading } = useStaffDetailsQuery(
 		{
 			id: id,
@@ -37,15 +51,26 @@ const StafPage = () => {
 			staff_media_page: 1,
 			staff_media_perPage: 25,
 		},
-		{ enabled: !!staffId },
+		{ enabled: !!staffId, refetchOnMount: true },
 	);
 
-	const StaffMediaRenderItem = useCallback(
-		({ item }: { item: StaffDetailsQuery['Staff']['staffMedia']['edges'][0] }) => {
-			return <StaffMediaCard item={item} />;
-		},
-		[],
-	);
+	const StaffMediaRenderItem = ({
+		item,
+	}: {
+		item: StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge;
+	}) => {
+		return <StaffMediaCard item={item} />;
+	};
+
+	const CharacterRenderItem = ({
+		item,
+	}: ListRenderItemInfo<StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge>) => {
+		return item.node?.id ? (
+			<View style={{ paddingHorizontal: 6 }}>
+				<CharacterCard {...item.node} role={item.role ?? undefined} />
+			</View>
+		) : null;
+	};
 
 	if (isLoading) {
 		return (
@@ -59,23 +84,25 @@ const StafPage = () => {
 		<FadeHeaderProvider
 			title={
 				mediaLanguage === 'english' || mediaLanguage === 'romaji'
-					? data?.Staff?.name?.full
-					: data?.Staff?.name?.native
+					? (data?.Staff?.name?.full as string)
+					: (data?.Staff?.name?.native ?? '')
 			}
 			loading={isLoading}
 			// shareLink={data?.Staff?.siteUrl}
 			// onEdit={() => openWebBrowser(`https://anilist.co/edit/staff/${id}`)}
 			BgImage={({ style }) =>
-				data?.Staff?.staffMedia?.edges?.length > 0 && (
+				(data?.Staff?.staffMedia?.edges?.length ?? 0) > 0 ? (
 					<MediaBanner
 						urls={[
-							data?.Staff?.staffMedia?.edges[0]?.node?.bannerImage ??
-								data?.Staff?.staffMedia?.edges[0]?.node?.coverImage?.extraLarge,
-							...data?.Staff?.staffMedia?.edges?.map((edge) => edge.node.bannerImage),
-						].filter((val) => val !== null)}
+							data?.Staff?.staffMedia?.edges?.[0]?.node?.bannerImage ??
+								data?.Staff?.staffMedia?.edges?.[0]?.node?.coverImage?.extraLarge,
+							...(data?.Staff?.staffMedia?.edges?.map(
+								(edge) => edge?.node?.bannerImage,
+							) ?? []),
+						].filter((val): val is string => val !== null && val !== undefined)}
 						style={style}
 					/>
-				)
+				) : undefined
 			}
 			// favorite={data?.Staff?.isFavourite}
 		>
@@ -88,7 +115,6 @@ const StafPage = () => {
 								style={styles.avatar}
 								contentFit="cover"
 							/>
-
 							<View style={[styles.avatarFavsContainer]}>
 								<RNText
 									style={{
@@ -111,27 +137,39 @@ const StafPage = () => {
 						/>
 					)} */}
 				</View>
-				<NameViewer
-					names={data?.Staff?.name}
-					nativeLang={
-						data?.Staff?.languageV2 === 'Japanese'
-							? 'JP'
-							: data?.Staff?.languageV2 === 'Korean'
-								? 'KR'
-								: data?.Staff?.languageV2 === 'Chinese'
-									? 'CN'
-									: null
-					}
-					defaultTitle={['english', 'romaji'].includes(mediaLanguage) ? 'full' : 'native'}
-				/>
-				{data?.Staff?.name.alternative && (
-					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				{data?.Staff?.name && (
+					<NameViewer
+						names={data?.Staff?.name}
+						nativeLang={
+							data?.Staff?.languageV2 === 'Japanese'
+								? 'JP'
+								: data?.Staff?.languageV2 === 'Korean'
+									? 'KR'
+									: data?.Staff?.languageV2 === 'Chinese'
+										? 'CN'
+										: null
+						}
+						defaultTitle={
+							mediaLanguage && ['english', 'romaji'].includes(mediaLanguage)
+								? 'full'
+								: 'native'
+						}
+					/>
+				)}
+				{data?.Staff?.name?.alternative && (
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						fadingEdgeLength={6}
+					>
 						{data?.Staff?.name.alternative?.map((name, idx) => (
 							<Chip
 								key={idx}
 								style={{ margin: 5 }}
 								onPress={() => copyToClipboard(name)}
-								onLongPress={enabled ? () => speak(name, english) : null}
+								onLongPress={
+									enabled ? () => name && speak(name, english) : undefined
+								}
 							>
 								{name}
 							</Chip>
@@ -140,7 +178,7 @@ const StafPage = () => {
 				)}
 				<CharStaffInteractionBar
 					id={id}
-					isFav={data?.Staff?.isFavourite}
+					isFav={!!data?.Staff?.isFavourite}
 					share_url={`https://anilist.co/staff/${id}`}
 					edit_url={`https://anilist.co/edit/staff/${id}`}
 				/>
@@ -190,7 +228,7 @@ const StafPage = () => {
 								</Text>
 							)}
 						/>
-						{data?.Staff?.dateOfDeath.month && (
+						{data?.Staff?.dateOfDeath?.month && (
 							<List.Item
 								title="Death"
 								left={(props) => (
@@ -222,7 +260,7 @@ const StafPage = () => {
 							)}
 							right={(props) => (
 								<Text numberOfLines={2} {...props}>
-									{data?.Staff?.primaryOccupations.join(', ') ?? 'N/A'}
+									{data?.Staff?.primaryOccupations?.join(', ') ?? 'N/A'}
 								</Text>
 							)}
 						/>
@@ -231,10 +269,10 @@ const StafPage = () => {
 							left={(props) => <List.Icon {...props} icon="timer-outline" />}
 							right={(props) => (
 								<Text {...props}>
-									{data?.Staff?.yearsActive.length > 1
-										? data?.Staff?.yearsActive.join(' - ')
-										: data?.Staff?.yearsActive.length === 1
-											? `${data?.Staff?.yearsActive[0]} - Present`
+									{(data?.Staff?.yearsActive?.length ?? 0) > 1
+										? data?.Staff?.yearsActive?.join(' - ')
+										: (data?.Staff?.yearsActive?.length ?? 0) === 1
+											? `${data?.Staff?.yearsActive?.[0]} - Present`
 											: 'N/A'}
 								</Text>
 							)}
@@ -247,13 +285,18 @@ const StafPage = () => {
 							)}
 						/>
 					</Accordion>
-					{data?.Staff?.staffMedia?.edges?.length > 0 && (
+					{(data?.Staff?.staffMedia?.edges?.length ?? 0) > 0 && (
 						<Accordion title="Media" initialExpand>
-							<FlashList
-								data={data?.Staff?.staffMedia?.edges}
+							<FlatList
+								data={data?.Staff?.staffMedia?.edges?.filter(
+									(
+										edge,
+									): edge is StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge =>
+										edge !== null,
+								)}
 								renderItem={StaffMediaRenderItem}
 								keyExtractor={(item, idx) => idx.toString()}
-								estimatedItemSize={250}
+								// estimatedItemSize={250}
 								horizontal
 								removeClippedSubviews
 								// contentContainerStyle={{ padding: 15 }}
@@ -265,21 +308,27 @@ const StafPage = () => {
 							/>
 						</Accordion>
 					)}
-					{data?.Staff?.characters?.edges?.length > 0 && (
+					{(data?.Staff?.characters?.edges?.length ?? 0) > 0 && (
 						<Accordion title="Characters">
-							<Text style={{ textAlign: 'center', marginTop: 15 }}>
+							{/* <Text style={{ textAlign: 'center', marginTop: 15 }}>
 								Characters coming soon!
-							</Text>
-							{/* <FlashList
-                                data={data?.Staff?.staffMedia?.edges}
-                                renderItem={StaffMediaRenderItem}
-                                keyExtractor={(item, idx) => idx.toString()}
-                                estimatedItemSize={250}
-                                horizontal
-                                removeClippedSubviews
-                                contentContainerStyle={{ padding: 15 }}
-                                showsHorizontalScrollIndicator={false}
-                            /> */}
+							</Text> */}
+							<FlatList
+								data={data?.Staff?.characters?.edges?.filter(
+									(edge) => edge !== null,
+								)}
+								renderItem={CharacterRenderItem}
+								keyExtractor={(item, idx) => idx.toString()}
+								// estimatedItemSize={250}
+								horizontal
+								removeClippedSubviews
+								// contentContainerStyle={{ padding: 15 }}
+								showsHorizontalScrollIndicator={false}
+								// onEndReached={() => {
+								// 	data?.Staff?.staffMedia?.pageInfo?.hasNextPage &&
+								// 		setSmPage((prev) => prev + 1);
+								// }}
+							/>
 						</Accordion>
 					)}
 					<View>{/* <CharacterPrevList data={data?.Staff?.characters} /> */}</View>
