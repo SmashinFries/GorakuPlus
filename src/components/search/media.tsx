@@ -6,7 +6,6 @@ import { router } from 'expo-router';
 import { Anilist, Result } from '@/api/tracemoe/models';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
-import { SheetManager } from 'react-native-actions-sheet';
 import { saveImage } from '@/utils/images';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -25,11 +24,12 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 	const anilist = item.anilist as Anilist;
 	const similarity = item.similarity * 100;
 	const videoRef = useRef<Video>(null);
-	const [status, setStatus] = useState<AVPlaybackStatus>(null);
+	const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
 
 	const onView = () => {
+		router.back();
 		router.navigate(`/anime/${anilist.id}`);
-		SheetManager.hideAll();
+		// SheetManager.hideAll();
 	};
 
 	if (!showNSFW && anilist.isAdult) return null;
@@ -37,7 +37,6 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 	return (
 		<View
 			style={{
-				flex: 1,
 				width: '100%',
 				alignItems: 'center',
 				marginVertical: 15,
@@ -51,8 +50,8 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 					style={{ height: 180, overflow: 'hidden', borderRadius: roundness * 3 }}
 					onPress={() =>
 						status?.isLoaded && status?.isPlaying
-							? videoRef.current.pauseAsync()
-							: videoRef.current.playAsync()
+							? videoRef.current?.pauseAsync()
+							: videoRef.current?.playAsync()
 					}
 				>
 					<Video
@@ -75,7 +74,7 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 					/>
 				</Pressable>
 				<Card.Title
-					title={anilist.title[mediaLanguage] ?? anilist.title.romaji}
+					title={anilist.title[mediaLanguage ?? 'romaji']}
 					right={(props) =>
 						similarity >= 90 && (
 							<View style={{ paddingRight: 8 }}>
