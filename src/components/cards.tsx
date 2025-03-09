@@ -16,10 +16,10 @@ import {
 	MediaStatus,
 	MediaType,
 	ScoreFormat,
-	SearchAllQuery,
 	StaffMetaDataFragment,
-	StudioSearchQuery,
 	UserSearchMetaFragment,
+	StudioSearchQuery_Page_Page_studios_Studio,
+	ScoreDistribution,
 } from '@/api/anilist/__genereated__/gql';
 import { ScoreVisualType } from '@/store/settings/types';
 import { useAppTheme } from '@/store/theme/themes';
@@ -30,9 +30,11 @@ import { useRef, useState } from 'react';
 import { MEDIA_FORMAT_ALT, MEDIA_STATUS_ALT } from '@/constants/anilist';
 import { ListStatusMode, useCardVisualStore } from '@/store/cardVisualStore';
 import { router } from 'expo-router';
-import { SheetManager } from 'react-native-actions-sheet';
 import { useAuthStore } from '@/store/authStore';
 import { useShallow } from 'zustand/react/shallow';
+import * as Haptics from 'expo-haptics';
+import { useListEntryStore } from '@/store/listEntryStore';
+import { BooruArtActionParams } from '@/app/(sheets)/booruArtActions';
 
 const BORDER_RADIUS = 8;
 
@@ -49,12 +51,11 @@ type MediaCardProps = MainMetaFragment & {
 	activityId?: number;
 	followingUsername?: string;
 	allowEntryEdit?: boolean;
-	onLongPress?: () => void;
 	isMangaDex?: boolean;
+	customEPText?: string;
 };
 export const MediaCard = ({
 	navigate = () => null,
-	onLongPress = () => null,
 	allowEntryEdit = true,
 	...props
 }: MediaCardProps) => {
@@ -66,20 +67,41 @@ export const MediaCard = ({
 			scoreColors: state.scoreColors,
 		})),
 	);
-	const { defaultScore, listStatusMode } = useCardVisualStore(
+	const { defaultScore, scoreVisualType, listStatusMode } = useCardVisualStore(
 		useShallow((state) => ({
 			defaultScore: state.defaultScore,
 			listStatusMode: state.listStatusMode,
+			scoreVisualType: state.scoreVisualType,
 			setCardVisual: state.setCardVisual,
 		})),
 	);
 	const [width, setWidth] = useState(props.width ?? 1);
+	const initializeListEntry = useListEntryStore((state) => state.initialize);
 
 	const onNav = () => {
 		router.push(`/${props.type === MediaType.Anime ? 'anime' : 'manga'}/${props.id}`);
-		SheetManager.hideAll();
-		SheetManager.hide('QuickActionAniTrendzSheet');
+		// SheetManager.hideAll();
+		// SheetManager.hide('QuickActionAniTrendzSheet');
 	};
+
+	const onLongPress = () => {
+		props.mediaListEntry && initializeListEntry(props.mediaListEntry);
+		!props.isMangaDex &&
+			router.push({
+				pathname: '/(sheets)/mediaActions',
+				params: {
+					params: JSON.stringify({
+						...props,
+						scoreFormat: props.scoreFormat,
+						activityId: props.activityId,
+						followingUsername: props.followingUsername,
+						allowEntryEdit: allowEntryEdit,
+					}),
+				},
+			});
+	};
+
+	if (!props) return;
 
 	return (
 		<AnimViewMem>
@@ -107,19 +129,7 @@ export const MediaCard = ({
 							navigate() ?? onNav();
 						}
 					}}
-					onLongPress={() => {
-						onLongPress() ??
-							(!props.isMangaDex &&
-								SheetManager.show('QuickActionSheet', {
-									payload: {
-										...props,
-										scoreFormat: props.scoreFormat,
-										activityId: props.activityId,
-										followingUsername: props.followingUsername,
-										allowEntryEdit: allowEntryEdit,
-									},
-								}));
-					}}
+					onLongPress={onLongPress}
 					android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 					style={{ height: '100%', width: '100%' }}
 				>
@@ -143,7 +153,7 @@ export const MediaCard = ({
 				}}
 			/> */}
 					<RNImage
-						source={{ uri: props.coverImage?.extraLarge }}
+						source={{ uri: props?.coverImage?.extraLarge ?? undefined }}
 						resizeMode="cover"
 						style={{
 							height: '100%',
@@ -173,22 +183,26 @@ export const MediaCard = ({
 							// 	: undefined,
 						}}
 						colors={[
-							'rgba(0,0,0,0)',
-							'rgba(0,0,0,.4)',
-							props.isFavourite ? 'rgba(79, 0, 0, 1)' : 'black',
+							'rgba(20, 20, 20,0)',
+							'rgba(20, 20, 20, 0.4)',
+							props.isFavourite ? 'rgba(79, 0, 0, 1)' : 'rgba(20, 20, 20, 1)',
 						]}
 					></LinearGradient>
 					<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-						{!props.isMangaDex && (props.meanScore || props.averageScore) && (
+						{!props.isMangaDex && (!!props.meanScore || !!props.averageScore) && (
 							<ScoreVisual
 								score={
 									defaultScore === 'average' && props.averageScore
 										? props.averageScore
-										: props.meanScore
+										: (props.meanScore as number)
 								}
 								scoreColors={scoreColors}
-								scoreVisualType={props.scoreVisualType}
-								scoreDistributions={props.stats?.scoreDistribution}
+								scoreVisualType={
+									props.scoreVisualType ?? scoreVisualType ?? 'healthbar-full'
+								}
+								scoreDistributions={props.stats?.scoreDistribution?.filter(
+									(s): s is ScoreDistribution => s !== null,
+								)}
 								height={card_height}
 								borderRadius={BORDER_RADIUS}
 							/>
@@ -220,9 +234,9 @@ export const MediaCard = ({
 							props.mediaListEntry?.status
 								? ' '
 								: ''}
-							{(props.titleLang && props.title[props.titleLang]) ??
-								(mediaLanguage && props?.title[mediaLanguage]) ??
-								props?.title.romaji}
+							{(props.titleLang && props.title?.[props.titleLang]) ??
+								(mediaLanguage && props?.title?.[mediaLanguage]) ??
+								props?.title?.romaji}
 						</Text>
 						{props.nextAiringEpisode?.airingAt ? (
 							<AiringBanner
@@ -230,6 +244,7 @@ export const MediaCard = ({
 								textColor={colors.onPrimaryContainer}
 								airingAt={props.nextAiringEpisode?.airingAt}
 								episode={props.nextAiringEpisode?.episode}
+								customText={props.customEPText}
 							/>
 						) : null}
 					</View>
@@ -238,9 +253,9 @@ export const MediaCard = ({
 			{props.mediaListEntry && (props.tempListStatusMode ?? listStatusMode) === 'bar' && (
 				<MediaProgressBar
 					containerStyle={{ width: width }}
-					progress={props.mediaListEntry?.progress}
+					progress={props.mediaListEntry?.progress ?? 0}
 					mediaListEntry={props.mediaListEntry as MediaList}
-					total={props.episodes ?? props.chapters ?? props.volumes}
+					total={props.episodes ?? props.chapters ?? props.volumes ?? undefined}
 					barStyle={{ width: '90%' }}
 				/>
 			)}
@@ -250,27 +265,42 @@ export const MediaCard = ({
 
 export const MediaCardRow = ({
 	navigate = () => null,
-	onLongPress = () => null,
+	allowEntryEdit = true,
 	...props
 }: MediaCardProps) => {
 	const card_height = props.height ?? 80;
 	const { mediaLanguage } = useSettingsStore();
 	const { colors } = useAppTheme();
+	const initializeListEntry = useListEntryStore((state) => state.initialize);
 
 	const onNav = () => {
-		SheetManager.hideAll();
-		SheetManager.hide('QuickActionAniTrendzSheet');
 		router.push(`/${props.type === MediaType.Anime ? 'anime' : 'manga'}/${props.id}`);
 	};
+
+	const onLongPress = () => {
+		props.mediaListEntry && initializeListEntry(props.mediaListEntry);
+		router.navigate({
+			pathname: '/(sheets)/mediaActions',
+			params: {
+				params: JSON.stringify({
+					...props,
+					scoreFormat: props.scoreFormat,
+					activityId: props.activityId,
+					followingUsername: props.followingUsername,
+					allowEntryEdit: allowEntryEdit,
+				}),
+			},
+		});
+	};
+
 	return (
 		<AnimViewMem>
 			<Pressable
 				onPress={() => {
 					navigate() ?? onNav();
 				}}
-				onLongPress={() => {
-					onLongPress() ?? SheetManager.show('QuickActionSheet', { payload: props });
-				}}
+				onLongPress={onLongPress}
+				android_ripple={{ color: colors.primary, foreground: true }}
 				style={{
 					overflow: 'hidden',
 					height: card_height,
@@ -303,7 +333,7 @@ export const MediaCardRow = ({
 							overflow: 'hidden',
 						}}
 					>
-						{props.averageScore && (
+						{!!props.averageScore && (
 							<View
 								style={{
 									position: 'absolute',
@@ -359,25 +389,27 @@ export const MediaCardRow = ({
 								/>
 							)}
 							{props.mediaListEntry?.status ? ' ' : ''}
-							{props.title[props.titleLang] ??
-								props.title[mediaLanguage] ??
-								props.title.romaji}
+							{(props.titleLang && props.title?.[props.titleLang]) ??
+								(mediaLanguage && props.title?.[mediaLanguage]) ??
+								props.title?.romaji}
 						</Text>
 					</View>
 
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<Text variant="labelMedium" style={{ color: colors.onSurfaceVariant }}>
-							{props.averageScore ? `${props.averageScore}%` : '--%'}
+							{!!props.averageScore ? `${props.averageScore}%` : '--%'}
 						</Text>
 						<Text> ・ </Text>
 						<Text variant="labelMedium" style={{ color: colors.onSurfaceVariant }}>
-							{MEDIA_FORMAT_ALT[props.format]}
+							{props.format && MEDIA_FORMAT_ALT[props.format]}
 						</Text>
 						<Text variant="labelMedium" style={{ color: colors.onSurfaceVariant }}>
 							{' ・ '}
-							{props?.nextAiringEpisode?.airingAt
-								? `EP ${props.nextAiringEpisode.episode.toLocaleString()}: ${getTimeUntil(Number(props.nextAiringEpisode.airingAt))}`
-								: `${MEDIA_STATUS_ALT[props.status]}`}
+							{props.customEPText
+								? props.customEPText
+								: props?.nextAiringEpisode?.airingAt
+									? `EP ${props.nextAiringEpisode.episode.toLocaleString()}: ${getTimeUntil(Number(props.nextAiringEpisode.airingAt))}`
+									: `${props.status && MEDIA_STATUS_ALT[props.status]}`}
 						</Text>
 					</View>
 					{/* <ProgressBar progress={0.5} style={{ marginHorizontal: 8, borderRadius: 12 }} /> */}
@@ -444,12 +476,14 @@ export const MediaProgressBar = ({
 				variant="labelSmall"
 			>
 				{mediaListEntry?.status}
-				{mediaListEntry?.progress > 0
+				{mediaListEntry?.progress && mediaListEntry?.progress > 0
 					? `${' · '}` +
 						mediaListEntry?.progress +
-						(![MediaListStatus.Repeating, MediaListStatus.Planning].includes(
+						(mediaListEntry?.status &&
+						![(MediaListStatus.Repeating, MediaListStatus.Planning)].includes(
 							mediaListEntry?.status,
-						) && total
+						) &&
+						total
 							? '/' + `${total}`
 							: '')
 					: null}
@@ -460,22 +494,29 @@ export const MediaProgressBar = ({
 
 type UserCardProps = UserSearchMetaFragment & {
 	status?: string;
-	progress?: string;
+	progress?: string | number;
 	size?: number;
 	onPress?: () => void;
-	onLongPress?: () => void;
 };
-export const UserCard = ({
-	onPress = () => null,
-	onLongPress = () => null,
-	...props
-}: UserCardProps) => {
+export const UserCard = ({ onPress = () => null, ...props }: UserCardProps) => {
 	const { colors } = useAppTheme();
 	const viewerName = useAuthStore(useShallow((state) => state.anilist.username));
 
 	const onNav = () => {
-		SheetManager.hideAll();
-		viewerName !== props.name && router.navigate(`/user/${props.name}`); // dont nav if user is viewer
+		// TrueSheet.dismiss('QuickActionUserSheet');
+		viewerName !== props.name && router.push(`/user/${props.name}`); // dont nav if user is viewer
+	};
+
+	const onLongPress = () => {
+		// Haptics.selectionAsync();
+		// viewerName !== props.name && openUserQuickSheet(props);
+		viewerName !== props.name &&
+			router.navigate({
+				pathname: '/(sheets)/userActions',
+				params: {
+					params: JSON.stringify(props),
+				},
+			});
 	};
 
 	return (
@@ -483,11 +524,7 @@ export const UserCard = ({
 			<Pressable
 				android_ripple={{ color: colors.primary, foreground: true }}
 				onPress={() => onPress() ?? onNav()}
-				onLongPress={() => {
-					onLongPress() ??
-						(viewerName !== props.name &&
-							SheetManager.show('QuickActionUserSheet', { payload: props }));
-				}}
+				onLongPress={onLongPress}
 				style={{
 					// marginHorizontal: 10,
 					overflow: 'hidden',
@@ -497,7 +534,7 @@ export const UserCard = ({
 					padding: 5,
 				}}
 			>
-				<Avatar.Image source={{ uri: props.avatar?.large }} />
+				<Avatar.Image source={{ uri: props.avatar?.large ?? undefined }} />
 				<Text
 					variant="titleSmall"
 					style={{
@@ -542,8 +579,10 @@ export const UserCard = ({
 type CharacterCardProps = (CharacterMetaDataFragment | StaffMetaDataFragment) & {
 	role?: string;
 	isStaff?: boolean;
+	isLangShown?: boolean;
 	onPress?: () => void;
 	onLongSelect?: () => void;
+	disableFav?: boolean;
 };
 export const CharacterCard = ({
 	onPress = () => null,
@@ -553,9 +592,20 @@ export const CharacterCard = ({
 	const { colors } = useAppTheme();
 	const { mediaLanguage } = useSettingsStore();
 	const onNav = () => {
-		SheetManager.hideAll();
-		SheetManager.hide('QuickActionAniTrendzSheet');
 		router.navigate(props.isStaff ? `/staff/${props.id}` : `/character/${props.id}`);
+	};
+
+	const onLongPress = () => {
+		router.push({
+			pathname: '/(sheets)/charStaffActions',
+			params: {
+				params: JSON.stringify({
+					...props,
+					type: props.isStaff ? 'staff' : 'character',
+					disableFav: !!props.disableFav,
+				}),
+			},
+		});
 	};
 
 	return (
@@ -563,10 +613,7 @@ export const CharacterCard = ({
 			<Pressable
 				onPress={() => onPress() ?? onNav()}
 				onLongPress={() => {
-					onLongSelect() ??
-						SheetManager.show('QuickActionCharStaffSheet', {
-							payload: { ...props, type: props.isStaff ? 'staff' : 'character' },
-						});
+					onLongSelect() ?? onLongPress();
 				}}
 				android_ripple={{ color: colors.primary, foreground: true }}
 				style={{
@@ -576,7 +623,7 @@ export const CharacterCard = ({
 					padding: 4,
 				}}
 			>
-				<Avatar.Image source={{ uri: props.image?.large }} />
+				<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
 				<View>
 					<Text
 						numberOfLines={2}
@@ -588,7 +635,7 @@ export const CharacterCard = ({
 					>
 						{mediaLanguage === 'native' ? props.name?.native : props.name?.full}
 					</Text>
-					{props.role ? (
+					{props.role || props.isLangShown ? (
 						<Text
 							numberOfLines={2}
 							variant="labelMedium"
@@ -600,7 +647,9 @@ export const CharacterCard = ({
 								paddingBottom: 10,
 							}}
 						>
-							{props.role}
+							{props.isLangShown && props.isStaff
+								? (props as StaffMetaDataFragment)?.language
+								: props.role}
 						</Text>
 					) : null}
 				</View>
@@ -609,27 +658,138 @@ export const CharacterCard = ({
 	);
 };
 
-export const StaffCard = CharacterCard;
+export const CharacterRowCard = ({
+	onPress = () => null,
+	onLongSelect = () => null,
+	...props
+}: CharacterCardProps & { height?: number }) => {
+	const card_height = props.height ?? 80;
+	const { colors } = useAppTheme();
+	const { mediaLanguage } = useSettingsStore();
+	const onNav = () => {
+		router.navigate(props.isStaff ? `/staff/${props.id}` : `/character/${props.id}`);
+	};
 
-type StudioCardProps = StudioSearchQuery['Page']['studios'][0] & {
+	const onLongPress = () => {
+		Haptics.selectionAsync();
+		router.push({
+			pathname: '/(sheets)/charStaffActions',
+			params: {
+				params: JSON.stringify({
+					...props,
+					type: props.isStaff ? 'staff' : 'character',
+				}),
+			},
+		});
+	};
+	return (
+		<AnimViewMem style={{ width: '100%' }}>
+			<Pressable
+				onPress={() => onPress() ?? onNav()}
+				onLongPress={() => {
+					onLongSelect() ?? onLongPress();
+				}}
+				android_ripple={{ color: colors.primary, foreground: true }}
+				style={{
+					overflow: 'hidden',
+					height: card_height,
+					marginVertical: 6,
+					width: '100%',
+					flexDirection: 'row',
+					alignItems: 'center',
+					paddingHorizontal: 10,
+				}}
+			>
+				<View
+					style={{
+						flexDirection: 'row',
+						height: '100%',
+						width: '100%',
+						alignItems: 'center',
+					}}
+				>
+					<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
+					<View
+						style={{
+							height: card_height - 16,
+							borderRadius: 24,
+							width: 1.5,
+							backgroundColor: colors.elevation.level3,
+							marginHorizontal: 12,
+							overflow: 'hidden',
+						}}
+					/>
+					<View style={{ padding: 5, paddingHorizontal: 6 }}>
+						<Text
+							style={{
+								color: props.isFavourite ? colors.primary : colors.onBackground,
+							}}
+						>
+							{mediaLanguage === 'native' ? props.name?.native : props.name?.full}
+						</Text>
+						{props.role ? (
+							<Text
+								numberOfLines={2}
+								variant="labelMedium"
+								style={{
+									textTransform: 'capitalize',
+									// width: 110 + 10,
+									color: colors.onSurfaceVariant,
+									paddingBottom: 10,
+								}}
+							>
+								{props.role}
+							</Text>
+						) : null}
+					</View>
+				</View>
+			</Pressable>
+		</AnimViewMem>
+	);
+};
+
+export const StaffCard = CharacterCard;
+export const StaffRowCard = CharacterRowCard;
+
+type StudioCardProps = StudioSearchQuery_Page_Page_studios_Studio & {
 	onPress: () => void;
-	onLongPress: () => void;
+	// onLongPress: () => void;
 };
 export const StudioCard = ({
 	onPress = () => null,
-	onLongPress = () => null,
+	// onLongPress = () => null,
 	...props
 }: StudioCardProps) => {
 	const { colors } = useAppTheme();
 	const img_src = useImageRotation(
 		props.media
 			? [
-					...(props as SearchAllQuery['Studios']['studios'][0]).media?.edges?.map(
-						(media) => media.node?.bannerImage ?? media.node?.coverImage?.extraLarge,
-					),
+					...((props as StudioSearchQuery_Page_Page_studios_Studio)?.media?.edges
+						?.filter((media): media is NonNullable<typeof media> => media !== null)
+						.map(
+							(media) =>
+								media.node?.bannerImage ?? media.node?.coverImage?.extraLarge,
+						)
+						.filter((url): url is string => url !== null && url !== undefined) ?? []),
 				]
 			: [],
 	);
+
+	const onNav = () => {
+		// TrueSheet.dismiss('QuickActionStudioSheet');
+		router.push(`/studio/${props.id}`);
+	};
+
+	const onLongPress = () => {
+		Haptics.selectionAsync();
+		router.push({
+			pathname: '/(sheets)/studioActions',
+			params: {
+				params: JSON.stringify(props),
+			},
+		});
+	};
+
 	return (
 		<AnimViewMem style={{ width: '100%' }}>
 			<Surface
@@ -643,11 +803,8 @@ export const StudioCard = ({
 				}}
 			>
 				<Pressable
-					onPress={() => onPress() ?? router.navigate(`/studio/${props.id}`)}
-					onLongPress={() => {
-						onLongPress() ??
-							SheetManager.show('QuickActionStudioSheet', { payload: props });
-					}}
+					onPress={() => onPress() ?? onNav()}
+					onLongPress={onLongPress}
 					style={{ width: '100%', height: '100%' }}
 					android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 				>
@@ -701,6 +858,22 @@ export const DanbooruImageCard = ({
 	const { width } = useWindowDimensions();
 	const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
 	const { blurAmount, toggleBlur, resetBlur } = useNsfwBlur(item.rating);
+	const isBlurNSFWEnabled = useSettingsStore((state) => state.blurNSFW);
+
+	const onLongPress = () => {
+		toggleBlur();
+		router.navigate({
+			pathname: '/(sheets)/booruArtActions',
+			params: {
+				id: `${item.id}`,
+				file_url: item.file_url,
+				name: item.tag_string_character?.split(' ')[0] + `_${item.id}`,
+				share_url: item.pixiv_id
+					? `https://www.pixiv.net/en/artworks/${item?.pixiv_id}`
+					: `https://danbooru.donmai.us/posts/${item?.id}`,
+			} as BooruArtActionParams,
+		});
+	};
 
 	if (lastItemId.current !== item.id) {
 		lastItemId.current = item.id;
@@ -713,8 +886,9 @@ export const DanbooruImageCard = ({
 	return (
 		<AnimViewMem>
 			<Pressable
-				onLongPress={toggleBlur}
+				onLongPress={onLongPress}
 				onPress={() => onNavigate(item.id)}
+				android_ripple={{ color: colors.primary, foreground: true }}
 				style={{
 					borderRadius: 12,
 					aspectRatio: disableAR ? undefined : preview?.width / preview?.height,
@@ -737,7 +911,7 @@ export const DanbooruImageCard = ({
 						maxHeight: disableAR ? 200 : undefined,
 					}}
 				/>
-				<NSFWLabel level={item.rating} />
+				{isBlurNSFWEnabled && <NSFWLabel level={item.rating} />}
 				{/* <IconButton
                 icon={item.file_ext === 'gif' ? 'file-gif-box' : 'image-area'}
                 style={{
