@@ -45,7 +45,7 @@ const RenderEmpty = ({ message }: { message: string }) => {
 };
 
 type DayTabProps = {
-	data: WeeklyAnimeQuery['Page']['airingSchedules'];
+	data: NonNullable<WeeklyAnimeQuery['Page']>['airingSchedules'];
 };
 export const DayTab = ({ data }: DayTabProps) => {
 	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
@@ -55,37 +55,43 @@ export const DayTab = ({ data }: DayTabProps) => {
 	// const { dismissAll: dismissAllModals } = useBottomSheetModal();
 
 	const RenderItem = React.useCallback(
-		({ item }: { item: WeeklyAnimeQuery['Page']['airingSchedules'][0] }) => {
-			if (!showNSFW && item.media?.isAdult) return null;
-			return displayMode === 'COMPACT' ? (
-				<View
-					style={{
-						flex: 1,
-						alignItems: 'center',
-						justifyContent: 'flex-start',
-						marginVertical: 10,
-						marginHorizontal: 5,
-						width: itemWidth,
-					}}
-				>
-					<MediaCard
-						{...item.media}
-						nextAiringEpisode={{ ...item.media?.nextAiringEpisode }}
-						fitToParent
-					/>
-					{/* <MediaProgressBar
+		({
+			item,
+		}: {
+			item: NonNullable<NonNullable<WeeklyAnimeQuery['Page']>['airingSchedules']>[0];
+		}) => {
+			if (!showNSFW && item?.media?.isAdult) return null;
+			return item?.media?.id ? (
+				displayMode === 'COMPACT' ? (
+					<View
+						style={{
+							flex: 1,
+							alignItems: 'center',
+							justifyContent: 'flex-start',
+							marginVertical: 10,
+							marginHorizontal: 5,
+							width: itemWidth,
+						}}
+					>
+						<MediaCard
+							{...item?.media}
+							nextAiringEpisode={item?.media?.nextAiringEpisode}
+							fitToParent
+						/>
+						{/* <MediaProgressBar
 						progress={item.media.mediaListEntry?.progress}
 						mediaListEntry={item.media.mediaListEntry as MediaList}
 						mediaStatus={item.media.status}
 						total={item.media.episodes ?? 0}
 					/> */}
-				</View>
-			) : (
-				<MediaCardRow
-					{...item.media}
-					nextAiringEpisode={{ ...item, mediaId: item.media?.id }}
-				/>
-			);
+					</View>
+				) : (
+					<MediaCardRow
+						{...item.media}
+						nextAiringEpisode={{ ...item, mediaId: item.media?.id }}
+					/>
+				)
+			) : null;
 		},
 		[data, itemWidth, showNSFW],
 	);
@@ -94,9 +100,9 @@ export const DayTab = ({ data }: DayTabProps) => {
 		<View style={{ width: '100%', height: '100%' }}>
 			<FlashList
 				key={columns}
-				data={data?.filter((ep) => (calendar.list_only ? ep.media?.mediaListEntry : true))}
+				data={data?.filter((ep) => (calendar.list_only ? ep?.media?.mediaListEntry : true))}
 				renderItem={RenderItem}
-				keyExtractor={(item) => item.id.toString()}
+				keyExtractor={(item, idx) => idx.toString()}
 				numColumns={displayMode === 'COMPACT' ? columns : 1}
 				estimatedItemSize={211}
 				centerContent
