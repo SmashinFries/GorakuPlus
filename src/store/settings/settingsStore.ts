@@ -46,7 +46,7 @@ type SettingsAction = {
 export const useSettingsStore = create<SettingsState & SettingsAction>()(
 	persist(
 		(set, _get) => ({
-			navAnimation: 'slide_from_bottom',
+			navAnimation: 'fade',
 			btmTabLabels: true,
 			btmTabShifting: true,
 			allowSensorMotion: false,
