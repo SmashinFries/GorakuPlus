@@ -9,10 +9,10 @@ import { create } from 'zustand';
 const storage = new MMKV({ id: 'theme-storage' });
 const ThemeStorage = getZustandStorage(storage);
 
-type ThemeState = {
-	mode?: ThemeOptions;
-	isDark?: boolean;
-	isAMOLED?: boolean;
+export type ThemeState = {
+	mode: ThemeOptions;
+	isDark: boolean;
+	isAMOLED: boolean;
 };
 type ThemeAction = {
 	setTheme: ({ mode, isDark, isAMOLED }: ThemeState) => void;
