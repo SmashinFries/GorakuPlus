@@ -38,7 +38,7 @@ const ArtListPage = () => {
 
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
-			{flattenedData?.length > 0 ? (
+			{(flattenedData?.length ?? 0) > 0 ? (
 				<AnimatedMasonryFlashlist
 					ref={listRef}
 					data={flattenedData}
@@ -50,7 +50,16 @@ const ArtListPage = () => {
 					onScroll={scrollHandler}
 				/>
 			) : (
-				<GorakuActivityIndicator />
+				<View
+					style={{
+						width: '100%',
+						height: '100%',
+						alignItems: 'center',
+						justifyContent: 'center',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
 			)}
 			{shouldShowScrollToTop && (
 				// masonryflashlist has some function as Flashlist
