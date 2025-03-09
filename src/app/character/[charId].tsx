@@ -2,7 +2,7 @@ import { View, StyleSheet } from 'react-native';
 import { Button, List, Portal, Text } from 'react-native-paper';
 import { FadeHeaderProvider } from '@/components/headers';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { convertDate } from '@/utils';
 import { HTMLText, ListHeading } from '@/components/text';
@@ -16,13 +16,19 @@ import { TagSearchDialog } from '@/components/characters/dialogs';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MediaBanner } from '@/components/media/banner';
 import { GorakuActivityIndicator } from '@/components/loading';
-import { CharacterDetailsQuery, MediaEdge, MediaFormat } from '@/api/anilist/__genereated__/gql';
+import {
+	CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge,
+	CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType,
+	MediaEdge,
+	MediaFormat,
+} from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAuthStore } from '@/store/authStore';
 import { DanPost } from '@/api/danbooru/types';
 import { useAppTheme } from '@/store/theme/themes';
 import { useMatchStore } from '@/store/matchStore';
 import { useShallow } from 'zustand/react/shallow';
+import { GorakuRefreshControl } from '@/components/explore/lists';
 
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
@@ -32,9 +38,9 @@ const CharacterScreen = () => {
 	const { width } = useWindowDimensions();
 
 	const [selectedImg, setSelectedImg] = useState('');
-	const [uniqueVAs, setUniqueVAs] = useState<
-		CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles']
-	>([]);
+	// const [uniqueVAs, setUniqueVAs] = useState<
+	// 	CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType[]
+	// >([]);
 	const [showTagSearch, toggleShowTagSearch] = useReducer((open) => !open, false);
 	// const [fav, setFav] = useState(charData.data?.Character?.isFavourite);
 
@@ -53,10 +59,24 @@ const CharacterScreen = () => {
 
 	const { colors } = useAppTheme();
 
-	const keyExtractor = useCallback((item, index: number) => index.toString(), []);
+	const keyExtractor = useCallback(
+		(
+			item:
+				| CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType
+				| CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge
+				| DanPost,
+			index: number,
+		) => index.toString(),
+		[],
+	);
 
 	const MediaRenderItem = useCallback(
-		({ item }: { item: CharacterDetailsQuery['Character']['media']['edges'][0] }) => {
+		({
+			item,
+		}: {
+			item: CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge;
+		}) => {
+			if (!item.node?.id) return null;
 			return (
 				<View>
 					<MediaCard {...item.node} />
@@ -78,7 +98,7 @@ const CharacterScreen = () => {
 							color: colors.onSurfaceVariant,
 						}}
 					>
-						{item.node?.status.replaceAll('_', ' ')}
+						{item.node?.status?.replaceAll('_', ' ')}
 					</Text>
 				</View>
 			);
@@ -90,11 +110,12 @@ const CharacterScreen = () => {
 		({
 			item,
 		}: {
-			item: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'][0];
+			item: CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType;
 		}) => {
+			if (!item.voiceActor?.id) return null;
 			return (
 				<View style={{ marginRight: 8 }}>
-					<StaffCard {...item.voiceActor} isStaff />
+					<StaffCard {...item.voiceActor} isStaff isLangShown disableFav />
 				</View>
 			);
 		},
@@ -132,32 +153,32 @@ const CharacterScreen = () => {
 	// 	setFav(charData.data?.Character?.isFavourite);
 	// }, [charData.data?.Character?.isFavourite]);
 
-	useEffect(() => {
-		if (charData.data?.Character?.media?.edges && uniqueVAs.length === 0) {
-			const va: CharacterDetailsQuery['Character']['media']['edges'][0]['voiceActorRoles'] =
-				[];
-			for (const media of charData.data.Character.media.edges) {
-				if (media.voiceActorRoles.length > 0) {
-					for (const role of media.voiceActorRoles) {
-						va.push(role);
-					}
-				}
-			}
+	// useEffect(() => {
+	// 	if (charData.data?.Character?.media?.edges && uniqueVAs.length === 0) {
+	// 		const va: CharacterDetailsQuery_Character_Character_media_MediaConnection_edges_MediaEdge_voiceActorRoles_StaffRoleType[] =
+	// 			[];
+	// 		for (const media of charData.data.Character.media.edges) {
+	// 			if (media?.voiceActorRoles && (media?.voiceActorRoles?.length ?? 0) > 0) {
+	// 				for (const role of media.voiceActorRoles) {
+	// 					role && va.push(role);
+	// 				}
+	// 			}
+	// 		}
 
-			const unique = [
-				...va
-					.reduce((uniq, curr) => {
-						if (!uniq.has(curr['voiceActor']['id'])) {
-							uniq.set(curr['voiceActor']['id'], curr);
-						}
-						return uniq;
-					}, new Map())
-					.values(),
-			];
+	// 		const unique = [
+	// 			...va
+	// 				.reduce((uniq, curr) => {
+	// 					if (!uniq.has(curr['voiceActor']?.['id'])) {
+	// 						uniq.set(curr['voiceActor']?.['id'], curr);
+	// 					}
+	// 					return uniq;
+	// 				}, new Map())
+	// 				.values(),
+	// 		];
 
-			setUniqueVAs(unique);
-		}
-	}, [charData.data]);
+	// 		setUniqueVAs(unique);
+	// 	}
+	// }, [charData.data]);
 
 	return (
 		<View>
@@ -173,197 +194,227 @@ const CharacterScreen = () => {
 			{isReady && (
 				<AnimViewMem>
 					<FadeHeaderProvider
-						title={primaryName}
+						title={primaryName ?? ''}
 						loading={charData.isLoading}
 						animationRange={[280, 340]}
 						// shareLink={charData.data?.Character?.siteUrl}
 						// onEdit={() => openWebBrowser(`https://anilist.co/edit/character/${charId}`)}
 						BgImage={({ style }) =>
-							charData?.data?.Character?.media?.edges?.length > 0 && (
+							(charData?.data?.Character?.media?.edges?.length ?? 0) > 0 ? (
 								<MediaBanner
 									urls={[
-										charData?.data?.Character?.media?.edges[0]?.node
+										charData?.data?.Character?.media?.edges?.[0]?.node
 											?.bannerImage ??
-											charData?.data?.Character?.media?.edges[0]?.node
+											charData?.data?.Character?.media?.edges?.[0]?.node
 												?.coverImage?.extraLarge,
-										...charData?.data?.Character?.media?.edges?.map(
-											(edge) => edge.node.bannerImage,
-										),
-									].filter((val) => val !== null)}
+										...(charData?.data?.Character?.media?.edges
+											?.filter(
+												(edge): edge is NonNullable<typeof edge> =>
+													edge !== null &&
+													edge.node !== null &&
+													edge.node !== undefined,
+											)
+											.map((edge) => edge.node?.bannerImage) ?? []),
+									].filter(
+										(val): val is string => val !== null && val !== undefined,
+									)}
 									style={style}
 								/>
-							)
+							) : undefined
+						}
+						RefreshControl={
+							<GorakuRefreshControl
+								refreshing={charData?.isRefetching}
+								onRefresh={charData?.refetch}
+							/>
 						}
 					>
 						<View style={[styles.bodyContainer, { backgroundColor: 'transparent' }]}>
-							<AnimViewMem>
-								<CharacterFront
-									id={Number(charId)}
-									favorites={charData?.data?.Character?.favourites}
-									image_url={charData?.data?.Character?.image?.large}
-									names={charData?.data?.Character?.name}
-									mediaEdges={
-										charData?.data?.Character?.media?.edges as MediaEdge[]
-									}
-									isFavorite={charData?.data?.Character?.isFavourite}
-									userID={userID}
-								/>
-								{/* Description */}
-								{charData?.data?.Character?.description ? (
-									<ExpandableDescription initialHeight={90}>
-										<HTMLText html={charData?.data?.Character?.description} />
-										{/* <MarkdownViewer
+							<CharacterFront
+								id={Number(charId)}
+								favorites={charData?.data?.Character?.favourites ?? 0}
+								image_url={charData?.data?.Character?.image?.large ?? undefined}
+								names={charData?.data?.Character?.name ?? undefined}
+								mediaEdges={charData?.data?.Character?.media?.edges as MediaEdge[]}
+								isFavorite={charData?.data?.Character?.isFavourite}
+								userID={userID ?? undefined}
+							/>
+							{/* Description */}
+							{charData?.data?.Character?.description ? (
+								<ExpandableDescription initialHeight={90}>
+									<HTMLText html={charData?.data?.Character?.description} />
+									{/* <MarkdownViewer
 											markdown={charData?.data?.Character?.description}
 										/> */}
-									</ExpandableDescription>
-								) : null}
-								{/* Info */}
-								<View
-									style={{
-										marginVertical: 20,
-										marginTop: 30,
-										overflow: 'visible',
-									}}
-								>
-									<Accordion title="Information" initialExpand>
-										<List.Item
-											title="Gender"
-											left={(props) => (
-												<List.Icon
-													{...props}
-													icon={
-														charData?.data?.Character?.gender ===
-														'Female'
-															? 'gender-female'
-															: charData?.data?.Character?.gender ===
-																  'Male'
-																? 'gender-male'
-																: 'gender-transgender'
-													}
-												/>
-											)}
-											right={(props) => (
-												<Text {...props}>
-													{charData?.data?.Character?.gender ?? 'N/A'}
-												</Text>
-											)}
-										/>
-										<List.Item
-											title="Age"
-											left={(props) => (
-												<List.Icon
-													{...props}
-													icon="clock-time-five-outline"
-												/>
-											)}
-											right={(props) => (
-												<Text {...props}>
-													{charData?.data?.Character?.age ?? 'N/A'}
-												</Text>
-											)}
-										/>
-										<List.Item
-											title="Birthday"
-											left={(props) => (
-												<List.Icon {...props} icon="cake-variant-outline" />
-											)}
-											right={(props) => (
-												<Text {...props}>
-													{convertDate(
-														charData?.data?.Character?.dateOfBirth,
-														true,
-													) ?? 'N/A'}
-												</Text>
-											)}
-										/>
-										<List.Item
-											title="Blood Type"
-											left={(props) => (
-												<List.Icon {...props} icon="blood-bag" />
-											)}
-											right={(props) => (
-												<Text {...props}>
-													{charData?.data?.Character?.bloodType ?? 'N/A'}
-												</Text>
-											)}
-										/>
-									</Accordion>
-								</View>
-								<ListHeading title="Media" />
-								<View style={{ overflow: 'visible' }}>
+								</ExpandableDescription>
+							) : null}
+							{/* Info */}
+							<View
+								style={{
+									marginVertical: 20,
+									marginTop: 30,
+									overflow: 'visible',
+								}}
+							>
+								<Accordion title="Information" initialExpand>
+									<List.Item
+										title="Gender"
+										left={(props) => (
+											<List.Icon
+												{...props}
+												icon={
+													charData?.data?.Character?.gender === 'Female'
+														? 'gender-female'
+														: charData?.data?.Character?.gender ===
+															  'Male'
+															? 'gender-male'
+															: 'gender-transgender'
+												}
+											/>
+										)}
+										right={(props) => (
+											<Text {...props}>
+												{charData?.data?.Character?.gender ?? 'N/A'}
+											</Text>
+										)}
+									/>
+									<List.Item
+										title="Age"
+										left={(props) => (
+											<List.Icon {...props} icon="clock-time-five-outline" />
+										)}
+										right={(props) => (
+											<Text {...props}>
+												{charData?.data?.Character?.age ?? 'N/A'}
+											</Text>
+										)}
+									/>
+									<List.Item
+										title="Birthday"
+										left={(props) => (
+											<List.Icon {...props} icon="cake-variant-outline" />
+										)}
+										right={(props) => (
+											<Text {...props}>
+												{convertDate(
+													charData?.data?.Character?.dateOfBirth,
+													true,
+												) ?? 'N/A'}
+											</Text>
+										)}
+									/>
+									<List.Item
+										title="Blood Type"
+										left={(props) => <List.Icon {...props} icon="blood-bag" />}
+										right={(props) => (
+											<Text {...props}>
+												{charData?.data?.Character?.bloodType ?? 'N/A'}
+											</Text>
+										)}
+									/>
+								</Accordion>
+							</View>
+							<Accordion title="Media">
+								<FlashList
+									data={
+										charData?.data?.Character?.media?.edges?.filter(
+											(edge): edge is NonNullable<typeof edge> =>
+												edge !== null,
+										) ?? []
+									}
+									renderItem={MediaRenderItem}
+									keyExtractor={keyExtractor}
+									estimatedItemSize={250}
+									estimatedListSize={{ height: 320, width: width }}
+									removeClippedSubviews
+									horizontal
+									fadingEdgeLength={6}
+									contentContainerStyle={{ padding: 15 }}
+									showsHorizontalScrollIndicator={false}
+								/>
+							</Accordion>
+							{(charData.data?.Character?.media?.edges?.length ?? 0) > 0 && (
+								<Accordion title="Voice Actors">
+									{/* <ListHeading title="Voice Actors" /> */}
 									<FlashList
-										data={charData?.data?.Character?.media?.edges ?? []}
-										renderItem={MediaRenderItem}
+										data={
+											[
+												...new Set(
+													charData.data?.Character?.media?.edges
+														?.flatMap(
+															(media) => media?.voiceActorRoles ?? [],
+														)
+														.filter(Boolean),
+												),
+											]
+												.filter(
+													(role, index, self) =>
+														self.findIndex(
+															(r) =>
+																r?.voiceActor?.id ===
+																role?.voiceActor?.id,
+														) === index,
+												)
+												.filter(
+													(role): role is NonNullable<typeof role> =>
+														role !== null,
+												) ?? []
+										}
+										renderItem={VARenderItem}
 										keyExtractor={keyExtractor}
-										estimatedItemSize={250}
-										estimatedListSize={{ height: 320, width: width }}
-										removeClippedSubviews
 										horizontal
+										fadingEdgeLength={6}
+										estimatedItemSize={130}
+										estimatedListSize={{ height: 130, width: width }}
 										contentContainerStyle={{ padding: 15 }}
 										showsHorizontalScrollIndicator={false}
 									/>
-								</View>
-								{uniqueVAs.length > 0 && (
-									<View style={{ overflow: 'visible' }}>
-										<ListHeading title="Voice Actors" />
+								</Accordion>
+							)}
+
+							{isBooruEnabled && (
+								<View style={{ overflow: 'visible', marginBottom: 20 }}>
+									<ListHeading
+										title="Fan Art"
+										subtitle={currentArtTag?.replaceAll('_', ' ') ?? undefined}
+										subtitleStyle={{
+											color: colors.primary,
+											textDecorationLine: 'underline',
+										}}
+										subtitlePress={toggleShowTagSearch}
+										icon="chevron-right"
+										onIconPress={() =>
+											// @ts-ignore
+											router.push(`/art/${currentArtTag}`)
+										}
+									/>
+									{!art?.isFetching ? (
 										<FlashList
-											data={uniqueVAs ?? []}
-											renderItem={VARenderItem}
+											data={art?.data?.pages[0]}
+											ListEmptyComponent={EmptyArt}
+											renderItem={ArtRenderItem}
 											keyExtractor={keyExtractor}
 											horizontal
-											estimatedItemSize={130}
-											estimatedListSize={{ height: 130, width: width }}
-											contentContainerStyle={{ padding: 15 }}
+											fadingEdgeLength={6}
+											estimatedItemSize={213}
+											contentContainerStyle={{
+												padding: 15,
+											}}
 											showsHorizontalScrollIndicator={false}
 										/>
-									</View>
-								)}
-
-								{isBooruEnabled && (
-									<View style={{ overflow: 'visible', marginBottom: 20 }}>
-										<ListHeading
-											title="Fan Art"
-											subtitle={
-												currentArtTag?.replaceAll('_', ' ') ?? undefined
-											}
-											subtitleStyle={{
-												color: colors.primary,
-												textDecorationLine: 'underline',
+									) : (
+										<View
+											style={{
+												height: 300,
+												justifyContent: 'center',
+												alignItems: 'center',
 											}}
-											subtitlePress={toggleShowTagSearch}
-											icon="chevron-right"
-											onIconPress={() =>
-												// @ts-ignore
-												router.push(`/art/${currentArtTag}`)
-											}
-										/>
-										{!art?.isFetching ? (
-											<FlashList
-												data={art?.data?.pages[0]}
-												ListEmptyComponent={EmptyArt}
-												renderItem={ArtRenderItem}
-												keyExtractor={keyExtractor}
-												horizontal
-												estimatedItemSize={213}
-												contentContainerStyle={{
-													padding: 15,
-												}}
-												showsHorizontalScrollIndicator={false}
-											/>
-										) : (
-											<View
-												style={{
-													height: 300,
-													justifyContent: 'center',
-													alignItems: 'center',
-												}}
-											>
-												<GorakuActivityIndicator />
-											</View>
-										)}
-									</View>
-								)}
-							</AnimViewMem>
+										>
+											<GorakuActivityIndicator />
+										</View>
+									)}
+								</View>
+							)}
 						</View>
 					</FadeHeaderProvider>
 					<Portal>
@@ -376,7 +427,7 @@ const CharacterScreen = () => {
 							visible={showTagSearch}
 							onDismiss={toggleShowTagSearch}
 							initialQuery={currentArtTag}
-							initialTags={tagOptions?.data}
+							initialTags={tagOptions?.data ?? []}
 							tagsLoading={tagOptions?.isFetching}
 							onTagChange={onTagChange}
 							charId={parseInt(charId)}
