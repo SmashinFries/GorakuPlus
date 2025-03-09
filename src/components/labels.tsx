@@ -1,6 +1,6 @@
 import { DanbooruRating } from '@/api/danbooru/types';
 import { View } from 'react-native';
-import { Chip, MD3LightTheme } from 'react-native-paper';
+import { Chip, MD3LightTheme, Text } from 'react-native-paper';
 type RatingLevels = Record<DanbooruRating, { text: string; color: string } | null>;
 
 const ratingLevels: RatingLevels = {
@@ -26,7 +26,7 @@ export const NSFWLabel = ({ level }: NSFWLabelProps) => {
 	if (!ratingLevels[level]) return null;
 	return (
 		<View style={{ position: 'absolute', borderRadius: 6, top: 0, left: 0 }}>
-			<Chip
+			{/* <Chip
 				style={{
 					backgroundColor: ratingLevels[level]?.color ?? undefined,
 					borderRadius: 0,
@@ -36,7 +36,22 @@ export const NSFWLabel = ({ level }: NSFWLabelProps) => {
 				textStyle={{ fontWeight: '900', color: MD3LightTheme.colors.onBackground }}
 			>
 				{ratingLevels[level]?.text}
-			</Chip>
+			</Chip> */}
+			<View
+				style={{
+					padding: 4,
+					backgroundColor: ratingLevels[level]?.color ?? undefined,
+					borderRadius: 0,
+					borderBottomRightRadius: 6,
+				}}
+			>
+				<Text
+					variant="labelSmall"
+					style={{ fontWeight: '900', color: MD3LightTheme.colors.onBackground }}
+				>
+					{ratingLevels[level]?.text}
+				</Text>
+			</View>
 		</View>
 	);
 };
