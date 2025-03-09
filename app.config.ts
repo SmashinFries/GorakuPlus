@@ -12,11 +12,12 @@ const config: ExpoConfig = {
 	owner: 'kuzulabz',
 	slug: 'GorakuPlus',
 	name: appName,
-	version: '1.4',
+	version: '1.4.5',
 	orientation: 'portrait',
 	icon: './assets/iconsv3/icon.png',
 	userInterfaceStyle: 'automatic',
 	jsEngine: 'hermes',
+	newArchEnabled: false,
 	experiments: {
 		tsconfigPaths: true,
 		typedRoutes: true,
@@ -36,7 +37,6 @@ const config: ExpoConfig = {
 		'expo-router',
 		'expo-font',
 		'expo-secure-store',
-		'react-native-bottom-tabs',
 		[
 			'expo-build-properties',
 			{
@@ -64,6 +64,40 @@ const config: ExpoConfig = {
 				isAccessMediaLocationEnabled: true,
 			},
 		],
+		[
+			'expo-quick-actions',
+			{
+				androidIcons: {
+					magnify: {
+						foregroundImage: './assets/quick-actions/adaptive-magnify.png',
+						backgroundColor: '#F5F5F5',
+					},
+					calendar: {
+						foregroundImage: './assets/quick-actions/adaptive-calendar.png',
+						backgroundColor: '#F5F5F5',
+					},
+					bookshelf: {
+						foregroundImage: './assets/quick-actions/adaptive-bookshelf.png',
+						backgroundColor: '#F5F5F5',
+					},
+					campfire: {
+						foregroundImage: './assets/quick-actions/adaptive-campfire.png',
+						backgroundColor: '#F5F5F5',
+					},
+				},
+			},
+		],
+		[
+			'expo-splash-screen',
+			{
+				backgroundColor: '#FFFFFF',
+				image: './assets/iconsv3/splash-icon.png',
+				dark: {
+					backgroundColor: '#000000',
+				},
+				imageWidth: 200,
+			},
+		],
 	],
 	assetBundlePatterns: ['**/*'],
 	ios: {
@@ -77,6 +111,7 @@ const config: ExpoConfig = {
 			backgroundColor: '#1E1E1F',
 			foregroundImage: './assets/iconsv3/adaptive-icon.png',
 		},
+		newArchEnabled: false,
 		softwareKeyboardLayoutMode: 'pan',
 		intentFilters: [
 			{
