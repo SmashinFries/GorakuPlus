@@ -27,11 +27,6 @@ const config: ExpoConfig = {
 		checkAutomatically: 'ON_LOAD',
 	},
 	runtimeVersion: 'appVersion',
-	splash: {
-		image: './assets/iconsv3/splash.png',
-		resizeMode: 'cover',
-		backgroundColor: '#1E1E1F',
-	},
 	plugins: [
 		'expo-localization',
 		'expo-router',
