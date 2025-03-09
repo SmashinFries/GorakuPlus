@@ -17,11 +17,10 @@ const MoreLayout = () => {
 					header: (props) => <MoreHeader {...props} />,
 				}}
 			/>
-			<Stack.Screen name="weeblab" options={{ headerShown: false }} />
+			<Stack.Screen name="weeblabs" options={{ headerShown: false }} />
 			<Stack.Screen name="accounts" options={{ title: 'Accounts', headerShown: false }} />
 			<Stack.Screen name="settings" options={{ title: 'Settings', headerShown: false }} />
 			<Stack.Screen name="about" options={{ title: 'About' }} />
-			<Stack.Screen name="sitestats" options={{ title: 'Anilist Stats' }} />
 		</AnimatedStack>
 	);
 };
