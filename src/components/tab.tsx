@@ -6,6 +6,7 @@ import {
 	SceneRendererProps,
 	TabBar,
 	TabBarIndicator,
+	TabBarItem,
 } from 'react-native-tab-view';
 
 const TAB_MARGIN = 24;
@@ -60,6 +61,7 @@ export const RenderTabBar = (
 				height: 4,
 				left: TAB_MARGIN / 2,
 			}}
+			renderTabBarItem={({ key, ...props }) => <TabBarItem {...props} key={key} />}
 			renderIndicator={(indicatorProps) => {
 				return (
 					<TabBarIndicator
@@ -160,6 +162,7 @@ export const GorakuTabBar = (
 					/>
 				);
 			}}
+			renderTabBarItem={({ key, ...props }) => <TabBarItem {...props} key={key} />}
 			// renderIndicator={(indicatorProps) => {
 			//     const width = indicatorProps.getTabWidth(props.navigationState.index);
 			//     return (
