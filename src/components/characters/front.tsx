@@ -12,14 +12,15 @@ import { CharStaffInteractionBar } from './interaction';
 import { CharacterName, MediaEdge } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useTTSStore } from '@/store/tts/ttsStore';
+import { useEffect } from 'react';
 
 type CharacterFrontProps = {
 	id: number;
-	favorites: number;
-	isFavorite: boolean;
-	image_url: string;
+	favorites?: number;
+	isFavorite?: boolean;
+	image_url?: string;
 	userID?: number;
-	names: CharacterName;
+	names?: CharacterName;
 	mediaEdges?: MediaEdge[];
 };
 export const CharacterFront = ({
@@ -32,7 +33,12 @@ export const CharacterFront = ({
 }: CharacterFrontProps) => {
 	const { mediaLanguage } = useSettingsStore();
 	const { enabled, english } = useTTSStore();
-	const { animatedStyle, panGesture } = use3dPan({ xLimit: [-25, 25], yLimit: [-25, 25] });
+	// 3D panning causing crash after amount of time!
+	const { animatedStyle, panGesture } = use3dPan({
+		xLimit: [-25, 25],
+		yLimit: [-25, 25],
+		disableAutoRotation: true,
+	});
 	const { speak } = useTTS();
 
 	return (
@@ -58,28 +64,35 @@ export const CharacterFront = ({
 					</Animated.View>
 				</GestureDetector>
 			</View>
-			<NameViewer
-				names={names}
-				nativeLang={mediaEdges?.[0]?.node?.countryOfOrigin} // kinda hacky ngl
-				defaultTitle={['english', 'romaji'].includes(mediaLanguage) ? 'full' : 'native'}
-			/>
+			{names && (
+				<NameViewer
+					names={names}
+					nativeLang={mediaEdges?.[0]?.node?.countryOfOrigin} // kinda hacky ngl
+					defaultTitle={
+						['english', 'romaji'].includes(mediaLanguage ?? '') ? 'full' : 'native'
+					}
+				/>
+			)}
 			{names?.alternative && (
 				<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-					{names.alternative?.map((name, idx) => (
-						<Chip
-							key={idx}
-							style={{ margin: 5 }}
-							onPress={() => copyToClipboard(name)}
-							onLongPress={enabled ? () => speak(name, english) : null}
-						>
-							{name}
-						</Chip>
-					))}
+					{names.alternative?.map(
+						(name, idx) =>
+							name && (
+								<Chip
+									key={idx}
+									style={{ margin: 5 }}
+									onPress={() => copyToClipboard(name)}
+									onLongPress={() => (enabled ? speak(name, english) : null)}
+								>
+									{name}
+								</Chip>
+							),
+					)}
 				</ScrollView>
 			)}
 			<CharStaffInteractionBar
 				id={id}
-				isFav={isFavorite}
+				isFav={!!isFavorite}
 				share_url={`https://anilist.co/character/${id}`}
 				edit_url={`https://anilist.co/edit/character/${id}`}
 			/>

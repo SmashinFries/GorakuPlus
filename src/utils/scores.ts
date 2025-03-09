@@ -36,6 +36,8 @@ export const scoreToIndex = (score: number, format: ScoreFormat) => {
 			return score; // can be used as index already
 		case ScoreFormat.Point_3:
 			return score; // can be used as index already
+		default:
+			return score;
 	}
 };
 

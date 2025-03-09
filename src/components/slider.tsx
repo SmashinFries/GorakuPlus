@@ -150,7 +150,7 @@ export const MUISlider = ({
 		if (typeof value === 'number' && trackWidth && enableExperimentalMD3) {
 			maxTrackWidth.value = trackWidth * (value / maxValue);
 		}
-	}, [trackWidth, value, maxValue, enableExperimentalMD3]);
+	}, [trackWidth, value, maxValue, maxTrackWidth, enableExperimentalMD3]);
 
 	return (
 		<View
@@ -175,7 +175,7 @@ export const MUISlider = ({
 				maximumValue={maxValue}
 				minimumValue={minValue}
 				containerStyle={{ borderRadius: 16 / 2, flex: 1, width: '100%' }}
-				step={mode === 'discrete' && step}
+				step={mode === 'discrete' ? step : undefined}
 				// trackStyle={{backgroundColor: }}
 				minimumTrackTintColor={colors.primary}
 				// minimumTrackTintColor="transparent"
@@ -451,7 +451,7 @@ type SliderProps = {
 	title: string;
 	description?: string;
 	initialValue: number | 'ANY';
-	onValueUpdate: (val: number) => void;
+	onValueUpdate: (val: number | undefined) => void;
 	maxValue: number;
 	allowTextInput?: boolean;
 	minValue?: number;

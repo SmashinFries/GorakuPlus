@@ -30,8 +30,8 @@ export const ActivityItem = ({ item, userId }: ActivityItemProps) => {
 		<View style={{ marginHorizontal: 8, overflow: 'visible', paddingVertical: 10 }}>
 			<MediaCard
 				{...(item.media as MainMetaFragment)}
-				activityId={item?.user?.id === userID && item?.id}
-				followingUsername={item?.user?.id !== userID && item?.user?.name}
+				activityId={item?.user?.id === userID ? item?.id : undefined}
+				followingUsername={item?.user?.id !== userID ? item?.user?.name : undefined}
 			/>
 			<Text
 				variant="labelLarge"
@@ -68,7 +68,7 @@ export const ActivityItem = ({ item, userId }: ActivityItemProps) => {
 			{item.user?.id !== userId && item.user?.id !== userID && (
 				<Avatar.Image
 					style={{ position: 'absolute', top: 10, left: 5 }}
-					source={{ uri: item.user?.avatar?.large }}
+					source={{ uri: item.user?.avatar?.large ?? '' }}
 					size={28}
 				/>
 			)}
@@ -83,7 +83,7 @@ export const ActivityOverview = ({
 }: {
 	userId: number;
 	username: string;
-	data: UserActivityQuery['Page']['activities'];
+	data: NonNullable<UserActivityQuery['Page']>['activities'];
 	onDelete?: (id: number) => void;
 }) => {
 	const { width } = useWindowDimensions();
@@ -105,7 +105,6 @@ export const ActivityOverview = ({
 			<ListHeading
 				title="List Activity"
 				icon={data?.length > 0 ? 'chevron-right' : undefined}
-				// @ts-ignore
 				onIconPress={() =>
 					router.navigate({
 						// @ts-ignore
@@ -118,8 +117,9 @@ export const ActivityOverview = ({
 			/>
 			<View style={{ width: width }}>
 				<FlashList
-					// @ts-ignore - not sure how to handle this type :/
-					data={data}
+					data={data?.filter(
+						(item) => item !== null && item.__typename === 'ListActivity',
+					)}
 					renderItem={({ item }) => (
 						<ActivityItem
 							userId={userId}
@@ -127,9 +127,7 @@ export const ActivityOverview = ({
 							onTrash={onTrash}
 						/>
 					)}
-					keyExtractor={(item) =>
-						item.__typename === 'ListActivity' && item.id.toString()
-					}
+					keyExtractor={(item, idx) => idx.toString()}
 					horizontal
 					estimatedItemSize={185}
 					showsHorizontalScrollIndicator={false}

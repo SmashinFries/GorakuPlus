@@ -84,7 +84,7 @@ export const LoadingItem = ({ loading, dark, icon, error }: LoadingItemProps) =>
 	}, []);
 	return (
 		<Animated.View style={{ padding: 20 }}>
-			<LoadingIconMem icon={icon} dark={dark} />
+			<LoadingIconMem icon={icon} dark={!!dark} />
 			{loading ? (
 				<ActivityIndicator style={{ paddingTop: 10 }} />
 			) : (
@@ -105,8 +105,8 @@ type LoadingProps = {
 	malLoading?: boolean;
 	malError?: any;
 	malUnitialized?: boolean;
-	mangaUpdatesLoading?: boolean;
-	mangaUpdatesError?: Error;
+	mangaUpdatesLoading?: boolean | undefined | null;
+	mangaUpdatesError?: Error | null;
 };
 
 export const MediaLoading = ({
@@ -136,11 +136,11 @@ export const MediaLoading = ({
 		>
 			<LoadingItemMem loading={aniLoading} dark={dark} error={aniError} icon="ANI" />
 			{isMalEnabled && (
-				<LoadingItemMem loading={malLoading} dark={dark} error={malError} icon="MAL" />
+				<LoadingItemMem loading={!!malLoading} dark={dark} error={malError} icon="MAL" />
 			)}
 			{isMangaUpdatesEnabled && mangaUpdatesLoading !== null && (
 				<LoadingItemMem
-					loading={mangaUpdatesLoading}
+					loading={!!mangaUpdatesLoading}
 					dark={dark}
 					error={mangaUpdatesError}
 					icon="MU"

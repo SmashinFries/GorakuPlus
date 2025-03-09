@@ -12,7 +12,7 @@ const cleanName = (query: string) => {
 	if (splitName?.length === 1) {
 		return splitName[0].toLowerCase();
 	} else if (splitName?.length > 2) {
-		return `${splitName[0].toLowerCase()} ${splitName.at(-1).toLowerCase()}`;
+		return `${splitName[0].toLowerCase()} ${splitName.at(-1)?.toLowerCase()}`;
 	} else {
 		return query.toLowerCase();
 	}
@@ -30,14 +30,14 @@ export const useCharDetail = (id: number) => {
 	const [currentArtTag, setCurrentArtTag] = useState<string>(booruDB[id] ?? '');
 	const artTagDebounced = useDebounce(currentArtTag, 1000) as string;
 
-	const { mutateAsync: toggleFav } = useToggleFavMutation();
+	// const { mutateAsync: toggleFav } = useToggleFavMutation();
 
-	const charData = useCharacterDetailsQuery({ id: id }, { enabled: !!id });
+	const charData = useCharacterDetailsQuery({ id: id }, { enabled: !!id, refetchOnMount: true });
 	const tagOptions = useTagsSearchQuery(
 		{
 			'search[query]': charData.data?.Character?.name?.full
-				? cleanName(charData.data?.Character?.name?.full)
-				: null,
+				? (cleanName(charData.data?.Character?.name?.full) ?? '')
+				: '',
 			'search[type]': 'tag',
 			limit: 1,
 		},
@@ -67,8 +67,8 @@ export const useCharDetail = (id: number) => {
 						art.isFetched && setIsReady(true);
 					}
 				} else if (tagOptions?.isFetched) {
-					if (tagOptions?.data?.length > 0) {
-						addBooruTag(id, tagOptions?.data[0]?.value);
+					if ((tagOptions?.data?.length ?? 0) > 0) {
+						tagOptions?.data?.[0]?.value && addBooruTag(id, tagOptions.data[0].value);
 						setIsReady(true);
 					} else {
 						setIsReady(true);
@@ -97,6 +97,6 @@ export const useCharDetail = (id: number) => {
 		currentArtTag,
 		isReady,
 		onTagChange,
-		toggleFav,
+		// toggleFav,
 	};
 };

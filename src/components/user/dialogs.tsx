@@ -6,7 +6,6 @@ import { FlatList } from 'react-native';
 import { View } from 'react-native';
 import {
 	UserDataQuery,
-	UserOverviewQuery,
 	UserSearchQuery,
 	useToggleFollowMutation,
 	useUserSearchQuery,
@@ -14,12 +13,11 @@ import {
 import useDebounce from '@/hooks/useDebounce';
 import { useAppTheme } from '@/store/theme/themes';
 import { useDeleteActivityItemInvalidateMutation } from '@/api/anilist/extended';
-import { SheetManager } from 'react-native-actions-sheet';
 import { router } from 'expo-router';
 
 type StatDialogProps = BasicDialogProps & {
-	animeStats: UserDataQuery['User']['statistics']['anime'];
-	mangaStats: UserDataQuery['User']['statistics']['manga'];
+	animeStats: NonNullable<NonNullable<UserDataQuery['User']>['statistics']>['anime'];
+	mangaStats: NonNullable<NonNullable<UserDataQuery['User']>['statistics']>['manga'];
 };
 export const StatDialog = ({ animeStats, mangaStats, visible, onDismiss }: StatDialogProps) => {
 	return (
@@ -27,11 +25,11 @@ export const StatDialog = ({ animeStats, mangaStats, visible, onDismiss }: StatD
 			<Dialog.Title>Statistics</Dialog.Title>
 			<Dialog.Content>
 				<Text variant="titleMedium">Anime</Text>
-				<Text>Minutes Watched: {animeStats.minutesWatched}</Text>
-				<Text>Episodes Watched: {animeStats.episodesWatched}</Text>
+				<Text>Minutes Watched: {animeStats?.minutesWatched}</Text>
+				<Text>Episodes Watched: {animeStats?.episodesWatched}</Text>
 				<Text>Manga</Text>
-				<Text>Chapters Read: {mangaStats.chaptersRead}</Text>
-				<Text>Volumes Read: {mangaStats.volumesRead}</Text>
+				<Text>Chapters Read: {mangaStats?.chaptersRead}</Text>
+				<Text>Volumes Read: {mangaStats?.volumesRead}</Text>
 			</Dialog.Content>
 		</Dialog>
 	);
@@ -47,13 +45,17 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 		{ enabled: !!debouncedQuery },
 	);
 	const { mutateAsync: toggleFollow } = useToggleFollowMutation();
-	const [selectedUser, setSelectedUser] = useState<UserSearchQuery['Page']['users'][0] | null>();
+	const [selectedUser, setSelectedUser] = useState<
+		NonNullable<NonNullable<UserSearchQuery['Page']>['users']>[0] | null
+	>();
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
 
 	const onFollowToggle = useCallback(async (id: number) => {
 		setIsFollowLoading(true);
 		const response = await toggleFollow({ userId: id });
-		setSelectedUser((prev) => ({ ...prev, isFollowing: response.ToggleFollow?.isFollowing }));
+		setSelectedUser((prev) =>
+			prev ? { ...prev, isFollowing: response.ToggleFollow?.isFollowing } : null,
+		);
 		// setResults((prev) =>
 		// 	prev.map((user) =>
 		// 		user.id === selectedUser?.id
@@ -65,36 +67,36 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 	}, []);
 
 	const keyExtractor = useCallback(
-		(item: UserSearchQuery['Page']['users'][0]) => item.id.toString(),
+		(item: NonNullable<NonNullable<UserSearchQuery['Page']>['users']>[0], idx: number) =>
+			idx.toString(),
 		[],
 	);
 
-	const RenderItem = useCallback(
-		({ item }: { item: UserSearchQuery['Page']['users'][0] }) => {
-			return (
-				<View
-					style={{
-						// flex: 1,
-						width: '50%',
-						borderRadius: 8,
-						borderWidth: 2,
-						borderColor: selectedUser?.id === item.id ? colors.primary : 'transparent',
-					}}
-				>
-					<UserCard
-						{...item}
-						size={100}
-						isFollowing={item.isFollowing}
-						onPress={() => setSelectedUser(item)}
-						onLongPress={() =>
-							SheetManager.show('QuickActionUserSheet', { payload: item })
-						}
-					/>
-				</View>
-			);
-		},
-		[selectedUser],
-	);
+	const RenderItem = ({
+		item,
+	}: {
+		item: NonNullable<NonNullable<UserSearchQuery['Page']>['users']>[0];
+	}) => {
+		return item?.id ? (
+			<View
+				style={{
+					// flex: 1,
+					width: '50%',
+					borderRadius: 8,
+					borderWidth: 2,
+					borderColor: selectedUser?.id === item?.id ? colors.primary : 'transparent',
+				}}
+			>
+				<UserCard
+					{...item}
+					size={100}
+					isFollowing={!!item?.isFollowing}
+					onPress={() => setSelectedUser(item)}
+					// onLongPress={() => openUserQuickSheet(item)}
+				/>
+			</View>
+		) : null;
+	};
 
 	return (
 		<Dialog visible={visible} onDismiss={onDismiss} style={{ maxHeight: '90%' }}>
@@ -133,7 +135,7 @@ export const AddFriendDialog = ({ visible, onDismiss }: AddFriendDialogProps) =>
 				</Button>
 				{!isFollowLoading ? (
 					<Button
-						onPress={() => onFollowToggle(selectedUser?.id)}
+						onPress={() => selectedUser?.id && onFollowToggle(selectedUser.id)}
 						icon={
 							selectedUser?.isFollowing
 								? 'account-minus-outline'

@@ -1,9 +1,13 @@
-import { AniMediaQuery, ReviewsQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	AniMediaQuery,
+	AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge,
+	ReviewsQuery,
+	ReviewsQuery_Page_Page_reviews_Review,
+} from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { router } from 'expo-router';
 import { DimensionValue, View } from 'react-native';
 import { Pressable } from 'react-native';
-import { SheetManager } from 'react-native-actions-sheet';
 import { Avatar, Icon, Surface, Text } from 'react-native-paper';
 
 type ReviewItemProps = {
@@ -11,20 +15,31 @@ type ReviewItemProps = {
 	iconColor?: string;
 	maxWidth?: DimensionValue;
 	marginVertical?: number;
-	item: AniMediaQuery['Media']['reviews']['edges'][0] | ReviewsQuery['Page']['reviews'][0];
+	item:
+		| NonNullable<NonNullable<NonNullable<AniMediaQuery['Media']>['reviews']>['edges']>[0]
+		| NonNullable<NonNullable<ReviewsQuery['Page']>['reviews']>[0];
 	index: number;
+	openSheet: (
+		data:
+			| NonNullable<
+					NonNullable<
+						NonNullable<NonNullable<AniMediaQuery['Media']>['reviews']>['edges']
+					>[0]
+			  >['node']
+			| NonNullable<NonNullable<ReviewsQuery['Page']>['reviews']>[0],
+	) => void;
 };
 export const ReviewItem = ({
 	item,
 	iconColor,
-	backgroundColor,
+	openSheet,
 	maxWidth = 320,
 	marginVertical = 0,
 }: ReviewItemProps) => {
 	const { colors } = useAppTheme();
 	const review =
-		(item as AniMediaQuery['Media']['reviews']['edges'][0])?.node ??
-		(item as ReviewsQuery['Page']['reviews'][0]);
+		(item as AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge['node']) ??
+		(item as ReviewsQuery_Page_Page_reviews_Review);
 	return (
 		<Surface
 			style={{
@@ -38,8 +53,9 @@ export const ReviewItem = ({
 		>
 			<Pressable
 				onPress={() => router.navigate(`/reviews/full/${review?.id}`)}
-				onLongPress={() =>
-					SheetManager.show('ReviewOverviewSheet', { payload: { data: review } })
+				onLongPress={
+					() => openSheet(review)
+					// SheetManager.show('ReviewOverviewSheet', { payload: { data: review } })
 				}
 				android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 				style={{
@@ -49,7 +65,10 @@ export const ReviewItem = ({
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<View style={{ paddingVertical: 15 }}>
-						<Avatar.Image source={{ uri: review?.user?.avatar?.large }} size={68} />
+						<Avatar.Image
+							source={{ uri: review?.user?.avatar?.large ?? undefined }}
+							size={68}
+						/>
 					</View>
 					<Text
 						style={{

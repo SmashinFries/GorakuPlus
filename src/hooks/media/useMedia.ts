@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
 	CharacterSort,
 	MediaFormat,
@@ -20,7 +20,7 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 	const { isMalEnabled, isMangaUpdatesEnabled } = useMatchStore(
 		useShallow((state) => ({
 			isMalEnabled: state.isMalEnabled,
-			isMangaUpdatesEnabled: state.isMangaDexEnabled,
+			isMangaUpdatesEnabled: state.isMangaUpdatesEnabled,
 		})),
 	);
 	const addMalID = useMatchStore(useShallow((state) => state.addMalID));
@@ -34,25 +34,62 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 		sort_c: [CharacterSort.Role, CharacterSort.Relevance, CharacterSort.Id],
 	});
 
-	const jikan = useMalQuery(malDB[aniId], type);
+	const jikan = useMalQuery(aniId ? malDB[aniId] : undefined, type);
 	const muSeries = useMangaUpdatesQuery(
 		type === MediaType.Manga ? aniId : null,
-		muDB[aniId],
+		muDB[aniId as number],
 		anilist.data?.Media?.type === MediaType.Manga
 			? (anilist.data?.Media?.countryOfOrigin === 'KR'
-				? (anilist.data?.Media?.title?.english ?? anilist.data?.Media?.title?.romaji)
-				: anilist.data?.Media?.title?.romaji
+				? (anilist.data?.Media?.title?.english ??
+					anilist.data?.Media?.title?.romaji ??
+					'')
+				: (anilist.data?.Media?.title?.native ?? '')
 			)
 				?.replace('[', '')
 				.replace(']', '')
-			: anilist.data?.Media?.title?.romaji,
+			: (anilist.data?.Media?.title?.romaji ?? ''),
 		anilist.data?.Media?.format === MediaFormat.Novel,
 	);
-	const muReleases = useMuReleasesQuery(type === MediaType.Manga ? muDB[aniId] : null);
+	const muReleases = useMuReleasesQuery(type === MediaType.Manga && aniId ? muDB[aniId] : null);
+
+	const dependencies = useMemo(
+		() => ({
+			type,
+			malDB,
+			anilistFetched: anilist?.isFetched,
+			jikanFetched: jikan?.isFetched,
+			muSeriesFetched: muSeries?.isFetched,
+			muReleasesFetched: muReleases?.isFetched,
+			muReleasesError: muReleases?.isError,
+			muSeriesError: muSeries?.isError,
+			anilistData: anilist?.data,
+			aniId,
+			isMalEnabled,
+			muDB,
+			isMangaUpdatesEnabled,
+			addMalID,
+		}),
+		[
+			type,
+			malDB,
+			anilist?.isFetched,
+			jikan?.isFetched,
+			muSeries?.isFetched,
+			muReleases?.isFetched,
+			muReleases?.isError,
+			muSeries?.isError,
+			anilist?.data,
+			aniId,
+			isMalEnabled,
+			muDB,
+			isMangaUpdatesEnabled,
+			addMalID,
+		],
+	);
 
 	useEffect(() => {
 		if (anilist?.isFetched && anilist?.data) {
-			if (malDB && malDB[aniId]) {
+			if (malDB && aniId && malDB[aniId]) {
 				if (type === MediaType.Anime) {
 					(isMalEnabled ? jikan?.isFetched : true) && setIsReady(true);
 				} else {
@@ -69,7 +106,7 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 						setIsReady(true);
 					}
 				}
-			} else if (anilist?.data?.Media?.idMal) {
+			} else if (aniId && anilist?.data?.Media?.idMal) {
 				addMalID(aniId, anilist?.data?.Media?.idMal);
 			} else if (!anilist?.data?.Media?.idMal || !isMalEnabled) {
 				if (type === MediaType.Anime) {
@@ -82,22 +119,7 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 				}
 			}
 		}
-	}, [
-		type,
-		malDB,
-		anilist?.isFetched,
-		jikan?.isFetched,
-		muSeries?.isFetched,
-		muReleases?.isFetched,
-		muReleases?.isError,
-		muSeries?.isError,
-		anilist?.data,
-		aniId,
-		isMalEnabled,
-		muDB,
-		isMangaUpdatesEnabled,
-		addMalID,
-	]);
+	}, [dependencies]);
 
 	return { anilist, jikan, muSeries, muReleases, isReady };
 };

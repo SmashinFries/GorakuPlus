@@ -8,17 +8,19 @@ type AiringBannerProps = {
 	textColor: string;
 	airingAt: number;
 	episode: number;
+	customText?: string;
 };
 export const AiringBanner = ({
 	containerColor,
 	textColor,
 	airingAt,
 	episode,
+	customText,
 }: AiringBannerProps) => {
 	return (
 		<View style={[Styles.container, { backgroundColor: containerColor }]}>
 			<Text variant="labelSmall" numberOfLines={1} style={[Styles.txt, { color: textColor }]}>
-				EP {episode}: {getTimeUntil(Number(airingAt))}
+				{customText ? customText : `EP ${episode}: ${getTimeUntil(Number(airingAt))}`}
 			</Text>
 		</View>
 	);

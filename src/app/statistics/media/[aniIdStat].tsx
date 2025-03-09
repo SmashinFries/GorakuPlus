@@ -6,8 +6,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import { ScrollView, View } from 'react-native';
 import { ActivityIndicator, Chip, List, Text } from 'react-native-paper';
-import { LineChart } from 'react-native-gifted-charts';
-import { lineDataItem } from 'gifted-charts-core';
+import { LineChart, LineChartPropsType } from 'react-native-gifted-charts';
 import { useAppTheme } from '@/store/theme/themes';
 import { ScoreItem, StatBar, StatusItem } from '@/components/media/statistics';
 
@@ -36,13 +35,13 @@ const CustomDataPoint = ({ bgColor }: { bgColor: string }) => {
 const ActivityChart = ({
 	activityData,
 }: {
-	activityData: MediaTrendsQuery['Media']['trends']['nodes'];
+	activityData: NonNullable<NonNullable<MediaTrendsQuery['Media']>['trends']>['nodes'];
 }) => {
 	const { colors } = useAppTheme();
-	const trendData: lineDataItem[] = activityData
+	const trendData: LineChartPropsType['data'] = activityData
 		? activityData?.toReversed()?.map((trend, idx) => ({
-				value: trend.trending,
-				dataPointText: `${trend.trending.toLocaleString()}`,
+				value: trend?.trending ?? 0,
+				dataPointText: `${trend?.trending?.toLocaleString() ?? '0'}`,
 				textShiftY: -10,
 				// hideDataPoint: !!(idx % 2),
 				textColor: colors.onSurface,
@@ -51,7 +50,7 @@ const ActivityChart = ({
 				labelComponent: () =>
 					!(idx % 2) && (
 						<CustomLabel
-							val={`${new Date(trend.date * 1000).getDate()}th`}
+							val={`${trend?.date ? new Date(trend.date * 1000).getDate() : '?'}th`}
 							marginLeft={20}
 						/>
 					),
@@ -59,18 +58,22 @@ const ActivityChart = ({
 		: [];
 
 	const lowestTrending = activityData
-		? [...activityData]?.sort((a, b) => a.trending - b.trending)[0]
+		? [...activityData]?.sort((a, b) => (a?.trending ?? 0) - (b?.trending ?? 0))[0]
 		: null;
-	const highestTrending = activityData
-		? [...activityData].sort((a, b) => b.trending - a.trending)[0]
-		: null;
+	// const highestTrending = activityData
+	// 	? [...activityData].sort((a, b) => (b?.trending ?? 0) - (a?.trending ?? 0))[0]
+	// 	: null;
 
 	if (!activityData || activityData?.length < 1) return null;
 	return (
 		<View>
 			<List.Item
 				title={'Recent Activity Per Day'}
-				description={`${new Date(activityData?.at(-1)?.date * 1000).toLocaleDateString()} -> ${new Date(activityData[0]?.date * 1000).toLocaleDateString()}`}
+				description={
+					activityData.at(-1)?.date &&
+					activityData[0]?.date &&
+					`${activityData.at(-1)?.date ? new Date((activityData.at(-1)?.date ?? 0) * 1000).toLocaleDateString() : '?'} -> ${new Date((activityData[0]?.date ?? 0) * 1000).toLocaleDateString()}`
+				}
 			/>
 			<View>
 				<LineChart
@@ -100,7 +103,7 @@ const ActivityChart = ({
 					verticalLinesStrokeLinecap="round"
 					verticalLinesStrokeDashArray={[2, 3]}
 					verticalLinesUptoDataPoint
-					yAxisOffset={lowestTrending?.trending - 50}
+					yAxisOffset={(lowestTrending?.trending ?? 0) - 50}
 					scrollAnimation
 					// maxValue={lowestTrending?.trending + 60}
 					// lineGradient
@@ -113,16 +116,16 @@ const ActivityChart = ({
 const AiringScoreChart = ({
 	airingData,
 }: {
-	airingData: MediaTrendsQuery['Media']['airingTrends']['nodes'];
+	airingData: NonNullable<NonNullable<MediaTrendsQuery['Media']>['airingTrends']>['nodes'];
 }) => {
 	const { colors } = useAppTheme();
 
-	const airingScoreData: lineDataItem[] =
-		airingData?.length > 0
+	const airingScoreData: LineChartPropsType['data'] =
+		(airingData?.length ?? 0) > 0
 			? airingData
 					?.toReversed()
-					?.filter((airtrend) => !!airtrend.episode)
-					?.map((airingTrend, idx) => ({
+					?.filter((airtrend) => !!airtrend?.episode)
+					?.map((airingTrend) => ({
 						value: airingTrend?.averageScore,
 						dataPointText: `${airingTrend?.averageScore}`,
 						textShiftY: -10,
@@ -131,21 +134,21 @@ const AiringScoreChart = ({
 						// label: ,
 						customDataPoint: () => <CustomDataPoint bgColor={colors.primary} />,
 						labelComponent: () => (
-							<CustomLabel val={`${airingTrend.episode}`} marginLeft={50} />
+							<CustomLabel val={`${airingTrend?.episode}`} marginLeft={50} />
 						),
 					}))
 			: [];
 	const lowestAiringScore =
-		airingData?.length > 0
+		(airingData?.length ?? 0) > 0
 			? [...(airingData ?? [])]
-					?.filter((data) => data.episode !== null)
-					?.sort((a, b) => a?.averageScore - b?.averageScore)[0]
+					?.filter((data) => data?.episode !== null)
+					?.sort((a, b) => (a?.averageScore ?? 0) - (b?.averageScore ?? 0))[0]
 			: null;
 	const highestAiringScore =
-		airingData?.length > 0
+		(airingData?.length ?? 0) > 0
 			? [...(airingData ?? [])]
-					?.filter((data) => data.episode !== null)
-					?.sort((a, b) => b?.averageScore - a?.averageScore)[0]
+					?.filter((data) => data?.episode !== null)
+					?.sort((a, b) => (b?.averageScore ?? 0) - (a?.averageScore ?? 0))[0]
 			: null;
 
 	if (
@@ -189,9 +192,13 @@ const AiringScoreChart = ({
 						isAnimated
 						animateOnDataChange
 						animationDuration={1200}
-						yAxisOffset={lowestAiringScore?.averageScore}
+						yAxisOffset={lowestAiringScore?.averageScore ?? undefined}
 						maxValue={
-							highestAiringScore?.averageScore - lowestAiringScore?.averageScore + 2
+							highestAiringScore?.averageScore && lowestAiringScore?.averageScore
+								? highestAiringScore?.averageScore -
+									lowestAiringScore?.averageScore +
+									2
+								: undefined
 						} //how many from lowest value
 						showVerticalLines
 						verticalLinesStrokeLinecap="round"
@@ -209,28 +216,31 @@ const AiringScoreChart = ({
 const AiringWatchersChart = ({
 	airingData,
 }: {
-	airingData: MediaTrendsQuery['Media']['airingTrends']['nodes'];
+	airingData: NonNullable<NonNullable<MediaTrendsQuery['Media']>['airingTrends']>['nodes'];
 }) => {
 	const { colors } = useAppTheme();
 
-	const airingProgData: lineDataItem[] = airingData
-		?.toReversed()
-		?.filter((data) => !!data?.episode)
-		?.map((airProgData) => ({
-			value: airProgData.inProgress,
-			dataPointText: `${airProgData.inProgress.toLocaleString()}`,
-			textShiftY: -10,
-			textColor: colors.onSurface,
-			dataPointColor: colors.primary,
-			customDataPoint: () => <CustomDataPoint bgColor={colors.primary} />,
-			labelComponent: () => <CustomLabel val={`${airProgData.episode}`} marginLeft={50} />,
-		}));
+	const airingProgData: LineChartPropsType['data'] =
+		airingData
+			?.toReversed()
+			?.filter((data) => !!data?.episode)
+			?.map((airProgData) => ({
+				value: airProgData?.inProgress,
+				dataPointText: `${airProgData?.inProgress?.toLocaleString()}`,
+				textShiftY: -10,
+				textColor: colors.onSurface,
+				dataPointColor: colors.primary,
+				customDataPoint: () => <CustomDataPoint bgColor={colors.primary} />,
+				labelComponent: () => (
+					<CustomLabel val={`${airProgData?.episode}`} marginLeft={50} />
+				),
+			})) ?? [];
 
 	const lowestAiringProgress =
-		airingData?.length > 0
+		(airingData?.length ?? 0) > 0
 			? [...(airingData ?? [])]
-					?.filter((data) => data.episode !== null)
-					?.sort((a, b) => a.inProgress - b.inProgress)[0]
+					?.filter((data) => data?.episode !== null)
+					?.sort((a, b) => (a?.inProgress ?? 0) - (b?.inProgress ?? 0))[0]
 			: null;
 
 	if (!airingData || airingData?.length < 1 || !airingProgData || !lowestAiringProgress)
@@ -262,7 +272,7 @@ const AiringWatchersChart = ({
 						isAnimated
 						animateOnDataChange
 						animationDuration={1200}
-						yAxisOffset={lowestAiringProgress?.inProgress}
+						yAxisOffset={lowestAiringProgress?.inProgress ?? undefined}
 						showVerticalLines
 						verticalLinesStrokeLinecap="round"
 						verticalLinesStrokeDashArray={[2, 3]}
@@ -282,11 +292,11 @@ const MediaStatsPage = () => {
 	);
 
 	const statusDistSorted = [...(data?.Media?.distribution?.status ?? [])]?.sort(
-		(a, b) => b.amount - a.amount,
+		(a, b) => (b?.amount ?? 0) - (a?.amount ?? 0),
 	);
 
 	const scoreDistSorted = [...(data?.Media?.distribution?.score ?? [])]?.sort(
-		(a, b) => a.score - b.score,
+		(a, b) => (a?.score ?? 0) - (b?.score ?? 0),
 	);
 
 	return (
@@ -306,11 +316,11 @@ const MediaStatsPage = () => {
 						{data?.Media?.rankings?.map((ranking, idx) => (
 							<Chip
 								key={idx}
-								icon={ranking.type === MediaRankType.Rated ? 'star' : 'heart'}
+								icon={ranking?.type === MediaRankType.Rated ? 'star' : 'heart'}
 								style={{ margin: 5 }}
 								textStyle={{ textTransform: 'capitalize' }}
 							>
-								#{ranking.rank} {ranking.context}
+								#{ranking?.rank} {ranking?.context}
 							</Chip>
 						))}
 					</ScrollView>
@@ -327,7 +337,7 @@ const MediaStatsPage = () => {
 								<StatBar data={statusDistSorted} />
 								<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 									{statusDistSorted?.map((statusDis, idx) => (
-										<StatusItem key={idx} status={statusDis} />
+										<StatusItem key={idx} status={statusDis ?? undefined} />
 									))}
 								</ScrollView>
 							</View>
@@ -351,11 +361,11 @@ const MediaStatsPage = () => {
 									{scoreDistSorted.map((scoreDis, idx) => (
 										<ScoreItem
 											key={idx}
-											score={scoreDis}
+											score={scoreDis ?? undefined}
 											highestScore={
 												[...scoreDistSorted].sort(
-													(a, b) => b.amount - a.amount,
-												)[0]?.score
+													(a, b) => (b?.amount ?? 0) - (a?.amount ?? 0),
+												)[0]?.score ?? undefined
 											}
 										/>
 									))}

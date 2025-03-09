@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import {
 	MediaListGroup,
 	MediaListSort,
-	MediaTag,
 	MediaType,
-	UserAnimeListCollectionQuery,
-	UserMangaListCollectionQuery,
+	UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup,
+	UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup,
 	useUserAnimeListCollectionQuery,
 	useUserMangaListCollectionQuery,
 } from '@/api/anilist/__genereated__/gql';
@@ -41,15 +40,16 @@ const useListOrder = (
 	);
 
 	const getListRoutes = (listData: MediaListGroup[], type: MediaType) => {
-		const count = {};
+		const count: { [key: string]: number } = {};
 		for (const list of listData) {
-			count[list.name] = list.entries.length;
+			count[list.name as string] = list.entries?.length ?? 0;
 		}
 		const listNames = listData
 			.filter((list) => list.isSplitCompletedList === false) // remove split lists (like anilist site)
 			.sort((a, b) => Number(a.isCustomList) - Number(b.isCustomList)) // puts customs lists at end
-			.map((list) => list.name);
-		checkListNames(type, listNames);
+			.map((list) => list.name)
+			.filter((name): name is string => name != null);
+		checkListNames?.(type, listNames);
 		const listOrder = orderList(
 			listNames,
 			type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
@@ -60,14 +60,6 @@ const useListOrder = (
 			title: `${name}  (${count[name] ?? 0})`,
 		}));
 	};
-
-	// const getTotalTitles = (lists: MediaListGroup[] | MediaListGroup[]) => {
-	// 	let count = 0;
-	// 	for (const list of lists) {
-	// 		count += list.entries.length;
-	// 	}
-	// 	return count;
-	// };
 
 	useEffect(() => {
 		if (animeList) {
@@ -83,61 +75,6 @@ const useListOrder = (
 	return { animeRoutes, mangaRoutes };
 };
 
-const getAllGenres = (
-	animeList: UserAnimeListCollectionQuery['MediaListCollection']['lists'],
-	mangaList: UserMangaListCollectionQuery['MediaListCollection']['lists'],
-) => {
-	let genres: string[] = [];
-	for (const list of animeList) {
-		for (const entry of list.entries) {
-			genres = [...genres, ...entry.media.genres];
-		}
-	}
-	for (const list of mangaList) {
-		for (const entry of list.entries) {
-			genres = [...genres, ...entry.media.genres];
-		}
-	}
-
-	const occurrences: { [key: string]: number } = genres.reduce(function (obj, val) {
-		obj[val] = (obj[val] || 0) + 1;
-		return obj;
-	}, {});
-
-	const sortedGenres = Object.keys(occurrences).sort((a, b) =>
-		a.toUpperCase() < b.toUpperCase() ? -1 : 1,
-	);
-
-	return [...new Set(sortedGenres.map((genre) => `${genre} (${occurrences[genre]})`))];
-};
-
-const getAllTags = (
-	animeList: UserAnimeListCollectionQuery['MediaListCollection']['lists'],
-	mangaList: UserMangaListCollectionQuery['MediaListCollection']['lists'],
-) => {
-	let tags: MediaTag[] = [];
-	for (const list of animeList) {
-		for (const entry of list.entries) {
-			tags = [...tags, ...entry.media.tags];
-		}
-	}
-	for (const list of mangaList) {
-		for (const entry of list.entries) {
-			tags = [...tags, ...entry.media.tags];
-		}
-	}
-
-	const occurrences: { [key: MediaTag['name']]: number } = tags.reduce(function (obj, val) {
-		obj[val.name] = (obj[val.name] || 0) + 1;
-		return obj;
-	}, {});
-
-	return tags
-		.filter((value, index, self) => index === self.findIndex((t) => t.name === value.name))
-		.map((tag) => ({ ...tag, name: `${tag.name} (${occurrences[tag.name]})` }))
-		.sort((a, b) => (a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
-};
-
 export const useList = (userId: number, isViewer = true) => {
 	const viewerId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const {
@@ -148,7 +85,7 @@ export const useList = (userId: number, isViewer = true) => {
 		refetch: refreshAnimeList,
 	} = useUserAnimeListCollectionQuery(
 		{ userId: userId, sort: MediaListSort.AddedTimeDesc },
-		{ enabled: !!userId, meta: { persist: viewerId === userId } },
+		{ enabled: !!userId, staleTime: Infinity, meta: { persist: viewerId === userId } },
 	);
 	const {
 		data: mangaList,
@@ -158,7 +95,7 @@ export const useList = (userId: number, isViewer = true) => {
 		refetch: refreshMangaList,
 	} = useUserMangaListCollectionQuery(
 		{ userId: userId, sort: MediaListSort.AddedTimeDesc },
-		{ enabled: !!userId, meta: { persist: viewerId === userId } },
+		{ enabled: !!userId, staleTime: Infinity, meta: { persist: viewerId === userId } },
 	);
 	const [rootRoutes, setRootRoutes] = useState<{ key: string; title: string }[]>([]);
 	const { animeRoutes, mangaRoutes } = useListOrder(
@@ -169,42 +106,21 @@ export const useList = (userId: number, isViewer = true) => {
 
 	const getTotalTitles = (
 		lists:
-			| UserAnimeListCollectionQuery['MediaListCollection']['lists']
-			| UserMangaListCollectionQuery['MediaListCollection']['lists'],
+			| UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup[]
+			| UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup[]
+			| null
+			| undefined,
 	) => {
 		let count = 0;
-		for (const list of lists) {
-			count += list.entries.length;
+		if (lists) {
+			for (const list of lists) {
+				count += list.entries?.length ?? 0;
+			}
 		}
 		return count;
 	};
 
 	useEffect(() => {
-		// if (animeList?.MediaListCollection?.lists) {
-		// 	const list = animeList?.MediaListCollection?.lists;
-
-		// 	const listOrder = orderList(list as MediaListGroup[], animeTabOrder, isViewer);
-		// 	setAnimeRoutes(
-		// 		listOrder.map((name) => ({
-		// 			key: name,
-		// 			title: `${name}  (${count[name] ?? 0})`,
-		// 		})),
-		// 	);
-		// }
-		// if (mangaList?.MediaListCollection?.lists) {
-		// 	const list = mangaList?.MediaListCollection?.lists;
-		// 	const count = {};
-		// 	for (const list of mangaList?.MediaListCollection?.lists) {
-		// 		count[list.name] = list.entries.length;
-		// 	}
-		// 	const listOrder = orderList(list as MediaListGroup[], animeTabOrder, isViewer);
-		// 	setMangaRoutes(
-		// 		mangaList?.MediaListCollection?.lists.map((list) => ({
-		// 			key: list.name,
-		// 			title: `${list.name}  (${count[list.name] ?? 0})`,
-		// 		})),
-		// 	);
-		// }
 		if (isAnimeListFetched && isMangaListFetched) {
 			setRootRoutes([
 				{
@@ -217,63 +133,6 @@ export const useList = (userId: number, isViewer = true) => {
 				},
 			]);
 		}
-		// if (animeList && mangaList) {
-		// 	const animeListCounts = {};
-		// 	const mangaListCounts = {};
-		// 	const customAnimeLists = animeList?.MediaListCollection?.lists
-		// 		?.map((list) => (!animeTabOrder.includes(list.name) ? list.name : null))
-		// 		.filter((x) => x !== null);
-		// 	const customMangaLists = mangaList?.MediaListCollection?.lists
-		// 		?.map((list) => (!mangaTabOrder.includes(list.name) ? list.name : null))
-		// 		.filter((x) => x !== null);
-
-		// 	for (const list of animeList?.MediaListCollection?.lists) {
-		// 		animeListCounts[list.name] = list.entries.length;
-		// 	}
-		// 	for (const list of mangaList?.MediaListCollection?.lists) {
-		// 		mangaListCounts[list.name] = list.entries.length;
-		// 	}
-		// 	const aRoutes = isViewer
-		// 		? sortListTabs(
-		// 				animeList?.MediaListCollection?.lists.map((list) => list.name),
-		// 				animeTabOrder,
-		// 				animeListCounts,
-		// 			)
-		// 		: animeList?.MediaListCollection?.lists.map((list) => ({
-		// 				key: list.name,
-		// 				title: `${list.name}  (${animeListCounts[list.name] ?? 0})`,
-		// 			}));
-		// 	const mRoutes = isViewer
-		// 		? sortListTabs(
-		// 				mangaList?.MediaListCollection?.lists.map((list) => list.name),
-		// 				mangaTabOrder,
-		// 				mangaListCounts,
-		// 			)
-		// 		: mangaList?.MediaListCollection?.lists.map((list) => ({
-		// 				key: list.name,
-		// 				title: `${list.name}  (${mangaListCounts[list.name] ?? 0})`,
-		// 			}));
-		// 	isViewer &&
-		// 		updateListFilter({
-		// 			animeTabOrder: [...new Set([...animeTabOrder, ...customAnimeLists])],
-		// 		});
-		// 	isViewer &&
-		// 		updateListFilter({
-		// 			mangaTabOrder: [...new Set([...mangaTabOrder, ...customMangaLists])],
-		// 		});
-		// 	setRootRoutes([
-		// 		{
-		// 			key: 'anime',
-		// 			title: `Anime (${getTotalTitles(animeList?.MediaListCollection?.lists)})`,
-		// 		},
-		// 		{
-		// 			key: 'manga',
-		// 			title: `Manga (${getTotalTitles(mangaList?.MediaListCollection?.lists)})`,
-		// 		},
-		// 	]);
-		// 	setAnimeRoutes(aRoutes);
-		// 	setMangaRoutes(mRoutes);
-		// }
 	}, [animeList, mangaList, isAnimeListFetched, isMangaListFetched]);
 
 	return {

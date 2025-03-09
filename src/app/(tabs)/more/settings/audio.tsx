@@ -15,7 +15,7 @@ type VoiceDialogProps = BasicDialogProps & {
 	voices: Speech.Voice[];
 	currentVoice: TTSVoice;
 	voiceMessage: string;
-	onConfirm: (voice: Speech.Voice, rate: number, pitch: number) => void;
+	onConfirm: (voice: Speech.Voice | null, rate: number, pitch: number) => void;
 };
 const VoiceDialog = ({
 	visible,
@@ -26,7 +26,7 @@ const VoiceDialog = ({
 	currentVoice,
 	voices,
 }: VoiceDialogProps) => {
-	const [newVoice, setNewVoice] = useState<Speech.Voice | null>(currentVoice?.voice);
+	const [newVoice, setNewVoice] = useState<Speech.Voice | null>(currentVoice?.voice ?? null);
 	const [newRate, setNewRate] = useState(currentVoice?.rate ?? 1.0);
 	const [newPitch, setNewPitch] = useState(currentVoice?.pitch ?? 1.0);
 
@@ -39,7 +39,7 @@ const VoiceDialog = ({
 	};
 
 	useEffect(() => {
-		setNewVoice(currentVoice?.voice);
+		setNewVoice(currentVoice?.voice ?? null);
 	}, [currentVoice]);
 
 	return (
@@ -53,7 +53,7 @@ const VoiceDialog = ({
 					title="Pitch"
 					description={newPitch.toString()}
 					initialValue={newPitch}
-					onValueUpdate={(val) => setNewPitch(val)}
+					onValueUpdate={(val) => val && setNewPitch(val)}
 					steps={0.1}
 					maxValue={5.0}
 					minValue={0.1}
@@ -64,7 +64,7 @@ const VoiceDialog = ({
 				<Slider
 					title="Rate"
 					initialValue={newRate}
-					onValueUpdate={(val) => setNewRate(val)}
+					onValueUpdate={(val) => val && setNewRate(val)}
 					steps={0.1}
 					maxValue={5.0}
 					minValue={0.1}
@@ -159,7 +159,7 @@ const AudioPage = () => {
 
 	const onVoiceEdit = (
 		lang: 'english' | 'japanese' | 'korean' | 'chinese',
-		voice: Speech.Voice,
+		voice: Speech.Voice | null,
 		rate: number,
 		pitch: number,
 	) => {
@@ -232,7 +232,7 @@ const AudioPage = () => {
 			<Portal>
 				<VoiceDialog
 					title="English TTS"
-					voiceMessage="Test"
+					voiceMessage="Goraku is the best app!"
 					visible={voiceEngDialogVis}
 					onDismiss={() => setVoiceEngDialogVis(false)}
 					currentVoice={english}

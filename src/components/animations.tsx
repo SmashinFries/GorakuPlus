@@ -1,17 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-	View,
-	StyleSheet,
-	StyleProp,
-	ViewStyle,
-	useWindowDimensions,
-	TextStyle,
-	ViewProps,
-	Image as RNImage,
-	DimensionValue,
-} from 'react-native';
-import { Icon, IconButton, Text, TextProps, TouchableRipple } from 'react-native-paper';
+import { View, StyleSheet, StyleProp, ViewStyle, TextStyle, ViewProps } from 'react-native';
+import { Divider, Icon, IconButton, Text, TextProps, TouchableRipple } from 'react-native-paper';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler,
@@ -33,11 +23,6 @@ import { rgbToRgba } from '@/utils';
 import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
 import useImageRotation from '@/hooks/useImageRotation';
-import WebView from 'react-native-webview';
-import gorakuBanner from '../../assets/iconsv3/banner.png';
-import gorakuIcon from '../../assets/iconsv3/adaptive-icon.png';
-import mascot from '../../assets/iconsv3/mascot.png';
-import { useSettingsStore } from '@/store/settings/settingsStore';
 
 export const useHeaderAnim = (start = 40, end = 110) => {
 	const input_range = [start, end];
@@ -263,7 +248,7 @@ export const ExpandableDescription = ({
 								: 'chevron-up'
 						}
 						onPress={() => setIsExpanded((prev) => !prev)}
-						onLongPress={toggleUwuifier}
+						onLongPress={toggleUwuifier ? toggleUwuifier : undefined}
 						style={{
 							position: 'absolute',
 							bottom: -35,
@@ -296,6 +281,8 @@ export const ExpandableDescription = ({
 	);
 };
 
+export const ExpandableDescriptionMem = memo(ExpandableDescription);
+
 export type AccordionProps = {
 	title: string;
 	titleNumberOfLines?: number;
@@ -308,6 +295,7 @@ export type AccordionProps = {
 	initialExpand?: boolean;
 	containerKey?: string | number;
 	left?: ReactNode;
+	enableDivider?: boolean;
 };
 export const Accordion = ({
 	title,
@@ -321,6 +309,7 @@ export const Accordion = ({
 	descriptionStyle,
 	initialExpand = false,
 	containerKey = 1,
+	enableDivider = false,
 }: AccordionProps) => {
 	const { colors } = useAppTheme();
 	const [isExpanded, setIsExpanded] = useState(initialExpand);
@@ -377,7 +366,7 @@ export const Accordion = ({
 					style={{ paddingVertical: 8, paddingRight: 24 }}
 				>
 					<View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 6 }}>
-						{left && left}
+						{left}
 						<View style={[{ flex: 1, paddingLeft: 16, justifyContent: 'center' }]}>
 							<Text
 								selectable={false}
@@ -433,10 +422,18 @@ export const Accordion = ({
 					>
 						{isExpanded && (
 							<AnimViewMem
-								entering={FadeIn.duration(200)}
+								style={
+									{
+										// backgroundColor: !disableBGColor ? colors.backdrop : undefined,
+									}
+								}
+								entering={FadeIn.duration(500)}
 								exiting={FadeOut.duration(800)}
 							>
 								{children}
+								{enableDivider && (
+									<Divider style={{ backgroundColor: colors.primary }} />
+								)}
 							</AnimViewMem>
 						)}
 					</View>
@@ -445,6 +442,8 @@ export const Accordion = ({
 		</View>
 	);
 };
+
+export const AccordionMemo = memo(Accordion);
 
 export const FullscreenBackground = ({
 	urls,
@@ -501,209 +500,6 @@ export const FullscreenBackground = ({
 				style={{ position: 'absolute', height: '100%', width: '100%' }}
 				locations={[0, 0.1, 0.6, 1]}
 			/>
-		</View>
-	);
-};
-
-const particleOptions2 = {
-	detectRetina: true,
-	fpsLimit: 120,
-	interactivity: {
-		detectsOn: 'canvas',
-		events: {
-			// onClick: {
-			// 	enable: true,
-			// 	mode: 'push',
-			// },
-			// onHover: {
-			// 	enable: true,
-			// 	mode: 'bubble',
-			// },
-			// resize: true,
-		},
-		modes: {
-			bubble: {
-				distance: 400,
-				duration: 2,
-				opacity: 1,
-				size: 40,
-				speed: 3,
-			},
-			push: {
-				quantity: 4,
-			},
-		},
-	},
-	particles: {
-		rotate: {
-			value: 5,
-			random: true,
-			direction: 'clockwise',
-			animation: {
-				enable: true,
-				speed: 5,
-				sync: false,
-			},
-		},
-		move: {
-			enable: true,
-			outMode: 'out',
-			speed: 2,
-		},
-		number: {
-			density: {
-				enable: true,
-				area: 800,
-			},
-			value: 80,
-		},
-		opacity: {
-			value: 0.8,
-		},
-		shape: {
-			type: 'image',
-			options: {
-				image: [
-					{
-						src: RNImage.resolveAssetSource(gorakuBanner).uri,
-						width: 1592,
-						height: 571,
-						particles: {
-							move: {
-								direction: 'top',
-							},
-						},
-					},
-					{
-						src: RNImage.resolveAssetSource(gorakuIcon).uri,
-						width: 1024,
-						height: 1024,
-						particles: {
-							move: {
-								direction: 'bottom',
-							},
-						},
-					},
-					// MAKE IMAGES OPTIONAL?
-					// {
-					// 	src: RNImage.resolveAssetSource(mascot).uri,
-					// 	width: 32,
-					// 	height: 32,
-					// 	particles: {
-					// 		move: {
-					// 			direction: 'bottom',
-					// 		},
-					// 	},
-					// },
-				],
-			},
-		},
-		size: {
-			value: 18,
-		},
-	},
-};
-
-type ParticleBackgroundProps = {
-	height?: DimensionValue;
-	backgroundColor?: string;
-	mascotOnly?: boolean;
-};
-export const ParticleBackground = ({
-	height = '100%',
-	backgroundColor = 'transparent',
-	mascotOnly = false,
-}: ParticleBackgroundProps) => {
-	const { width } = useWindowDimensions();
-	const { allowBgParticles: isEnabled } = useSettingsStore();
-
-	const options = { ...particleOptions2 };
-	const optionsMascot = {
-		...particleOptions2,
-		particles: {
-			...particleOptions2.particles,
-			shape: {
-				...particleOptions2.particles.shape,
-				options: {
-					...particleOptions2.particles.shape.options,
-					image: [
-						{
-							src: RNImage.resolveAssetSource(mascot).uri,
-							width: 32,
-							height: 32,
-							particles: {
-								move: {
-									direction: 'bottom',
-								},
-							},
-						},
-					],
-				},
-			},
-		},
-	};
-
-	const html1 = `
-	(async () => {
-  await loadAll(tsParticles);
-
-  await tsParticles.load({
-    id: "tsparticles",
-    options: ${JSON.stringify(mascotOnly ? optionsMascot : options)},
-  });
-})();
-	`;
-
-	const html2 = `
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>tsParticles</title>
-  <style>
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-	height: 100%;
-	width: 100%;
-  }
-
-  body {
-    background-color: rgba(255, 0, 0, 0);
-  }
-</style>
-</head>
-
-<body>
-	<div id="tsparticles"></div>
-	<script
-    src="https://cdn.jsdelivr.net/npm/@tsparticles/all@3.5.0/tsparticles.all.bundle.min.js"
-    crossorigin="anonymous"
-  ></script>
-  <script>
-  ${html1}
-</script>
-</body>
-</html>
-	`;
-
-	return (
-		<View style={{ width, height: height, flex: 1, position: 'absolute' }}>
-			{isEnabled && (
-				<WebView
-					source={{ html: html2 }}
-					javaScriptEnabled
-					allowFileAccessFromFileURLs
-					allowFileAccess
-					domStorageEnabled
-					style={{ width: width, height: height, backgroundColor }}
-				/>
-			)}
 		</View>
 	);
 };

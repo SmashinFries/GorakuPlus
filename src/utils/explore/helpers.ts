@@ -1,7 +1,6 @@
 import { MediaSeason } from '@/api/anilist/__genereated__/gql';
 
-export const getSeason = (next = false) => {
-	const date = new Date();
+export const getSeason = (date = new Date(), next = false) => {
 	const SEASONS = {
 		WINTER: [1, 2, 3],
 		SPRING: [4, 5, 6],
@@ -11,10 +10,10 @@ export const getSeason = (next = false) => {
 	const currMonth = date.getMonth() + 1;
 	const month = next ? currMonth + 3 : currMonth;
 	let year = date.getFullYear();
-	let current_season: MediaSeason = null;
+	let current_season: MediaSeason | null = null;
 	let same_year;
 	for (const season in SEASONS) {
-		if (SEASONS[season].includes(month)) {
+		if (SEASONS[season as keyof typeof SEASONS]?.includes(month)) {
 			// @ts-ignore
 			current_season = season;
 			same_year = true;

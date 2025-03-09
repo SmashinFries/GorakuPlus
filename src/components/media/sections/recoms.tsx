@@ -1,27 +1,36 @@
 import { Text } from 'react-native-paper';
-import { FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
-import { View } from 'react-native';
+import { FlatList, ListRenderItemInfo, View } from 'react-native';
 import { MediaCard } from '@/components/cards';
-import { router } from 'expo-router';
-import { ListHeading } from '@/components/text';
-import { AniMediaQuery, MediaFormat } from '@/api/anilist/__genereated__/gql';
+import {
+	AniMediaQuery_Media_Media_recommendations_RecommendationConnection,
+	AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge,
+	MediaFormat,
+} from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
-import { SheetManager } from 'react-native-actions-sheet';
-import { Accordion } from '@/components/animations';
+import { AccordionMemo } from '@/components/animations';
 
 type RecProps = {
-	data: AniMediaQuery['Media']['recommendations'];
+	data: AniMediaQuery_Media_Media_recommendations_RecommendationConnection;
 };
 const RecList = ({ data }: RecProps) => {
+	const getRatingText = (rating: number | null | undefined) => {
+		if (rating === null || rating === undefined) return '0';
+		if (rating > 0) return `+${rating}`;
+		return `${rating}`;
+	};
 	const { colors } = useAppTheme();
-	const keyExtractor = useCallback((item, index) => index.toString(), []);
+	const keyExtractor = useCallback(
+		(
+			item: AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge,
+			index: number,
+		) => index.toString(),
+		[],
+	);
 	const renderItem = ({
 		item,
-	}: {
-		item: AniMediaQuery['Media']['recommendations']['edges'][0];
-	}) => {
-		if (item.node.mediaRecommendation === null) return null;
+	}: ListRenderItemInfo<AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge>) => {
+		if (!item?.node?.mediaRecommendation) return null;
 		return (
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
 				<MediaCard
@@ -43,11 +52,7 @@ const RecList = ({ data }: RecProps) => {
 					variant="labelLarge"
 					style={{ textTransform: 'capitalize', textAlign: 'center' }}
 				>
-					{item.node?.rating > 0
-						? '+' + item.node?.rating
-						: item.node?.rating < 0
-							? item.node?.rating
-							: item.node?.rating}
+					{getRatingText(item.node?.rating)}
 				</Text>
 				<Text
 					variant="labelMedium"
@@ -68,24 +73,27 @@ const RecList = ({ data }: RecProps) => {
 		);
 	};
 
-	if (data?.edges?.length < 1) {
+	if ((data?.edges?.length ?? 0) < 1) {
 		return null;
 	}
 
 	return (
 		<View>
-			<Accordion title="Recommendations">
-				<FlashList
-					data={data?.edges}
+			<AccordionMemo title="Recommendations">
+				<FlatList
+					data={data?.edges?.filter(
+						(
+							edge,
+						): edge is AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge =>
+							edge !== null,
+					)}
 					renderItem={renderItem}
 					keyExtractor={keyExtractor}
-					estimatedItemSize={250}
-					removeClippedSubviews
 					horizontal
 					contentContainerStyle={{ padding: 15 }}
 					showsHorizontalScrollIndicator={false}
 				/>
-			</Accordion>
+			</AccordionMemo>
 		</View>
 	);
 };

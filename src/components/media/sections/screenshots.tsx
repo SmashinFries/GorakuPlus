@@ -1,7 +1,6 @@
 import { Media, MediaStreamingEpisode } from '@/api/anilist/__genereated__/gql';
 import { Accordion } from '@/components/animations';
 import { ImageViewer } from '@/components/imageViewer';
-import { ListHeading } from '@/components/text';
 import { useBlur } from '@/hooks/useNSFWBlur';
 import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
@@ -10,7 +9,7 @@ import { FlatList, Pressable, View } from 'react-native';
 import { Portal } from 'react-native-paper';
 
 type ScreenshotItemProps = {
-	item: Media['streamingEpisodes'][0];
+	item: MediaStreamingEpisode;
 	index: number;
 };
 const ScreenshotItem = ({ item, onSelect }: ScreenshotItemProps & { onSelect: () => void }) => {
@@ -64,7 +63,7 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 
 	return (
 		<View style={{ overflow: 'visible' }}>
-			<Accordion title="Screenshots" description={'Contains spoilers!'}>
+			<Accordion title="Screenshots" description={'Contains spoilers!'} disableBGColor>
 				<View style={{ width: '100%', height: 180 }}>
 					<FlatList
 						data={data}
@@ -86,7 +85,9 @@ const ScreenshotImages = ({ data }: ScreenshotsProps) => {
 
 			<Portal>
 				<ImageViewer
-					urls={data.map((stream) => stream.thumbnail)}
+					urls={data
+						.map((stream) => stream?.thumbnail)
+						.filter((url): url is string => !!url)}
 					visible={isImageViewerVisible}
 					onDismiss={() => setImageViewerVisible(false)}
 					isSpoiler

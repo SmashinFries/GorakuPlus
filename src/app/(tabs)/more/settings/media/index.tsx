@@ -19,7 +19,7 @@ import { MaterialSwitchListItem } from '@/components/switch';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { useAuthStore } from '@/store/authStore';
-import { useAppTheme } from '@/store/theme/themes';
+import { ThemeOptions, useAppTheme } from '@/store/theme/themes';
 import { MediaType, useUpdateViewerMutation } from '@/api/anilist/__genereated__/gql';
 import { useQueryClient } from '@tanstack/react-query';
 import { DanbooruRating } from '@/api/danbooru/types';
@@ -81,8 +81,8 @@ const MediaSettingsPage = () => {
 				<List.Item
 					title={'Explore Tabs'}
 					description={exploreTabOrder
-						.filter((item) => exploreTabs.includes(item))
-						.join(', ')}
+						?.filter((item) => exploreTabs?.includes(item))
+						?.join(', ')}
 					descriptionStyle={{ textTransform: 'capitalize' }}
 					onPress={() => toggleExploreTabOptions(true)}
 				/>
@@ -109,11 +109,11 @@ const MediaSettingsPage = () => {
 					title="NSFW"
 					fluid
 					description={
-						Constants.expoConfig.extra.isStore
+						Constants.expoConfig?.extra?.isStore
 							? 'Permenantly disabled. \nApp store does not allow NSFW content.'
 							: ''
 					}
-					selected={showNSFW}
+					selected={!!showNSFW}
 					onPress={() => {
 						userID && viewerMutation.mutate({ displayNSFW: !showNSFW });
 						setSettings({ showNSFW: !showNSFW });
@@ -121,11 +121,11 @@ const MediaSettingsPage = () => {
 							queryKey: ['DanbooruSearch', 'DanbooruPost'],
 						});
 					}}
-					disabled={Constants.expoConfig.extra.isStore as boolean}
+					disabled={Constants.expoConfig?.extra?.isStore as boolean}
 				/>
 				<MaterialSwitchListItem
 					title="NSFW Blur"
-					selected={blurNSFW}
+					selected={!!blurNSFW}
 					fluid
 					onPress={() => {
 						setSettings({ blurNSFW: !blurNSFW });
@@ -133,7 +133,7 @@ const MediaSettingsPage = () => {
 							queryKey: ['DanbooruSearch', 'DanbooruPost'],
 						});
 					}}
-					disabled={Constants.expoConfig.extra.isStore || !showNSFW}
+					disabled={Constants.expoConfig?.extra?.isStore || !showNSFW}
 				/>
 				<List.Item
 					title="NSFW Blur Level (fanart)"
@@ -148,7 +148,7 @@ const MediaSettingsPage = () => {
 							{
 								Object.entries(DanbooruRating).find(
 									(value) => value[1] === blurNSFWLevel,
-								)[0]
+								)?.[0]
 							}
 						</Text>
 					)}
@@ -174,13 +174,13 @@ const MediaSettingsPage = () => {
 					<List.Item
 						title={'Score Weights'}
 						onPress={() => setShowScoreColorDialog(true)}
-						description={`0 <-- ${scoreColors.red} <--> ${scoreColors.yellow} --> 100`}
+						description={`0 <-- ${scoreColors?.red} <--> ${scoreColors?.yellow} --> 100`}
 					/>
 				</List.Section>
 			</ScrollView>
 			<Portal>
 				<DefaultDescDialog
-					defaultValue={defaultDescription}
+					defaultValue={defaultDescription ?? 'ani'}
 					visible={showDefDescDialog}
 					onDismiss={() => setShowDefDescDialog(false)}
 				/>
@@ -201,7 +201,7 @@ const MediaSettingsPage = () => {
 				<DefaultScoreDialog
 					visible={showDefaultScoreDialog}
 					onDismiss={() => setShowDefaultScoreDialog(false)}
-					defaultScore={defaultScore}
+					defaultScore={defaultScore ?? 'average'}
 					updateDefaultScore={(scoreType: 'average' | 'mean') =>
 						setSettings({ defaultScore: scoreType })
 					}
@@ -218,7 +218,7 @@ const MediaSettingsPage = () => {
 					onDismiss={() => setShowNsfwLevelDialog(false)}
 				/>
 				<MediaTileCustomizer
-					themeMode={mode}
+					themeMode={mode as ThemeOptions}
 					visible={showMTCustomizer}
 					onDismiss={() => setShowMTCustomizer(false)}
 				/>

@@ -3,7 +3,13 @@ import { AnilistIcon, MalIcon } from '../svgs';
 import { Text } from 'react-native-paper';
 import { getScoreColor } from '@/utils';
 
-export const InstagramCardScore = ({ type, score }: { type: 'anilist' | 'mal'; score: number }) => {
+export const InstagramCardScore = ({
+	type,
+	score,
+}: {
+	type: 'anilist' | 'mal';
+	score: number | null | undefined;
+}) => {
 	if (!score) return null;
 	return (
 		<View

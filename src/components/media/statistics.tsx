@@ -1,11 +1,14 @@
-import { AniMediaQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	AniMediaQuery_Media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution,
+	AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution,
+} from '@/api/anilist/__genereated__/gql';
 import { ScoreColors, StatusColors } from '@/constants/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { View, useWindowDimensions } from 'react-native';
-import { Button, Chip, MD3DarkTheme, MD3LightTheme, Text } from 'react-native-paper';
+import { Chip, MD3DarkTheme, MD3LightTheme, Text } from 'react-native-paper';
 
 type StatusItemProps = {
-	status: AniMediaQuery['Media']['stats']['statusDistribution'][0];
+	status?: AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution;
 };
 export const StatusItem = ({ status }: StatusItemProps) => {
 	return (
@@ -14,13 +17,16 @@ export const StatusItem = ({ status }: StatusItemProps) => {
 				mode="flat"
 				elevated
 				textStyle={{ color: MD3DarkTheme.colors.onBackground, fontWeight: '900' }}
-				style={{ backgroundColor: StatusColors[status.status], padding: 2 }}
+				style={{
+					backgroundColor: StatusColors[status?.status as keyof typeof StatusColors],
+					padding: 2,
+				}}
 			>
-				{status.status}
+				{status?.status}
 			</Chip>
 			<Text>
-				<Text style={{ color: StatusColors[status.status] }}>
-					{status?.amount.toLocaleString()}
+				<Text style={{ color: StatusColors[status?.status as keyof typeof StatusColors] }}>
+					{status?.amount?.toLocaleString()}
 				</Text>{' '}
 				Users
 			</Text>
@@ -29,8 +35,10 @@ export const StatusItem = ({ status }: StatusItemProps) => {
 };
 
 type ScoreItemProps = {
-	score: AniMediaQuery['Media']['stats']['scoreDistribution'][0];
-	highestScore: number;
+	score:
+		| AniMediaQuery_Media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution
+		| undefined;
+	highestScore: number | undefined;
 };
 export const ScoreItem = ({ score, highestScore }: ScoreItemProps) => {
 	return (
@@ -39,14 +47,17 @@ export const ScoreItem = ({ score, highestScore }: ScoreItemProps) => {
 				mode="flat"
 				elevated
 				textStyle={{ color: MD3LightTheme.colors.onBackground, fontWeight: '900' }}
-				style={{ backgroundColor: ScoreColors[score.score], padding: 2 }}
+				style={{
+					backgroundColor: ScoreColors[score?.score as keyof typeof ScoreColors],
+					padding: 2,
+				}}
 			>
-				{score.score === highestScore && '🔥 '}
-				{score.score} %
+				{score?.score === highestScore && '🔥 '}
+				{score?.score} %
 			</Chip>
 			<Text>
-				<Text style={{ color: ScoreColors[score.score] }}>
-					{score?.amount.toLocaleString()}
+				<Text style={{ color: ScoreColors[score?.score as keyof typeof ScoreColors] }}>
+					{score?.amount?.toLocaleString()}
 				</Text>{' '}
 				Users
 			</Text>
@@ -56,26 +67,44 @@ export const ScoreItem = ({ score, highestScore }: ScoreItemProps) => {
 
 type StatusBarProps = {
 	data:
-		| AniMediaQuery['Media']['stats']['statusDistribution']
-		| AniMediaQuery['Media']['stats']['scoreDistribution'];
+		| AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution[]
+		| AniMediaQuery_Media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution[]
+		| undefined;
 };
 export const StatBar = ({ data }: StatusBarProps) => {
 	const { width } = useWindowDimensions();
 	const bar_width = width - 20; // 20 = padding
-	const total_users = data?.reduce((acc, curr) => acc + curr.amount, 0);
+	const total_users = data?.reduce((acc, curr) => acc + (curr?.amount ?? 0), 0);
 	const colors: string[] = data?.map((stat) => {
-		if (stat?.status) return StatusColors[stat?.status];
-		else return ScoreColors[stat?.score];
+		if (
+			(
+				stat as AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution
+			)?.status
+		)
+			return StatusColors[
+				(
+					stat as AniMediaQuery_Media_Media_stats_MediaStats_statusDistribution_StatusDistribution
+				)?.status as keyof typeof StatusColors
+			];
+		else
+			return ScoreColors[
+				(
+					stat as AniMediaQuery_Media_Media_stats_MediaStats_scoreDistribution_ScoreDistribution
+				)?.score as keyof typeof ScoreColors
+			];
 	});
 	// const locations = data?.map((stat) => {
 	//     return (stat.amount / total_users) * 100;
 	// });
-	const locations = data?.reduce((acc, stat, index) => {
-		const percentage = stat.amount / total_users;
-		const previousValue = index > 0 ? acc[index - 1] : 0;
-		acc.push(percentage + previousValue);
-		return acc;
-	}, []);
+	const locations: [number, number, ...number[]] | null | undefined = data?.reduce(
+		(acc, stat, index) => {
+			const percentage = (stat.amount ?? 1) / (total_users ?? 1);
+			const previousValue = index > 0 ? acc[index - 1] : 0;
+			acc.push(percentage + previousValue);
+			return acc;
+		},
+		[],
+	);
 	const sortedLocations = locations?.sort((a, b) => a - b);
 
 	return (
@@ -98,7 +127,7 @@ export const StatBar = ({ data }: StatusBarProps) => {
             ))} */}
 			{colors.length > 1 ? (
 				<LinearGradient
-					colors={colors}
+					colors={colors as [string, string, ...string[]]}
 					locations={sortedLocations}
 					start={[0, 1]}
 					end={[1, 0]}

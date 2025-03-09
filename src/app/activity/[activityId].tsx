@@ -16,7 +16,7 @@ import { Divider, Text } from 'react-native-paper';
 const ActivityPage = () => {
 	const { activityId } = useLocalSearchParams<{ activityId: string }>();
 	const { data, isFetching, isRefetching, refetch } = useActivityDetailQuery(
-		{ id: activityId && parseInt(activityId) },
+		{ id: activityId ? parseInt(activityId) : undefined },
 		{ enabled: !!activityId, refetchOnMount: true },
 	);
 

@@ -113,6 +113,8 @@ export const useMatchStore = create<MatchState & MatchActions>()(
 					case 'mangaUpdates':
 						set((state) => ({ isMangaUpdatesEnabled: !state.isMangaUpdatesEnabled }));
 						break;
+					default:
+						break;
 				}
 			},
 			reset(type) {

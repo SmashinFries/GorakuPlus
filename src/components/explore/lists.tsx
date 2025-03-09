@@ -1,15 +1,17 @@
 import { RefreshControl, View, useWindowDimensions } from 'react-native';
 import { Text } from 'react-native-paper';
-import { FlashList } from '@shopify/flash-list';
 import React, { memo } from 'react';
 import { MediaCard } from '../cards';
 import { GorakuActivityIndicator } from '../loading';
 import {
 	AnimeExploreQuery,
+	AnimeExploreQuery_trending_Page_media_Media,
 	MangaExploreQuery,
+	MangaExploreQuery_trending_Page_media_Media,
 	ScoreFormat,
 } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
+import { FlatList } from 'react-native-gesture-handler';
 
 export const GorakuRefreshControl = ({
 	refreshing,
@@ -33,15 +35,17 @@ export const GorakuRefreshControl = ({
 
 type SectionScrollProps = {
 	category_title: string;
-	data: AnimeExploreQuery['trending']['media'] | MangaExploreQuery['trending']['media'];
+	data:
+		| NonNullable<AnimeExploreQuery['trending']>['media']
+		| NonNullable<MangaExploreQuery['trending']>['media'];
 	viewer: AnimeExploreQuery['Viewer'];
 	isLoading: boolean;
 };
 
 const RenderItem = (props: {
 	item: (
-		| AnimeExploreQuery['trending']['media'][0]
-		| MangaExploreQuery['trending']['media'][0]
+		| AnimeExploreQuery_trending_Page_media_Media
+		| MangaExploreQuery_trending_Page_media_Media
 	) & { scoreFormat: ScoreFormat };
 }) => (
 	<View
@@ -61,7 +65,9 @@ export const SectionScroll = ({ category_title, data, viewer, isLoading }: Secti
 	const renderMediaItem = ({
 		item,
 	}: {
-		item: AnimeExploreQuery['trending']['media'][0] | MangaExploreQuery['trending']['media'][0];
+		item:
+			| NonNullable<NonNullable<AnimeExploreQuery['trending']>['media']>[0]
+			| NonNullable<NonNullable<MangaExploreQuery['trending']>['media']>[0];
 	}) => <RenderItem item={{ ...item, scoreFormat: viewer?.mediaListOptions?.scoreFormat }} />;
 
 	return (
@@ -91,12 +97,12 @@ export const SectionScroll = ({ category_title, data, viewer, isLoading }: Secti
 				}}
 			>
 				{!isLoading ? (
-					<FlashList
+					<FlatList
 						data={data ?? []}
-						keyExtractor={(item) => item.id.toString() + category_title}
+						keyExtractor={(item) => item?.id.toString() + category_title}
 						renderItem={renderMediaItem}
 						horizontal={true}
-						estimatedItemSize={210}
+						// estimatedItemSize={210}
 						removeClippedSubviews
 						centerContent
 						contentContainerStyle={{
@@ -104,7 +110,8 @@ export const SectionScroll = ({ category_title, data, viewer, isLoading }: Secti
 							paddingHorizontal: 10,
 						}}
 						showsHorizontalScrollIndicator={false}
-						estimatedListSize={{ height: 210, width: width }}
+						// estimatedListSize={{ height: 210, width: width }}
+						fadingEdgeLength={20}
 						// onEndReached={() => {
 						//     fetchMore();
 						// }}

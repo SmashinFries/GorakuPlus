@@ -18,11 +18,11 @@ export type MediaAniCardProps = {
 	titleLines?: number | null;
 	titleSize?: TextProps<any>['variant'];
 	type: MediaType;
-	format: MediaFormat;
-	coverImg: MediaCoverImage;
+	format: MediaFormat | null | undefined;
+	coverImg: MediaCoverImage | null | undefined;
 	totalContent?: number;
 	startDate?: FuzzyDate;
-	anilistScore: number;
+	anilistScore: number | null | undefined;
 	malScore?: number;
 	tags?: string[];
 	tagLimit?: number;
@@ -39,7 +39,7 @@ export const MediaAniCard = ({ descriptionLines = 6, ...cardProps }: MediaAniCar
 		<View
 			style={{
 				width: '100%',
-				aspectRatio: 1 / 1,
+				aspectRatio: 1,
 				justifyContent: 'space-evenly',
 				// backgroundColor: Color('#0d6be4').fade(0.5).string(),
 			}}
@@ -47,7 +47,7 @@ export const MediaAniCard = ({ descriptionLines = 6, ...cardProps }: MediaAniCar
 			<View style={{ position: 'absolute', width: '100%', height: '100%' }}>
 				<Image
 					source={{
-						uri: cardProps.coverImg.extraLarge,
+						uri: cardProps.coverImg?.extraLarge,
 					}}
 					style={{ width: '100%', height: '100%' }}
 					contentFit="cover"
@@ -66,7 +66,7 @@ export const MediaAniCard = ({ descriptionLines = 6, ...cardProps }: MediaAniCar
 				<View style={{ justifyContent: 'center', paddingHorizontal: 6 }}>
 					<Image
 						source={{
-							uri: cardProps.coverImg.extraLarge,
+							uri: cardProps.coverImg?.extraLarge,
 						}}
 						style={{ borderRadius: 12, width: 140, aspectRatio: 2 / 3 }}
 					/>
@@ -136,8 +136,10 @@ export const MediaAniCard = ({ descriptionLines = 6, ...cardProps }: MediaAniCar
 					}}
 				>
 					{cardProps.tags
-						.filter((_, idx) =>
-							Number.isInteger(cardProps.tagLimit) ? idx < cardProps.tagLimit : true,
+						?.filter((_, idx) =>
+							Number.isInteger(cardProps.tagLimit)
+								? idx < (cardProps?.tagLimit ?? 0)
+								: true,
 						)
 						.map((tag, idx) => (
 							<Chip
@@ -165,7 +167,7 @@ export const MediaAniCard = ({ descriptionLines = 6, ...cardProps }: MediaAniCar
 						</View>
 					) : (
 						<Text
-							numberOfLines={descriptionLines}
+							numberOfLines={descriptionLines ?? 2}
 							style={{ paddingHorizontal: 10, color: '#FFF' }}
 						>
 							{cardProps.description}

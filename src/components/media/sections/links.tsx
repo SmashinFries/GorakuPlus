@@ -27,7 +27,7 @@ type LinkIconButtonProps = {
 	iconLink?: string;
 	iconColor?: string;
 	siteUrl?: string;
-	language?: string;
+	language?: keyof typeof LANGUAGE_ABRV;
 	notes?: string;
 };
 const ExtLinkIconButton = ({
@@ -114,12 +114,14 @@ const MediaLinks = ({ links, aniLink, malLink, muLink }: MediaLinksProps) => {
 								<ExtLinkIconButton
 									key={index}
 									index={0}
-									iconColor={link.color}
-									iconLink={link.icon}
-									language={link.language}
-									notes={link.notes}
+									iconColor={link.color ?? undefined}
+									iconLink={link.icon ?? undefined}
+									language={
+										(link.language as keyof typeof LANGUAGE_ABRV) ?? undefined
+									}
+									notes={link.notes ?? undefined}
 									siteName={link.site}
-									siteUrl={link.url}
+									siteUrl={link.url ?? undefined}
 									textColor={colors.onSurfaceVariant}
 									customIcon={({ size, color }) =>
 										link?.iconType === 'ani' ? (
@@ -141,12 +143,14 @@ const MediaLinks = ({ links, aniLink, malLink, muLink }: MediaLinksProps) => {
 									key={index}
 									index={index}
 									textColor={colors.onSurfaceVariant}
-									iconColor={link.color}
-									iconLink={link.icon}
-									language={link.language}
-									notes={link.notes}
+									iconColor={link.color ?? undefined}
+									iconLink={link.icon ?? undefined}
+									language={
+										(link.language as keyof typeof LANGUAGE_ABRV) ?? undefined
+									}
+									notes={link.notes ?? undefined}
 									siteName={link.site}
-									siteUrl={link.url}
+									siteUrl={link.url ?? undefined}
 								/>
 							),
 					)}

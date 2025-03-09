@@ -15,9 +15,14 @@ export const TagItem = ({ tag, color, onPress }: DanbooruTag) => {
 	return (
 		<Chip
 			compact
-			onPress={() => onPress(tag)}
+			onPress={() => onPress?.(tag)}
 			onLongPress={() => copyToClipboard(tag)}
-			textStyle={{ color: MD3DarkTheme.colors.onBackground }}
+			textStyle={{
+				color:
+					color === 'orange'
+						? MD3LightTheme.colors.onBackground
+						: MD3DarkTheme.colors.onBackground,
+			}}
 			style={{ margin: 8, backgroundColor: color }}
 		>
 			{tag}
@@ -26,7 +31,7 @@ export const TagItem = ({ tag, color, onPress }: DanbooruTag) => {
 };
 
 type TagSectionProps = {
-	tags: string;
+	tags?: string;
 	title: string;
 	color: string;
 	disableWiki?: boolean;

@@ -1,23 +1,15 @@
 import {
-	StudioSearchQuery,
 	StudioSearchQuery_Page_Page_studios_Studio,
 	useToggleFavMutation,
 } from '@/api/anilist/__genereated__/gql';
-import { MediaCard, MediaCardRow } from '@/components/cards';
-import {
-	BottomSheetAccordion,
-	BottomSheetParent,
-	GlobalBottomSheetParent,
-} from '@/components/sheets/bottomsheets';
-import { useColumns } from '@/hooks/useColumns';
+import { GlobalBottomSheetParent } from '@/components/sheets/bottomsheets';
 import { useAuthStore } from '@/store/authStore';
 import { copyToClipboard } from '@/utils';
-import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useRef, useState } from 'react';
-import { FlatList, ScrollView, View } from 'react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
 import { Share } from 'react-native';
-import { ActivityIndicator, Divider, List } from 'react-native-paper';
+import { ActivityIndicator, List } from 'react-native-paper';
 import { useShallow } from 'zustand/react/shallow';
 
 // StudioSearchQuery['Page']['studios'][0]
@@ -25,11 +17,8 @@ export type StudioActionSheetProps = StudioSearchQuery_Page_Page_studios_Studio;
 const StudioActionSheet = () => {
 	const { params: paramsRaw } = useLocalSearchParams<{ params: string }>();
 	const params = JSON.parse(paramsRaw) as StudioActionSheetProps;
-	const sheet = useRef<TrueSheet>(null);
 	const isAuthed = useAuthStore(useShallow((state) => !!state.anilist.userID));
 	const [isFav, setIsFav] = useState(params?.isFavourite);
-
-	const { columns, displayMode, itemWidth } = useColumns('search');
 
 	const { mutateAsync: toggleFav, isPending } = useToggleFavMutation();
 
@@ -81,40 +70,6 @@ const StudioActionSheet = () => {
 					onPress={() => copyToClipboard(params?.name)}
 				/>
 			</View>
-			{/* {params?.media?.edges && (
-				<BottomSheetAccordion title="Preview">
-					<Divider />
-					<FlatList
-						key={columns}
-						data={params?.media?.edges}
-						numColumns={columns}
-						scrollEnabled={false}
-						keyExtractor={(item, idx) => idx.toString()}
-						renderItem={({ item }) =>
-							item?.node ? (
-								displayMode === 'COMPACT' ? (
-									<View style={{ width: '100%' }}>
-										<View
-											style={{
-												// flex: 1,
-												alignItems: 'center',
-												justifyContent: 'flex-start',
-												// marginVertical: 10,
-												// marginHorizontal: 5,
-												width: itemWidth,
-											}}
-										>
-											<MediaCard {...item.node} fitToParent />
-										</View>
-									</View>
-								) : (
-									<MediaCardRow {...item.node} />
-								)
-							) : null
-						}
-					/>
-				</BottomSheetAccordion>
-			)} */}
 		</GlobalBottomSheetParent>
 	);
 };

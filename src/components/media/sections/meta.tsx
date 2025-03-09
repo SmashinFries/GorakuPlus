@@ -1,7 +1,7 @@
-import { Button, List, Surface, Text, TouchableRipple, useTheme } from 'react-native-paper';
+import { Button, List, Surface, Text, TouchableRipple } from 'react-native-paper';
 import { convertDate, copyToClipboard, rgbToRgba } from '@/utils';
-import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import { useEffect, useMemo } from 'react';
+import { View } from 'react-native';
+import { useMemo } from 'react';
 import { Accordion } from '@/components/animations';
 import { COUNTRY_OPTIONS } from '@/constants/anilist';
 import { router } from 'expo-router';
@@ -10,7 +10,6 @@ import { AniMediaQuery, MediaFormat, MediaType } from '@/api/anilist/__genereate
 import { AnimeFull, MangaFull } from '@/api/jikan/models';
 import { useAppTheme } from '@/store/theme/themes';
 import { SeriesModelV1 } from '@/api/mangaupdates/models';
-import { SheetManager } from 'react-native-actions-sheet';
 
 type MetaDataProps = {
 	data: AniMediaQuery['Media'] | undefined;
@@ -25,7 +24,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 
 	return (
 		<Animated.View>
-			<Accordion title="Details">
+			<Accordion title="Details" enableDivider>
 				<List.Item
 					title={'Source'}
 					right={(props) => (
@@ -53,7 +52,9 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					right={(props) => (
 						<Text {...props}>
 							{data?.countryOfOrigin
-								? COUNTRY_OPTIONS[data?.countryOfOrigin]['name']
+								? COUNTRY_OPTIONS[
+										data?.countryOfOrigin as keyof typeof COUNTRY_OPTIONS
+									]['name']
 								: 'N/A'}
 						</Text>
 					)}
@@ -150,13 +151,13 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 					right={
 						!data?.hashtag?.includes('#')
 							? (props) => <Text {...props}>{'N/A'}</Text>
-							: null
+							: undefined
 					}
 				/>
 				<List.Item
 					title="Synonyms"
 					description={
-						data?.synonyms?.length > 0
+						(data?.synonyms?.length ?? 0) > 0
 							? () => (
 									<View
 										style={{
@@ -205,20 +206,21 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 							: null
 					}
 					right={
-						data?.synonyms?.length < 1
+						(data?.synonyms?.length ?? 0) < 1
 							? (props) => (
 									<Text {...props} style={{ width: '50%', textAlign: 'right' }}>
 										{'N/A'}
 									</Text>
 								)
-							: null
+							: undefined
 					}
 				/>
 				{data?.type !== MediaType.Manga && (
 					<List.Item
 						title="Studios"
 						description={
-							data?.studios?.edges.filter((val) => val.isMain === true).length > 0
+							(data?.studios?.edges?.filter((val) => val?.isMain === true).length ??
+								0) > 0
 								? () => (
 										<View
 											style={{
@@ -229,7 +231,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 										>
 											{data?.studios?.edges?.map(
 												(studio, idx) =>
-													studio.isMain && (
+													studio?.isMain && (
 														<Button
 															key={idx}
 															mode="elevated"
@@ -241,15 +243,20 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 															style={{ margin: 5 }}
 															onPress={() =>
 																router.push(
-																	`/studio/${studio.node.id}`,
+																	`/studio/${studio.node?.id}`,
 																)
 															}
 															onLongPress={
 																() => {
-																	SheetManager.show(
-																		'QuickActionStudioSheet',
-																		{ payload: studio.node },
-																	);
+																	router.push({
+																		pathname:
+																			'/(sheets)/studioActions',
+																		params: {
+																			params: JSON.stringify(
+																				studio.node,
+																			),
+																		},
+																	});
 																}
 																// copyToClipboard(studio.node.name)
 															}
@@ -263,7 +270,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 								: null
 						}
 						right={
-							data?.studios?.edges.length < 1
+							(data?.studios?.edges?.length ?? 0) < 1
 								? (props) => (
 										<Text
 											{...props}
@@ -272,7 +279,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 											{'N/A'}
 										</Text>
 									)
-								: null
+								: undefined
 						}
 					/>
 				)}
@@ -290,28 +297,32 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 							>
 								{data?.studios?.edges?.map(
 									(studio, idx) =>
-										!studio.isMain && (
+										!studio?.isMain && (
 											<Button
 												key={idx}
 												mode="elevated"
 												style={{ margin: 5 }}
 												onPress={() =>
-													router.push(`/studio/${studio.node.id}`)
+													router.push(`/studio/${studio?.node?.id}`)
 												}
 												onLongPress={() => {
-													SheetManager.show('QuickActionStudioSheet', {
-														payload: studio.node,
+													router.push({
+														pathname: '/(sheets)/studioActions',
+														params: {
+															params: JSON.stringify(studio?.node),
+														},
 													});
 												}}
 											>
-												{studio.node?.name}
+												{studio?.node?.name}
 											</Button>
 										),
 								)}
 							</View>
 						)}
 						right={
-							data?.studios?.edges?.filter((val) => val.isMain === false)?.length < 1
+							(data?.studios?.edges?.filter((val) => val?.isMain === false)?.length ??
+								0) < 1
 								? (props) => (
 										<Text
 											{...props}
@@ -320,7 +331,7 @@ export const MetaData = ({ data, malData }: MetaDataProps) => {
 											{'N/A'}
 										</Text>
 									)
-								: null
+								: undefined
 						}
 					/>
 				)}
@@ -345,13 +356,16 @@ export const MUData = ({
 	if (!data) return null;
 
 	return (
-		<View style={{ marginVertical: 15 }}>
-			<Accordion containerKey={data?.series_id} title="Manga Updates">
+		<View>
+			<Accordion containerKey={data?.series_id} title="Manga Updates" enableDivider={true}>
 				<List.Item
 					title="Title"
 					description="Wrong series?"
-					descriptionStyle={{ textDecorationLine: 'underline', color: colors.primary }}
-					right={(props) => (
+					descriptionStyle={{
+						textDecorationLine: 'underline',
+						color: colors.primary,
+					}}
+					right={(_props) => (
 						<Text style={{ maxWidth: '50%' }}>{data?.title ?? 'N/A'}</Text>
 					)}
 					onPress={openMuDialog}
@@ -364,18 +378,18 @@ export const MUData = ({
 				/>
 				<List.Item
 					title="Latest Chapter"
-					right={(props) => <Text selectable>{data?.latest_chapter ?? 'N/A'}</Text>}
+					right={(_props) => <Text selectable>{data?.latest_chapter ?? 'N/A'}</Text>}
 				/>
 				<List.Item
 					title="Last Updated"
-					right={(props) => (
-						<Text selectable>{data?.last_updated.as_string ?? 'N/A'}</Text>
+					right={(_props) => (
+						<Text selectable>{data?.last_updated?.as_string ?? 'N/A'}</Text>
 					)}
 				/>
 				{data?.anime?.start ? (
 					<List.Item
 						title="Anime Start"
-						right={(props) => (
+						right={(_props) => (
 							<Text style={{ width: '50%', textAlign: 'right' }} selectable>
 								{data?.anime?.start ?? 'N/A'}
 							</Text>
@@ -385,7 +399,7 @@ export const MUData = ({
 				{data?.anime?.end ? (
 					<List.Item
 						title="Anime End"
-						right={(props) => (
+						right={(_props) => (
 							<Text style={{ width: '50%', textAlign: 'right' }} selectable>
 								{data?.anime?.end ?? 'N/A'}
 							</Text>

@@ -20,7 +20,6 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import * as cheerio from 'cheerio';
 import { ResizeMode, Video } from 'expo-av';
 import { findOne } from 'domutils';
-import { SheetManager } from 'react-native-actions-sheet';
 import { openWebBrowser } from '@/utils/webBrowser';
 
 // (ITS ACTUALLY JUST HTML)
@@ -72,8 +71,9 @@ const CustomImageRenderer = (props: InternalRendererProps<any>) => {
 	const [ar, setAr] = useState<number>();
 
 	useEffect(() => {
-		RNImage.getSize(rendererProps.source.uri, (w, h) => setAr(w / h));
-	}, []);
+		rendererProps.source.uri &&
+			RNImage.getSize(rendererProps.source.uri, (w, h) => setAr(w / h));
+	}, [rendererProps.source.uri]);
 
 	return (
 		<View style={{ alignItems: 'center', width: '100%' }}>
@@ -99,8 +99,8 @@ const YoutubeRenderer = (props: InternalRendererProps<TBlock>) => {
 	const { Renderer, rendererProps } = useInternalRenderer('div', props);
 	const src = props.tnode.id
 		? props.tnode.id.includes('watch?v=')
-			? props.tnode.id.split('watch?v=').at(-1).split('&')[0]
-			: props.tnode.id.split('/').at(-1).split('?')[0]
+			? props.tnode.id.split('watch?v=')?.at(-1)?.split('&')[0]
+			: props.tnode.id.split('/').at(-1)?.split('?')[0]
 		: '';
 	const computeMaxWidth = useComputeMaxWidthForTag('div');
 	const contentWidth = useContentWidth();
@@ -164,7 +164,7 @@ const SpoilerRenderer = (props: InternalRendererProps<TBlock>) => {
 const defaultFontSize = 16;
 
 type ViewerProps = {
-	body: string;
+	body: string | null | undefined;
 	parentWidth?: number;
 	textColor?: string;
 	numLines?: number;
@@ -174,11 +174,13 @@ const AniListMarkdownViewer = ({ body, parentWidth, textColor, numLines }: Viewe
 	const { width } = useWindowDimensions();
 	const extraLineHeight = 6;
 
-	const html = preprocessHTML(
-		body
-			?.replaceAll(/\[(\<img.*?>).*?]\(.*?\)/gs, '$1') // this fixes a strange image issue in the html - ref: https://anilist.co/review/23899
-			.replaceAll(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>'),
-	);
+	const html = body
+		? preprocessHTML(
+				body
+					?.replaceAll(/\[(\<img.*?>).*?]\(.*?\)/gs, '$1') // this fixes a strange image issue in the html - ref: https://anilist.co/review/23899
+					.replaceAll(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>'),
+			)
+		: '';
 	const tagsStyles: RenderHTMLProps['tagsStyles'] = {
 		blockquote: {
 			borderLeftWidth: 10,
@@ -270,8 +272,6 @@ const AniListMarkdownViewer = ({ body, parentWidth, textColor, numLines }: Viewe
 		},
 		a: {
 			onPress(event, url) {
-				SheetManager.hideAll();
-				// openBrowserAsync(url);
 				openWebBrowser(url);
 			},
 		},

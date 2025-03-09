@@ -23,12 +23,12 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 			yellow: state.scoreColors?.yellow,
 		})),
 	);
-	const [newRed, setRed] = useState(red);
+	const [newRed, setRed] = useState(red ?? 64);
 	const [newYellow, setYellow] = useState(yellow ?? 74);
 
 	const onCancel = () => {
-		setRed(red);
-		setYellow(yellow);
+		red && setRed(red);
+		yellow && setYellow(yellow);
 		onDismiss();
 	};
 
@@ -44,13 +44,13 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 				<Slider
 					title="Max Low Score"
 					initialValue={newRed}
-					onValueUpdate={(val) => setRed(Math.round(val))}
+					onValueUpdate={(val) => val && setRed(Math.round(val))}
 					maxValue={newYellow - 1}
 					minValue={0}
 				/>
 				<Slider
 					initialValue={newYellow}
-					onValueUpdate={(val) => setYellow(Math.round(val))}
+					onValueUpdate={(val) => val && setYellow(Math.round(val))}
 					maxValue={99}
 					minValue={newRed + 1}
 					title="Max Mid Score"
@@ -86,7 +86,7 @@ export const ScoreColorDialog = ({ onDismiss, visible, updateScoreColor }: Dialo
 				<Button onPress={onCancel}>Cancel</Button>
 				<Button
 					onPress={() => {
-						setRed(red);
+						red && setRed(red ?? 64);
 						setYellow(yellow ?? 74);
 					}}
 				>
@@ -168,7 +168,9 @@ export const DefaultScoreDialog = ({
 			<Dialog.Title>{'Score Defaults'}</Dialog.Title>
 			<Dialog.Content>
 				<RadioButton.Group
-					onValueChange={(value: ScoreDialogProps['defaultScore']) => setScoreType(value)}
+					onValueChange={(value) =>
+						setScoreType(value as ScoreDialogProps['defaultScore'])
+					}
 					value={scoreType}
 				>
 					{['average', 'mean'].map((stype, idx) => (
@@ -208,9 +210,12 @@ export const MediaTileCustomizer = ({
 			setCardVisual: state.setCardVisual,
 		})),
 	);
-	const [tempScoreVisualType, setTempScoreVisualType] =
-		useState<ScoreVisualType>(scoreVisualType);
-	const [tempListStatusMode, setTempListStatusMode] = useState<ListStatusMode>(listStatusMode);
+	const [tempScoreVisualType, setTempScoreVisualType] = useState<ScoreVisualType>(
+		scoreVisualType ?? 'healthbar-full',
+	);
+	const [tempListStatusMode, setTempListStatusMode] = useState<ListStatusMode>(
+		listStatusMode ?? 'dot',
+	);
 
 	const onCancel = () => {
 		onDismiss();
@@ -223,8 +228,8 @@ export const MediaTileCustomizer = ({
 
 	useEffect(() => {
 		if (visible) {
-			setTempScoreVisualType(scoreVisualType);
-			setTempListStatusMode(listStatusMode);
+			scoreVisualType && setTempScoreVisualType(scoreVisualType);
+			listStatusMode && setTempListStatusMode(listStatusMode);
 		}
 	}, [visible]);
 
@@ -261,47 +266,56 @@ export const MediaTileCustomizer = ({
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							style={{ flex: 1 }}
-							contentContainerStyle={{ paddingHorizontal: 10 }}
+							fadingEdgeLength={24}
 						>
-							{Object.keys(ScoreVisualTypeEnum).map(
-								(visual: ScoreVisualType, idx) => (
-									<Chip
-										key={idx}
-										mode="outlined"
-										selected={
-											tempScoreVisualType === ScoreVisualTypeEnum[visual]
-										}
-										onPress={() =>
-											setTempScoreVisualType(ScoreVisualTypeEnum[visual])
-										}
-										textStyle={{
-											textTransform: 'capitalize',
-											color:
-												tempScoreVisualType === ScoreVisualTypeEnum[visual]
-													? colors.primary
-													: colors.onBackground,
-										}}
-										selectedColor={colors.primary}
-										style={{
-											marginHorizontal: 5,
-											justifyContent: 'center',
-											// borderColor:
-											//     visualPreset === ScoreVisualTypeEnum[visual]
-											//         ? colors.primary
-											//         : undefined,
-										}}
-									>
-										{visual}
-									</Chip>
-								),
-							)}
+							{Object.keys(ScoreVisualTypeEnum).map((visual, idx) => (
+								<Chip
+									key={idx}
+									mode="outlined"
+									selected={
+										tempScoreVisualType ===
+										ScoreVisualTypeEnum[
+											visual as keyof typeof ScoreVisualTypeEnum
+										]
+									}
+									onPress={() =>
+										setTempScoreVisualType(
+											ScoreVisualTypeEnum[
+												visual as keyof typeof ScoreVisualTypeEnum
+											],
+										)
+									}
+									textStyle={{
+										textTransform: 'capitalize',
+										color:
+											tempScoreVisualType ===
+											ScoreVisualTypeEnum[
+												visual as keyof typeof ScoreVisualTypeEnum
+											]
+												? colors.primary
+												: colors.onBackground,
+									}}
+									selectedColor={colors.primary}
+									style={{
+										marginHorizontal: 5,
+										justifyContent: 'center',
+										// borderColor:
+										//     visualPreset === ScoreVisualTypeEnum[visual]
+										//         ? colors.primary
+										//         : undefined,
+									}}
+								>
+									{visual}
+								</Chip>
+							))}
 						</ScrollView>
 					</List.Section>
 					<List.Section title={'List Visual'}>
 						<ScrollView
 							horizontal
 							showsHorizontalScrollIndicator={false}
-							contentContainerStyle={{ paddingHorizontal: 10 }}
+							// contentContainerStyle={{ paddingHorizontal: 10 }}
+							fadingEdgeLength={24}
 						>
 							{(['dot', 'bar'] as ListStatusMode[]).map(
 								(statusMode: ListStatusMode, idx) => (

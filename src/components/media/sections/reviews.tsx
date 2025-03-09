@@ -1,21 +1,34 @@
 import { FlashList } from '@shopify/flash-list';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { ListHeading } from '@/components/text';
 import { ReviewItem } from '@/components/reviews/reviewItem';
-import { AniMediaQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	AniMediaQuery_Media_Media_reviews_ReviewConnection,
+	AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review,
+	ReviewsQuery_Page_Page_reviews_Review,
+} from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
+import { ReviewActionsSheet } from '@/components/sheets/bottomsheets';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 
 type ReviewProps = {
-	data: AniMediaQuery['Media']['reviews'];
+	data: AniMediaQuery_Media_Media_reviews_ReviewConnection;
 	openMore: () => void;
 };
 const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 	const { colors } = useAppTheme();
+	const [selectedReview, setSelectedReview] = useState<
+		| AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review
+		| ReviewsQuery_Page_Page_reviews_Review
+		| null
+		| undefined
+	>();
+	const sheetRef = useRef<TrueSheet>(null);
 
-	const keyExtractor = useCallback((item, index) => index.toString(), []);
+	const keyExtractor = useCallback((_item: any, index: number) => index.toString(), []);
 
-	if (data?.edges?.length < 1) {
+	if ((data?.edges?.length ?? 0) < 1) {
 		return null;
 	}
 
@@ -33,6 +46,10 @@ const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 						{...info}
 						backgroundColor={colors.elevation.level5}
 						iconColor={colors.onBackground}
+						openSheet={(data) => {
+							setSelectedReview(data);
+							sheetRef.current?.present();
+						}}
 					/>
 				)}
 				keyExtractor={keyExtractor}
@@ -42,6 +59,7 @@ const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 				contentContainerStyle={{ padding: 15 }}
 				showsHorizontalScrollIndicator={false}
 			/>
+			<ReviewActionsSheet data={selectedReview} sheetRef={sheetRef} />
 		</View>
 	);
 };

@@ -1,5 +1,5 @@
-import { ImageStyle } from 'expo-image';
 import { useState } from 'react';
+import { ViewStyle } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import { clamp, runOnJS, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
@@ -58,10 +58,11 @@ const useZoom = () => {
 
 	const composedGesture = Gesture.Simultaneous(panGesture, zoomGesture);
 
-	const animatedStyle = useAnimatedStyle<ImageStyle>(() => ({
+	const animatedStyle = useAnimatedStyle<ViewStyle>(() => ({
 		// @ts-ignore - not sure what the issue is - still works though
 		transform: [
 			{ scale: zoomValue.value },
+			// how to set bounds?
 			{ translateX: positionX.value },
 			{ translateY: positionY.value },
 		],

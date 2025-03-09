@@ -1,4 +1,4 @@
-import { ThreadsOverviewQuery } from '@/api/anilist/__genereated__/gql';
+import { Thread, ThreadsOverviewQuery } from '@/api/anilist/__genereated__/gql';
 import { ListHeading } from '@/components/text';
 import { ThreadOverviewItem } from '@/components/thread/items';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
@@ -8,7 +8,7 @@ import { View } from 'react-native';
 
 type ThreadOverviewProps = {
 	aniId: number;
-	data: ThreadsOverviewQuery;
+	data: ThreadsOverviewQuery | undefined;
 	isFetching: boolean;
 };
 export const ThreadOverview = ({ aniId, data }: ThreadOverviewProps) => {
@@ -16,15 +16,15 @@ export const ThreadOverview = ({ aniId, data }: ThreadOverviewProps) => {
 		router.navigate(`/thread/${id}`);
 	};
 
-	const keyExtractor = useCallback((item, index) => index.toString(), []);
+	const keyExtractor = useCallback((item: any, index: number) => index.toString(), []);
 	const renderItem = useCallback(
-		({ item }: ListRenderItemInfo<ThreadsOverviewQuery['Page']['threads'][0]>) => (
+		({ item }: ListRenderItemInfo<Thread>) => (
 			<ThreadOverviewItem item={item} onSelect={() => onSelect(item.id)} />
 		),
 		[],
 	);
 
-	if (data?.Page?.threads?.length < 1) return null;
+	if ((data?.Page?.threads?.length ?? 0) < 1) return null;
 
 	return (
 		<View>

@@ -85,41 +85,51 @@ export const notifNavigate = (notif: Notification, pressActionId: NotificationPr
 		case 'media-route':
 			// @ts-ignore
 			router.navigate(
-				`/${((notif.data.media as MainMetaFragment)?.type as MediaType)?.toLowerCase() as 'anime' | 'manga'}/${(notif.data.media as MainMetaFragment)?.id}`,
+				`/${((notif.data?.media as MainMetaFragment)?.type as MediaType)?.toLowerCase() as 'anime' | 'manga'}/${(notif.data?.media as MainMetaFragment)?.id}`,
 			);
 			break;
 		case 'user-route':
 			// @ts-ignore
 			router.navigate(`/user/${notif.data.user?.id}/${notif.data.user?.name}`);
+			break;
 		default:
 			break;
 	}
 };
 
 export const parseNotif = (
-	data: GetNotificationsQuery['Page']['notifications'][0],
+	data: NonNullable<NonNullable<GetNotificationsQuery['Page']>['notifications']>[0],
 ): Notification => {
 	const language = useSettingsStore.getState().mediaLanguage;
-	const channelId = NotificationType[data.__typename.replace('Notification', '')];
+	const notifType = data?.__typename.replace('Notification', '') as keyof typeof NotificationType;
+	const channelId = NotificationType[notifType];
 	const channelInfo: NotificationAndroid = { channelId, groupId: ANILIST_GROUP_ID };
-	switch (data.__typename) {
+	switch (data?.__typename) {
 		case 'ActivityLikeNotification':
 		case 'ActivityMentionNotification':
 		case 'ActivityMessageNotification':
 		case 'ActivityReplyNotification':
 		case 'ActivityReplyLikeNotification':
 		case 'ActivityReplySubscribedNotification':
-			const activity_body = `${data.user.name} ${ActivityConfig[data.__typename].body}`;
+			const activity_body = `${data.user?.name} ${ActivityConfig[data.__typename].body}`;
 			return {
 				title: ActivityConfig[data.__typename].title,
 				body: activity_body,
 				data: {
-					...data,
+					...Object.entries(data).reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value ?? undefined,
+						}),
+						{},
+					),
 				},
 				android: {
 					...channelInfo,
-					largeIcon: data.user.avatar.large,
-					timestamp: new Date(data.createdAt * 1000).getTime(),
+					largeIcon: data.user?.avatar?.large ?? undefined,
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
 					pressAction: { id: 'activity-route' },
 					actions: [
 						{
@@ -139,8 +149,8 @@ export const parseNotif = (
 			};
 		case 'AiringNotification':
 			return {
-				title: data.media.title[language] ?? data.media.title.romaji,
-				body: `${data.contexts[0]}${data.episode}${data.contexts[2]}`,
+				title: data.media?.title?.[language ?? 'romaji'] as string,
+				body: `${data.contexts?.[0]}${data.episode}${data.contexts?.[2]}`,
 				data: {
 					...data,
 					contexts: '',
@@ -156,23 +166,36 @@ export const parseNotif = (
 							},
 						},
 					],
-					largeIcon: data.media.coverImage.large,
+					largeIcon: data.media?.coverImage?.large ?? undefined,
 					style: {
 						type: AndroidStyle.BIGPICTURE,
-						picture: data.media.bannerImage ?? data.media.coverImage.large,
+						picture:
+							data.media?.bannerImage ?? data.media?.coverImage?.large ?? '',
 					},
-					timestamp: new Date(data.createdAt * 1000).getTime(),
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
 				},
 			};
 		case 'FollowingNotification':
 			return {
 				title: 'New Follower',
-				body: `${data.user.name} started following you`,
-				data: { ...data },
+				body: `${data.user?.name} started following you`,
+				data: {
+					...Object.entries(data).reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value ?? undefined,
+						}),
+						{},
+					),
+				},
 				android: {
 					...channelInfo,
-					largeIcon: data.user.avatar.large,
-					timestamp: new Date(data.createdAt * 1000).getTime(),
+					largeIcon: data.user?.avatar?.large ?? undefined,
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
 					actions: [
 						{
 							title: 'View Activity',
@@ -191,13 +214,23 @@ export const parseNotif = (
 			};
 		case 'MediaDataChangeNotification':
 			return {
-				title: data.media.title[language] ?? data.media.title.romaji,
-				body: `${data.media.title[language] ?? data.media.title.romaji}${data.context}`,
-				data: { ...data },
+				title: data.media?.title?.[language ?? 'romaji'] as string,
+				body: `${data.media?.title?.[language ?? 'romaji']}${data.context}`,
+				data: {
+					...Object.entries(data).reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value ?? undefined,
+						}),
+						{},
+					),
+				},
 				android: {
 					...channelInfo,
-					largeIcon: data.media.coverImage.large,
-					timestamp: new Date(data.createdAt * 1000).getTime(),
+					largeIcon: data.media?.coverImage?.large ?? undefined,
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
 					pressAction: { id: 'media-route' },
 					style: {
 						type: AndroidStyle.BIGTEXT,
@@ -215,16 +248,26 @@ export const parseNotif = (
 			};
 		case 'MediaDeletionNotification':
 			return {
-				title: data.deletedMediaTitle,
+				title: data.deletedMediaTitle as string,
 				body: `${data.deletedMediaTitle}${data.context}`,
-				data: { ...data },
+				data: {
+					...Object.entries(data).reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value ?? undefined,
+						}),
+						{},
+					),
+				},
 				android: {
 					...channelInfo,
 					style: {
 						type: AndroidStyle.BIGTEXT,
 						text: data.reason ?? '',
 					},
-					timestamp: new Date(data.createdAt * 1000).getTime(),
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
 					// actions: [
 					// 	{
 					// 		title: 'View Activity',
@@ -237,19 +280,30 @@ export const parseNotif = (
 			};
 		case 'MediaMergeNotification':
 			return {
-				title: data.media.title[language] ?? data.media.title.romaji,
-				body: `${data.deletedMediaTitles} merged with ${data.media.title[language] ?? data.media.title.romaji
-					}`,
-				data: { ...data },
+				title: data.media?.title?.[language ?? 'romaji'] as string,
+				body: `${data.deletedMediaTitles} merged with ${data.media?.title?.[language ?? 'romaji'] as string}`,
+				data: {
+					...Object.entries(data).reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value ?? undefined,
+						}),
+						{},
+					),
+				},
 				android: {
 					...channelInfo,
-					timestamp: new Date(data.createdAt * 1000).getTime(),
-					largeIcon: data.media.coverImage.large,
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
+					largeIcon: data.media?.coverImage?.large ?? undefined,
 					pressAction: { id: 'media-route' },
-					style: {
-						type: AndroidStyle.BIGTEXT,
-						text: data.reason,
-					},
+					style: data.reason
+						? {
+							type: AndroidStyle.BIGTEXT,
+							text: data.reason,
+						}
+						: undefined,
 					actions: [
 						{
 							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
@@ -262,17 +316,27 @@ export const parseNotif = (
 			};
 		case 'RelatedMediaAdditionNotification':
 			return {
-				title: data.media.title[language] ?? data.media.title.romaji,
-				body: `${data.media.title[language] ?? data.media.title.romaji}${data.context}`,
-				data: { ...data },
+				title: data.media?.title?.[language ?? 'romaji'] as string,
+				body: `${data.media?.title?.[language ?? 'romaji'] as string}${data.context}`,
+				data: {
+					...Object.entries(data).reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value ?? undefined,
+						}),
+						{},
+					),
+				},
 				android: {
 					...channelInfo,
-					largeIcon: data.media.coverImage.large,
-					timestamp: new Date(data.createdAt * 1000).getTime(),
+					largeIcon: data.media?.coverImage?.large ?? undefined,
+					timestamp: data.createdAt
+						? new Date(data.createdAt * 1000).getTime()
+						: undefined,
 					pressAction: { id: 'media-route' },
 					style: {
 						type: AndroidStyle.BIGPICTURE,
-						picture: data.media.bannerImage ?? data.media.coverImage.large,
+						picture: data.media?.bannerImage ?? data.media?.coverImage?.large ?? '',
 					},
 					actions: [
 						{
@@ -284,6 +348,8 @@ export const parseNotif = (
 					],
 				},
 			};
+		default:
+			return {};
 		// case 'ThreadCommentLikeNotification':
 		// case 'ThreadCommentMentionNotification':
 		// case 'ThreadCommentReplyNotification':
@@ -357,8 +423,8 @@ export const fetchAnilistNotifications = async () => {
 			0,
 			data.Viewer?.unreadNotificationCount ?? 0,
 		);
-		if (newNotifs.length > 0) {
-			newNotifs.forEach((notif) => {
+		if ((newNotifs?.length ?? 0) > 0) {
+			newNotifs?.forEach((notif) => {
 				const parsedData = parseNotif(notif);
 				displayNotification({ ...parsedData });
 			});

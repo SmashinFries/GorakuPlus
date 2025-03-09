@@ -2,6 +2,7 @@ import {
 	AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection,
 	AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule,
 	AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge,
+	AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review,
 	AniMediaQuery_Media_Media_streamingEpisodes_MediaStreamingEpisode,
 	MainMetaFragment,
 	MediaListEntryMetaFragment,
@@ -175,9 +176,10 @@ export type MediaQuickActionProps = MainMetaFragment & {
 export type ReviewOverviewSheetProps = {
 	sheetRef: React.RefObject<TrueSheet>;
 	data:
-		| AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge
+		| AniMediaQuery_Media_Media_reviews_ReviewConnection_edges_ReviewEdge_node_Review
 		| ReviewsQuery_Page_Page_reviews_Review
-		| null;
+		| null
+		| undefined;
 };
 export const ReviewActionsSheet = ({ sheetRef, data }: ReviewOverviewSheetProps) => {
 	const review =

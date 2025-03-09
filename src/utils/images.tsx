@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Burnt from 'burnt';
 import { TOAST } from '@/constants/toast';
 
-export const saveImage = async (url: string, name = null, ext?: string) => {
+export const saveImage = async (url: string, name: string | null = null, ext?: string) => {
 	const { status } = await MediaLibrary.requestPermissionsAsync();
 	const formattedTitle = name ?? encodeURIComponent('mal_' + url.split('/').pop()?.split('.')[0]);
 	const fileUri =
@@ -70,17 +70,17 @@ export const SaveImageDialog = ({
 export const selectImage = async (
 	camera?: boolean,
 	asAsset?: boolean,
-): Promise<ImagePicker.ImagePickerAsset | string> => {
+): Promise<ImagePicker.ImagePickerAsset | string | null> => {
 	const result = camera
 		? await ImagePicker.launchCameraAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.All,
+				mediaTypes: 'images',
 				allowsEditing: true,
-				quality: 0.75,
+				quality: 1,
 				base64: true,
 				allowsMultipleSelection: false,
 			})
 		: await ImagePicker.launchImageLibraryAsync({
-				mediaTypes: ImagePicker.MediaTypeOptions.All,
+				mediaTypes: 'images',
 				allowsEditing: true,
 				quality: 1,
 				base64: true,
@@ -102,10 +102,10 @@ export const selectImage = async (
 };
 
 export const getImageB64 = async (camera?: boolean, url?: string): Promise<string | null> => {
+	const types = ['jpg', 'jpeg', 'png'];
 	if (url) {
-		const imgType = ['jpg', 'jpeg', 'png'].includes(url.split('.').at(-1))
-			? url.split('.').at(-1)
-			: 'jpg';
+		const ext = url.split('.').at(-1);
+		const imgType = ext && types.includes(ext) ? ext : 'jpg';
 		try {
 			const { uri } = await FileSystem.downloadAsync(
 				url,
@@ -134,9 +134,8 @@ export const getImageB64 = async (camera?: boolean, url?: string): Promise<strin
 					base64: true,
 					allowsMultipleSelection: false,
 				});
-		const imgType = ['jpg', 'jpeg', 'png'].includes(result.assets[0].uri.split('.').at(-1))
-			? result.assets[0].uri.split('.').at(-1)
-			: 'jpg';
+		const ext = result.assets?.[0].uri.split('.').at(-1);
+		const imgType = ext && types.includes(ext) ? ext : 'jpg';
 		if (!result.canceled) {
 			return `data:image/${imgType};base64,${result.assets[0].base64}`;
 		} else {

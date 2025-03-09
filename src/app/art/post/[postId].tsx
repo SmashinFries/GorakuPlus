@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { TagSection } from '@/components/art/danTag';
@@ -65,7 +65,7 @@ const DanbooruPostPage = () => {
 			>
 				<View
 					style={{
-						paddingBottom: bottom,
+						paddingBottom: bottom + 100,
 						backgroundColor: colors.background,
 					}}
 				>
@@ -75,10 +75,10 @@ const DanbooruPostPage = () => {
 					>
 						<View style={{ marginHorizontal: 5, alignItems: 'center' }}>
 							<Text variant="headlineSmall" style={{ textTransform: 'capitalize' }}>
-								{getTitle(data?.tag_string_character)}
+								{data?.tag_string_character && getTitle(data?.tag_string_character)}
 							</Text>
 							<Text variant="titleSmall" style={{ color: colors.onSurfaceVariant }}>
-								{getTitle(data?.tag_string_copyright)}
+								{data?.tag_string_copyright && getTitle(data?.tag_string_copyright)}
 							</Text>
 						</View>
 					</View>
@@ -93,13 +93,13 @@ const DanbooruPostPage = () => {
 						}
 					/>
 					<StatisticsBar
-						favorites={data?.fav_count}
+						favorites={data?.fav_count ?? 0}
 						up_score={data?.up_score}
 						down_score={data?.down_score}
 					/>
 					<ArtistBar
 						artist_name={data?.tag_string_artist?.split(' ')[0]}
-						pixiv_id={data?.pixiv_id}
+						pixiv_id={data?.pixiv_id ?? undefined}
 						source={data?.source}
 					/>
 					{commentary?.data && <Commentary data={commentary?.data} />}

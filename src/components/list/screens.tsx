@@ -20,8 +20,8 @@ import { GorakuRefreshControl } from '../explore/lists';
 
 type ListParams = {
 	data:
-		| UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]
-		| UserMangaListCollectionQuery['MediaListCollection']['lists'][0];
+		| NonNullable<NonNullable<UserAnimeListCollectionQuery['MediaListCollection']>['lists']>[0]
+		| NonNullable<NonNullable<UserMangaListCollectionQuery['MediaListCollection']>['lists']>[0];
 	updateTitle?: (dataLength: number) => void;
 	isRefreshing?: boolean;
 	onRefresh?: () => void;
@@ -29,7 +29,6 @@ type ListParams = {
 };
 
 const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
-	const [entries, setEntries] = useState(data?.entries);
 	const { query, sort } = useListFilterStore();
 	const { columns, displayMode } = useColumns('list');
 
@@ -43,18 +42,18 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 	// );
 
 	const sortedItems = useMemo(() => {
-		return sortLists(entries, sort);
+		return sort ? sortLists(data?.entries, sort) : null;
 	}, [sort]);
 
-	const filterList = (search: string) => {
-		if (search.length > 0) {
-			return sortedItems.filter(
+	const filterList = (search?: string) => {
+		if (search && search.length > 0) {
+			return sortedItems?.filter(
 				(item) =>
-					item.media.title.romaji?.toLowerCase()?.includes(search?.toLowerCase()) ||
-					item.media.title.english?.toLowerCase()?.includes(search?.toLowerCase()) ||
-					item.media.title.native?.includes(search) ||
-					item.media.synonyms?.some((value, index) =>
-						value.toLowerCase()?.includes(search?.toLowerCase()),
+					item?.media?.title?.romaji?.toLowerCase()?.includes(search?.toLowerCase()) ||
+					item?.media?.title?.english?.toLowerCase()?.includes(search?.toLowerCase()) ||
+					item?.media?.title?.native?.includes(search) ||
+					item?.media?.synonyms?.some((value) =>
+						value?.toLowerCase()?.includes(search?.toLowerCase()),
 					),
 			);
 		} else {
@@ -71,8 +70,24 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 			item,
 		}: {
 			item:
-				| UserAnimeListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0]
-				| UserMangaListCollectionQuery['MediaListCollection']['lists'][0]['entries'][0];
+				| NonNullable<
+						NonNullable<
+							NonNullable<
+								NonNullable<
+									UserAnimeListCollectionQuery['MediaListCollection']
+								>['lists']
+							>[0]
+						>['entries']
+				  >[0]
+				| NonNullable<
+						NonNullable<
+							NonNullable<
+								NonNullable<
+									UserMangaListCollectionQuery['MediaListCollection']
+								>['lists']
+							>[0]
+						>['entries']
+				  >[0];
 		}) => {
 			return displayMode === 'COMPACT' ? (
 				<View
@@ -85,7 +100,7 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 					}}
 				>
 					<MediaCard
-						{...item.media}
+						{...item?.media}
 						fitToParent
 						tempListStatusMode={
 							[
@@ -118,17 +133,17 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 					)} */}
 				</View>
 			) : (
-				<MediaCardRow {...item.media} />
+				<MediaCardRow {...item?.media} />
 			);
 		},
 		[displayMode],
 	);
 
 	useEffect(() => {
-		if (query.length > 0) {
-			updateTitle(filterList(query).length ?? 0);
+		if (query && (query?.length ?? 0) > 0) {
+			updateTitle?.(filterList(query)?.length ?? 0);
 		} else {
-			updateTitle(filteredItems.length ?? 0);
+			updateTitle?.(filteredItems?.length ?? 0);
 		}
 	}, [query]);
 
@@ -139,11 +154,11 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 				ref={listRef}
 				data={filteredItems}
 				renderItem={RenderItem}
-				keyExtractor={(item, idx) => item?.media?.id.toString()}
+				keyExtractor={(item, idx) => idx.toString()}
 				estimatedItemSize={238}
 				numColumns={columns}
 				refreshControl={
-					<GorakuRefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
+					<GorakuRefreshControl onRefresh={onRefresh} refreshing={!!isRefreshing} />
 				}
 				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				// terrible performance without
@@ -209,7 +224,7 @@ export const ListTabs = ({
 	const renderScene = ({ route }) => {
 		return (
 			<ListScreen
-				data={data?.lists.find((list) => list.name === route.key)}
+				data={data?.lists?.find((list) => list?.name === route.key)}
 				updateTitle={(dataLength: number) => updateTitleCount(route.key, dataLength ?? 0)}
 				isRefreshing={isRefreshing}
 				onRefresh={onRefresh}
@@ -219,9 +234,11 @@ export const ListTabs = ({
 
 	useEffect(() => {
 		if (tabRoutes && data?.lists && isViewer) {
-			const listCounts = {};
+			const listCounts: { [key: string]: number } = {};
 			for (const list of data.lists) {
-				listCounts[list.name] = list.entries.length;
+				if (list?.name) {
+					listCounts[list?.name] = list.entries?.length ?? 0;
+				}
 			}
 			const newRoutes = sortListTabs(
 				tabRoutes.map((route) => route.key),

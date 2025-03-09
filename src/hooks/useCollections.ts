@@ -32,13 +32,13 @@ export const useCollectionUpdater = (queryClient: QueryClient) => {
 				queryKey: useAllCollectionsQuery.getKey(),
 				queryFn: useAllCollectionsQuery.fetcher(),
 			});
-			if (data) {
-				updateCollection('genres', data.GenreCollection);
-				updateCollection('tags', data.MediaTagCollection);
+			data.GenreCollection && updateCollection('genres', data.GenreCollection);
+			data.MediaTagCollection && updateCollection('tags', data.MediaTagCollection);
+			data.AnimeExternalLinkSourceCollection &&
 				updateCollection('animeLinks', data.AnimeExternalLinkSourceCollection);
+			data.MangaExternalLinkSourceCollection &&
 				updateCollection('mangaLinks', data.MangaExternalLinkSourceCollection);
-				resetRefreshAt();
-			}
+			resetRefreshAt();
 		}
 	};
 
@@ -53,7 +53,7 @@ export const useCollectionUpdater = (queryClient: QueryClient) => {
 					queryKey: useGenreCollectionQuery.getKey(),
 					queryFn: useGenreCollectionQuery.fetcher(),
 				});
-				if (genreData) {
+				if (genreData.GenreCollection) {
 					updateCollection('genres', genreData.GenreCollection);
 				}
 				break;
@@ -62,7 +62,7 @@ export const useCollectionUpdater = (queryClient: QueryClient) => {
 					queryKey: useTagCollectionQuery.getKey(),
 					queryFn: useTagCollectionQuery.fetcher(),
 				});
-				if (tagData) {
+				if (tagData.MediaTagCollection) {
 					updateCollection('tags', tagData.MediaTagCollection);
 				}
 				break;
@@ -76,10 +76,11 @@ export const useCollectionUpdater = (queryClient: QueryClient) => {
 					updateCollection(
 						type,
 						type === 'animeLinks'
-							? linkData.AnimeExternalLinkSourceCollection
-							: linkData.MangaExternalLinkSourceCollection,
+							? (linkData.AnimeExternalLinkSourceCollection ?? [])
+							: (linkData.MangaExternalLinkSourceCollection ?? []),
 					);
 				}
+				break;
 			default:
 				break;
 		}

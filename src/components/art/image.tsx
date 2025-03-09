@@ -20,14 +20,13 @@ export const PostImage = ({
 	aspectRatio,
 	setImageHeight,
 }: PostImageProps) => {
-	const { width, height } = useWindowDimensions();
+	const { width } = useWindowDimensions();
 	const { colors } = useAppTheme();
 
 	if (!img_url) return null;
 
 	return (
 		<Animated.View
-			sharedTransitionTag="danImage"
 			style={[
 				style,
 				{

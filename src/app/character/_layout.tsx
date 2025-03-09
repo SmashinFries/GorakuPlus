@@ -1,8 +1,6 @@
 import PaperHeader from '@/components/headers';
 import AnimatedStack from '@/components/stack';
-import { Stack } from 'expo-router';
-import { SheetManager } from 'react-native-actions-sheet';
-import { Appbar } from 'react-native-paper';
+import { router, Stack } from 'expo-router';
 
 const CharacterLayout = () => {
 	return (
@@ -22,8 +20,9 @@ const CharacterLayout = () => {
 								{
 									icon: 'view-module',
 									onPress: () =>
-										SheetManager.show('DisplayConfigSheet', {
-											payload: { type: 'search' },
+										router.push({
+											pathname: '/(sheets)/displayConfig',
+											params: { type: 'search' },
 										}),
 								},
 							]}

@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { IconButton, MD3DarkTheme, Text, useTheme } from 'react-native-paper';
+import { IconButton, MD3DarkTheme, Text } from 'react-native-paper';
 import { memo } from 'react';
 import { CharacterListQuery } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 
 type CharacterItemProps = {
-	item: CharacterListQuery['Media']['characters']['edges'][0];
+	item: NonNullable<
+		NonNullable<NonNullable<CharacterListQuery['Media']>['characters']>['edges']
+	>[0];
 	index: number;
 	subTextColor: string;
 	onNavigation: (id: number) => void;
@@ -16,15 +17,15 @@ type CharacterItemProps = {
 
 const BORDER_RADIUS = 12;
 
-export const CharacterItem = ({ item, subTextColor, onNavigation }: CharacterItemProps) => {
+export const CharacterItem = ({ item, onNavigation }: CharacterItemProps) => {
 	const { colors } = useAppTheme();
 	return (
 		<Pressable
 			style={[styles.container]}
 			android_ripple={{ color: colors.primary, foreground: true }}
-			onPress={onNavigation ? () => onNavigation(item.node?.id) : null}
+			onPress={onNavigation ? () => item?.node?.id && onNavigation(item?.node?.id) : null}
 		>
-			<Image source={{ uri: item.node?.image?.large }} style={[styles.img]} />
+			<Image source={{ uri: item?.node?.image?.large }} style={[styles.img]} />
 			<LinearGradient
 				style={{
 					position: 'absolute',
@@ -38,10 +39,10 @@ export const CharacterItem = ({ item, subTextColor, onNavigation }: CharacterIte
 			/>
 			<View style={[styles.btmContainer]}>
 				<Text variant="labelMedium" numberOfLines={2} style={[styles.name]}>
-					{item.node?.name?.full}
+					{item?.node?.name?.full}
 				</Text>
 			</View>
-			{item.node.isFavourite && (
+			{item?.node?.isFavourite && (
 				<View style={{ position: 'absolute', top: -5, right: -5 }}>
 					<IconButton icon="heart" iconColor="red" />
 				</View>

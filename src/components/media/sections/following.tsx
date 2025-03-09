@@ -1,39 +1,47 @@
-import { FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
-import { ListHeading } from '../../text';
-import { View } from 'react-native';
+import { FlatList, ListRenderItemInfo } from 'react-native';
 import { UserCard } from '../../cards';
-import { AniMediaQuery } from '@/api/anilist/__genereated__/gql';
+import { AniMediaQuery_Following_Page_mediaList_MediaList } from '@/api/anilist/__genereated__/gql';
+import { useAuthStore } from '@/store/authStore';
+import { AccordionMemo } from '@/components/animations';
 
 type FollowingPrevListProps = {
-	data: AniMediaQuery['Following']['mediaList'];
+	data: AniMediaQuery_Following_Page_mediaList_MediaList[];
 };
 export const FollowingPrevList = ({ data }: FollowingPrevListProps) => {
-	const keyExtractor = useCallback((item, index) => index.toString(), []);
-	const renderItem = useCallback(
-		({ item }: { item: AniMediaQuery['Following']['mediaList'][0] }) => (
-			<UserCard {...item.user} />
-		),
+	const userID = useAuthStore((state) => state.anilist?.userID);
+	const keyExtractor = useCallback(
+		(item: AniMediaQuery_Following_Page_mediaList_MediaList, index: number) => index.toString(),
 		[],
 	);
+	const renderItem = ({
+		item,
+	}: ListRenderItemInfo<AniMediaQuery_Following_Page_mediaList_MediaList>) =>
+		userID !== item.user?.id && item.user?.id ? (
+			<UserCard
+				status={item.status ?? undefined}
+				progress={item.progress ?? undefined}
+				{...item.user}
+				isFollowing={false}
+				isFollower={false}
+			/>
+		) : null;
 
-	if (data?.length < 1) {
+	if ((data?.length ?? 0) < 1) {
 		return null;
 	}
 
 	return (
-		<View>
-			<ListHeading title="Following" />
-			<FlashList
+		<AccordionMemo title="Following">
+			<FlatList
 				data={data}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
 				horizontal
-				removeClippedSubviews
 				contentContainerStyle={{ padding: 15 }}
-				estimatedItemSize={125}
+				// estimatedItemSize={125}
 				showsHorizontalScrollIndicator={false}
 			/>
-		</View>
+		</AccordionMemo>
 	);
 };

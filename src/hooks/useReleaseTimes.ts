@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 
 type ReleaseTimesProps = {
 	type: MediaType;
-	status: MediaStatus;
-	nextEpisode?: AiringSchedule;
-	releases?: ReleaseSearchResponseV1ResultsItem[];
-	episodes?: number;
-	chapters?: number;
-	volumes?: number;
+	status: MediaStatus | null | undefined;
+	nextEpisode?: AiringSchedule | null | undefined;
+	releases?: ReleaseSearchResponseV1ResultsItem[] | null | undefined;
+	episodes?: number | null | undefined;
+	chapters?: number | null | undefined;
+	volumes?: number | null | undefined;
 };
 export const useReleaseTimes = ({
 	type,
@@ -24,7 +24,7 @@ export const useReleaseTimes = ({
 	const [text, setText] = useState('');
 
 	useEffect(() => {
-		if (episodes | chapters | volumes) {
+		if (episodes ?? chapters ?? volumes) {
 			setText(
 				`${episodes ?? chapters ?? volumes} ${episodes ? 'episodes' : chapters ? 'chapters' : 'volumes'}`,
 			);
@@ -44,7 +44,7 @@ export const useReleaseTimes = ({
 	useEffect(() => {
 		if (releases && releases.length > 1) {
 			setText(
-				`${getChapterFrequency(releases.map((release) => release.record?.release_date))} days`,
+				`${getChapterFrequency(releases.map((release) => release?.record?.release_date).filter((date): date is string => !!date))} days`,
 			);
 		}
 	}, [releases]);

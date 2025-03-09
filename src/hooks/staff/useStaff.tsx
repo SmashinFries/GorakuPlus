@@ -1,9 +1,4 @@
-import {
-	StaffSort,
-	useInfiniteStaffListQuery,
-	useStaffListQuery,
-} from '@/api/anilist/__genereated__/gql';
-import { useCallback, useState } from 'react';
+import { useInfiniteStaffListQuery } from '@/api/anilist/__genereated__/gql';
 
 export const useStaffList = (id: number) => {
 	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } = useInfiniteStaffListQuery(
@@ -15,16 +10,16 @@ export const useStaffList = (id: number) => {
 		{
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
-				if (lastPage.Media.staff.pageInfo.hasNextPage) {
+				if (lastPage.Media?.staff?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Media.staff.pageInfo.currentPage + 1,
+						page: (lastPage.Media.staff.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
 		},
 	);
 
-	const mergedData = data?.pages?.flatMap((page) => page.Media.staff.edges);
+	const mergedData = data?.pages?.flatMap((page) => page.Media?.staff?.edges);
 
 	return {
 		data: mergedData,

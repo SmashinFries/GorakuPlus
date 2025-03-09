@@ -1,9 +1,8 @@
 import {
 	LikeableType,
+	Thread,
 	ThreadCategory,
 	ThreadComment,
-	ThreadDetailQuery,
-	ThreadsOverviewQuery,
 	useToggleLikeMutation,
 	useToggleThreadSubscriptionMutation,
 } from '@/api/anilist/__genereated__/gql';
@@ -16,7 +15,6 @@ import { useAuthStore } from '@/store/authStore';
 import AniListMarkdownViewer from '../markdown/renderer';
 import ViewShot from 'react-native-view-shot';
 import { useScreenshot } from '@/hooks/useScreenshot';
-import { SheetManager } from 'react-native-actions-sheet';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -25,7 +23,7 @@ import { sendErrorMessage, sendToast } from '@/utils/toast';
 
 type ThreadItemHeaderProps = {
 	createdAt: number;
-	user: ThreadDetailQuery['Thread']['user'] | ThreadComment['user'];
+	user: { id: number; name?: string | null; avatar?: { large?: string | null } | null } | null;
 };
 export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => {
 	const { colors } = useAppTheme();
@@ -57,8 +55,14 @@ export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => 
 						padding: 4,
 					}}
 					onPress={onUserPress}
+					// onLongPress={() => openUserQuickSheet({ ...user })}
 					onLongPress={() =>
-						SheetManager.show('QuickActionUserSheet', { payload: { ...user } })
+						router.push({
+							pathname: '/(sheets)/userActions',
+							params: {
+								params: JSON.stringify(user),
+							},
+						})
 					}
 					android_ripple={{
 						color: colors.primary,
@@ -66,7 +70,7 @@ export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => 
 						borderless: true,
 					}}
 				>
-					<Avatar.Image size={42} source={{ uri: user?.avatar?.large }} />
+					<Avatar.Image size={42} source={{ uri: user?.avatar?.large ?? undefined }} />
 					<Text>{user?.name}</Text>
 				</Pressable>
 			</View>
@@ -92,7 +96,7 @@ export const ThreadItemFooter = ({
 	onScreenshot,
 }: {
 	threadId: number;
-	commentId: number;
+	commentId?: number;
 	categories?: ThreadCategory[];
 	viewCount?: number;
 	likeCount?: number;
@@ -110,8 +114,8 @@ export const ThreadItemFooter = ({
 	const toggleSubscribeMutation = useToggleThreadSubscriptionMutation();
 	const { mutateAsync: deleteActivity } = useDeleteActivityItemInvalidateMutation();
 	const [isLikedMutated, setIsLikedMutated] = useState<{ isLiked: boolean; likeCount: number }>({
-		isLiked,
-		likeCount,
+		isLiked: !!isLiked,
+		likeCount: likeCount ?? 0,
 	});
 	const [isSubscribedMutated, setIsSubscribedMutated] = useState(isSubscribed);
 	// const [isMoreMenuVis, setIsMoreMenuVis] = useState(false);
@@ -123,7 +127,7 @@ export const ThreadItemFooter = ({
 			{ subscribe: !isSubscribedMutated, threadId },
 			{
 				onSuccess(data) {
-					setIsSubscribedMutated(data?.ToggleThreadSubscription?.isSubscribed);
+					setIsSubscribedMutated(!!data?.ToggleThreadSubscription?.isSubscribed);
 				},
 			},
 		);
@@ -138,8 +142,8 @@ export const ThreadItemFooter = ({
 			{
 				onSuccess(data) {
 					setIsLikedMutated({
-						likeCount: data?.ToggleLikeV2?.likeCount,
-						isLiked: data?.ToggleLikeV2?.isLiked,
+						likeCount: data?.ToggleLikeV2?.likeCount ?? likeCount ?? 0,
+						isLiked: data?.ToggleLikeV2?.isLiked ?? !!isLiked,
 					});
 				},
 			},
@@ -208,7 +212,7 @@ export const ThreadItemFooter = ({
 					{!isReply && (
 						<Button
 							compact
-							icon={isSubscribedMutated && 'check'}
+							icon={!!isSubscribedMutated ? 'check' : undefined}
 							onPress={onSubscribePress}
 							disabled={!userId}
 						>
@@ -330,7 +334,9 @@ export const ThreadItem = ({
 	categories?: ThreadCategory[];
 	likeCount: number;
 	viewCount?: number;
-	user?: ThreadDetailQuery['Thread']['user'] | ThreadComment['user'];
+	user?:
+		| { id: number; name?: string | null; avatar?: { large?: string | null } | null }
+		| ThreadComment['user'];
 	createdAt: number;
 	isSubscribed?: boolean;
 	isLiked?: boolean;
@@ -351,7 +357,7 @@ export const ThreadItem = ({
 			style={{ backgroundColor: colors.background, paddingHorizontal: 12 }}
 			options={{ fileName: `${user?.name}-${commentId ?? threadId}`, quality: 1 }}
 		>
-			<ThreadItemHeader user={user} createdAt={createdAt} />
+			<ThreadItemHeader user={user ?? null} createdAt={createdAt} />
 			<ThreadItemBody
 				body={body}
 				isHtml={isHtml}
@@ -360,7 +366,7 @@ export const ThreadItem = ({
 			/>
 			<ThreadItemFooter
 				threadId={threadId}
-				commentId={commentId}
+				commentId={commentId ?? undefined}
 				categories={categories}
 				likeCount={likeCount}
 				viewCount={viewCount}
@@ -403,7 +409,7 @@ export const ThreadOverviewItem = ({
 	containerStyle,
 	onSelect,
 }: {
-	item: ThreadsOverviewQuery['Page']['threads'][0];
+	item: Thread;
 	onSelect: () => void;
 	containerStyle?: ViewStyle;
 }) => {
@@ -421,7 +427,12 @@ export const ThreadOverviewItem = ({
 				android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 				onPress={onSelect}
 				onLongPress={() =>
-					SheetManager.show('ThreadOverviewSheet', { payload: { data: item } })
+					router.push({
+						pathname: '/(sheets)/threadActions',
+						params: {
+							params: JSON.stringify(item),
+						},
+					})
 				}
 			>
 				<View
@@ -441,7 +452,7 @@ export const ThreadOverviewItem = ({
 							backgroundColor: colors.surfaceVariant,
 						}}
 					>
-						<Text variant="labelSmall">{item.categories[0]?.name}</Text>
+						<Text variant="labelSmall">{item?.categories?.[0]?.name}</Text>
 					</View>
 				</View>
 				<View style={{ flexDirection: 'row' }}>
@@ -468,7 +479,10 @@ export const ThreadOverviewItem = ({
 				>
 					<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-							<Avatar.Image source={{ uri: item.user?.avatar?.large }} size={24} />
+							<Avatar.Image
+								source={{ uri: item.user?.avatar?.large ?? undefined }}
+								size={24}
+							/>
 							<Text variant="labelMedium" style={{ paddingLeft: 4 }}>
 								By {item.user?.name}
 							</Text>
@@ -476,11 +490,11 @@ export const ThreadOverviewItem = ({
 						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 							<Text variant="labelSmall" style={{ marginRight: 6 }}>
 								<Icon source={'eye'} size={undefined} />
-								{` ${item.viewCount.toLocaleString()}`}
+								{` ${item?.viewCount?.toLocaleString()}`}
 							</Text>
 							<Text variant="labelSmall">
 								<Icon source={'comment'} size={undefined} />
-								{` ${item.replyCount.toLocaleString()}`}
+								{` ${item?.replyCount?.toLocaleString()}`}
 							</Text>
 						</View>
 					</View>

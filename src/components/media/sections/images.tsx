@@ -5,18 +5,19 @@ import { ListHeading } from '@/components/text';
 import { SaveImageDialog } from '@/utils/images';
 import { useCallback, useState } from 'react';
 import Animated from 'react-native-reanimated';
-import { Pressable, View } from 'react-native';
+import { ListRenderItemInfo, Pressable, View } from 'react-native';
 import { GetAnimePicturesQueryResult } from '@/api/jikan/jikan';
+import { PicturesVariantsDataItem } from '@/api/jikan/models';
 
 type MalImageItemProps = {
-	item: GetAnimePicturesQueryResult['data']['data'][0];
+	item: PicturesVariantsDataItem;
 	index: number;
 };
 const MalImageItem = ({
 	item,
 	index,
 	onDownload,
-}: MalImageItemProps & { onDownload: (img: string) => void }) => {
+}: MalImageItemProps & { onDownload: (img: string | null | undefined) => void }) => {
 	return (
 		<Pressable
 			onLongPress={() => {
@@ -42,11 +43,11 @@ const MalImages = ({ data }: MalImagesProps) => {
 
 	const onDismiss = useCallback(() => setSelectedImg(''), []);
 
-	const onDownload = useCallback((img_url: string) => {
-		setSelectedImg(img_url);
+	const onDownload = useCallback((img_url: string | null | undefined) => {
+		img_url && setSelectedImg(img_url);
 	}, []);
 
-	const RenderItem = useCallback((props) => {
+	const RenderItem = useCallback((props: ListRenderItemInfo<PicturesVariantsDataItem>) => {
 		return <MalImageItem {...props} onDownload={onDownload} />;
 	}, []);
 

@@ -6,10 +6,11 @@ import { NumberPickDialog } from '@/components/dialogs';
 import { scoreValues } from '@/utils/scores';
 import {
 	AniMediaQuery,
+	AniMediaQuery_Media_Media_mediaListEntry_MediaList,
+	MediaFragment,
 	MediaListStatus,
 	MediaStatus,
 	MediaType,
-	SaveMediaListItemMutation,
 	SaveMediaListItemMutationVariables,
 	ScoreFormat,
 	useDeleteMediaListItemMutation,
@@ -19,9 +20,11 @@ import {
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { AnimViewMem } from '@/components/animations';
-import { SheetManager } from 'react-native-actions-sheet';
 import { useShallow } from 'zustand/react/shallow';
 import { useQueryClient } from '@tanstack/react-query';
+import { router } from 'expo-router';
+import { useListEntryStore } from '@/store/listEntryStore';
+import { EntryNumberPickerSheetProps } from '@/app/(sheets)/numberPickerSheet';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -31,12 +34,12 @@ const ICON_SIZE = 24;
 type ListEntryViewProps = {
 	id: number;
 	type: MediaType;
-	status: MediaStatus;
+	status: MediaFragment['status'];
 	releaseMessage?: string;
-	data: AniMediaQuery['Media']['mediaListEntry'];
-	scoreFormat?: ScoreFormat;
+	data: AniMediaQuery_Media_Media_mediaListEntry_MediaList | null | undefined;
+	scoreFormat?: ScoreFormat | null;
 	media?: AniMediaQuery['Media'];
-	customLists: string[];
+	customLists: string[] | null | undefined;
 	onShowReleases: () => void;
 	refreshData: () => void;
 };
@@ -91,8 +94,8 @@ const ListEntryView = ({
 		useSaveMediaListItemMutation({
 			onSuccess: ({ SaveMediaListEntry }) => {
 				queryClient.invalidateQueries();
-				setListStatus(SaveMediaListEntry.status);
-				setListProgress(SaveMediaListEntry.progress);
+				setListStatus(SaveMediaListEntry?.status ?? '');
+				setListProgress(SaveMediaListEntry?.progress ?? 0);
 			},
 		});
 	const { isPending: deletedListItemLoading, mutateAsync: deleteListItem } =
@@ -116,14 +119,6 @@ const ListEntryView = ({
 			saveListItem({ mediaId: id, status: MediaListStatus.Planning, ...variables }).then(
 				(res) => {
 					if (res) {
-						// setListStatus(
-						// 	(res as { data: SaveMediaListItemMutation })?.data?.SaveMediaListEntry
-						// 		?.status ?? null,
-						// );
-						// setListProgress(
-						// 	(res as { data: SaveMediaListItemMutation })?.data?.SaveMediaListEntry
-						// 		?.progress ?? null,
-						// );
 						setIsOnList(true);
 						refreshData();
 					}
@@ -140,9 +135,9 @@ const ListEntryView = ({
 			color: isOnList ? 'green' : null,
 		},
 		fav: {
-			icon: media.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0],
+			icon: media?.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0],
 			isLoading: favLoading,
-			color: media.isFavourite ? 'red' : null,
+			color: media?.isFavourite ? 'red' : null,
 		},
 		disabled: userID ? false : true,
 	};
@@ -178,7 +173,7 @@ const ListEntryView = ({
 								}}
 								variant="labelMedium"
 							>
-								{splitReleaseMessage[0]?.length > 0
+								{(splitReleaseMessage[0]?.length ?? 0) > 0
 									? splitReleaseMessage[0]
 									: 'Unknown'}
 							</Text>
@@ -214,21 +209,21 @@ const ListEntryView = ({
 								}
 							>
 								<IconButton
-									icon={media.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0]}
-									iconColor={media.isFavourite ? colors.primary : null}
+									icon={media?.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0]}
+									iconColor={media?.isFavourite ? colors.primary : undefined}
 									disabled={!iconStates.disabled ? false : true}
 									size={ICON_SIZE}
 								/>
 								<Text
 									style={{
 										textTransform: 'capitalize',
-										color: media.isFavourite
+										color: media?.isFavourite
 											? colors.primary
 											: colors.onSurfaceVariant,
 									}}
 									variant="labelMedium"
 								>
-									{media.isFavourite ? 'Favorited' : 'Favorite'}
+									{media?.isFavourite ? 'Favorited' : 'Favorite'}
 								</Text>
 							</ActionIcon>
 						)}
@@ -243,12 +238,14 @@ const ListEntryView = ({
 						<ActionIcon
 							onPress={() =>
 								isOnList
-									? SheetManager.show('ListEntrySheet', {
-											payload: {
-												entryData: data,
-												scoreFormat: scoreFormat,
-												media: media,
-												updateEntry: updateListEntry,
+									? router.push({
+											pathname: '/(sheets)/listEntrySheet',
+											params: {
+												params: JSON.stringify({
+													entryData: data,
+													scoreFormat: scoreFormat,
+													media: media,
+												}),
 											},
 										})
 									: updateListEntry()
@@ -261,7 +258,7 @@ const ListEntryView = ({
 								<IconButton
 									disabled={!iconStates.disabled ? false : true}
 									icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
-									iconColor={isOnList ? colors.primary : null}
+									iconColor={isOnList ? colors.primary : undefined}
 									size={ICON_SIZE}
 								/>
 							)}
@@ -286,31 +283,13 @@ const ListEntryView = ({
 					visible={showRemListDlg}
 					onDismiss={() => setShowRemListDlg(false)}
 					onConfirm={() => {
-						deleteListItem({ id: data.id });
+						deleteListItem({ id: data?.id });
 						setIsOnList(false);
 						setListStatus('');
 						setListProgress(null);
 					}}
 				/>
-				{/* <ListEntryEditDialog
-                    visible={showListEntryDlg}
-                    entryData={data}
-                    scoreFormat={scoreFormat}
-                    status={listStatus}
-                    updateEntry={updateListEntry}
-                    onDismiss={() => setShowListEntryDlg(false)}
-                /> */}
 			</Portal>
-			{/* {data && (
-				<ListEntrySheet
-					// ref={sheetRef}
-					entryData={data}
-					scoreFormat={scoreFormat}
-					status={listStatus}
-					updateEntry={updateListEntry}
-					customLists={customLists}
-				/>
-			)} */}
 		</>
 	);
 };
@@ -325,6 +304,7 @@ export const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInpu
 	const [showNumPick, setShowNumPick] = useState(false);
 	const [containerHeight, setContainerHeight] = useState(0);
 	const { colors } = useAppTheme();
+	// const {} = useListEntryStore();
 
 	const blankScore = {
 		[ScoreFormat.Point_100]: 0,
@@ -363,7 +343,21 @@ export const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInpu
 					foreground: true,
 					radius: containerHeight ?? 40,
 				}}
-				onPress={() => setShowNumPick(true)}
+				onPress={() =>
+					router.push({
+						pathname: '/(sheets)/numberPickerSheet',
+						params: {
+							params: JSON.stringify({
+								title: 'Score',
+								mode: scoreFormat,
+								options: undefined,
+								// onDismiss: () => setShowNumPick(false)
+								defaultValue: value ?? 0,
+								type: 'score',
+							} as EntryNumberPickerSheetProps),
+						},
+					})
+				}
 				disabled={disabled}
 			>
 				<List.Subheader style={{ textAlign: 'center' }}>{'Score'}</List.Subheader>
@@ -386,22 +380,14 @@ export const ScoreInput = ({ value, scoreFormat, onChange, disabled }: ScoreInpu
 };
 
 type ProgressInputProps = {
-	value: number | null | undefined;
-	maxValue?: number;
-	onChange: (value: number) => void;
-	onCancel: () => void;
+	maxValue: number | null | undefined;
 	disabled?: boolean;
+	totalContent?: number | null;
 };
-export const ProgressInput = ({
-	value,
-	maxValue,
-	onChange,
-	onCancel,
-	disabled,
-}: ProgressInputProps) => {
-	const [showNumPick, setShowNumPick] = useState(false);
+export const ProgressInput = ({ maxValue, totalContent, disabled }: ProgressInputProps) => {
 	const [containerHeight, setContainerHeight] = useState(0);
 	const { colors } = useAppTheme();
+	const { progress } = useListEntryStore();
 
 	return (
 		<>
@@ -415,26 +401,30 @@ export const ProgressInput = ({
 					foreground: true,
 					radius: containerHeight ?? 40,
 				}}
-				onPress={() => setShowNumPick(true)}
+				onPress={() => {
+					router.push({
+						pathname: '/(sheets)/numberPickerSheet',
+						params: {
+							params: JSON.stringify({
+								title: 'Set Progress',
+								defaultValue: progress ?? 0,
+								mode: !maxValue ? 'unknown_chapters' : null,
+								options: maxValue
+									? Array.from(Array(maxValue + 1).keys()).map((i) => `${i}`)
+									: null,
+								type: 'progress',
+								totalContent,
+							} as EntryNumberPickerSheetProps),
+						},
+					});
+				}}
 				disabled={disabled}
 			>
 				<List.Subheader style={{ textAlign: 'center' }}>{'Progress'}</List.Subheader>
-				<Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>{value}</Text>
+				<Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>
+					{progress ?? 0}
+				</Text>
 			</Pressable>
-			<Portal>
-				<NumberPickDialog
-					title={'Set Progress'}
-					onChange={onChange}
-					visible={showNumPick}
-					onDismiss={() => setShowNumPick(false)}
-					defaultValue={value}
-					mode={!maxValue ? 'unknown_chapters' : null}
-					options={
-						maxValue ? Array.from(Array(maxValue + 1).keys()).map((i) => `${i}`) : null
-					}
-					onCancel={onCancel}
-				/>
-			</Portal>
 		</>
 	);
 };

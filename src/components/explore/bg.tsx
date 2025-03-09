@@ -1,4 +1,3 @@
-import { useTheme } from 'react-native-paper';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Platform, View } from 'react-native';
@@ -8,7 +7,7 @@ import { Image } from 'expo-image';
 import { useAppTheme } from '@/store/theme/themes';
 
 type BackgroundArtProps = {
-	data: AnimeExploreQuery['trending']['media'];
+	data: NonNullable<AnimeExploreQuery['trending']>['media'];
 	currentBG: string;
 	width: number;
 	height: number;
@@ -16,7 +15,7 @@ type BackgroundArtProps = {
 export const BackgroundArt = ({ data, width, height }: BackgroundArtProps) => {
 	// const [bg, setBg] = useState({ id: 0, bg: getBG(data.Page.media[0]) });
 	const { colors } = useAppTheme();
-	const { bg, key, visible, updateBG } = useBackground(data);
+	const { bg, visible } = useBackground(data);
 
 	return (
 		<View

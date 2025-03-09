@@ -69,13 +69,18 @@ export const useTokenTime = ({ death }: TokenTimeProps) => {
 	return { aniTokenTime };
 };
 
-export const convertDate = (date: FuzzyDate, bdayFormat?: boolean): string | null => {
+export const convertDate = (
+	date: FuzzyDate | null | undefined,
+	bdayFormat?: boolean,
+): string | null => {
 	if (!date) return null;
 	const { year, month, day } = date;
 
 	if (bdayFormat) {
 		// Jul 11, 1966
-		return month ? `${monthByNumber[month]} ${day ?? '??'}${year ? `, ${year}` : ''}` : null;
+		return month
+			? `${monthByNumber[month as keyof typeof monthByNumber]} ${day ?? '??'}${year ? `, ${year}` : ''}`
+			: null;
 	}
 
 	if (!date?.day && !date?.month && !date?.year) return null;
@@ -90,12 +95,13 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 		(futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
 	);
 	const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
-	return `${pos_estimated_days > 1
+	return `${
+		pos_estimated_days > 1
 			? pos_estimated_days?.toString() + ' days'
 			: pos_estimated_days === 1
 				? pos_estimated_days.toString() + ' day'
 				: 'Today'
-		}`;
+	}`;
 };
 
 export const getMovieDuration = (minutes: number) => {
@@ -133,7 +139,7 @@ export const getChapterFrequency = (release_dates: string[]) => {
 		}
 	}
 	let max = 0;
-	let common_freq: number;
+	let common_freq: number = 0;
 	m.forEach((val, key, _map) => {
 		if (max < val) {
 			max = val;
@@ -181,41 +187,71 @@ export const getReleaseTime = (
 };
 
 export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days' = 'until') => {
-	const today = new Date();
-	const episodeDate = new Date(time * 1000);
-	const diffTime = Math.abs(episodeDate.getTime() - today.getTime());
-	const diffMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7 * 4));
-	const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-	const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-	const diffHours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
-	const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
+	const diffTime = Math.abs(new Date(time * 1000).getTime() - new Date().getTime());
+	const timeUnits = {
+		month: Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30)),
+		week: Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7)),
+		day: Math.floor(diffTime / (1000 * 60 * 60 * 24)),
+		hour: Math.floor((diffTime / (1000 * 60 * 60)) % 24),
+		minute: Math.floor((diffTime / (1000 * 60)) % 60),
+	};
 
-	if (format === 'until')
-		return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${diffMinutes > 0 ? `${diffMinutes}m` : ''
-			}`;
+	if (format === 'until') {
+		return [
+			timeUnits.day > 0 && `${timeUnits.day}d`,
+			timeUnits.hour > 0 && `${timeUnits.hour}h`,
+			timeUnits.minute > 0 && `${timeUnits.minute}m`,
+		]
+			.filter(Boolean)
+			.join(' ');
+	}
+
 	if (format === 'createdAt') {
-		if (diffMonths > 0)
-			return `${diffMonths > 1 ? `${diffMonths} months` : `${diffMonths} month`} ago`;
-		if (diffWeeks > 0)
-			return `${diffWeeks > 1 ? `${diffWeeks} weeks` : `${diffWeeks} week`} ago`;
-		if (diffDays > 0) return `${diffDays > 1 ? `${diffDays} days` : `${diffDays} day`} ago`;
-		if (diffHours > 0)
-			return `${diffHours > 1 ? `${diffHours} hours` : `${diffHours} hour`} ago`;
-		if (diffMinutes > 0)
-			return `${diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`} ago`;
+		for (const [unit, value] of Object.entries(timeUnits)) {
+			if (value > 0) {
+				return `${value} ${unit}${value > 1 ? 's' : ''} ago`;
+			}
+		}
 	}
+
 	if (format === 'days') {
-		return `${diffDays > 1 ? `${diffDays} days` : diffDays === 1 ? '1 day' : 'Soon'}`;
+		return timeUnits.day > 1 ? `${timeUnits.day} days` : timeUnits.day === 1 ? '1 day' : 'Soon';
 	}
+	// const today = new Date();
+	// const episodeDate = new Date(time * 1000);
+	// const diffTime = Math.abs(episodeDate.getTime() - today.getTime());
+	// const diffMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7 * 4));
+	// const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+	// const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+	// const diffHours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
+	// const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
+
+	// if (format === 'until')
+	// 	return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${diffMinutes > 0 ? `${diffMinutes}m` : ''
+	// 		}`;
+	// if (format === 'createdAt') {
+	// 	if (diffMonths > 0)
+	// 		return `${diffMonths > 1 ? `${diffMonths} months` : `${diffMonths} month`} ago`;
+	// 	if (diffWeeks > 0)
+	// 		return `${diffWeeks > 1 ? `${diffWeeks} weeks` : `${diffWeeks} week`} ago`;
+	// 	if (diffDays > 0) return `${diffDays > 1 ? `${diffDays} days` : `${diffDays} day`} ago`;
+	// 	if (diffHours > 0)
+	// 		return `${diffHours > 1 ? `${diffHours} hours` : `${diffHours} hour`} ago`;
+	// 	if (diffMinutes > 0)
+	// 		return `${diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`} ago`;
+	// }
+	// if (format === 'days') {
+	// 	return `${diffDays > 1 ? `${diffDays} days` : diffDays === 1 ? '1 day' : 'Soon'}`;
+	// }
 };
 
 export const useTimeUntil = (time: number) => {
-	const [timeUntil, setTimeUntil] = useState<string>(getTimeUntil(time));
+	const [timeUntil, setTimeUntil] = useState<string | undefined>(getTimeUntil(time));
 
 	useEffect(() => {
 		const timer = setInterval(() => {
 			const newTime = getTimeUntil(time);
-			setTimeUntil(newTime);
+			newTime && setTimeUntil(newTime);
 		}, 60000);
 
 		return () => {
@@ -226,7 +262,7 @@ export const useTimeUntil = (time: number) => {
 	return { timeUntil };
 };
 
-export const getFuzzytoDate = (value: FuzzyDate): Date => {
+export const getFuzzytoDate = (value: FuzzyDate): Date | null => {
 	if (!value.day || !value.month || !value.year) return null;
 	const newDate = new Date(value.year, value.month - 1, value.day);
 	return newDate;
@@ -260,8 +296,8 @@ export const getFuzzyInttoString = (value: string): string => {
 	return `${month}-${day}-${year}`;
 };
 
-export const getDayStartEnd = (date?: number) => {
-	const today = new Date(date);
+export const getDayStartEnd = (date?: number | string) => {
+	const today = date ? new Date(date) : new Date();
 	today.setHours(0, 0, 0, 0);
 	const todayStart = Math.round(today.getTime() / 1000);
 	today.setHours(23, 59, 59, 0);
@@ -270,6 +306,7 @@ export const getDayStartEnd = (date?: number) => {
 	return { todayStart, todayEnd };
 };
 
+// Legacy
 export const getWeekStartEnd = () => {
 	const weekStart = new Date();
 	const weekEnd = new Date();
@@ -289,4 +326,45 @@ export const getWeekStartEnd = () => {
 		start: Math.round(weekStart.getTime() / 1000),
 		end: Math.round(weekEnd.getTime() / 1000),
 	};
+};
+
+export const getAniListCalendarDates = (selectedDate: Date, type: 'week' | 'month' = 'week') => {
+	switch (type) {
+		case 'week':
+			const day = selectedDate.getDay();
+			const firstDay = new Date(selectedDate.getTime() - 60 * 60 * 24 * day * 1000);
+			return {
+				start: new Date(Math.round(firstDay.getTime() / 1000)),
+				end: new Date(
+					Math.round(
+						new Date(firstDay.getTime() + 60 * 60 * 24 * 6 * 1000).getTime() / 1000,
+					),
+				),
+			};
+		case 'month':
+			return {
+				start: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1),
+				end: new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0),
+			};
+		default:
+			return null;
+	}
+};
+
+export const getCalendarDisplayDate = (selectedDate: Date) => {
+	const selectedDateString = selectedDate.toDateString();
+	const today = new Date();
+	const yesterday = new Date();
+	yesterday.setDate(today.getDate() - 1);
+	const tomorrow = new Date();
+	tomorrow.setDate(today.getDate() + 1);
+	if (yesterday.toDateString() === selectedDateString) {
+		return 'Yesterday';
+	} else if (tomorrow.toDateString() === selectedDateString) {
+		return 'Tomorrow';
+	} else if (today.toDateString() === selectedDateString) {
+		return 'Today';
+	} else {
+		return selectedDate.toLocaleDateString();
+	}
 };

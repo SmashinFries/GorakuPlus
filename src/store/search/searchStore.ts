@@ -151,9 +151,11 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					mediaFilter: {
 						...state.mediaFilter,
 						format: undefined,
-						format_in: AnimeFormats.includes(state.mediaFilter.format)
-							? state.mediaFilter.format
-							: undefined,
+						format_in:
+							state.mediaFilter.format &&
+							AnimeFormats.includes(state.mediaFilter.format)
+								? state.mediaFilter.format
+								: undefined,
 						isLicensed: undefined,
 						licensedBy_in: undefined,
 						chapters_greater: undefined,
@@ -176,9 +178,11 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					mediaFilter: {
 						...state.mediaFilter,
 						format: undefined,
-						format_in: MangaFormats.includes(state.mediaFilter.format)
-							? state.mediaFilter.format
-							: undefined,
+						format_in:
+							state.mediaFilter.format &&
+							MangaFormats.includes(state.mediaFilter.format)
+								? state.mediaFilter.format
+								: undefined,
 						season: undefined,
 						seasonYear: undefined,
 						licensedBy_in: undefined,
@@ -218,6 +222,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 						: { searchType: type },
 				);
 				break;
+			default:
+				break;
 		}
 		set({ searchType: type });
 	},
@@ -232,9 +238,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					tag_not_in:
 						(state.mediaFilter.tag_not_in?.length ?? 0) + (tagBlacklist?.length ?? 0) >
 						0
-							? [...(state.mediaFilter.tag_not_in ?? []), ...tagBlacklist].filter(
-									(value, index, array) => array.indexOf(value) === index,
-								)
+							? [
+									...(state.mediaFilter.tag_not_in ?? []),
+									...(tagBlacklist ?? []),
+								].filter((value, index, array) => array.indexOf(value) === index)
 							: undefined,
 				},
 			}));
@@ -245,10 +252,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					...state.mediaFilter,
 					tag_not_in:
 						(state.mediaFilter.tag_not_in as string[])?.filter(
-							(tag) => !tagBlacklist.includes(tag),
+							(tag) => !tagBlacklist?.includes(tag),
 						).length > 0
 							? (state.mediaFilter.tag_not_in as string[])?.filter(
-									(tag) => !tagBlacklist.includes(tag),
+									(tag) => !tagBlacklist?.includes(tag),
 								)
 							: undefined,
 				},
@@ -258,8 +265,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 	updateTags(tag) {
 		const { in_values, not_in_values } = updateMultiSelectFilters(
 			tag,
-			get().mediaFilter.tag_in,
-			get().mediaFilter.tag_not_in,
+			get().mediaFilter.tag_in as string[] | undefined,
+			get().mediaFilter.tag_not_in as string[] | undefined,
 		);
 
 		set((state) => ({
@@ -274,8 +281,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 	updateGenre(genre) {
 		const { in_values, not_in_values } = updateMultiSelectFilters(
 			genre,
-			get().mediaFilter.genre_in,
-			get().mediaFilter.genre_not_in,
+			get().mediaFilter.genre_in as string[] | undefined,
+			get().mediaFilter.genre_not_in as string[] | undefined,
 		);
 
 		set((state) => ({
@@ -311,9 +318,9 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 							? type === 'CHARACTER'
 								? CharacterAscSorts
 								: StaffAscSorts
-							: (type === 'CHARACTER' ? CharacterDescSorts : StaffDescSorts)[
-									sort.value
-								],
+							: type === 'CHARACTER'
+								? (CharacterDescSorts as any)[sort.value]
+								: (StaffDescSorts as any)[sort.value],
 					}
 				: { ...state[key], ...params },
 			[sortKey]: sort,
@@ -346,8 +353,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 	updateStatus(status) {
 		const { in_values, not_in_values } = updateMultiSelectFilters(
 			status,
-			get().mediaFilter.status_in,
-			get().mediaFilter.status_not_in,
+			get().mediaFilter.status_in as string[] | undefined,
+			get().mediaFilter.status_not_in as string[] | undefined,
 		);
 
 		set((state) => ({
@@ -362,8 +369,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 	updateFormat(format) {
 		const { in_values, not_in_values } = updateMultiSelectFilters(
 			format,
-			get().mediaFilter.format_in,
-			get().mediaFilter.format_not_in,
+			get().mediaFilter.format_in as string[] | undefined,
+			get().mediaFilter.format_not_in as string[] | undefined,
 		);
 
 		set((state) => ({
@@ -383,26 +390,33 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					mediaFilter: initialState.mediaFilter,
 					mediaSort: initialState.mediaSort,
 				}));
+				break;
 			case 'CHARACTER':
 				set(() => ({
 					characterFilter: initialState.characterFilter,
 					characterSort: initialState.characterSort,
 				}));
+				break;
 			case 'STAFF':
 				set(() => ({
 					staffFilter: initialState.staffFilter,
 					staffSort: initialState.staffSort,
 				}));
+				break;
 			case 'STUDIO':
 				set(() => ({
 					studioFilter: initialState.studioFilter,
 					studioSort: initialState.studioSort,
 				}));
+				break;
 			case 'USER':
 				set(() => ({
 					userFilter: initialState.userFilter,
 					userSort: initialState.userSort,
 				}));
+				break;
+			default:
+				break;
 		}
 	},
 	reset() {

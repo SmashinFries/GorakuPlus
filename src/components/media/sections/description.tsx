@@ -1,7 +1,6 @@
 import { Text, IconButton } from 'react-native-paper';
 import React, { useState } from 'react';
-import { ExpandableDescription } from '../../animations';
-import { useWindowDimensions } from 'react-native';
+import { ExpandableDescriptionMem } from '../../animations';
 import Uwuifier from 'uwuifier';
 import useTTS from '@/hooks/useTTS';
 import { useTTSStore } from '@/store/tts/ttsStore';
@@ -10,11 +9,10 @@ import { useAppTheme } from '@/store/theme/themes';
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 
 type DescriptionProps = {
-	aniDescription: string;
-	malDescription: string;
+	aniDescription?: string | null;
+	malDescription?: string | null;
 };
 export const Description = ({ aniDescription, malDescription }: DescriptionProps) => {
-	const { width } = useWindowDimensions();
 	const { colors } = useAppTheme();
 
 	const { enabled, english } = useTTSStore();
@@ -33,18 +31,20 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 		exclamations: 1,
 	});
 
-	const AniDesc = () => <AniListMarkdownViewer body={aniDescription} />;
+	const AniDesc = () => <AniListMarkdownViewer body={aniDescription ?? ''} />;
 	const MalDesc = () => (
 		<>
 			<Text selectable selectionColor={colors.inversePrimary}>
-				{isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription}
+				{isUwuified ? uwuifier.uwuifySentence(malDescription ?? '') : malDescription}
 			</Text>
 			{enabled && (
 				<IconButton
 					icon="text-to-speech"
 					onPress={() =>
 						speak(
-							isUwuified ? uwuifier.uwuifySentence(malDescription) : malDescription,
+							isUwuified
+								? uwuifier.uwuifySentence(malDescription ?? '')
+								: (malDescription ?? ''),
 							english,
 						)
 					}
@@ -75,7 +75,7 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 	}
 
 	return (
-		<ExpandableDescription
+		<ExpandableDescriptionMem
 			initialHeight={90}
 			toggleUwuifier={() => setIsUwuified((prev) => !prev)}
 		>
@@ -83,7 +83,7 @@ export const Description = ({ aniDescription, malDescription }: DescriptionProps
 			{/* {enabled && english && defaultDescription === 'mal' && malDescription && (
 				<IconButton icon="text-to-speech" style={{ alignSelf: 'flex-end' }} />
 			)} */}
-		</ExpandableDescription>
+		</ExpandableDescriptionMem>
 	);
 };
 

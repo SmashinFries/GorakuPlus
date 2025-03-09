@@ -27,18 +27,18 @@ const getMalColor = (
 	}
 };
 
-export const getScoreColor = (score: number, isMal = false): string => {
+export const getScoreColor = (score: number, isMal = false) => {
 	const scoreColors = useSettingsStore.getState().scoreColors;
 
-	if (isMal) {
+	if (isMal && scoreColors) {
 		return getMalColor(score, scoreColors);
 	}
 
-	if (between(score, 0, scoreColors.red)) {
+	if (scoreColors && between(score, 0, scoreColors.red)) {
 		return RED;
-	} else if (between(score, scoreColors.red + 1, scoreColors.yellow)) {
+	} else if (scoreColors && between(score, scoreColors.red + 1, scoreColors.yellow)) {
 		return YELLOW;
-	} else if (between(score, scoreColors.yellow + 1, 100)) {
+	} else if (scoreColors && between(score, scoreColors.yellow + 1, 100)) {
 		return GREEN;
 	}
 };
@@ -63,12 +63,16 @@ export const listColor = (status: MediaListStatus) => {
 		case MediaListStatus.Current:
 		case MediaListStatus.Repeating:
 			return '#3AADE9';
+		default:
+			return undefined;
 	}
 };
 
 export const getStatusColor = (status: MediaStatus) => {
 	switch (status) {
 		case MediaStatus.Releasing:
+			return '';
+		default:
 			return '';
 	}
 };

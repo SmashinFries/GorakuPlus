@@ -1,6 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
-import { useCallback } from 'react';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import useStudioList from '@/hooks/studio/useStudio';
 import { MediaCard, MediaCardRow } from '@/components/cards';
@@ -15,8 +14,10 @@ const StudioMediaListScreen = () => {
 	const { height } = useWindowDimensions();
 	const { itemWidth, columns, displayMode } = useColumns('search');
 
-	const RenderItem = useCallback(
-		(props: { item: StudioListQuery['Studio']['media']['nodes'][0] }) =>
+	const RenderItem = (props: {
+		item: NonNullable<NonNullable<NonNullable<StudioListQuery['Studio']>['media']>['nodes']>[0];
+	}) => {
+		return props.item?.id ? (
 			displayMode === 'COMPACT' ? (
 				<View
 					style={{
@@ -32,9 +33,9 @@ const StudioMediaListScreen = () => {
 				</View>
 			) : (
 				<MediaCardRow {...props.item} />
-			),
-		[displayMode, itemWidth],
-	);
+			)
+		) : null;
+	};
 
 	if (studioData.isLoading) {
 		return (
@@ -49,11 +50,11 @@ const StudioMediaListScreen = () => {
 			<Stack.Screen
 				options={{
 					headerShown: true,
-					title: `${studioData.data?.Studio.name}`,
+					title: `${studioData.data?.Studio?.name}`,
 					header: (props) => (
 						<StudioHeader
 							{...props}
-							isFav={studioData.data?.Studio?.isFavourite}
+							isFav={!!studioData.data?.Studio?.isFavourite}
 							id={Number(studioId)}
 						/>
 					),
@@ -62,7 +63,7 @@ const StudioMediaListScreen = () => {
 			<FlashList
 				key={columns}
 				numColumns={columns}
-				data={studioData.data?.Studio.media?.nodes}
+				data={studioData.data?.Studio?.media?.nodes}
 				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={RenderItem}
 				contentContainerStyle={{ paddingTop: 20 }}

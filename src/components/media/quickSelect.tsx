@@ -8,7 +8,11 @@ type QuickSelectorProps = {
 	disabled?: boolean;
 	onPress?: () => void;
 };
-export const QuickSelector = ({ icon, disabled = false, onPress }: QuickSelectorProps) => {
+export const QuickSelector = ({
+	icon,
+	disabled = false,
+	onPress = () => null,
+}: QuickSelectorProps) => {
 	const { colors } = useAppTheme();
 	return (
 		<View
@@ -22,7 +26,7 @@ export const QuickSelector = ({ icon, disabled = false, onPress }: QuickSelector
 		>
 			{icon !== 'crunchy' ? (
 				<IconButton
-					onPress={onPress ?? null}
+					onPress={onPress}
 					disabled={disabled}
 					iconColor={colors.primary}
 					icon={icon}
@@ -32,7 +36,7 @@ export const QuickSelector = ({ icon, disabled = false, onPress }: QuickSelector
 				<CrunchyRollIcon
 					width={38}
 					height={38}
-					onPress={onPress ?? null}
+					onPress={onPress}
 					logoColor={disabled ? colors.onSurface : colors.primary}
 					opacity={disabled ? 0.12 : 1}
 					fontColor={colors.onBackground}

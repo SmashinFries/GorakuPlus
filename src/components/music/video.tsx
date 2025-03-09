@@ -1,7 +1,6 @@
 import { AppState, StyleSheet, useWindowDimensions } from 'react-native';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import YoutubePlayer, { YoutubeIframeRef } from 'react-native-youtube-iframe';
 import {
 	AVPlaybackStatus,
 	ResizeMode,
@@ -10,14 +9,7 @@ import {
 	VideoFullscreenUpdate,
 	VideoFullscreenUpdateEvent,
 } from 'expo-av';
-import {
-	ActivityIndicator,
-	IconButton,
-	Menu,
-	ProgressBar,
-	Text,
-	useTheme,
-} from 'react-native-paper';
+import { ActivityIndicator, IconButton, Menu, ProgressBar, Text } from 'react-native-paper';
 import { SongMeta } from './meta';
 import { VideoControls } from './controls';
 import { Accordion } from '../animations';
@@ -25,7 +17,6 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { AnimeThemesIcon } from '../svgs';
 import { Animetheme } from '@/api/animethemes/types';
-import { AnimeVideos } from '@/api/jikan/models';
 import { useAppTheme } from '@/store/theme/themes';
 
 type MusicVideoProps = {
@@ -69,11 +60,15 @@ export const MusicVideo = ({ theme }: MusicVideoProps) => {
 			{totalDuration && (
 				<ProgressBar
 					style={{ width }}
-					animatedValue={status?.isLoaded && status?.positionMillis / totalDuration}
+					animatedValue={
+						status?.isLoaded && status?.positionMillis
+							? status?.positionMillis / totalDuration
+							: 0
+					}
 				/>
 			)}
 			<SongMeta data={theme} />
-			<VideoControls status={status} vidRef={vidRef} />
+			<VideoControls status={status as AVPlaybackStatus} vidRef={vidRef} />
 		</View>
 	);
 };
@@ -85,7 +80,7 @@ const FullscreenVideo = ({
 	onDoneLoading,
 	onDismiss,
 }: {
-	vidRef: MutableRefObject<Video>;
+	vidRef: RefObject<Video>;
 	video_url: string;
 	onStatus: (status: AVPlaybackStatus) => void;
 	onDismiss: () => void;
@@ -143,6 +138,8 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 	const [totalDuration, setTotalDuration] = useState<number>(0);
 	const [progress, setProgress] = useState<number>(0);
 
+	const [_vidStatus, setVidStatus] = useState<AVPlaybackStatus>();
+
 	const [playIconHeight, setPlayIconHeight] = useState<number>(0);
 
 	const [showMore, setShowMore] = useState<boolean>(false);
@@ -150,7 +147,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 	// Video
 	const vidRef = useRef<Video>(null);
 	const [vidLoading, setVidLoading] = useState<boolean>(false);
-	const [vidStatus, setVidStatus] = useState<AVPlaybackStatus>();
 	const [showVideo, setShowVideo] = useState<boolean>(false);
 
 	const _onPlaybackStatusUpdate = (playbackStatus: AVPlaybackStatus) => {
@@ -158,7 +154,8 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 			setProgress(0);
 		} else {
 			// Update your UI for the loaded state
-			setTotalDuration(playbackStatus.durationMillis);
+			playbackStatus.durationMillis !== undefined &&
+				setTotalDuration(playbackStatus.durationMillis);
 			setProgress(playbackStatus.positionMillis);
 			if (playbackStatus.isPlaying) {
 				// Update your UI for the playing state
@@ -166,13 +163,6 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 			} else {
 				setIsPlaying(false);
 				// Update your UI for the paused state
-			}
-
-			if (playbackStatus.isBuffering) {
-				// setIsLoading(true);
-				// Update your UI for the buffering state
-			} else {
-				// setIsLoading(false);
 			}
 
 			if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
@@ -198,7 +188,8 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 			setIsLoading(false);
 			song.sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
 			if (song.status.isLoaded) {
-				setTotalDuration(song.status.durationMillis);
+				song.status.durationMillis !== undefined &&
+					setTotalDuration(song.status.durationMillis);
 			}
 			setSound(song.sound);
 			setIsPlaying(true);
@@ -249,7 +240,7 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 			<Accordion
 				title={theme.song.title}
 				titleStyle={{ color: colors.primary }}
-				titleFontSize={18}
+				// titleFontSize={18}
 				description={`${theme.song.artists[0]?.name ?? 'unknown'}`}
 				left={
 					<Text

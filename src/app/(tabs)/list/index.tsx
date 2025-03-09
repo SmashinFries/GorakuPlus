@@ -8,9 +8,8 @@ import { useAuthStore } from '@/store/authStore';
 import { useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
-import { SheetManager } from 'react-native-actions-sheet';
 import { Text } from 'react-native-paper';
-import { TabView } from 'react-native-tab-view';
+import { SceneRendererProps, TabView } from 'react-native-tab-view';
 
 const ListPage = () => {
 	const layout = useWindowDimensions();
@@ -21,13 +20,13 @@ const ListPage = () => {
 		animeList,
 		mangaList,
 		rootRoutes,
-		animeRoutes,
-		mangaRoutes,
+		animeRoutes = [],
+		mangaRoutes = [],
 		loading,
 		isRefreshing,
 		refreshAnimeList,
 		refreshMangaList,
-	} = useList(userID);
+	} = useList(userID as number);
 
 	const [routes, setRoutes] = useState(rootRoutes);
 
@@ -43,7 +42,14 @@ const ListPage = () => {
 	//     />
 	// );
 
-	const renderScene = ({ route }) => {
+	const renderScene = ({
+		route,
+	}: SceneRendererProps & {
+		route: {
+			key: string;
+			title: string;
+		};
+	}) => {
 		switch (route.key) {
 			case 'anime':
 				return (
@@ -79,7 +85,7 @@ const ListPage = () => {
 	return (
 		<>
 			<ListHeader
-				openFilter={() => SheetManager.show('')}
+				// openFilter={() => SheetManager.show('')}
 				onRefresh={index === 0 ? refreshAnimeList : refreshMangaList}
 			/>
 			{!loading && !isRefreshing && routes.length > 0 ? (

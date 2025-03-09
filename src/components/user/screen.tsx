@@ -31,7 +31,7 @@ const UnauthedPage = () => {
 	const { data } = usePostsSearch({ limit: 50, page: 1, tags: '1girl', rating: 'g' });
 	return (
 		<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-			<FullscreenBackground urls={data?.pages[0]?.map((val) => val.large_file_url)} />
+			<FullscreenBackground urls={data?.pages[0]?.map((val) => val.large_file_url) ?? []} />
 			<View>
 				<Image
 					source={require('../../../assets/iconsv3/banner.png')}
@@ -81,7 +81,7 @@ export const UserScreen = ({
 			followingPerPage: 24,
 			reviewsPerPage: 24,
 		},
-		{ enabled: isViewer ? !!viewerId : !!userDataQuery?.data?.User?.id, refetchOnMount: false },
+		{ enabled: isViewer ? !!viewerId : !!userDataQuery?.data?.User?.id },
 	);
 	const userActivity = useUserActivityQuery({
 		userId: isViewer ? undefined : userDataQuery?.data?.User?.id,
@@ -151,13 +151,19 @@ export const UserScreen = ({
 				userDataQuery.isFetched &&
 				userOverviewQuery.isFetched && (
 					<FadeHeaderProvider
-						title={isViewer ? viewerName : (username ?? '')}
-						BgImage={({ style }) => (
-							<MediaBanner
-								style={style}
-								urls={[userDataQuery?.data?.User?.bannerImage]}
-							/>
-						)}
+						title={isViewer && viewerName ? viewerName : (username ?? '')}
+						BgImage={
+							!!userDataQuery?.data?.User?.bannerImage
+								? ({ style }) => (
+										<MediaBanner
+											style={style}
+											urls={[
+												userDataQuery?.data?.User?.bannerImage as string,
+											]}
+										/>
+									)
+								: undefined
+						}
 						disableBack={isViewer}
 						addFriendIcon
 						onAddFriend={() =>
@@ -174,7 +180,7 @@ export const UserScreen = ({
 							/>
 						}
 						onNotificationIcon={() => router.navigate(`/notifications`)}
-						newNotifs={userDataQuery?.data?.User?.unreadNotificationCount}
+						newNotifs={userDataQuery?.data?.User?.unreadNotificationCount ?? 0}
 						notificationIcon={isViewer}
 						loading={userDataQuery?.isLoading || userOverviewQuery.isLoading}
 					>
@@ -235,18 +241,20 @@ export const UserScreen = ({
 								</Button>
 							)}
 							<FavoritesOverview
-								data={userDataQuery?.data?.User.favourites}
+								data={userDataQuery?.data?.User?.favourites}
 								username={
-									isViewer
-										? (userDataQuery?.data?.User?.name ?? viewerName)
+									isViewer && (userDataQuery?.data?.User?.name || viewerName)
+										? (userDataQuery?.data?.User?.name ?? viewerName ?? '')
 										: username
 								}
 							/>
-							<ActivityOverview
-								userId={userDataQuery?.data?.User?.id}
-								username={userDataQuery?.data?.User?.name}
-								data={userActivity?.data?.Page?.activities}
-							/>
+							{userDataQuery?.data?.User && (
+								<ActivityOverview
+									userId={userDataQuery?.data?.User.id}
+									username={userDataQuery?.data?.User.name}
+									data={userActivity?.data?.Page?.activities}
+								/>
+							)}
 						</View>
 						{isViewer && (
 							<Portal>

@@ -5,10 +5,12 @@ import {
 	useInfiniteUserStaffFavoritesQuery,
 	useInfiniteUserWaifuFavoritesQuery,
 	UserAnimeFavoritesQuery,
+	UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff,
 	UserWaifuFavoritesQuery,
+	UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character,
 } from '@/api/anilist/__genereated__/gql';
 import { ScrollToTopButton } from '@/components/buttons';
-import { CharacterCard, MediaCard, MediaCardRow, StaffCard } from '@/components/cards';
+import { CharacterCard, CharacterRowCard, MediaCard, MediaCardRow } from '@/components/cards';
 import { GorakuRefreshControl } from '@/components/explore/lists';
 import { FavoritesHeader } from '@/components/headers';
 import { EmptyLoadView } from '@/components/search/loading';
@@ -20,14 +22,19 @@ import { FlashList } from '@shopify/flash-list';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { memo, useCallback, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { SceneRendererProps, TabBar, TabView } from 'react-native-tab-view';
+import {
+	SceneRendererProps,
+	TabBar,
+	TabBarItem,
+	TabBarProps,
+	TabView,
+} from 'react-native-tab-view';
 import { useShallow } from 'zustand/react/shallow';
 
 type FavoritesTabTypes = 'characters' | 'anime' | 'manga' | 'staff' | 'studios';
 // type AnimeMangaDataType<T extends MediaType> = T extends MediaType.Anime ? UserAnimeFavoritesQuery : UserMangaFavoritesQuery;
 
 const MediaTab = ({
-	updateTabTitle,
 	username,
 	type,
 }: {
@@ -35,10 +42,9 @@ const MediaTab = ({
 	type: MediaType;
 	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
 }) => {
-	const { viewerUsername, token } = useAuthStore(
+	const { viewerUsername } = useAuthStore(
 		useShallow((state) => ({
 			viewerUsername: state.anilist.username,
-			token: state.anilist.token,
 		})),
 	);
 	const { query } = useFavoritesFilterStore();
@@ -50,9 +56,9 @@ const MediaTab = ({
 		{
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
-				if (lastPage.User?.favourites?.anime.pageInfo.hasNextPage) {
+				if (lastPage.User?.favourites?.anime?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.User?.favourites?.anime.pageInfo.currentPage + 1,
+						page: (lastPage.User?.favourites?.anime.pageInfo?.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -72,9 +78,9 @@ const MediaTab = ({
 		{
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
-				if (lastPage.User?.favourites?.manga.pageInfo.hasNextPage) {
+				if (lastPage.User?.favourites?.manga?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.User?.favourites?.manga.pageInfo.currentPage + 1,
+						page: (lastPage.User?.favourites?.manga.pageInfo.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -89,38 +95,44 @@ const MediaTab = ({
 	const listRef = useRef<FlashList<any>>(null);
 
 	const keyExtract = useCallback(
-		(item, index: number) => item.id.toString() + index.toString(),
+		(item: any, index: number) => item.id.toString() + index.toString(),
 		[],
 	);
 
 	const RenderItem = useCallback(
 		(itemProps: {
-			item: UserAnimeFavoritesQuery['User']['favourites']['anime']['nodes'][0];
+			item: NonNullable<
+				NonNullable<
+					NonNullable<NonNullable<UserAnimeFavoritesQuery['User']>['favourites']>['anime']
+				>['nodes']
+			>[0];
 		}) =>
-			displayMode === 'COMPACT' ? (
-				<View style={{ width: itemWidth }}>
-					<View
-						style={{
-							alignItems: 'center',
-							justifyContent: 'flex-start',
-							marginVertical: 10,
-							marginHorizontal: 5,
-						}}
-					>
-						<MediaCard {...itemProps.item} fitToParent allowEntryEdit={false} />
+			itemProps.item?.id ? (
+				displayMode === 'COMPACT' ? (
+					<View style={{ width: itemWidth }}>
+						<View
+							style={{
+								alignItems: 'center',
+								justifyContent: 'flex-start',
+								marginVertical: 10,
+								marginHorizontal: 5,
+							}}
+						>
+							<MediaCard {...itemProps.item} fitToParent allowEntryEdit={false} />
+						</View>
 					</View>
-				</View>
-			) : (
-				<MediaCardRow {...itemProps.item} />
-			),
+				) : (
+					<MediaCardRow {...itemProps.item} />
+				)
+			) : null,
 		[itemWidth, displayMode],
 	);
 
 	const mergedResults = (
 		type === MediaType.Anime ? animeFavoriteQuery : mangaFavoriteQuery
-	)?.data?.pages?.flatMap(
-		(val) => val.User?.favourites?.anime?.nodes,
-	) as UserAnimeFavoritesQuery['User']['favourites']['anime']['nodes'];
+	)?.data?.pages?.flatMap((val) => val.User?.favourites?.anime?.nodes) as NonNullable<
+		NonNullable<NonNullable<UserAnimeFavoritesQuery['User']>['favourites']>['anime']
+	>['nodes'];
 
 	// useEffect(() => {
 	// 	if (mergedResults || query) {
@@ -156,22 +168,25 @@ const MediaTab = ({
 			<FlashList
 				ref={listRef}
 				key={columns}
-				data={mergedResults.filter(
+				data={mergedResults?.filter(
 					(item) =>
-						item?.title?.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
-						item?.title?.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
-						item?.title?.native?.includes(query) ||
-						item?.synonyms?.some((value, index) =>
-							value.toLowerCase()?.includes(query?.toLowerCase()),
-						) ||
-						item?.characters?.nodes?.some(
-							(value, index) =>
-								value.name?.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-								value.name?.native?.includes(query) ||
-								value.name?.alternative?.some((alt) =>
-									alt.toLowerCase().includes(query.toLowerCase()),
-								),
-						),
+						query &&
+						(item?.title?.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item?.title?.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item?.title?.native?.includes(query) ||
+							item?.synonyms?.some((value) =>
+								value?.toLowerCase()?.includes(query?.toLowerCase()),
+							) ||
+							item?.characters?.nodes?.some(
+								(value) =>
+									value?.name?.full
+										?.toLowerCase()
+										?.includes(query?.toLowerCase()) ||
+									value?.name?.native?.includes(query) ||
+									value?.name?.alternative?.some((alt) =>
+										alt?.toLowerCase().includes(query?.toLowerCase() ?? ''),
+									),
+							)),
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -216,7 +231,6 @@ const MediaTab = ({
 
 const WaifuTab = ({
 	username,
-	updateTabTitle,
 }: {
 	username: string;
 	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
@@ -224,7 +238,7 @@ const WaifuTab = ({
 	const viewerUsername = useAuthStore(useShallow((state) => state.anilist.username));
 	const query = useFavoritesFilterStore(useShallow((state) => state.query));
 	const { width } = useWindowDimensions();
-	const { itemWidth, columns } = useColumns('list');
+	const { itemWidth, columns, displayMode } = useColumns('list');
 
 	const { data, isLoading, isRefetching, hasNextPage, fetchNextPage, refetch } =
 		useInfiniteUserWaifuFavoritesQuery(
@@ -232,9 +246,11 @@ const WaifuTab = ({
 			{
 				initialPageParam: 1,
 				getNextPageParam(lastPage) {
-					if (lastPage.User?.favourites?.characters.pageInfo.hasNextPage) {
+					if (lastPage.User?.favourites?.characters?.pageInfo?.hasNextPage) {
 						return {
-							page: lastPage.User?.favourites?.characters.pageInfo.currentPage + 1,
+							page:
+								(lastPage.User?.favourites?.characters?.pageInfo?.currentPage ??
+									0) + 1,
 						};
 					}
 				},
@@ -246,7 +262,7 @@ const WaifuTab = ({
 		);
 
 	const keyExtract = useCallback(
-		(item, index: number) => item.id.toString() + index.toString(),
+		(item: any, index: number) => item.id.toString() + index.toString(),
 		[],
 	);
 
@@ -254,13 +270,20 @@ const WaifuTab = ({
 		({
 			item,
 		}: {
-			item: UserWaifuFavoritesQuery['User']['favourites']['characters']['nodes'][0];
+			item:
+				| UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character
+				| null
+				| undefined;
 		}) => {
-			return (
-				<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
-					<CharacterCard {...item} isFavourite />
-				</View>
-			);
+			return item?.id ? (
+				displayMode === 'COMPACT' ? (
+					<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
+						<CharacterCard {...item} isFavourite />
+					</View>
+				) : (
+					<CharacterRowCard {...item} isFavourite />
+				)
+			) : null;
 		},
 		[itemWidth],
 	);
@@ -288,10 +311,11 @@ const WaifuTab = ({
 		<View style={{ flex: 1, height: '100%', width }}>
 			<FlashList
 				key={columns}
-				data={mergedResults?.filter(
-					(item) =>
-						item.name?.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-						item.name?.native?.includes(query),
+				data={mergedResults?.filter((item) =>
+					query
+						? item?.name?.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item?.name?.native?.includes(query)
+						: true,
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -300,8 +324,8 @@ const WaifuTab = ({
 				estimatedItemSize={240}
 				centerContent
 				contentContainerStyle={{
-					padding: 10,
-					paddingLeft: mergedResults ? 110 / columns / 3 : undefined,
+					paddingVertical: 10,
+					// paddingLeft: mergedResults && columns ? 110 / columns / 3 : undefined,
 				}}
 				onEndReached={() => hasNextPage && fetchNextPage()}
 				refreshControl={
@@ -314,7 +338,6 @@ const WaifuTab = ({
 
 const StaffTab = ({
 	username,
-	updateTabTitle,
 }: {
 	username: string;
 	updateTabTitle: (tab: FavoritesTabTypes, title: string) => void;
@@ -322,7 +345,7 @@ const StaffTab = ({
 	const viewerUsername = useAuthStore(useShallow((state) => state.anilist.username));
 	const { query } = useFavoritesFilterStore();
 	const { width } = useWindowDimensions();
-	const { itemWidth, columns } = useColumns('list');
+	const { itemWidth, columns, displayMode } = useColumns('list');
 
 	const { data, isLoading, isRefetching, hasNextPage, fetchNextPage, refetch } =
 		useInfiniteUserStaffFavoritesQuery(
@@ -330,9 +353,9 @@ const StaffTab = ({
 			{
 				initialPageParam: 1,
 				getNextPageParam(lastPage) {
-					if (lastPage.User?.favourites?.staff.pageInfo.hasNextPage) {
+					if (lastPage.User?.favourites?.staff?.pageInfo?.hasNextPage) {
 						return {
-							page: lastPage.User?.favourites?.staff.pageInfo.currentPage + 1,
+							page: (lastPage.User?.favourites?.staff.pageInfo?.currentPage ?? 0) + 1,
 						};
 					}
 				},
@@ -344,24 +367,41 @@ const StaffTab = ({
 		);
 
 	const keyExtract = useCallback(
-		(item, index: number) => item.id.toString() + index.toString(),
+		(
+			item:
+				| UserStaffFavoritesQuery_User_User_favourites_Favourites_staff_StaffConnection_nodes_Staff
+				| null
+				| undefined,
+			index: number,
+		) => item?.id.toString() + index.toString(),
 		[],
 	);
 
-	const RenderItem = useCallback(
-		({
-			item,
-		}: {
-			item: UserWaifuFavoritesQuery['User']['favourites']['characters']['nodes'][0];
-		}) => {
-			return (
+	const RenderItem = ({
+		item,
+	}: {
+		item:
+			| NonNullable<
+					NonNullable<
+						NonNullable<
+							NonNullable<UserWaifuFavoritesQuery['User']>['favourites']
+						>['characters']
+					>['nodes']
+			  >[0]
+			| UserWaifuFavoritesQuery_User_User_favourites_Favourites_characters_CharacterConnection_nodes_Character
+			| null
+			| undefined;
+	}) => {
+		return item?.id ? (
+			displayMode === 'COMPACT' ? (
 				<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
-					<StaffCard {...item} isStaff isFavourite />
+					<CharacterCard {...item} isFavourite />
 				</View>
-			);
-		},
-		[],
-	);
+			) : (
+				<CharacterRowCard {...item} isFavourite />
+			)
+		) : null;
+	};
 
 	const mergedResults = data?.pages?.flatMap((val) => val.User?.favourites?.staff?.nodes);
 
@@ -386,10 +426,10 @@ const StaffTab = ({
 		<View style={{ flex: 1, height: '100%', width }}>
 			<FlashList
 				key={columns}
-				data={mergedResults.filter(
+				data={mergedResults?.filter(
 					(item) =>
-						item.name.full?.toLowerCase().includes(query?.toLowerCase()) ||
-						item.name.native?.includes(query),
+						(query && item?.name?.full?.toLowerCase().includes(query?.toLowerCase())) ||
+						(query && item?.name?.native?.includes(query)),
 				)}
 				nestedScrollEnabled
 				renderItem={RenderItem}
@@ -399,7 +439,7 @@ const StaffTab = ({
 				centerContent
 				contentContainerStyle={{
 					padding: 10,
-					paddingLeft: mergedResults ? 110 / columns / 3 : undefined,
+					// paddingLeft: mergedResults && columns ? 110 / columns / 3 : undefined,
 				}}
 				onEndReached={() => hasNextPage && fetchNextPage()}
 				refreshControl={
@@ -439,15 +479,20 @@ const FavoritesPage = () => {
 		});
 	};
 
-	const renderTabBar = (props) => (
+	const renderTabBar = (props: TabBarProps<any>) => (
 		<TabBar
 			{...props}
 			tabStyle={{ paddingTop: 10 }}
 			indicatorStyle={{ backgroundColor: colors.primary }}
-			style={{ backgroundColor: colors.surface }}
+			style={{
+				backgroundColor: colors.surface,
+				borderBottomColor: colors.elevation.level5,
+				borderBottomWidth: 0.8,
+			}}
 			labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
 			scrollEnabled={true}
 			android_ripple={{ color: colors.primary, borderless: true }}
+			renderTabBarItem={({ key, ...props }) => <TabBarItem {...props} key={key} />}
 		/>
 	);
 
@@ -474,14 +519,10 @@ const FavoritesPage = () => {
 				return <WaifuTabMem updateTabTitle={updateRouteTitle} username={username} />;
 			case 'staff':
 				return <StaffTabMem updateTabTitle={updateRouteTitle} username={username} />;
+			default:
+				return null;
 		}
 	};
-
-	// useEffect(() => {
-	// 	if (tab) {
-	// 		setIndex(routes.findIndex((r) => r.key === tab.toLowerCase()));
-	// 	}
-	// }, [tab]);
 
 	return (
 		<>

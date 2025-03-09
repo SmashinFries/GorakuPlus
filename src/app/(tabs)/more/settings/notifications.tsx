@@ -17,7 +17,7 @@ const NotificationsPage = () => {
 		const value = !isRegistered;
 		if (value) {
 			setRegisteredState(true);
-			registerBGFetch(fetchInterval);
+			registerBGFetch(fetchInterval ?? 6);
 		} else {
 			unregisterBGFetch();
 			// dispatch(disableAllNotifs());
@@ -38,7 +38,7 @@ const NotificationsPage = () => {
 		<ScrollView>
 			<MaterialSwitchListItem
 				title="Allow Notifications"
-				selected={isRegistered}
+				selected={!!isRegistered}
 				onPress={toggleNotifications}
 			/>
 			<List.Item
@@ -55,7 +55,7 @@ const NotificationsPage = () => {
 					Linking.sendIntent('android.settings.APP_NOTIFICATION_SETTINGS', [
 						{
 							key: 'android.provider.extra.APP_PACKAGE',
-							value: Constants.expoConfig.android?.package,
+							value: Constants.expoConfig?.android?.package as string,
 						},
 					])
 				}
@@ -64,7 +64,7 @@ const NotificationsPage = () => {
 				<FetchIntervalDialog
 					visible={intervalVis}
 					onDismiss={dismissIntervalDialog}
-					initialInterval={fetchInterval}
+					initialInterval={fetchInterval ?? 6}
 					updateInterval={updateFetchInterval}
 				/>
 			</Portal>

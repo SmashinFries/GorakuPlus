@@ -66,7 +66,7 @@ export const ScoreView = ({
 	barColor,
 }: {
 	type: 'average' | 'mean' | 'review' | 'mal';
-	score: number;
+	score: number | null | undefined;
 	height?: number;
 	barColor?: string;
 }) => {

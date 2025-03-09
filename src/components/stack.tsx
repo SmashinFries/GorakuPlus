@@ -16,10 +16,13 @@ const AnimatedStack = (props: StackProps) => {
 				contentStyle: { backgroundColor: colors.background },
 				animation: navAnimation,
 				header: (props) => <PaperHeader {...props} />,
-				...props.screenOptions,
+				statusBarTranslucent: true,
+				statusBarAnimation: 'fade',
+				statusBarBackgroundColor: 'transparent',
+				...props?.screenOptions,
 			}}
 		>
-			{props.children}
+			{props?.children}
 		</Stack>
 	);
 };

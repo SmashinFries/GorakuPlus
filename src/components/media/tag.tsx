@@ -1,4 +1,4 @@
-import { Chip, MD3LightTheme } from 'react-native-paper';
+import { Chip, Icon, MD3LightTheme } from 'react-native-paper';
 import React, { useState } from 'react';
 import { MediaTag } from '@/api/anilist/__genereated__/gql';
 
@@ -36,7 +36,15 @@ export const Tag = ({ tag, openTag, allowAdult }: TagProps) => {
 				},
 				tag.isAdult && { backgroundColor: '#FF69B4' },
 			]}
-			icon={isSpoiler ? 'chili-alert-outline' : undefined}
+			icon={(props) =>
+				isSpoiler && (
+					<Icon
+						{...props}
+						source={'chili-alert-outline'}
+						color={reveal && tag.isAdult ? '#000' : props.color}
+					/>
+				)
+			}
 			textStyle={tag.isAdult && { color: MD3LightTheme.colors.onBackground }}
 		>
 			{tag.isAdult && !allowAdult ? '✝' : !reveal ? 'Spoiler' : `${tag.name} | ${tag.rank}%`}

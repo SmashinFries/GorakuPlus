@@ -3,33 +3,37 @@ import { ScrollView, View } from 'react-native';
 import { Button, Chip, Text } from 'react-native-paper';
 import { ScoreItem, StatBar, StatusItem } from '../statistics';
 import Animated from 'react-native-reanimated';
-import { AniMediaQuery, MediaRankType } from '@/api/anilist/__genereated__/gql';
+import {
+	AniMediaQuery_Media_Media_rankings_MediaRank,
+	AniMediaQuery_Media_Media_stats_MediaStats,
+	MediaRankType,
+} from '@/api/anilist/__genereated__/gql';
 import { router } from 'expo-router';
 
 type StatSectionProps = {
 	id: number;
-	statData: AniMediaQuery['Media']['stats'];
-	rankData: AniMediaQuery['Media']['rankings'];
+	statData: AniMediaQuery_Media_Media_stats_MediaStats | null | undefined;
+	rankData: (AniMediaQuery_Media_Media_rankings_MediaRank | null)[] | null | undefined;
 };
 export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 	if (
-		rankData?.length < 1 &&
-		statData?.scoreDistribution?.length < 1 &&
-		statData?.statusDistribution?.length < 1
+		(rankData?.length ?? 0) < 1 &&
+		(statData?.scoreDistribution?.length ?? 0) < 1 &&
+		(statData?.statusDistribution?.length ?? 0) < 1
 	) {
 		return null;
 	}
 
 	const sortedStatus = statData?.statusDistribution
-		? [...statData.statusDistribution].sort((a, b) => b.amount - a.amount)
+		? [...statData.statusDistribution].sort((a, b) => (b?.amount ?? 0) - (a?.amount ?? 0))
 		: null;
 	const sortedScores = statData?.scoreDistribution
-		? [...statData.scoreDistribution].sort((a, b) => a.score - b.score)
+		? [...statData.scoreDistribution].sort((a, b) => (a?.score ?? 0) - (b?.score ?? 0))
 		: null;
 	const highestAmountObject =
-		sortedScores?.length > 0
+		(sortedScores?.length ?? 0) > 0
 			? sortedScores?.reduce((prev, current) => {
-					return prev.amount > current.amount ? prev : current;
+					return (prev?.amount ?? 0) > (current?.amount ?? 0) ? prev : current;
 				})
 			: null;
 	let highestScore = highestAmountObject?.score ?? null;
@@ -57,20 +61,26 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 					{rankData?.map((ranking, idx) => (
 						<Chip
 							key={idx}
-							icon={ranking.type === MediaRankType.Rated ? 'star' : 'heart'}
+							icon={ranking?.type === MediaRankType.Rated ? 'star' : 'heart'}
 							style={{ margin: 5 }}
 							textStyle={{ textTransform: 'capitalize' }}
 						>
-							#{ranking.rank} {ranking.context}
+							#{ranking?.rank} {ranking?.context}
 						</Chip>
 					))}
 				</ScrollView>
-				{statData?.statusDistribution?.length > 0 ? (
+				{(statData?.statusDistribution?.length ?? 0) > 0 ? (
 					<View style={{ paddingHorizontal: 15, marginTop: 10, marginBottom: 5 }}>
 						<Text variant="titleLarge" style={{ marginBottom: 5 }}>
 							Status Distribution
 						</Text>
-						<StatBar data={sortedStatus} />
+						<StatBar
+							data={
+								sortedStatus?.filter(
+									(item): item is NonNullable<typeof item> => item !== null,
+								) ?? []
+							}
+						/>
 						<View
 							style={{
 								flexDirection: 'row',
@@ -79,12 +89,12 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 							}}
 						>
 							{sortedStatus?.map((statusDis, idx) => (
-								<StatusItem key={idx} status={statusDis} />
+								<StatusItem key={idx} status={statusDis ?? undefined} />
 							))}
 						</View>
 					</View>
 				) : null}
-				{statData?.scoreDistribution?.length > 0 && (
+				{(statData?.scoreDistribution?.length ?? 0) > 0 && (
 					<View
 						style={{
 							marginTop: 10,
@@ -98,14 +108,24 @@ export const StatSection = ({ id, rankData, statData }: StatSectionProps) => {
 						>
 							Score Distribution
 						</Text>
-						<StatBar data={statData?.scoreDistribution} />
+						<StatBar
+							data={
+								statData?.scoreDistribution?.filter(
+									(item): item is NonNullable<typeof item> => item !== null,
+								) ?? []
+							}
+						/>
 						<ScrollView
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							contentContainerStyle={{ paddingHorizontal: 15 }}
 						>
-							{sortedScores.map((scoreDis, idx) => (
-								<ScoreItem key={idx} score={scoreDis} highestScore={highestScore} />
+							{sortedScores?.map((scoreDis, idx) => (
+								<ScoreItem
+									key={idx}
+									score={scoreDis ?? undefined}
+									highestScore={highestScore ?? undefined}
+								/>
 							))}
 						</ScrollView>
 					</View>

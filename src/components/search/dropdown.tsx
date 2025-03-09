@@ -127,7 +127,13 @@ export const DialogSelectDate = ({
 				left={
 					<TextInput.Icon
 						icon={value ? 'calendar-remove' : 'calendar'}
-						onPress={onClear}
+						onPress={() => {
+							if (value) {
+								onClear();
+							} else {
+								setIsVis(true);
+							}
+						}}
 					/>
 				}
 			/>

@@ -14,7 +14,12 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Image } from 'expo-image';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BasicDialogProps } from '@/types';
-import { AniMediaQuery, MediaStatus, MediaTag } from '@/api/anilist/__genereated__/gql';
+import {
+	AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule,
+	AniMediaQuery_Media_Media_streamingEpisodes_MediaStreamingEpisode,
+	MediaStatus,
+	MediaTag,
+} from '@/api/anilist/__genereated__/gql';
 import {
 	SearchReleasesPostMutationResult,
 	useSearchSeriesPost,
@@ -69,7 +74,7 @@ export const TagDialog = ({ visible, onDismiss, tag }: TagDialogProps) => {
 type EpisodeDialogProps = {
 	visible: boolean;
 	onDismiss: () => void;
-	episodes: AniMediaQuery['Media']['streamingEpisodes'];
+	episodes: AniMediaQuery_Media_Media_streamingEpisodes_MediaStreamingEpisode[];
 };
 export const EpisodeDialog = ({ episodes, visible, onDismiss }: EpisodeDialogProps) => {
 	// const reversedEpisodes = episodes.reverse();
@@ -193,7 +198,9 @@ export const MuSearchDialog = ({
 					data={results?.data.results ?? []}
 					renderItem={({ item }) => (
 						<Pressable
-							onPress={() => setSelected(item?.record?.series_id)}
+							onPress={() =>
+								item?.record?.series_id && setSelected(item?.record?.series_id)
+							}
 							style={{
 								flex: 1,
 								flexDirection: 'row',
@@ -207,7 +214,7 @@ export const MuSearchDialog = ({
 							}}
 						>
 							<Image
-								source={{ uri: item?.record?.image?.url.original }}
+								source={{ uri: item?.record?.image?.url?.original ?? undefined }}
 								style={{
 									height: 140,
 									width: 100,
@@ -257,10 +264,12 @@ export const MuSearchDialog = ({
 
 type ReleasesDialogProps = {
 	releases: SearchReleasesPostMutationResult['data']['results'] | undefined;
-	animeReleases: AniMediaQuery['Media']['airingSchedule']['nodes'] | undefined;
+	animeReleases:
+		| AniMediaQuery_Media_Media_airingSchedule_AiringScheduleConnection_nodes_AiringSchedule[]
+		| undefined;
 	streamingSites: AnimeFull['streaming'];
 	status: MediaStatus;
-	streamingEpisodes: AniMediaQuery['Media']['streamingEpisodes'];
+	streamingEpisodes: AniMediaQuery_Media_Media_streamingEpisodes_MediaStreamingEpisode[];
 } & BasicDialogProps;
 
 export const ReleasesDialog = ({
@@ -318,11 +327,11 @@ export const ReleasesDialog = ({
 									<List.Item
 										key={idx}
 										title={
-											release.record.chapter?.length > 0
-												? release.record.chapter
-												: `v${release.record.volume}`
+											(release.record?.chapter?.length ?? 0) > 0
+												? release.record?.chapter
+												: `v${release.record?.volume}`
 										}
-										description={release.record?.groups[0]?.name}
+										description={release.record?.groups?.[0]?.name}
 										right={(props) => (
 											<Text style={[props.style]}>
 												{release.record?.release_date}
@@ -331,7 +340,7 @@ export const ReleasesDialog = ({
 									/>
 								))
 							: streamingEpisodes
-								? streamingEpisodes.map((streamEP, idx) => (
+								? streamingEpisodes?.map((streamEP, idx) => (
 										// <List.Item
 										// 	key={idx}
 										// 	title={`${streamEP.title}`}

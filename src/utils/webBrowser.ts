@@ -1,7 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import { Linking } from 'react-native';
 
-export const openWebBrowser = async (link: string, openInBrowser?: boolean) => {
+export const openWebBrowser = async (link?: string | null, openInBrowser?: boolean) => {
 	if (!link) return;
 
 	if (openInBrowser) {

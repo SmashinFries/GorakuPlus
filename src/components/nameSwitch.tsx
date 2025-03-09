@@ -65,7 +65,7 @@ export const NameViewer = ({ nativeLang, names, defaultTitle }: NameViewerProps)
 		>
 			<View>
 				<Text
-					onPress={() => onSpeak(title, names[title])}
+					onPress={() => title && names[title] && onSpeak(title, names[title])}
 					onLongPress={() => copyToClipboard(names[title])}
 					variant="titleLarge"
 					style={[styles.title]}
@@ -86,7 +86,7 @@ export const NameViewer = ({ nativeLang, names, defaultTitle }: NameViewerProps)
 			</View>
 			<SegmentedButtons
 				density="high"
-				onValueChange={(value) => setTitle(value)}
+				onValueChange={(value) => setTitle(value as typeof title)}
 				buttons={titleButtons}
 				value={title}
 				style={{ paddingVertical: 10 }}

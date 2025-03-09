@@ -12,11 +12,11 @@ const ratings = {
 };
 
 type FileDetailsProps = {
-	size: number;
-	height: number;
-	width: number;
-	format: string;
-	rating: DanRatings | string;
+	size?: number;
+	height?: number;
+	width?: number;
+	format?: string;
+	rating?: DanRatings | string;
 };
 export const FileDetails = ({ size, format, height, width, rating }: FileDetailsProps) => {
 	return (
@@ -24,9 +24,16 @@ export const FileDetails = ({ size, format, height, width, rating }: FileDetails
 			<List.Item
 				title={'Rating'}
 				left={(props) => (
-					<List.Icon {...props} icon={rating ? ratings[rating]?.icon : 'account'} />
+					<List.Icon
+						{...props}
+						icon={rating ? ratings[rating as keyof typeof ratings]?.icon : 'account'}
+					/>
 				)}
-				right={(props) => <Text {...props}>{rating ? ratings[rating]?.title : 'g'}</Text>}
+				right={(props) => (
+					<Text {...props}>
+						{rating ? ratings[rating as keyof typeof ratings]?.title : 'g'}
+					</Text>
+				)}
 			/>
 			<List.Item
 				title={'Size'}
@@ -34,7 +41,7 @@ export const FileDetails = ({ size, format, height, width, rating }: FileDetails
 				right={(props) => (
 					<Text {...props}>
 						{/* {(size / 1024).toFixed(0)} {size / 1024 >= 1000 ? 'MB' : 'KB'} */}
-						{filesize(size)}
+						{size ? filesize(size) : 0}
 					</Text>
 				)}
 			/>
@@ -42,7 +49,11 @@ export const FileDetails = ({ size, format, height, width, rating }: FileDetails
 				title={'Aspect Ratio'}
 				description={'Estimated'}
 				left={(props) => <List.Icon {...props} icon={'aspect-ratio'} />}
-				right={(props) => <Text {...props}>~{getAR(width / height).join(':')}</Text>}
+				right={(props) => (
+					<Text {...props}>
+						~{width && height ? getAR(width / height).join(':') : 'N/A'}
+					</Text>
+				)}
 			/>
 			<List.Item
 				title={'Resolution'}
@@ -54,7 +65,11 @@ export const FileDetails = ({ size, format, height, width, rating }: FileDetails
 				left={(props) => (
 					<List.Icon
 						{...props}
-						icon={['jpg', 'jpeg'].includes(format) ? 'file-jpg-box' : 'file-png-box'}
+						icon={
+							format && ['jpg', 'jpeg'].includes(format)
+								? 'file-jpg-box'
+								: 'file-png-box'
+						}
 					/>
 				)}
 				right={(props) => <Text {...props}>{format}</Text>}

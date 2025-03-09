@@ -2,7 +2,13 @@ import {
 	DarkTheme as NavigationDarkTheme,
 	DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
-import { MD3DarkTheme, MD3LightTheme, adaptNavigationTheme, useTheme } from 'react-native-paper';
+import {
+	MD3DarkTheme,
+	MD3LightTheme,
+	MD3Theme,
+	adaptNavigationTheme,
+	useTheme,
+} from 'react-native-paper';
 import { KawaiiDark, KawaiiLight } from './m3/kawaiiTheme';
 import { PunpunDark, PunpunLight } from './m3/punpunTheme';
 import { MionDark, MionLight } from './m3/mionTheme';
@@ -38,7 +44,11 @@ const blurHashTheme = {
 	},
 };
 
-const HinataLightTheme = {
+type GorakuTheme = MD3Theme & {
+	colors: MD3Theme['colors'] & { blurhash: string };
+};
+
+const HinataLightTheme: GorakuTheme = {
 	...MD3LightTheme,
 	...LightTheme,
 	colors: {
@@ -46,8 +56,9 @@ const HinataLightTheme = {
 		...LightTheme.colors,
 		blurhash: blurHashTheme.light.hinata,
 	},
+	fonts: { ...MD3LightTheme.fonts, ...NavigationDefaultTheme.fonts },
 };
-const HinataDarkTheme = {
+const HinataDarkTheme: GorakuTheme = {
 	...MD3DarkTheme,
 	...DarkTheme,
 	colors: {
@@ -55,6 +66,7 @@ const HinataDarkTheme = {
 		...DarkTheme.colors,
 		blurhash: blurHashTheme.dark.hinata,
 	},
+	fonts: { ...MD3LightTheme.fonts, ...NavigationDefaultTheme.fonts },
 };
 
 const KawaiiLightTheme = {

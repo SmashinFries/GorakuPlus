@@ -5,7 +5,7 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisualType } from '@/store/settings/types';
 import { useAppTheme } from '@/store/theme/themes';
 import { rgbToRgba } from '@/utils';
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient, LinearGradientProps } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { DimensionValue, View } from 'react-native';
 import { Text, Icon } from 'react-native-paper';
@@ -13,7 +13,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 type ScoreHealthBarProps = {
 	score: number;
-	scoreColors: { red: number; yellow: number };
+	scoreColors?: { red: number; yellow: number };
 	heartColor?: string;
 	showScore?: boolean;
 	textColor?: string;
@@ -53,7 +53,7 @@ export const ScoreHealthBar = ({
 	textColor,
 	heartColor = 'red',
 	showScore = false,
-	scoreColors,
+	scoreColors = { red: 64, yellow: 74 },
 	borderRadius = 12,
 }: ScoreHealthBarProps) => {
 	const { colors } = useAppTheme();
@@ -92,7 +92,6 @@ export const ScoreHealthBar = ({
 };
 
 type ScoreBarProps = {
-	height: number;
 	scores: ScoreDistribution[];
 	isGradient?: boolean;
 	isGraph?: boolean;
@@ -100,25 +99,28 @@ type ScoreBarProps = {
 };
 export const ScoreBar = ({ scores, isGradient, isGraph, borderRadius = 12 }: ScoreBarProps) => {
 	const [card_width, setCardWidth] = useState(0);
-	const colors: string[] = scores?.map((stat) => {
-		return ScoreColors[stat?.score];
-	});
-	const total_users = scores?.reduce((acc, curr) => acc + curr.amount, 0);
+	const colors =
+		scores?.map((stat) => {
+			return ScoreColors[stat?.score as keyof typeof ScoreColors];
+		}) ?? [];
+	const total_users = scores?.reduce((acc, curr) => acc + (curr?.amount ?? 0), 0);
 	const locations = scores?.reduce((acc, stat, index) => {
-		const percentage = stat.amount / total_users;
-		const previousValue = index > 0 ? acc[index - 1] : 0;
-		acc.push(percentage + previousValue);
+		if (stat?.amount) {
+			const percentage = stat?.amount / total_users;
+			const previousValue = index > 0 ? acc[index - 1] : 0;
+			acc.push(percentage + previousValue);
+		}
 		return acc;
 	}, []);
 	const sortedLocations = locations?.sort((a, b) => a - b);
 
-	const highestAmountObject = scores.reduce((prev, current) => {
-		return prev.amount > current.amount ? prev : current;
+	const highestAmountObject = scores?.reduce((prev, current) => {
+		return prev?.amount && current?.amount && prev?.amount > current?.amount ? prev : current;
 	});
-	let highestScore = highestAmountObject.score;
+	let highestScore = highestAmountObject?.score;
 
 	// Check if all amounts are the same
-	if (scores.every((item) => item.amount === highestAmountObject.amount)) {
+	if (scores?.every((item) => item.amount === highestAmountObject?.amount)) {
 		highestScore = 0;
 	}
 	return (
@@ -131,25 +133,31 @@ export const ScoreBar = ({ scores, isGradient, isGraph, borderRadius = 12 }: Sco
 					style={{
 						flexDirection: 'row',
 						height:
-							scores.length > 4
+							(scores?.length ?? 0) > 4
 								? 230 * 0.4
 								: highestScore === 0 && scores.length === 1
 									? 230 * 0.05
 									: 230 * 0.15,
 					}}
 				>
-					{scores?.map((stat, idx) => (
-						<View
-							key={idx}
-							style={{
-								backgroundColor: ScoreColors[stat?.score].replaceAll('1)', '0.9)'),
-								height: `${(stat.amount / total_users) * 100}%`,
-								width: card_width / scores.length,
-								borderTopLeftRadius: idx === 0 ? 12 : 0,
-								borderTopRightRadius: idx === scores.length - 1 ? 12 : 0,
-							}}
-						/>
-					))}
+					{scores?.map(
+						(stat, idx) =>
+							stat?.score &&
+							stat?.amount && (
+								<View
+									key={idx}
+									style={{
+										backgroundColor: ScoreColors[
+											stat?.score as keyof typeof ScoreColors
+										].replaceAll('1)', '0.9)'),
+										height: `${(stat.amount / total_users) * 100}%`,
+										width: card_width / scores.length,
+										borderTopLeftRadius: idx === 0 ? 12 : 0,
+										borderTopRightRadius: idx === scores.length - 1 ? 12 : 0,
+									}}
+								/>
+							),
+					)}
 				</View>
 			) : isGradient ? (
 				<LinearGradient
@@ -161,21 +169,27 @@ export const ScoreBar = ({ scores, isGradient, isGraph, borderRadius = 12 }: Sco
 				/>
 			) : (
 				<View style={{ flexDirection: 'row' }}>
-					{scores?.map((stat, idx) => (
-						<View
-							key={idx}
-							style={{
-								backgroundColor: ScoreColors[stat?.score],
-								height: 6,
-								width: `${(stat.amount / total_users) * 100}%`,
-								borderTopLeftRadius: idx === 0 ? borderRadius : 0,
-								borderBottomLeftRadius: idx === 0 ? borderRadius : 0,
-								borderTopRightRadius: idx === scores.length - 1 ? borderRadius : 0,
-								borderBottomRightRadius:
-									idx === scores.length - 1 ? borderRadius : 0,
-							}}
-						/>
-					))}
+					{scores?.map(
+						(stat, idx) =>
+							stat?.score &&
+							stat.amount && (
+								<View
+									key={idx}
+									style={{
+										backgroundColor:
+											ScoreColors[stat.score as keyof typeof ScoreColors],
+										height: 6,
+										width: `${(stat.amount / total_users) * 100}%`,
+										borderTopLeftRadius: idx === 0 ? borderRadius : 0,
+										borderBottomLeftRadius: idx === 0 ? borderRadius : 0,
+										borderTopRightRadius:
+											idx === scores.length - 1 ? borderRadius : 0,
+										borderBottomRightRadius:
+											idx === scores.length - 1 ? borderRadius : 0,
+									}}
+								/>
+							),
+					)}
 				</View>
 			)}
 		</View>
@@ -186,7 +200,7 @@ type ScoreVisualProps = {
 	score: number;
 	scoreVisualType: ScoreVisualType;
 	scoreColors?: { red: number; yellow: number };
-	scoreDistributions: ScoreDistribution[];
+	scoreDistributions: ScoreDistribution[] | null | undefined;
 	height?: number;
 	width?: DimensionValue;
 	horizontal?: boolean;
@@ -242,10 +256,12 @@ export const ScoreVisual = ({
 				/>
 			);
 		case 'bar':
-			return <ScoreBar scores={scoreDistributions} height={height} />;
+			return scoreDistributions && <ScoreBar scores={scoreDistributions} />;
 		case 'gradient-bar':
-			return <ScoreBar scores={scoreDistributions} isGradient height={height} />;
+			return scoreDistributions && <ScoreBar scores={scoreDistributions} isGradient />;
 		case 'bar-graph':
-			return <ScoreBar scores={scoreDistributions} isGraph height={height} />;
+			return scoreDistributions && <ScoreBar scores={scoreDistributions} isGraph />;
+		default:
+			return null;
 	}
 };
