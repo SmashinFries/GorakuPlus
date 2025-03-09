@@ -5,7 +5,8 @@ import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { availableThemes, themeOptions, ThemeOptions, useAppTheme } from '@/store/theme/themes';
-import { useThemeStore } from '@/store/theme/themeStore';
+import { ThemeState, useThemeStore } from '@/store/theme/themeStore';
+import React from 'react';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
@@ -70,16 +71,20 @@ const AppearancePage = () => {
 
 	const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
 
+	const onThemeSwitch = (themeProps: ThemeState) => {
+		setTheme(themeProps);
+	};
+
 	const onDarkChange = () => {
-		setTheme({ isDark: !isDark });
+		onThemeSwitch({ isDark: !isDark } as ThemeState);
 	};
 
 	const onAmoledChange = () => {
-		setTheme({ isAMOLED: !isAMOLED });
+		onThemeSwitch({ isAMOLED: !isAMOLED } as ThemeState);
 	};
 
 	const onThemeChange = (theme: ThemeOptions) => {
-		setTheme({ mode: theme });
+		onThemeSwitch({ mode: theme } as ThemeState);
 	};
 
 	const onBtmTabLabelChange = () => {
@@ -109,25 +114,29 @@ const AppearancePage = () => {
 					<ListSubheader title="Theme" />
 					<MaterialSwitchListItem
 						title={'Dark Mode'}
-						selected={isDark}
+						selected={!!isDark}
 						onPress={onDarkChange}
 						fluid
 					/>
 					<MaterialSwitchListItem
 						title={'AMOLED Pure Black'}
-						selected={isAMOLED}
+						selected={!!isAMOLED}
 						onPress={onAmoledChange}
 						disabled={!isDark}
 						fluid
 					/>
 					<Accordion
 						title="Themes"
-						description={mode.replaceAll('_', ' ')}
+						description={mode?.replaceAll('_', ' ')}
 						descriptionStyle={{ textTransform: 'capitalize' }}
 						// initialExpand={true}
 						// onPress={() => setExpandThemes((prev) => !prev)}
 					>
-						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+						<ScrollView
+							horizontal
+							showsHorizontalScrollIndicator={false}
+							fadingEdgeLength={6}
+						>
 							{themeOptions.map((theme, index) => (
 								<View key={index} style={{ marginVertical: 10 }}>
 									<Pressable
@@ -188,7 +197,7 @@ const AppearancePage = () => {
 						title={'Bottom Tab Labels'}
 						description={'Show labels on bottom tab bar'}
 						onPress={onBtmTabLabelChange}
-						selected={btmTabLabels}
+						selected={!!btmTabLabels}
 						fluid
 					/>
 				</List.Section>
@@ -198,19 +207,19 @@ const AppearancePage = () => {
 						title={'Bottom Tab Shifting'}
 						description={'Enable labels to see the effect'}
 						onPress={onBtmTabShiftingChange}
-						selected={btmTabShifting}
+						selected={!!btmTabShifting}
 						fluid
 					/>
 					<MaterialSwitchListItem
 						title={'Background Particles'}
 						description={'Goraku particles float in the background!'}
 						onPress={() => setSettings({ allowBgParticles: !allowBgParticles })}
-						selected={allowBgParticles}
+						selected={!!allowBgParticles}
 						fluid
 					/>
 					<Accordion
 						title={'Screen Transition'}
-						description={navAnimation.replaceAll('_', ' ')}
+						description={navAnimation?.replaceAll('_', ' ')}
 						descriptionStyle={{ textTransform: 'capitalize' }}
 					>
 						<View
@@ -257,14 +266,14 @@ const AppearancePage = () => {
 							'Allows 3D interaction for certain things. Pointless but cool.'
 						}
 						onPress={onEnableInteraction3DChange}
-						selected={interaction3D}
+						selected={!!interaction3D}
 						fluid
 					/>
 					<MaterialSwitchListItem
 						title={'Auto Rotation'}
 						description={'3D Interactions must be enabled for this to take effect.'}
 						onPress={onAutoRotationChange}
-						selected={interaction3D ? autoRotation : false}
+						selected={interaction3D ? !!autoRotation : false}
 						disabled={!interaction3D}
 						fluid
 					/>
@@ -274,14 +283,14 @@ const AppearancePage = () => {
 							'Enables a parallax motion effect for the media banner image using the device rotation'
 						}
 						onPress={onAllowSensorMotionChange}
-						selected={allowSensorMotion}
+						selected={!!allowSensorMotion}
 						fluid
 					/>
 				</List.Section>
 			</ScrollView>
 			<Portal>
 				<MediaTileCustomizer
-					themeMode={mode}
+					themeMode={mode as ThemeOptions}
 					visible={showMTCustomizer}
 					onDismiss={() => setShowMTCustomizer(false)}
 				/>
