@@ -158,6 +158,7 @@ export const ImageSearchDialog = ({
 						imageUrl: asset.uri,
 					},
 				});
+				break;
 			default:
 				break;
 		}

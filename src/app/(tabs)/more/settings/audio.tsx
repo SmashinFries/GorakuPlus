@@ -173,8 +173,10 @@ const AudioPage = () => {
 				break;
 			case 'korean':
 				setVoiceKorDialogVis(false);
+				break;
 			case 'chinese':
 				setVoiceChnDialogVis(false);
+				break;
 			default:
 				break;
 		}
