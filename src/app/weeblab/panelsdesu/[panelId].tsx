@@ -112,7 +112,7 @@ const PanelPage = () => {
 								style={{
 									height: 80,
 									width: undefined,
-									aspectRatio: 1 / 1,
+									aspectRatio: 1,
 									borderRadius: 8,
 								}}
 							/>
