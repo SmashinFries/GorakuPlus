@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Appbar,
 	AppbarProps,
@@ -917,22 +917,29 @@ const HeaderStyles = StyleSheet.create({
 export const ListHeader = ({
 	title = 'List',
 	isViewer = true,
+	openFilter = () => null,
 }: {
 	title?: string;
 	isViewer?: boolean;
 	openFilter?: () => void;
 	onRefresh: () => void;
 }) => {
-	const { query, updateListFilter } = useListFilterStore();
+	const { query, genre_include, genre_exclude, tags_include, tags_exclude, updateListFilter } =
+		useListFilterStore();
 	const { colors } = useAppTheme();
 	const [isOpen, setIsOpen] = useState(false);
+
+	const total_filters = useMemo(
+		() =>
+			tags_include.length + tags_exclude.length + genre_include.length + genre_exclude.length,
+		[tags_include, tags_exclude, genre_include, genre_exclude],
+	);
 
 	useFocusEffect(() => {
 		const backAction = () => {
 			setIsOpen((prev) => {
 				if (prev === false) {
 					router.back();
-					return false;
 				}
 				return false;
 			});
@@ -993,7 +1000,18 @@ export const ListHeader = ({
 					})
 				}
 			/>
-			{/* {!!openFilter && <Appbar.Action icon="filter-variant" onPress={openFilter} />} */}
+			{!!openFilter && (
+				<>
+					<Badge
+						visible={total_filters > 0}
+						size={18}
+						style={{ position: 'absolute', top: 8, right: 6 }}
+					>
+						{total_filters}
+					</Badge>
+					<Appbar.Action icon="filter-variant" onPress={openFilter} />
+				</>
+			)}
 			{/* <Appbar.Action icon="filter-outline" onPress={openFilter} /> */}
 		</Appbar.Header>
 	);
