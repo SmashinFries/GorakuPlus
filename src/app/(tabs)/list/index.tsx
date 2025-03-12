@@ -30,18 +30,6 @@ const ListPage = () => {
 
 	const [routes, setRoutes] = useState(rootRoutes);
 
-	// const renderTabBar = (props) => (
-	//     <TabBar
-	//         {...props}
-	//         tabStyle={{ paddingTop: 10 }}
-	//         indicatorStyle={{ backgroundColor: colors.primary }}
-	//         style={{ backgroundColor: colors.surface }}
-	//         labelStyle={{ textTransform: 'capitalize', color: colors.onSurface }}
-	//         scrollEnabled={false}
-	//         android_ripple={{ color: colors.primary, borderless: true }}
-	//     />
-	// );
-
 	const renderScene = ({
 		route,
 	}: SceneRendererProps & {
