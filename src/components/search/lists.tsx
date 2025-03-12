@@ -688,7 +688,7 @@ export const StudioSearchList = () => {
 
 	const allResults: NonNullable<StudioSearchQuery['Page']>['studios'] = data?.pages
 		?.flatMap((val) => val.Page?.studios ?? [])
-		.filter((studio): studio is typeof studio & {} => studio !== undefined);
+		.filter((studio): studio is NonNullable<typeof studio> => studio !== undefined);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -779,7 +779,7 @@ export const UserSearchList = () => {
 
 	const allResults: NonNullable<UserSearchQuery['Page']>['users'] = data?.pages
 		?.flatMap((val) => val.Page?.users ?? [])
-		.filter((user): user is typeof user & {} => user !== undefined);
+		.filter((user): user is NonNullable<typeof user> => user !== undefined);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
