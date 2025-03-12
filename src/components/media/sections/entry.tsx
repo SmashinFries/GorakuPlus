@@ -87,17 +87,9 @@ const ListEntryView = ({
 	onShowReleases,
 }: ListEntryViewProps) => {
 	const queryClient = useQueryClient();
-	const [listStatus, setListStatus] = useState<MediaListStatus | string>(data?.status ?? '');
-	const [listProgress, setListProgress] = useState<number | null>(data?.progress ?? 0);
 	const { isPending: favLoading, mutateAsync: toggleFav } = useToggleFavMutation();
 	const { isPending: savedMediaLoading, mutateAsync: saveListItem } =
-		useSaveMediaListItemMutation({
-			onSuccess: ({ SaveMediaListEntry }) => {
-				queryClient.invalidateQueries();
-				setListStatus(SaveMediaListEntry?.status ?? '');
-				setListProgress(SaveMediaListEntry?.progress ?? 0);
-			},
-		});
+		useSaveMediaListItemMutation();
 	const { isPending: deletedListItemLoading, mutateAsync: deleteListItem } =
 		useDeleteMediaListItemMutation({ onSuccess: () => queryClient.invalidateQueries() });
 
@@ -126,6 +118,26 @@ const ListEntryView = ({
 			);
 		},
 		[id],
+	);
+
+	const serializedParams = useMemo(
+		() =>
+			JSON.stringify({
+				entryData: data,
+				scoreFormat: scoreFormat,
+				media: {
+					id: id,
+					type: type,
+					status: media?.status,
+					episodes: media?.episodes,
+					chapters: media?.chapters,
+					volumes: media?.volumes,
+					nextAiringEpisode: media?.nextAiringEpisode,
+					startDate: media?.startDate,
+					endDate: media?.endDate,
+				},
+			}),
+		[data, scoreFormat, media],
 	);
 
 	const iconStates = {
@@ -190,7 +202,6 @@ const ListEntryView = ({
 							) : null}
 						</ActionIcon>
 					</View>
-
 					<View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
 						{iconStates.fav.isLoading ? (
 							<ActivityIndicator
@@ -238,14 +249,10 @@ const ListEntryView = ({
 						<ActionIcon
 							onPress={() =>
 								isOnList
-									? router.push({
+									? router.navigate({
 											pathname: '/(sheets)/listEntrySheet',
 											params: {
-												params: JSON.stringify({
-													entryData: data,
-													scoreFormat: scoreFormat,
-													media: media,
-												}),
+												params: serializedParams,
 											},
 										})
 									: updateListEntry()
@@ -269,10 +276,10 @@ const ListEntryView = ({
 								}}
 								variant="labelMedium"
 							>
-								{listStatus
-									? `${listStatus?.replaceAll('_', ' ')}${data?.private ? '🔒' : ''}`
+								{data?.status
+									? `${data.status?.replaceAll('_', ' ')}${data?.private ? '🔒' : ''}`
 									: 'Add to List'}
-								{listProgress && listProgress > 0 ? ` · ${listProgress}` : ''}
+								{data?.progress && data?.progress > 0 ? ` · ${data.progress}` : ''}
 							</Text>
 						</ActionIcon>
 					</View>
@@ -285,8 +292,6 @@ const ListEntryView = ({
 					onConfirm={() => {
 						deleteListItem({ id: data?.id });
 						setIsOnList(false);
-						setListStatus('');
-						setListProgress(null);
 					}}
 				/>
 			</Portal>
