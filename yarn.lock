@@ -3516,13 +3516,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lodev09/react-native-true-sheet@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@lodev09/react-native-true-sheet@npm:2.0.3"
+"@lodev09/react-native-true-sheet@npm:^2.0.4":
+  version: 2.0.5
+  resolution: "@lodev09/react-native-true-sheet@npm:2.0.5"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/8b612d4fd24e43a01ab528ff5889af6585ce878c2db767bb12d039c86a1c217d5999ad4ec8fa3c5d3d5aea2562b8df2069c2aaf66d4316f6be4196559de85c32
+  checksum: 10c0/cee2d9818ba00ec0fe1cae75027383503e7efb08fc53b564572f4fecf9ca6db82ce5d35bf6669b84364a8cd3e8a3b941b65ec2b34e634c473ac3a6a7aa6c195e
   languageName: node
   linkType: hard
 
@@ -6284,14 +6284,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.2":
-  version: 1.8.1
-  resolution: "axios@npm:1.8.1"
+"axios@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "axios@npm:1.8.2"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/b2e1d5a61264502deee4b50f0a6df0aa3b174c546ccf68c0dff714a2b8863232e0bd8cb5b84f853303e97f242a98260f9bb9beabeafe451ad5af538e9eb7ac22
+  checksum: 10c0/d8c2969e4642dc6d39555ac58effe06c051ba7aac2bd40cad7a9011c019fb2f16ee011c5a6906cb25b8a4f87258c359314eb981f852e60ad445ecaeb793c7aa2
   languageName: node
   linkType: hard
 
@@ -10294,7 +10294,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": "npm:^4.2.3"
     "@graphql-codegen/typescript-react-query": "npm:^6.1.0"
     "@kesha-antonov/react-native-background-downloader": "npm:^3.2.6"
-    "@lodev09/react-native-true-sheet": "npm:^2.0.3"
+    "@lodev09/react-native-true-sheet": "npm:^2.0.4"
     "@marceloterreiro/flash-calendar": "npm:^1.3.0"
     "@miblanchard/react-native-slider": "npm:^2.6.0"
     "@notifee/react-native": "npm:^9.1.8"
@@ -10311,7 +10311,7 @@ __metadata:
     "@types/react-native-vector-icons": "npm:^6.4.13"
     "@typescript-eslint/eslint-plugin": "npm:^8.8.1"
     "@typescript-eslint/parser": "npm:^5.59.6"
-    axios: "npm:^1.7.2"
+    axios: "npm:^1.8.2"
     burnt: "npm:^0.12.2"
     cheerio: "npm:1.0.0-rc.12"
     color: "npm:^4.2.3"
