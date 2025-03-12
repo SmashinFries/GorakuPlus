@@ -95,13 +95,12 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 		(futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
 	);
 	const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
-	return `${
-		pos_estimated_days > 1
+	return `${pos_estimated_days > 1
 			? pos_estimated_days?.toString() + ' days'
 			: pos_estimated_days === 1
 				? pos_estimated_days.toString() + ' day'
 				: 'Today'
-	}`;
+		}`;
 };
 
 export const getMovieDuration = (minutes: number) => {
@@ -186,63 +185,51 @@ export const getReleaseTime = (
 	}
 };
 
-export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days' = 'until') => {
-	const diffTime = Math.abs(new Date(time * 1000).getTime() - new Date().getTime());
-	const timeUnits = {
-		month: Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30)),
-		week: Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7)),
-		day: Math.floor(diffTime / (1000 * 60 * 60 * 24)),
-		hour: Math.floor((diffTime / (1000 * 60 * 60)) % 24),
-		minute: Math.floor((diffTime / (1000 * 60)) % 60),
-	};
+const calculateTimeUnits = (diffTime: number) => ({
+	month: Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30)),
+	week: Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7)),
+	day: Math.floor(diffTime / (1000 * 60 * 60 * 24)),
+	hour: Math.floor((diffTime / (1000 * 60 * 60)) % 24),
+	minute: Math.floor((diffTime / (1000 * 60)) % 60),
+});
 
-	if (format === 'until') {
-		return [
-			timeUnits.day > 0 && `${timeUnits.day}d`,
-			timeUnits.hour > 0 && `${timeUnits.hour}h`,
-			timeUnits.minute > 0 && `${timeUnits.minute}m`,
-		]
-			.filter(Boolean)
-			.join(' ');
-	}
+const formatUntil = (timeUnits: ReturnType<typeof calculateTimeUnits>) => {
+	const parts = [
+		timeUnits.day > 0 && `${timeUnits.day}d`,
+		timeUnits.hour > 0 && `${timeUnits.hour}h`,
+		timeUnits.minute > 0 && `${timeUnits.minute}m`,
+	];
+	return parts.filter(Boolean).join(' ');
+};
 
-	if (format === 'createdAt') {
-		for (const [unit, value] of Object.entries(timeUnits)) {
-			if (value > 0) {
-				return `${value} ${unit}${value > 1 ? 's' : ''} ago`;
-			}
+const formatCreatedAt = (timeUnits: ReturnType<typeof calculateTimeUnits>) => {
+	const units = ['month', 'week', 'day', 'hour', 'minute'] as const;
+	for (const unit of units) {
+		const value = timeUnits[unit];
+		if (value > 0) {
+			return `${value} ${unit}${value > 1 ? 's' : ''} ago`;
 		}
 	}
+	return '';
+};
 
-	if (format === 'days') {
-		return timeUnits.day > 1 ? `${timeUnits.day} days` : timeUnits.day === 1 ? '1 day' : 'Soon';
-	}
-	// const today = new Date();
-	// const episodeDate = new Date(time * 1000);
-	// const diffTime = Math.abs(episodeDate.getTime() - today.getTime());
-	// const diffMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7 * 4));
-	// const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
-	// const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-	// const diffHours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
-	// const diffMinutes = Math.floor((diffTime / (1000 * 60)) % 60);
+const formatDays = (timeUnits: ReturnType<typeof calculateTimeUnits>) => {
+	if (timeUnits.day > 1) return `${timeUnits.day} days`;
+	if (timeUnits.day === 1) return '1 day';
+	return 'Soon';
+};
 
-	// if (format === 'until')
-	// 	return `${diffDays > 0 ? `${diffDays}d ` : ''}${diffHours > 0 ? `${diffHours}h ` : ''}${diffMinutes > 0 ? `${diffMinutes}m` : ''
-	// 		}`;
-	// if (format === 'createdAt') {
-	// 	if (diffMonths > 0)
-	// 		return `${diffMonths > 1 ? `${diffMonths} months` : `${diffMonths} month`} ago`;
-	// 	if (diffWeeks > 0)
-	// 		return `${diffWeeks > 1 ? `${diffWeeks} weeks` : `${diffWeeks} week`} ago`;
-	// 	if (diffDays > 0) return `${diffDays > 1 ? `${diffDays} days` : `${diffDays} day`} ago`;
-	// 	if (diffHours > 0)
-	// 		return `${diffHours > 1 ? `${diffHours} hours` : `${diffHours} hour`} ago`;
-	// 	if (diffMinutes > 0)
-	// 		return `${diffMinutes > 1 ? `${diffMinutes} minutes` : `${diffMinutes} minute`} ago`;
-	// }
-	// if (format === 'days') {
-	// 	return `${diffDays > 1 ? `${diffDays} days` : diffDays === 1 ? '1 day' : 'Soon'}`;
-	// }
+export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days' = 'until') => {
+	const diffTime = Math.abs(new Date(time * 1000).getTime() - new Date().getTime());
+	const timeUnits = calculateTimeUnits(diffTime);
+
+	const formatters = {
+		until: formatUntil,
+		createdAt: formatCreatedAt,
+		days: formatDays,
+	};
+
+	return formatters[format](timeUnits);
 };
 
 export const useTimeUntil = (time: number) => {
