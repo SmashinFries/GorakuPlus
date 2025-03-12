@@ -65,7 +65,7 @@ type FilterSheetSectionProps = {
 	nestedLevel?: number;
 	initialExpand?: boolean;
 };
-const FilterSheetSection = ({
+export const FilterSheetSection = ({
 	title,
 	children,
 	description,
@@ -204,7 +204,7 @@ const MediaFilters = ({
 			toggleTagBlacklist: state.toggleTagBlacklist,
 		})),
 	);
-	const { genreData, tagData, animeSites, mangaSites } = useCollectionStore(
+	const { genreData, tagData } = useCollectionStore(
 		useShallow((state) => ({
 			genreData: state.genres,
 			tagData: state.tags,
@@ -1351,9 +1351,8 @@ type StudioFilterProps = {
 	setTempStudioSort: React.Dispatch<React.SetStateAction<SearchState['studioSort']>>;
 };
 const StudioFilters = ({ tempStudioSort, setTempStudioSort }: StudioFilterProps) => {
-	const { studioFilter, studioSort } = useSearchStore(
+	const { studioSort } = useSearchStore(
 		useShallow((state) => ({
-			studioFilter: state.studioFilter,
 			studioSort: state.studioSort,
 		})),
 	);
@@ -1424,7 +1423,7 @@ export const FilterSheet = ({ sheetRef }: { sheetRef: React.RefObject<TrueSheet>
 	const [tempStaffSort, setTempStaffSort] = useState(staffSort);
 
 	// Studio
-	const { studioFilter, studioSort } = useSearchStore(
+	const { studioSort } = useSearchStore(
 		useShallow((state) => ({
 			studioFilter: state.studioFilter,
 			studioSort: state.studioSort,
