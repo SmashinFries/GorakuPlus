@@ -1,5 +1,6 @@
 import * as BackgroundFetch from 'expo-background-fetch';
 import notifee, {
+	AndroidBigPictureStyle,
 	AndroidImportance,
 	AndroidStyle,
 	AndroidVisibility,
@@ -10,6 +11,13 @@ import { useNotificationStore } from '@/store/notifications/notificationStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAuthStore } from '@/store/authStore';
 import {
+	ActivityLikeNotification,
+	ActivityMentionNotification,
+	ActivityMessageNotification,
+	ActivityReplyLikeNotification,
+	ActivityReplyNotification,
+	ActivityReplySubscribedNotification,
+	AiringNotification,
 	GetNotificationsQuery,
 	MainMetaFragment,
 	MediaType,
@@ -97,6 +105,82 @@ export const notifNavigate = (notif: Notification, pressActionId: NotificationPr
 	}
 };
 
+const createActivityNotification = (
+	data:
+		| ActivityLikeNotification
+		| ActivityMentionNotification
+		| ActivityMessageNotification
+		| ActivityReplyNotification
+		| ActivityReplyLikeNotification
+		| ActivityReplySubscribedNotification,
+	channelInfo: NotificationAndroid,
+): Notification => {
+	const activity_body = `${data?.user?.name} ${ActivityConfig[data?.__typename as string].body}`;
+	return {
+		title: ActivityConfig[data?.__typename as string].title,
+		body: activity_body,
+		data: createNotificationData(data),
+		android: {
+			...channelInfo,
+			largeIcon: data?.user?.avatar?.large ?? undefined,
+			timestamp: data?.createdAt ? getTimestamp(data?.createdAt) : undefined,
+			pressAction: { id: 'activity-route' },
+			actions: [
+				{ title: 'View Activity', pressAction: { id: 'activity-route' } },
+				{ title: 'View User', pressAction: { id: 'user-route' } },
+			],
+		},
+	};
+};
+
+const createMediaNotification = (
+	data: AiringNotification,
+	channelInfo: NotificationAndroid,
+	language?: 'english' | 'native' | 'romaji',
+): Notification => {
+	const title = data?.media?.title?.[language ?? 'romaji'] ?? '';
+	return {
+		title,
+		body: `${data?.contexts?.[0]}${data.episode}${data.contexts?.[2]}`,
+		data: data ? { ...(data as object), contexts: '' } : undefined,
+		android: {
+			...channelInfo,
+			pressAction: { id: 'media-route' },
+			actions: data.media?.type ? [createMediaViewAction(data.media?.type)] : undefined,
+			largeIcon: data.media?.coverImage?.large ?? undefined,
+			style: createMediaStyle(data.media) ?? undefined,
+			timestamp: data.createdAt ? getTimestamp(data.createdAt) : undefined,
+		},
+	};
+};
+
+const createNotificationData = (data: any) => {
+	return Object.entries(data).reduce(
+		(acc, [key, value]) => ({
+			...acc,
+			[key]: value ?? undefined,
+		}),
+		{},
+	);
+};
+
+const getTimestamp = (createdAt?: number) => {
+	return createdAt ? new Date(createdAt * 1000).getTime() : undefined;
+};
+
+const createMediaViewAction = (type?: MediaType) => ({
+	title: `View ${type === MediaType.Anime ? 'Anime' : 'Manga'}`,
+	pressAction: { id: 'media-route' },
+});
+
+const createMediaStyle = (media?: any): AndroidBigPictureStyle | undefined =>
+	media
+		? {
+				type: AndroidStyle.BIGPICTURE,
+				picture: media?.bannerImage ?? media?.coverImage?.large ?? '',
+			}
+		: undefined;
+
 export const parseNotif = (
 	data: NonNullable<NonNullable<GetNotificationsQuery['Page']>['notifications']>[0],
 ): Notification => {
@@ -104,258 +188,27 @@ export const parseNotif = (
 	const notifType = data?.__typename.replace('Notification', '') as keyof typeof NotificationType;
 	const channelId = NotificationType[notifType];
 	const channelInfo: NotificationAndroid = { channelId, groupId: ANILIST_GROUP_ID };
-	switch (data?.__typename) {
-		case 'ActivityLikeNotification':
-		case 'ActivityMentionNotification':
-		case 'ActivityMessageNotification':
-		case 'ActivityReplyNotification':
-		case 'ActivityReplyLikeNotification':
-		case 'ActivityReplySubscribedNotification':
-			const activity_body = `${data.user?.name} ${ActivityConfig[data.__typename].body}`;
-			return {
-				title: ActivityConfig[data.__typename].title,
-				body: activity_body,
-				data: {
-					...Object.entries(data).reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value ?? undefined,
-						}),
-						{},
-					),
-				},
-				android: {
-					...channelInfo,
-					largeIcon: data.user?.avatar?.large ?? undefined,
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-					pressAction: { id: 'activity-route' },
-					actions: [
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
-							},
-						},
-						{
-							title: 'View User',
-							pressAction: {
-								id: 'user-route',
-							},
-						},
-					],
-				},
-			};
-		case 'AiringNotification':
-			return {
-				title: data.media?.title?.[language ?? 'romaji'] as string,
-				body: `${data.contexts?.[0]}${data.episode}${data.contexts?.[2]}`,
-				data: {
-					...data,
-					contexts: '',
-				},
-				android: {
-					...channelInfo,
-					pressAction: { id: 'media-route' },
-					actions: [
-						{
-							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
-							pressAction: {
-								id: 'media-route',
-							},
-						},
-					],
-					largeIcon: data.media?.coverImage?.large ?? undefined,
-					style: {
-						type: AndroidStyle.BIGPICTURE,
-						picture:
-							data.media?.bannerImage ?? data.media?.coverImage?.large ?? '',
-					},
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-				},
-			};
-		case 'FollowingNotification':
-			return {
-				title: 'New Follower',
-				body: `${data.user?.name} started following you`,
-				data: {
-					...Object.entries(data).reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value ?? undefined,
-						}),
-						{},
-					),
-				},
-				android: {
-					...channelInfo,
-					largeIcon: data.user?.avatar?.large ?? undefined,
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-					actions: [
-						{
-							title: 'View Activity',
-							pressAction: {
-								id: 'activity-route',
-							},
-						},
-						{
-							title: 'View User',
-							pressAction: {
-								id: 'user-route',
-							},
-						},
-					],
-				},
-			};
-		case 'MediaDataChangeNotification':
-			return {
-				title: data.media?.title?.[language ?? 'romaji'] as string,
-				body: `${data.media?.title?.[language ?? 'romaji']}${data.context}`,
-				data: {
-					...Object.entries(data).reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value ?? undefined,
-						}),
-						{},
-					),
-				},
-				android: {
-					...channelInfo,
-					largeIcon: data.media?.coverImage?.large ?? undefined,
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-					pressAction: { id: 'media-route' },
-					style: {
-						type: AndroidStyle.BIGTEXT,
-						text: data.reason ?? '',
-					},
-					actions: [
-						{
-							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
-							pressAction: {
-								id: 'media-route',
-							},
-						},
-					],
-				},
-			};
-		case 'MediaDeletionNotification':
-			return {
-				title: data.deletedMediaTitle as string,
-				body: `${data.deletedMediaTitle}${data.context}`,
-				data: {
-					...Object.entries(data).reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value ?? undefined,
-						}),
-						{},
-					),
-				},
-				android: {
-					...channelInfo,
-					style: {
-						type: AndroidStyle.BIGTEXT,
-						text: data.reason ?? '',
-					},
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-					// actions: [
-					// 	{
-					// 		title: 'View Activity',
-					// 		pressAction: {
-					// 			id: 'activity-route',
-					// 		},
-					// 	},
-					// ],
-				},
-			};
-		case 'MediaMergeNotification':
-			return {
-				title: data.media?.title?.[language ?? 'romaji'] as string,
-				body: `${data.deletedMediaTitles} merged with ${data.media?.title?.[language ?? 'romaji'] as string}`,
-				data: {
-					...Object.entries(data).reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value ?? undefined,
-						}),
-						{},
-					),
-				},
-				android: {
-					...channelInfo,
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-					largeIcon: data.media?.coverImage?.large ?? undefined,
-					pressAction: { id: 'media-route' },
-					style: data.reason
-						? {
-							type: AndroidStyle.BIGTEXT,
-							text: data.reason,
-						}
-						: undefined,
-					actions: [
-						{
-							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
-							pressAction: {
-								id: 'media-route',
-							},
-						},
-					],
-				},
-			};
-		case 'RelatedMediaAdditionNotification':
-			return {
-				title: data.media?.title?.[language ?? 'romaji'] as string,
-				body: `${data.media?.title?.[language ?? 'romaji'] as string}${data.context}`,
-				data: {
-					...Object.entries(data).reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value ?? undefined,
-						}),
-						{},
-					),
-				},
-				android: {
-					...channelInfo,
-					largeIcon: data.media?.coverImage?.large ?? undefined,
-					timestamp: data.createdAt
-						? new Date(data.createdAt * 1000).getTime()
-						: undefined,
-					pressAction: { id: 'media-route' },
-					style: {
-						type: AndroidStyle.BIGPICTURE,
-						picture: data.media?.bannerImage ?? data.media?.coverImage?.large ?? '',
-					},
-					actions: [
-						{
-							title: `View ${data.media?.type === MediaType.Anime ? 'Anime' : 'Manga'}`,
-							pressAction: {
-								id: 'media-route',
-							},
-						},
-					],
-				},
-			};
-		default:
-			return {};
-		// case 'ThreadCommentLikeNotification':
-		// case 'ThreadCommentMentionNotification':
-		// case 'ThreadCommentReplyNotification':
-		// case 'ThreadCommentSubscribedNotification':
-		// case 'ThreadLikeNotification':
-	}
+
+	const notificationHandlers = {
+		ActivityLikeNotification: () =>
+			createActivityNotification(data as ActivityLikeNotification, channelInfo),
+		ActivityMentionNotification: () =>
+			createActivityNotification(data as ActivityMentionNotification, channelInfo),
+		ActivityMessageNotification: () =>
+			createActivityNotification(data as ActivityMessageNotification, channelInfo),
+		ActivityReplyNotification: () =>
+			createActivityNotification(data as ActivityReplyNotification, channelInfo),
+		ActivityReplyLikeNotification: () =>
+			createActivityNotification(data as ActivityReplyLikeNotification, channelInfo),
+		ActivityReplySubscribedNotification: () =>
+			createActivityNotification(data as ActivityReplySubscribedNotification, channelInfo),
+		AiringNotification: () =>
+			createMediaNotification(data as AiringNotification, channelInfo, language),
+		// Add other notification type handlers here...
+	};
+
+	const handler = notificationHandlers[data?.__typename as keyof typeof notificationHandlers];
+	return handler ? handler() : {};
 };
 const createNotifChannels = async () => {
 	const username = useAuthStore.getState().anilist.username;
