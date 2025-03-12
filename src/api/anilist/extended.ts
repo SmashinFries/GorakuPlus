@@ -315,7 +315,7 @@ export const useAiringRangeMonthQuery = (params: Omit<AiringRangeQueryVariables,
 						queryKey: ['AiringRangeMonthPage'],
 						queryFn: useAiringRangeQuery.fetcher({ ...params, page }),
 					});
-					if (resp?.Page?.airingSchedules) tempData.push(...resp?.Page?.airingSchedules);
+					if (resp?.Page?.airingSchedules) tempData.push(...(resp?.Page?.airingSchedules ?? []));
 					// setData((prev) => [...prev, ...resp.Page?.airingSchedules]);
 
 					if (resp.Page?.pageInfo?.hasNextPage) {
@@ -353,7 +353,7 @@ export const useSeasonalAnimeAllQuery = ({ season, year }: { season: MediaSeason
 							onList: true,
 						}),
 					});
-					if (resp?.Page?.media) tempData.push(...resp?.Page?.media);
+					if (resp?.Page?.media) tempData.push(...(resp?.Page?.media ?? []));
 
 					if (resp.Page?.pageInfo?.hasNextPage) {
 						page = page + 1;
