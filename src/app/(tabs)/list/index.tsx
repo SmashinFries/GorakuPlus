@@ -2,10 +2,12 @@ import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { ListHeader } from '@/components/headers';
 import { ListTabs } from '@/components/list/screens';
 import { GorakuActivityIndicator } from '@/components/loading';
+import { ListFilterSheet } from '@/components/sheets/listsheets';
 import { GorakuTabBar } from '@/components/tab';
 import { useList } from '@/hooks/list/useList';
 import { useAuthStore } from '@/store/authStore';
-import { useEffect, useState } from 'react';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import { useEffect, useRef, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -15,6 +17,7 @@ const ListPage = () => {
 	const layout = useWindowDimensions();
 	const { userID } = useAuthStore().anilist;
 	const [index, setIndex] = useState(0);
+	const filterSheetRef = useRef<TrueSheet>(null);
 
 	const {
 		animeList,
@@ -73,7 +76,7 @@ const ListPage = () => {
 	return (
 		<>
 			<ListHeader
-				// openFilter={() => SheetManager.show('')}
+				openFilter={() => filterSheetRef.current?.present()}
 				onRefresh={index === 0 ? refreshAnimeList : refreshMangaList}
 			/>
 			{!loading && !isRefreshing && routes.length > 0 ? (
@@ -93,13 +96,7 @@ const ListPage = () => {
 					<Text variant="labelMedium">Fetching lists</Text>
 				</View>
 			)}
-			{/* <ListFilterSheet
-				ref={filterSheetRef}
-				mediaType={index === 0 ? MediaType.Anime : MediaType.Manga}
-				// tags={tags}
-				// genres={genres}
-				// sortList={sortLists}
-			/> */}
+			<ListFilterSheet sheetRef={filterSheetRef} />
 		</>
 	);
 };
