@@ -8,7 +8,7 @@ import { availableThemes, themeOptions, ThemeOptions, useAppTheme } from '@/stor
 import { ThemeState, useThemeStore } from '@/store/theme/themeStore';
 import React from 'react';
 import { useState } from 'react';
-import { Pressable } from 'react-native';
+import { FlatList, Pressable } from 'react-native';
 import { Platform, ScrollView, View } from 'react-native';
 import { Chip, List, Portal, Text } from 'react-native-paper';
 import { StackAnimationTypes } from 'react-native-screens';
@@ -35,14 +35,7 @@ const STACK_ANIMS_IOS: StackAnimationTypes[] = [
 ];
 
 const AppearancePage = () => {
-	const { mode, isDark, isAMOLED, setTheme } = useThemeStore(
-		useShallow((state) => ({
-			mode: state.mode,
-			isDark: state.isDark,
-			isAMOLED: state.isAMOLED,
-			setTheme: state.setTheme,
-		})),
-	);
+	const { mode, isDark, isAMOLED, setThemeAMOLED, setThemeDark, setThemeMode } = useThemeStore();
 	const {
 		btmTabLabels,
 		btmTabShifting,
@@ -70,22 +63,6 @@ const AppearancePage = () => {
 	const [showMTCustomizer, setShowMTCustomizer] = useState(false);
 
 	const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
-
-	const onThemeSwitch = (themeProps: ThemeState) => {
-		setTheme(themeProps);
-	};
-
-	const onDarkChange = () => {
-		onThemeSwitch({ isDark: !isDark } as ThemeState);
-	};
-
-	const onAmoledChange = () => {
-		onThemeSwitch({ isAMOLED: !isAMOLED } as ThemeState);
-	};
-
-	const onThemeChange = (theme: ThemeOptions) => {
-		onThemeSwitch({ mode: theme } as ThemeState);
-	};
 
 	const onBtmTabLabelChange = () => {
 		setSettings({ btmTabLabels: !btmTabLabels });
@@ -115,13 +92,13 @@ const AppearancePage = () => {
 					<MaterialSwitchListItem
 						title={'Dark Mode'}
 						selected={!!isDark}
-						onPress={onDarkChange}
+						onPress={() => setThemeDark(!isDark)}
 						fluid
 					/>
 					<MaterialSwitchListItem
 						title={'AMOLED Pure Black'}
 						selected={!!isAMOLED}
-						onPress={onAmoledChange}
+						onPress={() => setThemeAMOLED(!isAMOLED)}
 						disabled={!isDark}
 						fluid
 					/>
@@ -132,25 +109,26 @@ const AppearancePage = () => {
 						// initialExpand={true}
 						// onPress={() => setExpandThemes((prev) => !prev)}
 					>
-						<ScrollView
-							horizontal
-							showsHorizontalScrollIndicator={false}
+						<FlatList
+							data={themeOptions}
 							fadingEdgeLength={6}
-						>
-							{themeOptions.map((theme, index) => (
-								<View key={index} style={{ marginVertical: 10 }}>
+							showsHorizontalScrollIndicator={false}
+							keyExtractor={(item, idx) => idx.toString()}
+							horizontal
+							renderItem={({ item }) => (
+								<View style={{ marginVertical: 10 }}>
 									<Pressable
 										style={{
 											marginHorizontal: 10,
 											borderRadius: 12,
 										}}
-										onPress={() => onThemeChange(theme)}
+										onPress={() => setThemeMode(item)}
 									>
 										<View
 											style={{
 												borderWidth: 1,
 												borderColor:
-													mode === theme ? colors.primary : 'transparent',
+													mode === item ? colors.primary : 'transparent',
 												borderRadius: 12,
 												alignItems: 'center',
 												paddingHorizontal: 15,
@@ -159,11 +137,9 @@ const AppearancePage = () => {
 										>
 											<ThemeSkeleton
 												theme={
-													availableThemes[isDark ? 'dark' : 'light'][
-														theme
-													]
+													availableThemes[isDark ? 'dark' : 'light'][item]
 												}
-												active={mode === theme}
+												active={mode === item}
 											/>
 											<Text
 												style={{
@@ -174,13 +150,13 @@ const AppearancePage = () => {
 												}}
 												numberOfLines={2}
 											>
-												{theme.replaceAll('_', ' ')}
+												{item.replaceAll('_', ' ')}
 											</Text>
 										</View>
 									</Pressable>
 								</View>
-							))}
-						</ScrollView>
+							)}
+						/>
 					</Accordion>
 				</List.Section>
 				<List.Section>
