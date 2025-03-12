@@ -83,6 +83,11 @@ mutation SaveMediaListItem(
 		customLists: $customLists
 	) {
 		...MediaListEntryMeta
+		media {
+			id
+			type
+			countryOfOrigin
+		}
 	}
 }
 

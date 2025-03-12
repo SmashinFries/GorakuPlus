@@ -71,6 +71,7 @@ fragment MainMeta on Media {
 	isAdult
 	synonyms
 	popularity
+	countryOfOrigin
 	startDate {
 		year
 		month
