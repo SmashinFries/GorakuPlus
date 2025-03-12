@@ -20,38 +20,43 @@ export const useMangaUpdatesQuery = (
 	const { addMangaUpdatesID, isMangaUpdatesEnabled, muDB } = useMatchStore(useShallow((state) => ({ muDB: state.mangaUpdates, isMangaUpdatesEnabled: state.isMangaUpdatesEnabled, addMangaUpdatesID: state.addMangaUpdatesID })));
 	const { mutateAsync: searchSeries, isPending, isError } = useSearchSeriesPost();
 
+	const retrieveSeriesResult = useRetrieveSeries(muId || 0, {}, {
+		query: {
+			enabled: isMangaUpdatesEnabled && !!muId && !!aniId
+		}
+	});
+
+	const searchQuery = useQuery({
+		queryKey: ['MangaUpdates'],
+		queryFn: async () => {
+			const searchResults = await searchSeries({
+				data: { search: `${title}${isNovel ? ' (Novel)' : ''}`, stype: 'title' },
+			});
+			if (aniId && (searchResults?.data?.total_hits ?? 0) > 0) {
+				const seriesId = (searchResults.data as SeriesSearchResponseV1).results?.[0]?.record
+					?.series_id
+				if (seriesId) {
+					const muIdResponse = await queryClient.fetchQuery(
+						getRetrieveSeriesQueryOptions(seriesId),
+					);
+					muIdResponse.data?.series_id && addMangaUpdatesID(aniId, muIdResponse.data.series_id);
+					return muIdResponse;
+				}
+			}
+			return null;
+		},
+		enabled: isMangaUpdatesEnabled ? !!aniId && !!title && !muId : false,
+	});
+
 	useEffect(() => {
 		if (muId && aniId) {
 			if (muDB[aniId] !== muId && !isError && !isPending) {
 				addMangaUpdatesID(aniId, muId);
 			}
 		}
-	}, [isError, isPending]);
+	}, [isError, isPending, muId, aniId]);
 
-	if (muId && aniId) {
-		return useRetrieveSeries(muId, {}, { query: { enabled: isMangaUpdatesEnabled } });
-	} else {
-		return useQuery({
-			queryKey: ['MangaUpdates'],
-			queryFn: async () => {
-				const searchResults = await searchSeries({
-					data: { search: `${title}${isNovel ? ' (Novel)' : ''}`, stype: 'title' },
-				});
-				if (searchResults?.data?.total_hits > 0) {
-					const muIdResponse = await queryClient.fetchQuery(
-						getRetrieveSeriesQueryOptions(
-							(searchResults.data as SeriesSearchResponseV1).results[0]?.record
-								?.series_id,
-						),
-					);
-					addMangaUpdatesID(aniId, muIdResponse.data.series_id);
-					return muIdResponse;
-				}
-				return null;
-			},
-			enabled: isMangaUpdatesEnabled ? !!aniId && !!title : false,
-		});
-	}
+	return muId && aniId ? retrieveSeriesResult : searchQuery;
 };
 
 export const useMuReleasesQuery = (muId: number) => {
