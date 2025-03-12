@@ -53,7 +53,6 @@ const MediaQuickActionSheet = () => {
 		isPending: isAddEntryPending,
 	} = useSaveMediaListItemInvalidatedMutation({
 		meta: { mediaId: payload?.id },
-		onSuccess: () => queryClient.invalidateQueries(),
 	});
 	const { mutateAsync: removeEntry, isPending: isRemoveEntryPending } =
 		useDeleteMediaListItemInvalidatedMutation({
