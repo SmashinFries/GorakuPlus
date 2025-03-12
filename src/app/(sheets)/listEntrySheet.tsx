@@ -13,9 +13,8 @@ import { BottomSheetParent, GlobalBottomSheetParent } from '@/components/sheets/
 import { useListEntryStore } from '@/store/listEntryStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { compareArrays } from '@/utils/compare';
-import { sendToast } from '@/utils/toast';
+import { sendErrorMessage, sendToast } from '@/utils/toast';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { Keyboard, Pressable, ScrollView, StyleProp, View, ViewStyle } from 'react-native';
@@ -135,16 +134,8 @@ const ListEntrySheet = () => {
 	const sheet = useRef<TrueSheet>(null);
 	const statusSheet = useRef<TrueSheet>(null);
 
-	const queryClient = useQueryClient();
-	const {
-		mutateAsync: addEntry,
-		// data: savedMediaListItemData,
-		// isPending: isAddEntryPending,
-	} = useSaveMediaListItemInvalidatedMutation({
+	const { mutateAsync: addEntry } = useSaveMediaListItemInvalidatedMutation({
 		meta: { mediaId: payload?.entryData?.id },
-		onSuccess: () => {
-			queryClient.invalidateQueries();
-		},
 	});
 
 	const allCustomLists =
@@ -170,25 +161,6 @@ const ListEntrySheet = () => {
 		initialize,
 		...tempParams
 	} = useListEntryStore();
-	// const [tempParams, setTempParams] = useState<SaveMediaListItemMutationVariables>({
-	// 	...payload?.entryData,
-	// 	status: payload?.entryData?.status ?? MediaListStatus.Planning,
-	// 	// status: status as MediaListStatus,
-	// 	score: payload?.entryData?.score ?? 0,
-	// 	repeat: payload?.entryData?.repeat ?? 0,
-	// 	// progress: entryData?.progress,
-	// 	// startedAt: entryData?.startedAt as FuzzyDate,
-	// 	// completedAt: entryData?.completedAt as FuzzyDate,
-	// 	// repeat: entryData?.repeat,
-	// 	// notes: entryData?.notes,
-	// 	// private: entryData?.private,
-	// 	// hideFromStatusList: entryData?.hiddenFromStatusLists,
-	// 	customLists: currentLists,
-	// 	// ? Object.keys(entryData?.customLists as { [key: string]: boolean })?.filter(
-	// 	// 		(val, _idx) => entryData?.customLists[val] === true,
-	// 	// 	)
-	// 	// : [],
-	// });
 
 	const submitNewEntry = async () => {
 		if (
@@ -209,8 +181,9 @@ const ListEntrySheet = () => {
 				// 	)
 				// : [],
 			)
-		)
+		) {
 			return;
+		}
 		try {
 			const result = await addEntry({
 				id: tempParams.id,
@@ -231,7 +204,9 @@ const ListEntrySheet = () => {
 					(tempParams.customLists?.length ?? 0) > 0 ? tempParams.customLists : undefined,
 			});
 			result?.SaveMediaListEntry && initialize(result.SaveMediaListEntry);
-			sendToast('Updated Entry');
+			void (result?.SaveMediaListEntry
+				? sendToast('Updated Entry')
+				: sendErrorMessage('Failed to update'));
 		} catch (e) {
 			console.log(e);
 		}
@@ -360,256 +335,241 @@ const ListEntrySheet = () => {
 					</View>
 				}
 			>
-				{params && (
-					<View>
-						<View
-							style={{
-								justifyContent: 'space-evenly',
-								paddingVertical: 10,
-								marginHorizontal: 20,
-							}}
+				<View>
+					<View
+						style={{
+							justifyContent: 'space-evenly',
+							paddingVertical: 10,
+							marginHorizontal: 20,
+						}}
+					>
+						<Button
+							mode="elevated"
+							labelStyle={{ textTransform: 'capitalize' }}
+							onPress={() => statusSheet.current?.present()}
 						>
-							{/* <StatusDropDown
-								value={tempParams.status}
-								isUnreleased={payload?.media?.status === MediaStatus.NotYetReleased}
-								onSelect={(item) => setValue('status', item)}
-							/> */}
-							<Button
-								mode="elevated"
-								labelStyle={{ textTransform: 'capitalize' }}
-								onPress={() => statusSheet.current?.present()}
+							{tempParams.status}
+						</Button>
+					</View>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-evenly',
+							alignItems: 'center',
+						}}
+					>
+						<Checkbox.Item
+							label="Private"
+							status={tempParams.private ? 'checked' : 'unchecked'}
+							labelVariant="labelMedium"
+							mode="android"
+							onPress={() => setValue('private', !tempParams.private as boolean)}
+						/>
+						<Checkbox.Item
+							label="Hide from status lists"
+							status={tempParams.hideFromStatusList ? 'checked' : 'unchecked'}
+							labelVariant="labelMedium"
+							mode="android"
+							onPress={() =>
+								setValue(
+									'hideFromStatusList',
+									!tempParams.hideFromStatusList as boolean,
+								)
+							}
+						/>
+					</View>
+					{payload?.media?.status !== MediaStatus.NotYetReleased && (
+						<>
+							<View
+								style={{
+									height: 0.5,
+									width: '90%',
+									alignSelf: 'center',
+									backgroundColor: colors.outline,
+								}}
+							/>
+							<View
+								style={{
+									flexDirection: 'row',
+									justifyContent: 'space-evenly',
+									alignItems: 'center',
+									paddingVertical: 10,
+									overflow: 'hidden',
+								}}
 							>
-								{tempParams.status}
-							</Button>
-						</View>
-						<View
-							style={{
-								flexDirection: 'row',
-								justifyContent: 'space-evenly',
-								alignItems: 'center',
-							}}
-						>
-							<Checkbox.Item
-								label="Private"
-								status={tempParams.private ? 'checked' : 'unchecked'}
-								labelVariant="labelMedium"
-								mode="android"
-								onPress={() => setValue('private', !tempParams.private as boolean)}
-							/>
-							<Checkbox.Item
-								label="Hide from status lists"
-								status={tempParams.hideFromStatusList ? 'checked' : 'unchecked'}
-								labelVariant="labelMedium"
-								mode="android"
-								onPress={() =>
-									setValue(
-										'hideFromStatusList',
-										!tempParams.hideFromStatusList as boolean,
-									)
-								}
-							/>
-						</View>
-						{payload?.media?.status !== MediaStatus.NotYetReleased && (
-							<>
-								<View
-									style={{
-										height: 0.5,
-										width: '90%',
-										alignSelf: 'center',
-										backgroundColor: colors.outline,
-									}}
+								<ProgressInput
+									// onCancel={() =>
+									// 	setValue('progress', payload?.entryData?.progress)
+									// }
+									totalContent={
+										payload?.media?.episodes ??
+										payload?.media?.chapters ??
+										payload?.media?.volumes
+									}
+									maxValue={
+										(payload?.media?.nextAiringEpisode?.episode
+											? payload?.media?.nextAiringEpisode?.episode - 1
+											: null) ??
+										payload?.media?.episodes ??
+										payload?.media?.chapters ??
+										payload?.media?.volumes ??
+										null
+									}
 								/>
 								<View
 									style={{
-										flexDirection: 'row',
-										justifyContent: 'space-evenly',
-										alignItems: 'center',
-										paddingVertical: 10,
-										overflow: 'hidden',
+										height: '100%',
+										width: 0.5,
+										backgroundColor: colors.outline,
 									}}
-								>
-									<ProgressInput
-										// onCancel={() =>
-										// 	setValue('progress', payload?.entryData?.progress)
-										// }
-										totalContent={
-											payload?.media?.episodes ??
-											payload?.media?.chapters ??
-											payload?.media?.volumes
-										}
-										maxValue={
-											(payload?.media?.nextAiringEpisode?.episode
-												? payload?.media?.nextAiringEpisode?.episode - 1
-												: null) ??
-											payload?.media?.episodes ??
-											payload?.media?.chapters ??
-											payload?.media?.volumes ??
-											null
-										}
-									/>
-									{/* <EntryNumInput
-                                            title="Progress"
-                                            inputType="number"
-                                            value={tempParams.progress}
-                                            onChange={(val) => updateParams('progress', val)}
-                                        /> */}
-									<View
-										style={{
-											height: '100%',
-											width: 0.5,
-											backgroundColor: colors.outline,
-										}}
-									/>
-									<ScoreInput
-										value={tempParams.score ?? 0}
-										onChange={(val) => setValue('score', val)}
-										scoreFormat={payload?.scoreFormat}
-									/>
-									{/* <EntryNumInput
+								/>
+								<ScoreInput
+									value={tempParams.score ?? 0}
+									onChange={(val) => setValue('score', val)}
+									scoreFormat={payload?.scoreFormat}
+								/>
+								{/* <EntryNumInput
                                             title="Score"
                                             inputType="number"
                                             value={tempParams.score}
                                             onChange={(val) => updateParams('score', val)}
                                         /> */}
-									<View
-										style={{
-											height: '100%',
-											width: 0.5,
-											backgroundColor: colors.outline,
-										}}
-									/>
-									<EntryNumInput
-										title="Repeats"
-										inputType="number"
-										value={tempParams.repeat}
-										type={'repeat'}
-										// onChange={(val) => setValue('repeat', val)}
-									/>
-								</View>
 								<View
 									style={{
-										height: 0.5,
-										width: '90%',
-										alignSelf: 'center',
+										height: '100%',
+										width: 0.5,
 										backgroundColor: colors.outline,
 									}}
 								/>
-								<View
-									style={{
-										flexDirection: 'row',
-										justifyContent: 'space-evenly',
-										alignItems: 'center',
-										paddingVertical: 10,
-										overflow: 'hidden',
-									}}
-								>
-									<EntryNumInput
-										title="Start Date"
-										inputType="date"
-										value={tempParams.startedAt}
-										type="startedAt"
-									/>
-									<View
-										style={{
-											height: '100%',
-											width: 0.5,
-											backgroundColor: colors.outline,
-										}}
-									/>
-									<EntryNumInput
-										title="End Date"
-										inputType="date"
-										value={tempParams.completedAt}
-										type="completedAt"
-									/>
-								</View>
-								<View
-									style={{
-										flexDirection: 'row',
-										justifyContent: 'space-evenly',
-										alignItems: 'center',
-									}}
-								>
-									<Button
-										style={{ width: '50%' }}
-										onPress={() =>
-											setValue(
-												'startedAt',
-												payload?.media?.startDate?.year &&
-													!tempParams.startedAt?.year
-													? payload?.media.startDate
-													: undefined,
-											)
-										}
-									>
-										{payload?.media?.startDate?.year &&
-										!tempParams.startedAt?.year
-											? 'Use release date'
-											: 'Clear'}
-									</Button>
-									<Button
-										style={{ width: '50%' }}
-										onPress={() =>
-											setValue(
-												'completedAt',
-												payload?.media?.endDate?.year &&
-													!tempParams.completedAt?.year
-													? payload?.media.endDate
-													: undefined,
-											)
-										}
-									>
-										{payload?.media?.endDate?.year &&
-										!tempParams.completedAt?.year
-											? 'Use completed date'
-											: 'Clear'}
-									</Button>
-								</View>
-							</>
-						)}
-						{(allCustomLists?.length ?? 0) > 0 && (
-							<List.Section title="Custom Lists">
-								<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-									{allCustomLists?.map(
-										(list, idx) =>
-											list && (
-												<Checkbox.Item
-													key={idx}
-													label={list}
-													status={
-														tempParams.customLists?.includes(list)
-															? 'checked'
-															: 'unchecked'
-													}
-													labelVariant="labelMedium"
-													mode="android"
-													onPress={() => setValue('customLists', list)}
-												/>
-											),
-									)}
-								</ScrollView>
-							</List.Section>
-						)}
-						<List.Section title="Notes">
-							<TextInput
-								multiline
-								value={tempParams.notes ?? ''}
-								clearButtonMode="while-editing"
-								onChangeText={(text) => setValue('notes', text)}
+								<EntryNumInput
+									title="Repeats"
+									inputType="number"
+									value={tempParams.repeat}
+									type={'repeat'}
+									// onChange={(val) => setValue('repeat', val)}
+								/>
+							</View>
+							<View
 								style={{
-									alignSelf: 'stretch',
-									marginHorizontal: 12,
-									marginBottom: 12,
-									padding: 6,
-									borderRadius: 12,
-									backgroundColor: colors.elevation.level2,
-									color: colors.onSurface,
-									fontSize: 14,
+									height: 0.5,
+									width: '90%',
+									alignSelf: 'center',
+									backgroundColor: colors.outline,
 								}}
 							/>
+							<View
+								style={{
+									flexDirection: 'row',
+									justifyContent: 'space-evenly',
+									alignItems: 'center',
+									paddingVertical: 10,
+									overflow: 'hidden',
+								}}
+							>
+								<EntryNumInput
+									title="Start Date"
+									inputType="date"
+									value={tempParams.startedAt}
+									type="startedAt"
+								/>
+								<View
+									style={{
+										height: '100%',
+										width: 0.5,
+										backgroundColor: colors.outline,
+									}}
+								/>
+								<EntryNumInput
+									title="End Date"
+									inputType="date"
+									value={tempParams.completedAt}
+									type="completedAt"
+								/>
+							</View>
+							<View
+								style={{
+									flexDirection: 'row',
+									justifyContent: 'space-evenly',
+									alignItems: 'center',
+								}}
+							>
+								<Button
+									style={{ width: '50%' }}
+									onPress={() =>
+										setValue(
+											'startedAt',
+											payload?.media?.startDate?.year &&
+												!tempParams.startedAt?.year
+												? payload?.media.startDate
+												: undefined,
+										)
+									}
+								>
+									{payload?.media?.startDate?.year && !tempParams.startedAt?.year
+										? 'Use release date'
+										: 'Clear'}
+								</Button>
+								<Button
+									style={{ width: '50%' }}
+									onPress={() =>
+										setValue(
+											'completedAt',
+											payload?.media?.endDate?.year &&
+												!tempParams.completedAt?.year
+												? payload?.media.endDate
+												: undefined,
+										)
+									}
+								>
+									{payload?.media?.endDate?.year && !tempParams.completedAt?.year
+										? 'Use completed date'
+										: 'Clear'}
+								</Button>
+							</View>
+						</>
+					)}
+					{(allCustomLists?.length ?? 0) > 0 && (
+						<List.Section title="Custom Lists">
+							<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+								{allCustomLists?.map(
+									(list, idx) =>
+										list && (
+											<Checkbox.Item
+												key={idx}
+												label={list}
+												status={
+													tempParams.customLists?.includes(list)
+														? 'checked'
+														: 'unchecked'
+												}
+												labelVariant="labelMedium"
+												mode="android"
+												onPress={() => setValue('customLists', list)}
+											/>
+										),
+								)}
+							</ScrollView>
 						</List.Section>
-					</View>
-				)}
+					)}
+					<List.Section title="Notes">
+						<TextInput
+							multiline
+							value={tempParams.notes ?? ''}
+							clearButtonMode="while-editing"
+							onChangeText={(text) => setValue('notes', text)}
+							style={{
+								alignSelf: 'stretch',
+								marginHorizontal: 12,
+								marginBottom: 12,
+								padding: 6,
+								borderRadius: 12,
+								backgroundColor: colors.elevation.level2,
+								color: colors.onSurface,
+								fontSize: 14,
+							}}
+						/>
+					</List.Section>
+				</View>
 			</GlobalBottomSheetParent>
 			<StatusSelectSheet
 				sheetRef={statusSheet}
