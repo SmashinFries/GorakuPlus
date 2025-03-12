@@ -1,6 +1,5 @@
 import { View } from 'react-native';
-import { Button, Portal } from 'react-native-paper';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 import { router } from 'expo-router';
 import { useMedia } from '@/hooks/media/useMedia';
 import { openWebBrowser } from '@/utils/webBrowser';
@@ -18,7 +17,6 @@ import { CharacterPrevList } from '@/components/media/sections/characters';
 import { StaffPrevList } from '@/components/media/sections/staff';
 import { AnimeTrailer } from '@/components/media/sections/trailer';
 import MediaLinks from '@/components/media/sections/links';
-import { MuSearchDialog, ReleasesDialog } from '@/components/media/dialogs';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import ReviewsSection from '@/components/media/sections/reviews';
 import { StatSection } from '@/components/media/sections/stats';
@@ -27,7 +25,6 @@ import {
 	ExternalLinkType,
 	MediaExternalLink,
 	MediaFormat,
-	MediaStatus,
 	MediaType,
 	useThreadsOverviewQuery,
 } from '@/api/anilist/__genereated__/gql';
@@ -44,7 +41,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { ChapterPreview } from './sections/chapterPreview';
 import { useMatchStore } from '@/store/matchStore';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { Accordion, AccordionMemo } from '../animations';
+import { AccordionMemo } from '../animations';
 import { MangaUpdatesSearchSheet, MediaReleasesSheet } from '../sheets/bottomsheets';
 
 const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
@@ -62,42 +59,12 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 		nextEpisode: anilist?.data?.Media?.nextAiringEpisode,
 		releases: muReleases?.data?.results,
 	});
-
-	const [showReleaseDialog, setShowReleaseDialog] = useState(false);
-	const [showMuDialog, setShowMuDialog] = useState(false);
 	const mediaReleasesRef = useRef<TrueSheet>(null);
 	const mangaUpdatesSheetRef = useRef<TrueSheet>(null);
-
-	const toggleMuDialog = useCallback(() => setShowMuDialog((prev) => !prev), []);
-
-	const onConfirmMuDialog = useCallback(() => {
-		muSeries.refetch();
-		toggleMuDialog();
-	}, []);
 
 	const openEdit = useCallback(() => {
 		openWebBrowser(`https://anilist.co/edit/${type}/${aniId}`);
 	}, []);
-
-	// const getRelease = useCallback(() => {
-	// 	return anilist?.data
-	// 		? getReleaseTime(
-	// 				type,
-	// 				anilist?.data?.Media?.status,
-	// 				anilist?.data?.Media?.nextAiringEpisode,
-	// 				type === MediaType.Manga
-	// 					? getChapterFrequency(
-	// 							muReleases?.data?.results?.map(
-	// 								(release) => release.record?.release_date,
-	// 							),
-	// 						)
-	// 					: '',
-	// 				anilist?.data?.Media?.chapters,
-	// 				anilist?.data?.Media?.episodes,
-	// 				anilist?.data?.Media?.volumes,
-	// 			)
-	// 		: '';
-	// }, [type, muReleases, anilist?.data]);
 
 	if (aniId === undefined || aniId === null) return null;
 

@@ -40,13 +40,13 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 		muDB[aniId as number],
 		anilist.data?.Media?.type === MediaType.Manga
 			? (anilist.data?.Media?.countryOfOrigin === 'KR'
-				? (anilist.data?.Media?.title?.english ??
-					anilist.data?.Media?.title?.romaji ??
-					'')
-				: (anilist.data?.Media?.title?.native ?? '')
-			)
-				?.replace('[', '')
-				.replace(']', '')
+					? (anilist.data?.Media?.title?.english ??
+						anilist.data?.Media?.title?.romaji ??
+						'')
+					: (anilist.data?.Media?.title?.native ?? '')
+				)
+					?.replace('[', '')
+					.replace(']', '')
 			: (anilist.data?.Media?.title?.romaji ?? ''),
 		anilist.data?.Media?.format === MediaFormat.Novel,
 	);
@@ -114,7 +114,7 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 				} else {
 					(isMangaUpdatesEnabled
 						? (muSeries?.isFetched || muSeries?.isError) &&
-						(muReleases?.isFetched || muReleases?.isError)
+							(muReleases?.isFetched || muReleases?.isError)
 						: true) && setIsReady(true);
 				}
 			}
