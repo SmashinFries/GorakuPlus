@@ -55,6 +55,7 @@ import {
 	SeriesSearchResponseV1,
 } from '../mangaupdates/models';
 import { AnimeFull, MangaFull } from '../jikan/models';
+import { updateAniMediaCache, updateExploreCache } from './queryUpdates';
 
 const invalidateExploreQueries = (queryClient: QueryClient) => {
 	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey({ includeViewer: true }) });
@@ -210,29 +211,12 @@ export const useSaveMediaListItemInvalidatedMutation = (
 	return useSaveMediaListItemMutation({
 		...options,
 
-		onSuccess(data, variables, context) {
-			invalidateExploreQueries(queryClient);
-			// queryClient.setQueriesData(
-			// 	{ queryKey: [useAnimeExploreQuery.getKey(), useMangaExploreQuery.getKey()] },
-			// 	(
-			// 		oldData:
-			// 			| AnimeExploreQuery
-			// 			| MangaExploreQuery
-			// 			| ManhwaExploreQuery
-			// 			| ManhuaExploreQuery
-			// 			| NovelExploreQuery,
-			// 	) => {
-			// 		if (oldData) {
-			// 			const newData = updateExploreOldEntriesSave(oldData, data);
-			// 			return {
-			// 				...oldData,
-			// 				...newData,
-			// 			};
-			// 		} else {
-			// 			return oldData;
-			// 		}
-			// 	},
-			// );
+		onSuccess(newData, variables) {
+			if (variables.mediaId) {
+				updateAniMediaCache(queryClient, newData);
+				updateExploreCache(queryClient, newData)
+			}
+
 		},
 	});
 };
