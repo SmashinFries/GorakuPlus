@@ -68,15 +68,6 @@ export const listColor = (status: MediaListStatus) => {
 	}
 };
 
-export const getStatusColor = (status: MediaStatus) => {
-	switch (status) {
-		case MediaStatus.Releasing:
-			return '';
-		default:
-			return '';
-	}
-};
-
 export const rgbToRgba = (rgb: string, alpha: number) => {
 	if (rgb.includes('rgba')) {
 		return rgb.replace(/(\d+)\)/g, `${alpha})`);
