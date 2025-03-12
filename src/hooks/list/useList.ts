@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
 	MediaListGroup,
 	MediaListSort,
@@ -85,7 +85,7 @@ export const useList = (userId: number, isViewer = true) => {
 		refetch: refreshAnimeList,
 	} = useUserAnimeListCollectionQuery(
 		{ userId: userId, sort: MediaListSort.AddedTimeDesc },
-		{ enabled: !!userId, staleTime: Infinity, meta: { persist: viewerId === userId } },
+		{ enabled: !!userId, meta: { persist: viewerId === userId } },
 	);
 	const {
 		data: mangaList,
@@ -95,9 +95,9 @@ export const useList = (userId: number, isViewer = true) => {
 		refetch: refreshMangaList,
 	} = useUserMangaListCollectionQuery(
 		{ userId: userId, sort: MediaListSort.AddedTimeDesc },
-		{ enabled: !!userId, staleTime: Infinity, meta: { persist: viewerId === userId } },
+		{ enabled: !!userId, meta: { persist: viewerId === userId } },
 	);
-	const [rootRoutes, setRootRoutes] = useState<{ key: string; title: string }[]>([]);
+	// const [rootRoutes, setRootRoutes] = useState<{ key: string; title: string }[]>([]);
 	const { animeRoutes, mangaRoutes } = useListOrder(
 		animeList?.MediaListCollection?.lists as MediaListGroup[],
 		mangaList?.MediaListCollection?.lists as MediaListGroup[],
@@ -120,19 +120,35 @@ export const useList = (userId: number, isViewer = true) => {
 		return count;
 	};
 
-	useEffect(() => {
-		if (isAnimeListFetched && isMangaListFetched) {
-			setRootRoutes([
-				{
-					key: 'anime',
-					title: `Anime (${getTotalTitles(animeList?.MediaListCollection?.lists)})`,
-				},
-				{
-					key: 'manga',
-					title: `Manga (${getTotalTitles(mangaList?.MediaListCollection?.lists)})`,
-				},
-			]);
+	const rootRoutes = useMemo(() => {
+		if (!isAnimeListFetched || !isMangaListFetched) {
+			return [];
 		}
+
+		return [
+			{
+				key: 'anime',
+				title: `Anime (${getTotalTitles(
+					animeList?.MediaListCollection?.lists?.filter(
+						(
+							list,
+						): list is UserAnimeListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup =>
+							list !== null,
+					),
+				)})`,
+			},
+			{
+				key: 'manga',
+				title: `Manga (${getTotalTitles(
+					mangaList?.MediaListCollection?.lists?.filter(
+						(
+							list,
+						): list is UserMangaListCollectionQuery_MediaListCollection_MediaListCollection_lists_MediaListGroup =>
+							list !== null,
+					),
+				)})`,
+			},
+		];
 	}, [animeList, mangaList, isAnimeListFetched, isMangaListFetched]);
 
 	return {
