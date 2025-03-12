@@ -17,7 +17,7 @@ const config: CodegenConfig = {
 				reactQueryVersion: 5,
 				dedupeFragments: true,
 				extractAllFieldsToTypes: true,
-				skipTypename: true,
+				skipTypename: false,
 			},
 		},
 	},
