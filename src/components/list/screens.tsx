@@ -7,14 +7,13 @@ import {
 import { useListFilterStore } from '@/store/listStore';
 import { sortLists, sortListTabs } from '@/utils/sort';
 import { FlashList } from '@shopify/flash-list';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { MediaCard, MediaCardRow } from '../cards';
 import { ScrollToTopButton } from '../buttons';
 import { compareArrays } from '@/utils/compare';
-import { TabView } from 'react-native-tab-view';
+import { SceneRendererProps, TabView } from 'react-native-tab-view';
 import { GorakuTabBar } from '../tab';
-import { useShallow } from 'zustand/react/shallow';
 import { useColumns } from '@/hooks/useColumns';
 import { GorakuRefreshControl } from '../explore/lists';
 
@@ -22,14 +21,15 @@ type ListParams = {
 	data:
 		| NonNullable<NonNullable<UserAnimeListCollectionQuery['MediaListCollection']>['lists']>[0]
 		| NonNullable<NonNullable<UserMangaListCollectionQuery['MediaListCollection']>['lists']>[0];
-	updateTitle?: (dataLength: number) => void;
+	updateTitle?: (dataLength?: number) => void;
 	isRefreshing?: boolean;
 	onRefresh?: () => void;
 	type?: MediaType;
 };
 
 const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) => {
-	const { query, sort } = useListFilterStore();
+	const { query, sort, tags_include, tags_exclude, genre_include, genre_exclude } =
+		useListFilterStore();
 	const { columns, displayMode } = useColumns('list');
 
 	const [scrollOffset, setScrollOffset] = useState(0);
@@ -45,25 +45,69 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 		return sort ? sortLists(data?.entries, sort) : null;
 	}, [sort]);
 
-	const filterList = (search?: string) => {
-		if (search && search.length > 0) {
-			return sortedItems?.filter(
-				(item) =>
-					item?.media?.title?.romaji?.toLowerCase()?.includes(search?.toLowerCase()) ||
-					item?.media?.title?.english?.toLowerCase()?.includes(search?.toLowerCase()) ||
-					item?.media?.title?.native?.includes(search) ||
-					item?.media?.synonyms?.some((value) =>
-						value?.toLowerCase()?.includes(search?.toLowerCase()),
-					),
-			);
-		} else {
-			return sortedItems;
-		}
+	const filterList = (
+		search: string = '',
+		tags_in: string[] = [],
+		tags_ex: string[] = [],
+		genres_in: string[] = [],
+		genres_ex: string[] = [],
+	) => {
+		const filtered = (sortedItems || []).filter((item) => {
+			// Search filter
+			if (search.length > 0) {
+				const searchTerm = search.toLowerCase();
+				const titles = [
+					item?.media?.title?.romaji,
+					item?.media?.title?.english,
+					item?.media?.title?.native,
+				];
+				const matchesTitle = titles.some((title) =>
+					title?.toLowerCase()?.includes(searchTerm),
+				);
+				const matchesSynonyms = item?.media?.synonyms?.some((value) =>
+					value?.toLowerCase()?.includes(searchTerm),
+				);
+
+				if (!matchesTitle && !matchesSynonyms) return false;
+			}
+
+			// Tags filter
+			if (
+				tags_in.length > 0 &&
+				!item?.media?.tags?.some((tag) => tag?.name && tags_in.includes(tag.name))
+			)
+				return false;
+
+			if (
+				tags_ex.length > 0 &&
+				item?.media?.tags?.some((tag) => tag?.name && tags_ex.includes(tag.name))
+			)
+				return false;
+
+			// Genres filter
+			if (
+				genres_in.length > 0 &&
+				!item?.media?.genres?.some((gen) => gen && genres_in.includes(gen))
+			)
+				return false;
+
+			if (
+				genres_ex.length > 0 &&
+				item?.media?.genres?.some((gen) => gen && genres_ex.includes(gen))
+			)
+				return false;
+
+			return true;
+		});
+
+		updateTitle?.(filtered.length);
+
+		return filtered;
 	};
 
 	const filteredItems = useMemo(() => {
-		return filterList(query);
-	}, [query, sort]);
+		return filterList(query, tags_include, tags_exclude, genre_include, genre_exclude);
+	}, [query, sort, tags_include, tags_exclude, genre_include, genre_exclude]);
 
 	const RenderItem = useCallback(
 		({
@@ -89,31 +133,32 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 						>['entries']
 				  >[0];
 		}) => {
-			return displayMode === 'COMPACT' ? (
-				<View
-					style={{
-						flex: 1,
-						alignItems: 'center',
-						justifyContent: 'flex-start',
-						marginVertical: 10,
-						marginHorizontal: 5,
-					}}
-				>
-					<MediaCard
-						{...item?.media}
-						fitToParent
-						tempListStatusMode={
-							[
-								MediaListStatus.Current,
-								MediaListStatus.Dropped,
-								MediaListStatus.Paused,
-								MediaListStatus.Repeating,
-							].includes(item.status)
-								? 'bar'
-								: 'dot'
-						}
-					/>
-					{/* {[
+			return item?.media?.id && item.status ? (
+				displayMode === 'COMPACT' ? (
+					<View
+						style={{
+							flex: 1,
+							alignItems: 'center',
+							justifyContent: 'flex-start',
+							marginVertical: 10,
+							marginHorizontal: 5,
+						}}
+					>
+						<MediaCard
+							{...item?.media}
+							fitToParent
+							tempListStatusMode={
+								[
+									MediaListStatus.Current,
+									MediaListStatus.Dropped,
+									MediaListStatus.Paused,
+									MediaListStatus.Repeating,
+								].includes(item.status)
+									? 'bar'
+									: 'dot'
+							}
+						/>
+						{/* {[
 						MediaListStatus.Current,
 						MediaListStatus.Repeating,
 						MediaListStatus.Paused,
@@ -131,21 +176,14 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 							showListStatus={false}
 						/>
 					)} */}
-				</View>
-			) : (
-				<MediaCardRow {...item?.media} />
-			);
+					</View>
+				) : (
+					<MediaCardRow {...item?.media} />
+				)
+			) : null;
 		},
 		[displayMode],
 	);
-
-	useEffect(() => {
-		if (query && (query?.length ?? 0) > 0) {
-			updateTitle?.(filterList(query)?.length ?? 0);
-		} else {
-			updateTitle?.(filteredItems?.length ?? 0);
-		}
-	}, [query]);
 
 	return (
 		<View style={{ flex: 1, height: '100%', width: '100%' }}>
@@ -158,16 +196,14 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh }: ListParams) 
 				estimatedItemSize={238}
 				numColumns={columns}
 				refreshControl={
-					<GorakuRefreshControl onRefresh={onRefresh} refreshing={!!isRefreshing} />
+					<GorakuRefreshControl
+						onRefresh={() => onRefresh?.()}
+						refreshing={!!isRefreshing}
+					/>
 				}
 				onScroll={(e) => setScrollOffset(e.nativeEvent.contentOffset.y)}
 				// terrible performance without
 				drawDistance={0}
-				contentContainerStyle={
-					{
-						// padding: 10,
-					}
-				}
 				centerContent
 				removeClippedSubviews
 			/>
@@ -197,68 +233,82 @@ export const ListTabs = ({
 	isRefreshing: boolean;
 	onRefresh: () => void;
 }) => {
-	const { animeTabOrder, mangaTabOrder } = useListFilterStore(
-		useShallow((state) => ({
-			animeTabOrder: state.animeTabOrder,
-			mangaTabOrder: state.mangaTabOrder,
-		})),
-	);
+	const { animeTabOrder, mangaTabOrder } = useListFilterStore();
 	const layout = useWindowDimensions();
 	const [index, setIndex] = useState(0);
 	const [tabRoutes, setTabRoutes] = useState<{ key: string; title: string }[]>(routes);
 
-	const updateTitleCount = (key: string, total: number) => {
-		setTabRoutes((prevRoutes) =>
-			prevRoutes.map((route) =>
-				route.key === key ? { ...route, title: `${route.title} (${total ?? 0})` } : route,
-			),
-		);
+	const updateTitleCount = (key: string, total?: number) => {
+		console.log('Updating', key, 'with', total);
+		setTabRoutes((prevRoutes) => {
+			const newRoutes = prevRoutes.map((route) => {
+				if (route.key === key) {
+					const baseTitle = route.title.replace(/\s*\(\d+\)$/, '');
+					const newRoute = { ...route, title: `${baseTitle} (${total ?? 0})` };
+					console.log('Updated route:', newRoute);
+					return newRoute;
+				}
+				return route;
+			});
+			console.log('New Routes:', newRoutes);
+			return newRoutes;
+		});
 	};
 
-	// const updateTabOrder = () => {
-	//     setTabRoutes((prevRoutes) =>
-	//         prevRoutes.map((route) => (route.key === key ? { ...route, title: `${route.title} (${total})` } : route)),
-	//     );
-	// };
+	const computedRoutes = useMemo(() => {
+		if (!tabRoutes || !data?.lists || !isViewer) {
+			return tabRoutes;
+		}
 
-	const renderScene = ({ route }) => {
+		const listCounts: { [key: string]: number } = {};
+		for (const list of data.lists) {
+			if (list?.name) {
+				listCounts[list?.name] = list.entries?.length ?? 0;
+			}
+		}
+
+		const newRoutes = sortListTabs(
+			tabRoutes.map((route) => route.key),
+			type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
+			listCounts,
+		);
+
+		const isOrderSame = compareArrays(
+			tabRoutes.map((route) => route.key),
+			newRoutes,
+		);
+
+		if (!isOrderSame) {
+			return newRoutes.map((route) => {
+				const existingRoute = tabRoutes.find((r) => r.key === route.key);
+				return existingRoute || route;
+			});
+		}
+
+		return tabRoutes;
+	}, [data, animeTabOrder, mangaTabOrder, tabRoutes, type, isViewer]);
+
+	const renderScene = ({
+		route,
+	}: SceneRendererProps & {
+		route: {
+			key: string;
+			title: string;
+		};
+	}) => {
 		return (
 			<ListScreen
-				data={data?.lists?.find((list) => list?.name === route.key)}
-				updateTitle={(dataLength: number) => updateTitleCount(route.key, dataLength ?? 0)}
+				data={data?.lists?.find((list) => list?.name === route.key) ?? null}
+				updateTitle={(dataLength?: number) => updateTitleCount(route.key, dataLength)}
 				isRefreshing={isRefreshing}
 				onRefresh={onRefresh}
 			/>
 		);
 	};
 
-	useEffect(() => {
-		if (tabRoutes && data?.lists && isViewer) {
-			const listCounts: { [key: string]: number } = {};
-			for (const list of data.lists) {
-				if (list?.name) {
-					listCounts[list?.name] = list.entries?.length ?? 0;
-				}
-			}
-			const newRoutes = sortListTabs(
-				tabRoutes.map((route) => route.key),
-				type === MediaType.Anime ? animeTabOrder : mangaTabOrder,
-				listCounts,
-			);
-			const isOrderSame = compareArrays(
-				tabRoutes.map((route) => route.key),
-				newRoutes,
-			);
-
-			if (!isOrderSame) {
-				isViewer && setTabRoutes(newRoutes);
-			}
-		}
-	}, [data, animeTabOrder, mangaTabOrder]);
-
 	return tabRoutes.length > 0 ? (
 		<TabView
-			navigationState={{ index, routes: tabRoutes }}
+			navigationState={{ index, routes: computedRoutes }}
 			renderScene={renderScene}
 			onIndexChange={setIndex}
 			initialLayout={{ width: layout.width }}

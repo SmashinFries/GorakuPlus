@@ -1,7 +1,7 @@
 import { MMKV } from 'react-native-mmkv';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
-import { MediaListSort, MediaTag, MediaType } from '@/api/anilist/__genereated__/gql';
+import { MediaListSort, MediaType } from '@/api/anilist/__genereated__/gql';
 import { create } from 'zustand';
 
 const storage = new MMKV({
@@ -9,19 +9,23 @@ const storage = new MMKV({
 });
 const ListFilterStorage = getZustandStorage(storage);
 
-type ListFilterState = {
-	query?: string;
-	sort?: MediaListSort;
-	genre?: string[];
-	tags_include?: MediaTag[];
-	tags_exclude?: MediaTag[];
-	animeTabOrder?: string[];
-	mangaTabOrder?: string[];
+type ListFilterTagGenre = {
+	genre_include: string[];
+	genre_exclude: string[];
+	tags_include: string[];
+	tags_exclude: string[];
 };
+type ListFilterState = {
+	query: string;
+	sort?: MediaListSort;
+	animeTabOrder: string[];
+	mangaTabOrder: string[];
+} & ListFilterTagGenre;
 
 type ListFilterActions = {
-	updateListFilter?: (filter: ListFilterState) => void;
-	checkListNames?: (type: MediaType, newNames: string[]) => void;
+	updateListFilter: (filter: Partial<ListFilterState>) => void;
+	checkListNames: (type: MediaType, newNames: string[]) => void;
+	updateTagGenre: (value: string, type: 'tags' | 'genre') => void;
 	// clearListFilter: (type: ListFilterState) => void;
 };
 
@@ -30,7 +34,8 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 		(set, _get) => ({
 			query: '',
 			sort: MediaListSort.AddedTimeDesc,
-			genre: [],
+			genre_include: [],
+			genre_exclude: [],
 			tags_include: [],
 			tags_exclude: [],
 			animeTabOrder: ['Watching', 'Planning', 'Completed', 'Rewatching', 'Paused', 'Dropped'],
@@ -66,6 +71,38 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 					});
 				}
 			},
+			updateTagGenre(value, type) {
+				set((state) => {
+					const include_key = `${type}_include` as keyof ListFilterTagGenre;
+					const exclude_key = `${type}_exclude` as keyof ListFilterTagGenre;
+
+					const include_list = state[include_key] || [];
+					const exclude_list = state[exclude_key] || [];
+
+					// If value exists in include list, move to exclude
+					if (include_list.includes(value)) {
+						return {
+							...state,
+							[include_key]: include_list.filter((item) => item !== value),
+							[exclude_key]: [...exclude_list, value],
+						};
+					}
+
+					// If value exists in exclude list, remove it completely
+					if (exclude_list.includes(value)) {
+						return {
+							...state,
+							[exclude_key]: exclude_list.filter((item) => item !== value),
+						};
+					}
+
+					// If value doesn't exist in either list, add to include
+					return {
+						...state,
+						[include_key]: [...include_list, value],
+					};
+				});
+			},
 		}),
 		{
 			name: 'list-filter-storage',
@@ -73,6 +110,7 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 			partialize: (state) => ({
 				animeTabOrder: state.animeTabOrder,
 				mangaTabOrder: state.mangaTabOrder,
+				sort: state.sort,
 			}),
 		},
 	),

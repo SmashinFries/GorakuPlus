@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
-import { useWindowDimensions, View } from 'react-native';
-import { List } from 'react-native-paper';
-import { SceneRendererProps, TabView } from 'react-native-tab-view';
-import { RenderTabBar } from '../tab';
+import React, { RefObject, useState } from 'react';
+import { Checkbox, Chip, List, Searchbar } from 'react-native-paper';
 import { ListSortOptions, ListSortOptionsType } from '@/types/anilist';
-import { MediaListSort, MediaTag, MediaType } from '@/api/anilist/__genereated__/gql';
+import { MediaListSort } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { BottomSheetParent } from './bottomsheets';
-import { useShallow } from 'zustand/react/shallow';
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import { Accordion } from '../animations';
+import { View } from 'react-native';
+import { useCollectionStore } from '@/store/useCollectionStore';
+import { useSettingsStore } from '@/store/settings/settingsStore';
+import { FilterSheetSection } from '../search/filtersheet';
 
 const ListFilterSort = () => {
 	const { colors } = useAppTheme();
-	const { sort, updateListFilter } = useListFilterStore(
-		useShallow((state) => ({
-			sort: state.sort,
-			updateListFilter: state.updateListFilter,
-		})),
-	);
+	const { sort, updateListFilter } = useListFilterStore();
 
 	const onSortSelect = (newSort: ListSortOptionsType) => {
 		if (sort && newSort.replace('_DESC', '').includes(sort.replace('_DESC', ''))) {
@@ -54,10 +51,7 @@ const ListFilterSort = () => {
 	};
 
 	return (
-		<View>
-			{/* {Object.values(MediaListSort).map((sortValue, idx) => !sortValue.includes('DESC') && (
-                <List.Item key={idx} title={sortValue.replaceAll('_', ' ')} titleStyle={{textTransform:'capitalize'}} onPress={() => dispatch(updateListFilter({entryType:'sort', value:sortValue}))} right={(props) => sort === sortValue ? <List.Icon {...props} icon={'check'} /> : null} />
-            ))} */}
+		<Accordion title="Sort" initialExpand>
 			<ListSortItem
 				title={MediaListSort.UpdatedTime.replaceAll('_', ' ')}
 				value={MediaListSort.UpdatedTimeDesc}
@@ -72,70 +66,257 @@ const ListFilterSort = () => {
 			<ListSortItem title={'Title (English)'} value={MediaListSort.MediaTitleEnglishDesc} />
 			<ListSortItem title={'Average Score'} value={ListSortOptions.AverageScoreDesc} />
 			<ListSortItem title={'Mean Score'} value={ListSortOptions.MeanScoreDesc} />
-			{/* <ListSortItem
-                title={MediaListSort.StartedOn.replaceAll('_', ' ')}
-                value={MediaListSort.StartedOnDesc}
-            /> */}
-			{/* <List.Item title={MediaListSort.AddedTime.replaceAll('_', ' ')} titleStyle={{textTransform:'capitalize'}} onPress={() => onSortSelect(MediaListSort.AddedTimeDesc)} right={(props) => sort === MediaListSort.AddedTimeDesc ? <List.Icon {...props} icon={'check'} /> : null} /> */}
-		</View>
+			<ListSortItem
+				title={MediaListSort.StartedOn.replaceAll('_', ' ')}
+				value={MediaListSort.StartedOnDesc}
+			/>
+			<ListSortItem
+				title={MediaListSort.FinishedOn.replaceAll('_', ' ')}
+				value={MediaListSort.FinishedOnDesc}
+			/>
+			<ListSortItem
+				title={MediaListSort.MediaPopularity.replaceAll('_', '')}
+				value={MediaListSort.MediaPopularityDesc}
+			/>
+		</Accordion>
 	);
 };
 
-const ListFilterTabs = () => {
+const ListFilterTags = () => {
+	const { tags_include, tags_exclude, updateTagGenre } = useListFilterStore();
+	const tagData = useCollectionStore((state) => state.tags);
+	const { showNSFW } = useSettingsStore();
 	const { colors } = useAppTheme();
-	const layout = useWindowDimensions();
-	const [index, setIndex] = useState(0);
-	const [routes, _setRoutes] = useState<{ key: string; title: string }[]>([
-		{
-			key: 'sort',
-			title: 'sort',
-		},
-		// {
-		//     key: 'filter',
-		//     title: 'filter',
-		// },
-	]);
 
-	const renderScene = ({
-		route,
-	}: SceneRendererProps & {
-		route: {
-			key: string;
-			title: string;
-		};
-	}) => {
-		switch (route.key) {
-			case 'sort':
-				return <ListFilterSort />;
-			// case 'filter':
-			//     return <ListFilterFilter genres={genres} tags={tags} />;
-			default:
-				return null;
-		}
-	};
+	const [tagSearch, setTagSearch] = useState('');
+
+	const updateTag = (val: string) => updateTagGenre(val, 'tags');
 
 	return (
-		<TabView
-			navigationState={{ index, routes }}
-			renderScene={renderScene}
-			onIndexChange={setIndex}
-			initialLayout={{ width: layout.width }}
-			renderTabBar={(props) => <RenderTabBar {...props} bgColor={colors.elevation.level5} />}
-			swipeEnabled={false}
-		/>
+		<Accordion
+			title={'Tags'}
+			description={
+				(tags_include.length > 0 || tags_exclude.length > 0) && (
+					<View
+						style={{
+							flexDirection: 'row',
+							flexWrap: 'wrap',
+							gap: 6,
+							paddingHorizontal: 10,
+						}}
+					>
+						{tags_include.map((tempTag, idx) => (
+							<Chip
+								key={idx}
+								mode="outlined"
+								compact
+								style={{ borderColor: colors.primary }}
+								textStyle={{ textTransform: 'capitalize' }}
+								onPress={() => updateTag(tempTag)}
+							>
+								{tempTag}
+							</Chip>
+						))}
+						{tags_exclude.map((tempTag, idx) => (
+							<Chip
+								key={idx}
+								mode="outlined"
+								compact
+								style={{ borderColor: colors.error }}
+								textStyle={{ textTransform: 'capitalize' }}
+								onPress={() => updateTag(tempTag)}
+							>
+								{tempTag}
+							</Chip>
+						))}
+					</View>
+				)
+			}
+		>
+			<Searchbar
+				value={tagSearch}
+				onChangeText={(txt) => setTagSearch(txt)}
+				style={{ marginHorizontal: 10, marginVertical: 6 }}
+				mode="view"
+			/>
+			{tagData
+				?.filter((val) =>
+					val.subCategories &&
+					val.subCategories.some((subCat) =>
+						subCat?.tags?.some((subCatTag) =>
+							subCatTag?.name.toLowerCase().includes(tagSearch.toLowerCase()),
+						),
+					)
+						? true
+						: val.tags?.some((data) =>
+								data?.name.toLowerCase().includes(tagSearch.toLowerCase()),
+							),
+				)
+				.map((tagSection, idx) =>
+					!showNSFW && tagSection.title === 'Sexual Content' ? null : (
+						<FilterSheetSection
+							key={idx}
+							title={tagSection.title}
+							nestedLevel={1}
+							initialExpand={tagSearch.length > 0 && idx === 0}
+						>
+							{tagSection.tags &&
+								tagSection.tags
+									?.filter((val) =>
+										val?.name.toLowerCase().includes(tagSearch.toLowerCase()),
+									)
+									.map(
+										(tag, idx) =>
+											tag &&
+											(tag.name === 'Sexual Content' ? null : (
+												<Checkbox.Item
+													position="leading"
+													key={idx}
+													label={tag.name}
+													status={
+														tags_include?.includes(tag.name)
+															? 'checked'
+															: tags_exclude?.includes(tag.name)
+																? 'indeterminate'
+																: 'unchecked'
+													}
+													onPress={() => updateTag(tag.name)}
+												/>
+											)),
+									)}
+							{tagSection.subCategories &&
+								tagSection.subCategories
+									?.filter((val) =>
+										val.tags?.some((data) =>
+											data?.name
+												.toLowerCase()
+												.includes(tagSearch.toLowerCase()),
+										),
+									)
+									.map((subTagSection, idx) => (
+										<FilterSheetSection
+											key={idx}
+											title={subTagSection.title}
+											nestedLevel={2}
+											initialExpand={tagSearch.length > 0 && idx === 0}
+										>
+											{subTagSection.tags &&
+												subTagSection.tags
+													?.filter((val) =>
+														val?.name
+															.toLowerCase()
+															.includes(tagSearch.toLowerCase()),
+													)
+													.map(
+														(tag, idx) =>
+															tag && (
+																<Checkbox.Item
+																	position="leading"
+																	key={idx}
+																	label={tag.name}
+																	status={
+																		tags_include?.includes(
+																			tag.name,
+																		)
+																			? 'checked'
+																			: tags_exclude?.includes(
+																						tag.name,
+																				  )
+																				? 'indeterminate'
+																				: 'unchecked'
+																	}
+																	onPress={() =>
+																		updateTag(tag.name)
+																	}
+																/>
+															),
+													)}
+										</FilterSheetSection>
+									))}
+						</FilterSheetSection>
+					),
+				)}
+		</Accordion>
+	);
+};
+
+const ListFilterGenre = () => {
+	const { genre_include, genre_exclude, updateTagGenre } = useListFilterStore();
+	const genreData = useCollectionStore((state) => state.genres);
+
+	const updateGenre = (val: string) => updateTagGenre(val, 'genre');
+
+	return (
+		<Accordion
+			title={`Genre${(genre_include?.length ?? 0) > 0 || (genre_exclude?.length ?? 0) > 0 ? ` (${(genre_include?.length ?? 0) + (genre_exclude?.length ?? 0)})` : ''}`}
+			description={
+				(genre_include || genre_exclude) && (
+					<View
+						style={{
+							flexDirection: 'row',
+							flexWrap: 'wrap',
+							gap: 6,
+							paddingHorizontal: 10,
+						}}
+					>
+						{genre_include?.map((genre, idx) => (
+							<Chip
+								key={idx}
+								mode="outlined"
+								compact
+								style={{ borderColor: 'green' }}
+								textStyle={{ textTransform: 'capitalize' }}
+								onPress={() => updateGenre(genre)}
+							>
+								{genre.replaceAll('_', ' ')}
+							</Chip>
+						))}
+						{genre_exclude?.map((genre, idx) => (
+							<Chip
+								key={idx}
+								compact
+								mode="outlined"
+								style={{ borderColor: 'red' }}
+								textStyle={{ textTransform: 'capitalize' }}
+								onPress={() => updateGenre(genre)}
+							>
+								{genre.replaceAll('_', ' ')}
+							</Chip>
+						))}
+					</View>
+				)
+			}
+		>
+			{genreData.map((genre, idx) => (
+				<Checkbox.Item
+					position="leading"
+					key={idx}
+					label={genre}
+					labelStyle={{ textTransform: 'capitalize' }}
+					status={
+						genre_include?.includes(genre)
+							? 'checked'
+							: genre_exclude?.includes(genre)
+								? 'indeterminate'
+								: 'unchecked'
+					}
+					onPress={() => updateGenre(genre)}
+				/>
+			))}
+		</Accordion>
 	);
 };
 
 export type ListFilterProps = {
-	mediaType: MediaType;
-	genres: string[];
-	tags: MediaTag[];
+	sheetRef: RefObject<TrueSheet>;
 };
 
-export const ListFilterSheet = ({ genres, mediaType, tags }: ListFilterProps) => {
+export const ListFilterSheet = ({ sheetRef }: ListFilterProps) => {
 	return (
-		<BottomSheetParent>
-			<ListFilterTabs />
+		<BottomSheetParent sheetRef={sheetRef} sizes={['auto', 'large']} scrollable>
+			<ListFilterSort />
+			<ListFilterGenre />
+			<ListFilterTags />
 		</BottomSheetParent>
 	);
 };
