@@ -618,7 +618,12 @@ export const MediaReleasesSheet = ({
 	streamingEpisodes,
 	mangaUpdatesUrl,
 }: MediaReleasesSheetProps) => {
-	const sortedStreamingSites = streamingEpisodes?.length > 0 ? streamingEpisodes.sort() : null;
+	const sortedStreamingSites =
+		streamingEpisodes?.length > 0
+			? streamingEpisodes.sort((a, b) => {
+					return (b.title ?? '').localeCompare(a.title ?? '');
+				})
+			: null;
 
 	const MangaRenderItem = ({ item }: ListRenderItemInfo<ReleaseSearchResponseV1ResultsItem>) => {
 		return (
