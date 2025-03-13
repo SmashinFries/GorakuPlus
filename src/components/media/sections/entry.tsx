@@ -25,6 +25,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useListEntryStore } from '@/store/listEntryStore';
 import { EntryNumberPickerSheetProps } from '@/app/(sheets)/numberPickerSheet';
+import { useSaveMediaListItemInvalidatedMutation } from '@/api/anilist/extended';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -89,7 +90,7 @@ const ListEntryView = ({
 	const queryClient = useQueryClient();
 	const { isPending: favLoading, mutateAsync: toggleFav } = useToggleFavMutation();
 	const { isPending: savedMediaLoading, mutateAsync: saveListItem } =
-		useSaveMediaListItemMutation();
+		useSaveMediaListItemInvalidatedMutation();
 	const { isPending: deletedListItemLoading, mutateAsync: deleteListItem } =
 		useDeleteMediaListItemMutation({ onSuccess: () => queryClient.invalidateQueries() });
 
