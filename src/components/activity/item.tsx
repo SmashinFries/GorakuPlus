@@ -22,6 +22,7 @@ export const ListActivityView = ({
 	return (
 		<ThreadItem
 			{...data}
+			threadId={data.id}
 			isMain
 			body={listBodyText}
 			coverImage={data?.media?.coverImage?.extraLarge ?? undefined}
@@ -33,6 +34,7 @@ export const ListActivityView = ({
 			}
 			isViewerActivity={isViewerActivity}
 			isReply={false}
+			showDivider
 		/>
 	);
 };
@@ -47,6 +49,7 @@ export const MessageActivityView = ({
 	return (
 		<ThreadItem
 			{...data}
+			threadId={data.id}
 			isViewerActivity={isViewerActivity}
 			isMain
 			body={data.message}
@@ -65,6 +68,7 @@ export const TextActivityView = ({
 	return (
 		<ThreadItem
 			{...data}
+			threadId={data.id}
 			isMain
 			isViewerActivity={isViewerActivity}
 			body={data.text}
