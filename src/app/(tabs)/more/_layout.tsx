@@ -21,6 +21,7 @@ const MoreLayout = () => {
 			<Stack.Screen name="accounts" options={{ title: 'Accounts', headerShown: false }} />
 			<Stack.Screen name="settings" options={{ title: 'Settings', headerShown: false }} />
 			<Stack.Screen name="about" options={{ title: 'About' }} />
+			<Stack.Screen name="roadmap" options={{ title: 'Roadmap' }} />
 		</AnimatedStack>
 	);
 };

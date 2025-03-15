@@ -17,6 +17,7 @@ import { Image } from 'expo-image';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppUpdaterStore } from '@/store/appUpdateStore';
+import { router } from 'expo-router';
 
 const OtherAppItem = ({
 	title,
@@ -92,6 +93,7 @@ const AboutPage = () => {
 					right={(props) => (isCheckingUpdate ? <ActivityIndicator {...props} /> : null)}
 				/>
 			)}
+			<List.Item title={'Roadmap'} onPress={() => router.push('/(tabs)/more/roadmap')} />
 			<Accordion title="More Apps" titleStyle={{ fontSize: 16 }}>
 				<ScrollView horizontal showsHorizontalScrollIndicator={false} fadingEdgeLength={6}>
 					<OtherAppItem
