@@ -35,7 +35,7 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 	const { width } = useWindowDimensions();
 
 	const markdownit: MarkdownIt = new MarkdownIt({ typographer: true, html: true });
-	const [markdownWidth, setMarkdownWidth] = useState(0);
+	const [markdownWidth, _setMarkdownWidth] = useState(0);
 
 	const onLinkPress = (url: string) => {
 		if (url) {
@@ -49,7 +49,7 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 	};
 
 	const rules: RenderRules = {
-		html_block: (node, children, parent, styles) => {
+		html_block: (node, children) => {
 			// we check that the parent array contans a td because <br> in paragraph setting will create a html_inlinde surrounded by a soft break, try removing the clause to see what happens (double spacing on the <br> between 'top one' and 'bottom one')
 			if (node.content.trim() === '<br>') {
 				return (
@@ -126,7 +126,7 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 		},
 		image: (node, children, parent, styles, allowedImageHandlers, defaultImageHandler) => {
 			const { src, alt } = node.attributes;
-			const targetWidth = parseInt((alt as string).replace('img', ''));
+			// const targetWidth = parseInt((alt as string).replace('img', ''));
 			// we check that the source starts with at least one of the elements in allowedImageHandlers
 			const show =
 				allowedImageHandlers.filter((value) => {
@@ -224,24 +224,24 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 				?.replaceAll('\\/', '/')
 				?.replaceAll(
 					/<img[^>]*>/g,
-					(t, args) => `![img](${t.split('src="').at(-1).split('"')[0]})`,
+					(t) => `![img](${t.split('src="').at(-1)?.split('"')[0]})`,
 				)
 				.replaceAll('<center>', '')
 				.replaceAll('</center>', '')
 				.replaceAll(
 					/img.*?\%\(.*?\)/g,
-					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
+					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1)?.split(')')[0]})`,
 				)
 				.replaceAll(
 					/img\d*\(.*?\)/g,
-					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
+					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1)?.split(')')[0]})`,
 				)
 				.replaceAll(/youtube\(.*?\)/g, (t) => {
-					return `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`;
+					return `![${t.split('(')[0]}](${t.split('(').at(-1)?.split(')')[0]})`;
 				})
 				.replaceAll(
 					/webm\(.*?\)/g,
-					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1).split(')')[0]})`,
+					(t) => `![${t.split('(')[0]}](${t.split('(').at(-1)?.split(')')[0]})`,
 				)
 				.replaceAll('~~~', '')
 				.replaceAll('~!', '```\n')

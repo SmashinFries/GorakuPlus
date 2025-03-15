@@ -1,8 +1,10 @@
 import {
-	ThreadsOverviewQuery,
+	ThreadsOverviewQuery_Page_Page_threads_Thread,
 	useInfiniteThreadsOverviewQuery,
 } from '@/api/anilist/__genereated__/gql';
+import { AnimViewMem } from '@/components/animations';
 import { FlashListAnim } from '@/components/list';
+import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadOverviewItem } from '@/components/thread/items';
 import { ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -11,15 +13,15 @@ import { View } from 'react-native';
 
 const ThreadsPage = () => {
 	const { threadParam: aniId } = useLocalSearchParams<{ threadParam: string }>();
-	const { data, hasNextPage, fetchNextPage } = useInfiniteThreadsOverviewQuery(
+	const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteThreadsOverviewQuery(
 		{ id: parseInt(aniId), page: 1, perPage: 50 },
 		{
 			enabled: !!aniId,
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo.hasNextPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo?.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -30,28 +32,39 @@ const ThreadsPage = () => {
 		router.navigate(`/thread/${id}`);
 	};
 
-	const keyExtractor = useCallback((item, index) => index.toString(), []);
-	const renderItem = useCallback(
-		({ item }: ListRenderItemInfo<ThreadsOverviewQuery['Page']['threads'][0]>) => (
-			<ThreadOverviewItem
-				item={item}
-				onSelect={() => onSelect(item.id)}
-				containerStyle={{ width: '100%', marginBottom: 6 }}
-			/>
-		),
-		[],
-	);
+	const keyExtractor = useCallback((item: any, index: number) => index.toString(), []);
+	const renderItem = ({
+		item,
+	}: ListRenderItemInfo<ThreadsOverviewQuery_Page_Page_threads_Thread | null>) => {
+		return item ? (
+			<AnimViewMem style={{ marginVertical: 8 }}>
+				<ThreadOverviewItem
+					item={item}
+					onSelect={() => onSelect(item.id)}
+					containerStyle={{ width: '100%', marginBottom: 6 }}
+				/>
+			</AnimViewMem>
+		) : null;
+	};
 
 	const flatData = data?.pages?.flatMap((val) => val.Page?.threads);
 
+	if (isLoading) {
+		return (
+			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+				<GorakuActivityIndicator />
+			</View>
+		);
+	}
+
 	return (
-		<View style={{ width: '100%', height: '100%' }}>
+		<View style={{ flex: 1, width: '100%' }}>
 			<FlashListAnim
 				data={flatData}
 				keyExtractor={keyExtractor}
 				renderItem={renderItem}
 				estimatedItemSize={146}
-				contentContainerStyle={{ padding: 15 }}
+				contentContainerStyle={{ padding: 10 }}
 				numColumns={1}
 				onEndReached={() => hasNextPage && fetchNextPage()}
 				showScrollToTop

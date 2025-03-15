@@ -42,15 +42,17 @@ const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 			<FlashList
 				data={data?.edges}
 				renderItem={(info) => (
-					<ReviewItem
-						{...info}
-						backgroundColor={colors.elevation.level5}
-						iconColor={colors.onBackground}
-						openSheet={(data) => {
-							setSelectedReview(data);
-							sheetRef.current?.present();
-						}}
-					/>
+					<View style={{ marginRight: 8 }}>
+						<ReviewItem
+							item={info.item?.node}
+							backgroundColor={colors.elevation.level5}
+							iconColor={colors.onBackground}
+							openSheet={(data) => {
+								setSelectedReview(data);
+								sheetRef.current?.present();
+							}}
+						/>
+					</View>
 				)}
 				keyExtractor={keyExtractor}
 				estimatedItemSize={250}

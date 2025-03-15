@@ -1,4 +1,8 @@
-import { Thread, ThreadsOverviewQuery } from '@/api/anilist/__genereated__/gql';
+import {
+	Thread,
+	ThreadsOverviewQuery,
+	ThreadsOverviewQuery_Page_Page_threads_Thread,
+} from '@/api/anilist/__genereated__/gql';
 import { ListHeading } from '@/components/text';
 import { ThreadOverviewItem } from '@/components/thread/items';
 import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
@@ -17,12 +21,13 @@ export const ThreadOverview = ({ aniId, data }: ThreadOverviewProps) => {
 	};
 
 	const keyExtractor = useCallback((item: any, index: number) => index.toString(), []);
-	const renderItem = useCallback(
-		({ item }: ListRenderItemInfo<Thread>) => (
-			<ThreadOverviewItem item={item} onSelect={() => onSelect(item.id)} />
-		),
-		[],
-	);
+	const renderItem = ({
+		item,
+	}: ListRenderItemInfo<ThreadsOverviewQuery_Page_Page_threads_Thread | null>) => {
+		return item ? (
+			<ThreadOverviewItem item={item} onSelect={() => item && onSelect(item.id)} />
+		) : null;
+	};
 
 	if ((data?.Page?.threads?.length ?? 0) < 1) return null;
 

@@ -1,9 +1,9 @@
 import {
 	LikeableType,
 	ListActivity,
-	Thread,
 	ThreadCategory,
 	ThreadComment,
+	ThreadsOverviewQuery_Page_Page_threads_Thread,
 	useToggleLikeMutation,
 	useToggleThreadSubscriptionMutation,
 } from '@/api/anilist/__genereated__/gql';
@@ -412,7 +412,7 @@ export const ThreadOverviewItem = ({
 	containerStyle,
 	onSelect,
 }: {
-	item: Thread;
+	item: ThreadsOverviewQuery_Page_Page_threads_Thread;
 	onSelect: () => void;
 	containerStyle?: ViewStyle;
 }) => {
