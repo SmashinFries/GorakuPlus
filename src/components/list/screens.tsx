@@ -239,18 +239,15 @@ export const ListTabs = ({
 	const [tabRoutes, setTabRoutes] = useState<{ key: string; title: string }[]>(routes);
 
 	const updateTitleCount = (key: string, total?: number) => {
-		console.log('Updating', key, 'with', total);
 		setTabRoutes((prevRoutes) => {
 			const newRoutes = prevRoutes.map((route) => {
 				if (route.key === key) {
 					const baseTitle = route.title.replace(/\s*\(\d+\)$/, '');
 					const newRoute = { ...route, title: `${baseTitle} (${total ?? 0})` };
-					console.log('Updated route:', newRoute);
 					return newRoute;
 				}
 				return route;
 			});
-			console.log('New Routes:', newRoutes);
 			return newRoutes;
 		});
 	};
