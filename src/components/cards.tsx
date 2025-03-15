@@ -857,11 +857,10 @@ export const DanbooruImageCard = ({
 	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
 	const preview = item.media_asset.variants?.find((v) => v.type === '360x360');
-	const { blurAmount, toggleBlur, resetBlur } = useNsfwBlur(item.rating);
+	const { blurAmount, isBlurred, toggleBlur, resetBlur } = useNsfwBlur(item.rating);
 	const isBlurNSFWEnabled = useSettingsStore((state) => state.blurNSFW);
 
 	const onLongPress = () => {
-		toggleBlur();
 		router.navigate({
 			pathname: '/(sheets)/booruArtActions',
 			params: {
@@ -873,6 +872,14 @@ export const DanbooruImageCard = ({
 					: `https://danbooru.donmai.us/posts/${item?.id}`,
 			} as BooruArtActionParams,
 		});
+	};
+
+	const onPress = () => {
+		if (isBlurred) {
+			toggleBlur();
+		} else {
+			onNavigate(item.id);
+		}
 	};
 
 	if (lastItemId.current !== item.id) {
@@ -887,7 +894,7 @@ export const DanbooruImageCard = ({
 		<AnimViewMem>
 			<Pressable
 				onLongPress={onLongPress}
-				onPress={() => onNavigate(item.id)}
+				onPress={onPress}
 				android_ripple={{ color: colors.primary, foreground: true }}
 				style={{
 					borderRadius: 12,
