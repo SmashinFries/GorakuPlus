@@ -1,18 +1,15 @@
 import { useAppTheme } from '@/store/theme/themes';
-import { GithubReleaseResponse } from '@/types';
 import { downloadAppUpdate } from '@/utils/update';
 import { useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
-import { Button, Divider, Icon, ProgressBar, Text } from 'react-native-paper';
+import { Button, Icon, ProgressBar, Text } from 'react-native-paper';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import React from 'react';
 import { GlobalBottomSheetParent } from '@/components/sheets/bottomsheets';
 import { useAppUpdaterStore } from '@/store/appUpdateStore';
 
 const AppUpdaterSheet = () => {
-	// const { params } = useLocalSearchParams<{ params: string }>();
-	// const updateDetails = JSON.parse(params) as GithubReleaseResponse[0] | null;
 	const { updateDetails } = useAppUpdaterStore();
 	const scrollRef = useRef<ScrollView>(null);
 

@@ -19,6 +19,6 @@ export const getStreamingSiteEmoji = (lang: string) => {
 		case 'Spanish':
 			return '🇪🇸';
 		default:
-			return 'N/A';
+			return '';
 	}
 };

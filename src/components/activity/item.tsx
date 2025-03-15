@@ -18,13 +18,13 @@ export const ListActivityView = ({
 	isViewerActivity?: boolean;
 }) => {
 	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
-	const listBodyText = `${data?.status.charAt(0).toUpperCase() + data?.status.slice(1)} ${data?.media?.mediaListEntry?.status === MediaListStatus.Current ? data?.progress + ' of\n' : '\n'}${data?.media?.title[mediaLanguage] ?? data?.media?.title?.romaji}`;
+	const listBodyText = `${(data?.status?.charAt(0).toUpperCase() ?? '') + data?.status?.slice(1)} ${data?.media?.mediaListEntry?.status === MediaListStatus.Current ? data?.progress + ' of\n' : '\n'}${data?.media?.title?.[mediaLanguage ?? 'romaji'] ?? data?.media?.title?.romaji}`;
 	return (
 		<ThreadItem
 			{...data}
 			isMain
 			body={listBodyText}
-			coverImage={data?.media?.coverImage?.extraLarge}
+			coverImage={data?.media?.coverImage?.extraLarge ?? undefined}
 			// @ts-ignore
 			onImagePress={() =>
 				router.navigate(

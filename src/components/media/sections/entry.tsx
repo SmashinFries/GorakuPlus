@@ -14,7 +14,6 @@ import {
 	SaveMediaListItemMutationVariables,
 	ScoreFormat,
 	useDeleteMediaListItemMutation,
-	useSaveMediaListItemMutation,
 	useToggleFavMutation,
 } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
