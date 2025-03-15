@@ -3,6 +3,7 @@ import {
 	CharacterSort,
 	MediaFormat,
 	MediaSearchQueryVariables,
+	MediaSort,
 	MediaStatus,
 	MediaType,
 	StaffSearchQueryVariables,
@@ -34,14 +35,17 @@ import {
 } from '@/constants/mediaConsts';
 import { updateMultiSelectFilters } from '@/utils/search/filtering';
 import { create } from 'zustand';
+import { SearchPreset, SearchPresetType } from '@/types/anilist';
+import { getSeason } from '@/utils/explore/helpers';
+import { subtractMonths } from '@/utils';
 
 export type SearchSortType = {
 	value:
-		| AvailableSorts
-		| AvailableCharSorts
-		| AvailableStaffSorts
-		| AvailableStudioSorts
-		| AvailableUserSorts;
+	| AvailableSorts
+	| AvailableCharSorts
+	| AvailableStaffSorts
+	| AvailableStudioSorts
+	| AvailableUserSorts;
 	asc: boolean;
 };
 export type SearchType =
@@ -94,6 +98,7 @@ type SearchActions = {
 	updateStatus: (status: MediaStatus) => void;
 	updateFormat: (format: MediaFormat) => void;
 	resetFilter: (type: SearchType) => void;
+	setPreset: (presetType: SearchPresetType, preset: SearchPreset) => void;
 	reset: () => void;
 };
 
@@ -136,10 +141,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			set((state) =>
 				state.searchType === 'CHARACTER' || state.searchType === 'STAFF'
 					? {
-							query: txt,
-							characterFilter: { ...state.characterFilter, isBirthday: undefined },
-							staffFilter: { ...state.staffFilter, isBirthday: undefined },
-						}
+						query: txt,
+						characterFilter: { ...state.characterFilter, isBirthday: undefined },
+						staffFilter: { ...state.staffFilter, isBirthday: undefined },
+					}
 					: { query: txt },
 			);
 		}
@@ -153,7 +158,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 						format: undefined,
 						format_in:
 							state.mediaFilter.format &&
-							AnimeFormats.includes(state.mediaFilter.format)
+								AnimeFormats.includes(state.mediaFilter.format)
 								? state.mediaFilter.format
 								: undefined,
 						isLicensed: undefined,
@@ -180,7 +185,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 						format: undefined,
 						format_in:
 							state.mediaFilter.format &&
-							MangaFormats.includes(state.mediaFilter.format)
+								MangaFormats.includes(state.mediaFilter.format)
 								? state.mediaFilter.format
 								: undefined,
 						season: undefined,
@@ -203,12 +208,12 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 				set((state) =>
 					state.query.length > 0
 						? {
-								searchType: type,
-								characterFilter: {
-									...state.characterFilter,
-									isBirthday: undefined,
-								},
-							}
+							searchType: type,
+							characterFilter: {
+								...state.characterFilter,
+								isBirthday: undefined,
+							},
+						}
 						: { searchType: type },
 				);
 				break;
@@ -216,9 +221,9 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 				set((state) =>
 					state.query.length > 0
 						? {
-								searchType: type,
-								staffFilter: { ...state.staffFilter, isBirthday: undefined },
-							}
+							searchType: type,
+							staffFilter: { ...state.staffFilter, isBirthday: undefined },
+						}
 						: { searchType: type },
 				);
 				break;
@@ -237,11 +242,11 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					...state.mediaFilter,
 					tag_not_in:
 						(state.mediaFilter.tag_not_in?.length ?? 0) + (tagBlacklist?.length ?? 0) >
-						0
+							0
 							? [
-									...(state.mediaFilter.tag_not_in ?? []),
-									...(tagBlacklist ?? []),
-								].filter((value, index, array) => array.indexOf(value) === index)
+								...(state.mediaFilter.tag_not_in ?? []),
+								...(tagBlacklist ?? []),
+							].filter((value, index, array) => array.indexOf(value) === index)
 							: undefined,
 				},
 			}));
@@ -255,8 +260,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 							(tag) => !tagBlacklist?.includes(tag),
 						).length > 0
 							? (state.mediaFilter.tag_not_in as string[])?.filter(
-									(tag) => !tagBlacklist?.includes(tag),
-								)
+								(tag) => !tagBlacklist?.includes(tag),
+							)
 							: undefined,
 				},
 			}));
@@ -298,10 +303,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			mediaFilter: sort
 				? {
-						...state.mediaFilter,
-						...params,
-						sort: sort.asc ? AscSorts[sort.value] : DescSorts[sort.value],
-					}
+					...state.mediaFilter,
+					...params,
+					sort: sort.asc ? AscSorts[sort.value] : DescSorts[sort.value],
+				}
 				: { ...state.mediaFilter, ...params },
 			mediaSort: sort,
 		}));
@@ -312,16 +317,16 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			[key]: sort
 				? {
-						...state[key],
-						...params,
-						sort: sort.asc
-							? type === 'CHARACTER'
-								? CharacterAscSorts
-								: StaffAscSorts
-							: type === 'CHARACTER'
-								? (CharacterDescSorts as any)[sort.value]
-								: (StaffDescSorts as any)[sort.value],
-					}
+					...state[key],
+					...params,
+					sort: sort.asc
+						? type === 'CHARACTER'
+							? CharacterAscSorts
+							: StaffAscSorts
+						: type === 'CHARACTER'
+							? (CharacterDescSorts as any)[sort.value]
+							: (StaffDescSorts as any)[sort.value],
+				}
 				: { ...state[key], ...params },
 			[sortKey]: sort,
 		}));
@@ -330,10 +335,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			studioFilter: sort
 				? {
-						...state.studioFilter,
-						...params,
-						sort: sort.asc ? StudioAscSorts[sort.value] : StudioDescSorts[sort.value],
-					}
+					...state.studioFilter,
+					...params,
+					sort: sort.asc ? StudioAscSorts[sort.value] : StudioDescSorts[sort.value],
+				}
 				: { ...state.studioFilter, ...params },
 			studioSort: sort,
 		}));
@@ -342,10 +347,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			userFilter: sort
 				? {
-						...state.userFilter,
-						...params,
-						sort: sort.asc ? UserAscSorts[sort.value] : UserDescSorts[sort.value],
-					}
+					...state.userFilter,
+					...params,
+					sort: sort.asc ? UserAscSorts[sort.value] : UserDescSorts[sort.value],
+				}
 				: { ...state.userFilter, ...params },
 			userSort: sort,
 		}));
@@ -381,6 +386,165 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 				format_not_in: not_in_values as MediaFormat[],
 			},
 		}));
+	},
+	setPreset(presetType, preset) {
+		const thisSeasonParams = getSeason();
+		const nextSeasonParams = getSeason(new Date(), true);
+		const countryOfOrigin: { [key in SearchPresetType]: string | undefined } = {
+			ANIME: undefined,
+			MANGA: 'JP',
+			MANHWA: 'KR',
+			MANHUA: 'CN',
+			NOVEL: undefined,
+		};
+		const anime_config: Partial<SearchState['mediaFilter']> = {
+			type: MediaType.Anime,
+			season: undefined,
+			seasonYear: undefined,
+			format: undefined,
+			format_in: undefined,
+			isLicensed: undefined,
+			licensedBy_in: undefined,
+			chapters_greater: undefined,
+			chapters_lesser: undefined,
+			volumes_greater: undefined,
+			volumes_lesser: undefined,
+		};
+		const manga_config: Partial<SearchState['mediaFilter']> = {
+			type: MediaType.Manga,
+			format: undefined,
+			format_not_in: undefined,
+			status: undefined,
+			season: undefined,
+			seasonYear: undefined,
+			licensedBy_in: undefined,
+			episodes_greater: undefined,
+			episodes_lesser: undefined,
+			duration_greater: undefined,
+			duration_lesser: undefined,
+			startDate_greater: undefined,
+		};
+		const format_config: Partial<SearchState['mediaFilter']> =
+			presetType === 'NOVEL'
+				? {
+					format: undefined,
+					format_in: [MediaFormat.Novel],
+					format_not_in: undefined,
+				}
+				: {
+					format: undefined,
+					format_in: undefined,
+					format_not_in: [MediaFormat.Novel],
+				};
+
+		switch (preset) {
+			case 'CurrentSeason':
+				set((state) => ({
+					...state,
+					mediaFilter: {
+						...state.mediaFilter,
+						...anime_config,
+						season: thisSeasonParams.current_season,
+						seasonYear: thisSeasonParams.year,
+						sort: [MediaSort.ScoreDesc],
+					},
+					mediaSort: {
+						asc: false,
+						value: 'SCORE',
+					},
+					searchType: MediaType.Anime,
+				}));
+				break;
+			case 'NextSeason':
+				set((state) => ({
+					...state,
+					mediaFilter: {
+						...anime_config,
+						season: nextSeasonParams.current_season,
+						seasonYear: nextSeasonParams.year,
+						sort: [MediaSort.TrendingDesc, MediaSort.PopularityDesc],
+					},
+					mediaSort: {
+						asc: false,
+						value: 'TRENDING',
+					},
+					searchType: MediaType.Anime,
+				}));
+				break;
+			case 'NewReleases':
+				set((state) => ({
+					...state,
+					mediaFilter: {
+						...state.mediaFilter,
+						...manga_config,
+						...format_config,
+						startDate_greater: subtractMonths(3),
+						countryOfOrigin: countryOfOrigin[presetType],
+						status: MediaStatus.Releasing,
+						sort: [MediaSort.TrendingDesc, MediaSort.PopularityDesc],
+					},
+					mediaSort: {
+						asc: false,
+						value: 'TRENDING',
+					},
+					searchType: MediaType.Manga,
+				}));
+				break;
+			case 'Trending':
+				set((state) => ({
+					...state,
+					mediaFilter: {
+						...state.mediaFilter,
+						...(presetType === MediaType.Anime ? anime_config : manga_config),
+						...format_config,
+						countryOfOrigin: countryOfOrigin[presetType],
+						sort: [MediaSort.TrendingDesc, MediaSort.PopularityDesc],
+					},
+					mediaSort: {
+						asc: false,
+						value: 'TRENDING',
+					},
+					searchType: MediaType.Anime === presetType ? MediaType.Anime : MediaType.Manga,
+				}));
+				break;
+			case 'Popular':
+				set((state) => ({
+					...state,
+					mediaFilter: {
+						...state.mediaFilter,
+						...(presetType === MediaType.Anime ? anime_config : manga_config),
+						...format_config,
+						countryOfOrigin: countryOfOrigin[presetType],
+						sort: [MediaSort.PopularityDesc],
+					},
+					mediaSort: {
+						asc: false,
+						value: 'POPULAR',
+					},
+					searchType: MediaType.Anime === presetType ? MediaType.Anime : MediaType.Manga,
+				}));
+				break;
+			case 'TopScore':
+				set((state) => ({
+					...state,
+					mediaFilter: {
+						...state.mediaFilter,
+						...(presetType === MediaType.Anime ? anime_config : manga_config),
+						...format_config,
+						countryOfOrigin: countryOfOrigin[presetType],
+						sort: [MediaSort.ScoreDesc],
+					},
+					mediaSort: {
+						asc: false,
+						value: 'SCORE',
+					},
+					searchType: MediaType.Anime === presetType ? MediaType.Anime : MediaType.Manga,
+				}));
+				break;
+
+			default:
+				break;
+		}
 	},
 	resetFilter(type) {
 		switch (type) {

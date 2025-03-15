@@ -21,9 +21,10 @@ import {
 import { useSearchHistoryStore } from '@/store/search/searchHistoryStore';
 import { useSearchStore } from '@/store/search/searchStore';
 import { useAppTheme } from '@/store/theme/themes';
+import { SearchPreset } from '@/types/anilist';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { Stack } from 'expo-router';
-import React from 'react';
+import { Stack, useLocalSearchParams } from 'expo-router';
+import React, { useEffect } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { Keyboard, ScrollView, TextInput } from 'react-native';
 import { View } from 'react-native';
@@ -34,13 +35,18 @@ const SearchPage = () => {
 	const { colors } = useAppTheme();
 	const searchbarRef = useRef<TextInput>(null);
 
+	const { preset, presetType } = useLocalSearchParams<{
+		preset?: SearchPreset;
+		presetType?: MediaType;
+	}>();
+
 	const [isFocused, setIsFocused] = useState(false);
 
 	const [showImageSearchDialog, setShowImageSearchDialog] = useState(false);
 
 	const toggleIsFocused = useCallback((value: boolean) => setIsFocused(value), []);
 
-	const { searchType, updateQuery } = useSearchStore();
+	const { searchType, updateQuery, setPreset, reset } = useSearchStore();
 	const { searchTerms, removeSearchTerm } = useSearchHistoryStore();
 
 	const [traceMoeParams, setTraceMoeParams] = useState<Omit<TraceMoeSheetProps, 'sheetRef'>>({
@@ -56,6 +62,14 @@ const SearchPage = () => {
 	const traceMoeSheetRef = useRef<TrueSheet>(null);
 	const sauceNaoSheetRef = useRef<TrueSheet>(null);
 
+	useEffect(() => {
+		if (preset && presetType) {
+			setPreset(presetType, preset);
+		} else {
+			reset();
+		}
+	}, []);
+
 	return (
 		<>
 			<Stack.Screen
@@ -64,6 +78,7 @@ const SearchPage = () => {
 						<View>
 							<SearchHeader
 								{...props}
+								autoFocus={!preset && !presetType}
 								// searchContent={onSearch}
 								openFilter={() => {
 									Keyboard.dismiss();

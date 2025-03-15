@@ -1,10 +1,11 @@
 import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { router } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { StyleProp, TextStyle } from 'react-native';
-import { Icon, IconButton, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
+import { VariantProp } from 'react-native-paper/lib/typescript/components/Typography/types';
 import RenderHTML, {
 	CustomTagRendererRecord,
 	CustomTextualRenderer,
@@ -13,15 +14,19 @@ import RenderHTML, {
 
 type ListHeadingProps = {
 	title: string;
+	titleVariant?: VariantProp<never>;
+	titleStyle?: StyleProp<TextStyle>;
 	subtitle?: string;
 	subtitleStyle?: StyleProp<TextStyle>;
 	subtitlePress?: () => void;
-	style?: StyleProp<TextStyle>;
+	style?: StyleProp<ViewStyle>;
 	icon?: string;
 	onIconPress?: () => void;
 };
 export const ListHeading = ({
 	title,
+	titleVariant,
+	titleStyle,
 	subtitle,
 	subtitlePress,
 	subtitleStyle,
@@ -29,7 +34,6 @@ export const ListHeading = ({
 	icon,
 	onIconPress,
 }: ListHeadingProps) => {
-	const { colors } = useAppTheme();
 	return (
 		<View
 			style={[
@@ -54,7 +58,9 @@ export const ListHeading = ({
 				}}
 			>
 				<View style={[{ flex: 1, paddingLeft: 16, justifyContent: 'center' }]}>
-					<Text variant="titleMedium">{title}</Text>
+					<Text variant={titleVariant ?? 'titleMedium'} style={[titleStyle]}>
+						{title}
+					</Text>
 					{subtitle ? (
 						<Text onPress={subtitlePress} style={subtitleStyle ?? undefined}>
 							{subtitle}
@@ -62,14 +68,7 @@ export const ListHeading = ({
 					) : null}
 				</View>
 			</View>
-			{/* <Pressable
-				onPress={onIconPress}
-				android_ripple={{ foreground: true, color: colors.primary }}
-				style={{ marginVertical: 6, paddingLeft: 4 }}
-			>
-				{icon && <Icon size={24} color={colors.onSurfaceVariant} source={icon} />}
-			</Pressable> */}
-			<IconButton onPress={onIconPress} icon={icon} size={24} />
+			{icon && <IconButton onPress={onIconPress} icon={icon} size={24} />}
 		</View>
 	);
 };
@@ -91,7 +90,7 @@ export const HTMLText = ({ html }: HTMLTextProps) => {
 
 	const renderersProps: Partial<RenderersProps> = {
 		a: {
-			onPress(event, url, htmlAttribs, target) {
+			onPress(event, url) {
 				if (url.includes('https://anilist.co/character/')) {
 					const id = url.split('/').at(-2);
 					router.push(`https://anilist.co/characters/info/${id}`);

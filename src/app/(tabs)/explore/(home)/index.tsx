@@ -24,7 +24,7 @@ import { ExploreTabsProps } from '@/types/navigation';
 import { subtractMonths } from '@/utils';
 import { getSeason } from '@/utils/explore/helpers';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
-import { Stack, useFocusEffect } from 'expo-router';
+import { router, Stack, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { BackHandler, ScrollView, View, useWindowDimensions } from 'react-native';
 import { Portal } from 'react-native-paper';
@@ -32,6 +32,7 @@ import { TabView } from 'react-native-tab-view';
 import { useShallow } from 'zustand/react/shallow';
 import React from 'react';
 import ParticleBackground from '@/components/particles';
+import { SearchPreset, SearchPresetType } from '@/types/anilist';
 
 const perPage = 24;
 const thisSeasonParams = getSeason();
@@ -39,6 +40,7 @@ const nextSeasonParams = getSeason(new Date(), true);
 
 type ExploreSectionsProps = {
 	type: MediaType;
+	presetType: SearchPresetType;
 	onRefresh: () => Promise<void>;
 	status?: UseQueryResult<unknown, unknown>['status'];
 	isError?: boolean;
@@ -50,7 +52,16 @@ type ExploreSectionsProps = {
 		| ManhuaExploreQuery
 		| NovelExploreQuery;
 };
-const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
+const ExploreSections = ({ type, data, presetType, isLoading }: ExploreSectionsProps) => {
+	const onMore = (preset: SearchPreset) => {
+		router.navigate({
+			pathname: '/(tabs)/explore/search',
+			params: {
+				preset: preset,
+				presetType: presetType,
+			},
+		});
+	};
 	return (
 		<View style={{ paddingVertical: 10 }}>
 			<View style={{ gap: 12 }}>
@@ -60,6 +71,7 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 						data={(data as MangaExploreQuery)?.newReleases?.media}
 						viewer={data?.Viewer}
 						isLoading={!!isLoading}
+						onMore={() => onMore('NewReleases')}
 					/>
 				)}
 				<SectionScroll
@@ -67,6 +79,7 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 					data={data?.trending?.media}
 					viewer={data?.Viewer}
 					isLoading={!!isLoading}
+					onMore={() => onMore('Trending')}
 				/>
 				{type === MediaType.Anime && (
 					<>
@@ -75,12 +88,14 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 							data={(data as AnimeExploreQuery)?.thisSeason?.media}
 							viewer={data?.Viewer}
 							isLoading={!!isLoading}
+							onMore={() => onMore('CurrentSeason')}
 						/>
 						<SectionScroll
 							category_title={'Next Season'}
 							data={(data as AnimeExploreQuery)?.nextSeason?.media}
 							viewer={data?.Viewer}
 							isLoading={!!isLoading}
+							onMore={() => onMore('NextSeason')}
 						/>
 					</>
 				)}
@@ -89,12 +104,14 @@ const ExploreSections = ({ type, data, isLoading }: ExploreSectionsProps) => {
 					data={data?.popular?.media}
 					viewer={data?.Viewer}
 					isLoading={!!isLoading}
+					onMore={() => onMore('Popular')}
 				/>
 				<SectionScroll
 					category_title={'Top Scored'}
 					data={data?.top?.media}
 					viewer={data?.Viewer}
 					isLoading={!!isLoading}
+					onMore={() => onMore('TopScore')}
 				/>
 			</View>
 		</View>
@@ -188,6 +205,17 @@ const ExploreTab = ({ type }: ExploreTabProps) => {
 			{!queries[queryIndex].isError && (
 				<ExploreSections
 					type={type === 'anime' ? MediaType.Anime : MediaType.Manga}
+					presetType={
+						type === 'anime'
+							? MediaType.Anime
+							: type === 'manga'
+								? MediaType.Manga
+								: type === 'manhwa'
+									? 'MANHWA'
+									: type === 'manhua'
+										? 'MANHUA'
+										: 'NOVEL'
+					}
 					data={queries[queryIndex].data ?? ({} as AnimeExploreQuery)}
 					onRefresh={onRefresh}
 					isError={queries[queryIndex].isError}

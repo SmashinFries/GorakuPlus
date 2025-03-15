@@ -1,5 +1,4 @@
 import { RefreshControl, View, useWindowDimensions } from 'react-native';
-import { Text } from 'react-native-paper';
 import React, { memo } from 'react';
 import { MediaCard } from '../cards';
 import { GorakuActivityIndicator } from '../loading';
@@ -12,6 +11,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { FlatList } from 'react-native-gesture-handler';
+import { ListHeading } from '../text';
 
 export const GorakuRefreshControl = ({
 	refreshing,
@@ -40,6 +40,7 @@ type SectionScrollProps = {
 		| NonNullable<MangaExploreQuery['trending']>['media'];
 	viewer: AnimeExploreQuery['Viewer'];
 	isLoading: boolean;
+	onMore?: () => void;
 };
 
 const RenderItem = (props: {
@@ -59,7 +60,13 @@ const RenderItem = (props: {
 	</View>
 );
 
-export const SectionScroll = ({ category_title, data, viewer, isLoading }: SectionScrollProps) => {
+export const SectionScroll = ({
+	category_title,
+	data,
+	viewer,
+	isLoading,
+	onMore,
+}: SectionScrollProps) => {
 	const { width } = useWindowDimensions();
 
 	const renderMediaItem = ({
@@ -75,21 +82,15 @@ export const SectionScroll = ({ category_title, data, viewer, isLoading }: Secti
 			style={{
 				flex: 1,
 				width: width,
-				// minHeight: 230,
 			}}
 		>
-			<Text
-				variant="headlineMedium"
-				style={{
-					fontWeight: 'bold',
-					// margin: 30,
-					marginLeft: 12,
-					// marginVertical: 10,
-					textTransform: 'capitalize',
-				}}
-			>
-				{category_title.toLowerCase()}
-			</Text>
+			<ListHeading
+				title={category_title}
+				titleStyle={{ fontWeight: 'bold' }}
+				icon={'arrow-right'}
+				titleVariant="headlineMedium"
+				onIconPress={onMore}
+			/>
 			<View
 				style={{
 					flex: 1,

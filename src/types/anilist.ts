@@ -2,6 +2,7 @@ import {
 	AnimeExploreQueryVariables,
 	MangaExploreQueryVariables,
 	MediaListSort,
+	MediaType,
 } from '@/api/anilist/__genereated__/gql';
 import { commonSorts } from '@/constants/anilist';
 
@@ -21,3 +22,12 @@ export const ListSortOptions = {
 export type ListSortOptionsType = (typeof ListSortOptions)[keyof typeof ListSortOptions];
 
 export type AnilistLanguages = 'JP' | 'KR' | 'CN';
+
+export type SearchPresetType = MediaType | 'MANHWA' | 'MANHUA' | 'NOVEL';
+export type SearchPreset =
+	| 'CurrentSeason'
+	| 'NextSeason'
+	| 'NewReleases'
+	| 'Trending'
+	| 'Popular'
+	| 'TopScore';
