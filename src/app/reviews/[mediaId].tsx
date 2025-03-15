@@ -1,14 +1,10 @@
-import { FlatList, ListRenderItemInfo, View, useWindowDimensions } from 'react-native';
-import { ActivityIndicator, Text, useTheme } from 'react-native-paper';
+import { FlatList, ListRenderItemInfo, View } from 'react-native';
 import { useCallback, useRef, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useReviewsList } from '@/hooks/reviews/useReviews';
 import { ReviewItem } from '@/components/reviews/reviewItem';
 import { GorakuActivityIndicator } from '@/components/loading';
-import {
-	ReviewsQuery,
-	ReviewsQuery_Page_Page_reviews_Review,
-} from '@/api/anilist/__genereated__/gql';
+import { ReviewsQuery_Page_Page_reviews_Review } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { ReviewActionsSheet } from '@/components/sheets/bottomsheets';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';

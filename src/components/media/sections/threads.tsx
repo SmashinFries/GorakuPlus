@@ -1,5 +1,4 @@
 import {
-	Thread,
 	ThreadsOverviewQuery,
 	ThreadsOverviewQuery_Page_Page_threads_Thread,
 } from '@/api/anilist/__genereated__/gql';
