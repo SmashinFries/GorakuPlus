@@ -3,22 +3,19 @@ import {
 	AiringRangeQuery,
 	AiringRangeQueryVariables,
 	AniMediaQuery,
-	AnimeExploreQuery,
 	CharacterSort,
 	DeleteActMutation,
 	DeleteActMutationVariables,
 	DeleteMediaListItemMutation,
 	DeleteMediaListItemMutationVariables,
-	MangaExploreQuery,
-	ManhuaExploreQuery,
-	ManhwaExploreQuery,
 	MediaFormat,
 	MediaSeason,
 	MediaType,
-	NovelExploreQuery,
 	SaveMediaListItemMutation,
 	SaveMediaListItemMutationVariables,
 	SeasonalAnimeQuery,
+	ToggleFavMutation,
+	ToggleFavMutationVariables,
 	useAiringRangeQuery,
 	useAniMediaQuery,
 	useAnimeExploreQuery,
@@ -31,6 +28,7 @@ import {
 	useNovelExploreQuery,
 	useSaveMediaListItemMutation,
 	useSeasonalAnimeQuery,
+	useToggleFavMutation,
 	useUserOverviewQuery,
 } from './__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
@@ -39,13 +37,10 @@ import {
 	getGetAnimeFullByIdQueryOptions,
 	getGetMangaFullByIdQueryOptions,
 	GetMangaFullByIdQueryResult,
-	useGetAnimeFullById,
-	useGetMangaFullById,
 } from '../jikan/jikan';
 import { useMatchStore } from '@/store/matchStore';
 import {
 	getRetrieveSeriesQueryOptions,
-	useRetrieveSeries,
 	useSearchReleasesPost,
 	useSearchSeriesPost,
 } from '../mangaupdates/mangaupdates';
@@ -55,7 +50,7 @@ import {
 	SeriesSearchResponseV1,
 } from '../mangaupdates/models';
 import { AnimeFull, MangaFull } from '../jikan/models';
-import { updateAniMediaCache, updateExploreCache } from './queryUpdates';
+import { updateAniMediaCache, updateExploreCache, updateMediaSearchCache, updateSearchAllCache } from './queryUpdates';
 
 const invalidateExploreQueries = (queryClient: QueryClient) => {
 	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey({ includeViewer: true }) });
@@ -214,7 +209,9 @@ export const useSaveMediaListItemInvalidatedMutation = (
 		onSuccess(newData, variables) {
 			if (variables.mediaId) {
 				updateAniMediaCache(queryClient, newData);
-				updateExploreCache(queryClient, newData)
+				updateExploreCache(queryClient, newData);
+				updateMediaSearchCache(queryClient, newData);
+				updateSearchAllCache(queryClient, newData);
 			}
 
 		},
@@ -234,12 +231,7 @@ export const useDeleteMediaListItemInvalidatedMutation = (
 		...options,
 		onSuccess(data, variables, context) {
 			invalidateExploreQueries(queryClient);
-			queryClient.invalidateQueries({
-				queryKey: useAniMediaQuery.getKey({
-					id: options?.meta?.mediaId as number,
-					skipUser: false,
-				}),
-			});
+			queryClient.invalidateQueries();
 			// queryClient.setQueriesData(
 			// 	{ queryKey: [useAnimeExploreQuery.getKey(), useMangaExploreQuery.getKey()] },
 			// 	(
@@ -283,6 +275,20 @@ export const useDeleteActivityItemInvalidateMutation = (
 		},
 	});
 };
+
+// export const useToggleFavInvalidateMutation = (
+// 	options?: UseMutationOptions<
+// 		ToggleFavMutation,
+// 		unknown,
+// 		ToggleFavMutationVariables,
+// 		unknown
+// 	>,
+// ) => {
+// 	const queryClient = useQueryClient();
+// 	return useToggleFavMutation({...options, onSuccess(newData, variables) {
+
+// 	}});
+// };
 
 export const useAiringRangeMonthQuery = (params: Omit<AiringRangeQueryVariables, 'page'>) => {
 	const queryClient = useQueryClient();
