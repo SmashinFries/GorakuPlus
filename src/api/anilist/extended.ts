@@ -29,6 +29,7 @@ import {
 	useSaveMediaListItemMutation,
 	useSeasonalAnimeQuery,
 	useToggleFavMutation,
+	useUserActivityQuery,
 	useUserOverviewQuery,
 } from './__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
@@ -265,9 +266,7 @@ export const useDeleteActivityItemInvalidateMutation = (
 		...options,
 		onSuccess(data, variables, context) {
 			queryClient.invalidateQueries({
-				queryKey: useUserOverviewQuery.getKey({
-					userId: useAuthStore.getState().anilist.userID,
-				}),
+				queryKey: useUserActivityQuery.getKey(),
 			});
 			queryClient.invalidateQueries({
 				queryKey: useInfiniteUserActivityQuery.getKey(),
