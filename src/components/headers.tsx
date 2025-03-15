@@ -153,11 +153,13 @@ type SearchHeaderProps = NativeStackHeaderProps & {
 	openImageSearch: () => void;
 	openWaifuSearch: () => void;
 	onFocus: () => void;
+	autoFocus?: boolean;
 };
 export const SearchHeader = ({
 	navigation,
 	openFilter,
 	searchbarRef,
+	autoFocus = true,
 	toggleIsFocused,
 	openImageSearch,
 	// openWaifuSearch,
@@ -218,7 +220,7 @@ export const SearchHeader = ({
 					// onSubmitEditing={searchContent}
 					scrollEnabled
 					returnKeyType="search"
-					autoFocus
+					autoFocus={autoFocus}
 					onFocus={() => {
 						// searchbarRef?.current?.focus();
 						toggleIsFocused(true);
