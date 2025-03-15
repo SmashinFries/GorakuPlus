@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import React from 'react';
 import { getScoreColor } from '@/utils';
 import { useAppTheme } from '@/store/theme/themes';
-import { Divider, Text } from 'react-native-paper';
+import { ActivityIndicator, Divider, Text } from 'react-native-paper';
 
 type ScoreViewProps = {
 	meanScore: number | null;
@@ -64,11 +64,13 @@ export const ScoreView = ({
 	score,
 	height = 50,
 	barColor,
+	isLoading = false,
 }: {
 	type: 'average' | 'mean' | 'review' | 'mal';
 	score: number | null | undefined;
 	height?: number;
 	barColor?: string;
+	isLoading?: boolean;
 }) => {
 	const { colors } = useAppTheme();
 	return (
@@ -98,10 +100,14 @@ export const ScoreView = ({
 				</View>
 			</View>
 			<View style={{ paddingHorizontal: 8, justifyContent: 'center' }}>
-				<Text variant="titleMedium" style={{ textAlign: 'center' }}>
-					{score ?? '-'}
-					{type === 'review' ? '/100' : ''}
-				</Text>
+				{isLoading ? (
+					<ActivityIndicator />
+				) : (
+					<Text variant="titleMedium" style={{ textAlign: 'center' }}>
+						{score ?? '-'}
+						{type === 'review' ? '/100' : ''}
+					</Text>
+				)}
 				<Divider />
 				<Text
 					variant="labelMedium"

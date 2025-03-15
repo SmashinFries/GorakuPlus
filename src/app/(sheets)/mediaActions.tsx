@@ -12,6 +12,7 @@ import {
 	useDeleteMediaListItemInvalidatedMutation,
 	useSaveMediaListItemInvalidatedMutation,
 } from '@/api/anilist/extended';
+import { useMalQuery } from '@/api/jikan/extended';
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 import { ScoreView } from '@/components/media/sections/scores';
 import { BottomSheetAccordion, GlobalBottomSheetParent } from '@/components/sheets/bottomsheets';
@@ -57,15 +58,16 @@ const MediaQuickActionSheet = () => {
 	const { mutateAsync: removeEntry, isPending: isRemoveEntryPending } =
 		useDeleteMediaListItemInvalidatedMutation({
 			meta: { mediaId: payload?.id },
-			onSuccess: () => queryClient.invalidateQueries(),
 		});
 	const { mutateAsync: removeActivity, isPending: isRemoveActivityPending } =
-		useDeleteActivityItemInvalidateMutation({
-			onSuccess: () => queryClient.invalidateQueries(),
-		});
+		useDeleteActivityItemInvalidateMutation();
 	const { mutateAsync: toggleFav, isPending: isFavPending } = useToggleFavMutation({
 		onSuccess: () => queryClient.invalidateQueries(),
 	});
+	const { data: malData, isFetching: _isFetchingMal } = useMalQuery(
+		payload?.idMal ?? undefined,
+		payload?.type ?? undefined,
+	);
 	const [titleIdx, setTitleIdx] = useState(0);
 	const { initialize, onDismiss, onReset: _onReset, ...currentEntry } = useListEntryStore();
 	// const [listEntryState, setListEntryState] = useState<MediaListEntryMetaFragment>({
@@ -210,14 +212,6 @@ const MediaQuickActionSheet = () => {
 								)}
 							/>
 						)}
-						{payload?.followingUsername && (
-							<List.Item
-								title={'View User'}
-								description={payload.followingUsername}
-								onPress={onViewUser}
-								left={(props) => <List.Icon {...props} icon={'account-outline'} />}
-							/>
-						)}
 						{!!userId && payload?.allowEntryEdit && (
 							<List.Item
 								title={!!currentEntry?.id ? 'Edit Entry' : 'Add to Planning'}
@@ -276,6 +270,14 @@ const MediaQuickActionSheet = () => {
 									/>
 								)}
 								onPress={onFavorite}
+							/>
+						)}
+						{payload?.followingUsername && (
+							<List.Item
+								title={'View User'}
+								description={payload.followingUsername}
+								onPress={onViewUser}
+								left={(props) => <List.Icon {...props} icon={'account-outline'} />}
 							/>
 						)}
 						<List.Item
@@ -338,22 +340,24 @@ const MediaQuickActionSheet = () => {
 								</Text>
 								{payload.nextAiringEpisode?.airingAt ? (
 									<Text style={{ color: colors.onSurfaceVariant }}>
-										<Icon size={undefined} source={'timer-outline'} />
+										<Icon size={14} source={'timer-outline'} />
 										{` EP ${payload.nextAiringEpisode.episode} - ${getTimeUntil(payload.nextAiringEpisode?.airingAt)}`}
 									</Text>
 								) : null}
 								{payload.type === MediaType.Manga ? (
 									<Text style={{ color: colors.onSurfaceVariant }}>
-										<Icon size={undefined} source={'timer-outline'} />
+										<Icon size={14} source={'timer-outline'} />
 										{payload.status === MediaStatus.Releasing ||
 										payload.status === MediaStatus.Hiatus
 											? ` Publishing since ${payload.startDate?.year}`
 											: ` ${payload.startDate?.year} - ${payload.endDate?.year}`}
 									</Text>
 								) : null}
-								<Text style={{ color: colors.onSurfaceVariant }}>
+								<Text
+									style={{ color: colors.onSurfaceVariant, paddingVertical: 6 }}
+								>
 									<Icon
-										size={undefined}
+										size={14}
 										source={
 											payload.type === MediaType.Anime
 												? 'television'
@@ -385,7 +389,7 @@ const MediaQuickActionSheet = () => {
 										textTransform: 'capitalize',
 									}}
 								>
-									<Icon size={undefined} source={'card-text-outline'} />
+									<Icon size={14} source={'card-text-outline'} />
 									{` ${payload.status?.replaceAll('_', ' ')}`}
 								</Text>
 								{payload.averageScore || payload.meanScore ? (
@@ -407,6 +411,12 @@ const MediaQuickActionSheet = () => {
 									</Text> */}
 										<ScoreView type="average" score={payload.averageScore} />
 										<ScoreView type="mean" score={payload.meanScore} />
+										{payload?.idMal && (
+											<ScoreView
+												type="mal"
+												score={malData?.data?.data?.score}
+											/>
+										)}
 									</View>
 								) : null}
 							</View>
@@ -420,6 +430,14 @@ const MediaQuickActionSheet = () => {
 									paddingTop: 6,
 								}}
 							>
+								{!!malData?.data?.data?.demographics?.[0] && (
+									<Chip
+										mode="outlined"
+										style={{ marginHorizontal: 8, marginVertical: 4 }}
+									>
+										{malData?.data?.data?.demographics?.[0]?.name}
+									</Chip>
+								)}
 								{payload.genres?.map((genre, idx) => (
 									<Chip
 										key={idx}
