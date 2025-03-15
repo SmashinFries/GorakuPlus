@@ -366,7 +366,7 @@ const MediaQuickActionSheet = () => {
 									(payload.episodes ?? 0) < 2
 										? ` ・ ${getMovieDuration(payload.duration)}`
 										: payload.status === MediaStatus.NotYetReleased
-											? ` ・ Unreleased`
+											? ``
 											: (payload.episodes ??
 												  payload.chapters ??
 												  payload.volumes)
@@ -378,6 +378,15 @@ const MediaQuickActionSheet = () => {
 																: 'Chapters'
 													}`
 												: ''}
+								</Text>
+								<Text
+									style={{
+										color: colors.onSurfaceVariant,
+										textTransform: 'capitalize',
+									}}
+								>
+									<Icon size={undefined} source={'card-text-outline'} />
+									{` ${payload.status?.replaceAll('_', ' ')}`}
 								</Text>
 								{payload.averageScore || payload.meanScore ? (
 									<View
