@@ -26,6 +26,7 @@ type ListFilterActions = {
 	updateListFilter: (filter: Partial<ListFilterState>) => void;
 	checkListNames: (type: MediaType, newNames: string[]) => void;
 	updateTagGenre: (value: string, type: 'tags' | 'genre') => void;
+	reset: () => void;
 	// clearListFilter: (type: ListFilterState) => void;
 };
 
@@ -102,6 +103,15 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 						[include_key]: [...include_list, value],
 					};
 				});
+			},
+			reset() {
+				set((state) => ({
+					...state,
+					genre_include: [],
+					genre_exclude: [],
+					tags_include: [],
+					tags_exclude: [],
+				}));
 			},
 		}),
 		{

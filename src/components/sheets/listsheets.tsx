@@ -1,5 +1,5 @@
 import React, { RefObject, useState } from 'react';
-import { Checkbox, Chip, List, Searchbar } from 'react-native-paper';
+import { Button, Checkbox, Chip, Divider, List, Searchbar } from 'react-native-paper';
 import { ListSortOptions, ListSortOptionsType } from '@/types/anilist';
 import { MediaListSort } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
@@ -312,8 +312,29 @@ export type ListFilterProps = {
 };
 
 export const ListFilterSheet = ({ sheetRef }: ListFilterProps) => {
+	const { reset } = useListFilterStore();
 	return (
-		<BottomSheetParent sheetRef={sheetRef} sizes={['auto', 'large']} scrollable>
+		<BottomSheetParent
+			sheetRef={sheetRef}
+			sizes={['auto', 'large']}
+			grabber={false}
+			header={
+				<>
+					<View
+						style={{
+							width: '100%',
+							padding: 8,
+							flexDirection: 'row',
+							justifyContent: 'flex-end',
+						}}
+					>
+						<Button onPress={reset}>Reset</Button>
+					</View>
+					<Divider />
+				</>
+			}
+			scrollable
+		>
 			<ListFilterSort />
 			<ListFilterGenre />
 			<ListFilterTags />
