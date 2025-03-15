@@ -822,12 +822,7 @@ const MediaFilters = ({
 								renderItem={({ item: site }) => (
 									<FilterCheckbox
 										key={idx}
-										label={
-											site.site +
-											(site.language
-												? `${getStreamingSiteEmoji(site.language)}`
-												: '')
-										}
+										label={site.site}
 										status={
 											((tempFilter.licensedBy_in as string[]) ?? []).includes(
 												site.site,
@@ -1080,6 +1075,7 @@ const MediaFilters = ({
 									onPress={() =>
 										updateTempMultiSelect(tempTag, 'tag_in', 'tag_not_in', true)
 									}
+									icon={'close'}
 								>
 									{tempTag}
 								</Chip>
