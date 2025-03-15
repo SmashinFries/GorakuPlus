@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
 	Button,
 	Checkbox,
@@ -11,10 +11,11 @@ import {
 	Searchbar,
 } from 'react-native-paper';
 import { DialogSelectDate } from './dropdown';
-import { FlatList, ScrollView, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import {
 	CharacterSearchQueryVariables,
-	MediaExternalLink,
+	ExternalLinkType,
+	LinkSourceCollectionQuery_AnimeExternalLinkSourceCollection_MediaExternalLink,
 	MediaFormat,
 	MediaSearchQueryVariables,
 	MediaSeason,
@@ -204,7 +205,7 @@ const MediaFilters = ({
 			toggleTagBlacklist: state.toggleTagBlacklist,
 		})),
 	);
-	const { genreData, tagData } = useCollectionStore(
+	const { genreData, tagData, animeSites, mangaSites } = useCollectionStore(
 		useShallow((state) => ({
 			genreData: state.genres,
 			tagData: state.tags,
@@ -213,25 +214,40 @@ const MediaFilters = ({
 		})),
 	);
 
-	const streamSites: { [key in string]: MediaExternalLink[] } = {};
-	// const sortedSites = (isAnime ? (animeSites ?? []) : (mangaSites ?? []))
-	// 	.sort((a, b) => {
-	// 		if (!a || !b) return 0;
-	// 		if (a.site < b.site) {
-	// 			return -1;
-	// 		}
-	// 		if (a.site > b.site) {
-	// 			return 1;
-	// 		}
-	// 		return 0;
-	// 	})
-	// 	.forEach(
-	// 		(site) =>
-	// 			site?.language &&
-	// 			(streamSites[site.language]
-	// 				? streamSites[site.language].push(site)
-	// 				: (streamSites[site.language] = [site])),
-	// 	);
+	const streamSites = useMemo(() => {
+		const links = (isAnime ? (animeSites ?? []) : (mangaSites ?? [])).sort((a, b) => {
+			if (!a || !b) return 0;
+			if (a.site < b.site) {
+				return -1;
+			}
+			if (a.site > b.site) {
+				return 1;
+			}
+			return 0;
+		});
+		const sites: {
+			[
+				key: string
+			]: LinkSourceCollectionQuery_AnimeExternalLinkSourceCollection_MediaExternalLink[];
+		} = {};
+		links.forEach((site) => {
+			if (site?.type !== ExternalLinkType.Streaming) return;
+			if (site?.language) {
+				if (sites?.[site.language]) {
+					sites[site.language].push(site);
+				} else {
+					sites[site.language] = [site];
+				}
+			} else if (site && !site?.language) {
+				if (sites?.['All']) {
+					sites['All'].push(site);
+				} else {
+					sites['All'] = [site];
+				}
+			}
+		});
+		return sites;
+	}, [animeSites, mangaSites, isAnime]);
 
 	const [tagSearch, setTagSearch] = useState('');
 
@@ -292,7 +308,7 @@ const MediaFilters = ({
 	}, [mediaSort, mediaFilter]);
 
 	return (
-		<>
+		<View style={{ paddingBottom: 80 }}>
 			<MaterialSwitchListItem
 				title={`Tag Blacklist`}
 				titleStyle={{ textTransform: 'capitalize' }}
@@ -790,11 +806,11 @@ const MediaFilters = ({
 				{Object.keys(streamSites).map((lang, idx) => (
 					<FilterSheetSection
 						key={idx}
-						title={
-							getStreamingSiteEmoji(lang === 'null' ? 'English' : lang) +
+						title={(
+							getStreamingSiteEmoji(lang === 'All' ? 'N/A' : lang) +
 							' ' +
-							(lang === 'null' ? 'English' : lang)
-						}
+							lang
+						).trimStart()}
 						nestedLevel={1}
 					>
 						{
@@ -1192,7 +1208,7 @@ const MediaFilters = ({
 					)}
 			</FilterSheetSection>
 			{/* <TagSelection openTagDialog={() => setTagDialogVis(true)} /> */}
-		</>
+		</View>
 	);
 };
 
@@ -1386,7 +1402,6 @@ const StudioFilters = ({ tempStudioSort, setTempStudioSort }: StudioFilterProps)
 
 export const FilterSheet = ({ sheetRef }: { sheetRef: React.RefObject<TrueSheet> }) => {
 	const searchType = useSearchStore(useShallow((state) => state.searchType));
-	const scrollSheet = useRef<ScrollView>(null);
 
 	// Anime / Manga
 	const { mediaFilter, mediaSort } = useSearchStore(
@@ -1525,50 +1540,49 @@ export const FilterSheet = ({ sheetRef }: { sheetRef: React.RefObject<TrueSheet>
 					</>
 				)
 			}
-			scrollRef={scrollSheet}
+			scrollable
+			// scrollRef={scrollSheet}
 			// scrollable
 		>
 			{/* Keyboard causes sheet to reopen; ruining UX. This temp fix isn't great but better than without imo. */}
 			{/* <KeyboardAvoidingView behavior="padding"  keyboardVerticalOffset={100}> */}
-			<ScrollView ref={scrollSheet} nestedScrollEnabled>
-				<MediaSelector />
-				{(searchType === MediaType.Anime || searchType === MediaType.Manga) && (
-					<MediaFilters
-						mediaType={searchType}
-						tempFilter={tempMediaFilter}
-						tempSort={tempMediaSort}
-						setTempSort={setTempMediaSort}
-						setTempFilter={setTempMediaFilter}
-					/>
-				)}
-				{(searchType === 'CHARACTER' || searchType === 'STAFF') && (
-					<CharacterStaffFilters
-						type={searchType}
-						tempCharFilter={tempCharFilter}
-						setTempCharFilter={setTempCharFilter}
-						tempStaffFilter={tempStaffFilter}
-						setTempStaffFilter={setTempStaffFilter}
-						tempCharSort={tempCharSort}
-						tempStaffSort={tempStaffSort}
-						setTempCharSort={setTempCharSort}
-						setTempStaffSort={setTempStaffSort}
-					/>
-				)}
-				{searchType === 'STUDIO' && (
-					<StudioFilters
-						tempStudioSort={tempStudioSort}
-						setTempStudioSort={setTempStudioSort}
-					/>
-				)}
-				{searchType === 'USER' && (
-					<UserFilters
-						tempUserFilter={tempUserFilter}
-						tempUserSort={tempUserSort}
-						setTempUserFilter={setTempUserFilter}
-						setTempUserSort={setTempUserSort}
-					/>
-				)}
-			</ScrollView>
+			<MediaSelector />
+			{(searchType === MediaType.Anime || searchType === MediaType.Manga) && (
+				<MediaFilters
+					mediaType={searchType}
+					tempFilter={tempMediaFilter}
+					tempSort={tempMediaSort}
+					setTempSort={setTempMediaSort}
+					setTempFilter={setTempMediaFilter}
+				/>
+			)}
+			{(searchType === 'CHARACTER' || searchType === 'STAFF') && (
+				<CharacterStaffFilters
+					type={searchType}
+					tempCharFilter={tempCharFilter}
+					setTempCharFilter={setTempCharFilter}
+					tempStaffFilter={tempStaffFilter}
+					setTempStaffFilter={setTempStaffFilter}
+					tempCharSort={tempCharSort}
+					tempStaffSort={tempStaffSort}
+					setTempCharSort={setTempCharSort}
+					setTempStaffSort={setTempStaffSort}
+				/>
+			)}
+			{searchType === 'STUDIO' && (
+				<StudioFilters
+					tempStudioSort={tempStudioSort}
+					setTempStudioSort={setTempStudioSort}
+				/>
+			)}
+			{searchType === 'USER' && (
+				<UserFilters
+					tempUserFilter={tempUserFilter}
+					tempUserSort={tempUserSort}
+					setTempUserFilter={setTempUserFilter}
+					setTempUserSort={setTempUserSort}
+				/>
+			)}
 			{/* </KeyboardAvoidingView> */}
 		</BottomSheetParent>
 	);
