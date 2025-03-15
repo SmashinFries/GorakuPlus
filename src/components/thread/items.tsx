@@ -1,5 +1,6 @@
 import {
 	LikeableType,
+	ListActivity,
 	Thread,
 	ThreadCategory,
 	ThreadComment,
@@ -75,7 +76,7 @@ export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => 
 				</Pressable>
 			</View>
 			<View>
-				<Text>{getTimeUntil(createdAt, 'createdAt')}</Text>
+				<Text variant="labelSmall">{getTimeUntil(createdAt, 'createdAt')}</Text>
 			</View>
 		</View>
 	);
@@ -100,10 +101,10 @@ export const ThreadItemFooter = ({
 	categories?: ThreadCategory[];
 	viewCount?: number;
 	likeCount?: number;
-	isSubscribed?: boolean;
-	isLiked?: boolean;
-	isReply: boolean;
-	replies?: ThreadComment[];
+	isSubscribed?: ListActivity['isSubscribed'];
+	isLiked?: ListActivity['isLiked'];
+	isReply: boolean | null;
+	replies?: ListActivity['replies'];
 	isMain?: boolean;
 	isViewerActivity?: boolean;
 	onScreenshot: () => Promise<void>;
@@ -264,7 +265,7 @@ export const ThreadItemFooter = ({
 
 type ThreadItemBodyProps = {
 	isHtml?: boolean;
-	body: string;
+	body: string | null | undefined;
 	coverImage?: string;
 	onImagePress?: () => void;
 };
@@ -326,10 +327,11 @@ export const ThreadItem = ({
 	onImagePress,
 	isHtml = true,
 	isViewerActivity = false,
+	showDivider = false,
 }: {
 	threadId: number;
 	commentId?: number;
-	body: string;
+	body: string | null | undefined;
 	isHtml?: boolean;
 	categories?: ThreadCategory[];
 	likeCount: number;
@@ -338,14 +340,15 @@ export const ThreadItem = ({
 		| { id: number; name?: string | null; avatar?: { large?: string | null } | null }
 		| ThreadComment['user'];
 	createdAt: number;
-	isSubscribed?: boolean;
-	isLiked?: boolean;
-	isReply: boolean;
-	replies?: ThreadComment[];
+	isSubscribed?: ListActivity['isSubscribed'];
+	isLiked?: ListActivity['isLiked'];
+	isReply: boolean | null;
+	replies?: ListActivity['replies'];
 	isMain?: boolean;
 	coverImage?: string;
 	isViewerActivity?: boolean;
 	onImagePress?: () => void;
+	showDivider?: boolean;
 }) => {
 	const { viewshotRef, onScreenshot } = useScreenshot();
 	const { colors } = useAppTheme();
@@ -378,7 +381,7 @@ export const ThreadItem = ({
 				isMain={isMain}
 				onScreenshot={onScreenshot}
 			/>
-			{isReply && <Divider style={{ width: '95%', alignSelf: 'center' }} />}
+			{(isReply || showDivider) && <Divider style={{ width: '95%', alignSelf: 'center' }} />}
 			{/* Images dont have enough time to render when capturing :/ */}
 			{/* <ViewShot
 				ref={viewshotRef}

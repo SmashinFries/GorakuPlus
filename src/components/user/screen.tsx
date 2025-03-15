@@ -133,7 +133,7 @@ export const UserScreen = ({
 
 	return (
 		<View style={{ height: '100%', width: '100%' }}>
-			{(userDataQuery.isFetching || userOverviewQuery.isFetching) && (
+			{(userDataQuery.isLoading || userOverviewQuery.isLoading) && (
 				<Animated.View
 					exiting={FadeOut}
 					style={{
@@ -148,8 +148,8 @@ export const UserScreen = ({
 			)}
 			{userDataQuery.data &&
 				userOverviewQuery.data &&
-				userDataQuery.isFetched &&
-				userOverviewQuery.isFetched && (
+				!userDataQuery.isLoading &&
+				!userOverviewQuery.isLoading && (
 					<FadeHeaderProvider
 						title={isViewer && viewerName ? viewerName : (username ?? '')}
 						BgImage={
