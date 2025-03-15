@@ -11,7 +11,7 @@ const nsfwLevelOrder = [
 
 export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
 	const { blurNSFW, blurNSFWLevel } = useSettingsStore();
-	const [isBlur, setIsBlur] = useState<boolean>(blurNSFW);
+	const [isBlurred, setIsBlurred] = useState<boolean>(!!blurNSFW);
 
 	const userNsfwLevel = useMemo(
 		() => nsfwLevelOrder.findIndex((value) => value === blurNSFWLevel),
@@ -23,15 +23,15 @@ export const useNsfwBlur = (nsfwLevel: DanbooruRating | undefined) => {
 	);
 
 	const blurAmount = useMemo(
-		() => (userNsfwLevel < imageNsfwLevel && isBlur && blurNSFW ? 200 : 0),
-		[userNsfwLevel, imageNsfwLevel, isBlur],
+		() => (userNsfwLevel < imageNsfwLevel && isBlurred && blurNSFW ? 200 : 0),
+		[userNsfwLevel, imageNsfwLevel, isBlurred],
 	);
 
-	const toggleBlur = () => setIsBlur((prev) => !prev);
+	const toggleBlur = () => setIsBlurred((prev) => !prev);
 
-	const resetBlur = () => setIsBlur(blurNSFW);
+	const resetBlur = () => setIsBlurred(!!blurNSFW);
 
-	return { blurAmount, toggleBlur, resetBlur };
+	return { blurAmount, isBlurred, toggleBlur, resetBlur };
 };
 
 export const useBlur = (blurStrength = 200, initialBlur = true) => {
