@@ -196,7 +196,6 @@ export const updateMediaSearchCache = (queryClient: QueryClient, result: SaveMed
 			? ({
 				...oldData,
 				pages: oldData.pages.map((page) => {
-					console.log(page);
 					return {
 						...page,
 						Page: {
