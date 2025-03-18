@@ -875,7 +875,7 @@ export const DanbooruImageCard = ({
 	};
 
 	const onPress = () => {
-		if (isBlurred) {
+		if (isBlurred && blurAmount > 0) {
 			toggleBlur();
 		} else {
 			onNavigate(item.id);
