@@ -1,4 +1,4 @@
-import { useCharacterDetailsQuery, useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
+import { useCharacterDetailsQuery } from '@/api/anilist/__genereated__/gql';
 import { usePostsSearch, useTagsSearchQuery } from '@/api/danbooru/danbooru';
 import { useMatchStore } from '@/store/matchStore';
 import { useEffect, useState } from 'react';

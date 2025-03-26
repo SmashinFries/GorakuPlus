@@ -1,4 +1,4 @@
-import { Button, List, Menu, Portal, Text, TextInput, useTheme } from 'react-native-paper';
+import { Button, List, Menu, Portal, Text, TextInput } from 'react-native-paper';
 import { useState } from 'react';
 import { convertDate, getDatetoFuzzy, getFuzzytoDate } from '@/utils';
 import { Pressable, View } from 'react-native';
@@ -58,15 +58,16 @@ type DatePopupProps = {
 };
 export const DatePopup = ({ onSelect, containerHeight, title, value }: DatePopupProps) => {
 	const [isVisible, setIsVisible] = useState(false);
-	const [date, setDate] = useState<Date>(
-		value?.day && value?.month && value?.year ? getFuzzytoDate(value) : new Date(),
-	);
+	const [date, setDate] = useState<Date>(() => {
+		const fuzzyDate = value?.day && value?.month && value?.year ? getFuzzytoDate(value) : null;
+		return fuzzyDate ?? new Date();
+	});
 	const { colors } = useAppTheme();
 
 	const onChange = (calendarDate: CalendarDate) => {
 		const currentDate = calendarDate;
-		setDate(currentDate);
-		const newFuzzy = getDatetoFuzzy(currentDate);
+		setDate(currentDate as Date);
+		const newFuzzy = getDatetoFuzzy(currentDate as Date);
 		onSelect(newFuzzy);
 	};
 
@@ -126,7 +127,9 @@ export const ProgressDropDown = ({
 				keyboardType="number-pad"
 				mode="outlined"
 				dense
-				onChangeText={(txt) => onSelect(Number(txt) > total ? total : Number(txt))}
+				onChangeText={(txt) =>
+					onSelect(Number(txt) > (total ?? 0) ? (total ?? 0) : Number(txt))
+				}
 				value={`${value?.toLocaleString()}`}
 				style={{
 					width: disableSlider ? '100%' : undefined,

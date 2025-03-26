@@ -43,9 +43,9 @@ export const useScrollHandler = (headerHeight?: number, scrollToTopTravelDistanc
 		onMomentumBegin: (e) => {
 			'worklet';
 			// How to stop scrollToTop button from showing before distance???
-			if (e.velocity.y > 0 && e.contentOffset.y > (scrollToTopTravelDistance ?? 500)) {
+			if ((e.velocity?.y ?? 0) > 0 && e.contentOffset.y > (scrollToTopTravelDistance ?? 500)) {
 				isScrollingUp.value = true;
-			} else if (e.velocity.y <= 0) {
+			} else if ((e.velocity?.y ?? 0) <= 0) {
 				isScrollingUp.value = false;
 			}
 		},

@@ -42,29 +42,6 @@ export const MANGA_DANGER: MediaSearchQueryVariables = {
 	duration_lesser: undefined,
 };
 
-export const COUNTRY_OPTIONS = {
-	ANY: {
-		name: '🌏 Global',
-		flag: '🌏',
-	},
-	JP: {
-		name: '🇯🇵 Japan',
-		flag: '🇯🇵',
-	},
-	KR: {
-		name: '🇰🇷 South Korea',
-		flag: '🇰🇷',
-	},
-	CN: {
-		name: '🇨🇳 China',
-		flag: '🇨🇳',
-	},
-	TW: {
-		name: '🇹🇼 Taiwan',
-		flag: '🇹🇼',
-	},
-};
-
 export type AvailableSorts =
 	| 'SEARCH_MATCH'
 	| 'TRENDING'

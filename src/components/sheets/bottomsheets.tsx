@@ -7,7 +7,6 @@ import {
 	MainMetaFragment,
 	MediaListEntryMetaFragment,
 	MediaStatus,
-	MediaType,
 	ReviewsQuery_Page_Page_reviews_Review,
 	SaveMediaListItemMutationVariables,
 	ScoreFormat,
@@ -30,7 +29,6 @@ import {
 	Surface,
 	Text,
 } from 'react-native-paper';
-import { MediaCard } from '../cards';
 import { GorakuActivityIndicator } from '../loading';
 import { Accordion, AccordionProps } from '../animations';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
@@ -39,7 +37,6 @@ import { MaterialSwitchListItem } from '../switch';
 import { useListFilterStore } from '@/store/listStore';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
-import { useColumns } from '@/hooks/useColumns';
 import { useGetSearch, usePostSearch } from '@/api/tracemoe/tracemoe';
 import { Result, SearchBody } from '@/api/tracemoe/models';
 import { ImageSearchItem } from '../search/media';
@@ -54,9 +51,6 @@ import { AnimeFull } from '@/api/jikan/models';
 import { useShallow } from 'zustand/react/shallow';
 import * as Haptics from 'expo-haptics';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { useGetSearchManga } from '@/api/mangadex/mangadexExtended';
-import { Manga } from '@/api/mangadex/models';
-import { getGetChapterQueryOptions } from '@/api/mangadex/mangadex';
 import { useMatchStore } from '@/store/matchStore';
 import {
 	ReleaseSearchResponseV1ResultsItem,
@@ -755,127 +749,6 @@ export type ListEntrySheetProps = {
 	scoreFormat: ScoreFormat;
 	updateEntry: (variables: SaveMediaListItemMutationVariables) => void;
 	media?: MainMetaFragment;
-};
-
-export type MangaDexSearchProps = {
-	sheetRef: React.RefObject<TrueSheet>;
-	aniId?: number;
-	search?: string;
-};
-export const MangaDexSearchSheet = ({ sheetRef, aniId, search }: MangaDexSearchProps) => {
-	const sheet = useRef<TrueSheet>(null);
-	const { addMangaDexID } = useMatchStore(
-		useShallow((state) => ({ addMangaDexID: state.addMangaDexID })),
-	);
-	const queryClient = useQueryClient();
-	const { data, isFetching } = useGetSearchManga(
-		{
-			title: search,
-			limit: 10,
-			'includes[]': ['cover_art'],
-			order: { relevance: 'desc' },
-		},
-		{ enabled: !!search },
-	);
-
-	const { columns, itemWidth } = useColumns('search');
-
-	const onSelection = async (mangaId: string) => {
-		const result = await queryClient.fetchQuery({
-			...getGetChapterQueryOptions({
-				manga: mangaId,
-				'translatedLanguage[]': ['en'],
-				limit: 1,
-				order: { chapter: 'asc' },
-			}),
-		});
-		aniId && addMangaDexID(aniId, mangaId, result?.data?.data?.[0]?.id);
-		sheet.current?.dismiss();
-	};
-
-	const MediaRenderItem = ({ item }: { item: Manga }) => {
-		const englishTitle = item?.attributes?.title?.en;
-		const nativeTitle =
-			item?.attributes?.altTitles?.find(
-				(title) => title?.[item?.attributes?.originalLanguage as string],
-			)?.[item?.attributes?.originalLanguage as string] ?? englishTitle;
-		// `${item?.attributes?.originalLanguage}-ro`
-		const romajiTitle =
-			item?.attributes?.altTitles?.find(
-				(title) => title?.[`${item?.attributes?.originalLanguage}-ro`],
-			)?.[`${item?.attributes?.originalLanguage}-ro`] ?? englishTitle;
-
-		const coverFilename = item?.relationships?.find((relation) => relation.type === 'cover_art')
-			?.attributes?.fileName;
-
-		return (
-			<View style={{ width: itemWidth }}>
-				<View
-					style={{
-						// flex: 1,
-						alignItems: 'center',
-						justifyContent: 'flex-start',
-						marginVertical: 10,
-						marginHorizontal: 5,
-					}}
-				>
-					<MediaCard
-						id={item.id as any}
-						type={MediaType.Manga}
-						isFavourite={false}
-						title={{
-							english: englishTitle,
-							romaji: romajiTitle,
-							native: nativeTitle,
-						}}
-						coverImage={{
-							// extraLarge: `https://uploads.mangadex.org/covers/${item?.id}/${coverFilename}`,
-							extraLarge: coverFilename
-								? `https://uploads.mangadex.org/covers/${item?.id}/${coverFilename}`
-								: 'https://mangadex.org/covers/f1aa643f-6921-4eeb-b1c9-a1619e7f07c0/a34a2ff4-309c-4de6-ad42-ef08583ad3e5.jpg',
-						}}
-						fitToParent
-						isMangaDex
-						navigate={() => item.id && onSelection(item.id)}
-					/>
-				</View>
-			</View>
-		);
-	};
-
-	return (
-		<BottomSheetParent sheetRef={sheetRef}>
-			{isFetching ? (
-				<View
-					style={{
-						height: 100,
-						width: '100%',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
-				>
-					<GorakuActivityIndicator />
-				</View>
-			) : (
-				<FlatList
-					key={columns}
-					data={data?.data?.data}
-					keyExtractor={(_item, idx) => idx.toString()}
-					numColumns={columns}
-					centerContent
-					ListHeaderComponent={() => (
-						<View style={{ marginBottom: 10, paddingHorizontal: 10 }}>
-							<Text variant="headlineMedium" style={{ textTransform: 'capitalize' }}>
-								MangaDex Search
-							</Text>
-							<Divider />
-						</View>
-					)}
-					renderItem={(props) => <MediaRenderItem {...props} />}
-				/>
-			)}
-		</BottomSheetParent>
-	);
 };
 
 export type MangaUpdatesSearchProps = {

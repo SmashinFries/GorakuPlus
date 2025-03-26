@@ -1,10 +1,11 @@
 import {
 	GetNotificationsQuery,
+	GetNotificationsQuery_Page_Page_notifications,
 	useInfiniteGetNotificationsQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { NotifItem } from '@/components/notifications/item';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import { View, useWindowDimensions } from 'react-native';
 
@@ -20,16 +21,19 @@ const NotificationPage = () => {
 			{
 				initialPageParam: 1,
 				getNextPageParam(lastPage) {
-					if (lastPage.Page?.pageInfo.hasNextPage) {
+					if (lastPage.Page?.pageInfo?.hasNextPage) {
 						return {
-							page: lastPage.Page?.pageInfo.currentPage + 1,
+							page: (lastPage.Page?.pageInfo?.currentPage ?? 0) + 1,
 						};
 					}
 				},
 			},
 		);
 
-	const RenderItem = ({ item }: { item: GetNotificationsQuery['Page']['notifications'][0] }) => {
+	const RenderItem = ({
+		item,
+	}: ListRenderItemInfo<GetNotificationsQuery_Page_Page_notifications | null | undefined>) => {
+		if (!item) return null;
 		return (
 			<NotifItem
 				item={item}
@@ -59,7 +63,7 @@ const NotificationPage = () => {
 				<FlashList
 					data={mergedData}
 					renderItem={RenderItem}
-					keyExtractor={(item) => item.id.toString()}
+					keyExtractor={(item, idx) => idx.toString()}
 					estimatedItemSize={20}
 					contentContainerStyle={{ paddingVertical: 10 }}
 					onEndReached={() => hasNextPage && fetchNextPage()}

@@ -1,17 +1,16 @@
-import { Dialog, Button, Text, ActivityIndicator, useTheme, TextInput } from 'react-native-paper';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Dialog, Button, Text, ActivityIndicator, TextInput } from 'react-native-paper';
+import MaterialCommunityIcon from '@react-native-vector-icons/material-design-icons';
 import { BasicDialogProps } from '@/types';
 import { Platform, View } from 'react-native';
 import { useBarcode } from '@/hooks/explore/useBarcode';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useCallback, useEffect, useState } from 'react';
-import { FlashList } from '@shopify/flash-list';
+import { useEffect, useState } from 'react';
+import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { MediaCard } from './cards';
 import { copyToClipboard } from '@/utils';
 import { NumberPicker, NumberPickerProps } from './picker';
 import { useCameraPermissions, CameraView } from 'expo-camera';
-import { scoreToIndex } from '@/utils/scores';
-import { MediaSearchQuery, MediaType } from '@/api/anilist/__genereated__/gql';
+import { MediaSearchQuery_Page_Page_media_Media } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { useAuthStore } from '@/store/authStore';
 import { router } from 'expo-router';
@@ -31,41 +30,41 @@ export const BarcodeScanDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 		onDismiss();
 	};
 
-	const RenderItem = useCallback(
-		({ item }: { item: MediaSearchQuery['Page']['media'][0] }) => {
-			return (
-				<View
+	const RenderItem = ({
+		item,
+	}: ListRenderItemInfo<MediaSearchQuery_Page_Page_media_Media | null>) => {
+		if (!item) return null;
+		return (
+			<View
+				style={{
+					flex: 1,
+					width: '100%',
+					alignItems: 'center',
+					marginVertical: 10,
+					marginHorizontal: 10,
+				}}
+			>
+				<MediaCard
+					{...item}
+					navigate={() => {
+						closeDialog();
+						router.navigate(`/manga/${item.id}`);
+					}}
+					fitToParent
+				/>
+				<Text
+					variant="labelMedium"
 					style={{
-						flex: 1,
-						width: '100%',
-						alignItems: 'center',
-						marginVertical: 10,
-						marginHorizontal: 10,
+						textTransform: 'capitalize',
+						textAlign: 'center',
+						color: colors.onSurfaceVariant,
 					}}
 				>
-					<MediaCard
-						{...item}
-						navigate={() => {
-							closeDialog();
-							router.navigate(`/manga/${item.id}`);
-						}}
-						fitToParent
-					/>
-					<Text
-						variant="labelMedium"
-						style={{
-							textTransform: 'capitalize',
-							textAlign: 'center',
-							color: colors.onSurfaceVariant,
-						}}
-					>
-						{item?.format}
-					</Text>
-				</View>
-			);
-		},
-		[dialog_width],
-	);
+					{item?.format}
+				</Text>
+			</View>
+		);
+	};
 
 	useEffect(() => {
 		if (visible) {
@@ -115,7 +114,7 @@ export const BarcodeScanDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 							<FlashList
 								key={1}
 								data={aniData?.Page?.media}
-								keyExtractor={(item) => item?.id.toString()}
+								keyExtractor={(item, idx) => idx.toString()}
 								renderItem={RenderItem}
 								estimatedItemSize={100}
 								numColumns={2}
@@ -185,7 +184,7 @@ export const NumberPickDialog = ({
 				</Button>
 				<Button
 					onPress={() => {
-						onChange(tempVal);
+						onChange?.(tempVal);
 						onDismiss();
 					}}
 				>
@@ -207,7 +206,7 @@ export const SauceNaoAuthDialog = ({ visible, onDismiss }: BasicDialogProps) => 
 	};
 
 	useEffect(() => {
-		setTempApiKey(api_key);
+		api_key && setTempApiKey(api_key);
 	}, [visible]);
 
 	return (
@@ -276,7 +275,7 @@ export const WaifuItTokenDialog = ({ visible, onDismiss }: BasicDialogProps) => 
 					mode="outlined"
 					label={'Token'}
 					placeholder="Enter token here..."
-					value={inputToken}
+					value={inputToken ?? ''}
 					onChangeText={(txt) => setInputToken(txt)}
 				/>
 			</Dialog.Content>

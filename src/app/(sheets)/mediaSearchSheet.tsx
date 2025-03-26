@@ -125,6 +125,7 @@ const MediaSearchSheet = () => {
 							<Divider />
 						</View>
 					)}
+					nestedScrollEnabled
 					renderItem={(props) => <MediaRenderItem {...props} />}
 					onEndReached={() => hasNextPage && fetchNextPage()}
 				/>

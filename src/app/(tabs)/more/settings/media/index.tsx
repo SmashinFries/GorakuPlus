@@ -76,7 +76,7 @@ const MediaSettingsPage = () => {
 
 	return (
 		<View>
-			<ScrollView>
+			<ScrollView contentContainerStyle={{ paddingBottom: 12 }}>
 				<ListSubheader title="Tab Order" />
 				<List.Item
 					title={'Explore Tabs'}

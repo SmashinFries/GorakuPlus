@@ -85,7 +85,7 @@ export const useAnilistAuth = () => {
 							'Rewatching',
 							'Paused',
 							'Dropped',
-							...(user?.Viewer?.mediaListOptions?.animeList?.customLists ?? []),
+							...(user?.Viewer?.mediaListOptions?.animeList?.customLists?.filter((list): list is string => list !== null) ?? []),
 						],
 						mangaTabOrder: [
 							'Reading',
@@ -94,7 +94,7 @@ export const useAnilistAuth = () => {
 							'Rereading',
 							'Paused',
 							'Dropped',
-							...(user?.Viewer?.mediaListOptions?.mangaList?.customLists ?? []),
+							...(user?.Viewer?.mediaListOptions?.mangaList?.customLists?.filter((list): list is string => list !== null) ?? []),
 						],
 					});
 					await invalidateQueries();
