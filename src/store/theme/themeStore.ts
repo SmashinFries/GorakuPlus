@@ -43,18 +43,18 @@ export const useThemeStore = create<ThemeState & ThemeAction>()(
 					// })
 					null,
 			setThemeDark(isDark) {
-				switchTheme({
-					switchThemeFunction: () => {
-						set({
-							isDark,
-						});
-					},
-					animationConfig: {
-						type: 'fade',
-						duration: 900,
-					},
-				})
-				// set({ isDark: isDark });
+				// switchTheme({
+				// 	switchThemeFunction: () => {
+				// 		set({
+				// 			isDark,
+				// 		});
+				// 	},
+				// 	animationConfig: {
+				// 		type: 'fade',
+				// 		duration: 900,
+				// 	},
+				// })
+				set({ isDark: isDark });
 			},
 			setThemeAMOLED(isAMOLED) {
 				set({ isAMOLED });
