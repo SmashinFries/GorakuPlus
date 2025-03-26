@@ -919,22 +919,42 @@ const HeaderStyles = StyleSheet.create({
 export const ListHeader = ({
 	title = 'List',
 	isViewer = true,
+	currentType,
 	openFilter = () => null,
 }: {
 	title?: string;
 	isViewer?: boolean;
+	currentType: MediaType;
 	openFilter?: () => void;
-	onRefresh: () => void;
 }) => {
-	const { query, genre_include, genre_exclude, tags_include, tags_exclude, updateListFilter } =
-		useListFilterStore();
+	const { updateListFilter, ...listParams } = useListFilterStore();
 	const { colors } = useAppTheme();
 	const [isOpen, setIsOpen] = useState(false);
 
 	const total_filters = useMemo(
 		() =>
-			tags_include.length + tags_exclude.length + genre_include.length + genre_exclude.length,
-		[tags_include, tags_exclude, genre_include, genre_exclude],
+			listParams?.tags_include.length +
+			listParams?.tags_exclude.length +
+			listParams?.genre_include.length +
+			listParams?.genre_exclude.length +
+			listParams?.[currentType === MediaType.Anime ? 'anime_format_in' : 'manga_format_in']
+				.length +
+			listParams?.[
+				currentType === MediaType.Anime ? 'anime_format_not_in' : 'manga_format_not_in'
+			].length +
+			(listParams?.countryOfOrigin ? 1 : 0),
+		[
+			listParams?.tags_include,
+			listParams?.tags_exclude,
+			listParams?.genre_include,
+			listParams?.genre_exclude,
+			listParams?.anime_format_in,
+			listParams?.anime_format_not_in,
+			listParams?.manga_format_in,
+			listParams?.manga_format_not_in,
+			listParams?.countryOfOrigin,
+			currentType,
+		],
 	);
 
 	useFocusEffect(() => {
@@ -973,7 +993,7 @@ export const ListHeader = ({
 				>
 					{/* <Appbar.BackAction onPress={() => setIsOpen(false)} /> */}
 					<Searchbar
-						value={query ?? ''}
+						value={listParams?.query ?? ''}
 						onChangeText={(txt) => {
 							updateListFilter?.({ query: txt });
 						}}
@@ -1019,7 +1039,13 @@ export const ListHeader = ({
 	);
 };
 
-export const FavoritesHeader = ({ navigation, options, route }: NativeStackHeaderProps) => {
+export const FavoritesHeader = ({
+	navigation,
+	options,
+	route,
+	isMediaRoute,
+	onFilterOpen,
+}: NativeStackHeaderProps & { isMediaRoute: boolean; onFilterOpen: () => void }) => {
 	const { query, updateFilter } = useFavoritesFilterStore();
 	const [isOpen, setIsOpen] = useState(false);
 	const title = getHeaderTitle(options, route.name);
@@ -1063,6 +1089,8 @@ export const FavoritesHeader = ({ navigation, options, route }: NativeStackHeade
 						style={{ width: '100%', backgroundColor: 'transparent' }}
 						placeholder={'Search favorites...'}
 						underlineColor="transparent"
+						underlineColorAndroid={'transparent'}
+						activeUnderlineColor="transparent"
 						// mode="flat"
 					/>
 				</Animated.View>
@@ -1079,6 +1107,7 @@ export const FavoritesHeader = ({ navigation, options, route }: NativeStackHeade
 					})
 				}
 			/>
+			{isMediaRoute && <Appbar.Action icon="filter-variant" onPress={onFilterOpen} />}
 		</Appbar.Header>
 	);
 };
