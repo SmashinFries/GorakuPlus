@@ -58,7 +58,7 @@ TaskManager.defineTask(ANILIST_NOTIF_BF_ID, async () => {
 });
 
 SplashScreen.setOptions({
-	duration: 1000,
+	duration: 600,
 	fade: true,
 });
 SplashScreen.preventAutoHideAsync();
