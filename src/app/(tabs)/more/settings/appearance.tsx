@@ -5,7 +5,7 @@ import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { availableThemes, themeOptions, ThemeOptions, useAppTheme } from '@/store/theme/themes';
-import { ThemeState, useThemeStore } from '@/store/theme/themeStore';
+import { useThemeStore } from '@/store/theme/themeStore';
 import React from 'react';
 import { useState } from 'react';
 import { FlatList, Pressable } from 'react-native';
@@ -38,23 +38,26 @@ const AppearancePage = () => {
 	const { mode, isDark, isAMOLED, setThemeAMOLED, setThemeDark, setThemeMode } = useThemeStore();
 	const {
 		btmTabLabels,
-		btmTabShifting,
+		btmTabHaptics,
 		navAnimation,
 		interaction3D,
 		autoRotation,
 		allowSensorMotion,
 		allowBgParticles,
 		setSettings,
+		toggle,
 	} = useSettingsStore(
 		useShallow((state) => ({
 			btmTabLabels: state.btmTabLabels,
 			btmTabShifting: state.btmTabShifting,
+			btmTabHaptics: state.btmTabHaptics,
 			navAnimation: state.navAnimation,
 			interaction3D: state.interaction3D,
 			autoRotation: state.autoRotation,
 			allowSensorMotion: state.allowSensorMotion,
 			allowBgParticles: state.allowBgParticles,
 			setSettings: state.setSettings,
+			toggle: state.toggle,
 		})),
 	);
 
@@ -63,26 +66,6 @@ const AppearancePage = () => {
 	const [showMTCustomizer, setShowMTCustomizer] = useState(false);
 
 	const STACK_ANIMS = Platform.OS === 'android' ? STACK_ANIMS_ANDROID : STACK_ANIMS_IOS;
-
-	const onBtmTabLabelChange = () => {
-		setSettings({ btmTabLabels: !btmTabLabels });
-	};
-
-	const onBtmTabShiftingChange = () => {
-		setSettings({ btmTabShifting: !btmTabShifting });
-	};
-
-	const onEnableInteraction3DChange = () => {
-		setSettings({ interaction3D: !interaction3D });
-	};
-
-	const onAutoRotationChange = () => {
-		setSettings({ autoRotation: !autoRotation });
-	};
-
-	const onAllowSensorMotionChange = () => {
-		setSettings({ allowSensorMotion: !allowSensorMotion });
-	};
 
 	return (
 		<>
@@ -172,20 +155,27 @@ const AppearancePage = () => {
 					<MaterialSwitchListItem
 						title={'Bottom Tab Labels'}
 						description={'Show labels on bottom tab bar'}
-						onPress={onBtmTabLabelChange}
+						onPress={() => toggle('btmTabLabels')}
 						selected={!!btmTabLabels}
+						fluid
+					/>
+					<MaterialSwitchListItem
+						title={'Bottom Tab Haptics'}
+						description="Haptic feedback on press"
+						onPress={() => toggle('btmTabHaptics')}
+						selected={!!btmTabHaptics}
 						fluid
 					/>
 				</List.Section>
 				<List.Section>
 					<ListSubheader title="Animations" />
-					<MaterialSwitchListItem
+					{/* <MaterialSwitchListItem
 						title={'Bottom Tab Shifting'}
 						description={'Enable labels to see the effect'}
 						onPress={onBtmTabShiftingChange}
 						selected={!!btmTabShifting}
 						fluid
-					/>
+					/> */}
 					<MaterialSwitchListItem
 						title={'Background Particles'}
 						description={'Goraku particles float in the background!'}
@@ -241,14 +231,14 @@ const AppearancePage = () => {
 						description={
 							'Allows 3D interaction for certain things. Pointless but cool.'
 						}
-						onPress={onEnableInteraction3DChange}
+						onPress={() => toggle('interaction3D')}
 						selected={!!interaction3D}
 						fluid
 					/>
 					<MaterialSwitchListItem
 						title={'Auto Rotation'}
 						description={'3D Interactions must be enabled for this to take effect.'}
-						onPress={onAutoRotationChange}
+						onPress={() => toggle('autoRotation')}
 						selected={interaction3D ? !!autoRotation : false}
 						disabled={!interaction3D}
 						fluid
@@ -258,7 +248,7 @@ const AppearancePage = () => {
 						description={
 							'Enables a parallax motion effect for the media banner image using the device rotation'
 						}
-						onPress={onAllowSensorMotionChange}
+						onPress={() => toggle('allowSensorMotion')}
 						selected={!!allowSensorMotion}
 						fluid
 					/>
