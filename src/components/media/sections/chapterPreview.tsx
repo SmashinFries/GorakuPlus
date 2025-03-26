@@ -2,20 +2,18 @@ import { useGetAtHomeServerChapterId, useGetChapter } from '@/api/mangadex/manga
 import { useGetSearchManga } from '@/api/mangadex/mangadexExtended';
 import { Accordion } from '@/components/animations';
 import { ImageViewer } from '@/components/imageViewer';
-import { MangaDexSearchProps, MangaDexSearchSheet } from '@/components/sheets/bottomsheets';
 import { useMatchStore } from '@/store/matchStore';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
 import { Button, Portal } from 'react-native-paper';
 
 export const ChapterPreview = ({ aniId, title }: { aniId: number; title: string }) => {
-	const sheetRef = useRef<TrueSheet>(null);
-	const [sheetParams, setSheetParams] = useState<Omit<MangaDexSearchProps, 'sheetRef'> | null>(
-		null,
-	);
+	// const [sheetParams, setSheetParams] = useState<Omit<MangaDexSearchProps, 'sheetRef'> | null>(
+	// 	null,
+	// );
 	const { mangadex: mangadexDB, isMangaDexEnabled, addMangaDexID } = useMatchStore();
 	const currentImageIndex = useRef(0);
 
@@ -39,7 +37,7 @@ export const ChapterPreview = ({ aniId, title }: { aniId: number; title: string 
 		},
 	);
 	const { data: pagesData } = useGetAtHomeServerChapterId(
-		mangadexDB[aniId]?.firstChapterId ?? chapterData?.data?.data[0]?.id,
+		mangadexDB[aniId]?.firstChapterId ?? chapterData?.data?.data?.[0]?.id ?? '',
 		undefined,
 		{
 			query: {
@@ -98,8 +96,15 @@ export const ChapterPreview = ({ aniId, title }: { aniId: number; title: string 
 					<Button
 						icon={'tools'}
 						onPress={() => {
-							setSheetParams({ aniId, search: title });
-							sheetRef.current?.present();
+							router.navigate({
+								pathname: '/(sheets)/mangaDexSearch',
+								params: {
+									aniId,
+									search: title,
+								},
+							});
+							// setSheetParams({ aniId, search: title });
+							// sheetRef.current?.present();
 						}}
 					>
 						Fix Title
@@ -160,7 +165,6 @@ export const ChapterPreview = ({ aniId, title }: { aniId: number; title: string 
 					</Portal>
 				)}
 			</Accordion>
-			<MangaDexSearchSheet sheetRef={sheetRef} {...sheetParams} />
 		</View>
 	);
 };
