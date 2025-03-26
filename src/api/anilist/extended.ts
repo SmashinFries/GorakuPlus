@@ -1,4 +1,4 @@
-import { QueryClient, UseMutationOptions, useQuery, useQueryClient } from '@tanstack/react-query';
+import { UseMutationOptions, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	AiringRangeQuery,
 	AiringRangeQueryVariables,
@@ -51,15 +51,7 @@ import {
 	SeriesSearchResponseV1,
 } from '../mangaupdates/models';
 import { AnimeFull, MangaFull } from '../jikan/models';
-import { updateAniMediaCache, updateExploreCache, updateMediaSearchCache, updateSearchAllCache } from './queryUpdates';
-
-const invalidateExploreQueries = (queryClient: QueryClient) => {
-	queryClient.invalidateQueries({ queryKey: useAnimeExploreQuery.getKey({ includeViewer: true }) });
-	queryClient.invalidateQueries({ queryKey: useMangaExploreQuery.getKey({ includeViewer: true }) });
-	queryClient.invalidateQueries({ queryKey: useManhwaExploreQuery.getKey({ includeViewer: true }) });
-	queryClient.invalidateQueries({ queryKey: useManhuaExploreQuery.getKey({ includeViewer: true }) });
-	queryClient.invalidateQueries({ queryKey: useNovelExploreQuery.getKey({ includeViewer: true }) });
-};
+import { FavMediaType, ToggleFavMetaData, updateDeletionEntryCache, updateEntrySaveCache, updateFavToggleCache } from './queryUpdates';
 
 export const useAnilistMalQuery = (aniId: number, type: MediaType) => {
 	const queryClient = useQueryClient();
@@ -209,10 +201,7 @@ export const useSaveMediaListItemInvalidatedMutation = (
 
 		onSuccess(newData, variables) {
 			if (variables.mediaId) {
-				updateAniMediaCache(queryClient, newData);
-				updateExploreCache(queryClient, newData);
-				updateMediaSearchCache(queryClient, newData);
-				updateSearchAllCache(queryClient, newData);
+				updateEntrySaveCache(queryClient, newData, options?.meta?.['parentMediaId'] as number | undefined,);
 			}
 
 		},
@@ -231,29 +220,19 @@ export const useDeleteMediaListItemInvalidatedMutation = (
 	return useDeleteMediaListItemMutation({
 		...options,
 		onSuccess(data, variables, context) {
-			invalidateExploreQueries(queryClient);
-			queryClient.invalidateQueries();
-			// queryClient.setQueriesData(
-			// 	{ queryKey: [useAnimeExploreQuery.getKey(), useMangaExploreQuery.getKey()] },
-			// 	(
-			// 		oldData:
-			// 			| AnimeExploreQuery
-			// 			| MangaExploreQuery
-			// 			| ManhwaExploreQuery
-			// 			| ManhuaExploreQuery
-			// 			| NovelExploreQuery,
-			// 	) => {
-			// 		if (oldData) {
-			// 			const newData = updateExploreOldEntriesDelete(oldData, variables.id);
-			// 			return {
-			// 				...oldData,
-			// 				...newData,
-			// 			};
-			// 		} else {
-			// 			return oldData;
-			// 		}
-			// 	},
-			// );
+			// invalidateExploreQueries(queryClient);
+			if (options?.meta?.['type'] && variables.id) {
+				updateDeletionEntryCache(queryClient,
+					{
+						type: options?.meta['type'] as MediaType,
+						mediaId: options?.meta['mediaId'] as number,
+						entryId: variables.id,
+						isDeleted: !!data?.DeleteMediaListEntry?.deleted,
+						countryOfOrigin: options?.meta['countryOfOrigin'] as string | undefined,
+						parentMediaId: options?.meta['parentMediaId'] as number | undefined,
+					}
+				)
+			}
 		},
 	});
 };
@@ -275,19 +254,31 @@ export const useDeleteActivityItemInvalidateMutation = (
 	});
 };
 
-// export const useToggleFavInvalidateMutation = (
-// 	options?: UseMutationOptions<
-// 		ToggleFavMutation,
-// 		unknown,
-// 		ToggleFavMutationVariables,
-// 		unknown
-// 	>,
-// ) => {
-// 	const queryClient = useQueryClient();
-// 	return useToggleFavMutation({...options, onSuccess(newData, variables) {
-
-// 	}});
-// };
+export const useToggleFavInvalidateMutation = (
+	options?: UseMutationOptions<
+		ToggleFavMutation,
+		unknown,
+		ToggleFavMutationVariables,
+		unknown
+	>,
+) => {
+	const queryClient = useQueryClient();
+	return useToggleFavMutation({
+		...options,
+		onError(error, variables, context) {
+			console.log(error);
+		}, onSuccess(newData, variables) {
+			if (variables) {
+				updateFavToggleCache(queryClient, {
+					id: variables.animeId ?? variables.characterId ?? variables.mangaId ?? variables.staffId ?? variables.studioId,
+					parentMediaId: options?.meta?.['parentMediaId'] as number,
+					type: options?.meta?.['type'] as FavMediaType,
+					countryOfOrigin: options?.meta?.['countryOfOrigin'] as string,
+				} as ToggleFavMetaData)
+			}
+		}
+	});
+};
 
 export const useAiringRangeMonthQuery = (params: Omit<AiringRangeQueryVariables, 'page'>) => {
 	const queryClient = useQueryClient();
