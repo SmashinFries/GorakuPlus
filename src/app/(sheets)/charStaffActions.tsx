@@ -1,17 +1,12 @@
-import {
-	CharacterMetaDataFragment,
-	StaffMetaDataFragment,
-	useCharacterDetailsQuery,
-	useStaffDetailsQuery,
-	useToggleFavMutation,
-} from '@/api/anilist/__genereated__/gql';
+import { CharacterMetaDataFragment, StaffMetaDataFragment } from '@/api/anilist/__genereated__/gql';
+import { useToggleFavInvalidateMutation } from '@/api/anilist/extended';
+import { ToggleFavMetaData } from '@/api/anilist/queryUpdates';
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 import { BottomSheetAccordion, GlobalBottomSheetParent } from '@/components/sheets/bottomsheets';
 import { useAuthStore } from '@/store/authStore';
 import { convertDate, copyToClipboard, getCompactNumberForm } from '@/utils';
 import { sendToast } from '@/utils/toast';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Share, View } from 'react-native';
@@ -21,6 +16,7 @@ import { useShallow } from 'zustand/react/shallow';
 export type QuickActionCharStaffProps = (StaffMetaDataFragment | CharacterMetaDataFragment) & {
 	type: 'character' | 'staff';
 	disableFav: boolean;
+	parentMediaId?: number;
 };
 
 const CharStaffActionSheet = () => {
@@ -33,61 +29,23 @@ const CharStaffActionSheet = () => {
 	const [titleIdx, setTitleIdx] = useState(0);
 	const [isFav, setIsFav] = useState(props?.isFavourite);
 
-	const queryClient = useQueryClient();
-	const { mutateAsync: toggleFav, isPending } = useToggleFavMutation({
-		onSuccess: () => {
-			if (props.type === 'staff') {
-				queryClient.invalidateQueries({
-					queryKey: [...useCharacterDetailsQuery.getKey()],
-					exact: false,
-				});
-				// queryClient.setQueryData(
-				// 	useCharacterDetailsQuery.getKey(),
-				// 	(oldData: CharacterDetailsQuery_Query): CharacterDetailsQuery_Query => {
-				// 		const newEdges = oldData?.Character?.media?.edges?.map((edge) => {
-				// 			return {
-				// 				...edge,
-				// 				voiceActorRoles: edge?.voiceActorRoles?.map((vaRole) =>
-				// 					vaRole?.voiceActor?.id === props.id
-				// 						? {
-				// 								...vaRole,
-				// 								voiceActor: {
-				// 									...vaRole.voiceActor,
-				// 									isFavourite: !vaRole.voiceActor?.isFavourite,
-				// 								},
-				// 							}
-				// 						: { ...vaRole },
-				// 				),
-				// 			};
-				// 		});
-				// 		return {
-				// 			...oldData,
-				// 			Character: newEdges
-				// 				? {
-				// 						...oldData.Character,
-				// 						media: { edges: newEdges },
-				// 						isFavourite: !!oldData.Character?.isFavourite,
-				// 					}
-				// 				: { ...oldData.Character },
-				// 		};
-				// 	},
-				// );
-			} else if (props.type === 'character') {
-				queryClient.invalidateQueries({
-					queryKey: [...useStaffDetailsQuery.getKey()],
-					exact: false,
-				});
-			}
-		},
+	const { mutateAsync: toggleFav, isPending } = useToggleFavInvalidateMutation({
+		meta: {
+			parentMediaId: props?.parentMediaId,
+			type: props.type === 'character' ? 'characters' : 'staff',
+			id: props.id,
+		} as ToggleFavMetaData,
 	});
 
 	const onFavorite = async () => {
 		if (!props) return;
 		try {
-			await toggleFav(
+			const result = await toggleFav(
 				props?.type === 'character' ? { characterId: props?.id } : { staffId: props?.id },
 			);
-			setIsFav((prev) => !prev);
+			if (result) {
+				setIsFav((prev) => !prev);
+			}
 		} catch (e) {
 			sendToast(`${e}`);
 		}

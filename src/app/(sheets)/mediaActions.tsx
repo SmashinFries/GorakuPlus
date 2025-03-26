@@ -5,13 +5,14 @@ import {
 	MediaStatus,
 	MediaType,
 	ScoreFormat,
-	useToggleFavMutation,
 } from '@/api/anilist/__genereated__/gql';
 import {
 	useDeleteActivityItemInvalidateMutation,
 	useDeleteMediaListItemInvalidatedMutation,
 	useSaveMediaListItemInvalidatedMutation,
+	useToggleFavInvalidateMutation,
 } from '@/api/anilist/extended';
+import { ToggleFavMetaData } from '@/api/anilist/queryUpdates';
 import { useMalQuery } from '@/api/jikan/extended';
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 import { ScoreView } from '@/components/media/sections/scores';
@@ -24,7 +25,6 @@ import { useAppTheme } from '@/store/theme/themes';
 import { copyToClipboard, getMovieDuration, getTimeUntil } from '@/utils';
 import { sendToast } from '@/utils/toast';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { useQueryClient } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -37,6 +37,7 @@ export type MediaQuickActionProps = MainMetaFragment & {
 	activityId?: number;
 	followingUsername?: string;
 	allowEntryEdit?: boolean;
+	parentMediaId?: number;
 };
 const MediaQuickActionSheet = () => {
 	const { params } = useLocalSearchParams<{ params: string }>();
@@ -44,7 +45,6 @@ const MediaQuickActionSheet = () => {
 	const sheet = useRef<TrueSheet>(null);
 
 	const { colors } = useAppTheme();
-	const queryClient = useQueryClient();
 	const isAnime = payload?.type === MediaType?.Anime;
 	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const mediaLanguage = useSettingsStore(useShallow((state) => state.mediaLanguage));
@@ -53,16 +53,33 @@ const MediaQuickActionSheet = () => {
 		data: _savedMediaListItemData,
 		isPending: isAddEntryPending,
 	} = useSaveMediaListItemInvalidatedMutation({
-		meta: { mediaId: payload?.id },
+		meta: {
+			mediaId: payload?.id,
+			parentMediaId: payload?.parentMediaId,
+			type: payload?.type,
+			entryId: payload?.mediaListEntry?.id,
+			countryOfOrigin: payload?.countryOfOrigin as string,
+		},
 	});
 	const { mutateAsync: removeEntry, isPending: isRemoveEntryPending } =
 		useDeleteMediaListItemInvalidatedMutation({
-			meta: { mediaId: payload?.id },
+			meta: {
+				mediaId: payload?.id,
+				parentMediaId: payload?.parentMediaId,
+				type: payload?.type,
+				entryId: payload?.mediaListEntry?.id,
+				countryOfOrigin: payload?.countryOfOrigin as string,
+			},
 		});
 	const { mutateAsync: removeActivity, isPending: isRemoveActivityPending } =
-		useDeleteActivityItemInvalidateMutation();
-	const { mutateAsync: toggleFav, isPending: isFavPending } = useToggleFavMutation({
-		onSuccess: () => queryClient.invalidateQueries(),
+		useDeleteActivityItemInvalidateMutation({});
+	const { mutateAsync: toggleFav, isPending: isFavPending } = useToggleFavInvalidateMutation({
+		meta: {
+			id: payload?.id,
+			parentMediaId: payload?.parentMediaId,
+			countryOfOrigin: payload?.countryOfOrigin,
+			type: payload?.type,
+		} as ToggleFavMetaData,
 	});
 	const { data: malData, isFetching: _isFetchingMal } = useMalQuery(
 		payload?.idMal ?? undefined,
@@ -103,6 +120,7 @@ const MediaQuickActionSheet = () => {
 
 	const onAdd = async (status: MediaListStatus = MediaListStatus.Planning) => {
 		const res = await addEntry({ status: status, mediaId: payload?.id });
+		console.log(res);
 		if (res?.SaveMediaListEntry) initialize(res.SaveMediaListEntry);
 		// setListEntryState({ ...res?.SaveMediaListEntry });
 	};
@@ -157,6 +175,13 @@ const MediaQuickActionSheet = () => {
 					scoreFormat:
 						payload?.scoreFormat ??
 						payload?.mediaListEntry?.user?.mediaListOptions?.scoreFormat,
+					meta: {
+						mediaId: payload?.id,
+						parentMediaId: payload?.parentMediaId,
+						type: payload?.type,
+						entryId: payload?.mediaListEntry?.id,
+						countryOfOrigin: payload?.countryOfOrigin as string,
+					},
 					// updateEntry: (tempState) => addEntry({ mediaId: payload?.id, ...tempState }),
 				}),
 			},

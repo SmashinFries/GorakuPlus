@@ -2,6 +2,8 @@ import {
 	StudioSearchQuery_Page_Page_studios_Studio,
 	useToggleFavMutation,
 } from '@/api/anilist/__genereated__/gql';
+import { useToggleFavInvalidateMutation } from '@/api/anilist/extended';
+import { ToggleFavMetaData } from '@/api/anilist/queryUpdates';
 import { GlobalBottomSheetParent } from '@/components/sheets/bottomsheets';
 import { useAuthStore } from '@/store/authStore';
 import { copyToClipboard } from '@/utils';
@@ -20,7 +22,9 @@ const StudioActionSheet = () => {
 	const isAuthed = useAuthStore(useShallow((state) => !!state.anilist.userID));
 	const [isFav, setIsFav] = useState(params?.isFavourite);
 
-	const { mutateAsync: toggleFav, isPending } = useToggleFavMutation();
+	const { mutateAsync: toggleFav, isPending } = useToggleFavInvalidateMutation({
+		meta: { id: params?.id, type: 'studios' } as ToggleFavMetaData,
+	});
 
 	const viewStudio = () => {
 		router.back();

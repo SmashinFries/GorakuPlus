@@ -126,6 +126,7 @@ export type ListEntrySheetProps = {
 	entryData: MediaListEntryMetaFragment;
 	scoreFormat: ScoreFormat;
 	media?: MainMetaFragment;
+	meta: {};
 };
 const ListEntrySheet = () => {
 	const { params } = useLocalSearchParams<{ params: string }>();
@@ -135,7 +136,7 @@ const ListEntrySheet = () => {
 	const statusSheet = useRef<TrueSheet>(null);
 
 	const { mutateAsync: addEntry } = useSaveMediaListItemInvalidatedMutation({
-		meta: { mediaId: payload?.entryData?.id },
+		meta: payload.meta,
 	});
 
 	const allCustomLists =
