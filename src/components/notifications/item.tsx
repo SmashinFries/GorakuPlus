@@ -2,13 +2,16 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { Pressable, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Image } from 'expo-image';
-import { getNotificationMessage, getTimeUntil, rgbToRgba } from '../../utils';
-import { GetNotificationsQuery } from '@/api/anilist/__genereated__/gql';
+import { getNotificationMessage, getTimeUntil } from '../../utils';
+import {
+	AiringNotification,
+	GetNotificationsQuery_Page_Page_notifications_AiringNotification,
+} from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
 
 type NotifItemProps = {
-	item: GetNotificationsQuery['Page']['notifications'][0];
+	item: GetNotificationsQuery_Page_Page_notifications_AiringNotification;
 	onNav: () => void;
 };
 export const NotifItem = ({ item, onNav }: NotifItemProps) => {
@@ -25,20 +28,14 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
 				marginVertical: 5,
 				marginHorizontal: 10,
 				borderRadius: 12,
-				backgroundColor: rgbToRgba(colors.primaryContainer, 0.2),
+				backgroundColor: colors.elevation.level2,
+				overflow: 'hidden',
 			}}
 		>
 			<Pressable onPress={onNav} android_ripple={{ color: colors.primary }}>
 				<View style={{ flexDirection: 'row' }}>
-					{/* {item.media.bannerImage && (
-                        <Image
-                            source={{ uri: item.media.bannerImage }}
-                            blurRadius={6}
-                            style={{ width: '100%', height: '100%', position: 'absolute' }}
-                        />
-                    )} */}
 					<Image
-						source={{ uri: item.media?.coverImage?.extraLarge }}
+						source={{ uri: item?.media?.coverImage?.extraLarge }}
 						style={{ height: 140, width: 90, borderRadius: 12, aspectRatio: 2 / 3 }}
 						contentFit="cover"
 					/>
@@ -55,7 +52,7 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
 							style={{
 								paddingHorizontal: 10,
 								paddingVertical: 10,
-								color: colors.onPrimaryContainer,
+								color: colors.onSurface,
 								width: '100%',
 							}}
 						>
@@ -68,7 +65,12 @@ export const NotifItem = ({ item, onNav }: NotifItemProps) => {
 											item?.media?.title?.romaji)}{' '}
 							</Text>
 							{'\n'}
-							{getNotificationMessage(item, mediaLanguage)}
+							<Text variant="labelMedium" style={{ color: colors.onSurfaceVariant }}>
+								{getNotificationMessage(
+									item as AiringNotification,
+									mediaLanguage ?? 'romaji',
+								)}
+							</Text>
 						</Text>
 					</View>
 					{/* <LinearGradient
