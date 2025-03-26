@@ -94,7 +94,7 @@ export type Variant = {
 };
 
 export type DanSearchQuery = {
-	tags: string;
+	tags?: string;
 	rating?: DanRatings;
 	limit: number;
 	page: number;
