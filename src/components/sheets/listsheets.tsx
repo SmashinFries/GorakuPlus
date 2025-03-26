@@ -1,7 +1,7 @@
 import React, { RefObject, useState } from 'react';
-import { Button, Checkbox, Chip, Divider, List, Searchbar } from 'react-native-paper';
+import { Button, Checkbox, Chip, Divider, List, RadioButton, Searchbar } from 'react-native-paper';
 import { ListSortOptions, ListSortOptionsType } from '@/types/anilist';
-import { MediaListSort } from '@/api/anilist/__genereated__/gql';
+import { MediaFormat, MediaListSort, MediaType } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { BottomSheetParent } from './bottomsheets';
@@ -11,6 +11,8 @@ import { View } from 'react-native';
 import { useCollectionStore } from '@/store/useCollectionStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { FilterSheetSection } from '../search/filtersheet';
+import { ANIME_FORMATS, MANGA_FORMATS } from '@/constants/mediaConsts';
+import { COUNTRY_OPTIONS, MEDIA_FORMAT_ALT } from '@/constants/anilist';
 
 const ListFilterSort = () => {
 	const { colors } = useAppTheme();
@@ -51,7 +53,7 @@ const ListFilterSort = () => {
 	};
 
 	return (
-		<Accordion title="Sort" initialExpand>
+		<Accordion title="Sort">
 			<ListSortItem
 				title={MediaListSort.UpdatedTime.replaceAll('_', ' ')}
 				value={MediaListSort.UpdatedTimeDesc}
@@ -75,7 +77,7 @@ const ListFilterSort = () => {
 				value={MediaListSort.FinishedOnDesc}
 			/>
 			<ListSortItem
-				title={MediaListSort.MediaPopularity.replaceAll('_', '')}
+				title={MediaListSort.MediaPopularity.replaceAll('_', ' ')}
 				value={MediaListSort.MediaPopularityDesc}
 			/>
 		</Accordion>
@@ -307,11 +309,143 @@ const ListFilterGenre = () => {
 	);
 };
 
-export type ListFilterProps = {
-	sheetRef: RefObject<TrueSheet>;
+const ListFilterFormats = ({ type }: { type: MediaType }) => {
+	const { colors } = useAppTheme();
+	const {
+		anime_format_in,
+		anime_format_not_in,
+		manga_format_in,
+		manga_format_not_in,
+		updateFormats,
+	} = useListFilterStore();
+
+	return (
+		<Accordion
+			title="Formats"
+			description={
+				((type === MediaType.Anime ? anime_format_in : manga_format_in).length > 0 ||
+					(type === MediaType.Anime ? anime_format_not_in : manga_format_not_in).length >
+						0) && (
+					<View
+						style={{
+							flexDirection: 'row',
+							flexWrap: 'wrap',
+							gap: 6,
+							paddingHorizontal: 10,
+						}}
+					>
+						{(type === MediaType.Anime ? anime_format_in : manga_format_in).map(
+							(tempFormat, idx) => (
+								<Chip
+									key={idx}
+									mode="outlined"
+									compact
+									style={{ borderColor: colors.primary }}
+									textStyle={{ textTransform: 'capitalize' }}
+									onPress={() => updateFormats(type, tempFormat as MediaFormat)}
+								>
+									{tempFormat}
+								</Chip>
+							),
+						)}
+						{(type === MediaType.Anime ? anime_format_not_in : manga_format_not_in).map(
+							(tempFormat, idx) => (
+								<Chip
+									key={idx}
+									mode="outlined"
+									compact
+									style={{ borderColor: colors.error }}
+									textStyle={{ textTransform: 'capitalize' }}
+									onPress={() => updateFormats(type, tempFormat as MediaFormat)}
+								>
+									{tempFormat}
+								</Chip>
+							),
+						)}
+					</View>
+				)
+			}
+		>
+			{(type === MediaType.Anime ? ANIME_FORMATS : MANGA_FORMATS).map((format, idx) => (
+				<Checkbox.Item
+					position="leading"
+					key={idx}
+					label={MEDIA_FORMAT_ALT[format]}
+					onPress={() => updateFormats(type, format)}
+					status={
+						(type === MediaType.Anime ? anime_format_in : manga_format_in)?.includes(
+							format,
+						)
+							? 'checked'
+							: (type === MediaType.Anime
+										? anime_format_not_in
+										: manga_format_not_in
+								  )?.includes(format)
+								? 'indeterminate'
+								: 'unchecked'
+					}
+				/>
+			))}
+		</Accordion>
+	);
 };
 
-export const ListFilterSheet = ({ sheetRef }: ListFilterProps) => {
+const ListFilterOrigin = () => {
+	const { countryOfOrigin, updateListFilter } = useListFilterStore();
+
+	const renderCountryOptions = () =>
+		Object.keys(COUNTRY_OPTIONS).map((c_code, idx) => (
+			<RadioButton.Item
+				position="leading"
+				key={idx}
+				label={
+					c_code === 'ANY'
+						? 'Any'
+						: COUNTRY_OPTIONS[c_code as keyof typeof COUNTRY_OPTIONS]['name']
+				}
+				value={c_code}
+			/>
+		));
+
+	return (
+		<Accordion
+			title="Country"
+			description={
+				countryOfOrigin && (
+					<View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
+						<Chip
+							compact
+							mode="outlined"
+							onPress={() => updateListFilter({ countryOfOrigin: undefined })}
+						>
+							{
+								COUNTRY_OPTIONS[countryOfOrigin as keyof typeof COUNTRY_OPTIONS][
+									'name'
+								]
+							}
+						</Chip>
+					</View>
+				)
+			}
+		>
+			<RadioButton.Group
+				onValueChange={(c_code) =>
+					updateListFilter({ countryOfOrigin: c_code === 'ANY' ? undefined : c_code })
+				}
+				value={countryOfOrigin ?? 'ANY'}
+			>
+				{renderCountryOptions()}
+			</RadioButton.Group>
+		</Accordion>
+	);
+};
+
+export type ListFilterProps = {
+	sheetRef: RefObject<TrueSheet>;
+	selectedType: MediaType;
+};
+
+export const ListFilterSheet = ({ sheetRef, selectedType }: ListFilterProps) => {
 	const { reset } = useListFilterStore();
 	return (
 		<BottomSheetParent
@@ -328,7 +462,7 @@ export const ListFilterSheet = ({ sheetRef }: ListFilterProps) => {
 							justifyContent: 'flex-end',
 						}}
 					>
-						<Button onPress={reset}>Reset</Button>
+						<Button onPress={() => reset(selectedType)}>Reset</Button>
 					</View>
 					<Divider />
 				</>
@@ -336,6 +470,8 @@ export const ListFilterSheet = ({ sheetRef }: ListFilterProps) => {
 			scrollable
 		>
 			<ListFilterSort />
+			<ListFilterFormats type={selectedType} />
+			<ListFilterOrigin />
 			<ListFilterGenre />
 			<ListFilterTags />
 		</BottomSheetParent>

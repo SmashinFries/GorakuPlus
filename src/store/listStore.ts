@@ -1,7 +1,7 @@
 import { MMKV } from 'react-native-mmkv';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from './helpers/mmkv-storage';
-import { MediaListSort, MediaType } from '@/api/anilist/__genereated__/gql';
+import { MediaFormat, MediaListSort, MediaType } from '@/api/anilist/__genereated__/gql';
 import { create } from 'zustand';
 
 const storage = new MMKV({
@@ -15,18 +15,27 @@ type ListFilterTagGenre = {
 	tags_include: string[];
 	tags_exclude: string[];
 };
+type ListFilterFormats = {
+	anime_format_in: string[];
+	anime_format_not_in: string[];
+	manga_format_in: string[];
+	manga_format_not_in: string[];
+};
 type ListFilterState = {
 	query: string;
 	sort?: MediaListSort;
+	countryOfOrigin?: string;
 	animeTabOrder: string[];
 	mangaTabOrder: string[];
-} & ListFilterTagGenre;
+} & ListFilterTagGenre &
+	ListFilterFormats;
 
 type ListFilterActions = {
 	updateListFilter: (filter: Partial<ListFilterState>) => void;
 	checkListNames: (type: MediaType, newNames: string[]) => void;
 	updateTagGenre: (value: string, type: 'tags' | 'genre') => void;
-	reset: () => void;
+	updateFormats: (type: MediaType, value: MediaFormat) => void;
+	reset: (type?: MediaType) => void;
 	// clearListFilter: (type: ListFilterState) => void;
 };
 
@@ -39,6 +48,10 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 			genre_exclude: [],
 			tags_include: [],
 			tags_exclude: [],
+			anime_format_in: [],
+			anime_format_not_in: [],
+			manga_format_in: [],
+			manga_format_not_in: [],
 			animeTabOrder: ['Watching', 'Planning', 'Completed', 'Rewatching', 'Paused', 'Dropped'],
 			mangaTabOrder: ['Reading', 'Planning', 'Completed', 'Rereading', 'Paused', 'Dropped'],
 			updateListFilter(filter) {
@@ -104,13 +117,64 @@ export const useListFilterStore = create<ListFilterState & ListFilterActions>()(
 					};
 				});
 			},
-			reset() {
+			updateFormats(type, value) {
+				set((state) => {
+					const typeLowerCase = type.toLowerCase();
+					const include_key = `${typeLowerCase}_format_in` as keyof ListFilterTagGenre;
+					const exclude_key =
+						`${typeLowerCase}_format_not_in` as keyof ListFilterTagGenre;
+
+					const include_list = state[include_key] || [];
+					const exclude_list = state[exclude_key] || [];
+
+					if (include_list.includes(value)) {
+						return {
+							...state,
+							[include_key]: include_list.filter((item) => item !== value),
+							[exclude_key]: [...exclude_list, value],
+						};
+					}
+
+					if (exclude_list.includes(value)) {
+						return {
+							...state,
+							[exclude_key]: exclude_list.filter((item) => item !== value),
+						};
+					}
+
+					return {
+						...state,
+						[include_key]: [...include_list, value],
+					};
+				});
+			},
+			reset(type) {
 				set((state) => ({
 					...state,
 					genre_include: [],
 					genre_exclude: [],
 					tags_include: [],
 					tags_exclude: [],
+					anime_format_in:
+						type === undefined
+							? []
+							: type === MediaType.Anime
+								? []
+								: state.anime_format_in,
+					anime_format_not_in:
+						type === undefined
+							? []
+							: type === MediaType.Anime
+								? []
+								: state.anime_format_not_in,
+					manga_format_in:
+						type === undefined
+							? []
+							: type === MediaType.Manga
+								? []
+								: state.manga_format_in,
+					manga_format_not_in: type === undefined ? [] : type === MediaType.Manga ? [] : state.manga_format_not_in,
+					countryOfOrigin: undefined,
 				}));
 			},
 		}),
