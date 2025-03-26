@@ -1,16 +1,12 @@
 import { MediaType } from '@/api/anilist/__genereated__/gql';
 import { ListHeader } from '@/components/headers';
-import { ListTabs } from '@/components/list/screens';
-import { GorakuActivityIndicator } from '@/components/loading';
+import { AnimeTab, MangaTab } from '@/components/list/screens';
 import { ListFilterSheet } from '@/components/sheets/listsheets';
 import { GorakuTabBar } from '@/components/tab';
-import { useList } from '@/hooks/list/useList';
 import { useAuthStore } from '@/store/authStore';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
 import { SceneRendererProps, TabView } from 'react-native-tab-view';
 
 const ListPage = () => {
@@ -19,19 +15,36 @@ const ListPage = () => {
 	const [index, setIndex] = useState(0);
 	const filterSheetRef = useRef<TrueSheet>(null);
 
-	const {
-		animeList,
-		mangaList,
-		rootRoutes,
-		animeRoutes = [],
-		mangaRoutes = [],
-		loading,
-		isRefreshing,
-		refreshAnimeList,
-		refreshMangaList,
-	} = useList(userID as number);
+	// const {
+	// 	animeList,
+	// 	mangaList,
+	// 	rootRoutes,
+	// 	animeRoutes = [],
+	// 	mangaRoutes = [],
+	// 	loading,
+	// 	isRefreshing,
+	// 	refreshAnimeList,
+	// 	refreshMangaList,
+	// } = useList(userID as number);
 
-	const [routes, setRoutes] = useState(rootRoutes);
+	const [routes, setRoutes] = useState([
+		{ key: 'anime', title: 'Anime' },
+		{ key: 'manga', title: 'Manga' },
+	]);
+
+	const updateTitleCount = (key: string, total?: number) => {
+		setRoutes((prevRoutes) => {
+			const newRoutes = prevRoutes.map((route) => {
+				if (route.key === key) {
+					const baseTitle = route.title.replace(/\s*\(\d+\)$/, '');
+					const newRoute = { ...route, title: `${baseTitle} (${total ?? 0})` };
+					return newRoute;
+				}
+				return route;
+			});
+			return newRoutes;
+		});
+	};
 
 	const renderScene = ({
 		route,
@@ -44,59 +57,49 @@ const ListPage = () => {
 		switch (route.key) {
 			case 'anime':
 				return (
-					<ListTabs
-						type={MediaType.Anime}
-						data={animeList?.MediaListCollection}
-						routes={animeRoutes}
-						isRefreshing={isRefreshing}
-						onRefresh={refreshAnimeList}
-					/>
+					<AnimeTab userId={userID as number} updateMainTitleCount={updateTitleCount} />
+					// <ListTabs
+					// 	type={MediaType.Anime}
+					// 	data={animeList?.MediaListCollection}
+					// 	routes={animeRoutes}
+					// 	isRefreshing={isRefreshing}
+					// 	onRefresh={refreshAnimeList}
+					// />
 				);
 			case 'manga':
 				return (
-					<ListTabs
-						type={MediaType.Manga}
-						data={mangaList?.MediaListCollection}
-						routes={mangaRoutes}
-						isRefreshing={isRefreshing}
-						onRefresh={refreshAnimeList}
-					/>
+					<MangaTab userId={userID as number} updateMainTitleCount={updateTitleCount} />
+					// <ListTabs
+					// 	type={MediaType.Manga}
+					// 	data={mangaList?.MediaListCollection}
+					// 	routes={mangaRoutes}
+					// 	isRefreshing={isRefreshing}
+					// 	onRefresh={refreshAnimeList}
+					// />
 				);
 			default:
 				return null;
 		}
 	};
 
-	useEffect(() => {
-		if (rootRoutes.length > 0) {
-			setRoutes(rootRoutes);
-		}
-	}, [rootRoutes]);
-
 	return (
 		<>
 			<ListHeader
 				openFilter={() => filterSheetRef.current?.present()}
-				onRefresh={index === 0 ? refreshAnimeList : refreshMangaList}
+				currentType={routes[index]?.key === 'anime' ? MediaType.Anime : MediaType.Manga}
 			/>
-			{!loading && !isRefreshing && routes.length > 0 ? (
-				<TabView
-					navigationState={{ index, routes }}
-					renderScene={renderScene}
-					onIndexChange={setIndex}
-					initialLayout={{ width: layout.width }}
-					renderTabBar={(props) => <GorakuTabBar {...props} enableChip />}
-					swipeEnabled={false}
-					lazy
-				/>
-			) : (
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					{/* <ActivityIndicator animating={true} size={'large'} color={colors.primary} /> */}
-					<GorakuActivityIndicator />
-					<Text variant="labelMedium">Fetching lists</Text>
-				</View>
-			)}
-			<ListFilterSheet sheetRef={filterSheetRef} />
+			<TabView
+				navigationState={{ index, routes }}
+				renderScene={renderScene}
+				onIndexChange={setIndex}
+				initialLayout={{ width: layout.width }}
+				renderTabBar={(props) => <GorakuTabBar {...props} enableChip />}
+				swipeEnabled={false}
+			/>
+			<ListFilterSheet
+				sheetRef={filterSheetRef}
+				selectedType={routes[index]?.key === 'anime' ? MediaType.Anime : MediaType.Manga}
+			/>
 		</>
 	);
 };
