@@ -14,6 +14,7 @@ type SettingsState = {
 	navAnimation?: StackAnimationTypes;
 	btmTabLabels?: boolean;
 	btmTabShifting?: boolean;
+	btmTabHaptics?: boolean;
 	allowSensorMotion?: boolean;
 	interaction3D?: boolean;
 	autoRotation?: boolean;
@@ -41,6 +42,7 @@ type SettingsState = {
 
 type SettingsAction = {
 	setSettings: (entries: SettingsState) => void;
+	toggle: (type: keyof SettingsState) => void;
 };
 
 export const useSettingsStore = create<SettingsState & SettingsAction>()(
@@ -49,6 +51,7 @@ export const useSettingsStore = create<SettingsState & SettingsAction>()(
 			navAnimation: 'fade',
 			btmTabLabels: true,
 			btmTabShifting: true,
+			btmTabHaptics: false,
 			allowSensorMotion: false,
 			interaction3D: false,
 			autoRotation: false,
@@ -73,6 +76,12 @@ export const useSettingsStore = create<SettingsState & SettingsAction>()(
 			tagBlacklist: [],
 			isFirstLaunch: true,
 			setSettings: (entries) => set((_state) => entries),
+			toggle: (type) =>
+				set((state) =>
+					typeof state[type] === 'boolean'
+						? { ...state, [type]: !state[type] as boolean }
+						: state,
+				),
 		}),
 		{
 			name: 'settings-storage',
