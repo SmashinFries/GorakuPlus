@@ -23,6 +23,7 @@ const SheetsLayout = () => {
 			<Stack.Screen name={'characterSearchSheet'} />
 			<Stack.Screen name={'appUpdateSheet'} />
 			<Stack.Screen name={'numberPickerSheet'} />
+			<Stack.Screen name={'mangaDexSearch'} />
 		</AnimatedStack>
 	);
 };
