@@ -1,18 +1,40 @@
 import { withLayoutContext } from 'expo-router';
-import { Avatar } from 'react-native-paper';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
-import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import { useEffect } from 'react';
 import * as QuickActions from 'expo-quick-actions';
 import { RouterAction } from 'expo-quick-actions/router';
+import Icon from '@react-native-vector-icons/material-design-icons';
+import {
+	createNativeBottomTabNavigator,
+	NativeBottomTabNavigationOptions,
+	NativeBottomTabNavigationEventMap,
+} from '@bottom-tabs/react-navigation';
+import { ParamListBase, TabNavigationState } from '@react-navigation/native';
+import { ImageSourcePropType } from 'react-native';
 
-export const Tabs = withLayoutContext(createMaterialBottomTabNavigator().Navigator);
+const exploreIcon = Icon.getImageSourceSync('campfire', 24);
+const calendarIcon = Icon.getImageSourceSync('calendar', 24);
+const listIcon = Icon.getImageSourceSync('bookshelf', 24);
+const loginIcon = Icon.getImageSourceSync('login', 24);
+const userIcon = Icon.getImageSourceSync('account-outline', 24);
+const moreIcon = Icon.getImageSourceSync('dots-horizontal', 24);
+
+const BottomTabNavigator = createNativeBottomTabNavigator().Navigator;
+
+const Tabs = withLayoutContext<
+	NativeBottomTabNavigationOptions,
+	typeof BottomTabNavigator,
+	TabNavigationState<ParamListBase>,
+	NativeBottomTabNavigationEventMap
+>(BottomTabNavigator);
+
+// export const Tabs = withLayoutContext(createMaterialBottomTabNavigator().Navigator);
 
 const RootLayout = () => {
 	const { avatar, username, userID } = useAuthStore().anilist;
-	const { btmTabLabels, btmTabShifting } = useSettingsStore();
+	const { btmTabLabels, btmTabHaptics } = useSettingsStore();
 	const { colors } = useAppTheme();
 
 	useEffect(() => {
@@ -52,20 +74,40 @@ const RootLayout = () => {
 		<Tabs
 			initialRouteName="explore"
 			labeled={btmTabLabels}
-			shifting={btmTabShifting}
-			activeColor={colors.onSurface}
-			inactiveColor={colors.onSurfaceVariant}
-			sceneAnimationEnabled
-			sceneAnimationType="opacity"
+			activeIndicatorColor={colors.secondaryContainer}
+			rippleColor={colors.secondaryContainer}
+			tabBarActiveTintColor={colors.onSurface}
+			tabBarInactiveTintColor={colors.onSurfaceVariant}
+			tabBarStyle={{ backgroundColor: colors.elevation.level4 }}
+			hapticFeedbackEnabled={btmTabHaptics}
+			// tabBarActiveTintColor={}
+			// rippleColor={colors.}
+			// shifting={btmTabShifting}
+			// activeColor={colors.onSurface}
+			// inactiveColor={colors.onSurfaceVariant}
+			// sceneAnimationEnabled
+			// sceneAnimationType="opacity"
 			// screenOptions={{}}
 		>
-			<Tabs.Screen name="explore" options={{ title: 'Discover', tabBarIcon: 'campfire' }} />
-			<Tabs.Screen name="calendar" options={{ title: 'Calendar', tabBarIcon: 'calendar' }} />
+			<Tabs.Screen
+				name="explore"
+				options={{
+					title: 'Discover',
+					tabBarIcon: () => exploreIcon as ImageSourcePropType,
+				}}
+			/>
+			<Tabs.Screen
+				name="calendar"
+				options={{
+					title: 'Calendar',
+					tabBarIcon: () => calendarIcon as ImageSourcePropType,
+				}}
+			/>
 			<Tabs.Screen
 				name="list"
 				options={{
 					title: 'List',
-					tabBarIcon: 'bookshelf',
+					tabBarIcon: () => listIcon as ImageSourcePropType,
 				}}
 				redirect={!userID}
 			/>
@@ -73,12 +115,16 @@ const RootLayout = () => {
 				name="viewer"
 				options={{
 					title: username && userID ? 'Profile' : 'Login',
-					tabBarIcon: avatar
-						? () => <Avatar.Image size={24} source={{ uri: avatar }} />
-						: 'login',
+					tabBarIcon: () =>
+						avatar
+							? (userIcon as ImageSourcePropType)
+							: (loginIcon as ImageSourcePropType),
 				}}
 			/>
-			<Tabs.Screen name="more" options={{ title: 'More', tabBarIcon: 'dots-horizontal' }} />
+			<Tabs.Screen
+				name="more"
+				options={{ title: 'More', tabBarIcon: () => moreIcon as ImageSourcePropType }}
+			/>
 		</Tabs>
 	);
 };

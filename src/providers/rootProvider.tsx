@@ -9,6 +9,7 @@ import { clientPersister } from '@/store/persister';
 import { useCollectionUpdater } from '@/hooks/useCollections';
 import { NotificationPressActionIds, notifNavigate } from '@/utils/notifications/backgroundFetch';
 import { sendErrorMessage } from '@/utils/toast';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -55,7 +56,7 @@ export const RootProvider = ({ children }: { children: ReactNode }) => {
 
 	return (
 		<PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-			{children}
+			<KeyboardProvider>{children}</KeyboardProvider>
 		</PersistQueryClientProvider>
 	);
 };

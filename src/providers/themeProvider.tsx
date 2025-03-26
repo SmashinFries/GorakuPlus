@@ -5,6 +5,7 @@ import { PaperProvider } from 'react-native-paper';
 import { ThemeProvider } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { MD3Colors } from 'react-native-paper/lib/typescript/types';
+import { SystemBars } from 'react-native-edge-to-edge';
 
 export const PaperThemeProvider = ({ children }: { children: ReactNode }) => {
 	const { isDark, mode, isAMOLED } = useThemeStore();
@@ -52,7 +53,8 @@ export const PaperThemeProvider = ({ children }: { children: ReactNode }) => {
 		>
 			<ThemeProvider value={currentTheme}>
 				{children}
-				<StatusBar translucent={true} style={isDark ? 'light' : 'dark'} animated />
+				<SystemBars style={isDark ? 'light' : 'dark'} />
+				{/* <StatusBar translucent={true} style={isDark ? 'light' : 'dark'} animated /> */}
 			</ThemeProvider>
 		</PaperProvider>
 	);
