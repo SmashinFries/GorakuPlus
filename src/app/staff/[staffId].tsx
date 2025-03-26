@@ -181,6 +181,7 @@ const StafPage = () => {
 					isFav={!!data?.Staff?.isFavourite}
 					share_url={`https://anilist.co/staff/${id}`}
 					edit_url={`https://anilist.co/edit/staff/${id}`}
+					type="staff"
 				/>
 				{data?.Staff?.description ? (
 					<ExpandableDescription initialHeight={90}>
