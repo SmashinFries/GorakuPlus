@@ -1,7 +1,7 @@
-import { ActivityIndicator, IconButton, List, Portal, Text } from 'react-native-paper';
+import { ActivityIndicator, Icon, IconButton, List, Portal, Text } from 'react-native-paper';
 import React, { useCallback, useMemo, useState } from 'react';
 import { RemoveListItemDialog } from '@/components/media/dialogs';
-import { Pressable, View, useWindowDimensions } from 'react-native';
+import { Pressable, TextStyle, View, useWindowDimensions } from 'react-native';
 import { NumberPickDialog } from '@/components/dialogs';
 import { scoreValues } from '@/utils/scores';
 import {
@@ -13,23 +13,25 @@ import {
 	MediaType,
 	SaveMediaListItemMutationVariables,
 	ScoreFormat,
-	useDeleteMediaListItemMutation,
-	useToggleFavMutation,
 } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { AnimViewMem } from '@/components/animations';
 import { useShallow } from 'zustand/react/shallow';
-import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useListEntryStore } from '@/store/listEntryStore';
 import { EntryNumberPickerSheetProps } from '@/app/(sheets)/numberPickerSheet';
-import { useSaveMediaListItemInvalidatedMutation } from '@/api/anilist/extended';
+import {
+	useDeleteMediaListItemInvalidatedMutation,
+	useSaveMediaListItemInvalidatedMutation,
+	useToggleFavInvalidateMutation,
+} from '@/api/anilist/extended';
+import { ToggleFavMetaData } from '@/api/anilist/queryUpdates';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
 
-const ICON_SIZE = 24;
+const ICON_SIZE = 26;
 
 type ListEntryViewProps = {
 	id: number;
@@ -45,12 +47,27 @@ type ListEntryViewProps = {
 };
 
 type ActionIconProps = {
-	children: React.ReactNode;
-	icon?: string;
+	isLoading: boolean;
+	icon: string;
+	iconColor?: string;
+	disabled?: boolean;
+	label?: string;
+	labelStyle?: TextStyle;
+	description?: string;
 	onPress: () => void;
 	onLongPress?: () => void;
 };
-export const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconProps) => {
+export const ActionIcon = ({
+	isLoading,
+	icon,
+	iconColor,
+	disabled,
+	label,
+	labelStyle,
+	description,
+	onPress,
+	onLongPress,
+}: ActionIconProps) => {
 	const { colors } = useAppTheme();
 	return (
 		<Pressable
@@ -68,9 +85,49 @@ export const ActionIcon = ({ children, icon, onPress, onLongPress }: ActionIconP
 				overflow: 'hidden',
 				alignItems: 'center',
 			}}
+			disabled={disabled}
 		>
-			{icon && <IconButton icon={icon} size={ICON_SIZE} />}
-			{children}
+			<View
+				style={{ height: ICON_SIZE + 18, justifyContent: 'center', alignItems: 'center' }}
+			>
+				{isLoading ? (
+					<ActivityIndicator
+						animating
+						size={'small'}
+						style={{ transform: [{ scale: 0.9 }] }}
+					/>
+				) : (
+					<Icon
+						source={icon}
+						size={ICON_SIZE}
+						color={disabled ? colors.onSurfaceDisabled : (iconColor ?? undefined)}
+					/>
+				)}
+			</View>
+			{label ? (
+				<Text
+					style={[
+						{
+							textTransform: 'capitalize',
+						},
+						labelStyle,
+					]}
+					variant="labelMedium"
+				>
+					{label}
+				</Text>
+			) : null}
+			{description ? (
+				<Text
+					style={{
+						color: colors.onSurfaceVariant,
+						textAlign: 'center',
+					}}
+					variant="labelSmall"
+				>
+					{description}
+				</Text>
+			) : null}
 		</Pressable>
 	);
 };
@@ -86,12 +143,32 @@ const ListEntryView = ({
 	refreshData,
 	onShowReleases,
 }: ListEntryViewProps) => {
-	const queryClient = useQueryClient();
-	const { isPending: favLoading, mutateAsync: toggleFav } = useToggleFavMutation();
+	// const queryClient = useQueryClient();
+	const { isPending: favLoading, mutateAsync: toggleFav } = useToggleFavInvalidateMutation({
+		meta: {
+			id: id,
+			type: type,
+			countryOfOrigin: media?.countryOfOrigin,
+		} as ToggleFavMetaData,
+	});
 	const { isPending: savedMediaLoading, mutateAsync: saveListItem } =
-		useSaveMediaListItemInvalidatedMutation();
+		useSaveMediaListItemInvalidatedMutation({
+			meta: {
+				type: media?.type,
+				mediaId: media?.id,
+				parentMediaId: undefined,
+				countryOfOrigin: media?.countryOfOrigin,
+			},
+		});
 	const { isPending: deletedListItemLoading, mutateAsync: deleteListItem } =
-		useDeleteMediaListItemMutation({ onSuccess: () => queryClient.invalidateQueries() });
+		useDeleteMediaListItemInvalidatedMutation({
+			meta: {
+				type: media?.type,
+				mediaId: media?.id,
+				parentMediaId: undefined,
+				countryOfOrigin: media?.countryOfOrigin,
+			},
+		});
 
 	const { userID } = useAuthStore(useShallow((state) => state.anilist));
 	const { colors } = useAppTheme();
@@ -172,72 +249,47 @@ const ListEntryView = ({
 						}}
 					>
 						<ActionIcon
+							isLoading={false}
 							icon={
-								status === MediaStatus.Finished ? 'timer-sand-full' : 'timer-sand'
+								status === MediaStatus.Finished
+									? 'timer-sand-complete'
+									: status === MediaStatus.Hiatus
+										? 'timer-sand-paused'
+										: status === MediaStatus.Cancelled
+											? 'timer-sand-empty'
+											: 'timer-sand'
 							}
 							onPress={onShowReleases}
-						>
-							<Text
-								style={{
-									textTransform: 'capitalize',
-									color: colors.onSurfaceVariant,
-									textAlign: 'center',
-								}}
-								variant="labelMedium"
-							>
-								{(splitReleaseMessage[0]?.length ?? 0) > 0
+							label={
+								(splitReleaseMessage[0]?.length ?? 0) > 0
 									? splitReleaseMessage[0]
-									: 'Unknown'}
-							</Text>
-							{splitReleaseMessage?.length > 1 ? (
-								<Text
-									style={{
-										color: colors.onSurfaceVariant,
-										textAlign: 'center',
-									}}
-									variant="labelSmall"
-								>
-									{splitReleaseMessage?.at(-1)}
-								</Text>
-							) : null}
-						</ActionIcon>
+									: 'Unknown'
+							}
+							description={
+								splitReleaseMessage?.length > 1
+									? splitReleaseMessage?.at(-1)
+									: undefined
+							}
+						/>
 					</View>
 					<View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
-						{iconStates.fav.isLoading ? (
-							<ActivityIndicator
-								animating
-								size={'small'}
-								style={{ transform: [{ scale: 0.9 }] }}
-							/>
-						) : (
-							<ActionIcon
-								onPress={() =>
-									toggleFav(
-										type === MediaType.Anime
-											? { animeId: id }
-											: { mangaId: id },
-									)
-								}
-							>
-								<IconButton
-									icon={media?.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0]}
-									iconColor={media?.isFavourite ? colors.primary : undefined}
-									disabled={!iconStates.disabled ? false : true}
-									size={ICON_SIZE}
-								/>
-								<Text
-									style={{
-										textTransform: 'capitalize',
-										color: media?.isFavourite
-											? colors.primary
-											: colors.onSurfaceVariant,
-									}}
-									variant="labelMedium"
-								>
-									{media?.isFavourite ? 'Favorited' : 'Favorite'}
-								</Text>
-							</ActionIcon>
-						)}
+						<ActionIcon
+							icon={media?.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0]}
+							iconColor={media?.isFavourite ? colors.primary : undefined}
+							isLoading={iconStates.fav.isLoading}
+							disabled={!iconStates.disabled ? false : true}
+							onPress={() =>
+								toggleFav(
+									type === MediaType.Anime ? { animeId: id } : { mangaId: id },
+								)
+							}
+							label={media?.isFavourite ? 'Favorited' : 'Favorite'}
+							labelStyle={{
+								color: media?.isFavourite
+									? colors.primary
+									: colors.onSurfaceVariant,
+							}}
+						/>
 					</View>
 					<View
 						style={{
@@ -247,6 +299,7 @@ const ListEntryView = ({
 						}}
 					>
 						<ActionIcon
+							isLoading={iconStates.list.isLoading}
 							onPress={() =>
 								isOnList
 									? router.navigate({
@@ -258,30 +311,18 @@ const ListEntryView = ({
 									: updateListEntry()
 							}
 							onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
-						>
-							{iconStates.list.isLoading ? (
-								<ActivityIndicator animating size={ICON_SIZE} />
-							) : (
-								<IconButton
-									disabled={!iconStates.disabled ? false : true}
-									icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
-									iconColor={isOnList ? colors.primary : undefined}
-									size={ICON_SIZE}
-								/>
-							)}
-							<Text
-								style={{
-									textTransform: 'capitalize',
-									color: isOnList ? colors.primary : colors.onSurfaceVariant,
-								}}
-								variant="labelMedium"
-							>
-								{data?.status
+							disabled={!iconStates.disabled ? false : true}
+							icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
+							iconColor={isOnList ? colors.primary : undefined}
+							label={`${
+								data?.status
 									? `${data.status?.replaceAll('_', ' ')}${data?.private ? '🔒' : ''}`
-									: 'Add to List'}
-								{data?.progress && data?.progress > 0 ? ` · ${data.progress}` : ''}
-							</Text>
-						</ActionIcon>
+									: 'Add to List'
+							}${data?.progress && data?.progress > 0 ? ` · ${data.progress}` : ''}`}
+							labelStyle={{
+								color: isOnList ? colors.primary : colors.onSurfaceVariant,
+							}}
+						/>
 					</View>
 				</AnimViewMem>
 			</View>
