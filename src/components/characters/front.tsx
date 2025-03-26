@@ -12,7 +12,6 @@ import { CharStaffInteractionBar } from './interaction';
 import { CharacterName, MediaEdge } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useTTSStore } from '@/store/tts/ttsStore';
-import { useEffect } from 'react';
 
 type CharacterFrontProps = {
 	id: number;
@@ -95,6 +94,7 @@ export const CharacterFront = ({
 				isFav={!!isFavorite}
 				share_url={`https://anilist.co/character/${id}`}
 				edit_url={`https://anilist.co/edit/character/${id}`}
+				type={'characters'}
 			/>
 			{/* {userID && (
 				<IconButton

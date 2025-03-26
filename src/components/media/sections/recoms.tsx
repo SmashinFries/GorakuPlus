@@ -12,8 +12,9 @@ import { AccordionMemo } from '@/components/animations';
 
 type RecProps = {
 	data: AniMediaQuery_Media_Media_recommendations_RecommendationConnection;
+	parentMediaId: number;
 };
-const RecList = ({ data }: RecProps) => {
+const RecList = ({ data, parentMediaId }: RecProps) => {
 	const getRatingText = (rating: number | null | undefined) => {
 		if (rating === null || rating === undefined) return '0';
 		if (rating > 0) return `+${rating}`;
@@ -35,6 +36,7 @@ const RecList = ({ data }: RecProps) => {
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
 				<MediaCard
 					{...item.node.mediaRecommendation}
+					parentMediaId={parentMediaId}
 					// navigate={() =>
 					// 	router.push(
 					// 		`/${item.node?.mediaRecommendation?.type?.toLowerCase()}/${

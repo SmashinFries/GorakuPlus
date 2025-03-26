@@ -12,9 +12,10 @@ import { useAppTheme } from '@/store/theme/themes';
 import { AccordionMemo } from '@/components/animations';
 
 type RelationsProps = {
+	parentMediaId: number;
 	data: AniMediaQuery_Media_Media_relations_MediaConnection;
 };
-const Relations = ({ data }: RelationsProps) => {
+const Relations = ({ parentMediaId, data }: RelationsProps) => {
 	const { colors } = useAppTheme();
 
 	const keyExtractor = useCallback(
@@ -24,40 +25,37 @@ const Relations = ({ data }: RelationsProps) => {
 		) => index.toString(),
 		[],
 	);
-	const renderItem = useCallback(
-		({
-			item,
-		}: {
-			item: AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge;
-		}) =>
-			item.node?.id ? (
-				<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
-					<MediaCard {...item.node} />
-					<Text
-						variant="labelLarge"
-						style={{ textTransform: 'capitalize', textAlign: 'center' }}
-					>
-						{item.relationType?.replaceAll('_', ' ') ?? '??'}
-					</Text>
-					<Text
-						variant="labelMedium"
-						style={{
-							textTransform: 'capitalize',
-							textAlign: 'center',
-							color: colors.onSurfaceVariant,
-						}}
-					>
-						{item.node?.format === MediaFormat.Tv
-							? 'Anime'
-							: item.node?.isLicensed
-								? item.node?.format
-								: 'Doujin'}{' '}
-						· {item.node?.status?.replaceAll('_', ' ') ?? '??'}
-					</Text>
-				</View>
-			) : null,
-		[],
-	);
+	const renderItem = ({
+		item,
+	}: {
+		item: AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge;
+	}) =>
+		item.node?.id ? (
+			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
+				<MediaCard {...item?.node} parentMediaId={parentMediaId} />
+				<Text
+					variant="labelLarge"
+					style={{ textTransform: 'capitalize', textAlign: 'center' }}
+				>
+					{item.relationType?.replaceAll('_', ' ') ?? '??'}
+				</Text>
+				<Text
+					variant="labelMedium"
+					style={{
+						textTransform: 'capitalize',
+						textAlign: 'center',
+						color: colors.onSurfaceVariant,
+					}}
+				>
+					{item.node?.format === MediaFormat.Tv
+						? 'Anime'
+						: item.node?.isLicensed
+							? item.node?.format
+							: 'Doujin'}{' '}
+					· {item.node?.status?.replaceAll('_', ' ') ?? '??'}
+				</Text>
+			</View>
+		) : null;
 
 	if ((data?.edges?.length ?? 0) < 1) {
 		return null;

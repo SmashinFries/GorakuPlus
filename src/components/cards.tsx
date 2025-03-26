@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { Pressable, View, useWindowDimensions, Image as RNImage, ViewStyle } from 'react-native';
-import { Avatar, ProgressBar, Surface, Text } from 'react-native-paper';
+import { Avatar, Icon, ProgressBar, Surface, Text } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getScoreColor, getTimeUntil, ListColors } from '@/utils';
 import { useNsfwBlur } from '@/hooks/useNSFWBlur';
@@ -20,6 +20,7 @@ import {
 	UserSearchMetaFragment,
 	StudioSearchQuery_Page_Page_studios_Studio,
 	ScoreDistribution,
+	CharacterRole,
 } from '@/api/anilist/__genereated__/gql';
 import { ScoreVisualType } from '@/store/settings/types';
 import { useAppTheme } from '@/store/theme/themes';
@@ -53,6 +54,7 @@ type MediaCardProps = MainMetaFragment & {
 	allowEntryEdit?: boolean;
 	isMangaDex?: boolean;
 	customEPText?: string;
+	parentMediaId?: number;
 };
 export const MediaCard = ({
 	navigate = () => null,
@@ -96,6 +98,7 @@ export const MediaCard = ({
 						activityId: props.activityId,
 						followingUsername: props.followingUsername,
 						allowEntryEdit: allowEntryEdit,
+						parentMediaId: props.parentMediaId,
 					}),
 				},
 			});
@@ -577,12 +580,13 @@ export const UserCard = ({ onPress = () => null, ...props }: UserCardProps) => {
 };
 
 type CharacterCardProps = (CharacterMetaDataFragment | StaffMetaDataFragment) & {
-	role?: string;
+	role?: CharacterRole | string;
 	isStaff?: boolean;
 	isLangShown?: boolean;
 	onPress?: () => void;
 	onLongSelect?: () => void;
 	disableFav?: boolean;
+	parentMediaId?: number;
 };
 export const CharacterCard = ({
 	onPress = () => null,
@@ -592,6 +596,7 @@ export const CharacterCard = ({
 	const { colors } = useAppTheme();
 	const { mediaLanguage } = useSettingsStore();
 	const onNav = () => {
+		// console.log(props.isFavourite);
 		router.navigate(props.isStaff ? `/staff/${props.id}` : `/character/${props.id}`);
 	};
 
@@ -603,6 +608,7 @@ export const CharacterCard = ({
 					...props,
 					type: props.isStaff ? 'staff' : 'character',
 					disableFav: !!props.disableFav,
+					parentMediaId: props.parentMediaId,
 				}),
 			},
 		});
@@ -623,13 +629,20 @@ export const CharacterCard = ({
 					padding: 4,
 				}}
 			>
-				<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
+				<View>
+					<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
+					{props.isFavourite && (
+						<View style={{ position: 'absolute', bottom: 0, right: 0 }}>
+							<Icon size={18} source={'heart'} color="red" />
+						</View>
+					)}
+				</View>
 				<View>
 					<Text
 						numberOfLines={2}
 						style={{
 							textAlign: 'center',
-							color: props.isFavourite ? colors.primary : colors.onBackground,
+							color: colors.onBackground,
 							paddingHorizontal: 4,
 						}}
 					>

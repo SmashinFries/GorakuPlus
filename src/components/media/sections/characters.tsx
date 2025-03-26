@@ -10,10 +10,11 @@ import {
 // router.push(`/characters/info/${item.node.id}`)
 
 type CharacterPrevListProps = {
+	mediaId: number;
 	data: AniMediaQuery_Media_Media_characters_CharacterConnection;
 	openMore: () => void;
 };
-export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) => {
+export const CharacterPrevList = ({ mediaId, data, openMore }: CharacterPrevListProps) => {
 	const keyExtractor = useCallback(
 		(
 			item: AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge | null,
@@ -25,7 +26,7 @@ export const CharacterPrevList = ({ data, openMore }: CharacterPrevListProps) =>
 		item,
 	}: ListRenderItemInfo<AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge | null>) => (
 		<View style={{ paddingRight: 6 }}>
-			<CharacterCard {...item?.node} role={item?.role} />
+			<CharacterCard {...item?.node} role={item?.role ?? undefined} parentMediaId={mediaId} />
 		</View>
 	);
 

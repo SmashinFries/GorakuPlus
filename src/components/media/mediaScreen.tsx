@@ -243,13 +243,17 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 								</View>
 								{anilist?.data?.Media?.relations && (
 									<View>
-										<Relations data={anilist?.data?.Media?.relations} />
+										<Relations
+											data={anilist?.data?.Media?.relations}
+											parentMediaId={aniId}
+										/>
 									</View>
 								)}
 								<AccordionMemo title="Characters / Staff">
 									{anilist?.data?.Media?.characters && (
 										<View>
 											<CharacterPrevList
+												mediaId={aniId}
 												data={anilist?.data?.Media?.characters}
 												openMore={() =>
 													router.push({
@@ -266,6 +270,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 									{anilist?.data?.Media?.staff && (
 										<View>
 											<StaffPrevList
+												mediaId={aniId}
 												data={anilist?.data?.Media?.staff}
 												openMore={() =>
 													router.push({
@@ -309,7 +314,10 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 									/>
 								)}
 								{anilist?.data?.Media?.recommendations && (
-									<RecList data={anilist?.data?.Media?.recommendations} />
+									<RecList
+										data={anilist?.data?.Media?.recommendations}
+										parentMediaId={aniId}
+									/>
 								)}
 								{anilist?.data?.Media?.externalLinks &&
 									anilist?.data?.Media?.siteUrl && (

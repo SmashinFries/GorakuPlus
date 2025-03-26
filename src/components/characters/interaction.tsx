@@ -5,29 +5,33 @@ import { ActionIcon } from '../media/sections/entry';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
-import { useQueryClient } from '@tanstack/react-query';
-import { useToggleFavMutation } from '@/api/anilist/__genereated__/gql';
 import { useState } from 'react';
+import { useToggleFavInvalidateMutation } from '@/api/anilist/extended';
+import { FavMediaType, ToggleFavMetaData } from '@/api/anilist/queryUpdates';
 
 type CharStaffInteractionBarProps = {
 	id: number;
 	isFav: boolean;
 	share_url: string;
 	edit_url: string;
+	type: FavMediaType;
 };
 export const CharStaffInteractionBar = ({
 	id,
 	isFav,
 	edit_url,
 	share_url,
+	type,
 }: CharStaffInteractionBarProps) => {
 	const { userID } = useAuthStore().anilist;
 	const { colors } = useAppTheme();
 	const { width } = useWindowDimensions();
-	const queryClient = useQueryClient();
 	const [isFavorite, setIsFavorite] = useState(isFav);
-	const { isPending, mutateAsync: toggleFav } = useToggleFavMutation({
-		onSuccess: () => queryClient.invalidateQueries(),
+	const { isPending, mutateAsync: toggleFav } = useToggleFavInvalidateMutation({
+		meta: {
+			id: id,
+			type: type,
+		} as ToggleFavMetaData,
 	});
 	const containerWidth = width / 3;
 
@@ -96,7 +100,7 @@ export const CharStaffInteractionBar = ({
 					<ActionIcon onPress={onFavoriteToggle}>
 						<IconButton
 							icon={isFavorite ? 'heart' : 'heart-outline'}
-							iconColor={isFavorite ? colors.primary : null}
+							iconColor={isFavorite ? colors.primary : undefined}
 							disabled={userID ? false : true}
 							size={24}
 							loading={isPending}

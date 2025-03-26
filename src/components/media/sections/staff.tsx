@@ -10,8 +10,9 @@ import {
 type StaffPrevListProps = {
 	data: AniMediaQuery_Media_Media_staff_StaffConnection;
 	openMore: () => void;
+	mediaId: number;
 };
-export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
+export const StaffPrevList = ({ data, mediaId, openMore }: StaffPrevListProps) => {
 	const keyExtractor = useCallback(
 		(
 			item: AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge | null,
@@ -23,7 +24,12 @@ export const StaffPrevList = ({ data, openMore }: StaffPrevListProps) => {
 		item,
 	}: ListRenderItemInfo<AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge | null>) =>
 		item && item?.node?.id ? (
-			<StaffCard {...item.node} role={item.role ?? undefined} isStaff />
+			<StaffCard
+				{...item.node}
+				role={item.role ?? undefined}
+				parentMediaId={mediaId}
+				isStaff
+			/>
 		) : null;
 
 	if ((data?.edges?.length ?? 0) < 1) {
