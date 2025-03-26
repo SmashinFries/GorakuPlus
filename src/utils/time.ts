@@ -95,12 +95,13 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 		(futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
 	);
 	const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
-	return `${pos_estimated_days > 1
+	return `${
+		pos_estimated_days > 1
 			? pos_estimated_days?.toString() + ' days'
 			: pos_estimated_days === 1
 				? pos_estimated_days.toString() + ' day'
 				: 'Today'
-		}`;
+	}`;
 };
 
 export const getMovieDuration = (minutes: number) => {
@@ -219,7 +220,11 @@ const formatDays = (timeUnits: ReturnType<typeof calculateTimeUnits>) => {
 	return 'Soon';
 };
 
-export const getTimeUntil = (time: number, format: 'until' | 'createdAt' | 'days' = 'until') => {
+export const getTimeUntil = (
+	time: number | null | undefined,
+	format: 'until' | 'createdAt' | 'days' = 'until',
+) => {
+	if (!time) return;
 	const diffTime = Math.abs(new Date(time * 1000).getTime() - new Date().getTime());
 	const timeUnits = calculateTimeUnits(diffTime);
 
