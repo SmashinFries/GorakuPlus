@@ -17,7 +17,7 @@ const config: ExpoConfig = {
 	icon: './assets/iconsv3/icon.png',
 	userInterfaceStyle: 'automatic',
 	jsEngine: 'hermes',
-	newArchEnabled: false,
+	newArchEnabled: false, // screen transitions and accordian anims dont work :/
 	experiments: {
 		tsconfigPaths: true,
 		typedRoutes: true,
@@ -32,16 +32,19 @@ const config: ExpoConfig = {
 		'expo-router',
 		'expo-font',
 		'expo-secure-store',
+		'react-native-bottom-tabs',
 		[
 			'expo-build-properties',
 			{
 				ios: {
-					useFrameworks: 'static',
 					deploymentTarget: '17.0',
+					extraPods: [
+						{ name: 'SDWebImage', modular_headers: true },
+						{ name: 'SDWebImageSVGCoder', modular_headers: true },
+					],
 				},
 				android: {
 					useLegacyPackaging: true,
-					newArchEnabled: false, // screen transitions and accordian anims dont work :/
 				},
 			},
 		],
@@ -91,6 +94,14 @@ const config: ExpoConfig = {
 					backgroundColor: '#000000',
 				},
 				imageWidth: 200,
+			},
+		],
+		[
+			'react-native-edge-to-edge',
+			{
+				android: {
+					parentTheme: 'Material3',
+				},
 			},
 		],
 	],
