@@ -1,7 +1,6 @@
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { FlatList, View, useWindowDimensions } from 'react-native';
-import { Text } from 'react-native-paper';
-import { ReactNode, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import {
 	CharacterCard,
 	CharacterRowCard,
@@ -15,9 +14,7 @@ import { router } from 'expo-router';
 import { useSearchStore } from '@/store/search/searchStore';
 import useDebounce from '@/hooks/useDebounce';
 import {
-	CharacterSearchQuery,
 	CharacterSearchQuery_Page_Page_characters_Character,
-	MediaSearchQuery,
 	MediaSearchQuery_Page_Page_media_Media,
 	MediaType,
 	StaffSearchQuery,
@@ -41,6 +38,7 @@ import { useDisplayStore } from '@/store/displayStore';
 import { LongScrollView } from '../list';
 import { useShallow } from 'zustand/react/shallow';
 import { GorakuRefreshControl } from '../explore/lists';
+import { ListHeading } from '../text';
 
 const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
 
@@ -217,19 +215,11 @@ const SearchList = ({
 	);
 };
 
-const SearchAllTitle = ({ children }: { children: ReactNode }) => {
-	const { colors } = useAppTheme();
-	return (
-		<View style={{ backgroundColor: colors.background, padding: 6, paddingLeft: 10 }}>
-			<Text variant="headlineMedium">{children}</Text>
-		</View>
-	);
-};
-
 export const SearchAllList = () => {
 	const { width } = useWindowDimensions();
+	const { colors } = useAppTheme();
 
-	const query = useSearchStore(useShallow((state) => state.query));
+	const { query, updateSearchType, updateMediaFilter } = useSearchStore();
 	const showNSFW = useSettingsStore(useShallow((state) => state.showNSFW));
 	const debouncedSearch = useDebounce(query, 1000) as string;
 
@@ -237,6 +227,33 @@ export const SearchAllList = () => {
 		{ search: debouncedSearch, perPage: 6, isAdult: showNSFW ? undefined : false },
 		{ enabled: debouncedSearch?.length > 0 },
 	);
+
+	const onMore = (type: SearchAllTypes) => {
+		switch (type) {
+			case 'anime':
+				updateMediaFilter({}, { asc: false, value: 'SEARCH_MATCH' });
+				updateSearchType(MediaType.Anime);
+				break;
+			case 'manga':
+				updateMediaFilter({}, { asc: false, value: 'SEARCH_MATCH' });
+				updateSearchType(MediaType.Manga);
+				break;
+			case 'characters':
+				updateSearchType('CHARACTER');
+				break;
+			case 'staff':
+				updateSearchType('STAFF');
+				break;
+			case 'studios':
+				updateSearchType('STUDIO');
+				break;
+			case 'users':
+				updateSearchType('USER');
+				break;
+			default:
+				break;
+		}
+	};
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
@@ -252,7 +269,7 @@ export const SearchAllList = () => {
 					<GorakuActivityIndicator />
 				</View>
 			)}
-			{data && (
+			{data && !isFetching && (
 				<LongScrollView
 					stickyHeaderIndices={[0, 2, 4, 6, 8, 10]}
 					scrollToTopIconTop={5}
@@ -260,20 +277,44 @@ export const SearchAllList = () => {
 						<GorakuRefreshControl refreshing={isRefetching} onRefresh={refetch} />
 					}
 				>
+					{/* ANIME */}
 					{(data?.Anime?.media?.length ?? 0) > 0 && (
-						<SearchAllTitle>Anime</SearchAllTitle>
+						<ListHeading
+							title={'Anime'}
+							titleStyle={{ fontWeight: 'bold' }}
+							icon={'arrow-right'}
+							titleVariant="headlineMedium"
+							onIconPress={() => onMore('anime')}
+							style={{ backgroundColor: colors.background }}
+						/>
 					)}
 					{(data?.Anime?.media?.length ?? 0) > 0 && (
 						<SearchAllSection data={data?.Anime?.media ?? undefined} type="anime" />
 					)}
+					{/* MANGA */}
 					{(data?.Manga?.media?.length ?? 0) > 0 && (
-						<SearchAllTitle>Manga</SearchAllTitle>
+						<ListHeading
+							title={'Manga'}
+							titleStyle={{ fontWeight: 'bold' }}
+							icon={'arrow-right'}
+							titleVariant="headlineMedium"
+							onIconPress={() => onMore('manga')}
+							style={{ backgroundColor: colors.background }}
+						/>
 					)}
 					{(data?.Manga?.media?.length ?? 0) > 0 && (
 						<SearchAllSection data={data?.Manga?.media ?? undefined} type="manga" />
 					)}
+					{/* CHARACTERS */}
 					{(data?.Characters?.characters?.length ?? 0) > 0 && (
-						<SearchAllTitle>Characters</SearchAllTitle>
+						<ListHeading
+							title={'Characters'}
+							titleStyle={{ fontWeight: 'bold' }}
+							icon={'arrow-right'}
+							titleVariant="headlineMedium"
+							onIconPress={() => onMore('characters')}
+							style={{ backgroundColor: colors.background }}
+						/>
 					)}
 					{(data?.Characters?.characters?.length ?? 0) > 0 && (
 						<SearchAllSection
@@ -281,14 +322,30 @@ export const SearchAllList = () => {
 							type="characters"
 						/>
 					)}
+					{/* STAFF */}
 					{(data?.Staff?.staff?.length ?? 0) > 0 && (
-						<SearchAllTitle>Staff</SearchAllTitle>
+						<ListHeading
+							title={'Staff'}
+							titleStyle={{ fontWeight: 'bold' }}
+							icon={'arrow-right'}
+							titleVariant="headlineMedium"
+							onIconPress={() => onMore('staff')}
+							style={{ backgroundColor: colors.background }}
+						/>
 					)}
 					{(data?.Staff?.staff?.length ?? 0) > 0 && (
 						<SearchAllSection data={data?.Staff?.staff ?? undefined} type="staff" />
 					)}
+					{/* STUDIOS */}
 					{(data?.Studios?.studios?.length ?? 0) > 0 && (
-						<SearchAllTitle>Studios</SearchAllTitle>
+						<ListHeading
+							title={'Studios'}
+							titleStyle={{ fontWeight: 'bold' }}
+							icon={'arrow-right'}
+							titleVariant="headlineMedium"
+							onIconPress={() => onMore('studios')}
+							style={{ backgroundColor: colors.background }}
+						/>
 					)}
 					{(data?.Studios?.studios?.length ?? 0) > 0 && (
 						<SearchAllSection
@@ -296,8 +353,16 @@ export const SearchAllList = () => {
 							type="studios"
 						/>
 					)}
+					{/* USERS */}
 					{(data?.Users?.users?.length ?? 0) > 0 && (
-						<SearchAllTitle>Users</SearchAllTitle>
+						<ListHeading
+							title={'Users'}
+							titleStyle={{ fontWeight: 'bold' }}
+							icon={'arrow-right'}
+							titleVariant="headlineMedium"
+							onIconPress={() => onMore('users')}
+							style={{ backgroundColor: colors.background }}
+						/>
 					)}
 					{(data?.Users?.users?.length ?? 0) > 0 && (
 						<SearchAllSection data={data?.Users?.users ?? undefined} type="users" />
