@@ -586,6 +586,7 @@ type CharacterCardProps = (CharacterMetaDataFragment | StaffMetaDataFragment) & 
 	onPress?: () => void;
 	onLongSelect?: () => void;
 	disableFav?: boolean;
+	isFavList?: boolean;
 	parentMediaId?: number;
 };
 export const CharacterCard = ({
@@ -631,7 +632,7 @@ export const CharacterCard = ({
 			>
 				<View>
 					<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
-					{props.isFavourite && (
+					{props.isFavourite && !props.isFavList && (
 						<View style={{ position: 'absolute', bottom: 0, right: 0 }}>
 							<Icon size={18} source={'heart'} color="red" />
 						</View>
@@ -721,7 +722,14 @@ export const CharacterRowCard = ({
 						alignItems: 'center',
 					}}
 				>
-					<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
+					<View>
+						<Avatar.Image source={{ uri: props.image?.large ?? undefined }} />
+						{props.isFavourite && !props.isFavList && (
+							<View style={{ position: 'absolute', bottom: 0, right: 0 }}>
+								<Icon size={18} source={'heart'} color="red" />
+							</View>
+						)}
+					</View>
 					<View
 						style={{
 							height: card_height - 16,
