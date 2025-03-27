@@ -50,7 +50,7 @@ export const useSettingsStore = create<SettingsState & SettingsAction>()(
 		(set, _get) => ({
 			navAnimation: 'fade',
 			btmTabLabels: true,
-			btmTabShifting: true,
+			btmTabShifting: false,
 			btmTabHaptics: false,
 			allowSensorMotion: false,
 			interaction3D: false,
