@@ -44,6 +44,7 @@ const AppearancePage = () => {
 		autoRotation,
 		allowSensorMotion,
 		allowBgParticles,
+		btmTabShifting,
 		setSettings,
 		toggle,
 	} = useSettingsStore(
@@ -151,12 +152,19 @@ const AppearancePage = () => {
 					/>
 				</List.Section>
 				<List.Section>
-					<ListSubheader title="Navigation" />
+					<ListSubheader title="Bottom Tabs" />
 					<MaterialSwitchListItem
 						title={'Bottom Tab Labels'}
 						description={'Show labels on bottom tab bar'}
 						onPress={() => toggle('btmTabLabels')}
 						selected={!!btmTabLabels}
+						fluid
+					/>
+					<MaterialSwitchListItem
+						title={'Bottom Tab Shifting'}
+						description={'Only show label of active tab'}
+						onPress={() => toggle('btmTabShifting')}
+						selected={!!btmTabShifting}
 						fluid
 					/>
 					<MaterialSwitchListItem
@@ -169,13 +177,7 @@ const AppearancePage = () => {
 				</List.Section>
 				<List.Section>
 					<ListSubheader title="Animations" />
-					{/* <MaterialSwitchListItem
-						title={'Bottom Tab Shifting'}
-						description={'Enable labels to see the effect'}
-						onPress={onBtmTabShiftingChange}
-						selected={!!btmTabShifting}
-						fluid
-					/> */}
+
 					<MaterialSwitchListItem
 						title={'Background Particles'}
 						description={'Goraku particles float in the background!'}
