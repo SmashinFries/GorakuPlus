@@ -55,10 +55,12 @@ type MediaCardProps = MainMetaFragment & {
 	isMangaDex?: boolean;
 	customEPText?: string;
 	parentMediaId?: number;
+	disableFav?: boolean;
 };
 export const MediaCard = ({
 	navigate = () => null,
 	allowEntryEdit = true,
+	disableFav = false,
 	...props
 }: MediaCardProps) => {
 	const card_height = props.height ?? 200;
@@ -99,6 +101,7 @@ export const MediaCard = ({
 						followingUsername: props.followingUsername,
 						allowEntryEdit: allowEntryEdit,
 						parentMediaId: props.parentMediaId,
+						disableFav,
 					}),
 				},
 			});
@@ -269,6 +272,7 @@ export const MediaCard = ({
 export const MediaCardRow = ({
 	navigate = () => null,
 	allowEntryEdit = true,
+	disableFav = false,
 	...props
 }: MediaCardProps) => {
 	const card_height = props.height ?? 80;
@@ -291,6 +295,8 @@ export const MediaCardRow = ({
 					activityId: props.activityId,
 					followingUsername: props.followingUsername,
 					allowEntryEdit: allowEntryEdit,
+					parentMediaId: props.parentMediaId,
+					disableFav,
 				}),
 			},
 		});
@@ -578,6 +584,97 @@ export const UserCard = ({ onPress = () => null, ...props }: UserCardProps) => {
 		</AnimViewMem>
 	);
 };
+export const UserRowCard = ({ onPress = () => null, ...props }: UserCardProps) => {
+	const card_height = 80;
+	const { colors } = useAppTheme();
+	const viewerName = useAuthStore(useShallow((state) => state.anilist.username));
+
+	const onNav = () => {
+		// TrueSheet.dismiss('QuickActionUserSheet');
+		viewerName !== props.name && router.push(`/user/${props.name}`); // dont nav if user is viewer
+	};
+
+	const onLongPress = () => {
+		// Haptics.selectionAsync();
+		// viewerName !== props.name && openUserQuickSheet(props);
+		viewerName !== props.name &&
+			router.navigate({
+				pathname: '/(sheets)/userActions',
+				params: {
+					params: JSON.stringify(props),
+				},
+			});
+	};
+
+	return (
+		<AnimViewMem style={{ width: '100%' }}>
+			<Pressable
+				onPress={() => onPress() ?? onNav()}
+				onLongPress={() => {
+					onLongPress();
+				}}
+				android_ripple={{ color: colors.primary, foreground: true }}
+				style={{
+					overflow: 'hidden',
+					height: card_height,
+					marginVertical: 6,
+					width: '100%',
+					flexDirection: 'row',
+					alignItems: 'center',
+					paddingHorizontal: 10,
+				}}
+			>
+				<View
+					style={{
+						flexDirection: 'row',
+						height: '100%',
+						width: '100%',
+						alignItems: 'center',
+					}}
+				>
+					<View>
+						<Avatar.Image source={{ uri: props.avatar?.large ?? undefined }} />
+					</View>
+					<View
+						style={{
+							height: card_height - 16,
+							borderRadius: 24,
+							width: 1.5,
+							backgroundColor: colors.elevation.level3,
+							marginHorizontal: 12,
+							overflow: 'hidden',
+						}}
+					/>
+					<View style={{ padding: 5, paddingHorizontal: 6 }}>
+						<Text
+							style={{
+								color: colors.onBackground,
+							}}
+						>
+							{props.name}
+						</Text>
+						{props.isFollower || props.isFollowing ? (
+							<Text
+								numberOfLines={2}
+								variant="labelMedium"
+								style={{
+									textTransform: 'capitalize',
+									// width: 110 + 10,
+									color: colors.onSurfaceVariant,
+									paddingBottom: 10,
+								}}
+							>
+								{props.isFollowing ? 'Following' : ''}
+								{props.isFollower && props.isFollowing ? ' ・ ' : ''}
+								{props.isFollower ? 'Follower' : ''}
+							</Text>
+						) : null}
+					</View>
+				</View>
+			</Pressable>
+		</AnimViewMem>
+	);
+};
 
 type CharacterCardProps = (CharacterMetaDataFragment | StaffMetaDataFragment) & {
 	role?: CharacterRole | string;
@@ -692,6 +789,8 @@ export const CharacterRowCard = ({
 				params: JSON.stringify({
 					...props,
 					type: props.isStaff ? 'staff' : 'character',
+					disableFav: !!props.disableFav,
+					parentMediaId: props.parentMediaId,
 				}),
 			},
 		});
