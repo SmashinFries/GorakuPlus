@@ -1,40 +1,28 @@
 import { Avatar, Text } from 'react-native-paper';
 import { Pressable, ScrollView, View } from 'react-native';
-import { User } from '@/api/anilist/__genereated__/gql';
+import {
+	User,
+	UserOverviewQuery_followers_Page_followers_User,
+} from '@/api/anilist/__genereated__/gql';
 import { router } from 'expo-router';
+import { ListHeading } from '../text';
+import { UserCard } from '../cards';
 
 type FollowUserItemProps = {
-	user: User;
+	user: UserOverviewQuery_followers_Page_followers_User | null | undefined;
 };
 const FollowUserItem = ({ user }: FollowUserItemProps) => {
-	return (
-		<Pressable
-			onPress={() =>
-				router.push({
-					pathname: '/user',
-					params: {
-						userId: user.id,
-						name: user.name,
-						avatarUrl: user.avatar.large,
-						bannerUrl: user.bannerImage,
-					},
-				})
-			}
-			style={{ margin: 12, alignItems: 'center' }}
-		>
-			<View>
-				<Avatar.Image size={80} source={{ uri: user?.avatar?.large }} />
-			</View>
-			<Text style={{ textAlign: 'center' }}>{user.name}</Text>
-		</Pressable>
-	);
+	if (!user) return null;
+	return <UserCard {...user} />;
 };
 
 type FollowRowProps = {
 	followType: 'followers' | 'following';
-	data: User[];
+	userId?: number;
+	username?: string;
+	data: (UserOverviewQuery_followers_Page_followers_User | null)[] | null | undefined;
 };
-export const FollowRow = ({ followType, data }: FollowRowProps) => {
+export const FollowRow = ({ followType, data, username, userId }: FollowRowProps) => {
 	if (!data || data.length < 1) {
 		return (
 			<Text style={{ textAlign: 'center' }}>
@@ -43,8 +31,24 @@ export const FollowRow = ({ followType, data }: FollowRowProps) => {
 		);
 	}
 	return (
-		<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-			{data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)}
-		</ScrollView>
+		<View>
+			<ListHeading
+				title={followType}
+				titleStyle={{ textTransform: 'capitalize' }}
+				icon={data?.length === 24 ? 'arrow-right' : undefined}
+				onIconPress={() =>
+					router.push({
+						pathname: `/user/[username]/${followType}`,
+						params: {
+							username: username as string,
+							userId,
+						},
+					})
+				}
+			/>
+			<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				{data?.map((user, idx) => <FollowUserItem key={idx} user={user} />)}
+			</ScrollView>
+		</View>
 	);
 };
