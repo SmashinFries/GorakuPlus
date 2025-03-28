@@ -38,6 +38,7 @@ export type MediaQuickActionProps = MainMetaFragment & {
 	followingUsername?: string;
 	allowEntryEdit?: boolean;
 	parentMediaId?: number;
+	disableFav?: boolean;
 };
 const MediaQuickActionSheet = () => {
 	const { params } = useLocalSearchParams<{ params: string }>();
@@ -137,6 +138,7 @@ const MediaQuickActionSheet = () => {
 	};
 
 	const onFavorite = async () => {
+		if (payload.disableFav) return;
 		try {
 			await toggleFav(isAnime ? { animeId: payload?.id } : { mangaId: payload?.id });
 			setIsFav((prev) => !prev);
@@ -279,7 +281,11 @@ const MediaQuickActionSheet = () => {
 						)}
 						{!!userId && (
 							<List.Item
-								title={isFav || !payload.allowEntryEdit ? 'Unfavorite' : 'Favorite'}
+								title={isFav ? 'Unfavorite' : 'Favorite'}
+								description={
+									payload.disableFav ? 'Favoriting is not available.' : undefined
+								}
+								descriptionStyle={{ opacity: payload.disableFav ? 0.38 : 1 }}
 								left={(props) => (
 									<List.Icon
 										{...props}
@@ -294,8 +300,34 @@ const MediaQuickActionSheet = () => {
 										}
 									/>
 								)}
+								titleStyle={{
+									opacity: payload.disableFav ? 0.38 : 1,
+								}}
+								disabled={payload.disableFav}
 								onPress={onFavorite}
 							/>
+							// <List.Item
+							// 	title={
+							// 		(isFav || !payload.allowEntryEdit) && !payload.disableFav
+							// 			? 'Unfavorite'
+							// 			: 'Favorite'
+							// 	}
+							// 	left={(props) => (
+							// 		<List.Icon
+							// 			{...props}
+							// 			icon={
+							// 				isFavPending
+							// 					? () => <ActivityIndicator />
+							// 					: payload.allowEntryEdit
+							// 						? !isFav
+							// 							? 'heart-outline'
+							// 							: 'heart-remove-outline'
+							// 						: 'heart-remove-outline'
+							// 			}
+							// 		/>
+							// 	)}
+							// 	onPress={onFavorite}
+							// />
 						)}
 						{payload?.followingUsername && (
 							<List.Item

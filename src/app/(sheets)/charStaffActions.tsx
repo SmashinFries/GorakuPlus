@@ -27,7 +27,7 @@ const CharStaffActionSheet = () => {
 	const sheet = useRef<TrueSheet>(null);
 	const userId = useAuthStore(useShallow((state) => state.anilist.userID));
 	const [titleIdx, setTitleIdx] = useState(0);
-	const [isFav, setIsFav] = useState(props?.isFavourite);
+	const [isFav, setIsFav] = useState(props.disableFav ? false : props?.isFavourite);
 
 	const { mutateAsync: toggleFav, isPending } = useToggleFavInvalidateMutation({
 		meta: {
