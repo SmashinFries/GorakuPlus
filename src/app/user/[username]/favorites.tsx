@@ -140,11 +140,16 @@ const MediaTabList = ({
 							marginHorizontal: 5,
 						}}
 					>
-						<MediaCard {...itemProps.item} fitToParent allowEntryEdit={false} />
+						<MediaCard
+							{...itemProps.item}
+							fitToParent
+							allowEntryEdit={false}
+							disableFav
+						/>
 					</View>
 				</View>
 			) : (
-				<MediaCardRow {...itemProps.item} />
+				<MediaCardRow {...itemProps.item} disableFav />
 			)
 		) : null;
 	};
@@ -364,7 +369,12 @@ const WaifuTab = ({
 		return item?.id ? (
 			displayMode === 'COMPACT' ? (
 				<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
-					<CharacterCard {...item} isFavourite isFavList />
+					<CharacterCard
+						{...item}
+						isFavourite
+						isFavList
+						disableFav={username !== viewerUsername}
+					/>
 				</View>
 			) : (
 				<CharacterRowCard {...item} isFavourite isFavList />
@@ -472,10 +482,10 @@ const StaffTab = ({
 		return item?.id ? (
 			displayMode === 'COMPACT' ? (
 				<View style={{ alignItems: 'center', marginVertical: 15, width: itemWidth }}>
-					<CharacterCard {...item} isFavourite />
+					<CharacterCard {...item} isFavourite disableFav isFavList />
 				</View>
 			) : (
-				<CharacterRowCard {...item} isFavourite />
+				<CharacterRowCard {...item} isFavourite disableFav isFavList />
 			)
 		) : null;
 	};
