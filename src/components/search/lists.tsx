@@ -8,6 +8,7 @@ import {
 	MediaCardRow,
 	StudioCard,
 	UserCard,
+	UserRowCard,
 } from '../cards';
 import Animated from 'react-native-reanimated';
 import { router } from 'expo-router';
@@ -97,12 +98,16 @@ const SearchAllRenderItem = ({
 				<View
 					style={{
 						alignItems: 'center',
-						marginVertical: 15,
+						marginVertical: displayMode === 'COMPACT' ? 15 : 0,
 						// marginHorizontal: 4,
 						width: itemWidth,
 					}}
 				>
-					<CharacterCard {...item} isStaff={type === 'staff'} />
+					{displayMode === 'COMPACT' ? (
+						<CharacterCard {...item} isStaff={type === 'staff'} />
+					) : (
+						<CharacterRowCard {...item} isStaff={type === 'staff'} />
+					)}
 				</View>
 			);
 		case 'studios':
@@ -132,12 +137,12 @@ const SearchAllRenderItem = ({
 				<View
 					style={{
 						alignItems: 'center',
-						marginVertical: 15,
+						marginVertical: displayMode === 'COMPACT' ? 15 : 0,
 						// marginHorizontal: 4,
 						width: itemWidth,
 					}}
 				>
-					<UserCard {...item} />
+					{displayMode === 'COMPACT' ? <UserCard {...item} /> : <UserRowCard {...item} />}
 				</View>
 			);
 		default:
@@ -840,7 +845,7 @@ export const UserSearchList = () => {
 	);
 	const { width } = useWindowDimensions();
 
-	const { columns, itemWidth } = useColumns('search');
+	const { columns, displayMode, itemWidth } = useColumns('search');
 
 	const allResults: NonNullable<UserSearchQuery['Page']>['users'] = data?.pages
 		?.flatMap((val) => val.Page?.users ?? [])
@@ -874,11 +879,15 @@ export const UserSearchList = () => {
 						<View
 							style={{
 								alignItems: 'center',
-								marginVertical: 15,
+								marginVertical: displayMode === 'COMPACT' ? 15 : 0,
 								width: itemWidth,
 							}}
 						>
-							<UserCard {...item} />
+							{displayMode === 'COMPACT' ? (
+								<UserCard {...item} />
+							) : (
+								<UserRowCard {...item} />
+							)}
 						</View>
 					) : null
 				}
