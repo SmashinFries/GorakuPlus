@@ -15,21 +15,9 @@ const ListPage = () => {
 	const [index, setIndex] = useState(0);
 	const filterSheetRef = useRef<TrueSheet>(null);
 
-	// const {
-	// 	animeList,
-	// 	mangaList,
-	// 	rootRoutes,
-	// 	animeRoutes = [],
-	// 	mangaRoutes = [],
-	// 	loading,
-	// 	isRefreshing,
-	// 	refreshAnimeList,
-	// 	refreshMangaList,
-	// } = useList(userID as number);
-
 	const [routes, setRoutes] = useState([
 		{ key: 'anime', title: 'Anime' },
-		{ key: 'manga', title: 'Manga' },
+		{ key: 'manga', title: 'Manga (0)' },
 	]);
 
 	const updateTitleCount = (key: string, total?: number) => {
@@ -58,24 +46,10 @@ const ListPage = () => {
 			case 'anime':
 				return (
 					<AnimeTab userId={userID as number} updateMainTitleCount={updateTitleCount} />
-					// <ListTabs
-					// 	type={MediaType.Anime}
-					// 	data={animeList?.MediaListCollection}
-					// 	routes={animeRoutes}
-					// 	isRefreshing={isRefreshing}
-					// 	onRefresh={refreshAnimeList}
-					// />
 				);
 			case 'manga':
 				return (
 					<MangaTab userId={userID as number} updateMainTitleCount={updateTitleCount} />
-					// <ListTabs
-					// 	type={MediaType.Manga}
-					// 	data={mangaList?.MediaListCollection}
-					// 	routes={mangaRoutes}
-					// 	isRefreshing={isRefreshing}
-					// 	onRefresh={refreshAnimeList}
-					// />
 				);
 			default:
 				return null;
