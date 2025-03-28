@@ -106,11 +106,11 @@ export const ActivityOverview = ({
 				title="List Activity"
 				icon={data?.length > 0 ? 'chevron-right' : undefined}
 				onIconPress={() =>
-					router.navigate({
-						// @ts-ignore
-						pathname: `/user/${username}/activity`,
+					router.push({
+						pathname: `/user/[username]/activity`,
 						params: {
 							userId: userId,
+							username: username,
 						},
 					})
 				}
