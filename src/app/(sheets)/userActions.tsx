@@ -1,7 +1,7 @@
 import { UserSearchMetaFragment, useToggleFollowMutation } from '@/api/anilist/__genereated__/gql';
 import AniListMarkdownViewer from '@/components/markdown/renderer';
 import { BottomSheetAccordion, GlobalBottomSheetParent } from '@/components/sheets/bottomsheets';
-import { copyToClipboard } from '@/utils';
+import { copyToClipboard, getTimeUntil } from '@/utils';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -90,12 +90,20 @@ const UserQuickActionSheet = () => {
 						>
 							{params?.name}
 						</Text>
-						{params?.isFollower ? (
-							<Text>
-								<Icon source={'account-eye-outline'} size={undefined} />
-								{' Follows you'}
-							</Text>
-						) : null}
+						<View style={{ gap: 6 }}>
+							{params?.isFollower ? (
+								<Text>
+									<Icon source={'account-eye-outline'} size={16} />
+									{' Follows you'}
+								</Text>
+							) : null}
+							{params?.createdAt ? (
+								<Text>
+									<Icon source={'calendar'} size={16} />
+									{` Created ${getTimeUntil(params.createdAt, 'createdAt')}`}
+								</Text>
+							) : null}
+						</View>
 					</View>
 				</View>
 				{params?.aboutHTML ? (
