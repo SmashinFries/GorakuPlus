@@ -624,6 +624,7 @@ query UserFollowing($userId: Int!, $page: Int) {
 		pageInfo {
 			total
 			hasNextPage
+			currentPage
 		}
 		following(userId: $userId) {
 			id
@@ -646,6 +647,7 @@ query UserFollowers($userId: Int!, $page: Int) {
 		pageInfo {
 			total
 			hasNextPage
+			currentPage
 		}
 		followers(userId: $userId) {
 			id

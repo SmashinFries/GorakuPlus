@@ -6832,7 +6832,7 @@ export type UserOverviewQueryVariables = Exact<{
 
 export type UserOverviewQuery = UserOverviewQuery_Query;
 
-export type UserFollowingQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null };
+export type UserFollowingQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null };
 
 export type UserFollowingQuery_Page_Page_following_User_avatar_UserAvatar = { __typename?: 'UserAvatar', large?: string | null, medium?: string | null };
 
@@ -6851,7 +6851,7 @@ export type UserFollowingQueryVariables = Exact<{
 
 export type UserFollowingQuery = UserFollowingQuery_Query;
 
-export type UserFollowersQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null };
+export type UserFollowersQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'PageInfo', total?: number | null, hasNextPage?: boolean | null, currentPage?: number | null };
 
 export type UserFollowersQuery_Page_Page_followers_User_avatar_UserAvatar = { __typename?: 'UserAvatar', large?: string | null, medium?: string | null };
 
@@ -12888,6 +12888,7 @@ export const UserFollowingDocument = `
     pageInfo {
       total
       hasNextPage
+      currentPage
     }
     following(userId: $userId) {
       id
@@ -12954,6 +12955,7 @@ export const UserFollowersDocument = `
     pageInfo {
       total
       hasNextPage
+      currentPage
     }
     followers(userId: $userId) {
       id
