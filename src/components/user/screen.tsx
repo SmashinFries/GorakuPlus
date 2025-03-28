@@ -1,5 +1,5 @@
 import { useWindowDimensions, View } from 'react-native';
-import { ExpandableDescription, FullscreenBackground } from '../animations';
+import { Accordion, ExpandableDescription, FullscreenBackground } from '../animations';
 import FavoritesOverview from './favoritesOverview';
 import { AddFriendDialog } from '@/components/user/dialogs';
 import { ProfileActionBar } from '@/components/user/actionbar';
@@ -25,6 +25,7 @@ import { ActivityOverview } from './activityItem';
 import { useShallow } from 'zustand/react/shallow';
 import { usePostsSearch } from '@/api/danbooru/danbooru';
 import { GorakuRefreshControl } from '../explore/lists';
+import { FollowRow } from './followOverview';
 
 const UnauthedPage = () => {
 	const { width } = useWindowDimensions();
@@ -239,6 +240,22 @@ export const UserScreen = ({
 								>
 									View List
 								</Button>
+							)}
+							{userOverviewQuery?.data && (
+								<Accordion title="Followers / Following">
+									<FollowRow
+										data={userOverviewQuery?.data?.following?.following}
+										followType="following"
+										userId={userDataQuery?.data?.User?.id}
+										username={isViewer ? (viewerName ?? undefined) : username}
+									/>
+									<FollowRow
+										data={userOverviewQuery?.data?.followers?.followers}
+										followType="followers"
+										userId={userDataQuery?.data?.User?.id}
+										username={isViewer ? (viewerName ?? undefined) : username}
+									/>
+								</Accordion>
 							)}
 							<FavoritesOverview
 								data={userDataQuery?.data?.User?.favourites}
