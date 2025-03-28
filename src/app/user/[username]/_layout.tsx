@@ -1,5 +1,6 @@
+import PaperHeader from '@/components/headers';
 import AnimatedStack from '@/components/stack';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 
 const UserLayout = () => {
 	return (
@@ -16,6 +17,50 @@ const UserLayout = () => {
 				options={{ headerShown: true, title: 'Statistics' }}
 			/>
 			<Stack.Screen name="userList" />
+			<Stack.Screen
+				name="followers"
+				options={{
+					title: 'Followers',
+					headerShown: true,
+					header: (props) => (
+						<PaperHeader
+							{...props}
+							actions={[
+								{
+									icon: 'view-module',
+									onPress: () =>
+										router.push({
+											pathname: '/(sheets)/displayConfig',
+											params: { type: 'search' },
+										}),
+								},
+							]}
+						/>
+					),
+				}}
+			/>
+			<Stack.Screen
+				name="following"
+				options={{
+					title: 'Following',
+					headerShown: true,
+					header: (props) => (
+						<PaperHeader
+							{...props}
+							actions={[
+								{
+									icon: 'view-module',
+									onPress: () =>
+										router.push({
+											pathname: '/(sheets)/displayConfig',
+											params: { type: 'search' },
+										}),
+								},
+							]}
+						/>
+					),
+				}}
+			/>
 			<Stack.Screen
 				name="activity/index"
 				options={{ title: 'Activity', headerShown: true }}
