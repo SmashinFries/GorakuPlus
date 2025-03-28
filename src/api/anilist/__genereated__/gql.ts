@@ -5565,7 +5565,7 @@ export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_Us
 
 export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions = { __typename?: 'MediaListOptions', scoreFormat?: ScoreFormat | null };
 
-export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+export type AniMediaQuery_Following_Page_mediaList_MediaList_user_User = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, createdAt?: number | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
 
 export type AniMediaQuery_Following_Page_mediaList_MediaList = { __typename?: 'MediaList', id: number, status?: MediaListStatus | null, score?: number | null, progress?: number | null, user?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User | null };
 
@@ -6183,11 +6183,11 @@ export type MediaSearchQueryVariables = Exact<{
 
 export type MediaSearchQuery = MediaSearchQuery_Query;
 
-export type UserSearchMetaFragment = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+export type UserSearchMetaFragment = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, createdAt?: number | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
 
 export type UserSearchQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'PageInfo', hasNextPage?: boolean | null, currentPage?: number | null, total?: number | null };
 
-export type UserSearchQuery_Page_Page_users_User = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
+export type UserSearchQuery_Page_Page_users_User = { __typename?: 'User', id: number, name: string, isFollowing?: boolean | null, isFollower?: boolean | null, createdAt?: number | null, siteUrl?: string | null, aboutHTML?: string | null, avatar?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_avatar_UserAvatar | null, mediaListOptions?: AniMediaQuery_Following_Page_mediaList_MediaList_user_User_mediaListOptions_MediaListOptions | null };
 
 export type UserSearchQuery_Page_Page = { __typename?: 'Page', pageInfo?: UserSearchQuery_Page_Page_pageInfo_PageInfo | null, users?: Array<UserSearchQuery_Page_Page_users_User | null> | null };
 
@@ -6759,9 +6759,9 @@ export type UserMetaDataFragment_User_favourites_Favourites_characters_Character
 
 export type UserMetaDataFragment_User_favourites_Favourites = { __typename?: 'Favourites', anime?: UserMetaDataFragment_User_favourites_Favourites_anime_MediaConnection | null, manga?: UserMetaDataFragment_User_favourites_Favourites_manga_MediaConnection | null, characters?: UserMetaDataFragment_User_favourites_Favourites_characters_CharacterConnection | null };
 
-export type UserMetaDataFragment = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: UserMetaDataFragment_User_avatar_UserAvatar | null, stats?: UserMetaDataFragment_User_stats_UserStats | null, statistics?: UserMetaDataFragment_User_statistics_UserStatisticTypes | null, mediaListOptions?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions | null, favourites?: UserMetaDataFragment_User_favourites_Favourites | null };
+export type UserMetaDataFragment = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, createdAt?: number | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: UserMetaDataFragment_User_avatar_UserAvatar | null, stats?: UserMetaDataFragment_User_stats_UserStats | null, statistics?: UserMetaDataFragment_User_statistics_UserStatisticTypes | null, mediaListOptions?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions | null, favourites?: UserMetaDataFragment_User_favourites_Favourites | null };
 
-export type UserDataQuery_User_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: UserMetaDataFragment_User_avatar_UserAvatar | null, stats?: UserMetaDataFragment_User_stats_UserStats | null, statistics?: UserMetaDataFragment_User_statistics_UserStatisticTypes | null, mediaListOptions?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions | null, favourites?: UserMetaDataFragment_User_favourites_Favourites | null };
+export type UserDataQuery_User_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, about?: string | null, siteUrl?: string | null, createdAt?: number | null, unreadNotificationCount?: number | null, aboutHTML?: string | null, avatar?: UserMetaDataFragment_User_avatar_UserAvatar | null, stats?: UserMetaDataFragment_User_stats_UserStats | null, statistics?: UserMetaDataFragment_User_statistics_UserStatisticTypes | null, mediaListOptions?: UserMetaDataFragment_User_mediaListOptions_MediaListOptions | null, favourites?: UserMetaDataFragment_User_favourites_Favourites | null };
 
 export type UserDataQuery_Query = { __typename?: 'Query', User?: UserDataQuery_User_User | null };
 
@@ -6797,7 +6797,7 @@ export type UserOverviewQuery_following_Page_pageInfo_PageInfo = { __typename?: 
 
 export type UserOverviewQuery_following_Page_following_User_avatar_UserAvatar = { __typename?: 'UserAvatar', large?: string | null, medium?: string | null };
 
-export type UserOverviewQuery_following_Page_following_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserOverviewQuery_following_Page_following_User_avatar_UserAvatar | null };
+export type UserOverviewQuery_following_Page_following_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, createdAt?: number | null, aboutHTML?: string | null, avatar?: UserOverviewQuery_following_Page_following_User_avatar_UserAvatar | null };
 
 export type UserOverviewQuery_following_Page = { __typename?: 'Page', pageInfo?: UserOverviewQuery_following_Page_pageInfo_PageInfo | null, following?: Array<UserOverviewQuery_following_Page_following_User | null> | null };
 
@@ -6805,7 +6805,7 @@ export type UserOverviewQuery_followers_Page_pageInfo_PageInfo = { __typename?: 
 
 export type UserOverviewQuery_followers_Page_followers_User_avatar_UserAvatar = { __typename?: 'UserAvatar', large?: string | null, medium?: string | null };
 
-export type UserOverviewQuery_followers_Page_followers_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserOverviewQuery_followers_Page_followers_User_avatar_UserAvatar | null };
+export type UserOverviewQuery_followers_Page_followers_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, createdAt?: number | null, aboutHTML?: string | null, avatar?: UserOverviewQuery_followers_Page_followers_User_avatar_UserAvatar | null };
 
 export type UserOverviewQuery_followers_Page = { __typename?: 'Page', pageInfo?: UserOverviewQuery_followers_Page_pageInfo_PageInfo | null, followers?: Array<UserOverviewQuery_followers_Page_followers_User | null> | null };
 
@@ -6836,7 +6836,7 @@ export type UserFollowingQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'Pag
 
 export type UserFollowingQuery_Page_Page_following_User_avatar_UserAvatar = { __typename?: 'UserAvatar', large?: string | null, medium?: string | null };
 
-export type UserFollowingQuery_Page_Page_following_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserFollowingQuery_Page_Page_following_User_avatar_UserAvatar | null };
+export type UserFollowingQuery_Page_Page_following_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, createdAt?: number | null, aboutHTML?: string | null, avatar?: UserFollowingQuery_Page_Page_following_User_avatar_UserAvatar | null };
 
 export type UserFollowingQuery_Page_Page = { __typename?: 'Page', pageInfo?: UserFollowingQuery_Page_Page_pageInfo_PageInfo | null, following?: Array<UserFollowingQuery_Page_Page_following_User | null> | null };
 
@@ -6855,7 +6855,7 @@ export type UserFollowersQuery_Page_Page_pageInfo_PageInfo = { __typename?: 'Pag
 
 export type UserFollowersQuery_Page_Page_followers_User_avatar_UserAvatar = { __typename?: 'UserAvatar', large?: string | null, medium?: string | null };
 
-export type UserFollowersQuery_Page_Page_followers_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, avatar?: UserFollowersQuery_Page_Page_followers_User_avatar_UserAvatar | null };
+export type UserFollowersQuery_Page_Page_followers_User = { __typename?: 'User', id: number, name: string, bannerImage?: string | null, isFollowing?: boolean | null, isFollower?: boolean | null, isBlocked?: boolean | null, siteUrl?: string | null, createdAt?: number | null, aboutHTML?: string | null, avatar?: UserFollowersQuery_Page_Page_followers_User_avatar_UserAvatar | null };
 
 export type UserFollowersQuery_Page_Page = { __typename?: 'Page', pageInfo?: UserFollowersQuery_Page_Page_pageInfo_PageInfo | null, followers?: Array<UserFollowersQuery_Page_Page_followers_User | null> | null };
 
@@ -7309,6 +7309,7 @@ export const UserSearchMetaFragmentDoc = `
   mediaListOptions {
     scoreFormat
   }
+  createdAt
   siteUrl
 }
     `;
@@ -7470,6 +7471,7 @@ export const UserMetaDataFragmentDoc = `
     }
   }
   siteUrl
+  createdAt
   unreadNotificationCount
 }
     `;
@@ -12792,11 +12794,13 @@ export const UserOverviewDocument = `
         large
         medium
       }
+      aboutHTML: about(asHtml: true)
       bannerImage
       isFollowing
       isFollower
       isBlocked
       siteUrl
+      createdAt
     }
   }
   followers: Page(page: 1, perPage: $followersPerPage) {
@@ -12811,11 +12815,13 @@ export const UserOverviewDocument = `
         large
         medium
       }
+      aboutHTML: about(asHtml: true)
       bannerImage
       isFollowing
       isFollower
       isBlocked
       siteUrl
+      createdAt
     }
   }
   reviews: Page(page: 1, perPage: $reviewsPerPage) {
@@ -12897,11 +12903,13 @@ export const UserFollowingDocument = `
         large
         medium
       }
+      aboutHTML: about(asHtml: true)
       bannerImage
       isFollowing
       isFollower
       isBlocked
       siteUrl
+      createdAt
     }
   }
 }
@@ -12964,11 +12972,13 @@ export const UserFollowersDocument = `
         large
         medium
       }
+      aboutHTML: about(asHtml: true)
       bannerImage
       isFollowing
       isFollower
       isBlocked
       siteUrl
+      createdAt
     }
   }
 }

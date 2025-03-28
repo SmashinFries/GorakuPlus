@@ -525,6 +525,7 @@ fragment UserMetaData on User {
 		}
 	}
 	siteUrl
+	createdAt
 	unreadNotificationCount
 }
 
@@ -573,11 +574,13 @@ query UserOverview(
 				large
 				medium
 			}
+			aboutHTML: about(asHtml: true)
 			bannerImage
 			isFollowing
 			isFollower
 			isBlocked
 			siteUrl
+			createdAt
 		}
 	}
 	followers: Page(page: 1, perPage: $followersPerPage) {
@@ -592,11 +595,13 @@ query UserOverview(
 				large
 				medium
 			}
+			aboutHTML: about(asHtml: true)
 			bannerImage
 			isFollowing
 			isFollower
 			isBlocked
 			siteUrl
+			createdAt
 		}
 	}
 	reviews: Page(page: 1, perPage: $reviewsPerPage) {
@@ -633,11 +638,13 @@ query UserFollowing($userId: Int!, $page: Int) {
 				large
 				medium
 			}
+			aboutHTML: about(asHtml: true)
 			bannerImage
 			isFollowing
 			isFollower
 			isBlocked
 			siteUrl
+			createdAt
 		}
 	}
 }
@@ -656,11 +663,13 @@ query UserFollowers($userId: Int!, $page: Int) {
 				large
 				medium
 			}
+			aboutHTML: about(asHtml: true)
 			bannerImage
 			isFollowing
 			isFollower
 			isBlocked
 			siteUrl
+			createdAt
 		}
 	}
 }
