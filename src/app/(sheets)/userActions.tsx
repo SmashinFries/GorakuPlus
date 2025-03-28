@@ -31,6 +31,28 @@ const UserQuickActionSheet = () => {
 		sheet.current?.dismiss();
 	};
 
+	const viewUserList = () => {
+		router.back();
+		router.push({
+			pathname: '/user/[username]/userList',
+			params: {
+				username: params?.name,
+				userId: params?.id,
+			},
+		});
+	};
+
+	const viewUserActivity = () => {
+		router.back();
+		router.push({
+			pathname: `/user/[username]/activity`,
+			params: {
+				userId: params?.id,
+				username: params?.name,
+			},
+		});
+	};
+
 	return (
 		<GlobalBottomSheetParent
 			sizes={['auto', 'large']}
@@ -60,6 +82,18 @@ const UserQuickActionSheet = () => {
 					titleStyle={{ textTransform: 'capitalize' }}
 					onPress={viewUser}
 					left={(props) => <List.Icon {...props} icon={'account-outline'} />}
+				/>
+				<List.Item
+					title={`User List`}
+					titleStyle={{ textTransform: 'capitalize' }}
+					onPress={viewUserList}
+					left={(props) => <List.Icon {...props} icon={'format-list-bulleted'} />}
+				/>
+				<List.Item
+					title={`User Activity`}
+					titleStyle={{ textTransform: 'capitalize' }}
+					onPress={viewUserActivity}
+					left={(props) => <List.Icon {...props} icon={'history'} />}
 				/>
 				<List.Item
 					title={'Share'}
