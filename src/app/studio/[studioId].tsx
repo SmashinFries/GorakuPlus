@@ -46,7 +46,7 @@ const StudioMediaListScreen = () => {
 	}
 
 	return (
-		<View style={{ height: '100%', width: '100%' }}>
+		<View style={{ flex: 1 }}>
 			<Stack.Screen
 				options={{
 					headerShown: true,

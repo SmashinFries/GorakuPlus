@@ -1144,7 +1144,7 @@ export const StudioHeader = ({ navigation, options, route, back, id }: StudioHea
 				onPress={() =>
 					router.push({
 						pathname: '/(sheets)/displayConfig',
-						params: { type: 'list' },
+						params: { type: 'search' },
 					})
 				}
 			/>
