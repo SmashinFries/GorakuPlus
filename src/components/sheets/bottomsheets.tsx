@@ -689,7 +689,7 @@ export const MediaReleasesSheet = ({
 	};
 
 	return (
-		<BottomSheetParent sheetRef={sheetRef}>
+		<BottomSheetParent sheetRef={sheetRef} sizes={['auto', 'large']}>
 			{/* @ts-ignore */}
 			<FlatList
 				data={releases ?? sortedStreamingSites ?? animeReleases}
