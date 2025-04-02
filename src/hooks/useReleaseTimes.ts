@@ -1,7 +1,12 @@
-import { AiringSchedule, MediaStatus, MediaType } from '@/api/anilist/__genereated__/gql';
+import {
+	AiringSchedule,
+	FuzzyDate,
+	MediaStatus,
+	MediaType,
+} from '@/api/anilist/__genereated__/gql';
 import { ReleaseSearchResponseV1ResultsItem } from '@/api/mangaupdates/models';
-import { getChapterFrequency, getTimeUntil } from '@/utils';
-import { useEffect, useState } from 'react';
+import { convertDate, getChapterFrequency, getTimeUntil } from '@/utils';
+import { useMemo } from 'react';
 
 type ReleaseTimesProps = {
 	type: MediaType;
@@ -11,6 +16,7 @@ type ReleaseTimesProps = {
 	episodes?: number | null | undefined;
 	chapters?: number | null | undefined;
 	volumes?: number | null | undefined;
+	startDate?: FuzzyDate;
 };
 export const useReleaseTimes = ({
 	type,
@@ -20,34 +26,31 @@ export const useReleaseTimes = ({
 	chapters,
 	episodes,
 	volumes,
+	startDate,
 }: ReleaseTimesProps) => {
-	const [text, setText] = useState('');
-
-	useEffect(() => {
-		if (episodes ?? chapters ?? volumes) {
-			setText(
-				`${episodes ?? chapters ?? volumes} ${episodes ? 'episodes' : chapters ? 'chapters' : 'volumes'}`,
-			);
+	const message = useMemo(() => {
+		switch (status) {
+			case MediaStatus.Finished:
+				if (episodes || chapters || volumes) {
+					return `${episodes ?? chapters ?? volumes} ${episodes ? 'episodes' : chapters ? 'chapters' : 'volumes'}`;
+				}
+				return '';
+			case MediaStatus.NotYetReleased:
+			case MediaStatus.Releasing:
+				if (type === MediaType.Manga && releases) {
+					return `${getChapterFrequency(releases.map((release) => release?.record?.release_date).filter((date): date is string => !!date))} days`;
+				}
+				if (nextEpisode) {
+					return `${getTimeUntil(nextEpisode.airingAt, 'days')}${'\n'}EP ${nextEpisode.episode}`;
+				}
+				if (status === MediaStatus.NotYetReleased) {
+					return startDate ? convertDate(startDate, true, true) : 'Unreleased';
+				}
+				return '';
+			default:
+				return '';
 		}
-	}, [episodes, chapters, volumes]);
+	}, [episodes, chapters, volumes, status, nextEpisode, releases, startDate]);
 
-	useEffect(() => {
-		if (nextEpisode) {
-			setText(
-				`${getTimeUntil(nextEpisode.airingAt, 'days')}${'\n'}EP ${nextEpisode.episode}`,
-			);
-		} else if (status === MediaStatus.NotYetReleased && !nextEpisode) {
-			setText('Unreleased');
-		}
-	}, [nextEpisode, status]);
-
-	useEffect(() => {
-		if (releases && releases.length > 1) {
-			setText(
-				`${getChapterFrequency(releases.map((release) => release?.record?.release_date).filter((date): date is string => !!date))} days`,
-			);
-		}
-	}, [releases]);
-
-	return text;
+	return message;
 };

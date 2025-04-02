@@ -23,6 +23,7 @@ import { StatSection } from '@/components/media/sections/stats';
 import ScreenshotImages from '@/components/media/sections/screenshots';
 import {
 	ExternalLinkType,
+	FuzzyDate,
 	MediaExternalLink,
 	MediaFormat,
 	MediaType,
@@ -58,6 +59,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 		volumes: anilist?.data?.Media?.volumes,
 		nextEpisode: anilist?.data?.Media?.nextAiringEpisode,
 		releases: muReleases?.data?.results,
+		startDate: anilist?.data?.Media?.startDate as FuzzyDate,
 	});
 	const mediaReleasesRef = useRef<TrueSheet>(null);
 	const mangaUpdatesSheetRef = useRef<TrueSheet>(null);
@@ -186,7 +188,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 										id={aniId}
 										type={type}
 										status={anilist?.data?.Media?.status}
-										releaseMessage={releaseText}
+										releaseMessage={releaseText ?? undefined}
 										onShowReleases={() => mediaReleasesRef.current?.present()}
 										data={anilist?.data?.Media?.mediaListEntry ?? undefined}
 										customLists={
