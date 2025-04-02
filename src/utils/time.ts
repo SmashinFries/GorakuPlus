@@ -72,20 +72,23 @@ export const useTokenTime = ({ death }: TokenTimeProps) => {
 export const convertDate = (
 	date: FuzzyDate | null | undefined,
 	bdayFormat?: boolean,
+	removeUnknown?: boolean,
 ): string | null => {
 	if (!date) return null;
 	const { year, month, day } = date;
+	const unknownDayMonth = removeUnknown ? '' : '??';
+	const unknownYear = removeUnknown ? '' : '????';
 
 	if (bdayFormat) {
 		// Jul 11, 1966
 		return month
-			? `${monthByNumber[month as keyof typeof monthByNumber]} ${day ?? '??'}${year ? `, ${year}` : ''}`
+			? `${monthByNumber[month as keyof typeof monthByNumber]}${day ? ` ${day}` : unknownDayMonth}${year ? `${!day ? ' ' : ', '}${year}` : ''}`
 			: null;
 	}
 
 	if (!date?.day && !date?.month && !date?.year) return null;
 
-	return `${month ?? '??'}-${day ?? '??'}-${year ?? '????'}`;
+	return `${month ?? unknownDayMonth}-${day ?? unknownDayMonth}-${year ?? unknownYear}`;
 };
 
 export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
@@ -95,13 +98,12 @@ export const getEstimatedChapterTime = (latest: Date, freq: number): string => {
 		(futureDate.getTime() - today.getTime()) / (1000 * 3600 * 24),
 	);
 	const pos_estimated_days = estimated_days > 0 ? estimated_days : estimated_days * -1;
-	return `${
-		pos_estimated_days > 1
-			? pos_estimated_days?.toString() + ' days'
-			: pos_estimated_days === 1
-				? pos_estimated_days.toString() + ' day'
-				: 'Today'
-	}`;
+	return `${pos_estimated_days > 1
+		? pos_estimated_days?.toString() + ' days'
+		: pos_estimated_days === 1
+			? pos_estimated_days.toString() + ' day'
+			: 'Today'
+		}`;
 };
 
 export const getMovieDuration = (minutes: number) => {
