@@ -22,9 +22,9 @@ const ThreadPage = () => {
 		{
 			initialPageParam: 1,
 			getNextPageParam(lastPage) {
-				if (lastPage.Page?.pageInfo.hasNextPage) {
+				if (lastPage.Page?.pageInfo?.hasNextPage) {
 					return {
-						page: lastPage.Page?.pageInfo.currentPage + 1,
+						page: (lastPage.Page?.pageInfo?.currentPage ?? 0) + 1,
 					};
 				}
 			},
@@ -36,7 +36,7 @@ const ThreadPage = () => {
 	);
 
 	return (
-		<View style={{ width: '100%', height: '100%' }}>
+		<View style={{ flex: 1 }}>
 			<Stack.Screen
 				options={{
 					title: 'Thread',
@@ -44,29 +44,32 @@ const ThreadPage = () => {
 					header: (props) => <PaperHeader {...props} />,
 				}}
 			/>
-			{(threadDetailQuery.isFetching || threadCommentsQuery.isFetching) && (
-				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-					<GorakuActivityIndicator />
-				</View>
-			)}
+			{(threadDetailQuery.isFetching || threadCommentsQuery.isFetching) &&
+				!threadCommentsQuery.isFetchingNextPage && (
+					<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+						<GorakuActivityIndicator />
+					</View>
+				)}
 			{!threadDetailQuery.isFetching && !threadCommentsQuery.isFetching && (
 				<AnimViewMem style={{ width: '100%', height: '100%' }}>
 					<FlashList
 						data={flatCommentsData}
-						keyExtractor={(item) => item.id.toString()}
-						renderItem={({ item }) => (
-							<ThreadItem
-								threadId={item?.threadId}
-								commentId={item?.id}
-								body={item?.htmlComment}
-								createdAt={item?.createdAt}
-								likeCount={item?.likeCount}
-								user={item?.user}
-								isReply={true}
-								replies={item?.childComments}
-							/>
-						)}
-						contentContainerStyle={{ paddingVertical: 12 }}
+						keyExtractor={(item, idx) => idx.toString()}
+						renderItem={({ item }) =>
+							!item?.threadId ? null : (
+								<ThreadItem
+									threadId={item?.threadId}
+									commentId={item?.id}
+									body={item?.htmlComment}
+									createdAt={item?.createdAt}
+									likeCount={item?.likeCount}
+									user={item?.user}
+									isReply={true}
+									replies={item?.childComments}
+								/>
+							)
+						}
+						contentContainerStyle={{ paddingVertical: 12, paddingBottom: 42 }}
 						estimatedItemSize={218}
 						onEndReached={() =>
 							threadCommentsQuery.hasNextPage && threadCommentsQuery?.fetchNextPage()
