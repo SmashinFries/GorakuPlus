@@ -41,11 +41,11 @@ import { subtractMonths } from '@/utils';
 
 export type SearchSortType = {
 	value:
-	| AvailableSorts
-	| AvailableCharSorts
-	| AvailableStaffSorts
-	| AvailableStudioSorts
-	| AvailableUserSorts;
+		| AvailableSorts
+		| AvailableCharSorts
+		| AvailableStaffSorts
+		| AvailableStudioSorts
+		| AvailableUserSorts;
 	asc: boolean;
 };
 export type SearchType =
@@ -141,10 +141,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			set((state) =>
 				state.searchType === 'CHARACTER' || state.searchType === 'STAFF'
 					? {
-						query: txt,
-						characterFilter: { ...state.characterFilter, isBirthday: undefined },
-						staffFilter: { ...state.staffFilter, isBirthday: undefined },
-					}
+							query: txt,
+							characterFilter: { ...state.characterFilter, isBirthday: undefined },
+							staffFilter: { ...state.staffFilter, isBirthday: undefined },
+						}
 					: { query: txt },
 			);
 		}
@@ -158,7 +158,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 						format: undefined,
 						format_in:
 							state.mediaFilter.format &&
-								AnimeFormats.includes(state.mediaFilter.format)
+							AnimeFormats.includes(state.mediaFilter.format)
 								? state.mediaFilter.format
 								: undefined,
 						isLicensed: undefined,
@@ -185,7 +185,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 						format: undefined,
 						format_in:
 							state.mediaFilter.format &&
-								MangaFormats.includes(state.mediaFilter.format)
+							MangaFormats.includes(state.mediaFilter.format)
 								? state.mediaFilter.format
 								: undefined,
 						season: undefined,
@@ -208,12 +208,12 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 				set((state) =>
 					state.query.length > 0
 						? {
-							searchType: type,
-							characterFilter: {
-								...state.characterFilter,
-								isBirthday: undefined,
-							},
-						}
+								searchType: type,
+								characterFilter: {
+									...state.characterFilter,
+									isBirthday: undefined,
+								},
+							}
 						: { searchType: type },
 				);
 				break;
@@ -221,9 +221,9 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 				set((state) =>
 					state.query.length > 0
 						? {
-							searchType: type,
-							staffFilter: { ...state.staffFilter, isBirthday: undefined },
-						}
+								searchType: type,
+								staffFilter: { ...state.staffFilter, isBirthday: undefined },
+							}
 						: { searchType: type },
 				);
 				break;
@@ -242,11 +242,11 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 					...state.mediaFilter,
 					tag_not_in:
 						(state.mediaFilter.tag_not_in?.length ?? 0) + (tagBlacklist?.length ?? 0) >
-							0
+						0
 							? [
-								...(state.mediaFilter.tag_not_in ?? []),
-								...(tagBlacklist ?? []),
-							].filter((value, index, array) => array.indexOf(value) === index)
+									...(state.mediaFilter.tag_not_in ?? []),
+									...(tagBlacklist ?? []),
+								].filter((value, index, array) => array.indexOf(value) === index)
 							: undefined,
 				},
 			}));
@@ -260,8 +260,8 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 							(tag) => !tagBlacklist?.includes(tag),
 						).length > 0
 							? (state.mediaFilter.tag_not_in as string[])?.filter(
-								(tag) => !tagBlacklist?.includes(tag),
-							)
+									(tag) => !tagBlacklist?.includes(tag),
+								)
 							: undefined,
 				},
 			}));
@@ -303,10 +303,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			mediaFilter: sort
 				? {
-					...state.mediaFilter,
-					...params,
-					sort: sort.asc ? AscSorts[sort.value] : DescSorts[sort.value],
-				}
+						...state.mediaFilter,
+						...params,
+						sort: sort.asc ? AscSorts[sort.value] : DescSorts[sort.value],
+					}
 				: { ...state.mediaFilter, ...params },
 			mediaSort: sort,
 		}));
@@ -317,16 +317,16 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			[key]: sort
 				? {
-					...state[key],
-					...params,
-					sort: sort.asc
-						? type === 'CHARACTER'
-							? CharacterAscSorts
-							: StaffAscSorts
-						: type === 'CHARACTER'
-							? (CharacterDescSorts as any)[sort.value]
-							: (StaffDescSorts as any)[sort.value],
-				}
+						...state[key],
+						...params,
+						sort: sort.asc
+							? type === 'CHARACTER'
+								? CharacterAscSorts
+								: StaffAscSorts
+							: type === 'CHARACTER'
+								? (CharacterDescSorts as any)[sort.value]
+								: (StaffDescSorts as any)[sort.value],
+					}
 				: { ...state[key], ...params },
 			[sortKey]: sort,
 		}));
@@ -335,10 +335,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			studioFilter: sort
 				? {
-					...state.studioFilter,
-					...params,
-					sort: sort.asc ? StudioAscSorts[sort.value] : StudioDescSorts[sort.value],
-				}
+						...state.studioFilter,
+						...params,
+						sort: sort.asc ? StudioAscSorts[sort.value] : StudioDescSorts[sort.value],
+					}
 				: { ...state.studioFilter, ...params },
 			studioSort: sort,
 		}));
@@ -347,10 +347,10 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		set((state) => ({
 			userFilter: sort
 				? {
-					...state.userFilter,
-					...params,
-					sort: sort.asc ? UserAscSorts[sort.value] : UserDescSorts[sort.value],
-				}
+						...state.userFilter,
+						...params,
+						sort: sort.asc ? UserAscSorts[sort.value] : UserDescSorts[sort.value],
+					}
 				: { ...state.userFilter, ...params },
 			userSort: sort,
 		}));
@@ -427,20 +427,21 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 		const format_config: Partial<SearchState['mediaFilter']> =
 			presetType === 'NOVEL'
 				? {
-					format: undefined,
-					format_in: [MediaFormat.Novel],
-					format_not_in: undefined,
-				}
+						format: undefined,
+						format_in: [MediaFormat.Novel],
+						format_not_in: undefined,
+					}
 				: {
-					format: undefined,
-					format_in: undefined,
-					format_not_in: [MediaFormat.Novel],
-				};
+						format: undefined,
+						format_in: undefined,
+						format_not_in: [MediaFormat.Novel],
+					};
 
 		switch (preset) {
 			case 'CurrentSeason':
 				set((state) => ({
 					...state,
+					query: '',
 					mediaFilter: {
 						...state.mediaFilter,
 						...anime_config,
@@ -458,6 +459,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			case 'NextSeason':
 				set((state) => ({
 					...state,
+					query: '',
 					mediaFilter: {
 						...anime_config,
 						season: nextSeasonParams.current_season,
@@ -474,6 +476,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			case 'NewReleases':
 				set((state) => ({
 					...state,
+					query: '',
 					mediaFilter: {
 						...state.mediaFilter,
 						...manga_config,
@@ -493,6 +496,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			case 'Trending':
 				set((state) => ({
 					...state,
+					query: '',
 					mediaFilter: {
 						...state.mediaFilter,
 						...(presetType === MediaType.Anime ? anime_config : manga_config),
@@ -510,6 +514,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			case 'Popular':
 				set((state) => ({
 					...state,
+					query: '',
 					mediaFilter: {
 						...state.mediaFilter,
 						...(presetType === MediaType.Anime ? anime_config : manga_config),
@@ -527,6 +532,7 @@ export const useSearchStore = create<SearchState & SearchActions>((set, get) => 
 			case 'TopScore':
 				set((state) => ({
 					...state,
+					query: '',
 					mediaFilter: {
 						...state.mediaFilter,
 						...(presetType === MediaType.Anime ? anime_config : manga_config),
