@@ -248,7 +248,6 @@ const ListScreen = ({ data, isRefreshing, updateTitle, onRefresh, type }: ListPa
 				refreshControl={
 					<GorakuRefreshControl
 						onRefresh={() => {
-							console.log('Refetching!');
 							onRefresh?.();
 						}}
 						refreshing={!!isRefreshing}

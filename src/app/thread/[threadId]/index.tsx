@@ -3,7 +3,6 @@ import {
 	useThreadDetailQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { AnimViewMem } from '@/components/animations';
-import PaperHeader from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
 import { FlashList } from '@shopify/flash-list';
@@ -41,7 +40,6 @@ const ThreadPage = () => {
 				options={{
 					title: 'Thread',
 					headerShown: true,
-					header: (props) => <PaperHeader {...props} />,
 				}}
 			/>
 			{(threadDetailQuery.isFetching || threadCommentsQuery.isFetching) &&
@@ -86,18 +84,20 @@ const ThreadPage = () => {
 								>
 									{threadDetailQuery?.data?.Thread?.title}
 								</Text>
-								<ThreadItem
-									threadId={threadDetailQuery?.data?.Thread?.id}
-									body={threadDetailQuery?.data?.Thread?.htmlBody}
-									createdAt={threadDetailQuery?.data?.Thread?.createdAt}
-									likeCount={threadDetailQuery?.data?.Thread?.likeCount}
-									categories={threadDetailQuery?.data?.Thread?.categories}
-									user={threadDetailQuery?.data?.Thread?.user}
-									viewCount={threadDetailQuery?.data?.Thread?.viewCount}
-									isLiked={threadDetailQuery?.data?.Thread?.isLiked}
-									isSubscribed={threadDetailQuery?.data?.Thread?.isSubscribed}
-									isReply={false}
-								/>
+								{threadDetailQuery?.data?.Thread?.id && (
+									<ThreadItem
+										threadId={threadDetailQuery?.data?.Thread?.id}
+										body={threadDetailQuery?.data?.Thread?.htmlBody}
+										createdAt={threadDetailQuery?.data?.Thread?.createdAt}
+										likeCount={threadDetailQuery?.data?.Thread?.likeCount}
+										categories={threadDetailQuery?.data?.Thread?.categories}
+										user={threadDetailQuery?.data?.Thread?.user}
+										viewCount={threadDetailQuery?.data?.Thread?.viewCount ?? 0}
+										isLiked={threadDetailQuery?.data?.Thread?.isLiked}
+										isSubscribed={threadDetailQuery?.data?.Thread?.isSubscribed}
+										isReply={false}
+									/>
+								)}
 								<Divider style={{ marginVertical: 10 }} />
 								<Text variant="titleLarge" style={{ paddingLeft: 12 }}>
 									{threadDetailQuery?.data?.Thread?.replyCount} Replies

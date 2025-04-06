@@ -1,5 +1,4 @@
 import {
-	GetNotificationsQuery,
 	GetNotificationsQuery_Page_Page_notifications,
 	useInfiniteGetNotificationsQuery,
 } from '@/api/anilist/__genereated__/gql';

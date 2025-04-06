@@ -21,19 +21,6 @@ const WeebLabPage = () => {
 					/>
 				)}
 			/>
-			{/* Either remove or explain API Quota */}
-			{/* <List.Item
-				title="WaifuIt"
-				description={'Anime quotes, facts, GIFs, images, and more'}
-				left={(props) => (
-					<List.Image
-						{...props}
-						source={require('../../../../../assets/waifu.it.logo.png')}
-					/>
-				)}
-				right={(props) => <List.Icon {...props} icon={'key-alert'} />}
-				onPress={() => router.navigate('/more/weeblab/waifuit')}
-			/> */}
 			<List.Item
 				title="NekosAPI"
 				description={'Anime images'}

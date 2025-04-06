@@ -146,7 +146,6 @@ const updateAniMediaCache = (queryClient: QueryClient, result: SaveMediaListItem
 	);
 };
 const updateAniMediaRelatRecCache = (queryClient: QueryClient, parentMediaId: number, result: SaveMediaListItemMutation_Mutation, userId: number) => {
-	console.log('ParentID:', parentMediaId)
 	queryClient.setQueriesData({
 		queryKey: useAniMediaQuery.getKey({
 			id: parentMediaId,
@@ -335,7 +334,6 @@ export const updateEntrySaveCache = (queryClient: QueryClient, result: SaveMedia
 
 // ENTRY DELETION
 const updateListDeletionCache = (queryClient: QueryClient, type: MediaType, entryId: number, userId: number) => {
-	console.log('DELETING LIST ITEM:', type, entryId, userId)
 	if (type === MediaType.Anime) {
 		queryClient.setQueriesData({
 			queryKey: useUserAnimeListCollectionQuery.getKey({ userId }),

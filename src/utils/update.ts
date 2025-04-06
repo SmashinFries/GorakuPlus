@@ -81,7 +81,6 @@ export const removeUpdateAPKs = async () => {
 	const dir = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory as string);
 	for (const file of dir) {
 		if (file.includes('goraku') && file.includes('.apk')) {
-			// console.log('Found!:', `${FileSystem.documentDirectory as string}/${file}`);
 			await FileSystem.deleteAsync(`${FileSystem.documentDirectory as string}/${file}`);
 		}
 	}

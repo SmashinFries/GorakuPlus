@@ -3,6 +3,7 @@ import {
 	ListActivity,
 	ThreadCategory,
 	ThreadComment,
+	ThreadDetailQuery_Thread_Thread_categories_ThreadCategory,
 	ThreadsOverviewQuery_Page_Page_threads_Thread,
 	useToggleLikeMutation,
 	useToggleThreadSubscriptionMutation,
@@ -23,7 +24,7 @@ import { useDeleteActivityItemInvalidateMutation } from '@/api/anilist/extended'
 import { sendErrorMessage, sendToast } from '@/utils/toast';
 
 type ThreadItemHeaderProps = {
-	createdAt: number;
+	createdAt?: number;
 	user: { id: number; name?: string | null; avatar?: { large?: string | null } | null } | null;
 };
 export const ThreadItemHeader = ({ user, createdAt }: ThreadItemHeaderProps) => {
@@ -333,13 +334,16 @@ export const ThreadItem = ({
 	commentId?: number;
 	body: string | null | undefined;
 	isHtml?: boolean;
-	categories?: ThreadCategory[];
-	likeCount: number;
+	categories?:
+		| (ThreadDetailQuery_Thread_Thread_categories_ThreadCategory | null)[]
+		| null
+		| undefined;
+	likeCount?: number;
 	viewCount?: number;
 	user?:
 		| { id: number; name?: string | null; avatar?: { large?: string | null } | null }
 		| ThreadComment['user'];
-	createdAt: number;
+	createdAt?: number;
 	isSubscribed?: ListActivity['isSubscribed'];
 	isLiked?: ListActivity['isLiked'];
 	isReply: boolean | null;
@@ -370,7 +374,7 @@ export const ThreadItem = ({
 			<ThreadItemFooter
 				threadId={threadId}
 				commentId={commentId ?? undefined}
-				categories={categories}
+				categories={(categories as ThreadCategory[]) ?? []}
 				likeCount={likeCount}
 				viewCount={viewCount}
 				isLiked={isLiked}

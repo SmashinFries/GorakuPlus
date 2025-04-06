@@ -1,5 +1,4 @@
 import { ThreadComment, useAniListCommentDetailsQuery } from '@/api/anilist/__genereated__/gql';
-import PaperHeader from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
 import { FlashList } from '@shopify/flash-list';
@@ -37,7 +36,6 @@ const ThreadCommentPage = () => {
 				options={{
 					title: 'Comment',
 					headerShown: true,
-					header: (props) => <PaperHeader {...props} />,
 				}}
 			/>
 			{isFetching && (
