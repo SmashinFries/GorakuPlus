@@ -1,0 +1,1 @@
+export const createSuwayomiIconUrl = (serverUrl?: string, iconUrl?: string) => (serverUrl && iconUrl) ? `${serverUrl?.split('/api')?.[0] ?? ''}${iconUrl}` : undefined;
