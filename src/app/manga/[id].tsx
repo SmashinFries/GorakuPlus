@@ -4,9 +4,8 @@ import { useLocalSearchParams } from 'expo-router';
 
 const MangaScreen = () => {
 	const { id } = useLocalSearchParams<{ id: string }>(); // /anime/1234
-	const aniId: number | null = id ? parseInt(id) : null;
 
-	return <MediaScreen aniId={aniId} type={MediaType.Manga} />;
+	return id && <MediaScreen aniId={Number(id)} type={MediaType.Manga} />;
 };
 
 export default MangaScreen;
