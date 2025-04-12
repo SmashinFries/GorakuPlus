@@ -1,23 +1,17 @@
-import { AppState, StyleSheet, useWindowDimensions } from 'react-native';
+import { AppState, StyleSheet } from 'react-native';
 import { RefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import {
-	AVPlaybackStatus,
-	ResizeMode,
-	Video,
-	Audio,
-	VideoFullscreenUpdate,
-	VideoFullscreenUpdateEvent,
-} from 'expo-av';
 import { ActivityIndicator, IconButton, Menu, ProgressBar, Text } from 'react-native-paper';
 import { SongMeta } from './meta';
 import { VideoControls } from './controls';
-import { Accordion } from '../animations';
-import * as ScreenOrientation from 'expo-screen-orientation';
+import { AccordionMemo } from '../animations';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { AnimeThemesIcon } from '../svgs';
 import { Animetheme } from '@/api/animethemes/types';
 import { useAppTheme } from '@/store/theme/themes';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEvent } from 'expo';
+import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 
 type MusicVideoProps = {
 	theme: Animetheme;
@@ -25,16 +19,8 @@ type MusicVideoProps = {
 	initialOpen?: boolean;
 };
 export const MusicVideo = ({ theme }: MusicVideoProps) => {
-	const vidRef = useRef<Video>(null);
-	const [status, setStatus] = useState<AVPlaybackStatus>();
-	const [totalDuration, setTotalDuration] = useState<number>();
-	const { width } = useWindowDimensions();
-
-	useEffect(() => {
-		if (status?.isLoaded && !totalDuration) {
-			setTotalDuration(status?.durationMillis);
-		}
-	}, [status]);
+	const player = useVideoPlayer(theme?.animethemeentries[0].videos[0]?.link);
+	const { status } = useEvent(player, 'statusChange', { status: player.status });
 
 	if (AppState.currentState !== 'active') {
 		return null;
@@ -43,7 +29,8 @@ export const MusicVideo = ({ theme }: MusicVideoProps) => {
 	return (
 		<View style={[styles.container]}>
 			<View style={[styles.player, { justifyContent: 'center', alignItems: 'center' }]}>
-				<Video
+				<VideoView player={player} style={styles.player} contentFit="contain" />
+				{/* <Video
 					ref={vidRef}
 					style={styles.player}
 					source={{
@@ -51,64 +38,72 @@ export const MusicVideo = ({ theme }: MusicVideoProps) => {
 					}}
 					onPlaybackStatusUpdate={(status) => setStatus(() => status)}
 					resizeMode={ResizeMode.CONTAIN}
-				/>
-				{!status?.isLoaded && (
+				/> */}
+				{status === 'loading' && (
 					<ActivityIndicator style={{ position: 'absolute', alignSelf: 'center' }} />
 				)}
 			</View>
-			{/* {video.resolution} */}
-			{totalDuration && (
-				<ProgressBar
-					style={{ width }}
-					animatedValue={
-						status?.isLoaded && status?.positionMillis
-							? status?.positionMillis / totalDuration
-							: 0
-					}
-				/>
-			)}
 			<SongMeta data={theme} />
-			<VideoControls status={status as AVPlaybackStatus} vidRef={vidRef} />
+			<VideoControls player={player} status={status} />
 		</View>
 	);
 };
 
 const FullscreenVideo = ({
-	vidRef,
 	video_url,
-	onStatus,
-	onDoneLoading,
-	onDismiss,
+	videoRef,
+	onLoading,
+	onExit,
 }: {
-	vidRef: RefObject<Video>;
+	videoRef: RefObject<VideoView>;
 	video_url: string;
-	onStatus: (status: AVPlaybackStatus) => void;
-	onDismiss: () => void;
-	onDoneLoading: () => void;
+	onLoading: (isLoading: boolean) => void;
+	onExit: () => void;
 }) => {
-	const onExit = () => {
-		vidRef?.current?.unloadAsync();
-		onDismiss();
-	};
+	const player = useVideoPlayer(video_url);
 
-	const onFullscreenUpdate = async ({ fullscreenUpdate }: VideoFullscreenUpdateEvent) => {
-		if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT) {
-			// await ScreenOrientation.unlockAsync();
-			await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-		} else if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_WILL_DISMISS) {
-			await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-		} else if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
-			onExit();
-		}
-	};
+	const { status } = useEvent(player, 'statusChange', { status: player.status });
+
+	// const onFullscreenUpdate = async ({ fullscreenUpdate }: VideoFullscreenUpdateEvent) => {
+	// 	if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT) {
+	// 		// await ScreenOrientation.unlockAsync();
+	// 		await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+	// 	} else if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_WILL_DISMISS) {
+	// 		await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+	// 	} else if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
+	// 		onExit();
+	// 	}
+	// };
+
+	// useEffect(() => {
+	// 	vidRef?.current
+	// }, []);
 
 	useEffect(() => {
-		vidRef?.current?.presentFullscreenPlayer();
-	}, []);
+		onLoading(status !== 'readyToPlay');
+		if (status === 'readyToPlay') {
+			videoRef.current?.enterFullscreen();
+		}
+	}, [status]);
 
 	return (
-		<View>
-			<Video
+		<>
+			{/* <IconButton
+				onPress={() => {
+					videoRef.current?.enterFullscreen();
+				}}
+				icon={'video-outline'}
+				loading={status === 'loading'}
+			/> */}
+			<VideoView
+				ref={videoRef}
+				player={player}
+				style={{ display: 'none', width: 0, height: 0 }}
+				allowsFullscreen
+				contentFit="contain"
+				onFullscreenExit={onExit}
+			/>
+			{/* <Video
 				ref={vidRef}
 				style={{ width: 0, height: 0 }}
 				source={{
@@ -120,8 +115,8 @@ const FullscreenVideo = ({
 				}}
 				onPlaybackStatusUpdate={(status) => onStatus(status)}
 				resizeMode={ResizeMode.CONTAIN}
-			/>
-		</View>
+			/> */}
+		</>
 	);
 };
 
@@ -130,114 +125,182 @@ const secToMinString = (seconds: number) =>
 		.toFixed(0)
 		.padStart(2, '0')}:${(Math.round(seconds) % 60).toFixed(0).padStart(2, '0')}`;
 
-export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) => {
-	const { colors } = useAppTheme();
-	const [sound, setSound] = useState<Audio.Sound>();
-	const [isPlaying, setIsPlaying] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [totalDuration, setTotalDuration] = useState<number>(0);
-	const [progress, setProgress] = useState<number>(0);
-
-	const [_vidStatus, setVidStatus] = useState<AVPlaybackStatus>();
-
-	const [playIconHeight, setPlayIconHeight] = useState<number>(0);
+const MusicItemBody = ({
+	audio_url,
+	links,
+	isVidLoading,
+	setShowVideo,
+}: {
+	audio_url: string;
+	links: { spotify: string; animethemes: string };
+	isVidLoading: boolean;
+	setShowVideo: (show: boolean) => void;
+}) => {
+	const audioPlayer = useAudioPlayer(audio_url);
+	const audioStatus = useAudioPlayerStatus(audioPlayer);
 
 	const [showMore, setShowMore] = useState<boolean>(false);
 
-	// Video
-	const vidRef = useRef<Video>(null);
-	const [vidLoading, setVidLoading] = useState<boolean>(false);
-	const [showVideo, setShowVideo] = useState<boolean>(false);
+	const toggleAudioPlay = () => {
+		if (!audioStatus.isLoaded) return;
 
-	const _onPlaybackStatusUpdate = (playbackStatus: AVPlaybackStatus) => {
-		if (!playbackStatus.isLoaded) {
-			setProgress(0);
+		if (audioStatus.playing) {
+			audioPlayer.pause();
 		} else {
-			// Update your UI for the loaded state
-			playbackStatus.durationMillis !== undefined &&
-				setTotalDuration(playbackStatus.durationMillis);
-			setProgress(playbackStatus.positionMillis);
-			if (playbackStatus.isPlaying) {
-				// Update your UI for the playing state
-				setIsPlaying(true);
-			} else {
-				setIsPlaying(false);
-				// Update your UI for the paused state
-			}
-
-			if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
-				setIsPlaying(false);
-				// The player has just finished playing and will stop. Maybe you want to play something else?
-			}
+			audioPlayer.play();
 		}
-	};
-
-	const playSong = async () => {
-		if (sound && sound._loaded) {
-			setIsPlaying(true);
-			if (progress === totalDuration) {
-				await sound.replayAsync();
-			} else {
-				await sound.playAsync();
-			}
-		} else {
-			setIsLoading(true);
-			const song = await Audio.Sound.createAsync({
-				uri: theme?.animethemeentries[0].videos[0]?.audio?.link,
-			});
-			setIsLoading(false);
-			song.sound.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
-			if (song.status.isLoaded) {
-				song.status.durationMillis !== undefined &&
-					setTotalDuration(song.status.durationMillis);
-			}
-			setSound(song.sound);
-			setIsPlaying(true);
-			await song.sound.playAsync();
-		}
-	};
-
-	const pauseSong = async () => {
-		await sound?.pauseAsync();
-		setIsPlaying(false);
 	};
 
 	const seek5Seconds = (direction: 'forward' | 'back') => {
-		if (sound) {
+		if (audioStatus.isLoaded) {
 			if (direction === 'forward') {
-				sound?.setPositionAsync(
-					progress + 5000 <= totalDuration ? progress + 5000 : totalDuration,
+				audioPlayer.seekTo(
+					audioStatus.currentTime + 5 <= audioStatus.duration
+						? audioStatus.currentTime + 5
+						: audioStatus.duration,
 				);
-				setProgress(progress + 5000 <= totalDuration ? progress + 5000 : totalDuration);
 			} else {
-				sound?.setPositionAsync(progress - 5000 >= 0 ? progress - 5000 : 0);
-				setProgress(progress - 5000 >= 0 ? progress - 5000 : 0);
+				audioPlayer.seekTo(
+					audioStatus.currentTime - 5 >= 0 ? audioStatus.currentTime - 5 : 0,
+				);
 			}
 		}
 	};
 
-	useEffect(() => {
-		return sound
-			? () => {
-					setProgress(0);
-					sound.unloadAsync();
-					setIsPlaying(false);
+	return (
+		<>
+			<ProgressBar
+				animatedValue={
+					audioStatus.isLoaded ? audioStatus.currentTime / audioStatus.duration : 0
 				}
-			: undefined;
-	}, [sound]);
+				style={{ marginHorizontal: 20, borderRadius: 12 }}
+			/>
+			<View
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					paddingHorizontal: 20,
+					paddingVertical: 6,
+				}}
+			>
+				<Text>{secToMinString(Math.max(audioStatus.currentTime))}</Text>
+				<Text>{secToMinString(Math.max(audioStatus.duration))}</Text>
+			</View>
+			<View
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'space-evenly',
+					alignItems: 'center',
+				}}
+			>
+				<IconButton
+					onPress={() => {
+						setShowVideo(true);
+					}}
+					loading={isVidLoading}
+					icon={'video-outline'}
+				/>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<IconButton
+						disabled={audioPlayer.currentTime === 0}
+						onPress={() => seek5Seconds('back')}
+						onLongPress={() => {
+							audioPlayer.seekTo(-audioStatus.currentTime);
+						}}
+						icon={'step-backward'}
+					/>
+					<IconButton
+						onPress={toggleAudioPlay}
+						icon={audioStatus.playing ? 'pause' : 'play'}
+						size={36}
+						loading={!audioStatus.isLoaded}
+					/>
+					<IconButton
+						onPress={() => seek5Seconds('forward')}
+						icon={'step-forward'}
+						disabled={audioStatus.currentTime === audioPlayer.duration}
+					/>
+				</View>
+				<Menu
+					visible={showMore}
+					onDismiss={() => setShowMore(false)}
+					anchor={<IconButton onPress={() => setShowMore(true)} icon={'dots-vertical'} />}
+					// anchorPosition="top"
+				>
+					<Menu.Item
+						onPress={() => openWebBrowser(links.animethemes)}
+						title="AnimeThemes"
+						leadingIcon={(props) => (
+							<AnimeThemesIcon
+								fill={props.color}
+								height={props.size}
+								width={props.size}
+							/>
+						)}
+					/>
+					<Menu.Item
+						onPress={() => openWebBrowser(links.spotify, true)}
+						leadingIcon={'spotify'}
+						title="Spotify"
+					/>
+				</Menu>
+			</View>
+		</>
+	);
+};
+
+export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) => {
+	const { colors } = useAppTheme();
+	const audioPlayer = useAudioPlayer(theme?.animethemeentries[0].videos[0]?.audio?.link);
+	const audioStatus = useAudioPlayerStatus(audioPlayer);
+
+	const videoRef = useRef<VideoView>(null);
+
+	const [showMore, setShowMore] = useState<boolean>(false);
+
+	const [isVidLoading, setIsVidLoading] = useState<boolean>(false);
+	const [showVideo, setShowVideo] = useState<boolean>(false);
+
+	const toggleAudioPlay = () => {
+		if (!audioStatus.isLoaded) return;
+
+		if (audioStatus.playing) {
+			audioPlayer.pause();
+		} else {
+			audioPlayer.play();
+		}
+	};
+
+	const seek5Seconds = (direction: 'forward' | 'back') => {
+		if (audioStatus.isLoaded) {
+			if (direction === 'forward') {
+				audioPlayer.seekTo(
+					audioStatus.currentTime + 5 <= audioStatus.duration
+						? audioStatus.currentTime + 5
+						: audioStatus.duration,
+				);
+			} else {
+				audioPlayer.seekTo(
+					audioStatus.currentTime - 5 >= 0 ? audioStatus.currentTime - 5 : 0,
+				);
+			}
+		}
+	};
 
 	return (
 		<>
 			{showVideo && (
 				<FullscreenVideo
-					vidRef={vidRef}
-					onStatus={(stat) => setVidStatus(stat)}
+					videoRef={videoRef}
 					video_url={theme.animethemeentries[0]?.videos[0]?.link}
-					onDismiss={() => setShowVideo(false)}
-					onDoneLoading={() => setVidLoading(false)}
+					onLoading={(isLoading) => setIsVidLoading(isLoading)}
+					onExit={() => {
+						setIsVidLoading(false);
+						setShowVideo(false);
+					}}
 				/>
 			)}
-			<Accordion
+			<AccordionMemo
 				title={theme.song.title}
 				titleStyle={{ color: colors.primary }}
 				// titleFontSize={18}
@@ -257,115 +320,16 @@ export const MusicItem = ({ theme, anime_slug, initialOpen }: MusicVideoProps) =
 				}
 				initialExpand={initialOpen}
 			>
-				{/* <ProgressBar
-					animatedValue={sound?._loaded ? progress / totalDuration : 0}
-					style={{ marginHorizontal: 20 }}
-				/> */}
-				{/* <Slider
-					value={progress}
-					maximumValue={totalDuration}
-					onValueChange={(val) => sound.setPositionAsync(val)}
-					thumbTintColor={colors.primary}
-					maximumTrackTintColor={colors.onSurfaceVariant}
-					minimumTrackTintColor={colors.primaryContainer}
-				/> */}
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						paddingHorizontal: 20,
+				<MusicItemBody
+					audio_url={theme?.animethemeentries[0].videos[0]?.audio?.link}
+					links={{
+						spotify: `https://open.spotify.com/search/${theme.song.title} ${theme.song.artists[0]?.name}`,
+						animethemes: `https://animethemes.moe/anime/${anime_slug}/${theme.slug}`,
 					}}
-				>
-					<Text>{secToMinString(Math.max(progress / 1000))}</Text>
-					<Text>{secToMinString(Math.max(totalDuration / 1000))}</Text>
-				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-evenly',
-						alignItems: 'center',
-					}}
-				>
-					{vidLoading ? (
-						<ActivityIndicator animating />
-					) : (
-						<IconButton
-							onPress={() => {
-								setShowVideo(true);
-								setVidLoading(true);
-							}}
-							icon={'video-outline'}
-						/>
-					)}
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<IconButton
-							disabled={!sound?._loaded}
-							onPress={() => seek5Seconds('back')}
-							onLongPress={() => {
-								sound?.setPositionAsync(0);
-								setProgress(0);
-							}}
-							icon={'step-backward'}
-						/>
-						{isLoading ? (
-							<ActivityIndicator
-								animating
-								style={{ height: playIconHeight, width: playIconHeight }}
-							/>
-						) : (
-							<IconButton
-								onPress={() => (isPlaying ? pauseSong() : playSong())}
-								icon={isPlaying ? 'pause' : 'play'}
-								size={36}
-								onLayout={(e) => setPlayIconHeight(e.nativeEvent.layout.height)}
-							/>
-						)}
-						<IconButton
-							onPress={() => seek5Seconds('forward')}
-							icon={'step-forward'}
-							disabled={!sound?._loaded}
-						/>
-					</View>
-					<Menu
-						visible={showMore}
-						onDismiss={() => setShowMore(false)}
-						anchor={
-							<IconButton onPress={() => setShowMore(true)} icon={'dots-vertical'} />
-						}
-					>
-						<Menu.Item
-							onPress={() =>
-								openWebBrowser(
-									`https://animethemes.moe/anime/${anime_slug}/${theme.slug}`,
-								)
-							}
-							title="AnimeThemes"
-							leadingIcon={(props) => (
-								<AnimeThemesIcon
-									fill={props.color}
-									height={props.size}
-									width={props.size}
-								/>
-							)}
-						/>
-						<Menu.Item
-							onPress={() =>
-								openWebBrowser(
-									`https://open.spotify.com/search/${theme.song.title} ${theme.song.artists[0]?.name}`,
-									true,
-								)
-							}
-							leadingIcon={'spotify'}
-							title="Spotify"
-						/>
-						{/* <Menu.Item
-							onPress={() => openWebBrowser(`anithemes://`, true)}
-							leadingIcon={'spotify'}
-							title="AniThemes"
-						/> */}
-					</Menu>
-				</View>
-			</Accordion>
+					isVidLoading={isVidLoading}
+					setShowVideo={setShowVideo}
+				/>
+			</AccordionMemo>
 		</>
 	);
 };

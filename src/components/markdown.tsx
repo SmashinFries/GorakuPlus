@@ -1,11 +1,32 @@
 import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
-import { ResizeMode, Video } from 'expo-av';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { useState } from 'react';
 import { View, useWindowDimensions, Image as RNImage } from 'react-native';
 import Markdown, { ASTNode, MarkdownIt, RenderRules } from 'react-native-markdown-display';
 import { Text } from 'react-native-paper';
 import YoutubePlayer from 'react-native-youtube-iframe';
+
+const MarkdownVideo = ({ url }: { url: string }) => {
+	const player = useVideoPlayer(url, (player) => {
+		player.loop = true;
+		player.muted = true;
+		player.play();
+	});
+
+	// useNativeControls
+	// 						shouldPlay
+	// 						isMuted
+	// 						isLooping
+	return (
+		<VideoView
+			player={player}
+			nativeControls
+			contentFit="contain"
+			style={{ height: 270, width: '100%' }}
+		/>
+	);
+};
 
 const Spoiler = (props: {
 	node: ASTNode;
@@ -154,7 +175,7 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 			if (alt === 'webm') {
 				return (
 					<View style={{ width: '100%', paddingVertical: 8 }}>
-						<Video
+						{/* <Video
 							key={node.key}
 							source={{ uri: src }}
 							style={{ height: 270, width: '100%' }}
@@ -163,7 +184,8 @@ export const MarkdownViewer = ({ markdown }: { markdown: string }) => {
 							isMuted
 							isLooping
 							resizeMode={ResizeMode.CONTAIN}
-						/>
+						/> */}
+						<MarkdownVideo url={src as string} />
 					</View>
 				);
 			}

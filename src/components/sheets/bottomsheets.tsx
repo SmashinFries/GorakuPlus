@@ -378,6 +378,7 @@ export const TraceMoeSheet = ({ sheetRef, url, image }: TraceMoeSheetProps) => {
 		<BottomSheetParent
 			sheetRef={sheetRef}
 			sizes={['auto', 'large']}
+			scrollable
 			header={
 				<View style={{ marginBottom: 10, paddingHorizontal: 10 }}>
 					<Text variant="headlineMedium" style={{ textTransform: 'capitalize' }}>
@@ -387,46 +388,46 @@ export const TraceMoeSheet = ({ sheetRef, url, image }: TraceMoeSheetProps) => {
 				</View>
 			}
 		>
-			<ScrollView
+			{/* <ScrollView
 				ref={scrollRef}
 				nestedScrollEnabled
 				contentContainerStyle={{ padding: 10, paddingBottom: 22 * 4 }}
-			>
-				{(url ? urlImageQuery?.isFetching : imageQuery?.isFetching) ? (
-					<View
-						style={{
-							justifyContent: 'center',
-							alignItems: 'center',
-							width: '100%',
-						}}
-					>
-						<GorakuActivityIndicator />
-					</View>
-				) : (
-					(url ? urlImageQuery?.data?.data?.result : imageQuery?.data?.data?.result)?.map(
-						(item, idx) => <RenderItem item={item} key={idx} />,
-					)
-					// <FlatList
-					// 	ref={scrollRef}
-					// 	nestedScrollEnabled
-					// 	data={url ? urlImageQuery?.data?.data?.result : imageQuery?.data?.data?.result}
-					// 	keyExtractor={(item, idx) => idx.toString()}
-					// 	numColumns={1}
-					// 	// centerContent
-					// 	ListHeaderComponent={() => (
-					// 		<View style={{ marginBottom: 10 }}>
-					// 			<Text variant="headlineMedium" style={{ textTransform: 'capitalize' }}>
-					// 				Image Search
-					// 			</Text>
-					// 			<Divider />
-					// 		</View>
-					// 	)}
-					// 	// contentContainerStyle={{ padding: 10, paddingBottom: 22 * 4 }}
-					// 	renderItem={RenderItem}
-					// 	windowSize={5}
-					// />
-				)}
-			</ScrollView>
+			> */}
+			{(url ? urlImageQuery?.isFetching : imageQuery?.isFetching) ? (
+				<View
+					style={{
+						justifyContent: 'center',
+						alignItems: 'center',
+						width: '100%',
+					}}
+				>
+					<GorakuActivityIndicator />
+				</View>
+			) : (
+				(url ? urlImageQuery?.data?.data?.result : imageQuery?.data?.data?.result)?.map(
+					(item, idx) => <RenderItem item={item} key={idx} />,
+				)
+				// <FlatList
+				// 	ref={scrollRef}
+				// 	nestedScrollEnabled
+				// 	data={url ? urlImageQuery?.data?.data?.result : imageQuery?.data?.data?.result}
+				// 	keyExtractor={(item, idx) => idx.toString()}
+				// 	numColumns={1}
+				// 	// centerContent
+				// 	ListHeaderComponent={() => (
+				// 		<View style={{ marginBottom: 10 }}>
+				// 			<Text variant="headlineMedium" style={{ textTransform: 'capitalize' }}>
+				// 				Image Search
+				// 			</Text>
+				// 			<Divider />
+				// 		</View>
+				// 	)}
+				// 	// contentContainerStyle={{ padding: 10, paddingBottom: 22 * 4 }}
+				// 	renderItem={RenderItem}
+				// 	windowSize={5}
+				// />
+			)}
+			{/* </ScrollView> */}
 		</BottomSheetParent>
 	);
 };

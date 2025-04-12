@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
-import { AVPlaybackStatus, ResizeMode, Video } from 'expo-av';
-import { Button, Card, Icon, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Card, Icon, Text } from 'react-native-paper';
 import { Pressable, useWindowDimensions, View } from 'react-native';
 import { router } from 'expo-router';
 import { Anilist, Result } from '@/api/tracemoe/models';
@@ -8,11 +7,18 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { saveImage } from '@/utils/images';
 import { useShallow } from 'zustand/react/shallow';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEvent } from 'expo';
+import { AnimViewMem } from '../animations';
 
 type ImageSearchItemProps = {
 	item: Result;
 };
 export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
+	const player = useVideoPlayer(item.video, (player) => {
+		player.loop = true;
+		player.muted = true;
+	});
 	const { roundness } = useAppTheme();
 	const { mediaLanguage, showNSFW } = useSettingsStore(
 		useShallow((state) => ({
@@ -23,8 +29,9 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 	const { width } = useWindowDimensions();
 	const anilist = item.anilist as Anilist;
 	const similarity = item.similarity * 100;
-	const videoRef = useRef<Video>(null);
-	const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
+
+	const { status } = useEvent(player, 'statusChange', { status: player.status });
+	const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
 
 	const onView = () => {
 		router.back();
@@ -46,33 +53,46 @@ export const ImageSearchItem = ({ item }: ImageSearchItemProps) => {
 			{/* <Image source={{ uri: item.image }} style={[{ height: 200, width: width }]} /> */}
 			<Card mode="elevated" style={{ width: width - 20 }}>
 				{/* <Card.Cover source={{ uri: item.image }} /> */}
-				<Pressable
-					style={{ height: 180, overflow: 'hidden', borderRadius: roundness * 3 }}
-					onPress={() =>
-						status?.isLoaded && status?.isPlaying
-							? videoRef.current?.pauseAsync()
-							: videoRef.current?.playAsync()
-					}
-				>
-					<Video
-						ref={videoRef}
+				<View style={{ height: 180, overflow: 'hidden', borderRadius: roundness * 3 }}>
+					<VideoView
+						player={player}
 						style={{
-							flex: 1,
-							height: undefined,
+							// flex: 1,
+							height: '100%',
 							width: undefined,
 							padding: 16,
 							justifyContent: 'flex-end',
 							borderRadius: roundness * 3,
 						}}
-						source={{
-							uri: item.video,
-						}}
-						resizeMode={ResizeMode.COVER}
-						isMuted={true}
-						isLooping
-						onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+						nativeControls={false}
+						contentFit="cover"
 					/>
-				</Pressable>
+					<Pressable
+						style={{ position: 'absolute', width: '100%', height: '100%' }}
+						onPress={() => {
+							if (status === 'readyToPlay') {
+								if (isPlaying) {
+									player.pause();
+								} else {
+									player.play();
+								}
+							}
+						}}
+					/>
+					{status === 'loading' && (
+						<AnimViewMem
+							style={{
+								position: 'absolute',
+								justifyContent: 'center',
+								alignItems: 'center',
+								width: '100%',
+								height: '100%',
+							}}
+						>
+							<ActivityIndicator />
+						</AnimViewMem>
+					)}
+				</View>
 				<Card.Title
 					title={anilist.title[mediaLanguage ?? 'romaji']}
 					right={(props) =>

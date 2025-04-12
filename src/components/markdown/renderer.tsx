@@ -18,11 +18,9 @@ import RenderHTML, {
 } from 'react-native-render-html';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import * as cheerio from 'cheerio';
-import { ResizeMode, Video } from 'expo-av';
 import { findOne } from 'domutils';
 import { openWebBrowser } from '@/utils/webBrowser';
-
-// (ITS ACTUALLY JUST HTML)
+import { useVideoPlayer, VideoView } from 'expo-video';
 
 const preprocessHTML = (html: string) => {
 	const $ = cheerio.load(`<body>${html}</body>`);
@@ -123,18 +121,20 @@ const YoutubeRenderer = (props: InternalRendererProps<TBlock>) => {
 };
 
 const VideoRenderer = (props: InternalRendererProps<TBlock>) => {
+	const player = useVideoPlayer(findSource(props.tnode), (player) => {
+		player.muted = true;
+		player.loop = true;
+		player.play();
+	});
 	const computeMaxWidth = useComputeMaxWidthForTag('video');
 	const width = computeMaxWidth(useContentWidth());
 	return (
 		<View style={{ width: '100%', paddingVertical: 8 }}>
-			<Video
-				source={{ uri: findSource(props.tnode) }}
+			<VideoView
+				player={player}
 				style={[{ aspectRatio: 16 / 9 }, props.style, { width }]}
-				useNativeControls
-				shouldPlay
-				isMuted
-				isLooping
-				resizeMode={ResizeMode.CONTAIN}
+				nativeControls
+				contentFit="contain"
 			/>
 		</View>
 	);

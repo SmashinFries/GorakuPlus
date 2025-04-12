@@ -1,7 +1,8 @@
-import { StyleSheet, View } from 'react-native';
-import { IconButton } from 'react-native-paper';
-import { AVPlaybackStatus, Video } from 'expo-av';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { IconButton, ProgressBar } from 'react-native-paper';
+import { useVideoPlayer, VideoPlayer, VideoPlayerStatus, VideoView } from 'expo-video';
 import { useEffect, useState } from 'react';
+import { useEvent } from 'expo';
 
 type ControlIconProps = {
 	icon: string;
@@ -22,47 +23,63 @@ const ControlIcon = ({ icon, size, disabled, onPress }: ControlIconProps) => {
 };
 
 type VideoControlsProps = {
-	status: AVPlaybackStatus;
-	vidRef: React.RefObject<Video>;
+	player: VideoPlayer;
+	status: VideoPlayerStatus;
 };
-export const VideoControls = ({ status, vidRef }: VideoControlsProps) => {
-	const [playIcon, setPlayIcon] = useState<string>('play-circle-outline');
+export const VideoControls = ({ player, status }: VideoControlsProps) => {
+	// const [playIcon, setPlayIcon] = useState<string>('play-circle-outline');
+	const { width } = useWindowDimensions();
+
+	const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
+	const { currentTime } = useEvent(player, 'timeUpdate', { ...player });
 
 	const seek = (amount: number) => {
-		if (status?.isLoaded) {
-			vidRef.current.setPositionAsync(status?.positionMillis + amount);
+		if (status === 'readyToPlay') {
+			player.seekBy(amount);
 		}
 	};
 
 	const togglePlay = () => {
-		if (status?.isLoaded) {
-			if (status?.isPlaying) {
-				vidRef.current.pauseAsync();
+		if (status === 'readyToPlay') {
+			if (isPlaying) {
+				player.pause();
 			} else {
-				vidRef.current.playAsync();
+				player.play();
 			}
 		}
 	};
 
-	useEffect(() => {
-		if (status?.isLoaded) {
-			if (status?.isPlaying && playIcon === 'play-circle-outline') {
-				setPlayIcon('pause');
-			} else if (!status?.isPlaying && playIcon === 'pause') {
-				setPlayIcon('play-circle-outline');
-			}
-		}
-	}, [status]);
+	// useEffect(() => {
+	// 	if (status === 'readyToPlay') {
+	// 		if (isPlaying && playIcon === 'play-circle-outline') {
+	// 			setPlayIcon('pause');
+	// 		} else if (!isPlaying && playIcon === 'pause') {
+	// 			setPlayIcon('play-circle-outline');
+	// 		}
+	// 	}
+	// }, [status]);
 
 	return (
-		<View style={[styles.container]}>
-			<ControlIcon
-				icon="step-backward"
-				disabled={status?.isLoaded && status?.positionMillis === 0}
-				onPress={() => seek(-5000)}
+		<View>
+			<ProgressBar
+				style={{ width }}
+				animatedValue={
+					status === 'readyToPlay' && currentTime ? currentTime / player.duration : 0
+				}
 			/>
-			<ControlIcon icon={playIcon} size={58} onPress={() => togglePlay()} />
-			<ControlIcon icon="step-forward" onPress={() => seek(5000)} />
+			<View style={[styles.container]}>
+				<ControlIcon
+					icon="step-backward"
+					disabled={currentTime === 0}
+					onPress={() => seek(-5000)}
+				/>
+				<ControlIcon
+					icon={isPlaying ? 'pause' : 'play-circle-outline'}
+					size={58}
+					onPress={() => togglePlay()}
+				/>
+				<ControlIcon icon="step-forward" onPress={() => seek(5000)} />
+			</View>
 		</View>
 	);
 };
