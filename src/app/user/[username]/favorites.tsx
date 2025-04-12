@@ -11,7 +11,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { CharacterCard, CharacterRowCard, MediaCard, MediaCardRow } from '@/components/cards';
 import { GorakuRefreshControl } from '@/components/explore/lists';
-import { FavoritesHeader } from '@/components/headers';
+import { FavoritesHeader } from '@/components/headers/favorites';
 import { FlashListAnim } from '@/components/list';
 import { EmptyLoadView } from '@/components/search/loading';
 import { FavoritesFilterSheet } from '@/components/sheets/favoritesSheet';

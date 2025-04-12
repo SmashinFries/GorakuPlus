@@ -1,7 +1,6 @@
 import { View, useWindowDimensions } from 'react-native';
 import { Avatar, Button, Divider, IconButton, Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
-import { ReviewHeader } from '@/components/headers';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import * as Burnt from 'burnt';
@@ -20,12 +19,13 @@ import { useAuthStore } from '@/store/authStore';
 import { getScoreColor } from '@/utils';
 import { MediaBanner } from '@/components/media/banner';
 import { useShallow } from 'zustand/react/shallow';
+import { ReviewHeader } from '@/components/headers/review';
 
 type ScoreProps = {
 	reviewId: number;
 	score: number;
-	ratingAmount: number;
-	rating: number;
+	ratingAmount?: number;
+	rating?: number;
 	userRating?: ReviewRating;
 };
 const Score = ({ reviewId, score, ratingAmount, rating, userRating }: ScoreProps) => {
@@ -37,7 +37,7 @@ const Score = ({ reviewId, score, ratingAmount, rating, userRating }: ScoreProps
 	);
 	const scoreColor = getScoreColor(score);
 	const [posRatings, setPosRatings] = useState(rating); // for clarity
-	const [negRatings, setNegRatings] = useState(ratingAmount - rating);
+	const [negRatings, setNegRatings] = useState((ratingAmount ?? 0) - (rating ?? 0));
 	// const ratingPercentage = {
 	// 	positive: ((rating / ratingAmount) * 100).toFixed(0),
 	// 	negative: (((ratingAmount - rating) / ratingAmount) * 100).toFixed(0),
@@ -47,14 +47,16 @@ const Score = ({ reviewId, score, ratingAmount, rating, userRating }: ScoreProps
 		if (!isAuthed) return;
 		if (rate === userRatingState) {
 			const res = await mutateAsync({ id: reviewId, rating: ReviewRating.NoVote });
-			setUserRatingState(res.RateReview.userRating);
-			setPosRatings(res.RateReview?.rating);
-			setNegRatings(res.RateReview?.ratingAmount - res.RateReview?.rating);
+			res.RateReview?.userRating && setUserRatingState(res.RateReview.userRating);
+			res.RateReview?.rating && setPosRatings(res.RateReview?.rating);
+			res.RateReview?.ratingAmount &&
+				setNegRatings(res.RateReview?.ratingAmount - (res.RateReview?.rating ?? 0));
 		} else {
 			const res = await mutateAsync({ id: reviewId, rating: rate });
-			setUserRatingState(res.RateReview.userRating);
-			setPosRatings(res.RateReview?.rating);
-			setNegRatings(res.RateReview?.ratingAmount - res.RateReview?.rating);
+			res.RateReview?.userRating && setUserRatingState(res.RateReview.userRating);
+			res.RateReview?.rating && setPosRatings(res.RateReview?.rating);
+			res.RateReview?.ratingAmount &&
+				setNegRatings(res.RateReview?.ratingAmount - (res.RateReview?.rating ?? 0));
 		}
 	};
 
@@ -139,7 +141,7 @@ const ReviewPage = () => {
 		if (!isAuthed) return;
 		if (data?.Review?.user?.id) {
 			const res = await mutateAsync({ userId: data?.Review?.user?.id });
-			setIsFollowing(res.ToggleFollow.isFollowing);
+			res.ToggleFollow?.isFollowing && setIsFollowing(res.ToggleFollow.isFollowing);
 		} else {
 			Burnt.toast({ title: 'User ID not found 🥲' });
 		}
@@ -147,7 +149,7 @@ const ReviewPage = () => {
 
 	useEffect(() => {
 		if (data?.Review?.user) {
-			setIsFollowing(data?.Review?.user?.isFollowing);
+			data?.Review?.user?.isFollowing && setIsFollowing(data?.Review?.user?.isFollowing);
 		}
 	}, [data]);
 
@@ -166,7 +168,7 @@ const ReviewPage = () => {
 					title: 'Review',
 					headerShown: true,
 					header: (props) => (
-						<ReviewHeader {...props} shareLink={data?.Review?.siteUrl} />
+						<ReviewHeader {...props} shareLink={data?.Review?.siteUrl ?? undefined} />
 					),
 				}}
 			/>
@@ -174,14 +176,15 @@ const ReviewPage = () => {
 				<MediaBanner
 					urls={[
 						data?.Review?.media?.bannerImage ??
-							data?.Review?.media?.coverImage?.extraLarge,
+							data?.Review?.media?.coverImage?.extraLarge ??
+							'',
 					]}
 				/>
 				<View style={{ marginVertical: 80 }}>
 					<View style={{ alignItems: 'center' }}>
 						<Avatar.Image
 							size={100}
-							source={{ uri: data?.Review?.user?.avatar?.large }}
+							source={{ uri: data?.Review?.user?.avatar?.large ?? undefined }}
 						/>
 						<Text variant={'titleLarge'} style={{ paddingVertical: 12 }}>
 							{data?.Review?.user?.name}
@@ -217,12 +220,14 @@ const ReviewPage = () => {
 						parentWidth={width - 20} // sub padding
 					/>
 				</View>
-				<Score
-					reviewId={id}
-					score={data?.Review?.score}
-					ratingAmount={data?.Review?.ratingAmount}
-					rating={data?.Review?.rating}
-				/>
+				{data?.Review?.score && (
+					<Score
+						reviewId={id}
+						score={data?.Review?.score}
+						ratingAmount={data?.Review?.ratingAmount ?? undefined}
+						rating={data?.Review?.rating ?? undefined}
+					/>
+				)}
 			</LongScrollView>
 		</View>
 	);

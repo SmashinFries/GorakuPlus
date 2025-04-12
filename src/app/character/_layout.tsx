@@ -1,4 +1,4 @@
-import PaperHeader from '@/components/headers';
+import { PaperHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { router, Stack } from 'expo-router';
 
@@ -24,6 +24,7 @@ const CharacterLayout = () => {
 											pathname: '/(sheets)/displayConfig',
 											params: { type: 'search' },
 										}),
+									title: 'Configure Display',
 								},
 							]}
 						/>

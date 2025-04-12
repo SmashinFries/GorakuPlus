@@ -1,15 +1,11 @@
-import PaperHeader from '@/components/headers';
+import { PaperHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { Stack } from 'expo-router';
 
 const PanelsDesuLayout = () => {
 	return (
-		<AnimatedStack
-			screenOptions={{
-				header: (props) => <PaperHeader {...props} />,
-			}}
-		>
+		<AnimatedStack>
 			<Stack.Screen
 				name="index"
 				options={{
@@ -21,6 +17,7 @@ const PanelsDesuLayout = () => {
 							elevated
 							actions={[
 								{
+									title: 'Open Website',
 									icon: 'information-outline',
 									onPress: () => openWebBrowser('https://panelsdesu.com/'),
 								},

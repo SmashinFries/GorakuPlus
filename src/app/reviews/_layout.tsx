@@ -1,4 +1,3 @@
-import PaperHeader from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 
@@ -6,7 +5,6 @@ const ReviewsLayout = () => {
 	return (
 		<AnimatedStack
 			screenOptions={{
-				header: (props) => <PaperHeader {...props} />,
 				headerTransparent: false,
 			}}
 		>

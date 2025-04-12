@@ -6,7 +6,7 @@ import {
 	AniTrendzChartTypes,
 } from '@/api/anitrendz/types';
 import { AnimViewMem } from '@/components/animations';
-import PaperHeader from '@/components/headers';
+import { PaperHeader } from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
 import {
 	AniTrendzQuickActionProps,
@@ -233,9 +233,9 @@ const AniTrendzPage = () => {
 	const [actionSheetParams, setActionSheetParams] = useState<
 		Omit<AniTrendzQuickActionProps, 'onAnimeSearch' | 'onCharacterSearch' | 'sheetRef'>
 	>({
-		link: null,
+		link: '',
 		names: [],
-		anime: null,
+		anime: '',
 	});
 	// const filterSheetRef = useRef<BottomSheetModalMethods>(null);
 	const [routes, _setRoutes] = useState<AniTrendzRoute[]>([
@@ -334,6 +334,7 @@ const AniTrendzPage = () => {
 							{...props}
 							actions={[
 								{
+									title: 'Open Website',
 									icon: 'information-outline',
 									onPress: () =>
 										openWebBrowser(

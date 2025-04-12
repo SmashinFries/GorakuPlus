@@ -1,5 +1,5 @@
 import { MediaType } from '@/api/anilist/__genereated__/gql';
-import { SearchHeader } from '@/components/headers';
+import { SearchHeader } from '@/components/headers/search';
 import { KeyboardSpacerView } from '@/components/keyboard';
 import { ImageSearchDialog } from '@/components/search/dialogs';
 import { FilterSheet } from '@/components/search/filtersheet';

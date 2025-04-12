@@ -1,4 +1,4 @@
-import PaperHeader from '@/components/headers';
+import { PaperHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { router, Stack } from 'expo-router';
 
@@ -6,7 +6,6 @@ const StaffLayout = () => {
 	return (
 		<AnimatedStack
 			screenOptions={{
-				header: (props) => <PaperHeader {...props} />,
 				headerTransparent: false,
 			}}
 		>
@@ -19,6 +18,7 @@ const StaffLayout = () => {
 							{...props}
 							actions={[
 								{
+									title: 'Configure Display',
 									icon: 'view-module',
 									onPress: () =>
 										router.push({

@@ -1,8 +1,7 @@
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import { TagSection } from '@/components/art/danTag';
-import { ArtHeaderProvider } from '@/components/headers';
 import { Accordion } from '@/components/animations';
 import { ArtistBar } from '@/components/art/artist';
 import { InteractionBar } from '@/components/art/interactions';
@@ -14,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { useArtistCommentaryQuery, usePostQuery } from '@/api/danbooru/danbooru';
 import { useAppTheme } from '@/store/theme/themes';
+import { ArtHeaderProvider } from '@/components/headers/art';
 
 const DanbooruPostPage = () => {
 	const { postId } = useLocalSearchParams<{ postId: string }>();

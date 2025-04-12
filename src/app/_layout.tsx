@@ -2,7 +2,6 @@ import 'react-native-gesture-handler';
 import { Stack, router, useNavigationContainerRef } from 'expo-router';
 import * as TaskManager from 'expo-task-manager';
 import { useEffect } from 'react';
-import PaperHeader from '@/components/headers';
 import { fetchAnilistNotifications, notifNavigate } from '@/utils/notifications/backgroundFetch';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import AnimatedStack from '@/components/stack';
@@ -131,7 +130,6 @@ const RootLayout = () => {
 							name="statistics"
 							options={{
 								title: 'Statistics',
-								header: (props) => <PaperHeader {...props} />,
 								headerShown: true,
 							}}
 						/>
@@ -139,7 +137,6 @@ const RootLayout = () => {
 							name="notifications"
 							options={{
 								title: 'Notifications',
-								header: (props) => <PaperHeader {...props} />,
 								headerShown: true,
 							}}
 						/>

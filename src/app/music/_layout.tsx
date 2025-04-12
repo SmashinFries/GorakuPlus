@@ -1,4 +1,3 @@
-import PaperHeader from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 
 const MusicLayout = () => {
@@ -6,7 +5,6 @@ const MusicLayout = () => {
 		<AnimatedStack
 			screenOptions={{
 				title: 'Music',
-				// header: (props) => <PaperHeader {...props} />,
 				headerShown: false,
 			}}
 		/>

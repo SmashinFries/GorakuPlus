@@ -1,6 +1,5 @@
 import { View, StyleSheet } from 'react-native';
 import { Button, List, Portal, Text } from 'react-native-paper';
-import { FadeHeaderProvider } from '@/components/headers';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
 import { useCallback, useReducer, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -29,6 +28,7 @@ import { useAppTheme } from '@/store/theme/themes';
 import { useMatchStore } from '@/store/matchStore';
 import { useShallow } from 'zustand/react/shallow';
 import { GorakuRefreshControl } from '@/components/explore/lists';
+import { AnimPaperHeader, FadeHeaderScrollView } from '@/components/headers';
 
 const CharacterScreen = () => {
 	const { charId } = useLocalSearchParams<{ charId: string }>();
@@ -193,12 +193,15 @@ const CharacterScreen = () => {
 			)}
 			{isReady && (
 				<AnimViewMem>
-					<FadeHeaderProvider
-						title={primaryName ?? ''}
-						loading={charData.isLoading}
+					<FadeHeaderScrollView
+						isLoading={charData.isLoading}
 						animationRange={[280, 340]}
-						// shareLink={charData.data?.Character?.siteUrl}
-						// onEdit={() => openWebBrowser(`https://anilist.co/edit/character/${charId}`)}
+						Header={(props) => (
+							<AnimPaperHeader
+								{...props}
+								options={{ ...props.options, title: primaryName ?? '' }}
+							/>
+						)}
 						BgImage={({ style }) =>
 							(charData?.data?.Character?.media?.edges?.length ?? 0) > 0 ? (
 								<MediaBanner
@@ -222,7 +225,7 @@ const CharacterScreen = () => {
 								/>
 							) : undefined
 						}
-						RefreshControl={
+						refreshControl={
 							<GorakuRefreshControl
 								refreshing={charData?.isRefetching}
 								onRefresh={charData?.refetch}
@@ -416,7 +419,7 @@ const CharacterScreen = () => {
 								</View>
 							)}
 						</View>
-					</FadeHeaderProvider>
+					</FadeHeaderScrollView>
 					<Portal>
 						<SaveImageDialog
 							img_url={selectedImg}

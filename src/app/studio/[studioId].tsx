@@ -3,10 +3,10 @@ import { View, useWindowDimensions } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import useStudioList from '@/hooks/studio/useStudio';
 import { MediaCard, MediaCardRow } from '@/components/cards';
-import { StudioHeader } from '@/components/headers';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { StudioListQuery } from '@/api/anilist/__genereated__/gql';
 import { useColumns } from '@/hooks/useColumns';
+import { StudioHeader } from '@/components/headers/studio';
 
 const StudioMediaListScreen = () => {
 	const { studioId } = useLocalSearchParams<{ studioId: string }>();

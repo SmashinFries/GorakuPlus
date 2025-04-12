@@ -1,4 +1,4 @@
-import PaperHeader from '@/components/headers';
+import { PaperHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { router, Stack } from 'expo-router';
 
@@ -27,6 +27,7 @@ const UserLayout = () => {
 							{...props}
 							actions={[
 								{
+									title: 'Configure Display',
 									icon: 'view-module',
 									onPress: () =>
 										router.push({
@@ -49,6 +50,7 @@ const UserLayout = () => {
 							{...props}
 							actions={[
 								{
+									title: 'Configure Display',
 									icon: 'view-module',
 									onPress: () =>
 										router.push({

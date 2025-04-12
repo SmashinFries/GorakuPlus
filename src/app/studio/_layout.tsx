@@ -1,4 +1,3 @@
-import PaperHeader, { StudioHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 

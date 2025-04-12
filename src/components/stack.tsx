@@ -1,8 +1,8 @@
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { Stack } from 'expo-router';
-import PaperHeader from './headers';
 import { useAppTheme } from '@/store/theme/themes';
 import { useShallow } from 'zustand/react/shallow';
+import { PaperHeader } from './headers';
 
 type StackProps = (typeof Stack)['defaultProps'];
 

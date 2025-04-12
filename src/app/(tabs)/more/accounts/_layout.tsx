@@ -1,4 +1,4 @@
-import { AccountsHeader } from '@/components/headers';
+import { AccountsHeader } from '@/components/headers/accounts';
 import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 

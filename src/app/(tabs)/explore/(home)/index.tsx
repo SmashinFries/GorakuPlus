@@ -15,7 +15,6 @@ import {
 import BarcodeScanner from '@/components/barcodeScanner';
 import { NetworkError } from '@/components/error';
 import { GorakuRefreshControl, SectionScroll } from '@/components/explore/lists';
-import { ExploreHeader } from '@/components/headers';
 import { RenderTabBar } from '@/components/tab';
 import { useAuthStore } from '@/store/authStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
@@ -33,6 +32,7 @@ import { useShallow } from 'zustand/react/shallow';
 import React from 'react';
 import ParticleBackground from '@/components/particles';
 import { SearchPreset, SearchPresetType } from '@/types/anilist';
+import { ExploreHeader } from '@/components/headers/explore';
 
 const perPage = 24;
 const thisSeasonParams = getSeason();
@@ -291,8 +291,8 @@ const ExplorePage = () => {
 			/>
 			<ParticleBackground backgroundColor={colors.background} />
 			<TabView
-				navigationState={{ index, routes }}
 				// @ts-ignore
+				navigationState={{ index, routes }}
 				renderScene={renderScene}
 				onIndexChange={setIndex}
 				initialLayout={{ width: layout.width }}

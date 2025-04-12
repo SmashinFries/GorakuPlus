@@ -1,4 +1,4 @@
-import PaperHeader from '@/components/headers';
+import { PaperHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 

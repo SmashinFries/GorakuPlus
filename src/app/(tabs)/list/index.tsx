@@ -1,5 +1,5 @@
 import { MediaType } from '@/api/anilist/__genereated__/gql';
-import { ListHeader } from '@/components/headers';
+import { ListHeader } from '@/components/headers/list';
 import { AnimeTab, MangaTab } from '@/components/list/screens';
 import { ListFilterSheet } from '@/components/sheets/listsheets';
 import { GorakuTabBar } from '@/components/tab';

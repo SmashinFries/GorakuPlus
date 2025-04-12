@@ -9,7 +9,6 @@ import {
 import { Chip, List, MD3DarkTheme, Text } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
-import { FadeHeaderProvider } from '@/components/headers';
 import { convertDate, copyToClipboard } from '@/utils';
 import { StaffMediaCard } from '@/components/staff/media';
 import { useLocalSearchParams } from 'expo-router';
@@ -30,6 +29,7 @@ import {
 	useStaffDetailsQuery,
 } from '@/api/anilist/__genereated__/gql';
 import { CharacterCard } from '@/components/cards';
+import { AnimPaperHeader, FadeHeaderScrollView } from '@/components/headers';
 
 const StafPage = () => {
 	const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -81,15 +81,8 @@ const StafPage = () => {
 	}
 
 	return (
-		<FadeHeaderProvider
-			title={
-				mediaLanguage === 'english' || mediaLanguage === 'romaji'
-					? (data?.Staff?.name?.full as string)
-					: (data?.Staff?.name?.native ?? '')
-			}
-			loading={isLoading}
-			// shareLink={data?.Staff?.siteUrl}
-			// onEdit={() => openWebBrowser(`https://anilist.co/edit/staff/${id}`)}
+		<FadeHeaderScrollView
+			isLoading={isLoading}
 			BgImage={({ style }) =>
 				(data?.Staff?.staffMedia?.edges?.length ?? 0) > 0 ? (
 					<MediaBanner
@@ -104,7 +97,18 @@ const StafPage = () => {
 					/>
 				) : undefined
 			}
-			// favorite={data?.Staff?.isFavourite}
+			Header={(props) => (
+				<AnimPaperHeader
+					{...props}
+					options={{
+						...props.options,
+						title:
+							mediaLanguage === 'english' || mediaLanguage === 'romaji'
+								? (data?.Staff?.name?.full as string)
+								: (data?.Staff?.name?.native ?? ''),
+					}}
+				/>
+			)}
 		>
 			<AnimViewMem style={{ paddingTop: 100 }}>
 				<View style={[styles.container]}>
@@ -335,7 +339,7 @@ const StafPage = () => {
 					<View>{/* <CharacterPrevList data={data?.Staff?.characters} /> */}</View>
 				</View>
 			</AnimViewMem>
-		</FadeHeaderProvider>
+		</FadeHeaderScrollView>
 	);
 };
 

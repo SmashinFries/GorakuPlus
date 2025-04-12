@@ -24,11 +24,11 @@ import { ListSubheader } from '@/components/titles';
 import { useAppTheme } from '@/store/theme/themes';
 import { Slider } from '@/components/slider';
 import { MaterialSwitchListItem } from '@/components/switch';
-import { AniCardHeader } from '@/components/headers';
 import { useScreenshot } from '@/hooks/useScreenshot';
 import { BottomSheetParent } from '@/components/sheets/bottomsheets';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { VariantProp } from 'react-native-paper/lib/typescript/components/Typography/types';
+import { AniCardHeader } from '@/components/headers/anicard';
 
 // const animeParams: MediaAniCardProps = {
 // 	title: 'Make Heroine ga Oosugiru!',

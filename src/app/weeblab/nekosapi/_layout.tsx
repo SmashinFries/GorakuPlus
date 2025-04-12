@@ -1,14 +1,9 @@
-import PaperHeader, { NekosAPIHeader } from '@/components/headers';
 import AnimatedStack from '@/components/stack';
 import { Stack } from 'expo-router';
 
 const NekosApiLayout = () => {
 	return (
-		<AnimatedStack
-			screenOptions={{
-				header: (props) => <PaperHeader {...props} />,
-			}}
-		>
+		<AnimatedStack>
 			<Stack.Screen
 				name="index"
 				options={{
