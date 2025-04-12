@@ -31,7 +31,8 @@ const config: ExpoConfig = {
 		'expo-localization',
 		'expo-router',
 		'expo-font',
-		'expo-secure-store',
+		'expo-video',
+		'expo-audio',
 		'react-native-bottom-tabs',
 		[
 			'expo-build-properties',
