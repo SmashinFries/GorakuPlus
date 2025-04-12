@@ -1,0 +1,233 @@
+diff --git a/src/components/Menu/Menu.tsx b/src/components/Menu/Menu.tsx
+index db5e9a10a079f750c9793b6f4d48a0a1fdec54e4..31a67284b5afb9b32ae395f440600043b782302f 100644
+--- a/src/components/Menu/Menu.tsx
++++ b/src/components/Menu/Menu.tsx
+@@ -1,4 +1,4 @@
+-import * as React from 'react';
++import * as React from "react";
+ import {
+   Animated,
+   Dimensions,
+@@ -18,17 +18,17 @@ import {
+   View,
+   ViewStyle,
+   Pressable,
+-} from 'react-native';
+-
+-import MenuItem from './MenuItem';
+-import { APPROX_STATUSBAR_HEIGHT } from '../../constants';
+-import { useInternalTheme } from '../../core/theming';
+-import type { MD3Elevation, ThemeProp } from '../../types';
+-import { ElevationLevels } from '../../types';
+-import { addEventListener } from '../../utils/addEventListener';
+-import { BackHandler } from '../../utils/BackHandler/BackHandler';
+-import Portal from '../Portal/Portal';
+-import Surface from '../Surface';
++} from "react-native";
++
++import MenuItem from "./MenuItem";
++import { APPROX_STATUSBAR_HEIGHT } from "../../constants";
++import { useInternalTheme } from "../../core/theming";
++import type { MD3Elevation, ThemeProp } from "../../types";
++import { ElevationLevels } from "../../types";
++import { addEventListener } from "../../utils/addEventListener";
++import { BackHandler } from "../../utils/BackHandler/BackHandler";
++import Portal from "../Portal/Portal";
++import Surface from "../Surface";
+ 
+ export type Props = {
+   /**
+@@ -43,7 +43,7 @@ export type Props = {
+    * Whether the menu should open at the top of the anchor or at its bottom.
+    * Applied only when anchor is a node, not an x/y position.
+    */
+-  anchorPosition?: 'top' | 'bottom';
++  anchorPosition?: "top" | "bottom";
+   /**
+    * Extra margin to add at the top of the menu to account for translucent status bar on Android.
+    * If you are using Expo, we assume translucent status bar and set a height for status bar automatically.
+@@ -80,7 +80,7 @@ export type Props = {
+    *
+    * @supported Available in v5.x with theme version 3
+    */
+-  mode?: 'flat' | 'elevated';
++  mode?: "flat" | "elevated";
+   /**
+    * @optional
+    */
+@@ -88,7 +88,7 @@ export type Props = {
+   /**
+    * Inner ScrollView prop
+    */
+-  keyboardShouldPersistTaps?: ScrollViewProps['keyboardShouldPersistTaps'];
++  keyboardShouldPersistTaps?: ScrollViewProps["keyboardShouldPersistTaps"];
+   /**
+    * testID to be used on tests.
+    */
+@@ -102,17 +102,17 @@ const ANIMATION_DURATION = 250;
+ // From the 'Standard easing' section of https://material.io/design/motion/speed.html#easing
+ const EASING = Easing.bezier(0.4, 0, 0.2, 1);
+ 
+-const WINDOW_LAYOUT = Dimensions.get('window');
++const WINDOW_LAYOUT = Dimensions.get("window");
+ 
+ const DEFAULT_ELEVATION: MD3Elevation = 2;
+ export const ELEVATION_LEVELS_MAP = Object.values(
+   ElevationLevels
+ ) as ElevationLevels[];
+ 
+-const DEFAULT_MODE = 'elevated';
++const DEFAULT_MODE = "elevated";
+ 
+ const focusFirstDOMNode = (el: View | null | undefined) => {
+-  if (el && Platform.OS === 'web') {
++  if (el && Platform.OS === "web") {
+     // When in the browser, we want to focus the first focusable item on toggle
+     // For example, when menu is shown, focus the first item in the menu
+     // And when menu is dismissed, send focus back to the button to resume tabbing
+@@ -128,10 +128,10 @@ const focusFirstDOMNode = (el: View | null | undefined) => {
+ 
+ const isCoordinate = (anchor: any): anchor is { x: number; y: number } =>
+   !React.isValidElement(anchor) &&
+-  typeof anchor?.x === 'number' &&
+-  typeof anchor?.y === 'number';
++  typeof anchor?.x === "number" &&
++  typeof anchor?.y === "number";
+ 
+-const isBrowser = () => Platform.OS === 'web' && 'document' in global;
++const isBrowser = () => Platform.OS === "web" && "document" in global;
+ 
+ /**
+  * Menus display a list of choices on temporary elevated surfaces. Their placement varies based on the element that opens them.
+@@ -183,8 +183,8 @@ const isBrowser = () => Platform.OS === 'web' && 'document' in global;
+ const Menu = ({
+   visible,
+   statusBarHeight = APPROX_STATUSBAR_HEIGHT,
+-  overlayAccessibilityLabel = 'Close menu',
+-  testID = 'menu',
++  overlayAccessibilityLabel = "Close menu",
++  testID = "menu",
+   anchor,
+   onDismiss,
+   anchorPosition,
+@@ -249,7 +249,7 @@ const Menu = ({
+ 
+   const handleKeypress = React.useCallback(
+     (e: KeyboardEvent) => {
+-      if (e.key === 'Escape') {
++      if (e.key === "Escape") {
+         onDismiss?.();
+       }
+     },
+@@ -259,21 +259,21 @@ const Menu = ({
+   const removeListeners = React.useCallback(() => {
+     backHandlerSubscriptionRef.current?.remove();
+     dimensionsSubscriptionRef.current?.remove();
+-    isBrowser() && document.removeEventListener('keyup', handleKeypress);
++    isBrowser() && document.removeEventListener("keyup", handleKeypress);
+   }, [handleKeypress]);
+ 
+   const attachListeners = React.useCallback(() => {
+     backHandlerSubscriptionRef.current = addEventListener(
+       BackHandler,
+-      'hardwareBackPress',
++      "hardwareBackPress",
+       handleDismiss
+     );
+     dimensionsSubscriptionRef.current = addEventListener(
+       Dimensions,
+-      'change',
++      "change",
+       handleDismiss
+     );
+-    Platform.OS === 'web' && document.addEventListener('keyup', handleKeypress);
++    Platform.OS === "web" && document.addEventListener("keyup", handleKeypress);
+   }, [handleDismiss, handleKeypress]);
+ 
+   const measureMenuLayout = () =>
+@@ -303,7 +303,7 @@ const Menu = ({
+   );
+ 
+   const show = React.useCallback(async () => {
+-    const windowLayoutResult = Dimensions.get('window');
++    const windowLayoutResult = Dimensions.get("window");
+     const [menuLayoutResult, anchorLayoutResult] = await Promise.all([
+       measureMenuLayout(),
+       measureAnchorLayout(),
+@@ -394,27 +394,28 @@ const Menu = ({
+       await Promise.resolve().then(() => {
+         if (display && !prevRendered.current) {
+           show();
+-        } else {
+-          if (rendered) {
+-            hide();
+-          }
++          return;
++        }
++
++        if (!display && prevRendered.current) {
++          hide();
+         }
+ 
+         return;
+       });
+     },
+-    [hide, show, rendered]
++    [hide, show]
+   );
+ 
+   React.useEffect(() => {
+     const opacityAnimation = opacityAnimationRef.current;
+     const scaleAnimation = scaleAnimationRef.current;
+     keyboardDidShowListenerRef.current = Keyboard.addListener(
+-      'keyboardDidShow',
++      "keyboardDidShow",
+       keyboardDidShow
+     );
+     keyboardDidHideListenerRef.current = Keyboard.addListener(
+-      'keyboardDidHide',
++      "keyboardDidHide",
+       keyboardDidHide
+     );
+ 
+@@ -451,7 +452,7 @@ const Menu = ({
+   const positionTransforms = [];
+   let leftTransformation = left;
+   let topTransformation =
+-    !isCoordinate(anchorRef.current) && anchorPosition === 'bottom'
++    !isCoordinate(anchorRef.current) && anchorPosition === "bottom"
+       ? top + anchorLayout.height
+       : top;
+ 
+@@ -624,7 +625,7 @@ const Menu = ({
+       : { left: leftTransformation }),
+   };
+ 
+-  const pointerEvents = visible ? 'box-none' : 'none';
++  const pointerEvents = visible ? "box-none" : "none";
+ 
+   return (
+     <View ref={(ref) => (anchorRef.current = ref)} collapsable={false}>
+@@ -688,7 +689,7 @@ Menu.Item = MenuItem;
+ 
+ const styles = StyleSheet.create({
+   wrapper: {
+-    position: 'absolute',
++    position: "absolute",
+   },
+   shadowMenuContainer: {
+     opacity: 0,
+@@ -697,11 +698,11 @@ const styles = StyleSheet.create({
+   pressableOverlay: {
+     ...Platform.select({
+       web: {
+-        cursor: 'auto',
++        cursor: "auto",
+       },
+     }),
+     ...StyleSheet.absoluteFillObject,
+-    width: '100%',
++    width: "100%",
+   },
+ });
+ 
