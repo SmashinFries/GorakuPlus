@@ -41,6 +41,7 @@ const BORDER_RADIUS = 8;
 
 type MediaCardProps = MainMetaFragment & {
 	navigate?: () => void;
+	onLongPress?: () => void;
 	scoreVisualType?: ScoreVisualType;
 	titleLang?: 'english' | 'romaji' | 'native';
 	height?: number;
@@ -56,11 +57,14 @@ type MediaCardProps = MainMetaFragment & {
 	customEPText?: string;
 	parentMediaId?: number;
 	disableFav?: boolean;
+	disableNav?: boolean;
 };
 export const MediaCard = ({
 	navigate = () => null,
+	onLongPress = () => null,
 	allowEntryEdit = true,
 	disableFav = false,
+	disableNav = false,
 	...props
 }: MediaCardProps) => {
 	const card_height = props.height ?? 200;
@@ -88,23 +92,27 @@ export const MediaCard = ({
 		// SheetManager.hide('QuickActionAniTrendzSheet');
 	};
 
-	const onLongPress = () => {
-		props.mediaListEntry && initializeListEntry(props.mediaListEntry);
-		!props.isMangaDex &&
-			router.push({
-				pathname: '/(sheets)/mediaActions',
-				params: {
-					params: JSON.stringify({
-						...props,
-						scoreFormat: props.scoreFormat,
-						activityId: props.activityId,
-						followingUsername: props.followingUsername,
-						allowEntryEdit: allowEntryEdit,
-						parentMediaId: props.parentMediaId,
-						disableFav,
-					}),
-				},
-			});
+	const onLongNav = () => {
+		if (disableNav) {
+			onLongPress();
+		} else {
+			props.mediaListEntry && initializeListEntry(props.mediaListEntry);
+			!props.isMangaDex &&
+				router.push({
+					pathname: '/(sheets)/mediaActions',
+					params: {
+						params: JSON.stringify({
+							...props,
+							scoreFormat: props.scoreFormat,
+							activityId: props.activityId,
+							followingUsername: props.followingUsername,
+							allowEntryEdit: allowEntryEdit,
+							parentMediaId: props.parentMediaId,
+							disableFav,
+						}),
+					},
+				});
+		}
 	};
 
 	if (!props) return;
@@ -132,10 +140,14 @@ export const MediaCard = ({
 						if (props.isMangaDex) {
 							navigate();
 						} else {
-							navigate() ?? onNav();
+							if (disableNav) {
+								navigate();
+							} else {
+								onNav();
+							}
 						}
 					}}
-					onLongPress={onLongPress}
+					onLongPress={onLongNav}
 					android_ripple={{ foreground: true, borderless: false, color: colors.primary }}
 					style={{ height: '100%', width: '100%' }}
 				>
@@ -694,7 +706,6 @@ export const CharacterCard = ({
 	const { colors } = useAppTheme();
 	const { mediaLanguage } = useSettingsStore();
 	const onNav = () => {
-		// console.log(props.isFavourite);
 		router.navigate(props.isStaff ? `/staff/${props.id}` : `/character/${props.id}`);
 	};
 

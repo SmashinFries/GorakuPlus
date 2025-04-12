@@ -1,15 +1,14 @@
-import { View } from 'react-native';
-import { useCallback, useRef } from 'react';
+import { Share, View } from 'react-native';
+import { useCallback, useMemo, useRef } from 'react';
 import { router } from 'expo-router';
 import { useMedia } from '@/hooks/media/useMedia';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { MediaLoading } from '@/components/media/loading';
-import { FadeHeaderProvider } from '@/components/headers';
 import { MediaBanner } from '@/components/media/banner';
 import { FrontCoverMem } from '@/components/media/sections/frontCover';
 import BodyContainer from '@/components/media/body';
 import TagView from '@/components/media/sections/tags';
-import ListEntryView from '@/components/media/sections/entry';
+import { MediaInteractionBar } from '@/components/media/sections/entry';
 import { Description } from '@/components/media/sections/description';
 import Relations from '@/components/media/sections/relations';
 import { MUData, MetaData } from '@/components/media/sections/meta';
@@ -44,6 +43,10 @@ import { useMatchStore } from '@/store/matchStore';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { AccordionMemo } from '../animations';
 import { MangaUpdatesSearchSheet, MediaReleasesSheet } from '../sheets/bottomsheets';
+import { AnimPaperHeader, FadeHeaderScrollView } from '../headers';
+import { HeaderActionsProps } from '../headers/components/actions';
+import { getStreamingSiteEmoji } from '@/utils/emoji';
+import { Icon, Text } from 'react-native-paper';
 
 const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 	const { mediaLanguage } = useSettingsStore();
@@ -68,6 +71,38 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 		openWebBrowser(`https://anilist.co/edit/${type}/${aniId}`);
 	}, []);
 
+	const streamLinks = useMemo(
+		() => [
+			...(anilist?.data?.Media?.externalLinks?.filter(
+				(link): link is NonNullable<typeof link> =>
+					link !== null && link.type === ExternalLinkType.Streaming,
+			) ?? []),
+			mangadexDB[aniId]
+				? {
+						id: 1,
+						site: 'MangaDex',
+						url: `https://mangadex.org/title/${mangadexDB[aniId]?.mangaId}`,
+					}
+				: null,
+		],
+		[anilist?.data?.Media?.externalLinks, aniId],
+	);
+
+	const shareLinkConfig = useMemo(
+		() =>
+			({
+				icon: 'share-variant-outline',
+				onPress: () => {
+					Share.share({
+						url: anilist?.data?.Media?.siteUrl ?? '',
+						title: anilist?.data?.Media?.siteUrl ?? '',
+						message: anilist?.data?.Media?.siteUrl ?? '',
+					});
+				},
+			}) as NonNullable<HeaderActionsProps['actions']>[0],
+		[anilist?.data?.Media?.siteUrl],
+	);
+
 	if (aniId === undefined || aniId === null) return null;
 
 	return (
@@ -88,19 +123,8 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 			)}
 
 			{isReady && (
-				<Animated.View>
-					<FadeHeaderProvider
-						// onBack={() => {
-						// 	dispatch(api.util.invalidateTags([{ id: aniId, type: 'AniMedia' }]));
-						// }}
-						title={
-							(mediaLanguage && anilist?.data?.Media?.title?.[mediaLanguage]) ??
-							anilist?.data?.Media?.title?.romaji ??
-							''
-						} //romaji should always be valid
-						shareLink={anilist?.data?.Media?.siteUrl ?? undefined}
-						onEdit={openEdit}
-						loading={false}
+				<View>
+					<FadeHeaderScrollView
 						BgImage={({ style }) => (
 							<MediaBanner
 								style={style}
@@ -124,31 +148,88 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 								}
 							/>
 						)}
-						isMediaScreen
-						streamingLinks={[
-							...(anilist?.data?.Media?.externalLinks?.filter(
-								(link): link is NonNullable<typeof link> =>
-									link !== null && link.type === ExternalLinkType.Streaming,
-							) ?? []),
-							mangadexDB[aniId]
-								? {
-										id: 1,
-										site: 'MangaDex',
-										url: `https://mangadex.org/title/${mangadexDB[aniId]?.mangaId}`,
-									}
-								: null,
-						]}
-						onAniCard={() => {
-							router.push({
-								pathname: '/anicard',
-								params: {
-									id: `${aniId}`,
-									cardType: 'media',
-									mediaType: type,
-									idMal: `${anilist?.data?.Media?.idMal}`,
-								} as AniCardPageParams,
-							});
-						}}
+						Header={(props) => (
+							<AnimPaperHeader
+								{...props}
+								options={{
+									...props.options,
+									title:
+										(mediaLanguage &&
+											anilist?.data?.Media?.title?.[mediaLanguage]) ??
+										anilist?.data?.Media?.title?.romaji ??
+										'',
+								}}
+								actions={[
+									streamLinks.filter(
+										(link) => link !== undefined && link !== null,
+									).length > 0
+										? {
+												icon: anilist?.data?.Media?.siteUrl?.includes(
+													'anime',
+												)
+													? 'play-box-multiple-outline'
+													: 'book-open-page-variant-outline',
+												title: 'Stream Sites',
+												menuItems: streamLinks.map(
+													(link) =>
+														link && {
+															leadingIcon: link.language
+																? (props) =>
+																		link?.language && (
+																			<Text {...props}>
+																				{getStreamingSiteEmoji(
+																					link?.language,
+																				)}
+																			</Text>
+																		)
+																: undefined,
+
+															trailingIcon: link.icon
+																? (props) => (
+																		<Icon
+																			{...props}
+																			source={{
+																				uri: link.icon,
+																			}}
+																			color={
+																				link?.color ??
+																				props.color
+																			}
+																		/>
+																	)
+																: undefined,
+
+															onPress: () =>
+																openWebBrowser(link.url, true),
+															title: link.site,
+														},
+												),
+											}
+										: null,
+									shareLinkConfig,
+									{
+										icon: 'card-text-outline',
+										title: 'AniCard',
+										onPress: () => {
+											router.push({
+												pathname: '/anicard',
+												params: {
+													id: `${aniId}`,
+													cardType: 'media',
+													mediaType: type,
+													idMal: `${anilist?.data?.Media?.idMal}`,
+												} as AniCardPageParams,
+											});
+										},
+									},
+									{
+										icon: 'file-document-edit-outline',
+										title: 'Edit Data',
+										onPress: () => openEdit(),
+									},
+								]}
+							/>
+						)}
 					>
 						<Animated.View entering={FadeIn}>
 							<BodyContainer>
@@ -182,31 +263,26 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 									scoreColors={scoreColors}
 								/> */}
 								</View>
-
-								{userID && (
-									<ListEntryView
-										id={aniId}
-										type={type}
-										status={anilist?.data?.Media?.status}
-										releaseMessage={releaseText ?? undefined}
-										onShowReleases={() => mediaReleasesRef.current?.present()}
-										data={anilist?.data?.Media?.mediaListEntry ?? undefined}
-										customLists={
-											type === MediaType.Anime
-												? (anilist?.data?.User?.mediaListOptions?.animeList?.customLists?.filter(
-														(list): list is string => list !== null,
-													) ?? [])
-												: (anilist?.data?.User?.mediaListOptions?.mangaList?.customLists?.filter(
-														(list): list is string => list !== null,
-													) ?? [])
-										}
-										scoreFormat={
-											anilist?.data?.User?.mediaListOptions?.scoreFormat
-										}
-										media={anilist?.data?.Media}
-										refreshData={anilist?.refetch}
-									/>
-								)}
+								<MediaInteractionBar
+									id={aniId}
+									type={type}
+									status={anilist?.data?.Media?.status}
+									releaseMessage={releaseText ?? undefined}
+									onShowReleases={() => mediaReleasesRef.current?.present()}
+									data={anilist?.data?.Media?.mediaListEntry ?? undefined}
+									customLists={
+										type === MediaType.Anime
+											? (anilist?.data?.User?.mediaListOptions?.animeList?.customLists?.filter(
+													(list): list is string => list !== null,
+												) ?? [])
+											: (anilist?.data?.User?.mediaListOptions?.mangaList?.customLists?.filter(
+													(list): list is string => list !== null,
+												) ?? [])
+									}
+									scoreFormat={anilist?.data?.User?.mediaListOptions?.scoreFormat}
+									media={anilist?.data?.Media}
+									refreshData={anilist?.refetch}
+								/>
 								<View>
 									<Description
 										aniDescription={anilist?.data?.Media?.descriptionHTML}
@@ -357,12 +433,15 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 									anilist?.data?.Media?.format !== MediaFormat.Novel && (
 										<ChapterPreview
 											aniId={aniId}
-											title={anilist.data.Media.title.romaji}
+											title={
+												anilist.data.Media.title.english ??
+												anilist.data.Media.title.romaji
+											}
 										/>
 									)}
 							</BodyContainer>
 						</Animated.View>
-					</FadeHeaderProvider>
+					</FadeHeaderScrollView>
 					<MediaReleasesSheet
 						sheetRef={mediaReleasesRef}
 						status={anilist?.data?.Media?.status ?? undefined}
@@ -397,7 +476,7 @@ const MediaScreen = ({ aniId, type }: { aniId: number; type: MediaType }) => {
 						].filter((title): title is string => title !== null)}
 						onConfirm={() => muSeries.refetch()}
 					/>
-				</Animated.View>
+				</View>
 			)}
 		</View>
 	);

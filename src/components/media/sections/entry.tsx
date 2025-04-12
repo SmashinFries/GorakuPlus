@@ -1,7 +1,7 @@
-import { ActivityIndicator, Icon, IconButton, List, Portal, Text } from 'react-native-paper';
+import { ActivityIndicator, Icon, List, Portal, Text } from 'react-native-paper';
 import React, { useCallback, useMemo, useState } from 'react';
 import { RemoveListItemDialog } from '@/components/media/dialogs';
-import { Pressable, TextStyle, View, useWindowDimensions } from 'react-native';
+import { DimensionValue, Pressable, TextStyle, View, useWindowDimensions } from 'react-native';
 import { NumberPickDialog } from '@/components/dialogs';
 import { scoreValues } from '@/utils/scores';
 import {
@@ -17,7 +17,6 @@ import {
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { AnimViewMem } from '@/components/animations';
-import { useShallow } from 'zustand/react/shallow';
 import { router } from 'expo-router';
 import { useListEntryStore } from '@/store/listEntryStore';
 import { EntryNumberPickerSheetProps } from '@/app/(sheets)/numberPickerSheet';
@@ -27,6 +26,7 @@ import {
 	useToggleFavInvalidateMutation,
 } from '@/api/anilist/extended';
 import { ToggleFavMetaData } from '@/api/anilist/queryUpdates';
+import { VariantProp } from 'react-native-paper/lib/typescript/components/Typography/types';
 
 const FAV_ICONS = ['heart-outline', 'heart'];
 const LIST_ICONS = ['plus', 'playlist-edit'];
@@ -50,8 +50,10 @@ type ActionIconProps = {
 	isLoading: boolean;
 	icon: string;
 	iconColor?: string;
+	iconSize?: number;
 	disabled?: boolean;
 	label?: string;
+	labelVariant?: VariantProp<never>;
 	labelStyle?: TextStyle;
 	description?: string;
 	onPress: () => void;
@@ -61,8 +63,10 @@ export const ActionIcon = ({
 	isLoading,
 	icon,
 	iconColor,
+	iconSize,
 	disabled,
 	label,
+	labelVariant,
 	labelStyle,
 	description,
 	onPress,
@@ -88,7 +92,11 @@ export const ActionIcon = ({
 			disabled={disabled}
 		>
 			<View
-				style={{ height: ICON_SIZE + 18, justifyContent: 'center', alignItems: 'center' }}
+				style={{
+					height: (iconSize !== undefined ? iconSize : ICON_SIZE) + 18,
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
 			>
 				{isLoading ? (
 					<ActivityIndicator
@@ -99,7 +107,7 @@ export const ActionIcon = ({
 				) : (
 					<Icon
 						source={icon}
-						size={ICON_SIZE}
+						size={iconSize !== undefined ? iconSize : ICON_SIZE}
 						color={disabled ? colors.onSurfaceDisabled : (iconColor ?? undefined)}
 					/>
 				)}
@@ -109,10 +117,11 @@ export const ActionIcon = ({
 					style={[
 						{
 							textTransform: 'capitalize',
+							textAlign: 'center',
 						},
 						labelStyle,
 					]}
-					variant="labelMedium"
+					variant={labelVariant ?? 'labelMedium'}
 				>
 					{label}
 				</Text>
@@ -132,18 +141,29 @@ export const ActionIcon = ({
 	);
 };
 
-const ListEntryView = ({
+const AnilistListAction = ({
 	id,
 	type,
-	status,
-	releaseMessage,
 	data,
-	scoreFormat,
 	media,
+	scoreFormat,
 	refreshData,
-	onShowReleases,
-}: ListEntryViewProps) => {
-	// const queryClient = useQueryClient();
+	containerWidth = `${100 / 3}%`,
+}: {
+	id: ListEntryViewProps['id'];
+	type: ListEntryViewProps['type'];
+	data: ListEntryViewProps['data'];
+	media: ListEntryViewProps['media'];
+	scoreFormat: ListEntryViewProps['scoreFormat'];
+	refreshData: ListEntryViewProps['refreshData'];
+	containerWidth?: DimensionValue;
+}) => {
+	const { colors } = useAppTheme();
+	const userId = useAuthStore((state) => state.anilist.userID);
+
+	const [showRemListDlg, setShowRemListDlg] = useState(false);
+	const [isOnList, setIsOnList] = useState(data ? true : false);
+
 	const { isPending: favLoading, mutateAsync: toggleFav } = useToggleFavInvalidateMutation({
 		meta: {
 			id: id,
@@ -169,19 +189,6 @@ const ListEntryView = ({
 				countryOfOrigin: media?.countryOfOrigin,
 			},
 		});
-
-	const { userID } = useAuthStore(useShallow((state) => state.anilist));
-	const { colors } = useAppTheme();
-
-	const [showRemListDlg, setShowRemListDlg] = useState(false);
-	const [isOnList, setIsOnList] = useState(data ? true : false);
-
-	const { width } = useWindowDimensions();
-
-	const containerWidth = width / 3;
-	const splitReleaseMessage = releaseMessage?.includes('\n')
-		? releaseMessage?.split('\n')
-		: [releaseMessage];
 
 	const updateListEntry = useCallback(
 		(variables?: SaveMediaListItemMutationVariables) => {
@@ -228,8 +235,97 @@ const ListEntryView = ({
 			isLoading: favLoading,
 			color: media?.isFavourite ? 'red' : null,
 		},
-		disabled: userID ? false : true,
+		disabled: userId ? false : true,
 	};
+
+	return (
+		<>
+			<View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
+				<ActionIcon
+					icon={media?.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0]}
+					iconColor={media?.isFavourite ? colors.primary : undefined}
+					isLoading={iconStates.fav.isLoading}
+					disabled={!iconStates.disabled ? false : true}
+					onPress={() =>
+						toggleFav(type === MediaType.Anime ? { animeId: id } : { mangaId: id })
+					}
+					label={media?.isFavourite ? 'Favorited' : 'Favorite'}
+					labelStyle={{
+						color: media?.isFavourite ? colors.primary : colors.onSurfaceVariant,
+					}}
+				/>
+			</View>
+
+			<View
+				style={{
+					justifyContent: 'flex-start',
+					alignItems: 'center',
+					width: containerWidth,
+				}}
+			>
+				<ActionIcon
+					isLoading={iconStates.list.isLoading}
+					onPress={() =>
+						isOnList
+							? router.navigate({
+									pathname: '/(sheets)/listEntrySheet',
+									params: {
+										params: serializedParams,
+									},
+								})
+							: updateListEntry()
+					}
+					onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
+					disabled={!iconStates.disabled ? false : true}
+					icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
+					iconColor={isOnList ? colors.primary : undefined}
+					label={`${
+						data?.status
+							? `${data.status?.replaceAll('_', ' ')}${data?.private ? '🔒' : ''}`
+							: 'Add to List'
+					}${data?.progress && data?.progress > 0 ? ` · ${data.progress}` : ''}`}
+					labelStyle={{
+						color: isOnList ? colors.primary : colors.onSurfaceVariant,
+					}}
+				/>
+			</View>
+			<Portal>
+				<RemoveListItemDialog
+					visible={showRemListDlg}
+					onDismiss={() => setShowRemListDlg(false)}
+					onConfirm={() => {
+						deleteListItem({ id: data?.id });
+						setIsOnList(false);
+					}}
+				/>
+			</Portal>
+		</>
+	);
+};
+
+export const MediaInteractionBar = ({
+	id,
+	type,
+	status,
+	releaseMessage,
+	data,
+	scoreFormat,
+	media,
+	refreshData,
+	onShowReleases,
+}: ListEntryViewProps) => {
+	const { colors } = useAppTheme();
+	const isSuwayomiEnabled = useAuthStore(
+		(state) => !!(state.suwayomi.serverUrl && state.suwayomi.info && type === MediaType.Manga),
+	);
+
+	const containerWidth = useMemo(
+		() => `${100 / (isSuwayomiEnabled ? 4 : 3)}%` as DimensionValue,
+		[isSuwayomiEnabled],
+	);
+	const splitReleaseMessage = releaseMessage?.includes('\n')
+		? releaseMessage?.split('\n')
+		: [releaseMessage];
 
 	return (
 		<>
@@ -272,70 +368,57 @@ const ListEntryView = ({
 							}
 						/>
 					</View>
-					<View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
-						<ActionIcon
-							icon={media?.isFavourite ? FAV_ICONS[1] : FAV_ICONS[0]}
-							iconColor={media?.isFavourite ? colors.primary : undefined}
-							isLoading={iconStates.fav.isLoading}
-							disabled={!iconStates.disabled ? false : true}
-							onPress={() =>
-								toggleFav(
-									type === MediaType.Anime ? { animeId: id } : { mangaId: id },
-								)
-							}
-							label={media?.isFavourite ? 'Favorited' : 'Favorite'}
-							labelStyle={{
-								color: media?.isFavourite
-									? colors.primary
-									: colors.onSurfaceVariant,
+					{isSuwayomiEnabled && type === MediaType.Manga && (
+						<View
+							style={{
+								width: containerWidth,
+								borderRadius: 12,
+								alignItems: 'center',
 							}}
-						/>
-					</View>
-					<View
-						style={{
-							justifyContent: 'flex-start',
-							alignItems: 'center',
-							width: containerWidth,
-						}}
-					>
-						<ActionIcon
-							isLoading={iconStates.list.isLoading}
-							onPress={() =>
-								isOnList
-									? router.navigate({
-											pathname: '/(sheets)/listEntrySheet',
-											params: {
-												params: serializedParams,
-											},
-										})
-									: updateListEntry()
-							}
-							onLongPress={() => (isOnList ? setShowRemListDlg(true) : null)}
-							disabled={!iconStates.disabled ? false : true}
-							icon={isOnList ? LIST_ICONS[1] : LIST_ICONS[0]}
-							iconColor={isOnList ? colors.primary : undefined}
-							label={`${
-								data?.status
-									? `${data.status?.replaceAll('_', ' ')}${data?.private ? '🔒' : ''}`
-									: 'Add to List'
-							}${data?.progress && data?.progress > 0 ? ` · ${data.progress}` : ''}`}
-							labelStyle={{
-								color: isOnList ? colors.primary : colors.onSurfaceVariant,
-							}}
-						/>
-					</View>
+						>
+							<ActionIcon
+								icon={'magnify'}
+								isLoading={false}
+								disabled={false}
+								onPress={() =>
+									router.navigate({
+										pathname: '/(dialogs)/(suwayomi)/search',
+										params: {
+											query: media?.title?.english ?? media?.title?.romaji,
+											altTitles: JSON.stringify(
+												[
+													media?.title?.english,
+													media?.title?.romaji,
+													media?.title?.native,
+													...(media?.synonyms ?? []),
+												]?.filter(
+													(title) =>
+														title !== null && title !== undefined,
+												),
+											),
+										},
+									})
+								}
+								label={'Suwayomi'}
+								// labelVariant="labelSmall"
+								labelStyle={{
+									textAlign: 'center',
+									color: colors.onSurfaceVariant,
+								}}
+							/>
+						</View>
+					)}
+					<AnilistListAction
+						data={data}
+						id={id}
+						media={media}
+						refreshData={refreshData}
+						scoreFormat={scoreFormat}
+						type={type}
+						containerWidth={`${100 / (isSuwayomiEnabled ? 4 : 3)}%`}
+					/>
 				</AnimViewMem>
 			</View>
-			<Portal>
-				<RemoveListItemDialog
-					visible={showRemListDlg}
-					onDismiss={() => setShowRemListDlg(false)}
-					onConfirm={() => {
-						deleteListItem({ id: data?.id });
-						setIsOnList(false);
-					}}
-				/>
-			</Portal>
 		</>
 	);
 };
@@ -474,5 +557,3 @@ export const ProgressInput = ({ maxValue, totalContent, disabled }: ProgressInpu
 		</>
 	);
 };
-
-export default ListEntryView;

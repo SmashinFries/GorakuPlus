@@ -1,15 +1,23 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { arrayRange } from '@/utils';
-import { StackAnimationTypes } from 'react-native-screens';
-import { MD3Theme } from 'react-native-paper';
+import { Icon } from 'react-native-paper';
+import Animated, {
+	cancelAnimation,
+	interpolateColor,
+	useAnimatedStyle,
+	useSharedValue,
+	withRepeat,
+	withTiming,
+} from 'react-native-reanimated';
+import { useEffect } from 'react';
+import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 
 type SkeletonProps = {
-	theme: MD3Theme;
+	colors: MD3Colors;
 	active: boolean;
 };
 
-export const ThemeSkeleton = ({ theme, active }: SkeletonProps) => {
-	const { colors } = theme;
+export const ThemeSkeleton = ({ colors, active }: SkeletonProps) => {
 	return (
 		<View
 			style={[
@@ -47,9 +55,58 @@ export const ThemeSkeleton = ({ theme, active }: SkeletonProps) => {
 	);
 };
 
-type NavSkeletonProps = SkeletonProps & {
-	onPress: () => void;
-	animation: StackAnimationTypes;
+export const ThemeCustomSkeleton = ({ colors, active }: SkeletonProps) => {
+	const time = useSharedValue(0);
+
+	const animatedColorStyle = useAnimatedStyle(() => ({
+		borderColor: interpolateColor(
+			time.value,
+			[0, 1],
+			['rgba(255,0,0,1)', 'rgba(0,255,0,1)', 'rgba(0,0,255,1)'],
+		),
+	}));
+
+	useEffect(() => {
+		if (!active) {
+			time.value = withRepeat(withTiming(1, { duration: 1000 }), -1, true);
+		} else {
+			cancelAnimation(time);
+		}
+	}, [active]);
+
+	return (
+		<Animated.View
+			style={[
+				{
+					borderWidth: 1,
+					borderRadius: 12,
+					alignItems: 'center',
+					paddingHorizontal: 15,
+					paddingVertical: 10,
+					borderColor: active ? colors.primary : 'transparent',
+				},
+			]}
+		>
+			<Animated.View
+				style={[
+					styles.container,
+					active ? { borderColor: colors.primary } : animatedColorStyle,
+					{
+						backgroundColor: colors.background,
+						// elevation: 20,
+						// shadowColor: active ? colors.primary : undefined,
+						shadowRadius: 5,
+						shadowOpacity: 20,
+						overflow: 'hidden',
+						justifyContent: 'center',
+						alignItems: 'center',
+					},
+				]}
+			>
+				<Icon source={'plus'} size={24} />
+			</Animated.View>
+		</Animated.View>
+	);
 };
 
 const styles = StyleSheet.create({
