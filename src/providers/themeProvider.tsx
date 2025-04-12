@@ -1,61 +1,58 @@
-import { availableThemes } from '@/store/theme/themes';
+import { availableThemes, ThemeOptions } from '@/store/theme/themes';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { ReactNode, useMemo } from 'react';
-import { PaperProvider } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeProvider } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import { MD3Colors } from 'react-native-paper/lib/typescript/types';
-import { SystemBars } from 'react-native-edge-to-edge';
+import { MD3Colors, MD3Theme } from 'react-native-paper/lib/typescript/types';
+import { createMaterial3Theme, Material3Theme } from '@pchmn/expo-material3-theme';
+
+const amoledColors: Partial<MD3Colors> = {
+	background: '#000001',
+	surface: '#000',
+};
+
+const createPresetTheme = (mode: ThemeOptions, isDark: boolean, isAMOLED: boolean) => {
+	if (mode === 'custom') return;
+
+	if (isAMOLED) {
+		return {
+			...availableThemes[isDark ? 'dark' : 'light'][mode],
+			colors: {
+				...availableThemes[isDark ? 'dark' : 'light'][mode].colors,
+				...amoledColors,
+				// elevation:
+			},
+		} as MD3Theme;
+	} else {
+		return availableThemes[isDark ? 'dark' : 'light'][mode];
+	}
+};
+
+const createCustomThemeBase = (theme: Material3Theme, isDark: boolean, isAMOLED: boolean) => {
+	return isDark
+		? {
+				...MD3DarkTheme,
+				colors: isAMOLED
+					? { ...MD3DarkTheme.colors, ...theme.dark, ...amoledColors }
+					: theme.dark,
+			}
+		: { ...MD3LightTheme, colors: { ...MD3LightTheme.colors, ...theme.light } };
+};
 
 export const PaperThemeProvider = ({ children }: { children: ReactNode }) => {
-	const { isDark, mode, isAMOLED } = useThemeStore();
-	const amoledColors: Partial<MD3Colors> = {
-		background: '#000001',
-		surface: '#000',
-	};
-	const currentTheme = useMemo(
-		() =>
-			isDark
-				? isAMOLED
-					? {
-							...availableThemes['dark'][mode],
-							colors: {
-								...availableThemes['dark'][mode]['colors'],
-								...amoledColors,
-							},
-						}
-					: availableThemes['dark'][mode]
-				: availableThemes['light'][mode],
-		[mode, isDark, isAMOLED],
-	);
+	const { isDark, mode, customColor, isAMOLED } = useThemeStore();
 
-	// useEffect(() => {
-	// 	setStatusBarTranslucent(true);
-	// 	if (isDark) {
-	// 		setStatusBarStyle('light');
-	// 	} else {
-	// 		setStatusBarStyle('dark');
-	// 	}
-	// }, [isDark]);
+	const currentTheme = useMemo(() => {
+		if (mode === 'custom' && customColor) {
+			return createCustomThemeBase(createMaterial3Theme(customColor), isDark, isAMOLED);
+		} else {
+			return createPresetTheme(mode, isDark, isAMOLED);
+		}
+	}, [mode, isDark, customColor, isAMOLED]);
 
 	return (
-		<PaperProvider
-			theme={currentTheme}
-			// theme={
-			// 	isDark
-			// 		? availableThemes['dark'][mode]
-			// 			? availableThemes['dark'][mode]
-			// 			: availableThemes['dark']['default']
-			// 		: availableThemes['light'][mode]
-			// 			? availableThemes['light'][mode]
-			// 			: availableThemes['light']['default']
-			// }
-		>
-			<ThemeProvider value={currentTheme}>
-				{children}
-				<SystemBars style={isDark ? 'light' : 'dark'} />
-				{/* <StatusBar translucent={true} style={isDark ? 'light' : 'dark'} animated /> */}
-			</ThemeProvider>
+		<PaperProvider theme={currentTheme}>
+			<ThemeProvider value={currentTheme as any}>{children}</ThemeProvider>
 		</PaperProvider>
 	);
 };

@@ -3,7 +3,6 @@ import { Appearance } from 'react-native';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { getZustandStorage } from '../helpers/mmkv-storage';
 import { ThemeOptions } from './themes';
-import switchTheme from 'react-native-theme-switch-animation';
 import { create } from 'zustand';
 
 const storage = new MMKV({ id: 'theme-storage' });
@@ -11,12 +10,12 @@ const ThemeStorage = getZustandStorage(storage);
 
 export type ThemeState = {
 	mode: ThemeOptions;
+	customColor: string | null;
 	isDark: boolean;
 	isAMOLED: boolean;
 };
 type ThemeAction = {
-	// setTheme: ({ mode, isDark, isAMOLED }: ThemeState) => void;
-	setThemeMode: (mode: ThemeOptions) => void;
+	setThemeMode: (mode: ThemeOptions, color?: string) => void;
 	setThemeDark: (isDark: boolean) => void;
 	setThemeAMOLED: (isAMOLED: boolean) => void;
 };
@@ -27,21 +26,14 @@ export const useThemeStore = create<ThemeState & ThemeAction>()(
 			mode: 'mi_chan',
 			isDark: Appearance.getColorScheme() === 'dark',
 			isAMOLED: false,
-			setThemeMode: (mode) =>
-				mode
-					? set({ mode })
-					: // switchTheme({
-					// 	switchThemeFunction: () => {
-					// 		set({
-					// 			mode,
-					// 		});
-					// 	},
-					// 	animationConfig: {
-					// 		type: 'fade',
-					// 		duration: 900,
-					// 	},
-					// })
-					null,
+			customColor: null,
+			setThemeMode: (mode, color) => {
+				if (mode === 'custom' && color) {
+					set({ mode, customColor: color });
+				} else {
+					set({ mode, customColor: undefined });
+				}
+			},
 			setThemeDark(isDark) {
 				// switchTheme({
 				// 	switchThemeFunction: () => {

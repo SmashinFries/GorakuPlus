@@ -1,11 +1,15 @@
 import { Accordion } from '@/components/animations';
 import { MediaTileCustomizer } from '@/components/more/settings/appearance/dialogs';
-import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
+import {
+	ThemeCustomSkeleton,
+	ThemeSkeleton,
+} from '@/components/more/settings/appearance/skeletons';
 import { MaterialSwitchListItem } from '@/components/switch';
 import { ListSubheader } from '@/components/titles';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { availableThemes, themeOptions, ThemeOptions, useAppTheme } from '@/store/theme/themes';
 import { useThemeStore } from '@/store/theme/themeStore';
+import { router } from 'expo-router';
 import React from 'react';
 import { useState } from 'react';
 import { FlatList, Pressable } from 'react-native';
@@ -99,36 +103,81 @@ const AppearancePage = () => {
 							showsHorizontalScrollIndicator={false}
 							keyExtractor={(item, idx) => idx.toString()}
 							horizontal
-							renderItem={({ item }) => (
-								<View style={{ marginVertical: 10 }}>
-									<Pressable
-										style={{
-											marginHorizontal: 10,
-											borderRadius: 12,
-										}}
-										onPress={() => setThemeMode(item)}
-									>
-										<View
+							renderItem={({ item }) =>
+								item !== 'custom' ? (
+									<View style={{ marginVertical: 10 }}>
+										<Pressable
 											style={{
-												borderWidth: 1,
-												borderColor:
-													mode === item ? colors.primary : 'transparent',
+												marginHorizontal: 10,
 												borderRadius: 12,
-												alignItems: 'center',
-												paddingHorizontal: 15,
-												paddingVertical: 10,
+												overflow: 'hidden',
+											}}
+											onPress={() => {
+												setThemeMode(item);
+											}}
+											android_ripple={{
+												foreground: true,
+												color: colors.primary,
 											}}
 										>
-											<ThemeSkeleton
-												theme={
-													availableThemes[isDark ? 'dark' : 'light'][item]
-												}
+											<View
+												style={{
+													borderWidth: 1,
+													borderColor:
+														mode === item
+															? colors.primary
+															: 'transparent',
+													borderRadius: 12,
+													alignItems: 'center',
+													paddingHorizontal: 15,
+													paddingVertical: 10,
+												}}
+											>
+												<ThemeSkeleton
+													colors={
+														availableThemes[isDark ? 'dark' : 'light'][
+															item
+														].colors
+													}
+													active={mode === item}
+												/>
+												<Text
+													style={{
+														paddingHorizontal: 10,
+														paddingTop: 10,
+														textTransform: 'capitalize',
+														alignSelf: 'center',
+													}}
+													numberOfLines={2}
+												>
+													{item.replaceAll('_', ' ')}
+												</Text>
+											</View>
+										</Pressable>
+									</View>
+								) : (
+									<View style={{ marginVertical: 10 }}>
+										<Pressable
+											style={{
+												marginHorizontal: 10,
+												borderRadius: 12,
+												overflow: 'hidden',
+											}}
+											onPress={() =>
+												router.navigate('/(dialogs)/customThemeDialog')
+											}
+											android_ripple={{
+												foreground: true,
+												color: colors.primary,
+											}}
+										>
+											<ThemeCustomSkeleton
+												colors={colors}
 												active={mode === item}
 											/>
 											<Text
 												style={{
 													paddingHorizontal: 10,
-													paddingTop: 10,
 													textTransform: 'capitalize',
 													alignSelf: 'center',
 												}}
@@ -136,10 +185,10 @@ const AppearancePage = () => {
 											>
 												{item.replaceAll('_', ' ')}
 											</Text>
-										</View>
-									</Pressable>
-								</View>
-							)}
+										</Pressable>
+									</View>
+								)
+							}
 						/>
 					</Accordion>
 				</List.Section>

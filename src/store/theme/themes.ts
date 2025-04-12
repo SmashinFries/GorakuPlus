@@ -15,8 +15,23 @@ import { MionDark, MionLight } from './m3/mionTheme';
 import { BerserkLight, BerserkDark } from './m3/berserkTheme';
 import { AquaDark, AquaLight } from './m3/aquaTheme';
 
-export type ThemeOptions = 'mi_chan' | 'hinata' | 'kawaii' | 'aqua' | 'berserk' | 'punpun';
-const themeOptions: ThemeOptions[] = ['mi_chan', 'hinata', 'kawaii', 'aqua', 'berserk', 'punpun'];
+export type ThemeOptions =
+	| 'mi_chan'
+	| 'hinata'
+	| 'kawaii'
+	| 'aqua'
+	| 'berserk'
+	| 'punpun'
+	| 'custom';
+const themeOptions: ThemeOptions[] = [
+	'mi_chan',
+	'hinata',
+	'kawaii',
+	'aqua',
+	'berserk',
+	'punpun',
+	'custom',
+];
 // type ThemeSelection = keyof typeof themes;
 // export { themeDark, themeLight, themes, ThemeOptions, ThemeSelection };
 
@@ -45,7 +60,7 @@ const blurHashTheme = {
 };
 
 type GorakuTheme = MD3Theme & {
-	colors: MD3Theme['colors'] & { blurhash: string };
+	colors: MD3Theme['colors'] & { blurhash: string }; // Material3Scheme
 };
 
 const HinataLightTheme: GorakuTheme = {

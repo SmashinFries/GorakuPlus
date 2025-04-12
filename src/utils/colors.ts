@@ -1,5 +1,6 @@
 import { MediaListStatus, MediaStatus } from '@/api/anilist/__genereated__/gql';
 import { useSettingsStore } from '@/store/settings/settingsStore';
+import { getColors } from 'react-native-image-colors';
 
 const RED = '#FF0000';
 const YELLOW = '#FFA500';
@@ -105,4 +106,10 @@ export const getPieChartColor = (index: number, primaryColor: string) => {
 		default:
 			break;
 	}
+};
+
+export const getImageThemeColor = async (url?: string | null, isBase64: boolean = false) => {
+	if (!url) return null;
+	const result = await getColors((isBase64 ? 'data:image/jpeg;base64,' : '') + url);
+	return result;
 };
