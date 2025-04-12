@@ -322,8 +322,8 @@ const updateListCache = (queryClient: QueryClient, result: SaveMediaListItemMuta
 export const updateEntrySaveCache = (queryClient: QueryClient, result: SaveMediaListItemMutation_Mutation, parentMediaId?: number) => {
 	const userId = useAuthStore.getState().anilist.userID;
 	if (userId) {
-		updateExploreCache(queryClient, result, userId);
 		updateAniMediaCache(queryClient, result, userId);
+		updateExploreCache(queryClient, result, userId);
 		parentMediaId && updateAniMediaRelatRecCache(queryClient, parentMediaId, result, userId);
 		updateMediaSearchCache(queryClient, result);
 		updateSearchAllCache(queryClient, result);
