@@ -3,10 +3,9 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, {
+	AnimatedStyle,
 	SensorType,
 	useAnimatedSensor,
 	useAnimatedStyle,
@@ -15,7 +14,7 @@ import Animated, {
 import { useShallow } from 'zustand/react/shallow';
 
 type Props = {
-	style?: any;
+	style?: AnimatedStyle<StyleProp<ViewStyle>>;
 	urls: string[];
 };
 export const MediaBanner = ({ urls, style }: Props) => {
