@@ -1,12 +1,11 @@
-import { useNekosApiImageSearchQuery, useNekosApiRandomImageQuery } from '@/api/nekosapi/nekosapi';
+import { useNekosApiRandomImageQuery } from '@/api/nekosapi/nekosapi';
 import { NekosApiImageResponse, NekosApiImageSearchParams } from '@/api/nekosapi/types';
 import { ScrollToTopButton } from '@/components/buttons';
 import { GorakuRefreshControl } from '@/components/explore/lists';
-import { NekosAPIHeader } from '@/components/headers';
+import { NekosAPIHeader } from '@/components/headers/weeblab';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { NekosApiSheet } from '@/components/sheets/weeblabSheets';
 import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
-import { useStickyHeader } from '@/hooks/animations/useStickyHeader';
 import useDebounce from '@/hooks/useDebounce';
 import { useAppTheme } from '@/store/theme/themes';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
@@ -19,7 +18,7 @@ import { Image, useImage } from 'expo-image';
 import { router, Stack } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Pressable, useWindowDimensions, View } from 'react-native';
-import { ActivityIndicator, Text, TouchableRipple } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 
 const AnimatedMasonryFlashList = Animated.createAnimatedComponent(MasonryFlashList);
@@ -91,7 +90,7 @@ const NekosApiPage = () => {
 
 	// const [searchbarHeight, setSearchbarHeight] = useState(0);
 	// const { scrollHandler, stickyHeaderStyle } = useStickyHeader(searchbarHeight);
-	const { scrollHandler, shouldShowScrollToTop } = useScrollHandler(undefined, 80);
+	const { scrollHandler, shouldShowScrollToTop } = useScrollHandler(undefined, 200);
 	const scrollRef = useRef<MasonryFlashListRef<any>>(null);
 
 	return (
@@ -145,79 +144,10 @@ const NekosApiPage = () => {
 					)}
 				/>
 			)}
-			{/* <Animated.View style={[{ position: 'absolute', width: '100%' }, stickyHeaderStyle]}>
-				<View onLayout={(e) => setSearchbarHeight(e.nativeEvent.layout.height)}>
-					<Searchbar
-						mode="view"
-						value={tagQuery}
-						elevation={0}
-						onChangeText={(txt) => setTagQuery(txt)}
-						style={[{ backgroundColor: colors.elevation.level2 }]}
-						onClearIconPress={() => setTagQuery('')}
-						loading={isFetching}
-					/>
-					<View
-						style={{
-							flexDirection: 'row',
-							flexWrap: 'wrap',
-							backgroundColor: colors.elevation.level2,
-						}}
-					>
-						{tagIds?.map((tagId, idx) => (
-							<Chip
-								key={idx}
-								compact
-								style={{ margin: 4 }}
-								onPress={() =>
-									setTagIds((prev) => prev.filter((id) => id !== tagId))
-								}
-							>
-								{tagData?.data?.items?.find((tag) => tag.id === tagId)?.name}
-							</Chip>
-							// <View key={idx} style={{ padding: 4, justifyContent: 'center', alignItems: 'center', backgroundColor: 'red' }}>
-							// 	<Text>{tagData?.data?.items?.find((tag) => tag.id === tagId)?.name}</Text>
-							// </View>
-						))}
-					</View>
-				</View>
-				{tagQuery && (
-					<Surface
-						elevation={2}
-						style={{
-							width: '100%',
-							alignSelf: 'center',
-							paddingHorizontal: 10,
-							borderRadius: 8,
-							borderTopLeftRadius: 0,
-							borderTopRightRadius: 0,
-						}}
-					>
-						<ScrollView>
-							{tagData?.data?.items
-								?.filter((tag) =>
-									tag.name.toLowerCase().includes(tagQuery.toLowerCase()),
-								)
-								.map(
-									(tag, idx) =>
-										idx < 5 && (
-											<List.Item
-												key={idx}
-												title={tag.name}
-												onPress={() => {
-													setTagIds((prev) => [...prev, tag.id]);
-													setTagQuery('');
-												}}
-											/>
-										),
-								)}
-						</ScrollView>
-					</Surface>
-				)}
-			</Animated.View> */}
 			{shouldShowScrollToTop && (
 				<ScrollToTopButton
 					onPress={() => scrollRef.current?.scrollToOffset({ offset: 0, animated: true })}
-					top={80}
+					top={20}
 				/>
 			)}
 			<NekosApiSheet
