@@ -3,26 +3,30 @@ import { useStaffList } from '@/hooks/staff/useStaff';
 import { useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { useColumns } from '@/hooks/useColumns';
-import { StaffCard } from '@/components/cards';
+import { StaffCard, StaffRowCard } from '@/components/cards';
 import { StaffListQuery_Media_Media_staff_StaffConnection_edges_StaffEdge } from '@/api/anilist/__genereated__/gql';
 
 const StaffListScreen = () => {
 	const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
 	const { data, hasNextPage, fetchNextPage, isFetching } = useStaffList(Number(mediaId));
-	const { itemWidth, columns } = useColumns('search');
+	const { itemWidth, columns, displayMode } = useColumns('search');
 
 	const RenderItem = (
 		props: ListRenderItemInfo<StaffListQuery_Media_Media_staff_StaffConnection_edges_StaffEdge>,
 	) => {
 		return props.item.node?.id ? (
-			<View
-				style={{
-					alignItems: 'center',
-					width: itemWidth,
-				}}
-			>
-				<StaffCard {...props.item.node} role={props.item.role ?? undefined} />
-			</View>
+			displayMode === 'COMPACT' ? (
+				<View
+					style={{
+						alignItems: 'center',
+						width: itemWidth,
+					}}
+				>
+					<StaffCard {...props.item.node} role={props.item.role ?? undefined} />
+				</View>
+			) : (
+				<StaffRowCard {...props.item.node} role={props.item.role ?? undefined} />
+			)
 		) : null;
 	};
 
