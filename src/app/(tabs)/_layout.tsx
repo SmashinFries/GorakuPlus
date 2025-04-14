@@ -28,6 +28,7 @@ const moreIcon = Icon.getImageSourceSync('dots-horizontal', 24);
 const BottomTabBar = ({ descriptors, navigation, state }: BottomTabBarProps) => {
 	const insets = useSafeAreaInsets();
 	const { btmTabLabels, btmTabShifting, btmTabHaptics } = useSettingsStore();
+	const userId = useAuthStore((state) => state.anilist.userID);
 	return (
 		<BottomNavigation.Bar
 			navigationState={state}
@@ -63,7 +64,7 @@ const BottomTabBar = ({ descriptors, navigation, state }: BottomTabBarProps) => 
 								height: 24,
 								borderRadius: route.name === 'viewer' ? 12 : 0,
 							}}
-							tintColor={route.name === 'viewer' ? undefined : color}
+							tintColor={route.name === 'viewer' && !!userId ? undefined : color}
 						/>
 					);
 				}
