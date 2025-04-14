@@ -95,7 +95,7 @@
     "react-native-markdown-display": "^7.0.2",
     "react-native-mmkv": "^2.12.2",
     "react-native-pager-view": "6.5.1",
-    "react-native-paper": "^5.13.1",
+    "react-native-paper": "patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch",
     "react-native-paper-dates": "^0.22.40",
     "react-native-qrcode-svg": "^6.3.15",
     "react-native-reanimated": "~3.16.7",
