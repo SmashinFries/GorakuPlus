@@ -60,6 +60,9 @@ export type FetchSourceMangaMangaItem = {
 	sourceId: string;
 	thumbnailUrl: string;
 	realUrl: string;
+	chapters: {
+		totalCount: number;
+	}
 	categories: {
 		nodes: {
 			id: number,

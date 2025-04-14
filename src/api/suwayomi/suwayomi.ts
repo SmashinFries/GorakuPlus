@@ -66,6 +66,9 @@ mutation FetchSourceManga($page: Int = 1, $query: String, $source: LongString!) 
       sourceId
       thumbnailUrl
 	  realUrl
+	  chapters {
+        totalCount
+      }
 	  categories {
 			nodes {
 				id

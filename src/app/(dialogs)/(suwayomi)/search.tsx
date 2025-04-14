@@ -72,12 +72,29 @@ const MediaRenderItem = ({
 						right: 12,
 						padding: 4,
 						backgroundColor: colors.primaryContainer,
-						borderRadius: 24 / 2,
+						borderRadius: 18 / 2,
 					}}
 				>
-					<Icon source={'bookmark'} size={24} color={colors.onPrimaryContainer} />
+					<Icon source={'bookmark'} size={18} color={colors.onPrimaryContainer} />
 				</AnimViewMem>
 			)}
+			<AnimViewMem
+				style={{
+					position: 'absolute',
+					top: 12,
+					left: 12,
+					padding: 4,
+					backgroundColor: colors.primaryContainer,
+					alignItems: 'center',
+					justifyContent: 'center',
+					borderRadius: 8,
+				}}
+			>
+				<Text
+					variant="labelSmall"
+					style={{ color: colors.onPrimaryContainer }}
+				>{`${item.chapters.totalCount} Chapters`}</Text>
+			</AnimViewMem>
 		</View>
 	);
 };
@@ -233,7 +250,7 @@ const SuwayomiSearchDialog = () => {
 	}, [selectedSources]);
 
 	return (
-		<ScrollView>
+		<ScrollView showsVerticalScrollIndicator={false}>
 			<Stack.Screen
 				options={{
 					header(props) {
