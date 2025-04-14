@@ -3,11 +3,11 @@ import { useAppTheme } from '@/store/theme/themes';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Markdown, { MarkdownIt } from 'react-native-markdown-display';
 
 const RoadmapPage = () => {
-	const { colors } = useAppTheme();
+	const { colors, fonts } = useAppTheme();
 	const { data, isFetching } = useQuery({
 		queryKey: ['roadmap'],
 		queryFn: async () => {
@@ -21,7 +21,7 @@ const RoadmapPage = () => {
 	const markdownit: MarkdownIt = new MarkdownIt({ typographer: true, html: false });
 
 	return (
-		<View style={{ flex: 1 }}>
+		<ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
 			{isFetching && (
 				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 					<GorakuActivityIndicator />
@@ -40,6 +40,7 @@ const RoadmapPage = () => {
 							body: {
 								backgroundColor: 'transparent',
 								color: colors.onBackground,
+								gap: 12,
 							},
 							link: {
 								color: colors.primary,
@@ -51,13 +52,28 @@ const RoadmapPage = () => {
 							heading1: {
 								display: 'none',
 							},
+							tr: {
+								borderColor: colors.surfaceVariant,
+							},
+							th: {
+								borderColor: colors.surfaceVariant,
+							},
+							tbody: {
+								backgroundColor: colors.elevation.level1,
+								borderColor: colors.surfaceVariant,
+								borderWidth: 1,
+							},
+							thead: {
+								...fonts.titleSmall,
+								fontWeight: 'bold',
+							},
 						}}
 					>
 						{data?.data}
 					</Markdown>
 				</View>
 			) : null}
-		</View>
+		</ScrollView>
 	);
 };
 
