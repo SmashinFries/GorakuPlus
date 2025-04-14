@@ -58,20 +58,11 @@ export const CharStaffInteractionBar = ({
 					}}
 				>
 					<ActionIcon
+						label="Edit"
+						isLoading={false}
 						icon={'file-document-edit-outline'}
 						onPress={() => openWebBrowser(edit_url)}
-					>
-						<Text
-							style={{
-								textTransform: 'capitalize',
-								color: colors.onSurfaceVariant,
-								textAlign: 'center',
-							}}
-							variant="labelMedium"
-						>
-							{'Edit'}
-						</Text>
-					</ActionIcon>
+					/>
 				</View>
 				<View
 					style={{
@@ -81,40 +72,24 @@ export const CharStaffInteractionBar = ({
 					}}
 				>
 					<ActionIcon
+						label={'Share'}
+						isLoading={false}
 						icon={'share-variant-outline'}
 						onPress={() => Share.share({ url: share_url, message: share_url })}
-					>
-						<Text
-							style={{
-								textTransform: 'capitalize',
-								color: colors.onSurfaceVariant,
-								textAlign: 'center',
-							}}
-							variant="labelMedium"
-						>
-							{'Share'}
-						</Text>
-					</ActionIcon>
+					/>
 				</View>
 				<View style={{ width: containerWidth, borderRadius: 12, alignItems: 'center' }}>
-					<ActionIcon onPress={onFavoriteToggle}>
-						<IconButton
-							icon={isFavorite ? 'heart' : 'heart-outline'}
-							iconColor={isFavorite ? colors.primary : undefined}
-							disabled={userID ? false : true}
-							size={24}
-							loading={isPending}
-						/>
-						<Text
-							style={{
-								textTransform: 'capitalize',
-								color: isFavorite ? colors.primary : colors.onSurfaceVariant,
-							}}
-							variant="labelMedium"
-						>
-							{isFavorite ? 'Favorited' : 'Favorite'}
-						</Text>
-					</ActionIcon>
+					<ActionIcon
+						icon={isFavorite ? 'heart' : 'heart-outline'}
+						iconColor={isFavorite ? colors.primary : undefined}
+						disabled={userID ? false : true}
+						isLoading={isPending}
+						onPress={onFavoriteToggle}
+						label={isFavorite ? 'Favorited' : 'Favorite'}
+						labelStyle={{
+							color: isFavorite ? colors.primary : colors.onSurfaceVariant,
+						}}
+					/>
 				</View>
 			</View>
 		</View>
