@@ -25,6 +25,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { DanbooruRating } from '@/api/danbooru/types';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useShallow } from 'zustand/react/shallow';
+import { useCardVisualStore } from '@/store/cardVisualStore';
 
 const MediaSettingsPage = () => {
 	const {
@@ -36,7 +37,6 @@ const MediaSettingsPage = () => {
 		exploreTabs,
 		exploreTabOrder,
 		scoreColors,
-		defaultScore,
 		setSettings,
 	} = useSettingsStore(
 		useShallow((state) => ({
@@ -48,8 +48,13 @@ const MediaSettingsPage = () => {
 			exploreTabs: state.exploreTabs,
 			exploreTabOrder: state.exploreTabOrder,
 			scoreColors: state.scoreColors,
-			defaultScore: state.defaultScore,
 			setSettings: state.setSettings,
+		})),
+	);
+	const { defaultScore, setCardVisual } = useCardVisualStore(
+		useShallow((state) => ({
+			defaultScore: state.defaultScore,
+			setCardVisual: state.setCardVisual,
 		})),
 	);
 	const mode = useThemeStore(useShallow((state) => state.mode));
@@ -203,7 +208,7 @@ const MediaSettingsPage = () => {
 					onDismiss={() => setShowDefaultScoreDialog(false)}
 					defaultScore={defaultScore ?? 'average'}
 					updateDefaultScore={(scoreType: 'average' | 'mean') =>
-						setSettings({ defaultScore: scoreType })
+						setCardVisual({ defaultScore: scoreType })
 					}
 				/>
 				<ScoreColorDialog
