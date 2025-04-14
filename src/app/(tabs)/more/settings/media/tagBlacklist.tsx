@@ -1,5 +1,5 @@
 import { TagBLSetup } from '@/app/setup';
-import { BanTagHeader } from '@/components/header';
+import { BanTagHeader } from '@/components/headers/tagBlacklist';
 import { useAppTheme } from '@/store/theme/themes';
 import { useQueryClient } from '@tanstack/react-query';
 import { Stack, router } from 'expo-router';

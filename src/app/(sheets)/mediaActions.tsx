@@ -121,7 +121,6 @@ const MediaQuickActionSheet = () => {
 
 	const onAdd = async (status: MediaListStatus = MediaListStatus.Planning) => {
 		const res = await addEntry({ status: status, mediaId: payload?.id });
-		console.log(res);
 		if (res?.SaveMediaListEntry) initialize(res.SaveMediaListEntry);
 		// setListEntryState({ ...res?.SaveMediaListEntry });
 	};
@@ -395,77 +394,76 @@ const MediaQuickActionSheet = () => {
 								>
 									{titlesArray[titleIdx]}
 								</Text>
-								{payload.nextAiringEpisode?.airingAt ? (
-									<Text style={{ color: colors.onSurfaceVariant }}>
-										<Icon size={14} source={'timer-outline'} />
-										{` EP ${payload.nextAiringEpisode.episode} - ${getTimeUntil(payload.nextAiringEpisode?.airingAt)}`}
+								<View style={{ paddingVertical: 6 }}>
+									{payload.nextAiringEpisode?.airingAt ? (
+										<Text style={{ color: colors.onSurfaceVariant }}>
+											<Icon size={14} source={'timer-outline'} />
+											{` EP ${payload.nextAiringEpisode.episode} - ${getTimeUntil(payload.nextAiringEpisode?.airingAt)}`}
+										</Text>
+									) : null}
+									{payload.type === MediaType.Manga ? (
+										<Text style={{ color: colors.onSurfaceVariant }}>
+											<Icon size={14} source={'timer-outline'} />
+											{payload.status === MediaStatus.Releasing ||
+											payload.status === MediaStatus.Hiatus
+												? ` Publishing since ${payload.startDate?.year}`
+												: ` ${payload.startDate?.year} - ${payload.endDate?.year}`}
+										</Text>
+									) : null}
+									<Text
+										style={{
+											color: colors.onSurfaceVariant,
+											paddingVertical: 6,
+										}}
+									>
+										<Icon
+											size={14}
+											source={
+												payload.type === MediaType.Anime
+													? 'television'
+													: 'book-outline'
+											}
+										/>
+										{` ${payload.format ? MEDIA_FORMAT_ALT[payload.format] : ''}`}
+										{payload.format === MediaFormat.Movie &&
+										payload.duration &&
+										(payload.episodes ?? 0) < 2
+											? ` ・ ${getMovieDuration(payload.duration)}`
+											: payload.status === MediaStatus.NotYetReleased
+												? ``
+												: (payload.episodes ??
+													  payload.chapters ??
+													  payload.volumes)
+													? ` ・ ${payload.episodes ?? payload.chapters ?? payload.volumes} ${
+															payload.type === MediaType.Anime
+																? 'Episodes'
+																: payload.format ===
+																	  MediaFormat.Novel
+																	? 'Volumes'
+																	: 'Chapters'
+														}`
+													: ''}
 									</Text>
-								) : null}
-								{payload.type === MediaType.Manga ? (
-									<Text style={{ color: colors.onSurfaceVariant }}>
-										<Icon size={14} source={'timer-outline'} />
-										{payload.status === MediaStatus.Releasing ||
-										payload.status === MediaStatus.Hiatus
-											? ` Publishing since ${payload.startDate?.year}`
-											: ` ${payload.startDate?.year} - ${payload.endDate?.year}`}
+									<Text
+										style={{
+											color: colors.onSurfaceVariant,
+											textTransform: 'capitalize',
+										}}
+									>
+										<Icon size={14} source={'card-text-outline'} />
+										{` ${payload.status?.replaceAll('_', ' ')}`}
 									</Text>
-								) : null}
-								<Text
-									style={{ color: colors.onSurfaceVariant, paddingVertical: 6 }}
-								>
-									<Icon
-										size={14}
-										source={
-											payload.type === MediaType.Anime
-												? 'television'
-												: 'book-outline'
-										}
-									/>
-									{` ${payload.format ? MEDIA_FORMAT_ALT[payload.format] : ''}`}
-									{payload.format === MediaFormat.Movie &&
-									payload.duration &&
-									(payload.episodes ?? 0) < 2
-										? ` ・ ${getMovieDuration(payload.duration)}`
-										: payload.status === MediaStatus.NotYetReleased
-											? ``
-											: (payload.episodes ??
-												  payload.chapters ??
-												  payload.volumes)
-												? ` ・ ${payload.episodes ?? payload.chapters ?? payload.volumes} ${
-														payload.type === MediaType.Anime
-															? 'Episodes'
-															: payload.format === MediaFormat.Novel
-																? 'Volumes'
-																: 'Chapters'
-													}`
-												: ''}
-								</Text>
-								<Text
-									style={{
-										color: colors.onSurfaceVariant,
-										textTransform: 'capitalize',
-									}}
-								>
-									<Icon size={14} source={'card-text-outline'} />
-									{` ${payload.status?.replaceAll('_', ' ')}`}
-								</Text>
+								</View>
 								{payload.averageScore || payload.meanScore ? (
 									<View
 										style={{
 											flex: 1,
 											flexDirection: 'row',
 											alignItems: 'center',
-											justifyContent: 'flex-start',
-											gap: 24,
+											justifyContent: 'space-evenly',
 											paddingTop: 6,
 										}}
 									>
-										{/* <Text>
-										<Text style={{ fontWeight: '900' }}>Avg: </Text>
-										<Text>{averageScore}%</Text> ・
-										<Text style={{ fontWeight: '900' }}> Mean: </Text>
-										<Text>{meanScore}%</Text>
-									</Text> */}
 										<ScoreView type="average" score={payload.averageScore} />
 										<ScoreView type="mean" score={payload.meanScore} />
 										{payload?.idMal && (
@@ -479,7 +477,6 @@ const MediaQuickActionSheet = () => {
 							</View>
 						</View>
 						<View style={{ paddingVertical: 18 }}>
-							{/* <TagView genres={genres} /> */}
 							<View
 								style={{
 									flexDirection: 'row',

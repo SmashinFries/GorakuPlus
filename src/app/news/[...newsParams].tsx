@@ -5,6 +5,7 @@ import {
 	useGetAnimeNews,
 	useGetMangaNews,
 } from '@/api/jikan/jikan';
+import { AnimeNews, NewsDataItem } from '@/api/jikan/models';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { NewsVItem } from '@/components/news/newsItem';
 import { FlashList } from '@shopify/flash-list';
@@ -14,7 +15,7 @@ import { View, useWindowDimensions } from 'react-native';
 import { Text } from 'react-native-paper';
 
 type RenderItemProps = {
-	item: GetAnimeNewsQueryResult['data']['data'][0] | GetMangaNewsQueryResult['data']['data'][0];
+	item: NewsDataItem;
 	index: number;
 };
 
@@ -39,7 +40,7 @@ const NewsPage = () => {
 		return <NewsVItem news={item} />;
 	}, []);
 
-	const keyExtractor = useCallback((item: RenderItemProps['item']) => item.mal_id.toString(), []);
+	const keyExtractor = useCallback((item: NewsDataItem, index: number) => index.toString(), []);
 
 	const EmptyList = useCallback(() => {
 		return (
@@ -64,8 +65,12 @@ const NewsPage = () => {
 	}
 
 	if (
-		(isAnime && animeNewsQuery?.isFetched && animeNewsQuery?.data?.data?.data?.length < 1) ||
-		(!isAnime && mangaNewsQuery?.isFetched && mangaNewsQuery?.data?.data?.data?.length < 1)
+		(isAnime &&
+			animeNewsQuery?.isFetched &&
+			(animeNewsQuery?.data?.data?.data?.length ?? 0) < 1) ||
+		(!isAnime &&
+			mangaNewsQuery?.isFetched &&
+			(mangaNewsQuery?.data?.data?.data?.length ?? 0) < 1)
 	) {
 		return <EmptyList />;
 	}
