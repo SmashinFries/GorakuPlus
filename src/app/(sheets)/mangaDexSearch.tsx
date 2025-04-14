@@ -11,13 +11,15 @@ import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import { useRef } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, useWindowDimensions, View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import { useShallow } from 'zustand/react/shallow';
 
 const MangaDexSearchSheet = () => {
 	const { aniId, search } = useLocalSearchParams<{ aniId: string; search: string }>();
 	const sheet = useRef<TrueSheet>(null);
+	const scrollRef = useRef<FlatList>(null);
+	const { width } = useWindowDimensions();
 	const { addMangaDexID } = useMatchStore(
 		useShallow((state) => ({ addMangaDexID: state.addMangaDexID })),
 	);
@@ -98,35 +100,44 @@ const MangaDexSearchSheet = () => {
 	};
 
 	return (
-		<GlobalBottomSheetParent sheetRef={sheet}>
-			{isFetching ? (
-				<View
-					style={{
-						height: 100,
-						width: '100%',
-						justifyContent: 'center',
-						alignItems: 'center',
-					}}
-				>
-					<GorakuActivityIndicator />
+		<GlobalBottomSheetParent
+			sheetRef={sheet}
+			// scrollRef={scrollRef}
+			header={
+				<View style={{ marginBottom: 10, paddingHorizontal: 10 }}>
+					<Text variant="headlineMedium">MangaDex Search</Text>
+					<Divider />
 				</View>
-			) : (
-				<FlatList
-					key={columns}
-					data={data?.data?.data}
-					keyExtractor={(_item, idx) => idx.toString()}
-					numColumns={columns}
-					centerContent
-					nestedScrollEnabled
-					ListHeaderComponent={() => (
-						<View style={{ marginBottom: 10, paddingHorizontal: 10 }}>
-							<Text variant="headlineMedium">MangaDex Search</Text>
-							<Divider />
+			}
+			scrollable
+			contentContainerStyle={{ paddingBottom: 24 }}
+			sizes={['large']}
+		>
+			<FlatList
+				ref={scrollRef}
+				key={columns}
+				data={data?.data?.data}
+				keyExtractor={(_item, idx) => idx.toString()}
+				numColumns={columns}
+				centerContent
+				nestedScrollEnabled
+				renderItem={(props) => <MediaRenderItem {...props} />}
+				contentContainerStyle={{ paddingBottom: 36 }}
+				ListEmptyComponent={
+					isFetching ? (
+						<View
+							style={{
+								height: 100,
+								width,
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}
+						>
+							<GorakuActivityIndicator />
 						</View>
-					)}
-					renderItem={(props) => <MediaRenderItem {...props} />}
-				/>
-			)}
+					) : null
+				}
+			/>
 		</GlobalBottomSheetParent>
 	);
 };
