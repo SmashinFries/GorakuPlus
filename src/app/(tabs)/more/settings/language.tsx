@@ -16,6 +16,7 @@ const LanguagePage = () => {
 				descriptionStyle={{ textTransform: 'capitalize' }}
 				onPress={() => setMediaLangVisible(true)}
 			/>
+			<List.Item title="App Language" description={'Coming soon!'} />
 			<MediaLanguageDialog
 				visible={mediaLangVisible}
 				hideDialog={() => setMediaLangVisible(false)}
