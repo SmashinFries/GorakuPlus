@@ -68,6 +68,9 @@ const AccountsPage = () => {
 						/>
 					)}
 				/>
+			</List.Section>
+			<List.Section>
+				<ListSubheader title="Experimental" />
 				<List.Item
 					title="Suwayomi Server"
 					description={'Add manga to your Suwayomi library'}
