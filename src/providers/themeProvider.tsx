@@ -5,6 +5,7 @@ import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeProvider } from '@react-navigation/native';
 import { MD3Colors, MD3Theme } from 'react-native-paper/lib/typescript/types';
 import { createMaterial3Theme, Material3Theme } from '@pchmn/expo-material3-theme';
+import { SystemBars } from 'react-native-edge-to-edge';
 
 const amoledColors: Partial<MD3Colors> = {
 	background: '#000001',
@@ -53,6 +54,7 @@ export const PaperThemeProvider = ({ children }: { children: ReactNode }) => {
 	return (
 		<PaperProvider theme={currentTheme}>
 			<ThemeProvider value={currentTheme as any}>{children}</ThemeProvider>
+			<SystemBars style={isDark ? 'light' : 'dark'} />
 		</PaperProvider>
 	);
 };
