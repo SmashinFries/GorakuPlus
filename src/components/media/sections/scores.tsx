@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View, ViewStyle } from 'react-native';
 import React from 'react';
 import { getScoreColor } from '@/utils';
 import { useAppTheme } from '@/store/theme/themes';
@@ -11,70 +11,33 @@ type ScoreViewProps = {
 	userScore: number | null;
 	height?: number;
 };
-// export const ScoreCircles = ({
-// 	avgScore,
-// 	malScore,
-// 	meanScore,
-// 	userScore,
-// }: ScoreViewProps & { scoreColors: { red: number; yellow: number } }) => {
-// 	const isMalEnabled = useMatchStore((state) => state.isMalEnabled);
-// 	return (
-// 		<View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 15 }}>
-// 			<ScoreContainer
-// 				title={'Mean'}
-// 				score={meanScore}
-// 				opacity={0.35}
-// 				color={getScoreColor(meanScore)}
-// 				delay={870}
-// 			/>
-// 			<ScoreContainer
-// 				title={'Average'}
-// 				score={avgScore}
-// 				opacity={0.35}
-// 				color={getScoreColor(avgScore)}
-// 				delay={835}
-// 			/>
-// 			{isMalEnabled && (
-// 				<ScoreContainer
-// 					title={'MAL'}
-// 					score={malScore}
-// 					opacity={0.35}
-// 					color={getScoreColor(malScore, true)}
-// 					delay={800}
-// 					isMal
-// 				/>
-// 			)}
-// 			{/* {userScore ? (
-//                 <ScoreContainer
-//                     title={'Yours'}
-//                     score={userScore}
-//                     opacity={0.35}
-//                     color={getScoreColor(userScore, scoreColors, true)}
-//                     // color={'red'}
-//                     delay={780}
-//                     isMal
-//                 />
-//             ) : null} */}
-// 		</View>
-// 	);
-// };
-
 export const ScoreView = ({
 	type,
 	score,
 	height = 50,
 	barColor,
 	isLoading = false,
+	containerStyle,
 }: {
 	type: 'average' | 'mean' | 'review' | 'mal';
 	score: number | null | undefined;
 	height?: number;
 	barColor?: string;
 	isLoading?: boolean;
+	containerStyle?: ViewStyle;
 }) => {
 	const { colors } = useAppTheme();
 	return (
-		<View style={{ flexDirection: 'row' }}>
+		<View
+			style={[
+				{
+					flexDirection: 'row',
+					// width: `${100 / 3}%`,
+					justifyContent: 'center',
+				},
+				containerStyle,
+			]}
+		>
 			<View>
 				<View
 					style={{
@@ -126,18 +89,33 @@ export const ScoreView = ({
 	);
 };
 
-export const MediaScoresView = ({
-	averageScore,
-	malScore,
-	meanScore,
-	userScore,
-	height,
-}: ScoreViewProps) => {
+export const MediaScoresView = ({ averageScore, malScore, meanScore, height }: ScoreViewProps) => {
 	return (
-		<View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-			<ScoreView type="average" score={averageScore} height={height} />
-			<ScoreView type="mean" score={meanScore} height={height} />
-			<ScoreView type="mal" score={malScore} height={height} />
+		<View style={{ flexDirection: 'row' }}>
+			<ScoreView
+				type="average"
+				score={averageScore}
+				height={height}
+				containerStyle={MediaScoresStyle.scoreView}
+			/>
+			<ScoreView
+				type="mean"
+				score={meanScore}
+				height={height}
+				containerStyle={MediaScoresStyle.scoreView}
+			/>
+			<ScoreView
+				type="mal"
+				score={malScore}
+				height={height}
+				containerStyle={MediaScoresStyle.scoreView}
+			/>
 		</View>
 	);
 };
+
+const MediaScoresStyle = StyleSheet.create({
+	scoreView: {
+		width: `${100 / 3}%`,
+	},
+});
