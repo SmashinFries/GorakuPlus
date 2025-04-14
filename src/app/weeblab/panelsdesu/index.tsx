@@ -6,7 +6,7 @@ import { useAppTheme } from '@/store/theme/themes';
 import { MasonryFlashList, MasonryListRenderItemInfo } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
@@ -15,13 +15,17 @@ const AnimatedMasonryFlashList = Animated.createAnimatedComponent(MasonryFlashLi
 
 const PanelItem = ({ item }: { item: GetSearchSearchMedia200PanelsItem }) => {
 	const { colors } = useAppTheme();
+	const aspectRatio = useMemo(
+		() => (item?.width ?? 1) / (item?.height ?? 1),
+		[item?.width, item?.height],
+	);
 	return (
 		<Pressable
 			onPress={() => router.navigate(`/weeblab/panelsdesu/${item.id}`)}
 			android_ripple={{ color: colors.primary, borderless: false, foreground: true }}
 			style={{
 				flex: 1,
-				aspectRatio: item?.width / item?.height,
+				aspectRatio: aspectRatio,
 				// minHeight: 80,
 			}}
 		>
@@ -33,7 +37,7 @@ const PanelItem = ({ item }: { item: GetSearchSearchMedia200PanelsItem }) => {
 				style={{
 					// width: '100%',
 					// height: '100%',
-					aspectRatio: item?.width / item?.height,
+					aspectRatio: aspectRatio,
 				}}
 			/>
 		</Pressable>
