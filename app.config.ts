@@ -46,6 +46,7 @@ const config: ExpoConfig = {
 				},
 				android: {
 					useLegacyPackaging: true,
+					usesCleartextTraffic: true,
 				},
 			},
 		],
