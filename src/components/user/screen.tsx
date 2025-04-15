@@ -11,7 +11,6 @@ import {
 	useUserDataQuery,
 	useUserOverviewQuery,
 } from '@/api/anilist/__genereated__/gql';
-import { FadeHeaderProvider } from '../headers';
 import { useAuthStore } from '@/store/authStore';
 import { router, Stack } from 'expo-router';
 import { MediaBanner } from '../media/banner';
@@ -26,6 +25,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { usePostsSearch } from '@/api/danbooru/danbooru';
 import { GorakuRefreshControl } from '../explore/lists';
 import { FollowRow } from './followOverview';
+import { AnimPaperHeader, FadeHeaderScrollView } from '../headers';
 
 const UnauthedPage = () => {
 	const { width } = useWindowDimensions();
@@ -151,8 +151,41 @@ export const UserScreen = ({
 				userOverviewQuery.data &&
 				!userDataQuery.isLoading &&
 				!userOverviewQuery.isLoading && (
-					<FadeHeaderProvider
-						title={isViewer && viewerName ? viewerName : (username ?? '')}
+					<FadeHeaderScrollView
+						Header={(props) => (
+							<AnimPaperHeader
+								{...props}
+								actions={[
+									{
+										icon: 'account-plus',
+										title: 'Add friends',
+										onPress: () => {
+											if (isViewer) {
+												setShowAddFriend(true);
+											} else {
+												mutateAsync({
+													userId: userDataQuery?.data?.User?.id,
+												});
+											}
+										},
+									},
+									isViewer
+										? {
+												icon: 'bell-outline',
+												title: 'Notifications',
+												badgeText:
+													userDataQuery?.data?.User
+														?.unreadNotificationCount ?? undefined,
+												onPress: () => router.navigate(`/notifications`),
+											}
+										: null,
+								]}
+								showBack={!isViewer}
+								options={{
+									title: isViewer && viewerName ? viewerName : (username ?? ''),
+								}}
+							/>
+						)}
 						BgImage={
 							!!userDataQuery?.data?.User?.bannerImage
 								? ({ style }) => (
@@ -165,14 +198,7 @@ export const UserScreen = ({
 									)
 								: undefined
 						}
-						disableBack={isViewer}
-						addFriendIcon
-						onAddFriend={() =>
-							isViewer
-								? setShowAddFriend(true)
-								: mutateAsync({ userId: userDataQuery?.data?.User?.id })
-						}
-						RefreshControl={
+						refreshControl={
 							<GorakuRefreshControl
 								onRefresh={onRefresh}
 								refreshing={
@@ -180,10 +206,9 @@ export const UserScreen = ({
 								}
 							/>
 						}
-						onNotificationIcon={() => router.navigate(`/notifications`)}
-						newNotifs={userDataQuery?.data?.User?.unreadNotificationCount ?? 0}
-						notificationIcon={isViewer}
-						loading={userDataQuery?.isLoading || userOverviewQuery.isLoading}
+						// newNotifs={userDataQuery?.data?.User?.unreadNotificationCount ?? 0}
+						// notificationIcon={isViewer}
+						isLoading={userDataQuery?.isLoading || userOverviewQuery.isLoading}
 					>
 						<View style={{ paddingTop: 100 }}>
 							<View style={{ alignItems: 'center' }}>
@@ -281,7 +306,7 @@ export const UserScreen = ({
 								/>
 							</Portal>
 						)}
-					</FadeHeaderProvider>
+					</FadeHeaderScrollView>
 				)}
 		</View>
 	);
