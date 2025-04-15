@@ -1,6 +1,5 @@
 import { useWindowDimensions } from 'react-native';
 import { Share, View } from 'react-native';
-import { IconButton, Text } from 'react-native-paper';
 import { ActionIcon } from '../media/sections/entry';
 import { openWebBrowser } from '@/utils/webBrowser';
 import { useAuthStore } from '@/store/authStore';

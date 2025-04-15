@@ -1,7 +1,6 @@
 import { useTagCollectionQuery } from '@/api/anilist/__genereated__/gql';
 import { useAnilistAuth } from '@/api/anilist/useAnilistAuth';
 import { MediaCard } from '@/components/cards';
-import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { SetupNavBar } from '@/components/setup/nav';
 import { AnilistIcon } from '@/components/svgs';
 import { MaterialSwitchListItem } from '@/components/switch';
@@ -12,7 +11,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useCardVisualStore } from '@/store/cardVisualStore';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { ScoreVisualTypeEnum } from '@/store/settings/types';
-import { availableThemes, ThemeOptions, themeOptions, useAppTheme } from '@/store/theme/themes';
+import { themeOptions, useAppTheme } from '@/store/theme/themes';
 import { useThemeStore } from '@/store/theme/themeStore';
 import { ExploreTabsProps } from '@/types/navigation';
 import { rgbToRgba } from '@/utils';
@@ -21,8 +20,8 @@ import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { maybeCompleteAuthSession } from 'expo-web-browser';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useWindowDimensions, Pressable, StyleProp, View, ViewStyle } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { useWindowDimensions, StyleProp, View, ViewStyle } from 'react-native';
 import DraggableFlatList, {
 	RenderItemParams,
 	ScaleDecorator,
@@ -40,7 +39,6 @@ import {
 	Searchbar,
 	Text,
 } from 'react-native-paper';
-import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 import Animated, { AnimatedStyle, FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
@@ -532,7 +530,6 @@ export const TagBLSetup = () => {
 			setSettings: state.setSettings,
 		})),
 	);
-	const [tags, _setTags] = useState<string[]>(tagBlacklist ?? []);
 	const [search, setSearch] = useState<string>('');
 
 	const { data } = useTagCollectionQuery({}, { enabled: true });

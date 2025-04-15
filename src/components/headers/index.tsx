@@ -3,10 +3,10 @@ import { Appbar, AppbarProps } from 'react-native-paper';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { HeaderActions, HeaderActionsProps } from './components/actions';
 import Animated, { AnimatedStyle } from 'react-native-reanimated';
-import { ScrollViewProps, StyleProp, View, ViewStyle } from 'react-native';
+import { ScrollViewProps, StyleProp, ViewStyle } from 'react-native';
 import { Stack } from 'expo-router';
 import { useHeaderAnim } from '../animations';
-import { ReactNode, useCallback } from 'react';
+import { ReactNode } from 'react';
 
 type PaperHeaderProps = NativeStackHeaderProps & {
 	mode?: AppbarProps['mode'];
