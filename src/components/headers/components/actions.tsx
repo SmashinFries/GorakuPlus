@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
-import { Appbar, Menu, MenuItemProps, MenuProps } from 'react-native-paper';
+import { Appbar, Badge, Menu, MenuItemProps, MenuProps } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import { HeaderStyles } from '../styles';
 
@@ -54,6 +54,7 @@ export type HeaderActionsProps = {
 				title: string;
 				menuItems?: (MenuItemProps | null | undefined)[];
 				onPress?: () => void;
+				badgeText?: string | number;
 		  }
 		| null
 		| undefined
@@ -80,6 +81,11 @@ export const HeaderActions = ({ actions, headerActionStyle }: HeaderActionsProps
 									icon={action.icon}
 									onPress={() => action.onPress?.()}
 								/>
+								{action.badgeText ? (
+									<Badge
+										style={{ position: 'absolute', top: 0, right: 0 }}
+									>{`${action.badgeText}`}</Badge>
+								) : null}
 							</Animated.View>
 						);
 					}
