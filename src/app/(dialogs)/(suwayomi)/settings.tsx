@@ -176,7 +176,7 @@ const SuwayomiConfigDialog = () => {
 			return true;
 		} else {
 			sendErrorMessage(
-				server?.status === 401 ? 'Authentication failed!' : 'Server not found!',
+				server?.status === 401 ? 'Authentication failed!' : `${server?.status} Error`,
 			);
 			return false;
 		}
