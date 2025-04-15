@@ -5,6 +5,8 @@ import { ThemeSkeleton } from '@/components/more/settings/appearance/skeletons';
 import { SetupNavBar } from '@/components/setup/nav';
 import { AnilistIcon } from '@/components/svgs';
 import { MaterialSwitchListItem } from '@/components/switch';
+import { LightDarkButton, ThemeCard, ThemeCustomCard } from '@/components/theme';
+import { ListSubheader } from '@/components/titles';
 import dummyData from '@/constants/dummyData';
 import { useAuthStore } from '@/store/authStore';
 import { useCardVisualStore } from '@/store/cardVisualStore';
@@ -38,6 +40,7 @@ import {
 	Searchbar,
 	Text,
 } from 'react-native-paper';
+import { MD3Colors } from 'react-native-paper/lib/typescript/types';
 import Animated, { AnimatedStyle, FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
@@ -146,7 +149,7 @@ const IntroPage = () => {
 				</Text>
 				<MaterialSwitchListItem
 					title="NSFW"
-					selected={showNSFW}
+					selected={!!showNSFW}
 					onPress={() => setSettings({ showNSFW: !showNSFW })}
 				/>
 			</View>
@@ -156,24 +159,18 @@ const IntroPage = () => {
 
 const ThemeSetup = () => {
 	const { colors } = useAppTheme();
-	const { isDark, mode, setTheme } = useThemeStore(
+	const { isDark, mode, isAMOLED, setThemeMode, setThemeDark, setThemeAMOLED } = useThemeStore(
 		useShallow((state) => ({
 			mode: state.mode,
 			isDark: state.isDark,
-			setTheme: state.setTheme,
+			isAMOLED: state.isAMOLED,
+			setThemeMode: state.setThemeMode,
+			setThemeDark: state.setThemeDark,
+			setThemeAMOLED: state.setThemeAMOLED,
 		})),
 	);
 
 	const [tempConfig, _setTempConfig] = useState({ isDark, mode });
-
-	const onDarkToggle = (toggle: boolean) => {
-		setTheme({ isDark: toggle });
-		// setTempConfig((prev) => ({ ...prev, isDark: toggle }));
-	};
-	const onModeChange = (theme: ThemeOptions) => {
-		setTheme({ mode: theme });
-		// setTempConfig((prev) => ({ ...prev, mode: theme }));
-	};
 
 	useEffect(() => {
 		// setTheme({ mode: tempConfig.mode, isDark: tempConfig.isDark });
@@ -182,87 +179,109 @@ const ThemeSetup = () => {
 	return (
 		<Body>
 			<TitleText title={'Choose a Theme'} description={"Let's start by choosing a theme!"} />
-			<View style={{ flex: 1, justifyContent: 'center' }}>
+			<View style={{ flex: 1 }}>
 				<View
 					style={{
 						flex: 1,
-						width: '100%',
 						flexDirection: 'row',
-						justifyContent: 'center',
+						justifyContent: 'space-evenly',
 						alignItems: 'center',
-						paddingHorizontal: 20,
+						gap: 12,
+
+						// paddingHorizontal: 20,
 					}}
 				>
-					<Pressable
-						onPress={() => onDarkToggle(false)}
-						style={{
-							alignItems: 'center',
-							justifyContent: 'center',
-							paddingHorizontal: 20,
+					<LightDarkButton
+						mode="light"
+						onPress={() => setThemeDark(false)}
+						colors={colors}
+						isSelected={!isDark}
+					/>
+					<LightDarkButton
+						mode="dark"
+						onPress={() => {
+							setThemeDark(true);
+							setThemeAMOLED(false);
 						}}
-					>
-						<IconButton icon={'weather-sunny'} selected={!isDark} />
-						<Text variant="labelLarge">Light Mode</Text>
-					</Pressable>
-					<Pressable
-						onPress={() => onDarkToggle(true)}
-						style={{
-							alignItems: 'center',
-							justifyContent: 'center',
-							paddingHorizontal: 20,
+						colors={colors}
+						isSelected={isDark && !isAMOLED}
+					/>
+					<LightDarkButton
+						mode="AMOLED"
+						onPress={() => {
+							setThemeDark(true);
+							setThemeAMOLED(true);
 						}}
-					>
-						<IconButton icon={'weather-night'} selected={isDark} />
-						<Text variant="labelLarge">Dark Mode</Text>
-					</Pressable>
+						colors={colors}
+						isSelected={isDark && isAMOLED}
+					/>
 				</View>
-				<View style={{ flex: 1, alignItems: 'center' }}>
-					<ScrollView
-						horizontal
-						showsHorizontalScrollIndicator={false}
-						contentContainerStyle={{
-							justifyContent: 'center',
-						}}
-					>
+				{/* <View style={{ backgroundColor: 'red' }}>
+					<MaterialSwitchListItem
+						title="AMOLED Mode"
+						selected={isAMOLED}
+						onPress={() => setThemeAMOLED(!isAMOLED)}
+					/>
+				</View> */}
+
+				<View
+					style={{
+						flex: 1,
+					}}
+				>
+					<ListSubheader title="Themes" />
+					<ScrollView horizontal showsHorizontalScrollIndicator={false}>
 						{themeOptions.map((theme, idx) => (
 							<View key={idx}>
-								<Pressable
-									style={{
-										marginHorizontal: 10,
-										borderRadius: 12,
-									}}
-									onPress={() => onModeChange(theme)}
-								>
-									<View
+								{/* <Pressable
 										style={{
-											borderWidth: 1,
-											borderColor:
-												mode === theme ? colors.primary : 'transparent',
+											marginHorizontal: 10,
 											borderRadius: 12,
-											alignItems: 'center',
-											paddingHorizontal: 15,
-											paddingVertical: 10,
 										}}
+										onPress={() => setThemeMode(theme)}
 									>
-										<ThemeSkeleton
-											theme={
-												availableThemes[isDark ? 'dark' : 'light'][theme]
-											}
-											active={mode === theme}
-										/>
-										<Text
+										<View
 											style={{
-												paddingHorizontal: 10,
-												paddingTop: 10,
-												textTransform: 'capitalize',
-												alignSelf: 'center',
+												borderWidth: 1,
+												borderColor:
+													mode === theme ? colors.primary : 'transparent',
+												borderRadius: 12,
+												alignItems: 'center',
+												paddingHorizontal: 15,
+												paddingVertical: 10,
 											}}
-											numberOfLines={2}
 										>
-											{theme.replaceAll('_', ' ')}
-										</Text>
-									</View>
-								</Pressable>
+											<ThemeSkeleton
+												colors={
+													availableThemes[isDark ? 'dark' : 'light'][
+														theme
+													]?.colors
+												}
+												active={mode === theme}
+											/>
+											<Text
+												style={{
+													paddingHorizontal: 10,
+													paddingTop: 10,
+													textTransform: 'capitalize',
+													alignSelf: 'center',
+												}}
+												numberOfLines={2}
+											>
+												{theme.replaceAll('_', ' ')}
+											</Text>
+										</View>
+									</Pressable> */}
+								{theme === 'custom' ? (
+									<ThemeCustomCard currentColors={colors} currentMode={mode} />
+								) : (
+									<ThemeCard
+										item={theme}
+										currentMode={mode}
+										isDark={isDark}
+										onPress={() => setThemeMode(theme)}
+									/>
+								)}
 							</View>
 						))}
 					</ScrollView>
@@ -367,7 +386,7 @@ const CardSetup = () => {
 				<View style={{ justifyContent: 'center', paddingVertical: 30 }}>
 					<View style={{ width: '45%', alignSelf: 'center' }}>
 						<MediaCard
-							{...dummyData[mode]}
+							{...dummyData[mode === 'custom' ? 'mi_chan' : mode]}
 							containerStyle={{ alignItems: 'center' }}
 							// fitToParent
 							width={width / 2.5}
@@ -397,13 +416,24 @@ const CardSetup = () => {
 							<Chip
 								key={idx}
 								mode="outlined"
-								selected={scoreVisualType === ScoreVisualTypeEnum[visual]}
+								selected={
+									scoreVisualType ===
+									ScoreVisualTypeEnum[visual as keyof typeof ScoreVisualTypeEnum]
+								}
 								onPress={() =>
-									setCardVisual({ scoreVisualType: ScoreVisualTypeEnum[visual] })
+									setCardVisual({
+										scoreVisualType:
+											ScoreVisualTypeEnum[
+												visual as keyof typeof ScoreVisualTypeEnum
+											],
+									})
 								}
 								textStyle={{
 									color:
-										scoreVisualType === ScoreVisualTypeEnum[visual]
+										scoreVisualType ===
+										ScoreVisualTypeEnum[
+											visual as keyof typeof ScoreVisualTypeEnum
+										]
 											? colors.primary
 											: colors.onBackground,
 								}}
@@ -507,29 +537,34 @@ export const TagBLSetup = () => {
 
 	const { data } = useTagCollectionQuery({}, { enabled: true });
 
-	const TagChip = useCallback(
-		({ name, onPress, icon }) => (
-			<Chip
-				style={{ margin: 8, borderColor: colors.primary }}
-				icon={icon ?? undefined}
-				mode="outlined"
-				compact
-				// selectedColor={isSelected(name) ? colors.primary : undefined}
-				onPress={() => onPress(name)}
-			>
-				{name}
-			</Chip>
-		),
-		[tags],
+	const TagChip = ({
+		name,
+		onPress,
+		icon,
+	}: {
+		name: string;
+		onPress: (name: string) => void;
+		icon: string;
+	}) => (
+		<Chip
+			style={{ margin: 8, borderColor: colors.primary }}
+			icon={icon ?? undefined}
+			mode="outlined"
+			compact
+			// selectedColor={isSelected(name) ? colors.primary : undefined}
+			onPress={() => onPress(name)}
+		>
+			{name}
+		</Chip>
 	);
 
 	const onAdd = (tag: string) => {
-		setSettings({ tagBlacklist: [tag, ...tagBlacklist] });
+		setSettings({ tagBlacklist: [tag, ...(tagBlacklist ?? [])] });
 		setSearch('');
 	};
 
 	const onRemove = (tag: string) => {
-		setSettings({ tagBlacklist: tagBlacklist.filter((t) => t !== tag) });
+		setSettings({ tagBlacklist: tagBlacklist?.filter((t) => t !== tag) });
 	};
 
 	return (
@@ -566,10 +601,10 @@ export const TagBLSetup = () => {
 								}}
 							>
 								{data?.MediaTagCollection?.filter((val) => {
-									if (!showNSFW && val.isAdult) {
+									if (!showNSFW && val?.isAdult) {
 										return false;
 									} else {
-										return val.name
+										return val?.name
 											.toLowerCase()
 											.includes(search.toLowerCase());
 									}
@@ -578,8 +613,8 @@ export const TagBLSetup = () => {
 										idx < 6 && (
 											<List.Item
 												key={idx}
-												title={tag.name}
-												onPress={() => onAdd(tag.name)}
+												title={tag?.name}
+												onPress={() => tag?.name && onAdd(tag.name)}
 											/>
 										),
 								)}
@@ -590,14 +625,14 @@ export const TagBLSetup = () => {
 			</View>
 			<Divider style={{ width: '100%', marginBottom: 10 }} />
 			<View>
-				{tagBlacklist.length > 0 && (
+				{(tagBlacklist?.length ?? 0) > 0 && (
 					<ScrollView
 						style={{
 							marginVertical: 5,
 						}}
 					>
 						<View style={{ flexWrap: 'wrap', flexDirection: 'row' }}>
-							{tagBlacklist.map((tag, idx) => (
+							{tagBlacklist?.map((tag, idx) => (
 								<TagChip
 									key={idx}
 									name={tag}
@@ -636,9 +671,9 @@ const TabSetup = () => {
 					}}
 					onPress={() =>
 						editExploreTabs(
-							exploreTabs.includes(item)
+							exploreTabs?.includes(item)
 								? exploreTabs.filter((tab) => tab !== item)
-								: [...exploreTabs, item],
+								: [...(exploreTabs ?? []), item],
 						)
 					}
 					activeOpacity={1}
@@ -651,7 +686,7 @@ const TabSetup = () => {
 						{item}
 					</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<Checkbox status={exploreTabs.includes(item) ? 'checked' : 'unchecked'} />
+						<Checkbox status={exploreTabs?.includes(item) ? 'checked' : 'unchecked'} />
 						<IconButton icon="drag-vertical" onPressIn={drag} />
 					</View>
 				</TouchableOpacity>
@@ -668,7 +703,7 @@ const TabSetup = () => {
 			/>
 			<View style={{ flex: 1, justifyContent: 'center' }}>
 				<DraggableFlatList
-					data={exploreTabOrder}
+					data={exploreTabOrder ?? []}
 					renderItem={renderItem}
 					keyExtractor={(item, idx) => idx.toString()}
 					onDragEnd={({ data }) => {
