@@ -85,7 +85,7 @@
     "react-native": "0.76.9",
     "react-native-bottom-tabs": "^0.9.0",
     "react-native-chart-kit": "^6.12.0",
-    "react-native-draggable-flatlist": "patch:react-native-draggable-flatlist@npm%3A4.0.1#~/.yarn/patches/react-native-draggable-flatlist-npm-4.0.1-4a95e98e27.patch",
+    "react-native-draggable-flatlist": "^4.0.2",
     "react-native-drawer-layout": "^4.1.1",
     "react-native-edge-to-edge": "^1.4.3",
     "react-native-gesture-handler": "~2.20.2",

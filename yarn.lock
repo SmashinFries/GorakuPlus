@@ -10649,7 +10649,7 @@ __metadata:
     react-native: "npm:0.76.9"
     react-native-bottom-tabs: "npm:^0.9.0"
     react-native-chart-kit: "npm:^6.12.0"
-    react-native-draggable-flatlist: "patch:react-native-draggable-flatlist@npm%3A4.0.1#~/.yarn/patches/react-native-draggable-flatlist-npm-4.0.1-4a95e98e27.patch"
+    react-native-draggable-flatlist: "npm:^4.0.2"
     react-native-drawer-layout: "npm:^4.1.1"
     react-native-edge-to-edge: "npm:^1.4.3"
     react-native-gesture-handler: "npm:~2.20.2"
@@ -10659,7 +10659,7 @@ __metadata:
     react-native-markdown-display: "npm:^7.0.2"
     react-native-mmkv: "npm:^2.12.2"
     react-native-pager-view: "npm:6.5.1"
-    react-native-paper: "npm:^5.13.1"
+    react-native-paper: "patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch"
     react-native-paper-dates: "npm:^0.22.40"
     react-native-qrcode-svg: "npm:^6.3.15"
     react-native-reanimated: "npm:~3.16.7"
@@ -14904,29 +14904,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-draggable-flatlist@npm:4.0.1":
-  version: 4.0.1
-  resolution: "react-native-draggable-flatlist@npm:4.0.1"
+"react-native-draggable-flatlist@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "react-native-draggable-flatlist@npm:4.0.2"
   dependencies:
     "@babel/preset-typescript": "npm:^7.17.12"
   peerDependencies:
     react-native: ">=0.64.0"
     react-native-gesture-handler: ">=2.0.0"
     react-native-reanimated: ">=2.8.0"
-  checksum: 10c0/914e4c1df1a0fed11da474499b78f6144644ab1e45cf22b8d6c3098f12f732d3f15ad26e932114016a80d99a39e9c16cb37357ea707333065dee9d2067639c0b
-  languageName: node
-  linkType: hard
-
-"react-native-draggable-flatlist@patch:react-native-draggable-flatlist@npm%3A4.0.1#~/.yarn/patches/react-native-draggable-flatlist-npm-4.0.1-4a95e98e27.patch":
-  version: 4.0.1
-  resolution: "react-native-draggable-flatlist@patch:react-native-draggable-flatlist@npm%3A4.0.1#~/.yarn/patches/react-native-draggable-flatlist-npm-4.0.1-4a95e98e27.patch::version=4.0.1&hash=7a5ee2"
-  dependencies:
-    "@babel/preset-typescript": "npm:^7.17.12"
-  peerDependencies:
-    react-native: ">=0.64.0"
-    react-native-gesture-handler: ">=2.0.0"
-    react-native-reanimated: ">=2.8.0"
-  checksum: 10c0/e9f369861f7e864cc41724fce5c7f36ba30f3f48cca1ed091e31db525f33740ccab7c7216203b5db6a6db7865738e8ebd24710db40b6afd1a75af51aada675a6
+  checksum: 10c0/4caf76d76eea87442e5a3dd9313793e6ed7a3055145506d44cb399bb32ca81817e3e16405bb604ff06afe1bca146dfedc50e391ddb9db47373193f604d347d2d
   languageName: node
   linkType: hard
 
@@ -15096,7 +15083,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-paper@npm:^5.13.1":
+"react-native-paper@npm:5.13.1":
   version: 5.13.1
   resolution: "react-native-paper@npm:5.13.1"
   dependencies:
@@ -15109,6 +15096,22 @@ __metadata:
     react-native-safe-area-context: "*"
     react-native-vector-icons: "*"
   checksum: 10c0/2fe62eebbfa28067e9fb3b6563f6e6686ca2b980cabddf10930742b491f1d9cb2a228f1057e3df586cdd40f73e48ab9c1c55ece003c3d95f66bf02ae9700cff0
+  languageName: node
+  linkType: hard
+
+"react-native-paper@patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch":
+  version: 5.13.1
+  resolution: "react-native-paper@patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch::version=5.13.1&hash=be9191"
+  dependencies:
+    "@callstack/react-theme-provider": "npm:^3.0.9"
+    color: "npm:^3.1.2"
+    use-latest-callback: "npm:^0.1.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    react-native-safe-area-context: "*"
+    react-native-vector-icons: "*"
+  checksum: 10c0/a87fe7ec08e7fd94fa2b7601139f08c900ec53aff8a4f825a03bb4c0c5f75a4c17f04c75fff90f807e1d11bcabfc70519d808be52fbe51daa6d9727ff735ff54
   languageName: node
   linkType: hard
 
