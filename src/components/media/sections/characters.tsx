@@ -39,7 +39,7 @@ export const CharacterPrevList = ({ mediaId, data, openMore }: CharacterPrevList
 		<View>
 			<ListHeading title="Characters" icon={'arrow-right'} onIconPress={openMore} />
 			<LegendList
-				style={{ height: 130 }}
+				style={{ height: 150 }}
 				data={data?.edges ?? []}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
