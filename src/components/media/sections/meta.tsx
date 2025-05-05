@@ -10,6 +10,7 @@ import { AniMediaQuery, MediaFormat, MediaType } from '@/api/anilist/__genereate
 import { AnimeFull, MangaFull } from '@/api/jikan/models';
 import { useAppTheme } from '@/store/theme/themes';
 import { SeriesModelV1 } from '@/api/mangaupdates/models';
+import { useMatchStore } from '@/store/matchStore';
 
 type MetaDataProps = {
 	data: AniMediaQuery['Media'] | undefined;
@@ -352,8 +353,9 @@ export const MUData = ({
 		() => data?.publishers?.some((pub) => pub.type === 'English') ?? false,
 		[data?.publishers],
 	);
+	const isMangaUpdatesEnabled = useMatchStore((state) => state.isMangaUpdatesEnabled);
 
-	if (!data) return null;
+	if (!data || !isMangaUpdatesEnabled) return null;
 
 	return (
 		<View>
