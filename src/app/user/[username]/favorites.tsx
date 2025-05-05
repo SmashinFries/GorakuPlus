@@ -39,8 +39,8 @@ const filterFavs = (
 		| UserMangaFavoritesQuery_User_User_favourites_Favourites_manga_MediaConnection_nodes_Media
 	)[],
 	search: string = '',
-	tags_in: string[] = [],
-	tags_ex: string[] = [],
+	_tags_in: string[] = [],
+	_tags_ex: string[] = [],
 	genres_in: string[] = [],
 	genres_ex: string[] = [],
 ) => {
