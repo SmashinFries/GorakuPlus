@@ -8,6 +8,9 @@ export const openWebBrowser = async (link?: string | null, openInBrowser?: boole
 		await Linking.openURL(link);
 	} else {
 		const customtabs = await WebBrowser.getCustomTabsSupportingBrowsersAsync();
-		await WebBrowser.openBrowserAsync(link, { createTask: true, browserPackage: customtabs.preferredBrowserPackage });
+		await WebBrowser.openBrowserAsync(link, {
+			createTask: true,
+			browserPackage: customtabs.preferredBrowserPackage,
+		});
 	}
 };
