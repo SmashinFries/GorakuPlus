@@ -23,8 +23,6 @@ export const BarcodeScanDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 	const { aniData, isLoading, isbn, scanned, handleBarCodeScanned, triggerScan, resetScan } =
 		useBarcode();
 
-	const [dialog_width, setDialogWidth] = useState(0);
-
 	const closeDialog = () => {
 		resetScan();
 		onDismiss();
@@ -104,7 +102,7 @@ export const BarcodeScanDialog = ({ visible, onDismiss }: BasicDialogProps) => {
 				)}
 			</Dialog.Content>
 			{scanned && (
-				<Dialog.ScrollArea onLayout={(e) => setDialogWidth(e.nativeEvent.layout.width)}>
+				<Dialog.ScrollArea>
 					<View
 						style={{
 							height: 450,
