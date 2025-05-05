@@ -211,7 +211,6 @@ export const UserScreen = ({
 						isLoading={userDataQuery?.isLoading || userOverviewQuery.isLoading}
 					>
 						<View style={{ paddingTop: 100 }}>
-							<Button onPress={() => console.log(username, viewerName)}>TEST</Button>
 							<View style={{ alignItems: 'center' }}>
 								<Image
 									source={{ uri: userDataQuery?.data?.User?.avatar?.large }}
