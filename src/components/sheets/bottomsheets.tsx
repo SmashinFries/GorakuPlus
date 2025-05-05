@@ -183,7 +183,7 @@ export const ReviewActionsSheet = ({ sheetRef, data }: ReviewOverviewSheetProps)
 	const onUserNav = () => {
 		router.navigate({
 			// @ts-ignore it works tho...
-			pathname: `/user/${review?.user?.id}/${review?.user?.name}`,
+			pathname: `/user/${review?.user?.name}`,
 			params: {
 				avatar: review?.user?.avatar?.large,
 				// banner: data?.node?.user?.bannerImage,

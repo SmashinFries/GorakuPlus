@@ -98,7 +98,7 @@ export const notifNavigate = (notif: Notification, pressActionId: NotificationPr
 			break;
 		case 'user-route':
 			// @ts-ignore
-			router.navigate(`/user/${notif.data.user?.id}/${notif.data.user?.name}`);
+			router.navigate(`/user/${notif.data.user?.name}`);
 			break;
 		default:
 			break;
@@ -176,9 +176,9 @@ const createMediaViewAction = (type?: MediaType) => ({
 const createMediaStyle = (media?: any): AndroidBigPictureStyle | undefined =>
 	media
 		? {
-				type: AndroidStyle.BIGPICTURE,
-				picture: media?.bannerImage ?? media?.coverImage?.large ?? '',
-			}
+			type: AndroidStyle.BIGPICTURE,
+			picture: media?.bannerImage ?? media?.coverImage?.large ?? '',
+		}
 		: undefined;
 
 export const parseNotif = (
