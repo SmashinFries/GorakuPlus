@@ -2,7 +2,6 @@ import { View, StyleSheet } from 'react-native';
 import { Button, List, Portal, Text } from 'react-native-paper';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
 import { useCallback, useReducer, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import { convertDate } from '@/utils';
 import { HTMLText, ListHeading } from '@/components/text';
 import { DanbooruImageCard, MediaCard, StaffCard } from '@/components/cards';

@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { FlatList, ListRenderItemInfo } from 'react-native';
 import { UserCard } from '../../cards';
 import { AniMediaQuery_Following_Page_mediaList_MediaList } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';

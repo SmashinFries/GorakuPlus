@@ -15,7 +15,6 @@ type MalImageItemProps = {
 };
 const MalImageItem = ({
 	item,
-	index,
 	onDownload,
 }: MalImageItemProps & { onDownload: (img: string | null | undefined) => void }) => {
 	return (

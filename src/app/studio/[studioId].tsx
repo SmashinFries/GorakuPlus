@@ -1,7 +1,6 @@
 import { View, useWindowDimensions } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import useStudioList from '@/hooks/studio/useStudio';
-import { MediaCard, MediaCardRow } from '@/components/cards';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { StudioListQuery } from '@/api/anilist/__genereated__/gql';
 import { useColumns } from '@/hooks/useColumns';
@@ -12,7 +11,7 @@ import { MediaRenderItem, MediaRowRenderItem } from '@/components/search/lists';
 const StudioMediaListScreen = () => {
 	const { studioId } = useLocalSearchParams<{ studioId: string }>();
 	const { loadMore, studioData } = useStudioList(Number(studioId));
-	const { height, width } = useWindowDimensions();
+	const { height } = useWindowDimensions();
 	const { itemWidth, columns, displayMode } = useColumns('search');
 
 	const RenderItem = (props: {

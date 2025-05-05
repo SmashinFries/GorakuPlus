@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { ListHeading } from '../../text';
-import { FlatList, ListRenderItemInfo, View } from 'react-native';
+import { View } from 'react-native';
 import { CharacterCard } from '../../cards';
 import {
 	AniMediaQuery_Media_Media_characters_CharacterConnection,
