@@ -617,7 +617,9 @@ const MediaFilters = ({
 									? 'indeterminate'
 									: 'unchecked'
 						}
-						onPress={() => updateTempMultiSelect(genre, 'genre_in', 'genre_not_in')}
+						onPress={() =>
+							updateTempMultiSelect(genre, 'genre_in', 'genre_not_in', true)
+						}
 					/>
 				))}
 			</FilterSheetSection>
