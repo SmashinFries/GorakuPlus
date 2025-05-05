@@ -24,7 +24,7 @@ export const FlashListAnim = (props: FlashListAnimProps) => {
 	);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={{ flex: 1, width: '100%' }}>
 			<AnimatedFlashList
 				ref={props.listRef ?? listRef}
 				{...props}
@@ -33,7 +33,12 @@ export const FlashListAnim = (props: FlashListAnimProps) => {
 			/>
 			{shouldShowScrollToTop && (
 				<ScrollToTopButton
-					onPress={() => listRef.current?.scrollToIndex({ index: 0, animated: true })}
+					onPress={() =>
+						(props.listRef ?? listRef).current?.scrollToIndex({
+							index: 0,
+							animated: true,
+						})
+					}
 					top={props.scrollToTopIconTop ?? 110}
 				/>
 			)}
