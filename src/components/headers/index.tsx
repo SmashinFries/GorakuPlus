@@ -83,7 +83,7 @@ export const AnimPaperHeader = ({
 							flex: 1,
 							height: '50%',
 							justifyContent: 'center',
-							paddingLeft: showBack ? 10 : 0,
+							paddingLeft: 6,
 						},
 					]}
 				>
