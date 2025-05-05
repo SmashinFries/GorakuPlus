@@ -6,6 +6,7 @@ import {
 	AniMediaQuery_Media_Media_staff_StaffConnection,
 	AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge,
 } from '@/api/anilist/__genereated__/gql';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 type StaffPrevListProps = {
 	data: AniMediaQuery_Media_Media_staff_StaffConnection;
@@ -22,7 +23,7 @@ export const StaffPrevList = ({ data, mediaId, openMore }: StaffPrevListProps) =
 	);
 	const renderItem = ({
 		item,
-	}: ListRenderItemInfo<AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge | null>) =>
+	}: LegendListRenderItemProps<AniMediaQuery_Media_Media_staff_StaffConnection_edges_StaffEdge | null>) =>
 		item && item?.node?.id ? (
 			<StaffCard
 				{...item.node}
@@ -39,12 +40,14 @@ export const StaffPrevList = ({ data, mediaId, openMore }: StaffPrevListProps) =
 	return (
 		<View>
 			<ListHeading title="Staff" icon={'arrow-right'} onIconPress={openMore} />
-			<FlatList
-				data={data.edges}
+			<LegendList
+				style={{ height: 150 }}
+				data={data.edges ?? []}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
 				horizontal
-				removeClippedSubviews
+				recycleItems
+				// removeClippedSubviews
 				// estimatedItemSize={120}
 				contentContainerStyle={{ padding: 15 }}
 				showsHorizontalScrollIndicator={false}
