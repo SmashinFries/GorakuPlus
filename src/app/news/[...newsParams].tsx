@@ -1,14 +1,9 @@
 import { MediaType } from '@/api/anilist/__genereated__/gql';
-import {
-	GetAnimeNewsQueryResult,
-	GetMangaNewsQueryResult,
-	useGetAnimeNews,
-	useGetMangaNews,
-} from '@/api/jikan/jikan';
-import { AnimeNews, NewsDataItem } from '@/api/jikan/models';
+import { useGetAnimeNews, useGetMangaNews } from '@/api/jikan/jikan';
+import { NewsDataItem } from '@/api/jikan/models';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { NewsVItem } from '@/components/news/newsItem';
-import { FlashList } from '@shopify/flash-list';
+import { LegendList } from '@legendapp/list';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
 import { View, useWindowDimensions } from 'react-native';
@@ -77,11 +72,16 @@ const NewsPage = () => {
 
 	return (
 		<View style={{ width: width, height: '100%' }}>
-			<FlashList
-				data={isAnime ? animeNewsQuery?.data?.data?.data : mangaNewsQuery?.data?.data?.data}
+			<LegendList
+				data={
+					isAnime
+						? (animeNewsQuery?.data?.data?.data ?? [])
+						: (mangaNewsQuery?.data?.data?.data ?? [])
+				}
 				keyExtractor={keyExtractor}
 				renderItem={RenderItem}
 				centerContent
+				recycleItems
 				estimatedItemSize={100}
 				contentContainerStyle={{ paddingVertical: 10 }}
 			/>

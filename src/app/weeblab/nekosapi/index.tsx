@@ -9,21 +9,17 @@ import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
 import useDebounce from '@/hooks/useDebounce';
 import { useAppTheme } from '@/store/theme/themes';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import {
-	MasonryFlashList,
-	MasonryFlashListRef,
-	MasonryListRenderItemInfo,
-} from '@shopify/flash-list';
+import { MasonryFlashList, MasonryFlashListRef } from '@shopify/flash-list';
 import { Image, useImage } from 'expo-image';
 import { router, Stack } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Pressable, useWindowDimensions, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 
-const AnimatedMasonryFlashList = Animated.createAnimatedComponent(MasonryFlashList);
+const AnimatedMasonryList = Animated.createAnimatedComponent(MasonryFlashList);
 
-const ImageItem = ({ item }: MasonryListRenderItemInfo<NekosApiImageResponse>) => {
+const ImageItem = ({ item }: { item: NekosApiImageResponse }) => {
 	const { colors } = useAppTheme();
 	const image = useImage(item.url, { maxHeight: 350 });
 	if (!image) return null;
@@ -60,7 +56,6 @@ const ImageItem = ({ item }: MasonryListRenderItemInfo<NekosApiImageResponse>) =
 
 const NekosApiPage = () => {
 	const filterRef = useRef<TrueSheet>(null);
-	const layout = useWindowDimensions();
 
 	// const { colors } = useAppTheme();
 	// const { showNSFW } = useSettingsStore(useShallow((state) => ({ showNSFW: state.showNSFW })));
@@ -113,9 +108,9 @@ const NekosApiPage = () => {
 				</View>
 			)}
 			{!isFetching && !isRefetching && (
-				<AnimatedMasonryFlashList
+				<AnimatedMasonryList
 					ref={scrollRef}
-					data={imageData?.data}
+					data={imageData?.data ?? []}
 					contentContainerStyle={{ paddingTop: 8 }}
 					renderItem={({ item, ...props }) => (
 						<ImageItem item={item as NekosApiImageResponse} {...props} />
@@ -123,11 +118,11 @@ const NekosApiPage = () => {
 					onScroll={scrollHandler}
 					numColumns={2}
 					keyboardDismissMode={'on-drag'}
-					drawDistance={layout.height * 2}
-					estimatedItemSize={270}
+					// drawDistance={layout.height * 2}
 					refreshControl={
 						<GorakuRefreshControl onRefresh={refetch} refreshing={isRefetching} />
 					}
+					estimatedItemSize={270}
 					ListEmptyComponent={() => (
 						<View
 							style={{

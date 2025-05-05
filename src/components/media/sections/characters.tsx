@@ -6,6 +6,7 @@ import {
 	AniMediaQuery_Media_Media_characters_CharacterConnection,
 	AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge,
 } from '@/api/anilist/__genereated__/gql';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 // router.push(`/characters/info/${item.node.id}`)
 
@@ -24,7 +25,7 @@ export const CharacterPrevList = ({ mediaId, data, openMore }: CharacterPrevList
 	);
 	const renderItem = ({
 		item,
-	}: ListRenderItemInfo<AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge | null>) => (
+	}: LegendListRenderItemProps<AniMediaQuery_Media_Media_characters_CharacterConnection_edges_CharacterEdge | null>) => (
 		<View style={{ paddingRight: 6 }}>
 			<CharacterCard {...item?.node} role={item?.role ?? undefined} parentMediaId={mediaId} />
 		</View>
@@ -37,12 +38,14 @@ export const CharacterPrevList = ({ mediaId, data, openMore }: CharacterPrevList
 	return (
 		<View>
 			<ListHeading title="Characters" icon={'arrow-right'} onIconPress={openMore} />
-			<FlatList
-				data={data?.edges}
+			<LegendList
+				style={{ height: 130 }}
+				data={data?.edges ?? []}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
 				horizontal
-				removeClippedSubviews
+				recycleItems
+				// removeClippedSubviews
 				// estimatedItemSize={120}
 				contentContainerStyle={{ padding: 15 }}
 				showsHorizontalScrollIndicator={false}

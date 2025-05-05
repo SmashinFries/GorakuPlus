@@ -2,7 +2,6 @@ import { Avatar, Portal, Text } from 'react-native-paper';
 import { useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { ListHeading } from '../text';
-import { FlashList } from '@shopify/flash-list';
 import { MediaCard } from '../cards';
 import { getTimeUntil } from '@/utils';
 import { ConfirmActDelDialog } from './dialogs';
@@ -16,6 +15,7 @@ import {
 import { useAuthStore } from '@/store/authStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { useShallow } from 'zustand/react/shallow';
+import { LegendList } from '@legendapp/list';
 
 type ActivityItemProps = {
 	item: ListActivity;
@@ -115,11 +115,13 @@ export const ActivityOverview = ({
 					})
 				}
 			/>
-			<View style={{ width: width }}>
-				<FlashList
+			<View style={{ flex: 1, width: width }}>
+				<LegendList
+					style={{ height: 300 }}
 					data={data?.filter(
 						(item) => item !== null && item.__typename === 'ListActivity',
 					)}
+					recycleItems
 					renderItem={({ item }) => (
 						<ActivityItem
 							userId={userId}

@@ -5,7 +5,7 @@ import {
 import { AnimViewMem } from '@/components/animations';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
-import { FlashList } from '@shopify/flash-list';
+import { LegendList } from '@legendapp/list';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
@@ -50,8 +50,8 @@ const ThreadPage = () => {
 				)}
 			{!threadDetailQuery.isFetching && !threadCommentsQuery.isFetching && (
 				<AnimViewMem style={{ width: '100%', height: '100%' }}>
-					<FlashList
-						data={flatCommentsData}
+					<LegendList
+						data={flatCommentsData ?? []}
 						keyExtractor={(item, idx) => idx.toString()}
 						renderItem={({ item }) =>
 							!item?.threadId ? null : (
@@ -67,6 +67,7 @@ const ThreadPage = () => {
 								/>
 							)
 						}
+						recycleItems
 						contentContainerStyle={{ paddingVertical: 12, paddingBottom: 42 }}
 						estimatedItemSize={218}
 						onEndReached={() =>

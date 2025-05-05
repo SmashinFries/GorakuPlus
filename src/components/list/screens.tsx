@@ -12,7 +12,6 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useListFilterStore } from '@/store/listStore';
 import { sortLists, sortListTabs } from '@/utils/sort';
-import { FlashList } from '@shopify/flash-list';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { MediaCard, MediaCardRow } from '../cards';
@@ -21,9 +20,10 @@ import { SceneRendererProps, TabView } from 'react-native-tab-view';
 import { GorakuTabBar } from '../tab';
 import { useColumns } from '@/hooks/useColumns';
 import { GorakuRefreshControl } from '../explore/lists';
-import { FlashListAnim } from '../list';
 import { useAuthStore } from '@/store/authStore';
 import { GorakuActivityIndicator } from '../loading';
+import { FlashListAnim } from '../list';
+import { FlashList } from '@shopify/flash-list';
 
 type ListParams = {
 	data:

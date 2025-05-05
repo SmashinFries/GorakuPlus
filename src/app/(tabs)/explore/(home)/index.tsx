@@ -63,7 +63,7 @@ const ExploreSections = ({ type, data, presetType, isLoading }: ExploreSectionsP
 		});
 	};
 	return (
-		<View style={{ paddingVertical: 10 }}>
+		<View style={{ flex: 1, paddingVertical: 10 }}>
 			<View style={{ gap: 12 }}>
 				{type === MediaType.Manga && (
 					<SectionScroll

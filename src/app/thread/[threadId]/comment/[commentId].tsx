@@ -1,7 +1,7 @@
 import { ThreadComment, useAniListCommentDetailsQuery } from '@/api/anilist/__genereated__/gql';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadItem } from '@/components/thread/items';
-import { FlashList } from '@shopify/flash-list';
+import { LegendList } from '@legendapp/list';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
@@ -45,7 +45,7 @@ const ThreadCommentPage = () => {
 			)}
 			{isFetched && (
 				<Animated.View entering={FadeIn} style={{ width: '100%', height: '100%' }}>
-					<FlashList
+					<LegendList
 						data={commentData?.childComments as ThreadComment[]}
 						keyExtractor={(_, idx) => idx.toString()}
 						renderItem={({ item }) => (
@@ -61,6 +61,7 @@ const ThreadCommentPage = () => {
 								replies={item?.childComments}
 							/>
 						)}
+						recycleItems
 						contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 12 }}
 						estimatedItemSize={218}
 						ListHeaderComponent={() => (

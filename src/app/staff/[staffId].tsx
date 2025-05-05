@@ -1,11 +1,4 @@
-import {
-	FlatList,
-	ListRenderItemInfo,
-	Text as RNText,
-	ScrollView,
-	StyleSheet,
-	View,
-} from 'react-native';
+import { Text as RNText, ScrollView, StyleSheet, View } from 'react-native';
 import { Chip, List, MD3DarkTheme, Text } from 'react-native-paper';
 import { Image } from 'expo-image';
 import { Accordion, AnimViewMem, ExpandableDescription } from '@/components/animations';
@@ -30,6 +23,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { CharacterCard } from '@/components/cards';
 import { AnimPaperHeader, FadeHeaderScrollView } from '@/components/headers';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 const StafPage = () => {
 	const { staffId } = useLocalSearchParams<{ staffId: string }>();
@@ -64,7 +58,7 @@ const StafPage = () => {
 
 	const CharacterRenderItem = ({
 		item,
-	}: ListRenderItemInfo<StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge>) => {
+	}: LegendListRenderItemProps<StaffDetailsQuery_Staff_Staff_characters_CharacterConnection_edges_CharacterEdge>) => {
 		return item.node?.id ? (
 			<View style={{ paddingHorizontal: 6 }}>
 				<CharacterCard {...item.node} role={item.role ?? undefined} />
@@ -292,18 +286,21 @@ const StafPage = () => {
 					</Accordion>
 					{(data?.Staff?.staffMedia?.edges?.length ?? 0) > 0 && (
 						<Accordion title="Media" initialExpand>
-							<FlatList
-								data={data?.Staff?.staffMedia?.edges?.filter(
-									(
-										edge,
-									): edge is StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge =>
-										edge !== null,
-								)}
+							<LegendList
+								style={{ height: 280 }}
+								data={
+									data?.Staff?.staffMedia?.edges?.filter(
+										(
+											edge,
+										): edge is StaffDetailsQuery_Staff_Staff_staffMedia_MediaConnection_edges_MediaEdge =>
+											edge !== null,
+									) ?? []
+								}
 								renderItem={StaffMediaRenderItem}
 								keyExtractor={(item, idx) => idx.toString()}
+								recycleItems
 								// estimatedItemSize={250}
 								horizontal
-								removeClippedSubviews
 								// contentContainerStyle={{ padding: 15 }}
 								showsHorizontalScrollIndicator={false}
 								// onEndReached={() => {
@@ -318,15 +315,19 @@ const StafPage = () => {
 							{/* <Text style={{ textAlign: 'center', marginTop: 15 }}>
 								Characters coming soon!
 							</Text> */}
-							<FlatList
-								data={data?.Staff?.characters?.edges?.filter(
-									(edge) => edge !== null,
-								)}
+							<LegendList
+								style={{ height: 120 }}
+								data={
+									data?.Staff?.characters?.edges?.filter(
+										(edge) => edge !== null,
+									) ?? []
+								}
 								renderItem={CharacterRenderItem}
 								keyExtractor={(item, idx) => idx.toString()}
 								// estimatedItemSize={250}
 								horizontal
-								removeClippedSubviews
+								recycleItems
+								// removeClippedSubviews
 								// contentContainerStyle={{ padding: 15 }}
 								showsHorizontalScrollIndicator={false}
 								// onEndReached={() => {

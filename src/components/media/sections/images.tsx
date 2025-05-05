@@ -1,13 +1,13 @@
 import { Portal } from 'react-native-paper';
-import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { ListHeading } from '@/components/text';
 import { SaveImageDialog } from '@/utils/images';
 import { useCallback, useState } from 'react';
 import Animated from 'react-native-reanimated';
-import { ListRenderItemInfo, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { GetAnimePicturesQueryResult } from '@/api/jikan/jikan';
 import { PicturesVariantsDataItem } from '@/api/jikan/models';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 type MalImageItemProps = {
 	item: PicturesVariantsDataItem;
@@ -47,7 +47,7 @@ const MalImages = ({ data }: MalImagesProps) => {
 		img_url && setSelectedImg(img_url);
 	}, []);
 
-	const RenderItem = useCallback((props: ListRenderItemInfo<PicturesVariantsDataItem>) => {
+	const RenderItem = useCallback((props: LegendListRenderItemProps<PicturesVariantsDataItem>) => {
 		return <MalImageItem {...props} onDownload={onDownload} />;
 	}, []);
 
@@ -59,15 +59,15 @@ const MalImages = ({ data }: MalImagesProps) => {
 		<Animated.View style={{ overflow: 'visible' }}>
 			<ListHeading title="Images" />
 			<View style={{ width: '100%', height: 260 }}>
-				<FlashList
+				<LegendList
 					data={data?.data}
 					renderItem={RenderItem}
 					keyExtractor={(item, index) => index.toString()}
 					estimatedItemSize={250}
+					recycleItems
 					horizontal
 					contentContainerStyle={{ padding: 15 }}
 					showsHorizontalScrollIndicator={false}
-					drawDistance={225 * data?.data?.length}
 				/>
 			</View>
 			<Portal>

@@ -1,6 +1,6 @@
 import { Text } from 'react-native-paper';
 import { useCallback } from 'react';
-import { FlatList, ListRenderItemInfo, View } from 'react-native';
+import { View } from 'react-native';
 import { MediaCard } from '@/components/cards';
 import {
 	AniMediaQuery_Media_Media_recommendations_RecommendationConnection,
@@ -9,6 +9,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { AccordionMemo } from '@/components/animations';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 type RecProps = {
 	data: AniMediaQuery_Media_Media_recommendations_RecommendationConnection;
@@ -30,7 +31,7 @@ const RecList = ({ data, parentMediaId }: RecProps) => {
 	);
 	const renderItem = ({
 		item,
-	}: ListRenderItemInfo<AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge>) => {
+	}: LegendListRenderItemProps<AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge>) => {
 		if (!item?.node?.mediaRecommendation) return null;
 		return (
 			<View style={{ marginHorizontal: 10, maxHeight: 260 }}>
@@ -82,16 +83,20 @@ const RecList = ({ data, parentMediaId }: RecProps) => {
 	return (
 		<View>
 			<AccordionMemo title="Recommendations">
-				<FlatList
-					data={data?.edges?.filter(
-						(
-							edge,
-						): edge is AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge =>
-							edge !== null,
-					)}
+				<LegendList
+					style={{ height: 290 }}
+					data={
+						data?.edges?.filter(
+							(
+								edge,
+							): edge is AniMediaQuery_Media_Media_recommendations_RecommendationConnection_edges_RecommendationEdge =>
+								edge !== null,
+						) ?? []
+					}
 					renderItem={renderItem}
 					keyExtractor={keyExtractor}
 					horizontal
+					recycleItems
 					contentContainerStyle={{ padding: 15 }}
 					showsHorizontalScrollIndicator={false}
 				/>

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import { MediaCard, MediaCardRow } from '../cards';
 // import { useBottomSheetModal } from '@gorhom/bottom-sheet';
 import Animated, {
@@ -15,6 +14,7 @@ import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useDisplayStore } from '@/store/displayStore';
 import { useColumns } from '@/hooks/useColumns';
 import { useShallow } from 'zustand/react/shallow';
+import { LegendList } from '@legendapp/list';
 
 const RenderEmpty = ({ message }: { message: string }) => {
 	const rotate = useSharedValue(0);
@@ -98,9 +98,13 @@ export const DayTab = ({ data }: DayTabProps) => {
 
 	return (
 		<View style={{ width: '100%', height: '100%' }}>
-			<FlashList
+			<LegendList
 				key={columns}
-				data={data?.filter((ep) => (calendar.list_only ? ep?.media?.mediaListEntry : true))}
+				data={
+					data?.filter((ep) => (calendar.list_only ? ep?.media?.mediaListEntry : true)) ??
+					[]
+				}
+				recycleItems
 				renderItem={RenderItem}
 				keyExtractor={(item, idx) => idx.toString()}
 				numColumns={displayMode === 'COMPACT' ? columns : 1}

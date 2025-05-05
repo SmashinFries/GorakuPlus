@@ -1,4 +1,3 @@
-import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { View, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
@@ -8,6 +7,8 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { UserCard, UserRowCard } from '@/components/cards';
 import { useColumns } from '@/hooks/useColumns';
+import { FlashListAnim } from '@/components/list';
+import { ListRenderItemInfo } from '@shopify/flash-list';
 
 const FollowingListPage = () => {
 	const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -64,10 +65,10 @@ const FollowingListPage = () => {
 
 	return (
 		<View style={{ height: '100%', width: '100%' }}>
-			<FlashList
+			<FlashListAnim
 				numColumns={columns}
 				key={columns}
-				data={flatData?.filter((item) => item != null)}
+				data={flatData?.filter((item) => item != null) ?? []}
 				keyExtractor={(item, idx) => idx.toString()}
 				renderItem={RenderItem}
 				ListFooterComponent={() =>

@@ -1,5 +1,4 @@
-import { FlashList } from '@shopify/flash-list';
-import { View, useWindowDimensions } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { useCharactersList } from '@/hooks/characters/useCharacters';
 import { useLocalSearchParams } from 'expo-router';
 import { GorakuActivityIndicator } from '@/components/loading';
@@ -11,7 +10,6 @@ const CharacterListPage = () => {
 	const { mediaId } = useLocalSearchParams<{ mediaId: string }>();
 	const id = parseInt(mediaId);
 	const { data, isLoading, isFetching, hasNextPage, fetchNextPage } = useCharactersList(id);
-	const { height } = useWindowDimensions();
 	const { columns, displayMode, itemWidth } = useColumns('search');
 
 	const RenderItem = (props: {
@@ -50,7 +48,7 @@ const CharacterListPage = () => {
 
 	return (
 		<View style={{ height: '100%', width: '100%' }}>
-			<FlashList
+			<FlatList
 				numColumns={columns}
 				key={columns}
 				data={data?.filter(
@@ -68,8 +66,8 @@ const CharacterListPage = () => {
 						</View>
 					)
 				}
-				drawDistance={height / 2}
-				estimatedItemSize={241}
+				// drawDistance={height / 2}
+				// estimatedItemSize={241}
 				onEndReached={() => hasNextPage && fetchNextPage()}
 			/>
 		</View>

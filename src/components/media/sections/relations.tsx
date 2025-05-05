@@ -1,5 +1,4 @@
 import { Text } from 'react-native-paper';
-import { FlashList } from '@shopify/flash-list';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { MediaCard } from '@/components/cards';
@@ -10,6 +9,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { useAppTheme } from '@/store/theme/themes';
 import { AccordionMemo } from '@/components/animations';
+import { LegendList } from '@legendapp/list';
 
 type RelationsProps = {
 	parentMediaId: number;
@@ -64,18 +64,21 @@ const Relations = ({ parentMediaId, data }: RelationsProps) => {
 	return (
 		<AccordionMemo title="Relations">
 			{/* <ListHeading title="Relations" /> */}
-			<FlashList
-				data={data?.edges?.filter(
-					(
-						edge,
-					): edge is AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge =>
-						edge !== null,
-				)}
+			<LegendList
+				style={{ height: 286 }}
+				data={
+					data?.edges?.filter(
+						(
+							edge,
+						): edge is AniMediaQuery_Media_Media_relations_MediaConnection_edges_MediaEdge =>
+							edge !== null,
+					) ?? []
+				}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
-				estimatedItemSize={250}
 				horizontal
-				removeClippedSubviews
+				recycleItems
+				// removeClippedSubviews
 				contentContainerStyle={{ padding: 15 }}
 				showsHorizontalScrollIndicator={false}
 			/>

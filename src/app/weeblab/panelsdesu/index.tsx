@@ -1,17 +1,15 @@
 import { GetSearchSearchMedia200PanelsItem } from '@/api/panelsdesu/models';
 import { useGetSearchSearchMedia } from '@/api/panelsdesu/panelsdesu';
+import { AnimatedMasonryFlashList } from '@/components/list';
 import { useStickyHeader } from '@/hooks/animations/useStickyHeader';
 import useDebounce from '@/hooks/useDebounce';
 import { useAppTheme } from '@/store/theme/themes';
-import { MasonryFlashList, MasonryListRenderItemInfo } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-
-const AnimatedMasonryFlashList = Animated.createAnimatedComponent(MasonryFlashList);
 
 const PanelItem = ({ item }: { item: GetSearchSearchMedia200PanelsItem }) => {
 	const { colors } = useAppTheme();
@@ -56,17 +54,14 @@ const PanelsDesuPage = () => {
 
 	const { scrollHandler, stickyHeaderStyle } = useStickyHeader(searchbarHeight);
 
-	const renderItem = useCallback(
-		(props: MasonryListRenderItemInfo<GetSearchSearchMedia200PanelsItem>) => {
-			return <PanelItem {...props} />;
-		},
-		[],
-	);
+	const renderItem = useCallback((props: any) => {
+		return <PanelItem {...props} />;
+	}, []);
 
 	return (
 		<View style={{ flex: 1, width: '100%' }}>
 			<AnimatedMasonryFlashList
-				data={data?.data?.panels}
+				data={data?.data?.panels ?? []}
 				ItemSeparatorComponent={() => <View style={{ height: 5 }} />}
 				contentContainerStyle={{ paddingTop: searchbarHeight }}
 				renderItem={renderItem}

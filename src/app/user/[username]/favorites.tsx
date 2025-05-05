@@ -20,7 +20,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useFavoritesFilterStore } from '@/store/favoritesStore';
 import { useAppTheme } from '@/store/theme/themes';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
-import { FlashList, FlashListProps, ListRenderItemInfo } from '@shopify/flash-list';
+import { FlashListProps, ListRenderItemInfo } from '@shopify/flash-list';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
@@ -159,24 +159,28 @@ const MediaTabList = ({
 			key={columns}
 			scrollToTopIconTop={25}
 			scrollToTopTravelDistance={200}
-			data={data?.filter((item) =>
-				query
-					? item?.title?.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
-						item?.title?.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
-						item?.title?.native?.includes(query) ||
-						item?.synonyms?.some((value) =>
-							value?.toLowerCase()?.includes(query?.toLowerCase()),
-						) ||
-						item?.characters?.nodes?.some(
-							(value) =>
-								value?.name?.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-								value?.name?.native?.includes(query) ||
-								value?.name?.alternative?.some((alt) =>
-									alt?.toLowerCase().includes(query?.toLowerCase() ?? ''),
-								),
-						)
-					: true,
-			)}
+			data={
+				data?.filter((item) =>
+					query
+						? item?.title?.romaji?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item?.title?.english?.toLowerCase()?.includes(query?.toLowerCase()) ||
+							item?.title?.native?.includes(query) ||
+							item?.synonyms?.some((value) =>
+								value?.toLowerCase()?.includes(query?.toLowerCase()),
+							) ||
+							item?.characters?.nodes?.some(
+								(value) =>
+									value?.name?.full
+										?.toLowerCase()
+										?.includes(query?.toLowerCase()) ||
+									value?.name?.native?.includes(query) ||
+									value?.name?.alternative?.some((alt) =>
+										alt?.toLowerCase().includes(query?.toLowerCase() ?? ''),
+									),
+							)
+						: true,
+				) ?? []
+			}
 			nestedScrollEnabled
 			renderItem={RenderItem}
 			keyExtractor={keyExtract}
@@ -403,14 +407,16 @@ const WaifuTab = ({
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
-			<FlashList
+			<FlashListAnim
 				key={columns}
-				data={mergedResults?.filter((item) =>
-					query
-						? item?.name?.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
-							item?.name?.native?.includes(query)
-						: true,
-				)}
+				data={
+					mergedResults?.filter((item) =>
+						query
+							? item?.name?.full?.toLowerCase()?.includes(query?.toLowerCase()) ||
+								item?.name?.native?.includes(query)
+							: true,
+					) ?? []
+				}
 				nestedScrollEnabled
 				renderItem={RenderItem}
 				keyExtractor={keyExtract}
@@ -511,14 +517,16 @@ const StaffTab = ({
 
 	return (
 		<View style={{ flex: 1, height: '100%', width }}>
-			<FlashList
+			<FlashListAnim
 				key={columns}
-				data={mergedResults?.filter((item) =>
-					query
-						? item?.name?.full?.toLowerCase().includes(query?.toLowerCase()) ||
-							item?.name?.native?.includes(query)
-						: true,
-				)}
+				data={
+					mergedResults?.filter((item) =>
+						query
+							? item?.name?.full?.toLowerCase().includes(query?.toLowerCase()) ||
+								item?.name?.native?.includes(query)
+							: true,
+					) ?? []
+				}
 				nestedScrollEnabled
 				renderItem={RenderItem}
 				keyExtractor={keyExtract}

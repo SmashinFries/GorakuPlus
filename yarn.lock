@@ -3749,6 +3749,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@legendapp/list@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "@legendapp/list@npm:1.0.8"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/bc18f714888890dc272e920d252123f86a4b5e8852dee95769543db6a3c74881c82f28af245badaa095839c3ed745f49ad0bc197c859dbb947ddc4af7d73a9e4
+  languageName: node
+  linkType: hard
+
 "@lodev09/react-native-true-sheet@npm:^2.0.5":
   version: 2.0.5
   resolution: "@lodev09/react-native-true-sheet@npm:2.0.5"
@@ -10575,6 +10585,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": "npm:^4.2.3"
     "@graphql-codegen/typescript-react-query": "npm:^6.1.0"
     "@kesha-antonov/react-native-background-downloader": "npm:^3.2.6"
+    "@legendapp/list": "npm:^1.0.8"
     "@lodev09/react-native-true-sheet": "npm:^2.0.5"
     "@marceloterreiro/flash-calendar": "npm:^1.3.0"
     "@miblanchard/react-native-slider": "npm:^2.6.0"
@@ -10659,7 +10670,7 @@ __metadata:
     react-native-markdown-display: "npm:^7.0.2"
     react-native-mmkv: "npm:^2.12.2"
     react-native-pager-view: "npm:6.5.1"
-    react-native-paper: "patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch"
+    react-native-paper: "npm:^5.14.0"
     react-native-paper-dates: "npm:^0.22.40"
     react-native-qrcode-svg: "npm:^6.3.15"
     react-native-reanimated: "npm:~3.16.7"
@@ -15083,35 +15094,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-paper@npm:5.13.1":
-  version: 5.13.1
-  resolution: "react-native-paper@npm:5.13.1"
+"react-native-paper@npm:^5.14.0":
+  version: 5.14.0
+  resolution: "react-native-paper@npm:5.14.0"
   dependencies:
     "@callstack/react-theme-provider": "npm:^3.0.9"
     color: "npm:^3.1.2"
-    use-latest-callback: "npm:^0.1.5"
+    use-latest-callback: "npm:^0.2.3"
   peerDependencies:
     react: "*"
     react-native: "*"
     react-native-safe-area-context: "*"
-    react-native-vector-icons: "*"
-  checksum: 10c0/2fe62eebbfa28067e9fb3b6563f6e6686ca2b980cabddf10930742b491f1d9cb2a228f1057e3df586cdd40f73e48ab9c1c55ece003c3d95f66bf02ae9700cff0
-  languageName: node
-  linkType: hard
-
-"react-native-paper@patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch":
-  version: 5.13.1
-  resolution: "react-native-paper@patch:react-native-paper@npm%3A5.13.1#~/.yarn/patches/react-native-paper-npm-5.13.1-f153e542e2.patch::version=5.13.1&hash=be9191"
-  dependencies:
-    "@callstack/react-theme-provider": "npm:^3.0.9"
-    color: "npm:^3.1.2"
-    use-latest-callback: "npm:^0.1.5"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-safe-area-context: "*"
-    react-native-vector-icons: "*"
-  checksum: 10c0/a87fe7ec08e7fd94fa2b7601139f08c900ec53aff8a4f825a03bb4c0c5f75a4c17f04c75fff90f807e1d11bcabfc70519d808be52fbe51daa6d9727ff735ff54
+  checksum: 10c0/5ffa063512d69239672b02912a0c7d75425d6363ea84d0fef896ae68b3cf5e567b377f71ad9af0e3aa70e9dc1cd040dd4b3ca683048863436a8aff75666c94bf
   languageName: node
   linkType: hard
 
@@ -17827,6 +17821,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 10c0/66debcd5ac30aa0198669314177c7b30902787131c98c8130695555655426b43c678f84acc98a49284d50257396ed1ac4e257f3a5fc1d2a0f09ec741c08bfda9
+  languageName: node
+  linkType: hard
+
+"use-latest-callback@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "use-latest-callback@npm:0.2.3"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/dc87503f6279ce2980f78e1019231ba20d7509e9d17adac05285babe4d6ba6f68c52f4ef7b5ad777cbc2af9fbaaa09d7adb664ca556da0aebab9f020022880be
   languageName: node
   linkType: hard
 

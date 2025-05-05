@@ -1,10 +1,12 @@
-import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { RefObject, useRef } from 'react';
 import Animated, { AnimatedScrollViewProps } from 'react-native-reanimated';
 import { ScrollToTopButton } from './buttons';
 import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
+import { View } from 'react-native';
+import { FlashList, FlashListProps, MasonryFlashList } from '@shopify/flash-list';
 
 export const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
+export const AnimatedMasonryFlashList = Animated.createAnimatedComponent(MasonryFlashList);
 
 type FlashListAnimProps = FlashListProps<any> & {
 	isSticky?: boolean;
@@ -22,7 +24,7 @@ export const FlashListAnim = (props: FlashListAnimProps) => {
 	);
 
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<AnimatedFlashList
 				ref={props.listRef ?? listRef}
 				{...props}
@@ -35,7 +37,7 @@ export const FlashListAnim = (props: FlashListAnimProps) => {
 					top={props.scrollToTopIconTop ?? 110}
 				/>
 			)}
-		</>
+		</View>
 	);
 };
 

@@ -1,4 +1,3 @@
-import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { FlatList, View, useWindowDimensions } from 'react-native';
 import { useCallback, useRef } from 'react';
 import {
@@ -10,7 +9,6 @@ import {
 	UserCard,
 	UserRowCard,
 } from '../cards';
-import Animated from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useSearchStore } from '@/store/search/searchStore';
 import useDebounce from '@/hooks/useDebounce';
@@ -32,16 +30,13 @@ import {
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { GorakuActivityIndicator } from '../loading';
 import { useAppTheme } from '@/store/theme/themes';
-import { useScrollHandler } from '@/hooks/animations/useScrollHandler';
-import { ScrollToTopButton } from '../buttons';
 import { useColumns } from '@/hooks/useColumns';
 import { useDisplayStore } from '@/store/displayStore';
-import { LongScrollView } from '../list';
+import { FlashListAnim, LongScrollView } from '../list';
 import { useShallow } from 'zustand/react/shallow';
 import { GorakuRefreshControl } from '../explore/lists';
 import { ListHeading } from '../text';
-
-const AnimatedFlashList = Animated.createAnimatedComponent(FlashList);
+import { FlashList, FlashListProps } from '@shopify/flash-list';
 
 export const MediaRenderItem = (props: MediaSearchQuery_Page_Page_media_Media) => {
 	return (
@@ -50,8 +45,8 @@ export const MediaRenderItem = (props: MediaSearchQuery_Page_Page_media_Media) =
 				// flex: 1,
 				alignItems: 'center',
 				justifyContent: 'flex-start',
-				marginVertical: 10,
-				marginHorizontal: 5,
+				marginVertical: 0,
+				marginHorizontal: 6,
 			}}
 		>
 			<MediaCard {...props} fitToParent />
@@ -184,38 +179,37 @@ const SearchAllSection = ({
 
 const SearchList = ({
 	data,
-	headerHeight,
 	numColumns = 3,
 	...props
 }: FlashListProps<any> & { headerHeight?: number }) => {
 	const listRef = useRef<FlashList<any>>(null);
 	const { width } = useWindowDimensions();
-	const { shouldShowScrollToTop, scrollHandler } = useScrollHandler(
-		headerHeight ?? undefined,
-		150,
-	);
+	// const { scrollHandler } = useScrollHandler(
+	// 	headerHeight ?? undefined,
+	// 	150,
+	// );
 	const keyExtract = useCallback(
 		(item: any, index: number) => (item?.id?.toString() ?? '0') + index.toString(),
 		[],
 	);
 
 	return (
-		<View style={{ width: width, height: '100%' }}>
-			<AnimatedFlashList
-				ref={listRef}
-				data={data}
+		<View style={{ flex: 1, width: width }}>
+			<FlashListAnim
+				listRef={listRef}
+				data={data ?? []}
 				keyExtractor={keyExtract}
 				numColumns={numColumns}
 				centerContent
-				onScroll={scrollHandler}
+				// onScroll={scrollHandler}
 				{...props}
 			/>
-			{shouldShowScrollToTop && (
+			{/* {shouldShowScrollToTop && (
 				<ScrollToTopButton
 					onPress={() => listRef.current?.scrollToIndex({ index: 0, animated: true })}
 					// top={110}
 				/>
-			)}
+			)} */}
 		</View>
 	);
 };
@@ -434,7 +428,7 @@ export const AnimeSearchList = () => {
 			)}
 			<SearchList
 				key={columns}
-				data={mergedResults}
+				data={mergedResults ?? []}
 				numColumns={columns}
 				nestedScrollEnabled
 				renderItem={({ item }: { item: MediaSearchQuery_Page_Page_media_Media }) =>
@@ -449,7 +443,7 @@ export const AnimeSearchList = () => {
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
-				removeClippedSubviews
+				// removeClippedSubviews
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -516,7 +510,7 @@ export const MangaSearchList = () => {
 			)}
 			<SearchList
 				key={columns}
-				data={allResults}
+				data={allResults ?? []}
 				numColumns={columns}
 				nestedScrollEnabled
 				renderItem={(props) =>
@@ -531,7 +525,7 @@ export const MangaSearchList = () => {
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
-				removeClippedSubviews
+				// removeClippedSubviews
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -626,7 +620,7 @@ export const CharacterSearchList = () => {
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
-				removeClippedSubviews
+				// removeClippedSubviews
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -714,7 +708,7 @@ export const StaffSearchList = () => {
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
-				removeClippedSubviews
+				// removeClippedSubviews
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -775,7 +769,7 @@ export const StudioSearchList = () => {
 				</View>
 			)}
 			<SearchList
-				data={allResults}
+				data={allResults ?? []}
 				numColumns={1}
 				nestedScrollEnabled
 				renderItem={({
@@ -803,7 +797,7 @@ export const StudioSearchList = () => {
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
-				removeClippedSubviews
+				// removeClippedSubviews
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();
@@ -868,7 +862,7 @@ export const UserSearchList = () => {
 			<SearchList
 				key={columns}
 				numColumns={columns}
-				data={allResults}
+				data={allResults ?? []}
 				nestedScrollEnabled
 				renderItem={({
 					item,
@@ -894,7 +888,7 @@ export const UserSearchList = () => {
 				keyboardShouldPersistTaps="never"
 				keyboardDismissMode="interactive"
 				estimatedItemSize={240}
-				removeClippedSubviews
+				// removeClippedSubviews
 				onEndReachedThreshold={0.4}
 				onEndReached={() => {
 					hasNextPage && fetchNextPage();

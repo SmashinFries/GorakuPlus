@@ -201,9 +201,9 @@ export const MediaCard = ({
 							// 	: undefined,
 						}}
 						colors={[
-							'rgba(20, 20, 20,0)',
+							'rgba(20, 20, 20,0.0)',
 							'rgba(20, 20, 20, 0.4)',
-							props.isFavourite ? 'rgba(79, 0, 0, 1)' : 'rgba(20, 20, 20, 1)',
+							props.isFavourite ? 'rgba(79, 0, 0, 1)' : 'rgba(20, 20, 20, 0.9)',
 						]}
 					></LinearGradient>
 					<View style={{ flex: 1, justifyContent: 'flex-end' }}>
@@ -589,7 +589,9 @@ export const UserCard = ({ onPress = () => null, ...props }: UserCardProps) => {
 						}}
 					>
 						{props.status}
-						{props.progress ? ` ${props.progress}` : ''}
+						{props.progress && props.status !== MediaListStatus.Completed
+							? ` ${props.progress}`
+							: ''}
 					</Text>
 				) : null}
 			</Pressable>

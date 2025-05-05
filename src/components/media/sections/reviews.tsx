@@ -1,4 +1,3 @@
-import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { ListHeading } from '@/components/text';
@@ -11,6 +10,7 @@ import {
 import { useAppTheme } from '@/store/theme/themes';
 import { ReviewActionsSheet } from '@/components/sheets/bottomsheets';
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
+import { LegendList } from '@legendapp/list';
 
 type ReviewProps = {
 	data: AniMediaQuery_Media_Media_reviews_ReviewConnection;
@@ -39,8 +39,9 @@ const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 				icon={data?.pageInfo?.hasNextPage ? 'arrow-right' : undefined}
 				onIconPress={openMore}
 			/>
-			<FlashList
-				data={data?.edges}
+			<LegendList
+				style={{ height: 180 }}
+				data={data?.edges ?? []}
 				renderItem={(info) => (
 					<View style={{ marginRight: 8 }}>
 						<ReviewItem
@@ -55,9 +56,10 @@ const ReviewsSection = ({ data, openMore }: ReviewProps) => {
 					</View>
 				)}
 				keyExtractor={keyExtractor}
-				estimatedItemSize={250}
+				// estimatedItemSize={250}
 				horizontal
-				removeClippedSubviews
+				recycleItems
+				// removeClippedSubviews
 				contentContainerStyle={{ padding: 15 }}
 				showsHorizontalScrollIndicator={false}
 			/>

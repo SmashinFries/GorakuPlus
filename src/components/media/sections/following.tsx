@@ -4,6 +4,7 @@ import { UserCard } from '../../cards';
 import { AniMediaQuery_Following_Page_mediaList_MediaList } from '@/api/anilist/__genereated__/gql';
 import { useAuthStore } from '@/store/authStore';
 import { AccordionMemo } from '@/components/animations';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 type FollowingPrevListProps = {
 	data: AniMediaQuery_Following_Page_mediaList_MediaList[];
@@ -16,7 +17,7 @@ export const FollowingPrevList = ({ data }: FollowingPrevListProps) => {
 	);
 	const renderItem = ({
 		item,
-	}: ListRenderItemInfo<AniMediaQuery_Following_Page_mediaList_MediaList>) =>
+	}: LegendListRenderItemProps<AniMediaQuery_Following_Page_mediaList_MediaList>) =>
 		userID !== item.user?.id && item.user?.id ? (
 			<UserCard
 				status={item.status ?? undefined}
@@ -33,11 +34,13 @@ export const FollowingPrevList = ({ data }: FollowingPrevListProps) => {
 
 	return (
 		<AccordionMemo title="Following">
-			<FlatList
+			<LegendList
+				style={{ height: 150 }}
 				data={data}
 				renderItem={renderItem}
 				keyExtractor={keyExtractor}
 				horizontal
+				recycleItems
 				contentContainerStyle={{ padding: 15 }}
 				// estimatedItemSize={125}
 				showsHorizontalScrollIndicator={false}

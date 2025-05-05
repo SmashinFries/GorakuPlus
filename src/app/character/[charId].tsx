@@ -6,7 +6,7 @@ import { useWindowDimensions } from 'react-native';
 import { convertDate } from '@/utils';
 import { HTMLText, ListHeading } from '@/components/text';
 import { DanbooruImageCard, MediaCard, StaffCard } from '@/components/cards';
-import { FlashList } from '@shopify/flash-list';
+import { LegendList } from '@legendapp/list';
 import { useCharDetail } from '@/hooks/characters/useCharDetails';
 import { CharacterLoading } from '@/components/characters/loading';
 import { CharacterFront } from '@/components/characters/front';
@@ -35,7 +35,6 @@ const CharacterScreen = () => {
 	const { charData, art, tagOptions, onTagChange, currentArtTag, isReady } = useCharDetail(
 		Number(charId),
 	);
-	const { width } = useWindowDimensions();
 
 	const [selectedImg, setSelectedImg] = useState('');
 	// const [uniqueVAs, setUniqueVAs] = useState<
@@ -318,7 +317,8 @@ const CharacterScreen = () => {
 								</Accordion>
 							</View>
 							<Accordion title="Media">
-								<FlashList
+								<LegendList
+									style={{ height: 280 }}
 									data={
 										charData?.data?.Character?.media?.edges?.filter(
 											(edge): edge is NonNullable<typeof edge> =>
@@ -328,8 +328,9 @@ const CharacterScreen = () => {
 									renderItem={MediaRenderItem}
 									keyExtractor={keyExtractor}
 									estimatedItemSize={250}
-									estimatedListSize={{ height: 320, width: width }}
-									removeClippedSubviews
+									recycleItems
+									// estimatedListSize={{ height: 320, width: width }}
+									// removeClippedSubviews
 									horizontal
 									fadingEdgeLength={6}
 									contentContainerStyle={{ padding: 15 }}
@@ -339,7 +340,8 @@ const CharacterScreen = () => {
 							{(charData.data?.Character?.media?.edges?.length ?? 0) > 0 && (
 								<Accordion title="Voice Actors">
 									{/* <ListHeading title="Voice Actors" /> */}
-									<FlashList
+									<LegendList
+										style={{ height: 160 }}
 										data={
 											[
 												...new Set(
@@ -366,9 +368,10 @@ const CharacterScreen = () => {
 										renderItem={VARenderItem}
 										keyExtractor={keyExtractor}
 										horizontal
+										recycleItems
 										fadingEdgeLength={6}
-										estimatedItemSize={130}
-										estimatedListSize={{ height: 130, width: width }}
+										// estimatedItemSize={130}
+										// estimatedListSize={{ height: 130, width: width }}
 										contentContainerStyle={{ padding: 15 }}
 										showsHorizontalScrollIndicator={false}
 									/>
@@ -392,14 +395,15 @@ const CharacterScreen = () => {
 										}
 									/>
 									{!art?.isFetching ? (
-										<FlashList
-											data={art?.data?.pages[0]}
+										<LegendList
+											style={{ height: 240 }}
+											data={art?.data?.pages[0] ?? []}
 											ListEmptyComponent={EmptyArt}
 											renderItem={ArtRenderItem}
 											keyExtractor={keyExtractor}
 											horizontal
+											recycleItems
 											fadingEdgeLength={6}
-											estimatedItemSize={213}
 											contentContainerStyle={{
 												padding: 15,
 											}}

@@ -6,6 +6,7 @@ import { AnimViewMem } from '@/components/animations';
 import { FlashListAnim } from '@/components/list';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadOverviewItem } from '@/components/thread/items';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 import { ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
@@ -35,7 +36,7 @@ const ThreadsPage = () => {
 	const keyExtractor = useCallback((item: any, index: number) => index.toString(), []);
 	const renderItem = ({
 		item,
-	}: ListRenderItemInfo<ThreadsOverviewQuery_Page_Page_threads_Thread | null>) => {
+	}: ListRenderItemInfo<ThreadsOverviewQuery_Page_Page_threads_Thread | null | undefined>) => {
 		return item ? (
 			<AnimViewMem style={{ marginVertical: 8 }}>
 				<ThreadOverviewItem
@@ -60,7 +61,7 @@ const ThreadsPage = () => {
 	return (
 		<View style={{ flex: 1, width: '100%' }}>
 			<FlashListAnim
-				data={flatData}
+				data={flatData ?? []}
 				keyExtractor={keyExtractor}
 				renderItem={renderItem}
 				estimatedItemSize={146}
@@ -68,7 +69,7 @@ const ThreadsPage = () => {
 				numColumns={1}
 				onEndReached={() => hasNextPage && fetchNextPage()}
 				showScrollToTop
-				// scrollToTopTravelDistance={50}
+				scrollToTopTravelDistance={50}
 				scrollToTopIconTop={10}
 			/>
 		</View>

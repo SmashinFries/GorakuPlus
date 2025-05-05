@@ -98,11 +98,15 @@ export const SectionScroll = ({
 				}}
 			>
 				{!isLoading ? (
+					// Needs FlatList from Gesture handler due to drawer and tab swipes
+					// Not sure how to fix gesture issues with LegendList / FlashList
 					<FlatList
+						// style={{ height: 210 }}
 						data={data ?? []}
 						keyExtractor={(item) => item?.id.toString() + category_title}
 						renderItem={renderMediaItem}
 						horizontal={true}
+						// recycleItems
 						// estimatedItemSize={210}
 						removeClippedSubviews
 						centerContent

@@ -4,7 +4,7 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { ListHeading } from '@/components/text';
 import { ThreadOverviewItem } from '@/components/thread/items';
-import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 import { router } from 'expo-router';
 import { useCallback } from 'react';
 import { View } from 'react-native';
@@ -22,7 +22,7 @@ export const ThreadOverview = ({ aniId, data }: ThreadOverviewProps) => {
 	const keyExtractor = useCallback((item: any, index: number) => index.toString(), []);
 	const renderItem = ({
 		item,
-	}: ListRenderItemInfo<ThreadsOverviewQuery_Page_Page_threads_Thread | null>) => {
+	}: LegendListRenderItemProps<ThreadsOverviewQuery_Page_Page_threads_Thread | null>) => {
 		return item ? (
 			<ThreadOverviewItem item={item} onSelect={() => item && onSelect(item.id)} />
 		) : null;
@@ -31,17 +31,18 @@ export const ThreadOverview = ({ aniId, data }: ThreadOverviewProps) => {
 	if ((data?.Page?.threads?.length ?? 0) < 1) return null;
 
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<ListHeading
 				title="Threads"
 				icon={data?.Page?.pageInfo?.hasNextPage ? 'arrow-right' : undefined}
 				onIconPress={() => router.navigate(`/thread/overview/${aniId}`)}
 			/>
-			<FlashList
-				data={data?.Page?.threads}
+			<LegendList
+				style={{ height: 180 }}
+				recycleItems
+				data={data?.Page?.threads ?? []}
 				keyExtractor={keyExtractor}
 				renderItem={renderItem}
-				estimatedItemSize={327}
 				contentContainerStyle={{ padding: 15 }}
 				horizontal
 				showsHorizontalScrollIndicator={false}

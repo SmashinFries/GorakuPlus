@@ -4,9 +4,9 @@ import {
 } from '@/api/anilist/__genereated__/gql';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { NotifItem } from '@/components/notifications/item';
-import { FlashList, ListRenderItemInfo } from '@shopify/flash-list';
 import { router } from 'expo-router';
 import { View, useWindowDimensions } from 'react-native';
+import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 
 const NotificationPage = () => {
 	const { width } = useWindowDimensions();
@@ -31,7 +31,9 @@ const NotificationPage = () => {
 
 	const RenderItem = ({
 		item,
-	}: ListRenderItemInfo<GetNotificationsQuery_Page_Page_notifications | null | undefined>) => {
+	}: LegendListRenderItemProps<
+		GetNotificationsQuery_Page_Page_notifications | null | undefined
+	>) => {
 		if (!item) return null;
 		return (
 			<NotifItem
@@ -59,13 +61,14 @@ const NotificationPage = () => {
 				</View>
 			)}
 			{mergedData && (
-				<FlashList
+				<LegendList
 					data={mergedData}
 					renderItem={RenderItem}
 					keyExtractor={(item, idx) => idx.toString()}
 					estimatedItemSize={20}
 					contentContainerStyle={{ paddingVertical: 10 }}
 					onEndReached={() => hasNextPage && fetchNextPage()}
+					recycleItems
 				/>
 			)}
 		</View>
