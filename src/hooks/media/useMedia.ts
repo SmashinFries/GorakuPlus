@@ -88,36 +88,46 @@ export const useMedia = (aniId: number | null, type: MediaType) => {
 	);
 
 	useEffect(() => {
-		if (anilist?.isFetched && anilist?.data) {
-			if (malDB && aniId && malDB[aniId]) {
-				if (type === MediaType.Anime) {
-					(isMalEnabled ? jikan?.isFetched : true) && setIsReady(true);
-				} else {
-					if (muDB[aniId]) {
-						(isMalEnabled ? jikan?.isFetched : true) &&
-							(isMangaUpdatesEnabled
-								? muSeries?.isFetched || muSeries.isError
-								: true) &&
-							(isMangaUpdatesEnabled
-								? muReleases?.isFetched || muReleases.isError
-								: true) &&
-							setIsReady(true);
-					} else if (muSeries?.isError || muReleases?.isError || !muSeries?.data?.data) {
-						setIsReady(true);
-					}
-				}
-			} else if (aniId && anilist?.data?.Media?.idMal) {
-				addMalID(aniId, anilist?.data?.Media?.idMal);
-			} else if (!anilist?.data?.Media?.idMal || !isMalEnabled) {
-				if (type === MediaType.Anime) {
-					setIsReady(true);
-				} else {
-					(isMangaUpdatesEnabled
-						? (muSeries?.isFetched || muSeries?.isError) &&
-							(muReleases?.isFetched || muReleases?.isError)
-						: true) && setIsReady(true);
-				}
+		if (!anilist?.isFetched || !anilist?.data) return;
+
+		const isAnime = type === MediaType.Anime;
+		const hasMalData = malDB && aniId && malDB[aniId];
+		const hasMuData = aniId && muDB[aniId];
+
+		// Handle MAL ID mapping
+		if (aniId && anilist?.data?.Media?.idMal && !malDB[aniId]) {
+			addMalID(aniId, anilist.data.Media.idMal);
+		}
+
+		// Check if MAL data is ready
+		const isMalReady = !isMalEnabled || jikan?.isFetched;
+
+		// Check if MangaUpdates data is ready
+		const isMuReady =
+			!isMangaUpdatesEnabled ||
+			((muSeries?.isFetched || muSeries?.isError) &&
+				(muReleases?.isFetched || muReleases?.isError));
+
+		// For Anime, we only need MAL data
+		if (isAnime) {
+			if (!hasMalData || isMalReady) {
+				setIsReady(true);
 			}
+			return;
+		}
+
+		// For Manga, we need both MAL and MangaUpdates data
+		const shouldSetReady =
+			(!hasMalData && isMuReady) || // No MAL data, only need MU
+			(hasMalData &&
+				isMalReady &&
+				(!hasMuData || // No MU data needed
+					isMuReady || // MU data is ready
+					muSeries?.isError || // MU errors are acceptable
+					!muSeries?.data?.data)); // No MU data available
+
+		if (shouldSetReady) {
+			setIsReady(true);
 		}
 	}, [dependencies]);
 
