@@ -6,7 +6,6 @@ import { AnimViewMem } from '@/components/animations';
 import { FlashListAnim } from '@/components/list';
 import { GorakuActivityIndicator } from '@/components/loading';
 import { ThreadOverviewItem } from '@/components/thread/items';
-import { LegendList, LegendListRenderItemProps } from '@legendapp/list';
 import { ListRenderItemInfo } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback } from 'react';
