@@ -45,8 +45,7 @@ export const AnimPaperHeader = ({
 	navigation,
 	options,
 	route,
-	back,
-	showBack,
+	showBack = true,
 	actions,
 	headerStyle,
 	headerActionStyle,
@@ -60,7 +59,7 @@ export const AnimPaperHeader = ({
 	return (
 		<Animated.View style={[headerStyle]}>
 			<Appbar.Header style={{ backgroundColor: 'rgba(0,0,0,0)' }}>
-				{back && !showBack && (
+				{showBack && (
 					<Animated.View
 						style={[
 							{
@@ -84,7 +83,7 @@ export const AnimPaperHeader = ({
 							flex: 1,
 							height: '50%',
 							justifyContent: 'center',
-							paddingLeft: !showBack ? 20 : 0,
+							paddingLeft: showBack ? 10 : 0,
 						},
 					]}
 				>
