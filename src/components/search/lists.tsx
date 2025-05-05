@@ -203,6 +203,7 @@ const SearchList = ({
 				centerContent
 				// onScroll={scrollHandler}
 				{...props}
+				scrollToTopIconTop={20}
 			/>
 			{/* {shouldShowScrollToTop && (
 				<ScrollToTopButton
