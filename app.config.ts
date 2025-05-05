@@ -12,7 +12,7 @@ const config: ExpoConfig = {
 	owner: 'kuzulabz',
 	slug: 'GorakuPlus',
 	name: appName,
-	version: '1.4.7',
+	version: '1.4.8',
 	orientation: 'portrait',
 	icon: './assets/iconsv3/icon.png',
 	userInterfaceStyle: 'automatic',
