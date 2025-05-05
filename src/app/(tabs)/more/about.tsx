@@ -18,6 +18,7 @@ import { openWebBrowser } from '@/utils/webBrowser';
 import { useSettingsStore } from '@/store/settings/settingsStore';
 import { useAppUpdaterStore } from '@/store/appUpdateStore';
 import { router } from 'expo-router';
+import { sendToast } from '@/utils/toast';
 
 const OtherAppItem = ({
 	title,
@@ -70,7 +71,10 @@ const AboutPage = () => {
 
 	const runUpdateChecker = async () => {
 		setIsCheckingUpdate(true);
-		await checkForUpdate();
+		const isAvailable = await checkForUpdate();
+		if (!isAvailable) {
+			sendToast('No update available');
+		}
 		setIsCheckingUpdate(false);
 	};
 

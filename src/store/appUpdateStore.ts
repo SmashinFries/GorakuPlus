@@ -3,7 +3,6 @@ import { GithubReleaseResponse } from '@/types';
 import axios from 'axios';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
-import { sendToast } from '@/utils/toast';
 
 const REPO_URL = 'https://api.github.com/repos/KuzuLabz/GorakuSite';
 
@@ -31,7 +30,6 @@ export const useAppUpdaterStore = create<AppUpdateState & AppUpdateAction>()((se
 			});
 			return true;
 		} else {
-			sendToast('No update available');
 			return false;
 		}
 	},
