@@ -115,6 +115,7 @@ export const FadeHeaderScrollView = ({
 	isLoading,
 	Header = (props) => <AnimPaperHeader {...props} />,
 	BgImage,
+	title,
 }: {
 	children: React.ReactNode;
 	BgImage?: ({
@@ -126,6 +127,7 @@ export const FadeHeaderScrollView = ({
 	animationRange?: [number, number];
 	refreshControl?: ScrollViewProps['refreshControl'];
 	isLoading?: boolean;
+	title?: string;
 }) => {
 	const { headerStyle, headerTitleStyle, headerActionStyle, bgImageStyle, scrollHandler } =
 		useHeaderAnim(animationRange[0], animationRange[1]);
@@ -143,6 +145,7 @@ export const FadeHeaderScrollView = ({
 					options={{
 						headerTransparent: true,
 						headerShown: !isLoading,
+						title: title,
 						header: (props) => (
 							<Header
 								{...props}
