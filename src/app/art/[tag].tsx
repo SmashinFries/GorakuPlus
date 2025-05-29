@@ -34,15 +34,16 @@ const ArtListPage = () => {
 		);
 	};
 
-	const flattenedData = data?.pages?.flatMap((page) => page);
+	const flattenedData = data?.pages?.flatMap((page) => page) ?? [];
 
 	return (
 		<View style={{ width: '100%', flex: 1 }}>
 			{(flattenedData?.length ?? 0) > 0 ? (
 				<AnimatedMasonryList
 					innerRef={listRef}
-					data={flattenedData ?? ([] as DanPost[])}
+					data={flattenedData}
 					numColumns={2}
+					// @ts-expect-error
 					renderItem={RenderItem}
 					estimatedItemSize={200}
 					onEndReachedThreshold={0.7}
