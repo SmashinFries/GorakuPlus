@@ -3,8 +3,9 @@ import { Stack } from 'expo-router';
 import { useAppTheme } from '@/store/theme/themes';
 import { useShallow } from 'zustand/react/shallow';
 import { PaperHeader } from './headers';
+import { ComponentProps } from 'react';
 
-type StackProps = (typeof Stack)['defaultProps'];
+type StackProps = ComponentProps<typeof Stack>;
 
 const AnimatedStack = (props: StackProps) => {
 	const { colors } = useAppTheme();
