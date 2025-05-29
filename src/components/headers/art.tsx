@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, useWindowDimensions } from 'react-native';
-import { FadeHeaderProvider } from '../headers';
 import { PostImage } from '../art/image';
+import { FadeHeaderScrollView } from '.';
 
 export const ArtHeaderProvider = ({
 	aspectRatio,
@@ -19,7 +19,7 @@ export const ArtHeaderProvider = ({
 	const { width } = useWindowDimensions();
 	const [imageHeight, setImageHeight] = useState<number>(0);
 	return (
-		<FadeHeaderProvider
+		<FadeHeaderScrollView
 			animationRange={[width / aspectRatio, width / aspectRatio + titleHeight]}
 			title={title ?? ''}
 			BgImage={({ style }) => (
@@ -41,6 +41,6 @@ export const ArtHeaderProvider = ({
 				}}
 			/>
 			{children}
-		</FadeHeaderProvider>
+		</FadeHeaderScrollView>
 	);
 };
